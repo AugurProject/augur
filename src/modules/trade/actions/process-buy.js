@@ -15,14 +15,14 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
-		const { loginAccount } = getState();
-
 		// we track filled shares again here to keep track of the full total through the recursiveness of trading
 		let filledShares = 0;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
+		const { loginAccount } = getState();
+
+		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => {
 				filledShares += parseFloat(res.filledShares);

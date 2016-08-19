@@ -31,17 +31,27 @@ export function placeTrade(marketID) {
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
 
 			if (outcomeTradeInProgress.side === BUY) {
-				dispatch(addTradeTransaction(
-					BUY,
-					i,
-					marketID,
-					outcomeID,
-					market.description,
-					outcomesData[marketID][outcomeID].name,
-					outcomeTradeInProgress.numShares,
-					outcomeTradeInProgress.limitPrice,
-					totalCost));
-
+				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+				if (tradeIDs && tradeIDs.length) {
+					dispatch(addTradeTransaction(
+						BUY,
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+				} else {
+					dispatch(addBidTransaction(
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+				}
 			} else if (outcomeTradeInProgress.side === SELL) {
 				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 
