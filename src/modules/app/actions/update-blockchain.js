@@ -1,5 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { checkPeriod } from '../../reports/actions/check-period';
+import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
@@ -22,6 +23,7 @@ export function updateBlockchain(runCheckPeriod, cb) {
 			const currentPeriodProgress = augur.getCurrentPeriodProgress(branch.periodLength);
 			const isReportConfirmationPhase = currentPeriodProgress > 50;
 			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
+
 			augur.getVotePeriod(branch.id, (period) => {
 				if (period && period.error) {
 					console.error('ERROR getVotePeriod', branch.id, period);
@@ -46,6 +48,7 @@ export function updateBlockchain(runCheckPeriod, cb) {
 				// if not logged in, can't increment period
 				// if report period is caught up and we're not in a new
 				// report phase, callback and exit
+				if (loginAccount.id) dispatch(claimProceeds());
 				if (!loginAccount.id || (isCaughtUpReportPeriod && !isChangedReportPhase && !runCheckPeriod)) {
 					return cb && cb();
 				}
