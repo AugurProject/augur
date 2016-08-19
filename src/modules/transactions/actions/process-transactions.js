@@ -9,13 +9,14 @@ export function processTransactions() {
 			return;
 		}
 
-		const runningTransactions = transactions.filter(transaction => transaction.status !== PENDING && transaction.status !== SUCCESS && transaction.status !== FAILED && transaction.status !== INTERRUPTED);
+		const runningTransactions = (transactions || []).filter(transaction => transaction.status !== PENDING && transaction.status !== SUCCESS && transaction.status !== FAILED && transaction.status !== INTERRUPTED);
 
 		let maxExecutionOrderToExecute = 0;
 
 		if (runningTransactions.length) {
 			maxExecutionOrderToExecute = runningTransactions[0].executionOrder;
-		} else {
+		}
+		else {
 			maxExecutionOrderToExecute = pendingTransactions[pendingTransactions.length - 1].executionOrder;
 		}
 

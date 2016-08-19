@@ -4,10 +4,15 @@ import { addTradeTransaction } from '../../transactions/actions/add-trade-transa
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { selectTransactionsLink } from '../../link/selectors/links';
+import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
+import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
+import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
+import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
+import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData } = getState();
+		const { tradesInProgress, outcomesData, orderBooks, loginAccount, accountTrades } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 
@@ -38,17 +43,6 @@ export function placeTrade(marketID) {
 					totalCost));
 
 			} else if (outcomeTradeInProgress.side === SELL) {
-				dispatch(addTradeTransaction(
-					SELL,
-					i,
-					marketID,
-					outcomeID,
-					market.description,
-					outcomesData[marketID][outcomeID].name,
-					outcomeTradeInProgress.numShares,
-					outcomeTradeInProgress.limitPrice,
-					totalCost));
-/*
 				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 
 				// check if user has position
@@ -96,7 +90,6 @@ export function placeTrade(marketID) {
 							totalCost));
 					}
 				}
-*/
 			}
 		});
 
