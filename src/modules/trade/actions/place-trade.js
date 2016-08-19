@@ -21,8 +21,7 @@ export function placeTrade(marketID) {
 		}
 
 		let outcomeTradeInProgress;
-
-		Object.keys(marketTradeInProgress).forEach((outcomeID, i) => {
+		Object.keys(marketTradeInProgress).forEach(outcomeID => {
 			outcomeTradeInProgress = marketTradeInProgress[outcomeID];
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
 				return;

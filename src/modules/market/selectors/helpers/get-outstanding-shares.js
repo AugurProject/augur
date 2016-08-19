@@ -8,6 +8,6 @@
  */
 export default function (marketOutcomesData) {
 	return Object.keys(marketOutcomesData)
-		.map(outcomeID => marketOutcomesData[outcomeID])
+		.map(outcomeId => marketOutcomesData[outcomeId])
 		.reduce((outstandingShares, outcome) => outstandingShares + parseFloat(outcome.outstandingShares), 0);
 }

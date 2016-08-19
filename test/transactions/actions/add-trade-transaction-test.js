@@ -44,13 +44,12 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Buy Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(BUY, 1, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
 		const actual = store.getActions();
 		actual[0].action();
 
 		const expected = [{
 			type: 'buy',
-			executionOrder: 1,
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
@@ -88,13 +87,12 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Sell Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(SELL, 2, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
 		const actual = store.getActions();
 		actual[0].action();
 
 		const expected = [{
 			type: 'sell',
-			executionOrder: 2,
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
