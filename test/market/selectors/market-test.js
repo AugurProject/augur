@@ -14,9 +14,9 @@ describe(`modules/market/selectors/market.js`, () => {
 	const stubbedSelectors = { loginAccount };
 
 	let stubbedAugurJS = {
-		getFees: () => {}
+		getMarketCreatorFeesCollected: () => {}
 	};
-	sinon.stub(stubbedAugurJS, 'getFees', () => 10);
+	sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
 
 	selector = proxyquire('../../../src/modules/market/selectors/market.js', {
 		'../../../store': store,

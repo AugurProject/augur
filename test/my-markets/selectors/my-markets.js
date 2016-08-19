@@ -15,8 +15,8 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	const { store } = mockStore.default;
 	const { loginAccount, allMarkets } = store.getState();
 
-	let stubbedAugurJS = { augur: { getFees: () => {} } };
-	sinon.stub(stubbedAugurJS.augur, 'getFees', () => 10);
+	let stubbedAugurJS = { augur: { getMarketCreatorFeesCollected: () => {} } };
+	sinon.stub(stubbedAugurJS.augur, 'getMarketCreatorFeesCollected', () => 10);
 
 	let stubbedSelectors = {
 		loginAccount,
@@ -37,7 +37,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 			description: 'test-market-1',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
-			fees: formatEther(stubbedAugurJS.augur.getFees()),
+			fees: formatEther(stubbedAugurJS.augur.getMarketCreatorFeesCollected()),
 			numberOfTrades: formatNumber(8),
 			averageTradeSize: formatNumber(15),
 			openVolume: formatNumber(80)
@@ -47,7 +47,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 			description: 'test-market-2',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
-			fees: formatEther(stubbedAugurJS.augur.getFees()),
+			fees: formatEther(stubbedAugurJS.augur.getMarketCreatorFeesCollected()),
 			numberOfTrades: formatNumber(8),
 			averageTradeSize: formatNumber(15),
 			openVolume: formatNumber(80)
