@@ -145,7 +145,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
-	market.creationTime = formatDate(new Date(marketData.creationTime));
+	market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;

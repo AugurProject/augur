@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-ui-react-components": "3.0.47",
+    "augur-ui-react-components": "3.0.49",
     "augur.js": "2.0.14",
     "bignumber.js": "2.4.0",
     "memoizerific": "1.8.4",
