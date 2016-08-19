@@ -30,8 +30,8 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		// TODO augur.getFees should be async (provide callback)
-		const fees = formatEther((augur) ? augur.getFees(market.id) : 0);
+		// TODO augur.getMarketCreatorFeesCollected should be async (provide callback)
+		const fees = formatEther((augur) ? augur.getMarketCreatorFeesCollected(market.id) : 0);
 
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
