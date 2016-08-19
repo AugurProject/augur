@@ -282,7 +282,7 @@ module.exports = {
                         // create a scalar market
                         augur.createSingleEventMarket({
                             branchId: branchID,
-                            description: description,
+                            description: description + "?",
                             expDate: expDate,
                             minValue: 5,
                             maxValue: 10,

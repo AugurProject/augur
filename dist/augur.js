@@ -17449,6 +17449,16 @@ module.exports={
           "int256[]"
         ]
       }, 
+      "getMarketCreatorFeesCollected": {
+        "inputs": [
+          "market"
+        ], 
+        "method": "getMarketCreatorFeesCollected", 
+        "returns": "int256", 
+        "signature": [
+          "int256"
+        ]
+      }, 
       "getMarketInfo": {
         "inputs": [
           "marketID"
@@ -20954,41 +20964,41 @@ module.exports={
         "Trades": "0xf26707c1f3b94d80611c5373013098ccd2d4ea9d"
     }, 
     "2": {
-        "Backstops": "0x6566906efce3e816921a6af0e865fc9496b1e0d3", 
-        "Branches": "0xcadac34e7e9e1daba5d11b1a0b0e709e44404a56", 
-        "BuyAndSellShares": "0xe176f3d700c3a5da2ea6b9012e5c530f2f966704", 
-        "Cash": "0xfc89e338d45bd222ee756e155d6c6e3296286761", 
-        "CloseMarket": "0x5605009e968a72eba8da01e28e780111c596e661", 
-        "CloseMarketOne": "0x57bac5425b203dd7213060fde3ca9f030e533680", 
-        "CloseMarketTwo": "0xce61229ccc4a7eca6a39c8240b29de0ee8d28848", 
-        "CollectFees": "0x41b9e97513c627b9dab26e3743ccf6c47fac4abc", 
-        "CompleteSets": "0xe231eb8225061ab49201afc639adac432319bef8", 
-        "CompositeGetters": "0x5d10e242e0af6ee41c6e01ebe086c410a7f37111", 
-        "Consensus": "0x369d6aa931f607bec2b9585cad2d9df9d60c3964", 
-        "ConsensusData": "0x20008d15ff29341dfca3e76a7d642bb81bfd3e55", 
-        "CreateBranch": "0x35f2ce06a32153a30b945599ddb705260d934945", 
-        "CreateMarket": "0x3fdeb53d535e359d5915c2ac807d1b57f43553d8", 
-        "EventResolution": "0x9989dd4768328bf8f7559e99cf4e1bbed18c1238", 
-        "Events": "0x045a909f22dd69101b2fa03dcb5928921f6cbff6", 
-        "ExpiringEvents": "0x02b5f11a6ba4d0d56f20b8a2857ce3a6a7f65896", 
-        "Faucets": "0xcffad567d8e13ad4cf20924911c47fddcbf69d03", 
-        "ForkPenalize": "0x5bfa2877b343bc401a78c1a9fe565908ed40e636", 
-        "Forking": "0xd081ffb7b0639f331cd421357519209e1b4e2d22", 
-        "FxpFunctions": "0x8b71da514129799744dd71467f3c9016338aae60", 
-        "Info": "0x65fde58c98098168e7b190ad5ef71be1cb2c5b61", 
-        "MakeReports": "0xca6e36916584403beec6b888da7b3d8bc08103d1", 
-        "Markets": "0x346f66f4c58385fb86a941c44c99f52aa76594da", 
-        "PenalizationCatchup": "0x06b4b345d444526d6a214d658593fc9939298fd6", 
-        "PenalizeNotEnoughReports": "0xccd105011c3b7da5fe8dfe02d15f5dcebbf84a91", 
-        "ProportionCorrect": "0xa99bf12626c69794c2edff12dcc371a60d2d036d", 
-        "Reporting": "0x0fc618603aad4819262fa52554cf41898a44139c", 
-        "ReportingThreshold": "0xa530ce63cff5b76b1d4981f157e54c83492d09e5", 
-        "RoundTwo": "0x0d7978d10f73e27cd01bf26f48d677ccddd10dec", 
-        "RoundTwoPenalize": "0x31820d3be1cd391775ce7255a219d52ab298e755", 
-        "SendReputation": "0xd330305979d26dac29e6b0bafafc9f05bc472ad6", 
-        "SlashRep": "0x2cd26dc9cfd42a0bdbaf5a67b5ddadbe3eed563d", 
-        "Trade": "0x6e9035bddb9addc521cb94a079918991efbe56fe", 
-        "Trades": "0x51996ae37ab719f126a52ad015fa3c7304a7c136"
+        "Backstops": "0xe8e97f54a9de1c90e5c7ed9fb7ffbcff65dbafdb", 
+        "Branches": "0xac88faf06b1b2d37288bd557ad6cb3aa8fac757f", 
+        "BuyAndSellShares": "0x07fc22f07807cad664edcdb2494f359f1599db4c", 
+        "Cash": "0xa726b9e21388b5ccfee429804a3a9f234bf93535", 
+        "CloseMarket": "0xd2f91c2e30ca71b2bba10dc5851ccf23ffe1b0cc", 
+        "CloseMarketOne": "0x7b8c830588df2970171b598acb9ca0be2860bbda", 
+        "CloseMarketTwo": "0x94db3bc4184e320498455774b424802462458d3a", 
+        "CollectFees": "0xbb57b07e50038086617d722739efdf0cb81569fd", 
+        "CompleteSets": "0xb9bb5c2e404868469d8421db4964622f4163a116", 
+        "CompositeGetters": "0x6ee28ac73e3ebafbd357e46cc0c8bbbe6235e4a7", 
+        "Consensus": "0xfb262777af60c63de479ba9237861e89ca5dd8ba", 
+        "ConsensusData": "0xc4cee1d39d0b793addfffd3b20ff20c064a88008", 
+        "CreateBranch": "0x551a0bfeb54cfd2a0296ab60af657a1a8ae8937c", 
+        "CreateMarket": "0x0654c3bf4f57312caff94272a6f73d89ace5937f", 
+        "EventResolution": "0x4e2fb3c24c3c2bea754fcba0e67301c0f9566c4c", 
+        "Events": "0x54ad03abdf2a86ff2e758dd60c234702928f5a41", 
+        "ExpiringEvents": "0xadb4d0e959d0224100911b49ff2d61816e50f907", 
+        "Faucets": "0xc4959845c5eaa621cf1faa2be1a54079aac16c8f", 
+        "ForkPenalize": "0x5505c2123fa285ff17091fbd930d79409b0eaa46", 
+        "Forking": "0x1a42fd28ebfceee4e312fd7107fcbda752a314be", 
+        "FxpFunctions": "0x76049293138d99ebfaf9e229290fa9fa0331f39c", 
+        "Info": "0xd56d0f911c3f2bb4e4bf6fb56122ce1a5713e6d6", 
+        "MakeReports": "0x684907137f91d25532e8431053d3802146300d2b", 
+        "Markets": "0x9a98b727297eb0869ab07bad057cc4f0acf6ce8a", 
+        "PenalizationCatchup": "0xddb5b9e5ada53fb7c8926a7f2b093020699ff658", 
+        "PenalizeNotEnoughReports": "0xcdff160a9e70c4864b9f8198880055e96f9fa84d", 
+        "ProportionCorrect": "0x7f6e2d85f54d7a2fa32a20db024cb09492ae3c8f", 
+        "Reporting": "0x8949c7f290a46f3b11bf0abb1f1a900ed0ce1732", 
+        "ReportingThreshold": "0xc4bfdf52f8e78c6712186a34e397d3483a9b4d66", 
+        "RoundTwo": "0x65bb41e1efda8eae70ec3d55c285b749973ac50a", 
+        "RoundTwoPenalize": "0x227a7bc76fb182077ed002b7752ebf274842ef92", 
+        "SendReputation": "0x5544e08a66c1381694223a9d0663fe4d824093cc", 
+        "SlashRep": "0x0bd61e4524885c3f08c1a919bee2ce144dd96fea", 
+        "Trade": "0x97a5ddc68c0f14c1375b9e6d2ac3ea0abe33b137", 
+        "Trades": "0xfbe993b523d1829d1dec8fe787a2630eaa2d3e96"
     }
 }
 },{}],57:[function(require,module,exports){
@@ -21011,7 +21021,8 @@ module.exports={
     },
     "claimProceeds": {
         "0": "reporting not done",
-        "-1": "trader doesn't exist"
+        "-1": "trader doesn't exist",
+        "-8": "invalid branch"
     },
     "closeMarket": {
         "0": "fail/trading not over yet/event not expired or closed already",
@@ -42827,43 +42838,21 @@ module.exports = function () {
             // } else {
             //     async.forEachOf(this.filter, function (filter, label, next) {
             //         if (utils.is_function(cb[label])) {
-            //             var callback;
+            //             var callback = cb[label];
             //             switch (label) {
-            //             case "block":
-            //                 callback = cb.block;
-            //                 cb.block = function (block) {
-            //                     self.parse_block_message(block, callback);
-            //                 };
-            //                 break;
             //             case "contracts":
-            //                 callback = cb.contracts;
-            //                 cb.contracts = function (msg) {
+            //                 cb[label] = function (msg) {
             //                     self.parse_contracts_message(msg, callback);
             //                 };
             //                 break;
-            //             case "log_fill_tx":
-            //                 callback = cb.log_fill_tx;
-            //                 cb.log_fill_tx = function (msg) {
-            //                     self.parse_log_fill_tx_message(msg, callback);
-            //                 };
-            //                 break;
-            //             case "marketCreated":
-            //                 callback = cb.marketCreated;
-            //                 cb.marketCreated = function (msg) {
-            //                     self.parse_marketCreated_message(msg, callback);
-            //                 };
-            //                 break;
-            //             case "tradingFeeUpdated":
-            //                 callback = cb.tradingFeeUpdated;
-            //                 cb.tradingFeeUpdated = function (msg) {
-            //                     self.parse_tradingFeeUpdated_message(msg, callback);
-            //                 };
-            //                 break;
-            //             }
-            //             default:
-            //                 callback = cb[label];
+            //             case "block":
             //                 cb[label] = function (msg) {
-            //                     self.parse_event_message(msg, callback);
+            //                     self.parse_block_message(msg, callback);
+            //                 };
+            //                 break;
+            //             default:
+            //                 cb[label] = function (msg) {
+            //                     self.parse_event_message(label, msg, callback);
             //                 };
             //             }
             //             augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
@@ -43278,7 +43267,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.13";
+    this.version = "2.0.14";
 
     this.options = {
         debug: {
@@ -45023,6 +45012,39 @@ module.exports = {
         ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
     },
 
+    // markets: array of market IDs for which to claim proceeds
+    claimMarketsProceeds: function (branch, markets, callback) {
+        var self = this;
+        var claimedMarkets = [];
+        async.eachSeries(markets, function (market, nextMarket) {
+            self.getWinningOutcomes(market, function (winningOutcomes) {
+                // market not yet resolved
+                if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+                    return nextMarket();
+                }
+                self.claimProceeds({
+                    branch: branch,
+                    market: market,
+                    onSent: function (res) {
+                        // console.log("claim proceeds sent:", market, res);
+                    },
+                    onSuccess: function (res) {
+                        // console.log("claim proceeds success:", market, res.callReturn);
+                        if (res.callReturn === "1") {
+                            claimedMarkets.push(market);
+                            return nextMarket();
+                        }
+                        nextMarket(res.callReturn);
+                    },
+                    onFailed: nextMarket
+                });
+            });
+        }, function (err) {
+            if (err) return callback(err);
+            callback(null, claimedMarkets);
+        });
+    },
+
     // Increment vote period until vote period = current period - 1
     checkPeriod: function (branch, periodLength, sender, callback) {
         var self = this;
@@ -45047,8 +45069,8 @@ module.exports = {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     // if > first period, then call penalizeWrong(branch, 0)
-                    console.log("No events found for this period");
-                    return self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+                    console.log("No events found for period", votePeriod);
+                    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
                         lastPeriodPenalized = parseInt(lastPeriodPenalized);
                         if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
                             console.log("Penalizations caught up!");
@@ -45072,44 +45094,45 @@ module.exports = {
                             }
                         });
                     });
+                } else {
+                    console.log("Events found for period " + votePeriod + ", looping through...");
+                    async.eachSeries(events, function (event, nextEvent) {
+                        console.log(" - penalizeWrong:", event);
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: event,
+                            onSent: utils.noop,
+                            onSuccess: function (r) {
+                                console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                console.log(" - closing extra markets");
+                                self.getMarkets(event, function (markets) {
+                                    if (!markets) return nextEvent("no markets found for " + event);
+                                    if (markets && markets.error) return nextEvent(markets);
+                                    if (markets.length <= 1) return nextEvent();
+                                    async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                        self.closeMarket({
+                                            branch: branch,
+                                            market: market,
+                                            sender: sender,
+                                            onSent: function (res) {
+                                                console.log("closeMarket", market, res);
+                                            },
+                                            onSuccess: function (res) {
+                                                console.log("closeMarket success", market, res.callReturn);
+                                                nextMarket();
+                                            },
+                                            onFailed: nextMarket
+                                        });
+                                    }, nextEvent);
+                                });
+                            },
+                            onFailed: function (err) {
+                                console.error(" - penalizeWrong error:", err);
+                                nextEvent(err);
+                            }
+                        });
+                    }, next);
                 }
-                console.log("Events found, looping through...");
-                async.eachSeries(events, function (event, nextEvent) {
-                    console.log(" - penalizeWrong:", event);
-                    self.penalizeWrong({
-                        branch: branch,
-                        event: event,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            console.log(" - closing extra markets");
-                            self.getMarkets(event, function (markets) {
-                                if (!markets) return nextEvent("no markets found for " + event);
-                                if (markets && markets.error) return nextEvent(markets);
-                                if (markets.length <= 1) return nextEvent();
-                                async.eachSeries(markets.slice(1), function (market, nextMarket) {
-                                    self.closeMarket({
-                                        branch: branch,
-                                        market: market,
-                                        sender: sender,
-                                        onSent: function (res) {
-                                            console.log("closeMarket", market, res);
-                                        },
-                                        onSuccess: function (res) {
-                                            console.log("closeMarket success", market, res.callReturn);
-                                            nextMarket();
-                                        },
-                                        onFailed: nextMarket
-                                    });
-                                }, nextEvent);
-                            });
-                        },
-                        onFailed: function (err) {
-                            console.error(" - penalizeWrong error:", err);
-                            nextEvent(err);
-                        }
-                    });
-                }, next);
             });
         }
 
@@ -46839,7 +46862,7 @@ module.exports = {
                         // create a scalar market
                         augur.createSingleEventMarket({
                             branchId: branchID,
-                            description: description,
+                            description: description + "?",
                             expDate: expDate,
                             minValue: 5,
                             maxValue: 10,

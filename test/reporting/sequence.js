@@ -325,11 +325,22 @@ describe("Reporting sequence", function () {
                                         console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
                                     }
                                     var winningOutcomes = augur.getWinningOutcomes(markets[type]);
-                                    if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
                                     var eventOutcome = augur.getOutcome(event);
-                                    if (DEBUG) console.log("event", event, "outcome:", eventOutcome);
-                                    // assert.strictEqual(winningOutcomes[report-1], "1");
-                                    nextEvent();
+                                    if (DEBUG) {
+                                        console.log("winningOutcomes:", winningOutcomes);
+                                        console.log("event", event, "outcome:", eventOutcome);
+                                    }
+                                    assert(parseInt(winningOutcomes[0]) !== 0);
+                                    assert(parseInt(eventOutcome) !== 0);
+                                    augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
+                                        if (res && res.error) return nextEvent(res);
+                                        var claimable = [markets.binary, markets.categorical, markets.scalar];
+                                        augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
+                                            assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
+                                            assert.sameMembers(claimable, claimed);
+                                            nextEvent();
+                                        });
+                                    });
                                 },
                                 onFailed: function (err) {
                                     if (DEBUG) {

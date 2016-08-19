@@ -26,6 +26,39 @@ module.exports = {
         ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
     },
 
+    // markets: array of market IDs for which to claim proceeds
+    claimMarketsProceeds: function (branch, markets, callback) {
+        var self = this;
+        var claimedMarkets = [];
+        async.eachSeries(markets, function (market, nextMarket) {
+            self.getWinningOutcomes(market, function (winningOutcomes) {
+                // market not yet resolved
+                if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+                    return nextMarket();
+                }
+                self.claimProceeds({
+                    branch: branch,
+                    market: market,
+                    onSent: function (res) {
+                        // console.log("claim proceeds sent:", market, res);
+                    },
+                    onSuccess: function (res) {
+                        // console.log("claim proceeds success:", market, res.callReturn);
+                        if (res.callReturn === "1") {
+                            claimedMarkets.push(market);
+                            return nextMarket();
+                        }
+                        nextMarket(res.callReturn);
+                    },
+                    onFailed: nextMarket
+                });
+            });
+        }, function (err) {
+            if (err) return callback(err);
+            callback(null, claimedMarkets);
+        });
+    },
+
     // Increment vote period until vote period = current period - 1
     checkPeriod: function (branch, periodLength, sender, callback) {
         var self = this;
@@ -50,8 +83,8 @@ module.exports = {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     // if > first period, then call penalizeWrong(branch, 0)
-                    console.log("No events found for this period");
-                    return self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+                    console.log("No events found for period", votePeriod);
+                    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
                         lastPeriodPenalized = parseInt(lastPeriodPenalized);
                         if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
                             console.log("Penalizations caught up!");
@@ -75,44 +108,45 @@ module.exports = {
                             }
                         });
                     });
+                } else {
+                    console.log("Events found for period " + votePeriod + ", looping through...");
+                    async.eachSeries(events, function (event, nextEvent) {
+                        console.log(" - penalizeWrong:", event);
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: event,
+                            onSent: utils.noop,
+                            onSuccess: function (r) {
+                                console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                console.log(" - closing extra markets");
+                                self.getMarkets(event, function (markets) {
+                                    if (!markets) return nextEvent("no markets found for " + event);
+                                    if (markets && markets.error) return nextEvent(markets);
+                                    if (markets.length <= 1) return nextEvent();
+                                    async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                        self.closeMarket({
+                                            branch: branch,
+                                            market: market,
+                                            sender: sender,
+                                            onSent: function (res) {
+                                                console.log("closeMarket", market, res);
+                                            },
+                                            onSuccess: function (res) {
+                                                console.log("closeMarket success", market, res.callReturn);
+                                                nextMarket();
+                                            },
+                                            onFailed: nextMarket
+                                        });
+                                    }, nextEvent);
+                                });
+                            },
+                            onFailed: function (err) {
+                                console.error(" - penalizeWrong error:", err);
+                                nextEvent(err);
+                            }
+                        });
+                    }, next);
                 }
-                console.log("Events found, looping through...");
-                async.eachSeries(events, function (event, nextEvent) {
-                    console.log(" - penalizeWrong:", event);
-                    self.penalizeWrong({
-                        branch: branch,
-                        event: event,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            console.log(" - closing extra markets");
-                            self.getMarkets(event, function (markets) {
-                                if (!markets) return nextEvent("no markets found for " + event);
-                                if (markets && markets.error) return nextEvent(markets);
-                                if (markets.length <= 1) return nextEvent();
-                                async.eachSeries(markets.slice(1), function (market, nextMarket) {
-                                    self.closeMarket({
-                                        branch: branch,
-                                        market: market,
-                                        sender: sender,
-                                        onSent: function (res) {
-                                            console.log("closeMarket", market, res);
-                                        },
-                                        onSuccess: function (res) {
-                                            console.log("closeMarket success", market, res.callReturn);
-                                            nextMarket();
-                                        },
-                                        onFailed: nextMarket
-                                    });
-                                }, nextEvent);
-                            });
-                        },
-                        onFailed: function (err) {
-                            console.error(" - penalizeWrong error:", err);
-                            nextEvent(err);
-                        }
-                    });
-                }, next);
             });
         }
 
