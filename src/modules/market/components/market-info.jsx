@@ -33,6 +33,18 @@ const MarketInfo = (p) => (
 					{getResolutionNode(p.resolution)}
 				</li>
 			}
+			{p.type === 'scalar' && p.minValue != null &&
+				<li className="property min-value">
+					<span className="property-label">minimum value</span>
+					<span className="property-value">{p.minValue}</span>
+				</li>
+			}
+			{p.type === 'scalar' && p.maxValue != null &&
+				<li className="property max-value">
+					<span className="property-label">maximum value</span>
+					<span className="property-value">{p.maxValue}</span>
+				</li>
+			}
 			<li className="property creation-date">
 				<span className="property-label">creation date</span>
 				<ValueDate className="property-value" {...p.creationTime} />
@@ -46,7 +58,10 @@ MarketInfo.propTypes = {
 	extraInfo: PropTypes.string,
 	resolution: PropTypes.string,
 	outstandingShares: PropTypes.object,
-	creationTime: PropTypes.object
+	creationTime: PropTypes.object,
+	type: PropTypes.string,
+	minValue: PropTypes.number,
+	maxValue: PropTypes.number
 };
 
 export default MarketInfo;
