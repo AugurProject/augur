@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_SELL_RISKY, SUBMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_SELL_RISKY, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
@@ -76,7 +76,7 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case SUBMIT_REPORT:
+	case COMMIT_REPORT:
 		nodes.description = (
 			<span className="description">
 				<span>Report</span>

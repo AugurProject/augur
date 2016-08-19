@@ -19,7 +19,8 @@ export default class MarketPage extends Component {
 		selectedOutcome: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
-		orderCancellation: PropTypes.object.isRequired
+		orderCancellation: PropTypes.object.isRequired,
+		tradesInProgress: PropTypes.object
 	};
 	constructor(props) {
 		super(props);
@@ -62,6 +63,7 @@ export default class MarketPage extends Component {
 						tradeSummary={p.market.tradeSummary}
 						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
+						tradesInProgress={p.tradesInProgress}
 					/>
 				);
 

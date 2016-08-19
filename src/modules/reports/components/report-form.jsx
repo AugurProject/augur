@@ -4,6 +4,9 @@ import Checkbox from '../../common/components/checkbox';
 
 export default class ReportForm extends React.Component {
 	static propTypes = {
+		type: React.PropTypes.string,
+		minValue: React.PropTypes.number,
+		maxValue: React.PropTypes.number,
 		reportableOutcomes: React.PropTypes.array,
 		reportedOutcomeID: React.PropTypes.any,
 		isIndeterminate: React.PropTypes.bool,
@@ -15,6 +18,9 @@ export default class ReportForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			type: props.type,
+			minValue: props.minValue,
+			maxValue: props.maxValue,
 			reportedOutcomeID: props.reportedOutcomeID,
 			isIndeterminate: props.isIndeterminate,
 			isUnethical: props.isUnethical,
@@ -41,25 +47,50 @@ export default class ReportForm extends React.Component {
 		const p = this.props;
 		const s = this.state;
 
+		console.log('report-form props:', p);
+		console.log('report-form state:', s);
+
+		let outcomeOptions;
+		if (p.type !== 'scalar') {
+			outcomeOptions = (
+				(p.reportableOutcomes || []).map(outcome => (
+					<label key={outcome.id} className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}>
+						<input
+							type="radio"
+							className="outcome-option-radio"
+							name="outcome-option-radio"
+							value={outcome.id}
+							checked={s.reportedOutcomeID === outcome.id}
+							disabled={s.isReported || s.isIndeterminate}
+							onChange={this.handleOutcomeChange}
+						/>
+						{outcome.name}
+					</label>
+				))
+			);
+		} else {
+			outcomeOptions = (
+				<div>
+					<label key="scalar-outcome">
+						<input
+							type="text"
+							className="outcome-scalar-input"
+							name="outcome-scalar-input"
+							value={s.reportedOutcomeID}
+							disabled={s.isReported || s.isIndeterminate}
+							onChange={this.handleOutcomeChange}
+						/>
+					</label>
+					<p>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</p>
+				</div>
+			);
+		}
+
 		return (
 			<section className={classnames('report-form', { reported: s.isReported })}>
 				<div className="outcome-options">
 					<h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
-
-					{(p.reportableOutcomes || []).map(outcome => (
-						<label key={outcome.id} className={classnames('outcome-option', { disabled: s.isReported })}>
-							<input
-								type="radio"
-								className="outcome-option-radio"
-								name="outcome-option-radio"
-								value={outcome.id}
-								checked={s.reportedOutcomeID === outcome.id}
-								disabled={s.isReported}
-								onChange={this.handleOutcomeChange}
-							/>
-							{outcome.name}
-						</label>
-					))}
+					{outcomeOptions}
 				</div>
 
 				<div className="indeterminate">
