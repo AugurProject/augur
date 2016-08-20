@@ -14,17 +14,21 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = {};
+	const fakeAugurJS = { augur: {} };
 	const fakeUpdateAssets = {};
 	const fakeLoadAcctTrades = {};
 	const fakeLoadReports = {};
 	const fakeCheckPeriod = { checkPeriod: () => {} };
 	const fakeCollectFees = {};
+	const fakeLoadMarketsInfo = {};
 	let action, store;
 	let thisTestState = Object.assign({}, testState, { loginAccount: {} });
 	store = mockStore(thisTestState);
 	fakeAugurJS.loadLoginAccount = (env, cb) => {
 		cb(null, { id: 123456789 });
+	};
+	fakeAugurJS.augur.batchGetMarketInfo = (marketIDs, account, cb) => {
+		cb(null);
 	};
 	fakeUpdateAssets.updateAssets = () => {
 		return (dispatch, getState) => {
@@ -34,6 +38,11 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			dispatch(updateLoginAccount({ ether }));
 			dispatch(updateLoginAccount({ rep }));
 			dispatch(updateLoginAccount({ realEther }));
+		};
+	};
+	fakeLoadMarketsInfo.loadMarketsInfo = () => {
+		return (dispatch, getState) => {
+			dispatch({ type: 'UPDATE_MARKETS_INFO' });
 		};
 	};
 	sinon.stub(fakeCheckPeriod, 'checkPeriod', (cb) => {
@@ -51,6 +60,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../auth/actions/update-assets': fakeUpdateAssets,
+		'../../markets/actions/load-markets-info': fakeLoadMarketsInfo,
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
 		'../../reports/actions/check-period': fakeCheckPeriod,
@@ -78,6 +88,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			data: { realEther: 100 }
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
+		}, {
+			type: 'UPDATE_MARKETS_INFO'
 		}, {
 			type: 'UPDATE_BLOCKCHAIN',
 			data: { reportPeriod: 19 }

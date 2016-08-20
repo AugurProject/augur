@@ -9,7 +9,7 @@ export function loadMarketsInfo(marketIDs, cb) {
 		(function loader(stepStart) {
 			const stepEnd = stepStart + MARKETS_PER_BATCH;
 			const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
-			augur.batchGetMarketInfo(marketsToLoad, (marketsData) => {
+			augur.batchGetMarketInfo(marketsToLoad, getState().loginAccount.id, (marketsData) => {
 				if (!marketsData || marketsData.error) {
 					console.error('ERROR loadMarketsInfo()', marketsData);
 				} else {

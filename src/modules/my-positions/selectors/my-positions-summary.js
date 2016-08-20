@@ -8,7 +8,7 @@ export default function () {
 	return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice) => {
+export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice, sharesPurchased) => {
 	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
 		return null;
 	}
@@ -38,11 +38,10 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	const avgPerShareValue = calculateAvgPrice(qtyShares, totalValue);
 	const avgPerShareCost = calculateAvgPrice(qtyShares, totalCost);
 
-	qtyShares -= totalSellShares;
 	totalValue -= totalSellShares * avgPerShareValue;
 	totalCost -= totalSellShares * avgPerShareCost;
 
-	return generatePositionsSummary(1, qtyShares, totalValue, totalCost);
+	return generatePositionsSummary(1, sharesPurchased - totalSellShares, totalValue, totalCost);
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {

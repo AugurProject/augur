@@ -5,6 +5,7 @@ import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statu
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 // import { updateReports, clearReports } from '../../reports/actions/update-reports';
 import { checkPeriod } from '../../reports/actions/check-period';
 import { updateReports } from '../../reports/actions/update-reports';
@@ -16,6 +17,9 @@ export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
+
+		const { selectedMarketID } = getState();
+		if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
 
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)

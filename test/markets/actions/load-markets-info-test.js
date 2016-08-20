@@ -26,7 +26,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 		store.clearActions();
 	});
 
-	sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, cb) => {
+	sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, account, cb) => {
 		cb({
 			test123: {
 				branchId: testState.branch.id,

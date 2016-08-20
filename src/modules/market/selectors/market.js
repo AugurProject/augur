@@ -190,8 +190,7 @@ export const assembleMarket = memoizerific(1000)((
 
 		outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-		outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
-
+		outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, parseFloat(outcomeData.sharesPurchased));
 		const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 		outcome.orderBook = orderBook;
 		outcome.topBid = selectTopBid(orderBook);
