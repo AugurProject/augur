@@ -69,7 +69,7 @@ module.exports = {
 
     parseMarketInfo: function (rawInfo) {
         var EVENTS_FIELDS = 7;
-        var OUTCOMES_FIELDS = 2;
+        var OUTCOMES_FIELDS = 3;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
             // marketInfo[0] = marketID
@@ -146,7 +146,8 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
+                    sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
             index += info.numOutcomes*OUTCOMES_FIELDS;

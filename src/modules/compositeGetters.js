@@ -128,14 +128,16 @@ module.exports = {
         return parsedMarketInfo;
     },
 
-    getMarketInfo: function (market, callback) {
+    // account is optional, if provided will return sharesPurchased
+    getMarketInfo: function (market, account, callback) {
         var self = this;
         if (market && market.market) {
             callback = callback || market.callback;
+            account = market.account;
             market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = market;
+        tx.params = [market, account || 0];
         tx.timeout = 45000;
         return this.fire(tx, callback, this.validateMarketInfo);
     },
@@ -162,9 +164,13 @@ module.exports = {
         return marketsInfo;
     },
 
-    batchGetMarketInfo: function (marketIDs, callback) {
+    batchGetMarketInfo: function (marketIDs, account, callback) {
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
+        }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-        tx.params = [marketIDs];
+        tx.params = [marketIDs, account || 0];
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 

@@ -17441,12 +17441,14 @@ module.exports={
     "CompositeGetters": {
       "batchGetMarketInfo": {
         "inputs": [
-          "marketIDs"
+          "marketIDs", 
+          "account"
         ], 
         "method": "batchGetMarketInfo", 
         "returns": "hash[]", 
         "signature": [
-          "int256[]"
+          "int256[]", 
+          "int256"
         ]
       }, 
       "getMarketCreatorFeesCollected": {
@@ -17454,18 +17456,20 @@ module.exports={
           "market"
         ], 
         "method": "getMarketCreatorFeesCollected", 
-        "returns": "int256", 
+        "returns": "unfix", 
         "signature": [
           "int256"
         ]
       }, 
       "getMarketInfo": {
         "inputs": [
-          "marketID"
+          "marketID", 
+          "account"
         ], 
         "method": "getMarketInfo", 
         "returns": "hash[]", 
         "signature": [
+          "int256", 
           "int256"
         ]
       }, 
@@ -20973,7 +20977,7 @@ module.exports={
         "CloseMarketTwo": "0x94db3bc4184e320498455774b424802462458d3a", 
         "CollectFees": "0xbb57b07e50038086617d722739efdf0cb81569fd", 
         "CompleteSets": "0xb9bb5c2e404868469d8421db4964622f4163a116", 
-        "CompositeGetters": "0x6ee28ac73e3ebafbd357e46cc0c8bbbe6235e4a7", 
+        "CompositeGetters": "0x27c8fe512983c1bedce37f1e312acb92456a3c5b", 
         "Consensus": "0xfb262777af60c63de479ba9237861e89ca5dd8ba", 
         "ConsensusData": "0xc4cee1d39d0b793addfffd3b20ff20c064a88008", 
         "CreateBranch": "0x551a0bfeb54cfd2a0296ab60af657a1a8ae8937c", 
@@ -43267,11 +43271,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.14";
+    this.version = "2.0.15";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc 
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -43388,7 +43392,7 @@ module.exports = {
 
     parseMarketInfo: function (rawInfo) {
         var EVENTS_FIELDS = 7;
-        var OUTCOMES_FIELDS = 2;
+        var OUTCOMES_FIELDS = 3;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
             // marketInfo[0] = marketID
@@ -43465,7 +43469,8 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
+                    sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
             index += info.numOutcomes*OUTCOMES_FIELDS;
@@ -43947,14 +43952,16 @@ module.exports = {
         return parsedMarketInfo;
     },
 
-    getMarketInfo: function (market, callback) {
+    // account is optional, if provided will return sharesPurchased
+    getMarketInfo: function (market, account, callback) {
         var self = this;
         if (market && market.market) {
             callback = callback || market.callback;
+            account = market.account;
             market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = market;
+        tx.params = [market, account || 0];
         tx.timeout = 45000;
         return this.fire(tx, callback, this.validateMarketInfo);
     },
@@ -43981,9 +43988,13 @@ module.exports = {
         return marketsInfo;
     },
 
-    batchGetMarketInfo: function (marketIDs, callback) {
+    batchGetMarketInfo: function (marketIDs, account, callback) {
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
+        }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-        tx.params = [marketIDs];
+        tx.params = [marketIDs, account || 0];
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
