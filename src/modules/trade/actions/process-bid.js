@@ -13,7 +13,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'placing bid...', message: `bidding ${numShares} shares @ ${limitPrice} eth` }));
 
-		bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, (err, res) => {
+		bid(transactionID, marketID, outcomeID, limitPrice, numShares, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
@@ -25,9 +25,9 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 	};
 }
 
-function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, cb) {
+function bid(transactionID, marketID, outcomeID, limitPrice, numShares, cb) {
 	augur.buy({
-		amount: totalEthWithFee,
+		amount: numShares,
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
