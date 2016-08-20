@@ -14,12 +14,7 @@ const SiteHeader = (p) => (
 
 			{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
-					{!!p.portfolioTotals.totalValue &&
-						<ValueDenomination
-							title={`Total Portfolio Value: ${p.portfolioTotals.totalValue.full}`}
-							{...p.portfolioTotals.totalValue || {}}
-						/>
-					}Portfolio ({!!p.portfolioTotals.netChange &&
+					Portfolio ({!!p.portfolioTotals.netChange &&
 						<ValueDenomination
 							title={`Total Portfolio Gain/Loss: ${p.portfolioTotals.netChange.full}`}
 							{...p.portfolioTotals.netChange || {}}
