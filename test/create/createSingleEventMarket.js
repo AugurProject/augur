@@ -124,23 +124,23 @@ describe("CreateMarket.createSingleEventMarket", function () {
             });
         });
     };
-    test({
-        branch: augur.constants.DEFAULT_BRANCH_ID,
-        description: "Will Gary Johnson be included in at least one nationally televised Presidential debate in 2016, in which Hillary Clinton and Donald Trump also participate?",
-        expDate: parseInt(new Date("11/8/2016").getTime()/1000 + new Date().getTime()/1000*Math.random()),
-        minValue: 1,
-        maxValue: 2,
-        numOutcomes: 2,
-        takerFee: "0.02",
-        makerFee: "0.01",
-        extraInfo: "Candidates must be polling at 15% or higher to be included in the Presidential debates.",
-        tags: ["politics", "US elections", "presidential debates"],
-        resolution: ""
-    });
+    // test({
+    //     branch: augur.constants.DEFAULT_BRANCH_ID,
+    //     description: "Will Gary Johnson be included in at least one nationally televised Presidential debate in 2016, in which Hillary Clinton and Donald Trump also participate?",
+    //     expDate: parseInt(new Date("11/8/2016").getTime()/1000 + new Date().getTime()/1000*Math.random()),
+    //     minValue: 1,
+    //     maxValue: 2,
+    //     numOutcomes: 2,
+    //     takerFee: "0.02",
+    //     makerFee: "0.01",
+    //     extraInfo: "Candidates must be polling at 15% or higher to be included in the Presidential debates.",
+    //     tags: ["politics", "US elections", "presidential debates"],
+    //     resolution: ""
+    // });
     test({
         branch: augur.constants.DEFAULT_BRANCH_ID,
         description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-        expDate: parseInt(new Date("1/1/2019").getTime()/1000 + new Date().getTime()/1000*Math.random()),
+        expDate: parseInt(new Date("1/1/2019").getTime()/1000),
         minValue: 1,
         maxValue: 2,
         numOutcomes: 2,
@@ -153,7 +153,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
     test({
         branch: augur.constants.DEFAULT_BRANCH_ID,
         description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
-        expDate: parseInt(new Date("1/2/2017").getTime()/1000 + new Date().getTime()/1000*Math.random()),
+        expDate: parseInt(new Date("1/2/2017").getTime()/1000),
         minValue: 1,
         maxValue: 2,
         numOutcomes: 4,

@@ -42,7 +42,7 @@ module.exports = function (p, cb) {
     var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
     var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
     var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
-    this.getMarketInfo(p.market, function (marketInfo) {
+    this.getMarketInfo(p.market, null, function (marketInfo) {
         var minValue, maxValue;
         if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
         if (marketInfo.numOutcomes !== numOutcomes) {
