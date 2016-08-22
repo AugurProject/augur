@@ -46,7 +46,7 @@ export default class AuthForm extends Component {
 		this.state = {
 			msg: this.props.msg,
 			secureLoginID: this.props.secureLoginID,
-			rememberMe: this.props.rememberMe
+			rememberMe: this.props.rememberMe || true
 		};
 	}
 
