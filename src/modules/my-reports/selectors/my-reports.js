@@ -1,7 +1,8 @@
 import { augur } from '../../../services/augurjs';
-import { formatPercent } from '../../../utils/format-number';
+import { formatNumber, formatPercent } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
+import { dateToBlock } from '../../../utils/date-to-block-to-date';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import store from '../../../store';
 import memoizerific from 'memoizerific';
@@ -13,7 +14,7 @@ export default function () {
 		return [];
 	}
 
-	return [];
+	// return [];
 
 	// Req'd object:
 	/*
@@ -43,7 +44,10 @@ export default function () {
 		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
 		const isReportEqual = outcome === reported;
 		const feesEarned = getFeesEarned(marketID, loginAccount.id, eventID, event[eventID]);
+		const repEarned = getNetRep(eventID, loginAccount.id);
 	});
+
+	return reports;
 
 // Whether it's been challanged -- def getRoundTwo(event):
 // Whether it's already been challanged -- def getFinal(event):
@@ -99,6 +103,19 @@ export const getFeesEarned = memoizerific(1000)((marketID, accountID, eventID, e
 	return 0.5 * marketFees * repBalance / eventWeight;
 });
 
+export const getNetRep = memoizerific(1000)((eventID, accountID) => {
+	const expirationBlock = getEventExpiration(eventID); // returns block number
+	const formattedAccountID = [augur.format_int256(accountID)]
+
+	augur.rpc.getLogs({
+		fromBlock: expirationBlock,
+		address: augur.contracts.Consensus,
+		topics: [augur.format_int256(accountID)]
+	}, res => {
+		return !!res ? formatNumber(res) : null;
+	});
+});
+
 export const getFees = marketID => {
 	augur.getFees(marketID, res => {
 		return !!res ? res : null;
@@ -114,6 +131,14 @@ export const getRepBalance = accountID => {
 export const getEventWeight = (eventID, event) => {
 	augur.getEventWeight(event.branch, event.period, eventID, res => {
 		return !!res ? res : null;
+	});
+};
+
+export const getEventExpiration = eventID => {
+	const { blockchain } = state.getState();
+
+	augur.getExpiration(eventID, res => {
+		return !!res ? dateToBlock(res, blockchain.currentBlockNumber) : null;
 	});
 };
 
