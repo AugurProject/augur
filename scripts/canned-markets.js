@@ -21,6 +21,17 @@ var cannedMarkets = [{
     extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
     resolution: ""
 }, {
+    description: "Will Ethereum trade at $15 or higher by midnight EST on November 30, 2016?",
+    expDate: parseInt(new Date("12/1/2016").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    extraInfo: "http://coinmarketcap.com/currencies/ethereum",
+    tags: ["ethereum", "trading", "currencies"],
+    resolution: "http://coinmarketcap.com"
+}, {
     description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
     expDate: parseInt(new Date("1/1/2019").getTime() / 1000, 10),
     minValue: 1,
@@ -169,11 +180,11 @@ augur.connect({
                     // console.log("onSetupOrder", res);
                 },
                 onSuccess: function (res) {
-                    console.log("onSuccess", res);
+                    // console.log("onSuccess", res);
                     nextMarket();
                 },
                 onFailed: function (err) {
-                    console.error("generateOrderBook failed:", err);
+                    console.error(chalk.red.bold("generateOrderBook failed:"), err);
                     nextMarket();
                 }
             });
