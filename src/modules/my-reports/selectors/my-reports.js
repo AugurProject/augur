@@ -14,27 +14,7 @@ export default function () {
 		return [];
 	}
 
-	// Req'd object:
-	/*
-		[
-			{
-				eventId: <string>,
-				marketId: <string>,
-				description: <string>,
-				outcome: <string>,
-				outcomePercentage: <formattedNumber>,
-				reported: <string>,
-				isReportEqual: <bool>,
-				feesEarned: <formattedNumber>,
-				repEarned: <formattedNumber>,
-				endDate: <formattedDate>,
-				isChallenged: <bool>,
-				isChallengeable: <bool>
-			}
-		]
-	 */
-
-	const reports = Object.keys(eventsWithAccountReport).map(eventId => {
+	const reports = Object.keys(eventsWithAccountReport.events).map(eventId => {
 		const expirationDate = getEventExpiration(eventId);
 		const isFinal = getFinal(eventId);
 
@@ -65,6 +45,8 @@ export default function () {
 			isChallengeable
 		};
 	});
+
+	console.log('*** reports -- ', reports);
 
 	return reports;
 }
