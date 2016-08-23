@@ -131,15 +131,52 @@ augur.connect({
     ws: "ws://127.0.0.1:8546"
 }, function (connected) {
     if (!connected) return console.error("connect failed:", connected);
-    async.each(cannedMarkets, function (market, nextMarket) {
+    async.eachSeries(cannedMarkets, function (market, nextMarket) {
         market.branchId = augur.constants.DEFAULT_BRANCH_ID;
         market.onSent = function (r) {
             console.debug("createSingleEventMarket sent:", r);
         };
         market.onSuccess = function (r) {
-            console.debug("createSingleEventMarket success:", r);
+            console.debug("createSingleEventMarket success:", r.callReturn);
             console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
-            nextMarket();
+            var initialFairPrices = new Array(market.numOutcomes);
+            if (market.numOutcomes === 2 && (market.minValue !== 1 || market.maxValue !== 2)) {
+                var midpoint = ((market.maxValue - market.minValue) / 2).toString();
+                initialFairPrices[0] = midpoint;
+                initialFairPrices[1] = midpoint;
+            } else {
+                for (var i = 0; i < market.numOutcomes; ++i) {
+                    initialFairPrices[i] = "0.5";
+                }
+            }
+            var orderBookParams = {
+                market: r.callReturn,
+                liquidity: 100,
+                initialFairPrices: initialFairPrices,
+                startingQuantity: 5,
+                bestStartingQuantity: 10,
+                priceWidth: "0.2"
+            };
+            console.log("generating order book:", JSON.stringify(orderBookParams, null, 2));
+            augur.generateOrderBook(orderBookParams, {
+                onBuyCompleteSets: function (res) {
+                    console.log("onBuyCompleteSets", res);
+                },
+                onSetupOutcome: function (res) {
+                    console.log("onSetupOutcome", res);
+                },
+                onSetupOrder: function (res) {
+                    console.log("onSetupOrder", res);
+                },
+                onSuccess: function (res) {
+                    console.log("onSuccess", res);
+                    nextMarket();
+                },
+                onFailed: function (err) {
+                    console.error("generateOrderBook failed:", err);
+                    nextMarket();
+                }
+            });
         };
         market.onFailed = function (e) {
             console.error(chalk.red.bold("createSingleEventMarket failed:"), e);
