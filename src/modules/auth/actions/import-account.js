@@ -30,7 +30,7 @@ export function importAccount(name, password, rememberMe, keystore) {
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
 			if (links && links.marketsLink)	{
-				links.marketsLink.onClick(links.marketsLink.href);
+				return links.marketsLink.onClick(links.marketsLink.href);
 			}
 			return;
 		});

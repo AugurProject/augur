@@ -45,11 +45,11 @@ export const selectRegister = (auth, dispatch) => {
 	return {
 		title: 'Sign Up',
 
-		isVisibleName: true,
+		isVisibleName: false,
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
-		isVisibleRememberMe: false,
+		isVisibleRememberMe: true,
 		isVisibleFileInput: false,
 
 		topLinkText: 'Login',
@@ -64,7 +64,7 @@ export const selectRegister = (auth, dispatch) => {
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (name, password, password2, secureLoginID) => dispatch(register(name, password, password2))
+		onSubmit: (name, password, password2, secureLoginID, rememberMe) => dispatch(register(name, password, password2, rememberMe))
 	};
 };
 
