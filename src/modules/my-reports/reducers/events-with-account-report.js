@@ -8,18 +8,15 @@ const INITIAL_STATE = {
 
 export default function (eventsWithAccountReport = INITIAL_STATE, action) {
 	switch (action.type) {
-	case UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA: {
-		const events = (action.data.events || []).reduce((previous, eventID) => {
-			if (eventsWithAccountReport.events.indexOf(eventID) === -1) previous.push(eventID);
-			return previous;
-		}, eventsWithAccountReport.events);
-
+	case UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA:
 		return {
 			...eventsWithAccountReport,
 			...action.data,
-			events
+			events: {
+				...eventsWithAccountReport.events,
+				...action.data.events
+			}
 		};
-	}
 	case CLEAR_LOGIN_ACCOUNT:
 		return null;
 	default:
