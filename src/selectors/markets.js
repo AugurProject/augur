@@ -63,7 +63,7 @@ function makeMarkets(numMarkets = 10) {
 
 		// trade summary
 		m.tradeSummary = {
-			totalGas: makeNumber(0, 'eth'),
+			totalGas: makeNumber(0, ' ETH'),
 			tradeOrders: []
 		};
 
@@ -97,11 +97,11 @@ function makeMarkets(numMarkets = 10) {
 		m.myPositionsSummary = {
 			numPositions: makeNumber(2, 'Positions', true),
 			qtyShares: makeNumber(16898, 'shares'),
-			purchasePrice: makeNumber(0.5, 'eth'),
-			totalCost: makeNumber(5, 'eth'),
+			purchasePrice: makeNumber(0.5, ' ETH'),
+			totalCost: makeNumber(5, ' ETH'),
 			shareChange: makeNumber(1, 'shares'),
-			netChange: makeNumber(1, 'eth'),
-			totalValue: makeNumber(985, 'eth'),
+			netChange: makeNumber(1, ' ETH'),
+			totalValue: makeNumber(985, ' ETH'),
 			gainPercent: makeNumber(14, '%')
 		};
 
@@ -109,22 +109,22 @@ function makeMarkets(numMarkets = 10) {
 		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, 'eth'),
+			totalValue: makeNumber(14877, ' ETH'),
 			gainPercent: makeNumber(14, '%'),
-			purchasePrice: makeNumber(0.77, 'eth'),
-			shareChange: makeNumber(0.107, 'eth'),
-			totalCost: makeNumber(12555, 'eth'),
-			netChange: makeNumber(3344, 'eth')
+			purchasePrice: makeNumber(0.77, ' ETH'),
+			shareChange: makeNumber(0.107, ' ETH'),
+			totalCost: makeNumber(12555, ' ETH'),
+			netChange: makeNumber(3344, ' ETH')
 		};
 		const randomPositionOutcome2 = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome2.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, 'eth'),
+			totalValue: makeNumber(14877, ' ETH'),
 			gainPercent: makeNumber(14, '%'),
-			purchasePrice: makeNumber(0.77, 'eth'),
-			shareChange: makeNumber(0.107, 'eth'),
-			totalCost: makeNumber(12555, 'eth'),
-			netChange: makeNumber(3344, 'eth')
+			purchasePrice: makeNumber(0.77, ' ETH'),
+			shareChange: makeNumber(0.107, ' ETH'),
+			totalCost: makeNumber(12555, ' ETH'),
+			netChange: makeNumber(3344, ' ETH')
 		};
 		m.myPositionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
@@ -137,10 +137,10 @@ function makeMarkets(numMarkets = 10) {
 		// market summary
 		m.myMarketSummary = {
 			endDate: makeDate(new Date('2017/12/12')),
-			fees: makeNumber(Math.random() * 10, 'eth'),
+			fees: makeNumber(Math.random() * 10, ' ETH'),
 			volume: makeNumber(Math.floor(Math.random() * 100), null, true),
 			numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
-			averageTradeSize: makeNumber(Math.random() * 100, 'eth', true),
+			averageTradeSize: makeNumber(Math.random() * 100, ' ETH', true),
 			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
 		};
 
@@ -242,7 +242,7 @@ function makeMarkets(numMarkets = 10) {
 			}
 
 			const finalLastPrice = (outcome.lastPricePercent.value + percentLeft) / 100;
-			outcome.lastPrice = makeNumber(finalLastPrice, 'eth');
+			outcome.lastPrice = makeNumber(finalLastPrice, ' ETH');
 			outcome.lastPricePercent = makeNumber(finalLastPrice * 100, '%');
 
 			return outcomes.sort((a, b) => b.lastPrice.value - a.lastPrice.value);
@@ -259,7 +259,7 @@ function makeMarkets(numMarkets = 10) {
 					id: index.toString(),
 					marketID: outcomeID,
 					name: makeName(index),
-					lastPrice: makeNumber(lastPrice, 'eth'),
+					lastPrice: makeNumber(lastPrice, ' ETH'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
 					trade: {
 						side: tradeTypeOptions[0].value,
@@ -287,9 +287,9 @@ function makeMarkets(numMarkets = 10) {
 
 							const finalLimitPrice = outcome.trade.limitPrice || 1;
 							const totEth = outcome.trade.numShares * finalLimitPrice * negater;
-							outcome.trade.totalFee = makeNumber(Math.round(m.takerFeePercent.value / 100 * finalLimitPrice * outcome.trade.numShares * 100) / 100, 'eth');
+							outcome.trade.totalFee = makeNumber(Math.round(m.takerFeePercent.value / 100 * finalLimitPrice * outcome.trade.numShares * 100) / 100, ' ETH');
 							const feeFortotalEth = -1 * outcome.trade.totalFee.value;
-							outcome.trade.totalCost = makeNumber(Math.round((totEth + feeFortotalEth) * 100) / 100, 'eth');
+							outcome.trade.totalCost = makeNumber(Math.round((totEth + feeFortotalEth) * 100) / 100, ' ETH');
 
 							m.outcomes = m.outcomes.map(currentOutcome => {
 								if (currentOutcome.id === outcomeID) {
@@ -308,12 +308,12 @@ function makeMarkets(numMarkets = 10) {
 								p.tradeOrders.push({
 									type: outcome.trade.side,
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
-									gas: makeNumber(gas, 'eth'),
-									ether: makeNumber(outcome.trade.totalCost.value - gas, 'eth'),
+									gas: makeNumber(gas, ' ETH'),
+									ether: makeNumber(outcome.trade.totalCost.value - gas, ' ETH'),
 									data: {
 										outcomeName: outcome.name,
 										marketDescription: m.description,
-										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, 'eth'),
+										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, ' ETH'),
 									}
 								});
 
@@ -348,7 +348,7 @@ function makeMarkets(numMarkets = 10) {
 						id: `${m.id}${outcome.id}order${index}`,
 						type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
 						marketID: m.id,
-						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'eth'),
+						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), ' ETH'),
 						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
 						outcome: outcomeID,
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'

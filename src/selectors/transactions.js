@@ -23,12 +23,12 @@ export default [
 				roundedValue: 0.4,
 				rounded: '0.4',
 				minimized: '0.36',
-				denomination: 'eth',
-				full: '0.36eth'
+				denomination: ' ETH',
+				full: '0.36 ETH'
 			}
 		},
 		status: 'processing buy...',
-		message: 'buying 10 shares @ 0.67eth',
+		message: 'buying 10 shares @ 0.67 ETH',
 		id: '1385867-1469682892056'
 	},
 	{
@@ -55,8 +55,8 @@ export default [
 				roundedValue: 0.7,
 				rounded: '0.7',
 				minimized: '0.68',
-				denomination: 'eth',
-				full: '0.68eth'
+				denomination: ' ETH',
+				full: '0.68 ETH'
 			}
 		},
 		status: 'failed',
@@ -87,8 +87,8 @@ export default [
 				roundedValue: 0,
 				rounded: '0.0',
 				minimized: '0.01',
-				denomination: 'eth',
-				full: '0.01eth'
+				denomination: ' ETH',
+				full: '0.01 ETH'
 			}
 		},
 		status: 'interrupted',

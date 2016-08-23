@@ -11,14 +11,14 @@ export default [
 				position: {
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, 'eth'),
-					shareChange: makeNumber(-0.1, 'eth'),
-					totalCost: makeNumber(1000, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
-					netChange: makeNumber(-900, 'eth'),
+					purchasePrice: makeNumber(0.2, ' ETH'),
+					shareChange: makeNumber(-0.1, ' ETH'),
+					totalCost: makeNumber(1000, ' ETH'),
+					totalValue: makeNumber(100, ' ETH'),
+					netChange: makeNumber(-900, ' ETH'),
 					gainPercent: makeNumber(-9, '%')
 				},
-				lastPrice: makeNumber(0.1, 'eth')
+				lastPrice: makeNumber(0.1, ' ETH')
 			},
 			{
 				id: 2,
@@ -26,14 +26,14 @@ export default [
 				position: {
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, 'eth'),
-					shareChange: makeNumber(-0.1, 'eth'),
-					totalCost: makeNumber(1000, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
-					netChange: makeNumber(-900, 'eth'),
+					purchasePrice: makeNumber(0.2, ' ETH'),
+					shareChange: makeNumber(-0.1, ' ETH'),
+					totalCost: makeNumber(1000, ' ETH'),
+					totalValue: makeNumber(100, ' ETH'),
+					netChange: makeNumber(-900, ' ETH'),
 					gainPercent: makeNumber(-9, '%')
 				},
-				lastPrice: makeNumber(0.1, 'eth')
+				lastPrice: makeNumber(0.1, ' ETH')
 			}
 		]
 	},
@@ -47,14 +47,14 @@ export default [
 				position: {
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, 'eth'),
-					shareChange: makeNumber(-0.1, 'eth'),
-					totalCost: makeNumber(1000, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
-					netChange: makeNumber(-900, 'eth'),
+					purchasePrice: makeNumber(0.2, ' ETH'),
+					shareChange: makeNumber(-0.1, ' ETH'),
+					totalCost: makeNumber(1000, ' ETH'),
+					totalValue: makeNumber(100, ' ETH'),
+					netChange: makeNumber(-900, ' ETH'),
 					gainPercent: makeNumber(-9, '%')
 				},
-				lastPrice: makeNumber(0.1, 'eth')
+				lastPrice: makeNumber(0.1, ' ETH')
 			},
 			{
 				id: 2,
@@ -62,14 +62,14 @@ export default [
 				position: {
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, 'eth'),
-					shareChange: makeNumber(-0.1, 'eth'),
-					totalCost: makeNumber(1000, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
-					netChange: makeNumber(-900, 'eth'),
+					purchasePrice: makeNumber(0.2, ' ETH'),
+					shareChange: makeNumber(-0.1, ' ETH'),
+					totalCost: makeNumber(1000, ' ETH'),
+					totalValue: makeNumber(100, ' ETH'),
+					netChange: makeNumber(-900, ' ETH'),
 					gainPercent: makeNumber(-9, '%')
 				},
-				lastPrice: makeNumber(0.1, 'eth')
+				lastPrice: makeNumber(0.1, ' ETH')
 			}
 		]
 	}

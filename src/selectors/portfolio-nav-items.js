@@ -16,7 +16,7 @@ export default [
 		leadingTitle: 'Total Positions',
 		leadingValue: makeNumber(Math.round(Math.random() * 10), 'positions'),
 		trailingTitle: 'Total Gain/Loss',
-		trailingValue: makeNumber(randomSign() * Math.random() * 3.7, 'eth')
+		trailingValue: makeNumber(randomSign() * Math.random() * 3.7, ' ETH')
 	},
 	{
 		label: 'Markets',
@@ -25,7 +25,7 @@ export default [
 		leadingTitle: 'Total Markets',
 		leadingValue: makeNumber(Math.round(Math.random() * 100), 'markets'),
 		trailingTitle: 'Total Gain/Loss',
-		trailingValue: makeNumber(Math.random() * 1.3, 'eth')
+		trailingValue: makeNumber(Math.random() * 1.3, ' ETH')
 	},
 	{
 		label: 'Reports',
@@ -34,6 +34,6 @@ export default [
 		leadingTitle: 'Total Reports',
 		leadingValue: makeNumber(Math.round(Math.random() * 1000), 'reports'),
 		trailingTitle: 'Total Gain/Loss',
-		trailingValue: makeNumber(randomSign() * Math.random() * 1.3, 'rep')
+		trailingValue: makeNumber(randomSign() * Math.random() * 1.3, ' REP')
 	}
 ];

@@ -7,9 +7,9 @@ const loginAccount = {
 	localNode: false,
 	secureLoginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 	prettySecureLoginID: 'test...ORUM',
-	rep: makeNumber(47, 'rep'),
-	ether: makeNumber(10000, 'eth'),
-	realEther: makeNumber(2.5, 'eth'),
+	rep: makeNumber(47, ' REP'),
+	ether: makeNumber(10000, ' ETH'),
+	realEther: makeNumber(2.5, ' ETH'),
 	name: 'MrTestTesterson'
 };
 
@@ -39,7 +39,7 @@ loginAccount.editName = (name) => {
 };
 
 loginAccount.transferFunds = (amount, to) => {
-	console.log(`Sending ${amount}eth to: ${to}`);
+	console.log(`Sending ${amount} ETH to: ${to}`);
 };
 
 loginAccount.signIn = (name = loginAccount.name) => {

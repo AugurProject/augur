@@ -12,8 +12,8 @@ export default [
 		outcomePercentage: makeNumber((Math.random() * (100 - 51) + 51), '%'),
 		reported: 'No',
 		isReportEqual: randomBool(),
-		feesEarned: makeNumber(randomSign() * Math.random() * 1.9, 'eth'),
-		repEarned: makeNumber(randomSign() * Math.random() * 1.3, 'rep'),
+		feesEarned: makeNumber(randomSign() * Math.random() * 1.9, ' ETH'),
+		repEarned: makeNumber(randomSign() * Math.random() * 1.3, ' REP'),
 		endDate: makeDate(new Date('2015/12/31')),
 		isChallenged: randomBool(),
 		isChallengeable: randomBool()
@@ -25,8 +25,8 @@ export default [
 		outcomePercentage: makeNumber((Math.random() * (100 - 51) + 51), '%'),
 		reported: 'Yes',
 		isReportEqual: randomBool(),
-		feesEarned: makeNumber(randomSign() * Math.random() * 1.2, 'eth'),
-		repEarned: makeNumber(randomSign() * Math.random() * 1.3, 'rep'),
+		feesEarned: makeNumber(randomSign() * Math.random() * 1.2, ' ETH'),
+		repEarned: makeNumber(randomSign() * Math.random() * 1.3, ' REP'),
 		endDate: makeDate(new Date('2015/12/31')),
 		isChallenged: randomBool(),
 		isChallengeable: randomBool()
@@ -38,8 +38,8 @@ export default [
 		outcomePercentage: makeNumber((Math.random() * (100 - 51) + 51), '%'),
 		reported: 'Mitt Romney',
 		isReportEqual: randomBool(),
-		feesEarned: makeNumber(randomSign() * Math.random() * 1.8, 'eth'),
-		repEarned: makeNumber(randomSign() * Math.random() * 2.1, 'rep'),
+		feesEarned: makeNumber(randomSign() * Math.random() * 1.8, ' ETH'),
+		repEarned: makeNumber(randomSign() * Math.random() * 2.1, ' REP'),
 		endDate: makeDate(new Date('2008/11/4')),
 		isChallenged: randomBool(),
 		isChallengeable: randomBool()
