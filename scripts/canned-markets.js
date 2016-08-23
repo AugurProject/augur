@@ -14,7 +14,7 @@ var cannedMarkets = [{
     expDate: parseInt(new Date("1/2/2017").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
-    numOutcomes: 2,
+    numOutcomes: 5,
     takerFee: "0.02",
     makerFee: "0.01",
     tags: ["politics", "US elections", "president"],
