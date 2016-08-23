@@ -35,6 +35,7 @@ export default function () {
 	const reports = Object.keys(eventsWithAccountReport).map(eventID => {
 		const marketID = getMarketIDForEvent(eventID);
 		const description = getMarketDescription(marketID);
+		const outcome = getMarketOutcome(eventID);
 	});
 
 // Whether it's been challanged -- def getRoundTwo(event):
@@ -59,5 +60,11 @@ export const getMarketDescription = memoizerific(100)(marketID => {
 	const { allMarkets } = require('../../../selectors');
 
 	return allMarkets.filter(market => market.id === marketID)[0] && allMarkets.filter(market => market.id === marketID)[0].description || null;
+});
+
+export const getMarketOutcome = memoizerific(100)(eventID => {
+	augur.getOutcome(eventID, (res) => {
+		return !!res ? res : null;
+	});
 });
 
