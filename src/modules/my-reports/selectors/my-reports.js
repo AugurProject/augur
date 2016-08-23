@@ -46,8 +46,6 @@ export default function () {
 		};
 	});
 
-	console.log('*** reports -- ', reports);
-
 	return reports;
 }
 
@@ -56,7 +54,6 @@ export const getMarketIDForEvent = memoizerific(1000)(eventID => {
 
 	// Simply getting the first market since events -> markets are 1-to-1 currently
 	augur.getMarket(eventID, 0, (res) => {
-		console.log('getMarket res -- ', res);
 		if (!!res) {
 			if (!allMarkets.filter(market => res === market.id)) store.dispatch(loadMarketsInfo([res]));
 			return res;
