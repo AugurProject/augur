@@ -8,7 +8,7 @@ import store from '../../../store';
 import memoizerific from 'memoizerific';
 
 export default function () {
-	const { eventsWithAccountReport, loginAccount } = store.getState();
+	const { eventsWithAccountReport, loginAccount, blockchain } = store.getState();
 
 	if(!eventsWithAccountReport){
 		return [];
@@ -37,6 +37,7 @@ export default function () {
 	 */
 
 	const reports = Object.keys(eventsWithAccountReport).map(eventID => {
+		const expirationDate = getEventExpiration(eventID);
 		const marketID = getMarketIDForEvent(eventID);
 		const description = getMarketDescription(marketID);
 		const outcome = getMarketOutcome(eventID, marketID);
@@ -44,7 +45,8 @@ export default function () {
 		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
 		const isReportEqual = outcome === reported;
 		const feesEarned = getFeesEarned(marketID, loginAccount.id, eventID, event[eventID]);
-		const repEarned = getNetRep(eventID, loginAccount.id);
+		const repEarned = getNetRep(eventID, loginAccount.id, blockchain.currentBlockNumber, expirationDate);
+		const endDate = formatDate(expirationDate);
 	});
 
 	return reports;
@@ -103,9 +105,8 @@ export const getFeesEarned = memoizerific(1000)((marketID, accountID, eventID, e
 	return 0.5 * marketFees * repBalance / eventWeight;
 });
 
-export const getNetRep = memoizerific(1000)((eventID, accountID) => {
-	const expirationBlock = getEventExpiration(eventID); // returns block number
-	const formattedAccountID = [augur.format_int256(accountID)]
+export const getNetRep = memoizerific(1000)((eventID, accountID, currentBlock, expirationDate) => {
+	const expirationBlock = dateToBlock(expirationDate, currentBlock);
 
 	augur.rpc.getLogs({
 		fromBlock: expirationBlock,
@@ -134,13 +135,11 @@ export const getEventWeight = (eventID, event) => {
 	});
 };
 
-export const getEventExpiration = eventID => {
-	const { blockchain } = state.getState();
-
+export const getEventExpiration = memoizerific(1000)(eventID => {
 	augur.getExpiration(eventID, res => {
-		return !!res ? dateToBlock(res, blockchain.currentBlockNumber) : null;
+		return !!res ? res : null;
 	});
-};
+});
 
 export const selectMarketOutcome = memoizerific(1000)((outcome, marketID) => {
 	const { allMarkets } = require('../../../selectors');
