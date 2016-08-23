@@ -18,7 +18,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 
 					const events = {};
 					(eventIDs || []).forEach(eventID => {
-						if (parseInt(eventID.substring(2), 10) !== 0) events[eventID] = { branch: branch.id, period: startPeriod };
+						if (parseInt(eventID, 16)) events[eventID] = { branch: branch.id, period: startPeriod };
 					});
 
 					dispatch(updateEventsWithAccountReportData({ events }));
