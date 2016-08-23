@@ -34,7 +34,7 @@ export default class AuthForm extends Component {
 	};
 
 	static defaultProps = {
-		rememberMe: false
+		rememberMe: true
 	};
 
 	constructor(props) {
@@ -46,7 +46,7 @@ export default class AuthForm extends Component {
 		this.state = {
 			msg: this.props.msg,
 			secureLoginID: this.props.secureLoginID,
-			rememberMe: this.props.rememberMe || true
+			rememberMe: this.props.rememberMe
 		};
 	}
 
@@ -67,7 +67,7 @@ export default class AuthForm extends Component {
 		}
 	}
 
-	handleSubmit = (e) => {
+	handleRegister = (e) => {
 		e.preventDefault();
 		const name = this.refs.name.value;
 		const secureLoginID = this.state.secureLoginID;
@@ -75,17 +75,23 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
-		console.log(file);
+		let cb;
+
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
-				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+				setTimeout(() => { cb = this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount); }, 100);
 			};
 		} else {
-			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined), 100);
+			setTimeout(() => { cb = this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined); }, 100);
 		}
+		setTimeout(() => this.refs.form.submit(cb), 1000);
+	}
 
+	handleSubmit = (cb, e) => {
+		e.preventDefault();
+		cb();
 		this.setState({ msg: '' });
 	}
 
@@ -128,7 +134,7 @@ export default class AuthForm extends Component {
 					autoFocus="autofocus"
 				/>
 				<Input
-					name="secureLoginID"
+					name="username"
 					ref={(ref) => { if (ref && ref.state.value !== s.secureLoginID) { this.setState({ secureLoginID: ref.state.value }); } }}
 					className={classnames('secure-login-id-input', { displayNone: !p.isVisibleID })}
 					type="text"
@@ -170,7 +176,8 @@ export default class AuthForm extends Component {
 				</div>
 				<input
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
-					type="submit"
+					type="button"
+					onClick={this.handleRegister}
 					value={p.submitButtonText}
 				/>
 				<Link

@@ -25,7 +25,7 @@ const signUp = {
 	submitButtonClass: 'register-button',
 	submitButtonText: 'Generate Account',
 	title: 'Sign Up',
-	isVisibleName: true,
+	isVisibleName: false,
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
@@ -87,23 +87,25 @@ const importAccount = {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
-		require('../selectors').update({ activePage: 'account' });
+		return () => {require('../selectors').update({ activePage: 'account' });}
 	}
 };
 
 const accountCreated = {
-	...logIn,
+	...signUp,
+	isVisibleID: true,
 	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
 	secureLoginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };
 
 
-function SignUpOnSubmit(name, password, password2) {
+function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, importedAccount) {
 	require('../selectors').update({
 		authForm: {
 			...accountCreated,
 		}
 	});
+	return () => {require('../selectors').update({ activePage: 'account' });};
 }
 
 const AuthForm = {
