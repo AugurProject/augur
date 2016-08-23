@@ -8,5 +8,5 @@ export default function () {
 	return {
 		reports,
 		summary
-	}
+	};
 }

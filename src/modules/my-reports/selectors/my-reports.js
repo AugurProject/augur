@@ -1,8 +1,8 @@
-import { augur } from '../../../services/augurjs';
-import { formatPercent } from '../../../utils/format-number';
-import { formatDate } from '../../../utils/format-date';
-import store from '../../../store';
-import memoizerific from 'memoizerific';
+// import { augur } from '../../../services/augurjs';
+// import { formatPercent } from '../../../utils/format-number';
+// import { formatDate } from '../../../utils/format-date';
+// import store from '../../../store';
+// import memoizerific from 'memoizerific';
 
 export default function () {
 	// const { accountReports } = store.getState();
