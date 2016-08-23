@@ -52,18 +52,18 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		const expected = [{
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'submitting a request to transfer 5eth to toTestAddress456...'
+				status: 'submitting a request to transfer 5 ETH to toTestAddress456...'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'processing transferring of 5eth to toTestAddress456'
+				status: 'processing transferring of 5 ETH to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
 				status: 'success',
-				message: 'Transfer of 5eth to toTestAddress456 Complete.'
+				message: 'Transfer of 5 ETH to toTestAddress456 Complete.'
 			}
 		}, {
 			type: 'UPDATE_ASSETS'

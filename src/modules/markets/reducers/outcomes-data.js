@@ -2,7 +2,7 @@ import { UPDATE_MARKETS_DATA } from '../../markets/actions/update-markets-data';
 import { UPDATE_OUTCOME_PRICE } from '../../markets/actions/update-outcome-price';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_NO_ID, BINARY_YES_ID, SCALAR_DOWN_ID, SCALAR_UP_ID } from '../../markets/constants/market-outcomes';
+import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_YES_ID, SCALAR_UP_ID } from '../../markets/constants/market-outcomes';
 
 export default function (outcomesData = {}, action) {
 	switch (action.type) {
@@ -79,14 +79,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
 			return parseCategoricalOutcomes(marketData, marketID);
 		}
 		return marketData.outcomes.reduce((p, outcome) => {
+			if (outcome.id !== BINARY_YES_ID) return p;
 			p[outcome.id] = { ...outcome };
-			if (outcome.id === BINARY_NO_ID) {
-				p[outcome.id].name = 'No';
-			} else if (outcome.id === BINARY_YES_ID) {
-				p[outcome.id].name = 'Yes';
-			} else {
-				console.warn('Invalid outcome ID for binary market:', outcome, marketID, marketData);
-			}
+			p[outcome.id].name = 'Yes';
 			return p;
 		}, {});
 	}
@@ -116,14 +111,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
 
 	function parseScalarOutcomes(marketData, marketID) {
 		return marketData.outcomes.reduce((p, outcome) => {
+			if (outcome.id !== SCALAR_UP_ID) return p;
 			p[outcome.id] = { ...outcome };
-			if (outcome.id === SCALAR_DOWN_ID) {
-				p[outcome.id].name = '⇩';
-			} else if (outcome.id === SCALAR_UP_ID) {
-				p[outcome.id].name = '⇧';
-			} else {
-				console.warn('Invalid outcome ID for scalar market:', outcome, marketID, marketData);
-			}
+			p[outcome.id].name = '';
 			return p;
 		}, {});
 	}

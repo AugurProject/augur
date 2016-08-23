@@ -2,7 +2,7 @@ import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../create-mark
 
 export default function (expirySource) {
 	if (
-		!expirySource ||
+		expirySource === null || expirySource === undefined ||
 		[EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC].indexOf(expirySource) < 0) {
 		return 'Please choose an expiry source';
 	}

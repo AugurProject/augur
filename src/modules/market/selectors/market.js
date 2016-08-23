@@ -186,7 +186,18 @@ export const assembleMarket = memoizerific(1000)((
 			lastPrice: formatEther(parseFloat(outcomeData.price) || 0, { positiveSign: false })
 		};
 
-		outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+		if (market.type === 'scalar') {
+			// note: not actually a percent
+			outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
+				decimals: 2,
+				decimalsRounded: 1,
+				denomination: '',
+				positiveSign: false,
+				zeroStyled: false
+			});
+		} else {
+			outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+		}
 
 		outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 

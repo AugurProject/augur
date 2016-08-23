@@ -11,7 +11,7 @@ export const TAGS_MAX_LENGTH = 25;
 export const RESOURCES_MAX_NUM = 5;
 export const RESOURCES_MAX_LENGTH = 1250;
 
-export const EXPIRY_SOURCE_GENERIC = 'generic';
+export const EXPIRY_SOURCE_GENERIC = '';
 export const EXPIRY_SOURCE_SPECIFIC = 'specific';
 
 export const INITIAL_LIQUIDITY_DEFAULT = 500;

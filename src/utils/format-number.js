@@ -51,7 +51,7 @@ export function formatEther(num, opts) {
 		{
 			decimals: 3,
 			decimalsRounded: 1,
-			denomination: 'eth',
+			denomination: ' ETH',
 			positiveSign: false,
 			zeroStyled: false,
 			...opts
@@ -99,7 +99,7 @@ export function formatRep(num, opts) {
 		{
 			decimals: 0,
 			decimalsRounded: 0,
-			denomination: 'rep',
+			denomination: ' REP',
 			positiveSign: false,
 			zeroStyled: false,
 			...opts

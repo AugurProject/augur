@@ -72,8 +72,8 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					roundedValue: 10,
 					rounded: '10.0',
 					minimized: '10',
-					denomination: 'eth',
-					full: '10.000eth'
+					denomination: ' ETH',
+					full: '10.000 ETH'
 				}
 			},
 			action: actual[0].action
@@ -115,8 +115,8 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					roundedValue: 10,
 					rounded: '10.0',
 					minimized: '10',
-					denomination: 'eth',
-					full: '10.000eth'
+					denomination: ' ETH',
+					full: '10.000 ETH'
 				}
 			},
 			action: actual[0].action

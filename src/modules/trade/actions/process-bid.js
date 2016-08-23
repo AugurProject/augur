@@ -11,7 +11,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'placing bid...', message: `bidding ${numShares} shares @ ${limitPrice} eth` }));
+		dispatch(updateExistingTransaction(transactionID, { status: 'placing bid...', message: `bidding ${numShares} shares @ ${limitPrice} ETH` }));
 
 		bid(transactionID, marketID, outcomeID, limitPrice, numShares, (err, res) => {
 			if (err) {

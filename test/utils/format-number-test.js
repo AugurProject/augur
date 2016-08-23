@@ -15,8 +15,8 @@ describe('utils/format-number.js', () => {
 						formatted: '1,000.100',
 						rounded: '1,000.1',
 						minimized: '1,000.1',
-						denomination: 'eth',
-						full: '1,000.100eth'
+						denomination: ' ETH',
+						full: '1,000.100 ETH'
 					}
 				},
 				{
@@ -57,8 +57,8 @@ describe('utils/format-number.js', () => {
 						formatted: '1,000',
 						rounded: '1,000',
 						minimized: '1,000',
-						denomination: 'rep',
-						full: '1,000rep'
+						denomination: ' REP',
+						full: '1,000 REP'
 					}
 				}
 			];
