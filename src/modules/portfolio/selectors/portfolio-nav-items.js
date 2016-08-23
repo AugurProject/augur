@@ -1,8 +1,9 @@
 import memoizerific from 'memoizerific';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/app/constants/pages';
-import { formatNumber, formatEther } from '../../../utils/format-number';
-import selectMyPositionsSummary from '../../../modules/my-positions/selectors/my-positions-summary';
-import selectMyMarketsSummary from '../../../modules/my-markets/selectors/my-markets-summary';
+import { formatNumber, formatEther, formatRep } from '../../../utils/format-number';
+import selectMyPositionsSummary from '../../my-positions/selectors/my-positions-summary';
+import selectMyMarketsSummary from '../../my-markets/selectors/my-markets-summary';
+import selectMyReportsSummary from '../../my-reports/selectors/my-reports-summary';
 
 export default function () {
 	const { links } = require('../../../selectors');
@@ -13,6 +14,7 @@ export default function () {
 export const selectPortfolioNavItems = memoizerific(1)((links) => {
 	const positionsSummary = selectMyPositionsSummary();
 	const marketsSummary = selectMyMarketsSummary();
+	const reportsSummary = selectMyReportsSummary();
 
 	return [
 		{
@@ -31,12 +33,16 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
 			leadingTitle: 'Total Markets',
 			leadingValue: formatNumber((marketsSummary && marketsSummary.numMarkets || 0), { denomination: 'markets' }),
 			trailingTitle: 'Total Gain/Loss',
-			trailingValue: formatEther((marketsSummary && marketsSummary.totalValue || 0), 'eth')
+			trailingValue: formatEther((marketsSummary && marketsSummary.totalValue || 0), { denomination: 'eth' })
 		},
 		{
 			label: 'Reports',
 			link: links.myReportsLink,
-			page: MY_REPORTS
+			page: MY_REPORTS,
+			leadingTitle: 'Total Reports',
+			leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'reports' }),
+			trailingTitle: 'Total Gain/Loss',
+			trailingValue: formatRep((reportsSummary && reportsSummary.netRep), { denomination: 'rep' })
 		}
 	];
 });
