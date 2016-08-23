@@ -2,15 +2,18 @@ import { augur } from '../../../services/augurjs';
 import { formatPercent } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import store from '../../../store';
 import memoizerific from 'memoizerific';
 
 export default function () {
-	const { eventsWithAccountReport } = store.getState();
+	const { eventsWithAccountReport, loginAccount } = store.getState();
 
 	if(!eventsWithAccountReport){
 		return [];
 	}
+
+	return [];
 
 	// Req'd object:
 	/*
@@ -18,7 +21,7 @@ export default function () {
 			{
 				eventId: <string>,
 				marketId: <string>,
-				description: <string>, // Req MarketID
+				description: <string>,
 				outcome: <string>,
 				outcomePercentage: <formattedNumber>,
 				reported: <string>,
@@ -35,8 +38,9 @@ export default function () {
 	const reports = Object.keys(eventsWithAccountReport).map(eventID => {
 		const marketID = getMarketIDForEvent(eventID);
 		const description = getMarketDescription(marketID);
-		const outcome = getMarketOutcome(eventID);
+		const outcome = getMarketOutcome(eventID, marketID);
 		const outcomePercentage = getOutcomePercentage(eventID);
+		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
 	});
 
 // Whether it's been challanged -- def getRoundTwo(event):
@@ -63,9 +67,11 @@ export const getMarketDescription = memoizerific(1000)(marketID => {
 	return allMarkets.filter(market => market.id === marketID)[0] && allMarkets.filter(market => market.id === marketID)[0].description || null;
 });
 
-export const getMarketOutcome = memoizerific(1000)(eventID => {
+export const getMarketOutcome = memoizerific(1000)((eventID, marketID) => {
 	augur.getOutcome(eventID, (res) => {
-		return !!res ? res : null;
+		if(!!res) return selectMarketOutcome(res, marketID);
+
+		return null;
 	});
 });
 
@@ -73,4 +79,30 @@ export const getOutcomePercentage = memoizerific(1000)(eventID => {
 	augur.proportionCorrect(eventID, (res) => {
 		return !!res ? formatPercent(res) : null;
 	});
+});
+
+export const getAccountReportOnEvent = memoizerific(1000)((eventID, event, accountID, marketID) => {
+	augur.getReport(event.branch, event.period, eventID, accountID, (res) => {
+		if(!!res) return selectMarketOutcome(res, marketID);
+
+		return null;
+	});
+});
+
+export const selectMarketOutcome = memoizerific(1000)((outcome, marketID) => {
+	const { allMarkets } = require('../../../selectors');
+
+	const filteredMarket = allMarkets.filter(market => market.id === marketID);
+
+	if(!filteredMarket) return null;
+
+	switch(filteredMarket.type){
+	case BINARY:
+	case CATEGORICAL:
+		return filteredMarket.outcome[outcome].name;
+	case SCALAR:
+		return filteredMarket.outcome[outcome].price;
+	default:
+		return null;
+	}
 });
