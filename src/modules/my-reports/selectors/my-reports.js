@@ -41,6 +41,7 @@ export default function () {
 		const outcome = getMarketOutcome(eventID, marketID);
 		const outcomePercentage = getOutcomePercentage(eventID);
 		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
+		const isReportEqual = outcome === reported;
 	});
 
 // Whether it's been challanged -- def getRoundTwo(event):
