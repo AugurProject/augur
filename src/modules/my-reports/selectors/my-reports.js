@@ -36,13 +36,14 @@ export default function () {
 		const marketID = getMarketIDForEvent(eventID);
 		const description = getMarketDescription(marketID);
 		const outcome = getMarketOutcome(eventID);
+		const outcomePercentage = getOutcomePercentage(eventID);
 	});
 
 // Whether it's been challanged -- def getRoundTwo(event):
 // Whether it's already been challanged -- def getFinal(event):
 }
 
-export const getMarketIDForEvent = memoizerific(100)(eventID => {
+export const getMarketIDForEvent = memoizerific(1000)(eventID => {
 	const { allMarkets } = require('../../../selectors');
 
 	// Simply getting the first market since events -> markets are 1-to-1 currently
@@ -56,15 +57,20 @@ export const getMarketIDForEvent = memoizerific(100)(eventID => {
 	});
 });
 
-export const getMarketDescription = memoizerific(100)(marketID => {
+export const getMarketDescription = memoizerific(1000)(marketID => {
 	const { allMarkets } = require('../../../selectors');
 
 	return allMarkets.filter(market => market.id === marketID)[0] && allMarkets.filter(market => market.id === marketID)[0].description || null;
 });
 
-export const getMarketOutcome = memoizerific(100)(eventID => {
+export const getMarketOutcome = memoizerific(1000)(eventID => {
 	augur.getOutcome(eventID, (res) => {
 		return !!res ? res : null;
 	});
 });
 
+export const getOutcomePercentage = memoizerific(1000)(eventID => {
+	augur.proportionCorrect(eventID, (res) => {
+		return !!res ? formatPercent(res) : null;
+	});
+});
