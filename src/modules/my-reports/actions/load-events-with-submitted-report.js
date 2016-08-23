@@ -22,8 +22,6 @@ export function loadEventsWithSubmittedReport(loadMore) {
 
 export function getEventsWithReports(branch, period, accountID, dispatch) {
 	augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
-		console.log('getEventsWithSubmittedReport res -- ', eventIDs);
-
 		const events = {};
 		(eventIDs || []).forEach(eventID => {
 			if (parseInt(eventID, 16)) events[eventID] = { branch, period };
