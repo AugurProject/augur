@@ -13,19 +13,22 @@ export function loadEventsWithSubmittedReport(loadMore) {
 			dispatch(updateEventsWithAccountReportData({ oldestLoadedPeriod: startPeriod }));
 
 			while (startPeriod <= blockchain.currentPeriod) {
-				augur.getEventsWithSubmittedReport(branch.id, startPeriod, loginAccount.id, (eventIDs) => {
-					console.log('getEventsWithSubmittedReport res -- ', eventIDs);
-
-					const events = {};
-					(eventIDs || []).forEach(eventID => {
-						if (parseInt(eventID, 16)) events[eventID] = { branch: branch.id, period: startPeriod };
-					});
-
-					dispatch(updateEventsWithAccountReportData({ events }));
-				});
-
+				getEventsWithReports(branch.id, startPeriod, loginAccount.id, dispatch);
 				startPeriod++;
 			}
 		}
 	};
+}
+
+export function getEventsWithReports(branch, period, accountID, dispatch) {
+	augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
+		console.log('getEventsWithSubmittedReport res -- ', eventIDs);
+
+		const events = {};
+		(eventIDs || []).forEach(eventID => {
+			if (parseInt(eventID, 16)) events[eventID] = { branch, period };
+		});
+
+		dispatch(updateEventsWithAccountReportData({ events }));
+	});
 }

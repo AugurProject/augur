@@ -10,7 +10,7 @@ import memoizerific from 'memoizerific';
 export default function () {
 	const { eventsWithAccountReport, loginAccount, blockchain } = store.getState();
 
-	if(!eventsWithAccountReport){
+	if (!eventsWithAccountReport) {
 		return [];
 	}
 
@@ -76,7 +76,7 @@ export const getMarketIDForEvent = memoizerific(1000)(eventID => {
 	augur.getMarket(eventID, 0, (res) => {
 		console.log('getMarket res -- ', res);
 		if (!!res) {
-			if(!allMarkets.filter(market => res === market.id)) store.dispatch(loadMarketsInfo([res]));
+			if (!allMarkets.filter(market => res === market.id)) store.dispatch(loadMarketsInfo([res]));
 			return res;
 		}
 		return null;
@@ -91,21 +91,19 @@ export const getMarketDescription = memoizerific(1000)(marketID => {
 
 export const getMarketOutcome = memoizerific(1000)((eventID, marketID) => {
 	augur.getOutcome(eventID, (res) => {
-		if(!!res) return selectMarketOutcome(res, marketID);
+		if (!!res) return selectMarketOutcome(res, marketID);
 
 		return null;
 	});
 });
 
 export const getOutcomePercentage = memoizerific(1000)(eventID => {
-	augur.proportionCorrect(eventID, (res) => {
-		return !!res ? formatPercent(res) : null;
-	});
+	augur.proportionCorrect(eventID, res => !!res && formatPercent(res) || null);
 });
 
 export const getAccountReportOnEvent = memoizerific(1000)((eventID, event, accountID, marketID) => {
 	augur.getReport(event.branch, event.period, eventID, accountID, (res) => {
-		if(!!res) return selectMarketOutcome(res, marketID);
+		if (!!res) return selectMarketOutcome(res, marketID);
 
 		return null;
 	});
@@ -126,45 +124,31 @@ export const getNetRep = memoizerific(1000)((eventID, accountID, currentBlock, e
 		fromBlock: expirationBlock,
 		address: augur.contracts.Consensus,
 		topics: [augur.format_int256(accountID)]
-	}, res => {
-		return !!res ? formatNumber(res) : null;
-	});
+	}, res => !!res && formatNumber(res) || null);
 });
 
 export const getRoundTwo = eventID => {
-	augur.getRoundTwo(eventID, res => {
-		return !!res;
-	});
+	augur.getRoundTwo(eventID, res => !!res);
 };
 
 export const getFinal = eventID => {
-	augur.getFinal(eventID, res => {
-		return !!res;
-	});
+	augur.getFinal(eventID, res => !!res);
 };
 
 export const getFees = marketID => {
-	augur.getFees(marketID, res => {
-		return !!res ? res : null;
-	});
+	augur.getFees(marketID, res => !!res && res || null);
 };
 
 export const getRepBalance = accountID => {
-	augur.getRepBalance(accountID, res => {
-		return !!res ? res : null;
-	});
+	augur.getRepBalance(accountID, res => !!res && res || null);
 };
 
 export const getEventWeight = (eventID, event) => {
-	augur.getEventWeight(event.branch, event.period, eventID, res => {
-		return !!res ? res : null;
-	});
+	augur.getEventWeight(event.branch, event.period, eventID, res => !!res && res || null);
 };
 
 export const getEventExpiration = memoizerific(1000)(eventID => {
-	augur.getExpiration(eventID, res => {
-		return !!res ? res : null;
-	});
+	augur.getExpiration(eventID, res => !!res && res || null);
 });
 
 export const selectMarketOutcome = memoizerific(1000)((outcome, marketID) => {
@@ -172,9 +156,9 @@ export const selectMarketOutcome = memoizerific(1000)((outcome, marketID) => {
 
 	const filteredMarket = allMarkets.filter(market => market.id === marketID);
 
-	if(!filteredMarket) return null;
+	if (!filteredMarket) return null;
 
-	switch(filteredMarket.type){
+	switch (filteredMarket.type) {
 	case BINARY:
 	case CATEGORICAL:
 		return filteredMarket.outcome[outcome].name;
