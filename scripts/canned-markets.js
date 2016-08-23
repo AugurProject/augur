@@ -43,7 +43,7 @@ var cannedMarkets = [{
     tags: ["politics", "US elections", "presidential debates"],
     resolution: ""
 }, {
-    description: "Which city will have the highest median single-family home price for September 2016?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|Paris|other",
+    description: "Which city will have the highest median single-family home price for September 2016?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
     expDate: parseInt(new Date("10-2-2016").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
@@ -134,10 +134,10 @@ augur.connect({
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
         market.branchId = augur.constants.DEFAULT_BRANCH_ID;
         market.onSent = function (r) {
-            console.debug("createSingleEventMarket sent:", r);
+            // console.debug("createSingleEventMarket sent:", r);
         };
         market.onSuccess = function (r) {
-            console.debug("createSingleEventMarket success:", r.callReturn);
+            // console.debug("createSingleEventMarket success:", r.callReturn);
             console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
             var initialFairPrices = new Array(market.numOutcomes);
             if (market.numOutcomes === 2 && (market.minValue !== 1 || market.maxValue !== 2)) {
@@ -157,16 +157,16 @@ augur.connect({
                 bestStartingQuantity: 10,
                 priceWidth: "0.2"
             };
-            console.log("generating order book:", JSON.stringify(orderBookParams, null, 2));
+            // console.log("generating order book:", JSON.stringify(orderBookParams, null, 2));
             augur.generateOrderBook(orderBookParams, {
                 onBuyCompleteSets: function (res) {
-                    console.log("onBuyCompleteSets", res);
+                    // console.log("onBuyCompleteSets", res);
                 },
                 onSetupOutcome: function (res) {
-                    console.log("onSetupOutcome", res);
+                    // console.log("onSetupOutcome", res);
                 },
                 onSetupOrder: function (res) {
-                    console.log("onSetupOrder", res);
+                    // console.log("onSetupOrder", res);
                 },
                 onSuccess: function (res) {
                     console.log("onSuccess", res);
