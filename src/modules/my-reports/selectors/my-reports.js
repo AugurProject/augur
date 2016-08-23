@@ -42,6 +42,7 @@ export default function () {
 		const outcomePercentage = getOutcomePercentage(eventID);
 		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
 		const isReportEqual = outcome === reported;
+		const feesEarned = getFeesEarned(marketID, loginAccount.id, eventID, event[eventID]);
 	});
 
 // Whether it's been challanged -- def getRoundTwo(event):
@@ -89,6 +90,32 @@ export const getAccountReportOnEvent = memoizerific(1000)((eventID, event, accou
 		return null;
 	});
 });
+
+export const getFeesEarned = memoizerific(1000)((marketID, accountID, eventID, event) => {
+	const marketFees = getFees(marketID);
+	const repBalance = getRepBalance(accountID);
+	const eventWeight = getEventWeight(eventID, event);
+
+	return 0.5 * marketFees * repBalance / eventWeight;
+});
+
+export const getFees = marketID => {
+	augur.getFees(marketID, res => {
+		return !!res ? res : null;
+	});
+};
+
+export const getRepBalance = accountID => {
+	augur.getRepBalance(accountID, res => {
+		return !!res ? res : null;
+	});
+};
+
+export const getEventWeight = (eventID, event) => {
+	augur.getEventWeight(event.branch, event.period, eventID, res => {
+		return !!res ? res : null;
+	});
+};
 
 export const selectMarketOutcome = memoizerific(1000)((outcome, marketID) => {
 	const { allMarkets } = require('../../../selectors');
