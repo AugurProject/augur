@@ -12,11 +12,13 @@ import { updateReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
+		dispatch(loadEventsWithSubmittedReport());
 
 		const { selectedMarketID } = getState();
 		if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
