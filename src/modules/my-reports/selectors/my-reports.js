@@ -14,8 +14,6 @@ export default function () {
 		return [];
 	}
 
-	// return [];
-
 	// Req'd object:
 	/*
 		[
@@ -27,32 +25,48 @@ export default function () {
 				outcomePercentage: <formattedNumber>,
 				reported: <string>,
 				isReportEqual: <bool>,
-				feesEarned: <formattedNumber>, // Req MarketID
+				feesEarned: <formattedNumber>,
 				repEarned: <formattedNumber>,
 				endDate: <formattedDate>,
-				isChallenged: <bool>, // TODO
-				isChallengeable: <bool> // TODO
+				isChallenged: <bool>,
+				isChallengeable: <bool>
 			}
 		]
 	 */
 
-	const reports = Object.keys(eventsWithAccountReport).map(eventID => {
-		const expirationDate = getEventExpiration(eventID);
-		const marketID = getMarketIDForEvent(eventID);
-		const description = getMarketDescription(marketID);
-		const outcome = getMarketOutcome(eventID, marketID);
-		const outcomePercentage = getOutcomePercentage(eventID);
-		const reported = getAccountReportOnEvent(eventID, eventsWithAccountReport[eventID], loginAccount.id, marketID);
+	const reports = Object.keys(eventsWithAccountReport).map(eventId => {
+		const expirationDate = getEventExpiration(eventId);
+		const isFinal = getFinal(eventId);
+
+		const marketId = getMarketIDForEvent(eventId);
+		const description = getMarketDescription(marketId);
+		const outcome = getMarketOutcome(eventId, marketId);
+		const outcomePercentage = getOutcomePercentage(eventId);
+		const reported = getAccountReportOnEvent(eventId, eventsWithAccountReport[eventId], loginAccount.id, marketId);
 		const isReportEqual = outcome === reported;
-		const feesEarned = getFeesEarned(marketID, loginAccount.id, eventID, event[eventID]);
-		const repEarned = getNetRep(eventID, loginAccount.id, blockchain.currentBlockNumber, expirationDate);
+		const feesEarned = getFeesEarned(marketId, loginAccount.id, eventId, event[eventId]);
+		const repEarned = getNetRep(eventId, loginAccount.id, blockchain.currentBlockNumber, expirationDate);
 		const endDate = formatDate(expirationDate);
+		const isChallenged = getRoundTwo(eventId);
+		const isChallengeable = !isFinal && !isChallenged;
+
+		return {
+			eventId,
+			marketId,
+			description,
+			outcome,
+			outcomePercentage,
+			reported,
+			isReportEqual,
+			feesEarned,
+			repEarned,
+			endDate,
+			isChallenged,
+			isChallengeable
+		};
 	});
 
 	return reports;
-
-// Whether it's been challanged -- def getRoundTwo(event):
-// Whether it's already been challanged -- def getFinal(event):
 }
 
 export const getMarketIDForEvent = memoizerific(1000)(eventID => {
@@ -116,6 +130,18 @@ export const getNetRep = memoizerific(1000)((eventID, accountID, currentBlock, e
 		return !!res ? formatNumber(res) : null;
 	});
 });
+
+export const getRoundTwo = eventID => {
+	augur.getRoundTwo(eventID, res => {
+		return !!res;
+	});
+};
+
+export const getFinal = eventID => {
+	augur.getFinal(eventID, res => {
+		return !!res;
+	});
+};
 
 export const getFees = marketID => {
 	augur.getFees(marketID, res => {
