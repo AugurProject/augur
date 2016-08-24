@@ -7,6 +7,12 @@
         "daoForkSupport" : true
     },
     "alloc": {
+        "7fbe93bc104ac4bcae5d643fd3747e1866f1ece4": {
+            "balance": "9000000000000000000000"
+        },
+        "ab50dcce6c36a033dc4a3b451d23868c909afbd6": {
+            "balance": "9000000000000000000000"
+        },
         "7c0d52faab596c08f484e3478aebc6205f3f5d8c": {
             "balance": "9000000000000000000000"
         },
