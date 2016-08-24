@@ -56,7 +56,7 @@ describe("CreateMarket.createMarket", function () {
                                 assert.strictEqual(augur.getCreator(marketID), augur.from);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
                                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
-                                augur.getMarketInfo(marketID, null, function (info) {
+                                augur.getMarketInfo(marketID, function (info) {
                                     if (info.error) return done(info);
                                     assert.isArray(info.events);
                                     assert.strictEqual(info.events.length, 1);

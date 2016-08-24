@@ -136,6 +136,10 @@ module.exports = {
             account = market.account;
             market = market.market;
         }
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
+        }
         var tx = clone(this.tx.CompositeGetters.getMarketInfo);
         tx.params = [market, account || 0];
         tx.timeout = 45000;
