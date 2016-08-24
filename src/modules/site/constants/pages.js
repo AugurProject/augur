@@ -6,4 +6,5 @@ export const ACCOUNT = 'account';
 export const MY_POSITIONS = 'my-positions';
 export const MY_MARKETS = 'my-markets';
 export const MY_REPORTS = 'my-reports';
+export const IMPORTANT_INFORMATION = 'important-information';
 export const DEFAULT_PAGE = MARKETS;

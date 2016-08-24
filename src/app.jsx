@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, IMPORTANT_INFORMATION } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -11,6 +11,7 @@ import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
 import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
+import ImportantInformationPage from './modules/important-information/components/important-information-page';
 
 export default function (appElement, selectors) {
 	const p = selectors;
@@ -54,6 +55,7 @@ export default function (appElement, selectors) {
 	case ACCOUNT:
 		node = (
 			<AccountPage
+				importantInformationLink={p.links.importantInformationLink}
 				siteHeader={p.siteHeader}
 				account={p.loginAccount}
 				onChangePass={p.loginAccount.onChangePass}
@@ -104,6 +106,14 @@ export default function (appElement, selectors) {
 		);
 		break;
 
+	case IMPORTANT_INFORMATION:
+		node = (
+			<ImportantInformationPage
+				siteHeader={p.siteHeader}
+				content={p.importantInformation.content}
+			/>
+		);
+		break;
 	default:
 		node = (
 			<MarketsPage
