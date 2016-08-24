@@ -1,3 +1,5 @@
+// geth --ws --wsapi eth,net,web3,admin,personal,miner,txpool --wsport 8546 --wsorigins '*' --cache 2048 --networkid 10101 --rpc --rpcapi eth,net,web3,admin,personal,miner,txpool --ipcapi admin,eth,debug,miner,net,txpool,personal,web3 --rpccorsdomain '*' --maxpeers 128 --etherbase 7fbe93bc104ac4bcae5d643fd3747e1866f1ece4 --unlock 7fbe93bc104ac4bcae5d643fd3747e1866f1ece4 --password ~/.ethereum/.password console
+
 var options = {
      // http: "http://augur13.eastus.cloudapp.azure.com:8545",
      http: "http://127.0.0.1:8545",
