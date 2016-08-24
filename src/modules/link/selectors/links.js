@@ -11,7 +11,8 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
 
-import { loadFullLoginAccountMarkets } from '../../../modules/portfolio/actions/load-full-login-acccount-markets';
+import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
+import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 import store from '../../../store';
 
@@ -166,6 +167,9 @@ export const selectMyReportsLink = memoizerific(1)((dispatch) => {
 	const href = PAGES_PATHS[MY_REPORTS];
 	return {
 		href,
-		onClick: () => dispatch(updateURL(href))
+		onClick: () => {
+			dispatch(loadEventsWithSubmittedReport());
+			dispatch(updateURL(href));
+		}
 	};
 });

@@ -14,6 +14,7 @@ import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
 import reports from './modules/reports/reducers/reports';
+import eventsWithAccountReport from './modules/my-reports/reducers/events-with-account-report';
 
 import orderBooks from './modules/bids-asks/reducers/order-books';
 import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
@@ -50,6 +51,7 @@ module.exports = {
 	pagination,
 
 	reports,
+	eventsWithAccountReport,
 
 	selectedMarketID,
 	selectedMarketsHeader,
