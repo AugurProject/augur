@@ -7,16 +7,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-// , {
-// 			type: 'UPDATE_REPORTS',
-// 			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
-// 		}, {
-// 			type: 'UPDATE_ASSETS'
-// 		}, {
-// 			type: 'UPDATE_REPORTS',
-// 			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
-// 		}, 
-
 describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];

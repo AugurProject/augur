@@ -33,8 +33,6 @@
     "build:html": "cat ./src/index.html | npm run -s partial:replaceBuildFolderString | npm run -s build:html:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
     "build:html:inline_sources": "inline-source --compress false --root ./build -",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
-    "build-azure": "BUILD_AZURE=true BUILD_AZURE_WSURL='{{ $BUILD_AZURE_WSURL }}' BUILD_AZURE_LOCALNODE='{{ $BUILD_AZURE_LOCALNODE }}' BUILD_AZURE_HOSTEDNODE='{{ $BUILD_AZURE_HOSTEDNODE }}' BUILD_AZURE_CONTRACTS='{{ $BUILD_AZURE_CONTRACTS }}' npm run build",
-    "watch-azure": "BUILD_AZURE=true BUILD_AZURE_WSURL='{{ $BUILD_AZURE_WSURL }}' BUILD_AZURE_LOCALNODE='{{ $BUILD_AZURE_LOCALNODE }}' BUILD_AZURE_HOSTEDNODE='{{ $BUILD_AZURE_HOSTEDNODE }}' BUILD_AZURE_CONTRACTS='{{ $BUILD_AZURE_CONTRACTS }}' npm run watch",
     "______": "",
     "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:env & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
     "watch:env": "onchange './src/env.json' -i -- npm run -s build:env",
@@ -56,7 +54,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-ui-react-components": "3.0.52",
-    "augur.js": "2.1.3",
+    "augur.js": "2.1.4",
     "bignumber.js": "2.4.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",
