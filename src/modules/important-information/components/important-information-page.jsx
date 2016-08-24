@@ -2,7 +2,7 @@
  * Author: priecint
  */
 
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 
@@ -12,7 +12,7 @@ const ImportantInformationPage = (p) => (
 
 		<article className="page-content">
 			<div className="l-container">
-				{ p.content }
+				{p.content}
 			</div>
 		</article>
 

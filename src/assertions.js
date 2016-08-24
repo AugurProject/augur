@@ -30,6 +30,7 @@ import myMarkets from '../test/assertions/my-markets';
 import myMarketsSummary from '../test/assertions/my-markets-summary';
 import loginAccountReports from '../test/assertions/login-account-reports';
 import portfolioTotals from '../test/assertions/portfolio-totals';
+import importantInformation from '../test/assertions/important-information';
 
 export default {
 	activePage,
@@ -63,5 +64,6 @@ export default {
 	loginAccountMarkets,
 	myMarkets,
 	myMarketsSummary,
-	loginAccountReports
+	loginAccountReports,
+	importantInformation
 };

@@ -20,7 +20,8 @@ export default {
 				feedback" )
 				From your submissions, the Dev team will coordinate fixes and new features. Changes and fixes
 				will be
-				displayed when you log-in again.</p>
+				displayed when you log-in again.
+			</p>
 			<p className="strong">Important Information:</p>
 			<ol>
 				<li>
@@ -50,8 +51,7 @@ export default {
 					cycle will be 60 days long) it is recommended that users visit the site at least every 2
 					days to
 					maintain your REP and simulate “real money” trading, resolution, and reporting conditions.
-					Learn <a
-					href="https://www.youtube.com/watch?v=sCms-snzHk4">How Augur's Reputation Tokens Work</a>
+					Learn <a href="https://www.youtube.com/watch?v=sCms-snzHk4">How Augur's Reputation Tokens Work</a>
 				</li>
 				<li>
 					The site is only as fast as Ethereum blocks are mined. However, it is important to know that
