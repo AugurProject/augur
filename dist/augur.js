@@ -39283,6 +39283,8 @@ module.exports = {
     ETHER: ONE,
 
     DEFAULT_BRANCH_ID: "0xf69b5",
+    DEFAULT_BRANCH_PERIOD_LENGTH: 172800,
+
     BID: 1,
     ASK: 2,
 
@@ -40039,7 +40041,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.1.2";
+    this.version = "2.1.3";
 
     this.options = {
         debug: {
