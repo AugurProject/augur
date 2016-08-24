@@ -8,8 +8,51 @@
 var async = require("async");
 var chalk = require("chalk");
 var augur = require("../src");
+var DEBUG = false;
+
+var closingBell = new Date();
+closingBell.setHours(20, 0, 0, 0);
+
+var midnightTomorrow = new Date();
+midnightTomorrow.setDate(midnightTomorrow.getDate() + 1);
+midnightTomorrow.setHours(0, 0, 0, 0);
+
+var today = new Date();
 
 var cannedMarkets = [{
+    description: "What will the maximum temperature be on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
+    expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    minValue: -10,
+    maxValue: 120,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["weather", "temperature", "SFO"],
+    extraInfo: "https://www.penny-arcade.com/comic/2001/12/12",
+    resolution: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join('/') + "/DailyHistory.html"
+}, {
+    description: "Which candidate will be leading in the polls in the 2016 U.S. Presidential election at midnight PST " + midnightTomorrow.toDateString() + ", according to the RealClearPolitics 4-way polling average?~|>Clinton|Trump|Johnson|Stein",
+    expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 4,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["politics", "US elections", "polling"],
+    extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
+    resolution: "http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton_vs_johnson_vs_stein-5952.html"
+}, {
+    description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
+    expDate: parseInt(closingBell.getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["Dow Jones", "stock market", "DJIA"],
+    extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
+    resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
+}, {
     description: "Who will win the 2016 U.S. Presidential election?~|>Hillary Clinton|Donald Trump|Gary Johnson|Jill Stein|someone else",
     expDate: parseInt(new Date("1/2/2017").getTime() / 1000, 10),
     minValue: 1,
@@ -147,10 +190,10 @@ augur.connect({
         async.eachSeries(cannedMarkets, function (market, nextMarket) {
             market.branchId = augur.constants.DEFAULT_BRANCH_ID;
             market.onSent = function (r) {
-                // console.debug("createSingleEventMarket sent:", r);
+                if (DEBUG) console.debug("createSingleEventMarket sent:", r);
             };
             market.onSuccess = function (r) {
-                // console.debug("createSingleEventMarket success:", r.callReturn);
+                if (DEBUG) console.debug("createSingleEventMarket success:", r.callReturn);
                 console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
                 var initialFairPrices = new Array(market.numOutcomes);
                 if (market.numOutcomes === 2 && (market.minValue !== 1 || market.maxValue !== 2)) {
@@ -173,14 +216,14 @@ augur.connect({
                 console.log(chalk.blue.bold("Generating order book:"), chalk.cyan.dim(JSON.stringify(orderBookParams, null, 2)));
                 augur.generateOrderBook(orderBookParams, {
                     onBuyCompleteSets: function (res) {
-                        // console.log("onBuyCompleteSets", res);
+                        if (DEBUG) console.log("onBuyCompleteSets", res);
                     },
                     onSetupOutcome: function (res) {
-                        // console.log("onSetupOutcome", res);
-                        console.log(chalk.white.dim(" - Outcome"), chalk.cyan(res.outcome))
+                        if (DEBUG) console.log("onSetupOutcome", res);
+                        console.log(chalk.white.dim(" - Outcome"), chalk.cyan(res.outcome));
                     },
                     onSetupOrder: function (res) {
-                        // console.log("onSetupOrder", res);
+                        if (DEBUG) console.log("onSetupOrder", res);
                     },
                     onSuccess: function (res) {
                         console.log(chalk.blue.bold("Order book generated:"));
