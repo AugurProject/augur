@@ -53,7 +53,7 @@ export default class AuthForm extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, loginID: nextProps.loginID });
+		this.setState({ msg: nextProps.msg, showID: nextProps.isVisibleID });
 	}
 
 	componentDidUpdate() {
@@ -93,11 +93,13 @@ export default class AuthForm extends Component {
 	handlePasswordInput = (e) => {
 		e.preventDefault();
 		const name = this.refs.name.value;
+		const loginID = this.state.loginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
+		const rememberMe = this.state.rememberMe;
 
 		if (password === password2 && password.length >= 6) {
-			setTimeout(() => this.props.onSubmit(name, password, password2, undefined, false, undefined, (loginAccount) => {
+			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
 				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
 			}), 100);
 		}
