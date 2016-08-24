@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/pages';
 
-import { formatNumber, formatEther } from '../../../src/utils/format-number';
+import { formatNumber, formatEther, formatRep } from '../../../src/utils/format-number';
 
 import * as selector from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
 
@@ -46,7 +46,8 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
 	const selectors = {
 		selectMyPositionsSummary: () => {},
-		selectMyMarketsSummary: () => {}
+		selectMyMarketsSummary: () => {},
+		selectMyReportsSummary: () => {}
 	};
 
 	const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
@@ -62,9 +63,17 @@ describe('modules/portfolio/selectors/nav-items', () => {
 		}
 	));
 
+	const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
+		{
+			numReports: 10,
+			netRep: 5
+		}
+	));
+
 	const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
-		'../../../modules/my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
-		'../../../modules/my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
+		'../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
+		'../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
+		'../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
 		'../../../selectors': stubbedSelectors
 	});
 
@@ -99,7 +108,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
 			leadingTitle: 'Total Markets',
 			leadingValue: formatNumber(30, { denomination: 'markets' }),
 			trailingTitle: 'Total Gain/Loss',
-			trailingValue: formatEther(10)
+			trailingValue: formatEther(10, { denomination: 'eth' })
 		},
 		{
 			label: 'Reports',
@@ -111,7 +120,11 @@ describe('modules/portfolio/selectors/nav-items', () => {
 				},
 				page: 'test'
 			},
-			page: MY_REPORTS
+			page: MY_REPORTS,
+			leadingTitle: 'Total Reports',
+			leadingValue: formatNumber(10, { denomination: 'reports' }),
+			trailingTitle: 'Total Gain/Loss',
+			trailingValue: formatRep(5, { denomination: 'rep' })
 		}
 	];
 
@@ -125,6 +138,10 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
 	it(`should call 'selectMyMarketsSummary' once`, () => {
 		assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`);
+	});
+
+	it(`should call 'selectMyReportsSummary' once`, () => {
+		assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`);
 	});
 
 	it('should return the expected array', () => {
