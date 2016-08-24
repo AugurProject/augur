@@ -28,6 +28,8 @@ import loginAccountPositions from '../test/assertions/login-account-positions';
 import loginAccountMarkets from '../test/assertions/login-account-markets';
 import myMarkets from '../test/assertions/my-markets';
 import myMarketsSummary from '../test/assertions/my-markets-summary';
+import myReports from '../test/assertions/my-reports';
+import myReportsSummary from '../test/assertions/my-reports-summary';
 import loginAccountReports from '../test/assertions/login-account-reports';
 import portfolioTotals from '../test/assertions/portfolio-totals';
 
@@ -63,5 +65,7 @@ export default {
 	loginAccountMarkets,
 	myMarkets,
 	myMarketsSummary,
+	myReports,
+	myReportsSummary,
 	loginAccountReports
 };
