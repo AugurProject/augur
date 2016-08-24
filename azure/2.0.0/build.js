@@ -69849,7 +69849,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 				decimalsRounded: 1,
 				denomination: '',
 				positiveSign: false,
-				zeroStyled: false
+				zeroStyled: true
 			});
 		} else {
 			outcome.lastPricePercent = (0, _formatNumber.formatPercent)(outcome.lastPrice.value * 100, { positiveSign: false });
