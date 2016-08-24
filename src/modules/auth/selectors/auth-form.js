@@ -40,16 +40,21 @@ export const selectErrMsg = (err) => {
 	}
 };
 
-export const selectRegister = (auth, dispatch) => {
+export const selectRegister = (auth, loginAccount, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
+	let newAccountMessage = null;
+	if (errMsg === null && loginAccount.secureLoginID) {
+		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
+	}
+	let isVisibleID = newAccountMessage ? true : false;
 	return {
 		title: 'Sign Up',
 
 		isVisibleName: false,
-		isVisibleID: false,
+		isVisibleID,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
-		isVisibleRememberMe: true,
+		isVisibleRememberMe: isVisibleID,
 		isVisibleFileInput: false,
 
 		topLinkText: 'Login',
@@ -58,13 +63,13 @@ export const selectRegister = (auth, dispatch) => {
 		bottomLinkText: 'Import Account',
 		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
-		msg: errMsg,
+		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (name, password, password2, secureLoginID, rememberMe) => dispatch(register(name, password, password2, rememberMe))
+		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) => dispatch(register(name, password, password2, loginID, rememberMe, cb))
 	};
 };
 
@@ -98,7 +103,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID, rememberMe) =>	dispatch(login(secureLoginID, password, rememberMe))
+		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) =>	dispatch(login(loginID, password, rememberMe))
 	};
 };
 
@@ -126,14 +131,14 @@ export const selectImportAccount = (auth, dispatch) => {
 		submitButtonText: 'Import Account',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (name, password, password2, secureLoginID, rememberMe, keystore) => dispatch(importAccount(name, password, rememberMe, keystore))
+		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) => dispatch(importAccount(name, password, rememberMe, keystore, cb))
 	};
 };
 
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
-		return selectRegister(auth, dispatch);
+		return selectRegister(auth, loginAccount, dispatch);
 	case LOGIN:
 		return selectLogin(auth, loginAccount, dispatch);
 	case IMPORT:
