@@ -11,9 +11,9 @@ export function loadEventsWithSubmittedReport(loadMore) {
 		if (branch.id && blockchain.currentPeriod && loginAccount.id) {
 			const oldestLoadedPeriod = oldestLoadedEventPeriod || blockchain.currentPeriod - 5;
 
-			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : blockchain.currentPeriod - 5;
+			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
 
-			dispatch(updateOldestLoadedEventPeriod(oldestLoadedPeriod));
+			dispatch(updateOldestLoadedEventPeriod(startPeriod));
 
 			while (startPeriod <= blockchain.currentPeriod) {
 				getEventsWithReports(branch.id, startPeriod, loginAccount.id);
