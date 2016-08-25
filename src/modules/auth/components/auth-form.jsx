@@ -88,6 +88,7 @@ export default class AuthForm extends Component {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 100);
 		}
 		this.setState({ msg: '', disableInputs: false });
+		return false;
 	}
 
 	handlePasswordInput = (e) => {
@@ -110,7 +111,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
+			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data" autoComplete="on">
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
