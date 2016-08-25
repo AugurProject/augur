@@ -1,16 +1,17 @@
 import { augur } from '../../../services/augurjs';
+import { updateOldestLoadedEventPeriod } from '../../my-reports/actions/update-oldest-loaded-event-period';
 import { updateEventsWithAccountReportData } from '../../my-reports/actions/update-events-with-account-report-data';
 
 export function loadEventsWithSubmittedReport(loadMore) {
 	return (dispatch, getState) => {
-		const { branch, blockchain, loginAccount, accountReports } = getState();
+		const { branch, blockchain, loginAccount, oldestLoadedEventPeriod } = getState();
 
 		if (branch.id && blockchain.currentPeriod && loginAccount.id) {
-			const oldestLoadedPeriod = accountReports && accountReports.oldestLoadedPeriod || blockchain.currentPeriod - 5;
+			const oldestLoadedPeriod = oldestLoadedEventPeriod || blockchain.currentPeriod - 5;
 
 			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : blockchain.currentPeriod - 5;
 
-			dispatch(updateEventsWithAccountReportData({ oldestLoadedPeriod: startPeriod }));
+			dispatch(updateOldestLoadedEventPeriod(oldestLoadedPeriod));
 
 			while (startPeriod <= blockchain.currentPeriod) {
 				getEventsWithReports(branch.id, startPeriod, loginAccount.id, dispatch);
