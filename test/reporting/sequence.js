@@ -337,7 +337,8 @@ describe("Reporting sequence", function () {
                                         var claimable = [markets.binary, markets.categorical, markets.scalar];
                                         augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
                                             assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
-                                            console.log(claimable, claimed);
+                                            console.log("claimable:", claimable);
+                                            console.log("claimed:  ", claimed);
                                             assert.sameMembers(claimable, claimed);
                                             nextEvent();
                                         });
