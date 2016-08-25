@@ -22,9 +22,9 @@ export default function () {
 		const description = getMarketDescription(marketId);
 		const outcome = getMarketOutcome(eventId, marketId);
 		const outcomePercentage = getOutcomePercentage(eventId);
-		const reported = getAccountReportOnEvent(eventId, eventsWithAccountReport[eventId], loginAccount.id, marketId);
+		const reported = getAccountReportOnEvent(eventId, eventsWithAccountReport.events[eventId], loginAccount.id, marketId);
 		const isReportEqual = outcome === reported;
-		const feesEarned = getFeesEarned(marketId, loginAccount.id, eventId, event[eventId]);
+		const feesEarned = getFeesEarned(marketId, loginAccount.id, eventId, eventsWithAccountReport.events[eventId]);
 		const repEarned = getNetRep(eventId, loginAccount.id, blockchain.currentBlockNumber, expirationDate);
 		const endDate = formatDate(expirationDate);
 		const isChallenged = getRoundTwo(eventId);
