@@ -1,4 +1,3 @@
-import { augur } from '../../../services/augurjs';
 import { formatEther, formatPercent, formatRep } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
@@ -51,8 +50,8 @@ export default function () {
 export const getMarketDescription = memoizerific(1000)(marketID => {
 	const { allMarkets } = require('../../../selectors');
 
-	if (!allMarkets.filter(market => res === market.id)) {
-		store.dispatch(loadMarketsInfo([res]));
+	if (!allMarkets.filter(market => market.id === marketID)) {
+		store.dispatch(loadMarketsInfo([marketID]));
 		return null;
 	}
 

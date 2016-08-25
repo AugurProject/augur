@@ -25,7 +25,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 
 function getEventsWithReports(branch, period, accountID) {
 	augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
-		let events = {};
+		const events = {};
 		(eventIDs || []).forEach(eventID => {
 			if (parseInt(eventID, 16)) events[eventID] = { branch, period };
 		});
@@ -36,11 +36,11 @@ function getEventsWithReports(branch, period, accountID) {
 	});
 }
 
-function loadAdditionalEventData(events){
+function loadAdditionalEventData(events) {
 	const { loginAccount, blockchain } = store.getState();
 
 	const updateEvent = (eventID, data) => {
-		let event = {};
+		const event = {};
 		event[eventID] = { ...data };
 		store.dispatch(updateEventsWithAccountReportData({ ...event }));
 	};

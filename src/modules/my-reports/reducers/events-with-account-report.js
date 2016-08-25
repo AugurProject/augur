@@ -5,7 +5,7 @@ export default function (eventsWithAccountReport = {}, action) {
 	switch (action.type) {
 	case UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA: {
 		const updatedEvents = Object.keys(action.data).reduce((p, eventID) => {
-			p[eventID] = {...eventsWithAccountReport[eventID], ...action.data[eventID]};
+			p[eventID] = { ...eventsWithAccountReport[eventID], ...action.data[eventID] };
 			return p;
 		}, {});
 
