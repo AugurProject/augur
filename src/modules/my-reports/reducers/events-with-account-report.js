@@ -15,7 +15,7 @@ export default function (eventsWithAccountReport = {}, action) {
 		};
 	}
 	case CLEAR_LOGIN_ACCOUNT:
-		return null;
+		return {};
 	default:
 		return eventsWithAccountReport;
 	}
