@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from '../../link/components/link';
 import classnames from 'classnames';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_SELL_RISKY, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
@@ -138,8 +139,15 @@ const Transaction = (p) => {
 				}
 			</span>
 
-			{p.status &&
-				<div className="status-and-message">
+			{p.status && p.hash ?
+				<Link href={`https://test.ether.camp/transaction/${p.hash}`}>
+					<div className="status-and-message">
+						<span className="message">{p.message}</span>
+						<br />
+						<span className="status">{p.status}</span>
+					</div>
+				</Link>
+				: <div className="status-and-message">
 					<span className="message">{p.message}</span>
 					<br />
 					<span className="status">{p.status}</span>
@@ -157,7 +165,8 @@ Transaction.propTypes = {
 	data: React.PropTypes.object,
 	shares: React.PropTypes.object,
 	ether: React.PropTypes.object,
-	gas: React.PropTypes.object
+	gas: React.PropTypes.object,
+	hash: React.PropTypes.string
 };
 
 export default Transaction;
