@@ -30,7 +30,7 @@ function getEventsWithReports(branch, period, accountID) {
 			if (parseInt(eventID, 16)) events[eventID] = { branch, period };
 		});
 
-		store.dispatch(updateEventsWithAccountReportData({ events }));
+		store.dispatch(updateEventsWithAccountReportData(events));
 
 		loadAdditionalEventData(events);
 	});
@@ -42,7 +42,7 @@ function loadAdditionalEventData(events) {
 	const updateEvent = (eventID, data) => {
 		const event = {};
 		event[eventID] = { ...data };
-		store.dispatch(updateEventsWithAccountReportData({ ...event }));
+		store.dispatch(updateEventsWithAccountReportData(event));
 	};
 
 	Object.keys(events).forEach(eventID => {
