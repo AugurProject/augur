@@ -45,21 +45,20 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
 			const loginAccount = { ...account, id: account.address };
-			loginAccount.loginID = loginAccount.secureLoginID;
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
 
-			if (rememberMe && localStorageRef && localStorageRef.setItem) {
-				const persistentAccount = Object.assign({}, loginAccount);
-				if (Buffer.isBuffer(persistentAccount.privateKey)) {
-					persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-				}
-				if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-					persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-				}
-				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-			}
+			// if (rememberMe && localStorageRef && localStorageRef.setItem) {
+			// 	const persistentAccount = Object.assign({}, loginAccount);
+			// 	if (Buffer.isBuffer(persistentAccount.privateKey)) {
+			// 		persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+			// 	}
+			// 	if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+			// 		persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+			// 	}
+			// 	localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+			// }
 
 			dispatch(addFundNewAccount(loginAccount.address));
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
