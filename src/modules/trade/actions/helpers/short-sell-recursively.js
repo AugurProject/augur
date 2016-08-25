@@ -22,15 +22,15 @@ export function shortSellRecursively(marketID, outcomeID, numShares, takerAddres
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
 
-			onTradeHash: data => cbStatus('submitting'),
+			onTradeHash: data => cbStatus({ status: 'submitting' }),
 
-			onCommitSent: data => cbStatus('committing'),
-			onCommitSuccess: data => cbStatus('sending'),
+			onCommitSent: data => cbStatus({ status: 'committing', hash: data.txHash }),
+			onCommitSuccess: data => cbStatus({ status: 'sending' }),
 			onCommitFailed: err => { console.log('!!!! onCommitFailed', err); nextMatchingID(err); },
 
 			onNextBlock: data => console.log('short_sell-onNextBlock', data),
 
-			onTradeSent: data => { console.log('!!!! onTradeSent', data); cbStatus('filling'); },
+			onTradeSent: data => { console.log('!!!! onTradeSent', data); cbStatus({ status: 'filling', hash: data.txHash }); },
 			onTradeSuccess: data => {
 				res.remainingShares = parseFloat(data.unmatchedShares) || 0;
 				res.filledShares += parseFloat(data.matchedShares) || 0;

@@ -23,7 +23,11 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 		const { loginAccount } = getState();
 
 		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
-			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
+			(data) => {
+				const update = { status: `${data.status} buy...` };
+				if (data.hash) update.hash = data.hash;
+				dispatch(updateExistingTransaction(transactionID, update));
+			},
 			(res) => {
 				filledShares += parseFloat(res.filledShares);
 

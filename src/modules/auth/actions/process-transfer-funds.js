@@ -8,8 +8,8 @@ export function processTransferFunds(transactionID, fromAddress, amount, toAddre
 		dispatch(updateExistingTransaction(transactionID, { status: `submitting a request to transfer ${amount} ETH to ${toAddress}...` }));
 
 		augur.sendCashFrom(toAddress, amount, fromAddress,
-			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ETH to ${toAddress}` }));
+			(data) => {
+				dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ETH to ${toAddress}`, hash: data.txHash }));
 			},
 			() => {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ETH to ${toAddress} Complete.` }));

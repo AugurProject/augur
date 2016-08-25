@@ -13,7 +13,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'placing ask...', message: `asking ${numShares} shares @ ${formatEther(limitPrice).full}` }));
 
-		ask(transactionID, marketID, outcomeID, limitPrice, numShares, (err, res) => {
+		ask(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
@@ -25,14 +25,17 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 	};
 }
 
-function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, cb) {
+function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, dispatch, cb) {
 	augur.sell({
 		amount: totalShares,
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
 
-		onSent: data => console.log('ask onSent', data),
+		onSent: data => {
+			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
+			console.log('ask onSent', data);
+		},
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
 	});

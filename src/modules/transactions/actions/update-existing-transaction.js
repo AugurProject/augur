@@ -8,8 +8,7 @@ export function updateExistingTransaction(transactionID, newTransactionData) {
 		// if the transaction doesn't already exist, probably/perhaps because user
 		// logged out while a transaction was running and it just completed now,
 		// do not update, ignore it
-		if (!transactionID || !newTransactionData ||
-		!transactionsData || !transactionsData[transactionID]) {
+		if (!transactionID || !newTransactionData || !transactionsData || !transactionsData[transactionID]) {
 			return;
 		}
 

@@ -55,6 +55,7 @@ export function processCancelOrder(transactionID, orderID) {
 			trade_id: orderID,
 			onSent: (res) => {
 				console.log('onSent %o', res);
+				dispatch(updateExistingTransaction(transactionID, { hash: res.txHash }));
 			},
 			onSuccess: (res) => {
 				console.log('onSucc %o', res);
@@ -67,9 +68,6 @@ export function processCancelOrder(transactionID, orderID) {
 				dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 				setTimeout(() => dispatch(updateOrderStatus(orderID, null, transaction.data.market.id, transaction.data.order.type)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
-			},
-			onConfirmed: (res) => {
-				console.log('onConfirmed %o', res);
 			}
 		});
 	};

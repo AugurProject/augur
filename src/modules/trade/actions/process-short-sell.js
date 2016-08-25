@@ -23,7 +23,11 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 		const { loginAccount } = getState();
 
 		shortSellRecursively(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
-			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} short sell...` })),
+			(data) => {
+				const update = { status: `${data.status} short sell...` };
+				if (data.hash) update.hash = data.hash;
+				dispatch(updateExistingTransaction(transactionID, update));
+			},
 			(res) => {
 				filledEth += parseFloat(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));

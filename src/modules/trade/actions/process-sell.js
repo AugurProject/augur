@@ -23,7 +23,11 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 		const { loginAccount } = getState();
 
 		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
-			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
+			(data) => {
+				const update = { status: `${data.status} sell...` };
+				if (data.hash) update.hash = data.hash;
+				dispatch(updateExistingTransaction(transactionID, update));
+			},
 			(res) => {
 				filledEth += parseFloat(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));

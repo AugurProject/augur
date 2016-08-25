@@ -20,6 +20,7 @@
     "test:watch": "clear; npm test -- --watch",
     "lint": "echo begin linting... && eslint src/*.js src/services/* src/utils/* src/modules/* && echo linting complete.",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "link": "npm link augur.js && npm link augur-ui-react-components",
     "deploy-firebase": "firebase deploy",
     "publish-ipfs": "ipfs name publish `ipfs add -rq build | tail -1`",
     "restart-faucet": "ssh augur@eth1.augur.net \"sudo service faucet restart\"",
@@ -53,7 +54,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-ui-react-components": "3.0.52",
+    "augur-ui-react-components": "3.0.53",
     "augur.js": "2.1.5",
     "bignumber.js": "2.4.0",
     "memoizerific": "1.8.4",
