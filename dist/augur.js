@@ -21165,7 +21165,7 @@ module.exports={
         "RoundTwoPenalize": "0x1148f9bb7db673e5126eb0fd70a23201ce704406", 
         "SendReputation": "0x0511d7363716f3b8b08b3cae74c853e99e3f8b2f", 
         "SlashRep": "0x531c5a87d8e4787c22648012e1a8282525ca8f22", 
-        "Trade": "0x545504d2307967889bbe22ca3e27e5e4bb7b18fe", 
+        "Trade": "0x9a6b1053f76e9e3ee1dc14d7dfd4463a25a8bfe8", 
         "Trades": "0xe41bf99cac58dca892bb198f09aac2cb7bfb4813"
     }
 }
@@ -40044,7 +40044,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.1.9";
+    this.version = "2.1.10";
 
     this.options = {
         debug: {
