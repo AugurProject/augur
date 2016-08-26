@@ -140,7 +140,7 @@ const Transaction = (p) => {
 			</span>
 
 			{p.status && p.hash ?
-				<Link href={`https://test.ether.camp/transaction/${p.hash}`}>
+				<Link href={`https://morden.ether.camp/transaction/${p.hash}`} target="_blank">
 					<div className="status-and-message">
 						<span className="message">{p.message}</span>
 						<br />
