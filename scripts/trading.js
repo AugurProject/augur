@@ -33,7 +33,6 @@ var test = function (t) {
                 var _augur = augur;
                 var _abi = abi;
                 var checkHash = augur.checkHash(tradeHash, augur.from);
-                debugger;
                 console.log("checkHash:", checkHash);
                 assert.strictEqual(checkHash, "1");
             });

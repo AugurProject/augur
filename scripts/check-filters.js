@@ -12,9 +12,9 @@ augur.filters.listen({
     block: function (msg) {
         console.log("block filter:", msg);
     },
-    // contracts: function (msg) {
-    //     console.log("contracts filter:", JSON.stringify(msg, null, 2));
-    // },
+    contracts: function (msg) {
+        console.log("contracts filter:", JSON.stringify(msg, null, 2));
+    },
     log_fill_tx: function (msg) {
         console.log("log_fill_tx filter:", JSON.stringify(msg, null, 2));
     },

@@ -69,9 +69,9 @@ describe("Integration tests", function () {
             });
         }
     });
-    describe("getPeriodLength(" + branchID + ") == 7200", function () {
+    describe("getPeriodLength(" + branchID + ") == " + constants.DEFAULT_BRANCH_PERIOD_LENGTH, function () {
         var test = function (r) {
-            assert.strictEqual(r, 7200);
+            assert.strictEqual(r, constants.DEFAULT_BRANCH_PERIOD_LENGTH);
         };
         it("sync", function () {
             test(augur.getPeriodLength(branchID));

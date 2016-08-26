@@ -18,7 +18,7 @@ augur.createSingleEventMarket({
     extraInfo: "Test markets are really terrific!  I wish there were more of them on this site!",
     resolution: "augur.js",
     onSent: function (r) {
-        console.log("createSingleEventMarket sent:", r)
+        console.log("createSingleEventMarket sent:", r);
     },
     onSuccess: function (r) {
         console.log("createSingleEventMarket success:", r);

@@ -195,16 +195,16 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		console.log("getTradingActions:");
-		console.log("type:", type);
-		console.log("orderShares:", orderShares);
-		console.log("orderLimitPrice:", orderLimitPrice);
-		console.log("takerFee:", takerFee);
-		console.log("makerFee:", makerFee);
-		console.log("userAddress:", userAddress);
-		console.log("userPositionShares:", userPositionShares);
-		console.log("outcomeId:", outcomeId);
-		console.log("marketOrderBook:", marketOrderBook);
+		// console.log("getTradingActions:");
+		// console.log("type:", type);
+		// console.log("orderShares:", orderShares);
+		// console.log("orderLimitPrice:", orderLimitPrice);
+		// console.log("takerFee:", takerFee);
+		// console.log("makerFee:", makerFee);
+		// console.log("userAddress:", userAddress);
+		// console.log("userPositionShares:", userPositionShares);
+		// console.log("outcomeId:", outcomeId);
+		// console.log("marketOrderBook:", marketOrderBook);
 		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;

@@ -63,10 +63,6 @@ describe("CreateMarket.createSingleEventMarket", function () {
                     assert.strictEqual(utils.sha3([
                         futurePeriod,
                         abi.fix(tradingFee, "hex"),
-                        block.timestamp,
-                        formattedTags[0],
-                        formattedTags[1],
-                        formattedTags[2],
                         t.expDate,
                         new Buffer(t.description, "utf8").length,
                         t.description

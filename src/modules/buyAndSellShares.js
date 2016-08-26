@@ -29,6 +29,9 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        if (self.options.debug.trading) {
+            console.log("buy tx:", JSON.stringify(tx, null, 2));
+        }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
@@ -49,6 +52,9 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        if (self.options.debug.trading) {
+            console.log("sell tx:", JSON.stringify(tx, null, 2));
+        }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
@@ -69,6 +75,9 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buyCompleteSetsThenSell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        if (self.options.debug.trading) {
+            console.log("buyCompleteSetsThenSell tx:", JSON.stringify(tx, null, 2));
+        }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     }
 };

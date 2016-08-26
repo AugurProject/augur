@@ -16,6 +16,8 @@ module.exports = {
     ETHER: ONE,
 
     DEFAULT_BRANCH_ID: "0xf69b5",
+    DEFAULT_BRANCH_PERIOD_LENGTH: 172800,
+
     BID: 1,
     ASK: 2,
 

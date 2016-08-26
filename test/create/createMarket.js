@@ -198,7 +198,7 @@ describe("CreateMarket.createMarket", function () {
                                 assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
                                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
-                                augur.getMarketInfo(marketID, function (info) {
+                                augur.getMarketInfo(marketID, null, function (info) {
                                     if (info.error) return done(info);
                                     assert.isArray(info.events);
                                     assert.strictEqual(info.events.length, 1);
@@ -340,7 +340,7 @@ describe("CreateMarket.createMarket", function () {
                             assert.strictEqual(creator, augur.coinbase);
                             assert.strictEqual(augur.getDescription(marketID), description);
                             assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
-                            augur.getMarketInfo(marketID, function (info) {
+                            augur.getMarketInfo(marketID, null, function (info) {
                                 if (info.error) return next(info);
                                 assert.isArray(info.events);
                                 assert.strictEqual(info.events.length, 1);

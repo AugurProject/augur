@@ -31,15 +31,15 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.11";
+    this.version = "2.1.12";
 
     this.options = {
         debug: {
-            tools: false,
-            abi: false,
-            broadcast: false,
-            connect: false,
-            trading: false
+            tools: false,       // if true, testing tools (test/tools.js) included
+            abi: false,         // debug logging in augur-abi
+            broadcast: false,   // broadcast debug logging in ethrpc 
+            connect: false,     // connection debug logging in ethereumjs-connect
+            trading: false      // trading-related debug logging
         }
     };
     this.protocol = NODE_JS || document.location.protocol;
