@@ -46,56 +46,18 @@ module.exports = {
             options = null;
         }
         options = options || {};
-        //TODO: disallow cahce fetch if from/to options specified? (hard to verify)
-        if (self.augurNode.nodes.length > 0){
-            var params = {
-                id: market
-            }
-            if (options.toBlock) params['toBlock'] = options.toBlock;
-            if (options.fromBlock) params['fromBlock'] = options.fromBlock;
-            self.augurNode.getMarketPriceHistory(params, (err, result) => {
-                //TODO: prob fallback to on chain fetch
-               if (err) return cb(null);
-               return cb(result);
-            });
-        }else{
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Trade,
-                topics: [this.api.events.log_fill_tx.signature, market]
-            };
-            if (!utils.is_function(cb)) {
-                return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
-            }
-            this.rpc.getLogs(filter, function (logs) {
-                cb(parseMarketPriceHistoryLogs(logs));
-            });
+        var filter = {
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [this.api.events.log_fill_tx.signature, market]
+        };
+        if (!utils.is_function(cb)) {
+            return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
         }
-    },
-
-    meanTradePrice: function (trades, sell) {
-        var price, shares, totalShares, outcomeMeanPrice, meanPrice = {};
-        function include(shares) {
-            return (sell) ? shares.lt(new BigNumber(0)) : shares.gt(new BigNumber(0));
-        }
-        for (var outcome in trades) {
-            if (!trades.hasOwnProperty(outcome)) continue;
-            outcomeMeanPrice = new BigNumber(0);
-            totalShares = new BigNumber(0);
-            for (var i = 0, n = trades[outcome].length; i < n; ++i) {
-                price = new BigNumber(trades[outcome][i].price, 10);
-                shares = new BigNumber(trades[outcome][i].shares, 10);
-                if (include(shares)) {
-                    outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
-                    totalShares = totalShares.plus(shares);
-                }
-            }
-            if (include(totalShares)) {
-                meanPrice[outcome] = outcomeMeanPrice.dividedBy(totalShares).toFixed();
-            }
-        }
-        return meanPrice;
+        this.rpc.getLogs(filter, function (logs) {
+            cb(parseMarketPriceHistoryLogs(logs));
+        });
     },
 
     getAccountTrades: function (account, options, cb) {
@@ -136,55 +98,41 @@ module.exports = {
 
         if (!account || !utils.is_function(cb)) return;
 
-        //TODO:Disallow this fetch when to/from options specified? (hard to verify)
-        if (self.augurNode.nodes.length > 0){
-            var params = {
-                id: account
-            }
-            if (options.toBlock) params['toBlock'] = options.toBlock;
-            if (options.fromBlock) params['fromBlock'] = options.fromBlock;
-            self.augurNode.getAccountTrades(params, (err, result) => {
-                //TODO: prob fallback to on chain fetch
-               if (err) return cb(null);
-               return cb(result);
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [
+                this.api.events.log_fill_tx.signature,
+                null,
+                null,
+                abi.format_int256(account)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            var trades = {};
+            parseLogs(logs, trades, true, function () {
+                self.rpc.getLogs({
+                    fromBlock: options.fromBlock || "0x1",
+                    toBlock: options.toBlock || "latest",
+                    address: self.contracts.Trade,
+                    topics: [
+                        self.api.events.log_fill_tx.signature,
+                        null,
+                        abi.format_int256(account),
+                        null
+                    ],
+                    timeout: 480000
+                }, function (logs) {
+                    parseLogs(logs, trades, false, function () {
+                        if (!trades || Object.keys(trades).length === 0) {
+                            return cb(null);
+                        }
+                        cb(trades);
+                    });
+                });              
             });
-        }else{
-            this.rpc.getLogs({
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Trade,
-                topics: [
-                    this.api.events.log_fill_tx.signature,
-                    null,
-                    null,
-                    abi.format_int256(account)
-                ],
-                timeout: 480000
-            }, function (logs) {
-                var trades = {};
-                parseLogs(logs, trades, true, function () {
-                    self.rpc.getLogs({
-                        fromBlock: options.fromBlock || "0x1",
-                        toBlock: options.toBlock || "latest",
-                        address: self.contracts.Trade,
-                        topics: [
-                            self.api.events.log_fill_tx.signature,
-                            null,
-                            abi.format_int256(account),
-                            null
-                        ],
-                        timeout: 480000
-                    }, function (logs) {
-                        parseLogs(logs, trades, false, function () {
-                            if (!trades || Object.keys(trades).length === 0) {
-                                return cb(null);
-                            }
-                            cb(trades);
-                        });
-                    });              
-                });
-            });
-        }
+        });
     },
 
     getAccountMeanTradePrices: function (account, cb) {

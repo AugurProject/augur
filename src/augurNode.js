@@ -17,7 +17,6 @@ module.exports  = function () {
 
         nodes: [],
 
-        //This method bootstraps the augur cache node network
         //(For now just takes list of nodes as input)
         bootstrap: function(cache_nodes, cb){
             var self = this;
@@ -33,7 +32,6 @@ module.exports  = function () {
 
             var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
             url = url + "/" + endpoint;
-            //http://augurnode1.eastus.cloudapp.azure.com:8547/getMarketsInfo
             var first = true;
             for(var key in params){
                 if (params.hasOwnProperty(key)){
@@ -55,11 +53,11 @@ module.exports  = function () {
 
         fetchHelper: function(url, cb){
             if (!url) return cb("no nodes to fetch from");
-            request(url, function (error, response, body) {
+            request(url, {timeout: 10}, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     return cb(null, body);
                 }else{
-                    return cb("cache node fetch failed");
+                    return cb(url + " " + error);
                 }
             });
         },

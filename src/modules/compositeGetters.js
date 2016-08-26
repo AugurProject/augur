@@ -43,14 +43,32 @@ module.exports = {
     loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
         var self = this;
 
-        // load the total number of markets
-        this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-            var numMarkets = parseInt(numMarketsRaw, 10);
-            var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+        function loadMarketsHelper (branchID, chunkSize, isDesc, chunkCB){
+            // load the total number of markets
+            self.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+                var numMarkets = parseInt(numMarketsRaw, 10);
+                console.log(branchID, "numMarkets: ", numMarkets);
+                var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
 
-            // load markets in batches
-            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
-        });
+                // load markets in batches
+                self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
+            });
+        }
+
+        //Try hitting a cache node first
+        if (self.augurNode.nodes.length){
+            self.augurNode.getMarketsInfo(branchID, (err, result) => {
+                if (err){
+                    console.log(err);
+                    //fallback to loading in batches from chain
+                    loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+                }else{
+                    chunkCB(result);
+                }
+            });
+        }else{
+            loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+        }
     },
 
     loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
@@ -128,24 +146,22 @@ module.exports = {
         return parsedMarketInfo;
     },
 
-    getMarketInfo: function (market, callback) {
+    // account is optional, if provided will return sharesPurchased
+    getMarketInfo: function (market, account, callback) {
         var self = this;
         if (market && market.market) {
             callback = callback || market.callback;
+            account = market.account;
             market = market.market;
         }
-        if (self.augurNode.nodes.length > 0){
-            self.augurNode.getMarketInfo(market, (err, result) => {
-                //TODO: prob fallback to on chain fetch
-               if (err) return callback(null);
-               return callback(result);
-            });
-        }else{
-            var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-            tx.params = market;
-            tx.timeout = 45000;
-            return this.fire(tx, callback, this.validateMarketInfo);
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
         }
+        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
+        tx.params = [market, account || 0];
+        tx.timeout = 45000;
+        return this.fire(tx, callback, this.validateMarketInfo);
     },
 
     parseBatchMarketInfo: function (marketsArray, numMarkets) {
@@ -170,19 +186,14 @@ module.exports = {
         return marketsInfo;
     },
 
-    batchGetMarketInfo: function (marketIDs, callback) {
-        var self = this;
-        if (self.augurNode.nodes.length > 0){
-            self.augurNode.batchGetMarketInfo(marketIDs, (err, result) => {
-                //TODO: prob fallback to on chain fetch
-               if (err) return callback(null);
-               return callback(result);
-            });
-        }else{
-            var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-            tx.params = [marketIDs];
-            return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+    batchGetMarketInfo: function (marketIDs, account, callback) {
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
         }
+        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+        tx.params = [marketIDs, account || 0];
+        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
     parseMarketsInfo: function (marketsArray) {
