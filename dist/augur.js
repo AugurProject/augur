@@ -21176,7 +21176,7 @@ module.exports={
         "0": "market doesn't exist",
         "-1": "amount/price bad",
         "-2": "oracle-only branch",
-        "-4": "not enough money or shares",
+        "-4": "not enough money",
         "21": "trade already exists"
     },
     "buyCompleteSets": {
@@ -21281,7 +21281,7 @@ module.exports={
         "-1": "amount/price bad",
         "-2": "oracle only branch",
         "-3": "bad outcome to trade",
-        "-4": "not enough money or shares",
+        "-4": "not enough shares",
         "21": "trade already exists"
     },
     "sellCompleteSets": {
@@ -40044,7 +40044,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.1.10";
+    this.version = "2.1.11";
 
     this.options = {
         debug: {
