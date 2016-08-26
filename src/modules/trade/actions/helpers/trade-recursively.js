@@ -27,13 +27,22 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 
 		onCommitSent: data => cbStatus({ status: 'committing', hash: data.txHash }),
 		onCommitSuccess: data => cbStatus({ status: 'sending' }),
-		onCommitFailed: err => { console.log('!!!! onCommitFailed', err); cb(err); },
+		onCommitFailed: err => {
+			console.log('!!!! onCommitFailed', err);
+			cb(err);
+		},
 
 		onNextBlock: data => console.log('trade-onNextBlock', data),
 
-		onTradeSent: data => { console.log('!!!! onTradeSent', data); cbStatus({ status: 'filling', hash: data.txHash }); },
+		onTradeSent: data => {
+			console.log('!!!! onTradeSent', data);
+			cbStatus({ status: 'filling', hash: data.txHash });
+		},
 		onTradeSuccess: doSuccess,
-		onTradeFailed: err => { console.log('!!!! onTradeFailed', err); cb(err); }
+		onTradeFailed: err => {
+			console.log('!!!! onTradeFailed', err);
+			cb(err);
+		}
 	});
 
 	function doSuccess(data) {

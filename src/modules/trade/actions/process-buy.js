@@ -50,7 +50,8 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(totalEthWithFee, res.remainingEth, filledShares) }));
 
-				if (res.remainingEth) {
+				const sharesRemaining = parseFloat(numShares) - filledShares;
+				if (sharesRemaining > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addBidTransaction(
@@ -58,7 +59,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
-						numShares - filledShares,
+						sharesRemaining,
 						limitPrice,
 						res.remainingEth));
 				}

@@ -184,5 +184,6 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 };
 
 ex.augur = augur;
+ex.abi = augur.abi;
 
 module.exports = ex;
