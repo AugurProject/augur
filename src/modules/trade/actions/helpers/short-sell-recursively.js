@@ -26,21 +26,30 @@ export function shortSellRecursively(marketID, outcomeID, numShares, takerAddres
 
 			onCommitSent: data => cbStatus({ status: 'committing', hash: data.txHash }),
 			onCommitSuccess: data => cbStatus({ status: 'sending' }),
-			onCommitFailed: err => { console.log('!!!! onCommitFailed', err); nextMatchingID(err); },
-
+			onCommitFailed: err => {
+				console.log('!!!! onCommitFailed', err);
+				nextMatchingID(err);
+			},
 			onNextBlock: data => console.log('short_sell-onNextBlock', data),
 
-			onTradeSent: data => { console.log('!!!! onTradeSent', data); cbStatus({ status: 'filling', hash: data.txHash }); },
+			onTradeSent: data => {
+				console.log('!!!! onTradeSent', data);
+				cbStatus({ status: 'filling', hash: data.txHash });
+			},
 			onTradeSuccess: data => {
 				res.remainingShares = parseFloat(data.unmatchedShares) || 0;
 				res.filledShares += parseFloat(data.matchedShares) || 0;
 				res.filledEth += parseFloat(data.cashFromTrade) || 0;
+				if (!res.remainingShares) return nextMatchingID({ isComplete: true });
 				nextMatchingID();
 			},
-			onTradeFailed: err => { console.log('!!!! onTradeFailed', err); nextMatchingID(err); }
+			onTradeFailed: err => {
+				console.log('!!!! onTradeFailed', err);
+				nextMatchingID(err);
+			}
 		});
 	}, err => {
-		if (err) return cb(err);
+		if (err && !err.isComplete) return cb(err);
 		console.log('* short_sell success data:', res);
 		if (res.filledShares && res.remainingShares) {
 			cbFill(res);
