@@ -221,13 +221,13 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
+                loginID: localAccount.loginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
-            return cb(clone(this.account));
+            return cb(clone(self.account));
         },
 
         login: function (loginID, password, cb) {
