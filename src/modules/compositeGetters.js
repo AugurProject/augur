@@ -47,9 +47,8 @@ module.exports = {
             // load the total number of markets
             self.getNumMarketsBranch(branchID, function (numMarketsRaw) {
                 var numMarkets = parseInt(numMarketsRaw, 10);
-                console.log(branchID, "numMarkets: ", numMarkets);
+                
                 var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
-
                 // load markets in batches
                 self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
             });
@@ -63,7 +62,7 @@ module.exports = {
                     //fallback to loading in batches from chain
                     loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
                 }else{
-                    chunkCB(result);
+                    chunkCB(null, result);
                 }
             });
         }else{

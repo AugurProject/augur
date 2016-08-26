@@ -16,6 +16,7 @@ module.exports  = function () {
     return {
 
         nodes: [],
+        REQUEST_TIMEOUT: 1000,
 
         //(For now just takes list of nodes as input)
         bootstrap: function(cache_nodes, cb){
@@ -53,7 +54,7 @@ module.exports  = function () {
 
         fetchHelper: function(url, cb){
             if (!url) return cb("no nodes to fetch from");
-            request(url, {timeout: 10}, function (error, response, body) {
+            request(url, {timeout: this.REQUEST_TIMEOUT}, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     return cb(null, body);
                 }else{
