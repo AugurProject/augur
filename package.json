@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "2.1.15",
+  "version": "2.1.16",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "ethrpc": "1.6.8",
     "keythereum": "0.2.6",
     "locks": "0.2.2",
-    "node-uuid": "1.4.7"
+    "node-uuid": "1.4.7",
+    "request": "2.74.0"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -75,8 +76,7 @@
     "web3": "^0.8.1"
   },
   "optionalDependencies": {
-    "madlibs": "0.0.0",
-    "request": "2.67.0"
+    "madlibs": "0.0.0"
   },
   "author": "Jack Peterson <jack@tinybike.net>",
   "directories": {
