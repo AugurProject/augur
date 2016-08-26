@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -10,21 +10,22 @@
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/create test/markets test/trading test/reporting  --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "setup": "scripts/setup.js --reset --faucets",
-    "build": "gulp build"
+    "build": "gulp build",
+    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect"
   },
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "0.6.0",
-    "augur-contracts": "1.8.3",
+    "augur-contracts": "1.8.4",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "1.0.8",
+    "ethereumjs-connect": "1.0.9",
     "ethereumjs-tx": "1.1.1",
     "ethereumjs-util": "4.4.1",
-    "ethrpc": "1.6.3",
+    "ethrpc": "1.6.4",
     "keythereum": "0.2.6",
     "locks": "0.2.2",
     "node-uuid": "1.4.7"

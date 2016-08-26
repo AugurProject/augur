@@ -11,12 +11,8 @@ env:
 
 node_js:
   - "6"
-  - "6.2"
-  - "6.1"
   - "5"
   - "4"
-  - "4.2"
-  - "iojs"
 
 addons:
   apt:
@@ -31,4 +27,4 @@ before_script:
 
 script:
   - npm run lint
-  - travis_wait 30 npm run coverage
+  - travis_wait 60 npm run coverage
