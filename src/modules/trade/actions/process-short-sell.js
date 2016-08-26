@@ -5,7 +5,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { shortSellRecursively } from '../../trade/actions/helpers/short-sell-recursively';
+import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
@@ -23,15 +23,11 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 		const { loginAccount } = getState();
 
-		shortSellRecursively(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		shortSell(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
 			(data) => {
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;
 				dispatch(updateExistingTransaction(transactionID, update));
-			},
-			(res) => {
-				filledEth += parseFloat(res.filledEth);
-				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));
 			},
 			(err, res) => {
 				dispatch(updateTradeCommitLock(false));
@@ -46,7 +42,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
 
-				if (res.remainingEth) {
+				if (res.remainingShares) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addShortSellRiskyTransaction(

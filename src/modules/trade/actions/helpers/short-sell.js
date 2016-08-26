@@ -1,7 +1,7 @@
 import async from 'async';
 import { augur } from '../../../../services/augurjs';
 
-export function shortSellRecursively(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cbFill, cb) {
+export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
 		remainingShares: numShares,
 		filledShares: 0,
@@ -50,11 +50,7 @@ export function shortSellRecursively(marketID, outcomeID, numShares, takerAddres
 		});
 	}, err => {
 		if (err && !err.isComplete) return cb(err);
-		console.log('* short_sell success data:', res);
-		if (res.filledShares && res.remainingShares) {
-			cbFill(res);
-			return shortSellRecursively(marketID, outcomeID, res.remainingShares, takerAddress, getTradeIDs, cbStatus, cbFill, cb);
-		}
+		console.log('* short_sell success:', res);
 		return cb(null, res);
 	});
 }

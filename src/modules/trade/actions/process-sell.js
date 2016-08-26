@@ -46,7 +46,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
 
-				if (res.remainingEth) {
+				if (res.remainingShares) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addAskTransaction(
