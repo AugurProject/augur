@@ -17,7 +17,7 @@ const TradePanel = (p) => (
 		<div className="place-trade-container">
 			<button
 				className="button place-trade"
-				disabled={!(!!p.tradeSummary && !!p.tradeSummary.tradeOrders && !!p.tradeSummary.tradeOrders.length) || p.isTradeWorking}
+				disabled={!(!!p.tradeSummary && !!p.tradeSummary.tradeOrders && !!p.tradeSummary.tradeOrders.length) || p.isTradeCommitLocked}
 				onClick={event => {
 					event.stopPropagation();
 					p.onSubmitPlaceTrade();
@@ -30,7 +30,7 @@ const TradePanel = (p) => (
 );
 
 TradePanel.propTypes = {
-	isTradeWorking: React.PropTypes.bool,
+	isTradeCommitLocked: React.PropTypes.bool,
 	outcomes: React.PropTypes.array,
 	selectedOutcome: React.PropTypes.object,
 	tradeSummary: React.PropTypes.object,
