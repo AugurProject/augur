@@ -154,7 +154,7 @@ module.exports = {
         connector.connect(options, function (connection) {
             self.sync();
             if (options.augurNodes){
-                self.augurNode.bootstrap(options.augurNodes, function (connection) {
+                self.augurNode.bootstrap(options.augurNodes, function () {
                     cb(connection);
                 });
             }else{
