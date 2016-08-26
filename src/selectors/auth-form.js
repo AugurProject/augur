@@ -111,6 +111,7 @@ function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, im
 	} else {
 		cb(require('../selectors').loginAccount);
 	}
+	return false;
 }
 
 const AuthForm = {

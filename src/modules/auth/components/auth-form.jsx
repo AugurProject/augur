@@ -77,17 +77,16 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
-
+		this.setState({ msg: '', disableInputs: false });
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
-				setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, importAccount, undefined), 100);
+				setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, importAccount, undefined), 300);
 			};
 		} else {
-			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 100);
+			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 300);
 		}
-		this.setState({ msg: '', disableInputs: false });
 		return false;
 	}
 
@@ -102,7 +101,7 @@ export default class AuthForm extends Component {
 		if (password === password2 && password.length >= 6) {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
 				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
-			}), 100);
+			}), 300);
 		}
 	}
 
@@ -111,7 +110,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data" autoComplete="on">
+			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
