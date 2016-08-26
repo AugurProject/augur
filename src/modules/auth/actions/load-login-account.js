@@ -70,7 +70,7 @@ export function loadLoginAccount() {
 
 		AugurJS.loadLoginAccount(env, (err, loginAccount) => {
 			let localLoginAccount = loginAccount;
-
+			console.log(loginAccount);
 			if (err) {
 				return console.error('ERR loadLoginAccount():', err);
 			}
