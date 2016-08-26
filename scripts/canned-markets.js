@@ -53,11 +53,11 @@ var cannedMarkets = [{
     extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
     resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
 }, {
-    description: "NFL Preseason Week 3: Falcons @ Dolphins - Who wins?",
+    description: "NFL Preseason Week 3: Falcons @ Dolphins - Who wins?~|>Atlanta Falcons|Miami Dolphins|tie",
     expDate: parseInt(new Date("8/29/2016").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
-    numOutcomes: 2,
+    numOutcomes: 3,
     takerFee: "0.02",
     makerFee: "0.01",
     tags: ["NFL", "sports", "American football"],
