@@ -13,7 +13,7 @@ import { addShortSellRiskyTransaction } from '../../transactions/actions/add-sho
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData, orderBooks, loginAccount, accountTrades } = getState();
+		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 
@@ -59,7 +59,17 @@ export function placeTrade(marketID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short sell risky
-				if (accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares) {
+				let position;
+				if (market.myPositionOutcomes) {
+					const numPositions = market.myPositionOutcomes.length;
+					for (let i = 0; i < numPositions; ++i) {
+						if (market.myPositionOutcomes[i].id === outcomeID) {
+							position = market.myPositionOutcomes[i].position.qtyShares;
+							break;
+						}
+					}
+				}
+				if (position && position.value) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addTradeTransaction(
