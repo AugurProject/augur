@@ -3,6 +3,7 @@ import { BUY, SELL } from '../../trade/constants/types';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
+import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { selectTransactionsLink } from '../../link/selectors/links';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
@@ -32,6 +33,7 @@ export function placeTrade(marketID) {
 			if (outcomeTradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 				if (tradeIDs && tradeIDs.length) {
+					dispatch(updateTradeCommitLock(true));
 					dispatch(addTradeTransaction(
 						BUY,
 						marketID,
@@ -59,6 +61,7 @@ export function placeTrade(marketID) {
 				//  - if not, short sell/short sell risky
 				if (accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares) {
 					if (tradeIDs && tradeIDs.length) {
+						dispatch(updateTradeCommitLock(true));
 						dispatch(addTradeTransaction(
 							SELL,
 							marketID,
@@ -80,6 +83,7 @@ export function placeTrade(marketID) {
 					}
 				} else {
 					if (tradeIDs && tradeIDs.length) {
+						dispatch(updateTradeCommitLock(true));
 						dispatch(addShortSellTransaction(
 							marketID,
 							outcomeID,

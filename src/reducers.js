@@ -26,6 +26,7 @@ import transactionsData from './modules/transactions/reducers/transactions-data'
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
+import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
@@ -65,6 +66,7 @@ module.exports = {
 	selectedOutcomeID,
 
 	tradesInProgress,
+	tradeCommitLock,
 	createMarketInProgress,
 
 	orderBooks,

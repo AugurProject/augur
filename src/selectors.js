@@ -33,6 +33,7 @@ import transactionsTotals from './modules/transactions/selectors/transactions-to
 import isTransactionsWorking from './modules/transactions/selectors/is-transactions-working';
 
 import tradesInProgress from './modules/trade/selectors/trade-in-progress';
+import tradeCommitLock from './modules/trade/selectors/trade-commit-lock';
 
 import createMarketForm from './modules/create-market/selectors/create-market-form';
 
@@ -72,7 +73,8 @@ const selectors = {
 	transactionsTotals,
 	isTransactionsWorking,
 
-	tradesInProgress
+	tradesInProgress,
+	tradeCommitLock
 };
 
 module.exports = {};

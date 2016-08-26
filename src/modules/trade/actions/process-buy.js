@@ -4,6 +4,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
+import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -37,6 +38,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth, filledShares) }));
 			},
 			(err, res) => {
+				dispatch(updateTradeCommitLock(false));
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
