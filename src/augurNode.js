@@ -9,6 +9,9 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var request = (NODE_JS) ? require("request") : require("browser-request");
 var noop = function () {};
 
+//for now, cache nodes only have 1 second to respond before we fall back to chain.
+request = request.defaults({timeout: 1000});
+
 module.exports  = function () {
 
     var augur = this;
@@ -16,7 +19,6 @@ module.exports  = function () {
     return {
 
         nodes: [],
-        REQUEST_TIMEOUT: 1000,
 
         //(For now just takes list of nodes as input)
         bootstrap: function(cache_nodes, cb){
@@ -54,7 +56,7 @@ module.exports  = function () {
 
         fetchHelper: function(url, cb){
             if (!url) return cb("no nodes to fetch from");
-            request(url, {timeout: this.REQUEST_TIMEOUT}, function (error, response, body) {
+            request(url, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     return cb(null, body);
                 }else{
