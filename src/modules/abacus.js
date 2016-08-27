@@ -23,26 +23,32 @@ var ONE_POINT_FIVE = new BigNumber("1.5", 10);
 
 module.exports = {
 
-    // Calculates adjusted trading fee and total cost at a specified price
+    /**
+     * @param tradingfee BigNumber
+     * @param price BigNumber
+     * @param range BigNumber
+     * @returns BigNumber
+     */
+    calculateAdjustedTradingFee: function (tradingFee, price, range) {
+        return tradingFee.times(4).times(price).times(ONE.minus(price).dividedBy(range)).dividedBy(range);
+    },
+
+    // Calculates adjusted total trade cost at a specified price
     // @returns {BigNumbers}
     calculateTradingCost: function (amount, price, makerFee, takerFee, range) {
-        var bnPrice = abi.bignum(price);
         var bnAmount = abi.bignum(amount);
+        var bnPrice = abi.bignum(price);
         var bnRange = abi.bignum(range);
         var fees = this.calculateTradingFees(makerFee, takerFee);
-        console.log("fees:", fees);
-        var fee = fees.tradingFee.times(4).times(bnPrice).times(ONE.minus(bnPrice).dividedBy(bnRange)).dividedBy(bnRange);
+        console.log(JSON.stringify(fees, null, 2));
+        var fee = this.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange);
+        console.log("takerFee:", ONE_POINT_FIVE.minus(fees.makerProportionOfFee).times(fee).toFixed());
         var branchFees = THREE_FOURTHS.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
         var creatorFees = ONE_FOURTH.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
         var takerFeesTotal = branchFees.plus(creatorFees);
         var cost = bnAmount.times(bnRange).minus(bnAmount.times(bnPrice).minus(takerFeesTotal));
-        return {
-            fee: fee,
-            branchFees: branchFees,
-            creatorFees: creatorFees,
-            takerFees: takerFeesTotal,
-            cost: cost
-        };
+        var makerFeesTotal = bnPrice.times(bnAmount).times(fees.makerProportionOfFee).times(fee);
+        return {fee: fee, takerFee: takerFeesTotal, makerFee: makerFeesTotal, cost: cost};
     },
 
     // type: "buy" or "sell"
