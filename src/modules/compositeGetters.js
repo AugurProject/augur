@@ -18,55 +18,59 @@ module.exports = {
     // load each batch of marketdata sequentially and recursively until complete
     loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, chunkCB) {
         var self = this;
-        this.getMarketsInfo({
-            branch: branchID,
-            offset: startIndex,
-            numMarketsToLoad: chunkSize
-        }, function (marketsData) {
-            if (!marketsData || marketsData.error) {
-                chunkCB(marketsData);
-            } else {
-                chunkCB(null, marketsData);
-            }
-            if (isDesc && startIndex > 0) {
-                setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, chunkCB);
-                }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
-            } else if (!isDesc && startIndex < numMarkets) {
-                setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, chunkCB);
-                }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
-            }
+        if (startIndex < numMarkets) {
+            this.getMarketsInfo({
+                branch: branchID,
+                offset: startIndex,
+                numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex)
+            }, function (marketsData) {
+                if (!marketsData || marketsData.error) {
+                    chunkCB(marketsData);
+                } else {
+                    chunkCB(null, marketsData);
+                }
+                if (isDesc && startIndex > 0) {
+                    setTimeout(function () {
+                        self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, chunkCB);
+                    }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
+                } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+                    setTimeout(function () {
+                        self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, chunkCB);
+                    }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
+                }
+            });
+        }
+    },
+
+    loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
+        var self = this;
+        // load the total number of markets
+        this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+            var numMarkets = parseInt(numMarketsRaw, 10);
+            
+            var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+            // load markets in batches
+            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
         });
     },
 
     loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
         var self = this;
 
-        function loadMarketsHelper (branchID, chunkSize, isDesc, chunkCB){
-            // load the total number of markets
-            self.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-                var numMarkets = parseInt(numMarketsRaw, 10);
-                
-                var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
-                // load markets in batches
-                self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
-            });
-        }
+        // Try hitting a cache node first
+        if (this.augurNode.nodes.length) {
+            this.augurNode.getMarketsInfo(branchID, function (err, result) {
+                if (err) {
+                    console.warn("cache node getMarketsInfo failed:", err);
 
-        //Try hitting a cache node first
-        if (self.augurNode.nodes.length){
-            self.augurNode.getMarketsInfo(branchID, (err, result) => {
-                if (err){
-                    console.log(err);
-                    //fallback to loading in batches from chain
-                    loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-                }else{
+                    // fallback to loading in batches from chain
+                    self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+                } else {
                     chunkCB(null, result);
                 }
             });
-        }else{
-            loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+        } else {
+            this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
         }
     },
 
@@ -198,7 +202,7 @@ module.exports = {
     parseMarketsInfo: function (marketsArray) {
         var len, shift, marketID, fees;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
+            return null;
         }
         var numMarkets = parseInt(marketsArray.shift(), 16);
         var marketsInfo = {};
@@ -248,13 +252,13 @@ module.exports = {
         branch = branch || this.constants.DEFAULT_BRANCH_ID;
         offset = offset || 0;
         numMarketsToLoad = numMarketsToLoad || 0;
-        if (useCache){
-            self.augurNode.getMarketsInfo(branch, (err, result) => {
-                //TODO: prob fallback to on chain fetch
-               if (err) return callback(null);
-               return callback(result);
+        if (useCache) {
+            self.augurNode.getMarketsInfo(branch, function (err, result) {
+                // TODO: prob fallback to on chain fetch
+                if (err) return callback(null);
+                return callback(result);
             });
-        }else{
+        } else {
             var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
             tx.params = [branch, offset, numMarketsToLoad];
             tx.timeout = 240000;
