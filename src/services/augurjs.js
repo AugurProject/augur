@@ -7,7 +7,8 @@ ex.connect = function connect(env, cb) {
 	const options = {
 		http: env.gethHttpURL,
 		ws: env.gethWebsocketsURL,
-		contracts: env.contracts
+		contracts: env.contracts,
+		augurNodes: env.augurNodes
 	};
 	if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
 		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
