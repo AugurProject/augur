@@ -5,8 +5,8 @@
 
 "use strict";
 
-var request = require('request');
-
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+var request = (NODE_JS) ? require("request") : require("browser-request");
 var noop = function () {};
 
 module.exports  = function () {
