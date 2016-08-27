@@ -20,7 +20,7 @@ var random = require("../random");
 var errors = require("augur-contracts").errors;
 var abacus = require("../../src/modules/abacus");
 var trade = require("../../src/modules/trade");
-var DEBUG = false;
+var DEBUG = true;
 
 describe("Unit tests", function () {
 
@@ -2352,13 +2352,14 @@ describe("Integration tests", function () {
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
 
     var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    augur.options.debug.trading = DEBUG;
     var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
     var unlockable = augur.rpc.accounts();
     // var markets = {};
     var markets = {
-        binary: "0x6b96d8816e748efe72fb439937e4d02bbd7d156ab78f77ca875430fea8535510",
-        categorical: "0xe14e9d46c95b8106a9c89708cb112a3e779890dbb6d4e785029102dd0c20319d",
-        scalar: "0xa049d5e3ed3e47d26b36b590acf9e73fef75da77592f57dbb9d70a1afb627f2c"
+        binary: "0x602e5982a16fded3a298dc1cc202d777925b7a98c95a0a3c09c8bcc7d1f936eb",
+        categorical: "0x339203020b1a79c893969394a55418a7e1b5a87f05d219701915cd03638e6f42",
+        scalar: "0x6b23d0d9e8c82b83ad93b3f6d2c7a2e667fad53b65272cb798eeeefa3c34de90"
     };
 
     before("Top-up accounts and create new markets", function (done) {
@@ -2368,31 +2369,31 @@ describe("Integration tests", function () {
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
             unlockable = clone(unlocked);
-            var expiration = parseInt(new Date().getTime() / 995);
-            tools.create_each_market_type(augur, null, expiration, function (err, newMarkets) {
-                assert.isNull(err, JSON.stringify(err));
-                assert.isObject(newMarkets);
-                assert.isString(newMarkets.binary);
-                assert.isString(newMarkets.categorical);
-                assert.isString(newMarkets.scalar);
-                assert.isNotNull(augur.getMarketInfo(newMarkets.binary));
-                assert.isNotNull(augur.getMarketInfo(newMarkets.categorical));
-                assert.isNotNull(augur.getMarketInfo(newMarkets.scalar));
-                markets = clone(newMarkets);
+            // var expiration = parseInt(new Date().getTime() / 995);
+            // tools.create_each_market_type(augur, null, expiration, function (err, newMarkets) {
+            //     assert.isNull(err, JSON.stringify(err));
+            //     assert.isObject(newMarkets);
+            //     assert.isString(newMarkets.binary);
+            //     assert.isString(newMarkets.categorical);
+            //     assert.isString(newMarkets.scalar);
+            //     assert.isNotNull(augur.getMarketInfo(newMarkets.binary));
+            //     assert.isNotNull(augur.getMarketInfo(newMarkets.categorical));
+            //     assert.isNotNull(augur.getMarketInfo(newMarkets.scalar));
+            //     markets = clone(newMarkets);
                 done();
-            });
+            // });
         });
     });
 
-    beforeEach("Top-up accounts", function (done) {
-        this.timeout(tools.TIMEOUT*unlockable.length);
-        tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
-            assert.isNull(err, JSON.stringify(err));
-            assert.isArray(unlocked);
-            assert.isAbove(unlocked.length, 0);
-            done();
-        });
-    });
+    // beforeEach("Top-up accounts", function (done) {
+    //     this.timeout(tools.TIMEOUT*unlockable.length);
+    //     tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
+    //         assert.isNull(err, JSON.stringify(err));
+    //         assert.isArray(unlocked);
+    //         assert.isAbove(unlocked.length, 0);
+    //         done();
+    //     });
+    // });
 
     describe("trade.isUnderGasLimit", function () {
         var test = function (t) {
@@ -2883,7 +2884,7 @@ describe("Integration tests", function () {
                                             assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
                                             assert.deepEqual(augur.get_trade(new_trade_id), {
                                                 id: "0x0",
-                                                type: "buy",
+                                                type: "sell",
                                                 market: "0x0",
                                                 amount: "0",
                                                 price: "0",

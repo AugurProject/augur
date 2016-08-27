@@ -15,7 +15,35 @@ var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var ONE_FOURTH = new BigNumber("0.25", 10);
+var ONE_HALF = new BigNumber("0.5", 10);
+var THREE_FOURTHS = new BigNumber("0.75", 10);
+var ONE = new BigNumber("1", 10);
+var ONE_POINT_FIVE = new BigNumber("1.5", 10);
+
 module.exports = {
+
+    // Calculates adjusted trading fee and total cost at a specified price
+    // @returns {BigNumbers}
+    calculateTradingCost: function (amount, price, makerFee, takerFee, range) {
+        var bnPrice = abi.bignum(price);
+        var bnAmount = abi.bignum(amount);
+        var bnRange = abi.bignum(range);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+        console.log("fees:", fees);
+        var fee = fees.tradingFee.times(4).times(bnPrice).times(ONE.minus(bnPrice).dividedBy(bnRange)).dividedBy(bnRange);
+        var branchFees = THREE_FOURTHS.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
+        var creatorFees = ONE_FOURTH.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
+        var takerFeesTotal = branchFees.plus(creatorFees);
+        var cost = bnAmount.times(bnRange).minus(bnAmount.times(bnPrice).minus(takerFeesTotal));
+        return {
+            fee: fee,
+            branchFees: branchFees,
+            creatorFees: creatorFees,
+            takerFees: takerFeesTotal,
+            cost: cost
+        };
+    },
 
     // type: "buy" or "sell"
     // gasLimit (optional): block gas limit as an integer
@@ -50,7 +78,7 @@ module.exports = {
 
     calculateTradingFees: function (makerFee, takerFee) {
         var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
@@ -63,7 +91,7 @@ module.exports = {
         return {
             trading: tradingFee.toFixed(),
             maker: makerFee.toFixed(),
-            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
+            taker: ONE_POINT_FIVE.times(tradingFee).minus(makerFee).toFixed()
         };
     },
 
