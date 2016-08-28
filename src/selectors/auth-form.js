@@ -30,7 +30,7 @@ const signUp = {
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
-	instruction: `Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don't forget to copy down your Login ID.`,
+	instruction: 'Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don\'t forget to copy down your Login ID.',
 	topLinkText: 'login',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
@@ -54,22 +54,22 @@ const signUp = {
 	}
 };
 
-const logIn = {
-	...Shared,
-	...loginParts,
-	topLink: {
-		href: '/register',
-		onClick: () => {
-			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
-		}
-	},
-	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
-		require('../selectors').update({ authForm: { ...signUp, clearName: true,
-		clearPassword: true } });
-		loginAccount.signIn();
-		require('../selectors').update({ activePage: 'account' });
-	}
-};
+// const logIn = {
+// 	...Shared,
+// 	...loginParts,
+// 	topLink: {
+// 		href: '/register',
+// 		onClick: () => {
+// 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
+// 		}
+// 	},
+// 	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
+// 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
+// 		clearPassword: true } });
+// 		loginAccount.signIn();
+// 		require('../selectors').update({ activePage: 'account' });
+// 	}
+// };
 
 const importAccount = {
 	...signUp,
@@ -90,7 +90,7 @@ const importAccount = {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
-		return () => {require('../selectors').update({ activePage: 'account' });}
+		return () => { require('../selectors').update({ activePage: 'account' }); };
 	}
 };
 
