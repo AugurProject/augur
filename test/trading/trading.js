@@ -2622,10 +2622,8 @@ describe("Integration tests", function () {
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, abi.hex(new_trade_id));
                                     var orderBook = augur.getOrderBook(markets[t.market]);
-                                    console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
-                                    console.log("buying max_value:", abi.bignum(t.amount).times(abi.bignum(t.price)).toFixed());
-                                    var cost = augur.calculateTradingCost(t.amount, t.price, augur.getTradingFee(markets[t.market]), augur.getCumScale(markets[t.market])).toFixed();
-                                    console.log("trade cost:", cost);
+                                    // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                                    var cost = augur.calculateTradingCost(t.amount, t.price, augur.getTradingFee(markets[t.market]), augur.getCumScale(markets[t.market])).cost.toFixed();
                                     augur.trade({
                                         max_value: cost,
                                         max_amount: 0,
@@ -2715,7 +2713,7 @@ describe("Integration tests", function () {
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, abi.hex(new_trade_id));
                                     var orderBook = augur.getOrderBook(markets[t.market]);
-                                    console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                                    // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                     augur.trade({
                                         max_value: 0,
                                         max_amount: t.amount,
@@ -2739,9 +2737,9 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            console.log("trade success:", r);
+                                            // console.log("trade success:", r);
                                             var orderBook = augur.getOrderBook(markets[t.market]);
-                                            console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                                            // console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
                                             assert.property(r, "unmatchedCash");
