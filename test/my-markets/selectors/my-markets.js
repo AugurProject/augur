@@ -15,7 +15,10 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	const { store } = mockStore.default;
 	const { loginAccount, allMarkets } = store.getState();
 
-	let stubbedAugurJS = { augur: { getMarketCreatorFeesCollected: () => {} } };
+	let stubbedAugurJS = {
+		augur: { getMarketCreatorFeesCollected: () => {} },
+		abi: { bignum: (n) => { return n; } }
+	};
 	sinon.stub(stubbedAugurJS.augur, 'getMarketCreatorFeesCollected', () => 10);
 
 	let stubbedSelectors = {

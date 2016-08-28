@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
-import { augur, abi, constants } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
 
@@ -61,7 +62,7 @@ export const selectNumberOfTrades = memoizerific(1)(trades => {
 });
 
 export const selectOpenVolume = market => {
-	let openVolume = constants.ZERO;
+	let openVolume = ZERO;
 
 	market.outcomes.forEach(outcome => {
 		Object.keys(outcome.orderBook).forEach(orderType => {
@@ -80,7 +81,7 @@ export const selectAverageTradeSize = memoizerific(1)(marketPriceHistory => {
 	}
 
 	const initialState = {
-		shares: constants.ZERO,
+		shares: ZERO,
 		trades: 0
 	};
 

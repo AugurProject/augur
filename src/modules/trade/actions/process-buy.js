@@ -1,9 +1,8 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
-
+import { abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
-
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
-
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
@@ -12,12 +11,12 @@ import { addBidTransaction } from '../../transactions/actions/add-bid-transactio
 
 export function processBuy(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
-		if ((!limitPrice) || !totalEthWithFee) {
+		if (!limitPrice || !totalEthWithFee) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
 		// we track filled shares again here to keep track of the full total through the recursiveness of trading
-		let filledShares = 0;
+		let filledShares = ZERO;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
@@ -30,7 +29,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(res) => {
-				filledShares += parseFloat(res.filledShares);
+				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
 				// update user's position
 				dispatch(loadAccountTrades());
@@ -46,12 +45,12 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				// update user's position
 				dispatch(loadAccountTrades());
 
-				filledShares += parseFloat(res.filledShares);
+				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(totalEthWithFee, res.remainingEth, filledShares) }));
 
-				const sharesRemaining = parseFloat(numShares) - filledShares;
-				if (sharesRemaining > 0 && res.remainingEth) {
+				const sharesRemaining = abi.bignum(numShares).minus(filledShares);
+				if (sharesRemaining > 0 && res.remainingEth > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addBidTransaction(
@@ -69,6 +68,6 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 }
 
 function generateMessage(totalEthWithFee, remainingEth, filledShares) {
-	const filledEth = totalEthWithFee - remainingEth;
+	const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(remainingEth));
 	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }

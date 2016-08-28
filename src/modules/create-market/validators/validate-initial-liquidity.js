@@ -1,12 +1,27 @@
 import { formatEther } from '../../../utils/format-number';
+import { abi } from '../../../services/augurjs';
+import { ONE, TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 import { INITIAL_LIQUIDITY_MIN } from '../../create-market/constants/market-values-constraints';
 
 export default function validateInitialLiquidity(type, liquidity, start, best, halfWidth, scalarMin, scalarMax) {
 	const parsed = parseFloat(liquidity);
-	const priceDepth = type === SCALAR ?
-	(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best))) :
-	(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best)));
+	let priceDepth;
+	if (isNaN(parsed)) {
+		priceDepth = NaN;
+	} else {
+		if (type === SCALAR) {
+			priceDepth = abi.bignum(start)
+				.times(abi.bignum(scalarMin).plus(abi.bignum(scalarMax)).minus(abi.bignum(halfWidth)))
+				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
+				.toNumber();
+		} else {
+			priceDepth = abi.bignum(start)
+				.times(ONE.minus(abi.bignum(halfWidth)))
+				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
+				.toNumber();
+		}
+	}
 
 	if (!liquidity) {
 		return 'Please provide some initial liquidity';

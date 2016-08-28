@@ -1,3 +1,5 @@
+import { abi } from '../../../services/augurjs';
+import { ONE } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
 export default function validateInitialFairPrices(type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) {
@@ -8,9 +10,15 @@ export default function validateInitialFairPrices(type, initialFairPrices, width
 	// 	Scalar:
 	// 		min: scalarMin + (priceWidth / 2)
 	// 		max: scalarMax - (priceWidth / 2)
-
-	const max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth;
-	const min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
+	let max;
+	let min;
+	if (isNaN(parseFloat(halfWidth)) || isNaN(parseFloat(scalarMin)) || isNaN(parseFloat(scalarMax))) {
+		max = NaN;
+		min = NaN;
+	} else {
+		max = type === SCALAR ? abi.bignum(scalarMax).minus(abi.bignum(halfWidth)).toNumber() : ONE.minus(abi.bignum(halfWidth)).toNumber();
+		min = type === SCALAR ? abi.bignum(scalarMin).plus(abi.bignum(halfWidth)).toNumber() : halfWidth;
+	}
 	const fairPriceErrors = {};
 
 	initialFairPrices.map((cV, i) => {

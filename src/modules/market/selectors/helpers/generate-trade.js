@@ -1,7 +1,9 @@
 import memoizerific from 'memoizerific';
 import { formatEther } from '../../../../utils/format-number';
+import { abi } from '../../../../services/augurjs';
 
 import { BUY, SELL } from '../../../trade/constants/types';
+import { ZERO } from '../../../trade/constants/numbers';
 import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
 
 import { updateTradesInProgress } from '../../../trade/actions/update-trades-in-progress';
@@ -35,13 +37,15 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 });
 
 export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
-	let tradeSummary = { totalGas: 0, tradeOrders: [] };
+	let tradeSummary = { totalGas: ZERO, tradeOrders: [] };
 
 	if (tradeOrders && tradeOrders.length) {
 		tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
 
 			// total gas
-			p.totalGas += tradeOrder.gasEth && tradeOrder.gasEth.value || 0;
+			if (tradeOrder.gasEth && tradeOrder.gasEth.value) {
+				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.gasEth.value));
+			}
 
 			// trade order
 			p.tradeOrders.push(tradeOrder);
@@ -70,8 +74,8 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			outcome.id,
 			market.description,
 			outcome.name,
-			parseFloat(tradeAction.shares),
-			formatEther(parseFloat(tradeAction.avgPrice), { roundUp: outcomeTradeInProgress.side === BUY, roundDown: outcomeTradeInProgress.side === SELL }).formattedValue,
+			tradeAction.shares,
+			formatEther(tradeAction.avgPrice, { roundUp: outcomeTradeInProgress.side === BUY, roundDown: outcomeTradeInProgress.side === SELL }).formattedValue,
 			Math.abs(parseFloat(tradeAction.costEth)),
 			store.dispatch)
 	));

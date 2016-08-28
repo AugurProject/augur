@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
-import { abi, constants } from '../../../services/augurjs';
+import { abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import { formatEther, formatPercent, formatShares, formatNumber } from '../../../utils/format-number';
 import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
 
@@ -14,11 +15,11 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 		return null;
 	}
 	const bnLastPrice = abi.bignum(lastPrice);
-	let numShares = constants.ZERO;
-	let qtyShares = constants.ZERO;
-	let totalValue = constants.ZERO;
-	let totalCost = constants.ZERO;
-	let totalSellShares = constants.ZERO;
+	let numShares = ZERO;
+	let qtyShares = ZERO;
+	let totalValue = ZERO;
+	let totalCost = ZERO;
+	let totalSellShares = ZERO;
 	outcomeAccountTrades.forEach(outcomeAccountTrade => {
 		if (!outcomeAccountTrade) {
 			return;
@@ -50,9 +51,9 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 		return null;
 	}
 
-	let qtyShares = constants.ZERO;
-	let totalValue = constants.ZERO;
-	let totalCost = constants.ZERO;
+	let qtyShares = ZERO;
+	let totalValue = ZERO;
+	let totalCost = ZERO;
 	const positionOutcomes = [];
 
 	markets.forEach(market => {
@@ -83,7 +84,7 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 	const valuePrice = calculateAvgPrice(bnQtyShares, bnTotalValue);
 	const shareChange = valuePrice.minus(purchasePrice);
 	let gainPercent = 0;
-	if (!bnTotalCost.eq(constants.ZERO)) {
+	if (!bnTotalCost.eq(ZERO)) {
 		gainPercent = bnTotalValue.minus(bnTotalCost).dividedBy(bnTotalCost).times(100);
 	}
 	const netChange = bnTotalValue.minus(bnTotalCost);
@@ -102,7 +103,7 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 
 function calculateAvgPrice(qtyShares, totalCost) {
 	if (!qtyShares || !totalCost || !abi.number(qtyShares) || !abi.number(totalCost)) {
-		return constants.ZERO;
+		return ZERO;
 	}
 	return totalCost.dividedBy(qtyShares);
 }

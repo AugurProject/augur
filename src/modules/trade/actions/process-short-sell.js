@@ -1,9 +1,8 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
-
+import { abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
-
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
-
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
@@ -12,12 +11,12 @@ import { addShortSellRiskyTransaction } from '../../transactions/actions/add-sho
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
-		if ((!limitPrice) || !numShares) {
+		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
 		// we track filled eth here as well to take into account the recursiveness of trading
-		let filledEth = 0;
+		let filledEth = ZERO;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `short selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
@@ -38,11 +37,11 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				// update user's position
 				dispatch(loadAccountTrades());
 
-				filledEth += parseFloat(res.filledEth);
+				filledEth = filledEth.plus(res.filledEth);
 
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
 
-				if (res.remainingShares) {
+				if (res.remainingShares > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addShortSellRiskyTransaction(
@@ -59,6 +58,6 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 }
 
 function generateMessage(numShares, remainingShares, filledEth) {
-	const filledShares = numShares - remainingShares;
+	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
 	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }

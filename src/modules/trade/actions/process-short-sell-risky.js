@@ -7,7 +7,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 
 export function processShortSellRisky(transactionID, marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
-		if ((!limitPrice) || !numShares) {
+		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
