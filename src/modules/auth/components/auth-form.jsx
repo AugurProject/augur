@@ -78,6 +78,7 @@ export default class AuthForm extends Component {
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
 		this.setState({ msg: '', disableInputs: false });
+
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
@@ -123,6 +124,7 @@ export default class AuthForm extends Component {
 						</Link>
 					}
 				</h1>
+				{p.instruction && <p className={classnames('instruction')}>{p.instruction}</p>}
 				{s.msg &&
 					<span className={classnames('msg', p.msgClass)}>
 						{s.msg}
@@ -205,6 +207,7 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
+				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length. Passwords should contain at least one number, one lowercase letter, one uppercase letter, and one special character.</p>
 			</form>
 		);
 	}
