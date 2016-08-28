@@ -62,6 +62,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				loginAccount.id,
 				accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares || 0,
 				outcomeID,
+				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});
 		}
 
