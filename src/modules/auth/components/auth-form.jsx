@@ -207,7 +207,7 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
-				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length. Passwords should contain at least one number, one lowercase letter, one uppercase letter, and one special character.</p>
+				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length. Passwords should contain at least one number, one lowercase letter, and one uppercase letter.</p>
 			</form>
 		);
 	}
