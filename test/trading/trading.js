@@ -2624,8 +2624,10 @@ describe("Integration tests", function () {
                                     var orderBook = augur.getOrderBook(markets[t.market]);
                                     console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                     console.log("buying max_value:", abi.bignum(t.amount).times(abi.bignum(t.price)).toFixed());
+                                    var cost = augur.calculateTradingCost(t.amount, t.price, augur.getTradingFee(markets[t.market]), augur.getCumScale(markets[t.market])).toFixed();
+                                    console.log("trade cost:", cost);
                                     augur.trade({
-                                        max_value: abi.bignum(t.amount).times(abi.bignum(t.price)).toFixed(),
+                                        max_value: cost,
                                         max_amount: 0,
                                         trade_ids: [new_trade_id],
                                         sender: unlockable[1],
@@ -2886,52 +2888,50 @@ describe("Integration tests", function () {
                         augur.useAccount(unlockable[1]);
                         var trade_ids = augur.get_trade_ids(markets[t.market]);
                         assert.include(trade_ids, abi.hex(new_trade_id));
-                        augur.getOrderBook(markets[t.market], function (orderBook) {
-                            // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
-                            augur.short_sell({
-                                buyer_trade_id: new_trade_id,
-                                max_amount: t.amount,
-                                sender: unlockable[1],
-                                onTradeHash: function (r) {
-                                    assert.notProperty(r, "error");
-                                    assert.isString(r);
-                                },
-                                onCommitSent: function (r) {
-                                    assert.strictEqual(r.callReturn, "1");
-                                },
-                                onCommitSuccess: function (r) {
-                                    assert.strictEqual(r.callReturn, "1");
-                                },
-                                onCommitFailed: function (e) {
-                                    augur.useAccount(active);
-                                    done(e);
-                                },
-                                onTradeSent: function (r) {
-                                    assert.isNull(r.callReturn);
-                                },
-                                onTradeSuccess: function (r) {
-                                    // console.log("short_sell succeeded:", r);
-                                    augur.getOrderBook(markets[t.market], function (orderBook) {
-                                        // console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
-                                        assert.isObject(r);
-                                        assert.notProperty(r, "error");
-                                        assert.property(r, "matchedShares");
-                                        assert.property(r, "unmatchedShares");
-                                        assert.property(r, "cashFromTrade");
-                                        assert.property(r, "price");
-                                        assert.strictEqual(abi.number(r.matchedShares), t.expected.matchedShares);
-                                        assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
-                                        assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
-                                        assert.strictEqual(abi.number(r.price), t.expected.price);
-                                        augur.useAccount(active);
-                                        done();
-                                    });
-                                },
-                                onTradeFailed: function (e) {
-                                    augur.useAccount(active);
-                                    done(e);
-                                }
-                            });
+                        var orderBook = augur.getOrderBook(markets[t.market]);
+                        // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                        augur.short_sell({
+                            buyer_trade_id: new_trade_id,
+                            max_amount: t.amount,
+                            sender: unlockable[1],
+                            onTradeHash: function (r) {
+                                assert.notProperty(r, "error");
+                                assert.isString(r);
+                            },
+                            onCommitSent: function (r) {
+                                assert.strictEqual(r.callReturn, "1");
+                            },
+                            onCommitSuccess: function (r) {
+                                assert.strictEqual(r.callReturn, "1");
+                            },
+                            onCommitFailed: function (e) {
+                                augur.useAccount(active);
+                                done(e);
+                            },
+                            onTradeSent: function (r) {
+                                assert.isNull(r.callReturn);
+                            },
+                            onTradeSuccess: function (r) {
+                                // console.log("short_sell succeeded:", r);
+                                var orderBook = augur.getOrderBook(markets[t.market]);
+                                // console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                                assert.isObject(r);
+                                assert.notProperty(r, "error");
+                                assert.property(r, "matchedShares");
+                                assert.property(r, "unmatchedShares");
+                                assert.property(r, "cashFromTrade");
+                                assert.property(r, "price");
+                                assert.strictEqual(abi.number(r.matchedShares), t.expected.matchedShares);
+                                assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
+                                assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
+                                assert.strictEqual(abi.number(r.price), t.expected.price);
+                                augur.useAccount(active);
+                                done();
+                            },
+                            onTradeFailed: function (e) {
+                                augur.useAccount(active);
+                                done(e);
+                            }
                         });
                     },
                     onFailed: function (e) {
