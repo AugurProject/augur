@@ -20,7 +20,7 @@ var random = require("../random");
 var errors = require("augur-contracts").errors;
 var abacus = require("../../src/modules/abacus");
 var trade = require("../../src/modules/trade");
-var DEBUG = true;
+var DEBUG = false;
 
 describe("Unit tests", function () {
 
@@ -502,8 +502,6 @@ describe("Unit tests", function () {
                     callback({gasLimit: t.gasLimit});
                 };
                 trade.checkGasLimit(t.trade_ids, t.sender, function (err, trade_ids) {
-                    console.log(err);
-                    console.log(JSON.stringify(trade_ids, null, 4));
                     assert.deepEqual(err, t.expected.error);
                     assert.deepEqual(trade_ids, t.expected.trade_ids);
                     done();
