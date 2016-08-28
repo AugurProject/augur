@@ -39231,7 +39231,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":238,"./utilities":263,"_process":192,"augur-abi":1,"augur-contracts":59,"bignumber.js":83,"browser-request":87,"buffer":117,"clone":120,"ethereumjs-tx":158,"keythereum":274,"locks":176,"node-uuid":184,"request":88}],236:[function(require,module,exports){
+},{"./constants":238,"./utilities":262,"_process":192,"augur-abi":1,"augur-contracts":59,"bignumber.js":83,"browser-request":87,"buffer":117,"clone":120,"ethereumjs-tx":158,"keythereum":273,"locks":176,"node-uuid":184,"request":88}],236:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -39866,7 +39866,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":238,"./utilities":263,"async":80,"augur-abi":1,"augur-contracts":59,"clone":120}],240:[function(require,module,exports){
+},{"./constants":238,"./utilities":262,"async":80,"augur-abi":1,"augur-contracts":59,"clone":120}],240:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -40141,7 +40141,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.2";
+    this.version = "2.2.3";
 
     this.options = {
         debug: {
@@ -40175,7 +40175,6 @@ function Augur() {
         }
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.processOrder = require("./processOrder").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
@@ -40191,7 +40190,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":265,"./accounts":235,"./augurNode":236,"./batch":237,"./constants":238,"./filters":239,"./generateOrderBook":240,"./modules/abacus":242,"./modules/buyAndSellShares":243,"./modules/cash":244,"./modules/collectFees":245,"./modules/completeSets":246,"./modules/compositeGetters":247,"./modules/connect":248,"./modules/createBranch":249,"./modules/createMarket":250,"./modules/events":251,"./modules/logs":252,"./modules/makeReports":253,"./modules/markets":254,"./modules/reportingTools":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/trades":258,"./modules/tradingActions":259,"./modules/transact":260,"./modules/whitelist":261,"./processOrder":262,"./utilities":263,"_process":192,"augur-abi":1,"augur-contracts":59,"ethrpc":268}],242:[function(require,module,exports){
+},{"../test/tools":264,"./accounts":235,"./augurNode":236,"./batch":237,"./constants":238,"./filters":239,"./generateOrderBook":240,"./modules/abacus":242,"./modules/buyAndSellShares":243,"./modules/cash":244,"./modules/collectFees":245,"./modules/completeSets":246,"./modules/compositeGetters":247,"./modules/connect":248,"./modules/createBranch":249,"./modules/createMarket":250,"./modules/events":251,"./modules/logs":252,"./modules/makeReports":253,"./modules/markets":254,"./modules/reportingTools":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/trades":258,"./modules/tradingActions":259,"./modules/transact":260,"./modules/whitelist":261,"./utilities":262,"_process":192,"augur-abi":1,"augur-contracts":59,"ethrpc":267}],242:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -40210,33 +40209,32 @@ var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
-var ONE_FOURTH = new BigNumber("0.25", 10);
-var ONE_HALF = new BigNumber("0.5", 10);
-var THREE_FOURTHS = new BigNumber("0.75", 10);
 var ONE = new BigNumber("1", 10);
 var ONE_POINT_FIVE = new BigNumber("1.5", 10);
 
 module.exports = {
 
-    // Calculates adjusted trading fee and total cost at a specified price
+    /**
+     * @param tradingfee BigNumber
+     * @param price BigNumber
+     * @param range BigNumber
+     * @returns BigNumber
+     */
+    calculateAdjustedTradingFee: function (tradingFee, price, range) {
+        return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
+    },
+
+    // Calculates adjusted total trade cost at a specified price
     // @returns {BigNumbers}
-    calculateTradingCost: function (amount, price, makerFee, takerFee, range) {
-        var bnPrice = abi.bignum(price);
+    calculateTradingCost: function (amount, price, tradingFee, range) {
         var bnAmount = abi.bignum(amount);
-        var bnRange = abi.bignum(range);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        console.log("fees:", fees);
-        var fee = fees.tradingFee.times(4).times(bnPrice).times(ONE.minus(bnPrice).dividedBy(bnRange)).dividedBy(bnRange);
-        var branchFees = THREE_FOURTHS.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
-        var creatorFees = ONE_FOURTH.plus(ONE_HALF.minus(fees.makerProportionOfFee).dividedBy(2)).times(fee);
-        var takerFeesTotal = branchFees.plus(creatorFees);
-        var cost = bnAmount.times(bnRange).minus(bnAmount.times(bnPrice).minus(takerFeesTotal));
+        var bnPrice = abi.bignum(price);
+        var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+        var fee = percentFee.times(bnAmount).times(bnPrice);
         return {
             fee: fee,
-            branchFees: branchFees,
-            creatorFees: creatorFees,
-            takerFees: takerFeesTotal,
-            cost: cost
+            percentFee: percentFee,
+            cost: bnAmount.times(bnPrice).plus(fee)
         };
     },
 
@@ -40278,15 +40276,28 @@ module.exports = {
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
-    // expects fixed-point inputs
-    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
-        tradingFee = abi.unfix(tradingFee);
-        makerProportionOfFee = abi.unfix(makerProportionOfFee);
-        var makerFee = tradingFee.times(makerProportionOfFee);
+    // expects fixed-point inputs if !isUnfixed
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+        var bnTradingFee, bnMakerProportionOfFee, makerFee;
+        if (!isUnfixed) {
+            bnTradingFee = abi.unfix(tradingFee);
+            bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
+        } else {
+            bnTradingFee = abi.bignum(tradingFee);
+            bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+        }
+        makerFee = bnTradingFee.times(bnMakerProportionOfFee);
+        if (returnBigNumber) {
+            return {
+                trading: bnTradingFee,
+                maker: makerFee,
+                taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
+            };
+        }
         return {
-            trading: tradingFee.toFixed(),
+            trading: bnTradingFee.toFixed(),
             maker: makerFee.toFixed(),
-            taker: ONE_POINT_FIVE.times(tradingFee).minus(makerFee).toFixed()
+            taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
         };
     },
 
@@ -40473,7 +40484,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":238,"../utilities":263,"async":80,"augur-abi":1,"bignumber.js":83,"bs58":115,"buffer":117,"clone":120}],243:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"async":80,"augur-abi":1,"bignumber.js":83,"bs58":115,"buffer":117,"clone":120}],243:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -40558,7 +40569,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"augur-abi":1,"clone":120}],244:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":120}],244:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -40641,7 +40652,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"augur-abi":1,"clone":120}],245:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":120}],245:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -40699,7 +40710,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"bignumber.js":83,"clone":120}],246:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"bignumber.js":83,"clone":120}],246:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -40730,7 +40741,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":120}],247:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":120}],247:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41000,7 +41011,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"augur-abi":1,"bignumber.js":83,"clone":120}],248:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"bignumber.js":83,"clone":120}],248:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -41167,7 +41178,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"clone":120,"ethereumjs-connect":266}],249:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"clone":120,"ethereumjs-connect":265}],249:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41269,7 +41280,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":120}],250:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":120}],250:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41439,7 +41450,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"bignumber.js":83,"clone":120}],251:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"bignumber.js":83,"clone":120}],251:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41488,7 +41499,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":120}],252:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":120}],252:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41699,7 +41710,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"augur-abi":1,"bignumber.js":83}],253:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"bignumber.js":83}],253:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -41882,7 +41893,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":238,"../utilities":263,"augur-abi":1,"augur-contracts":59,"buffer":117,"clone":120,"keythereum":274}],254:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"augur-contracts":59,"buffer":117,"clone":120,"keythereum":273}],254:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41923,7 +41934,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"clone":120}],255:[function(require,module,exports){
+},{"../utilities":262,"clone":120}],255:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -42155,7 +42166,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"async":80,"augur-abi":1}],256:[function(require,module,exports){
+},{"../utilities":262,"async":80,"augur-abi":1}],256:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42479,7 +42490,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":263,"./abacus":242,"async":80,"augur-abi":1,"clone":120,"ethrpc":268}],258:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"./abacus":242,"async":80,"augur-abi":1,"clone":120,"ethrpc":267}],258:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42543,7 +42554,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":120}],259:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":120}],259:[function(require,module,exports){
 /*
  * Author: priecint
  */
@@ -42551,6 +42562,7 @@ var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
 var constants = require("../constants");
+var abacus = require("./abacus");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -42567,6 +42579,7 @@ module.exports = {
 		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
 		tx.gasPrice = gasPrice;
 		var etx = new EthTx(tx);
+		// TODO replace getUpfrontCost w/ eth_estimateGas RPC
 		return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
 	},
 
@@ -42626,17 +42639,17 @@ module.exports = {
 	 *
 	 * @param {BigNumber} buyEth
 	 * @param {BigNumber} sharesFilled
-	 * @param {BigNumber} takerFee
+	 * @param {BigNumber} takerFeeEth
 	 * @param {Number} gasPrice
 	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
-	getBuyAction: function (buyEth, sharesFilled, takerFee, gasPrice) {
+	getBuyAction: function (buyEth, sharesFilled, takerFeeEth, gasPrice) {
 		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
 		return {
 			action: "BUY",
 			shares: sharesFilled.toFixed(),
 			gasEth: tradeGasEth.toFixed(),
-			feeEth: buyEth.times(takerFee).toFixed(),
+			feeEth: takerFeeEth.toFixed(),
 			costEth: buyEth.toFixed(),
 			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
 		};
@@ -42667,17 +42680,17 @@ module.exports = {
 	 *
 	 * @param {BigNumber} sellEth
 	 * @param {BigNumber} sharesFilled
-	 * @param {BigNumber} takerFee
+	 * @param {BigNumber} takerFeeEth
 	 * @param {Number} gasPrice
 	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
-	getSellAction: function (sellEth, sharesFilled, takerFee, gasPrice) {
+	getSellAction: function (sellEth, sharesFilled, takerFeeEth, gasPrice) {
 		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
 		return {
 			action: "SELL",
 			shares: sharesFilled.toFixed(),
 			gasEth: tradeGasEth.toFixed(),
-			feeEth: sellEth.times(takerFee).toFixed(),
+			feeEth: takerFeeEth.toFixed(),
 			costEth: sellEth.toFixed(),
 			avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
 		};
@@ -42687,17 +42700,17 @@ module.exports = {
 	 *
 	 * @param {BigNumber} shortSellEth
 	 * @param {BigNumber} shares
-	 * @param {BigNumber} takerFee
+	 * @param {BigNumber} takerFeeEth
 	 * @param {Number} gasPrice
 	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
-	getShortSellAction: function (shortSellEth, shares, takerFee, gasPrice) {
+	getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
 		var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
 		return {
 			action: "SHORT_SELL",
 			shares: shares.toFixed(),
 			gasEth: shortSellGasEth.toFixed(),
-			feeEth: shortSellEth.times(takerFee).toFixed(),
+			feeEth: takerFeeEth.toFixed(),
 			costEth: shortSellEth.toFixed(),
 			avgPrice: shortSellEth.dividedBy(shares).toFixed()
 		};
@@ -42740,18 +42753,8 @@ module.exports = {
 	 * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
 	 * @return {Array}
 	 */
-	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		// console.log("getTradingActions:");
-		// console.log("type:", type);
-		// console.log("orderShares:", orderShares);
-		// console.log("orderLimitPrice:", orderLimitPrice);
-		// console.log("takerFee:", takerFee);
-		// console.log("makerFee:", makerFee);
-		// console.log("userAddress:", userAddress);
-		// console.log("userPositionShares:", userPositionShares);
-		// console.log("outcomeId:", outcomeId);
-		// console.log("marketOrderBook:", marketOrderBook);
-		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
+	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook) {
+		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, bnPrice, totalTakerFeeEth;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;
 			orderLimitPrice = type.orderLimitPrice;
@@ -42761,15 +42764,21 @@ module.exports = {
 			userPositionShares = type.userPositionShares;
 			outcomeId = type.outcomeId;
 			marketOrderBook = type.marketOrderBook;
+			range = type.range;
 			type = type.type;
 		}
 
 		orderShares = new BigNumber(orderShares, 10);
 		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
-		takerFee = new BigNumber(takerFee, 10);
-		makerFee = new BigNumber(makerFee, 10);
+		var bnTakerFee = new BigNumber(takerFee, 10);
+		var bnMakerFee = new BigNumber(makerFee, 10);
+		var bnRange = new BigNumber(range, 10);
 		userPositionShares = new BigNumber(userPositionShares, 10);
 		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
+		fees = abacus.calculateTradingFees(bnMakerFee, bnTakerFee);
+		if (!isMarketOrder) {
+			adjustedFees = abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, orderLimitPrice, bnRange), fees.makerProportionOfFee, true, true);
+		}
 
 		var augur = this;
 		var gasPrice = augur.rpc.gasPrice;
@@ -42780,26 +42789,29 @@ module.exports = {
 				if (isMarketOrder) {
 					return [];
 				}
-				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
+				return [augur.getBidAction(orderShares, orderLimitPrice, adjustedFees.maker, gasPrice)];
 			} else {
 				var buyActions = [];
 
 				var etherToTrade = constants.ZERO;
+				totalTakerFeeEth = constants.ZERO;
 				remainingOrderShares = orderShares;
 				length = matchingSortedAsks.length;
 				for (i = 0; i < length; i++) {
 					ask = matchingSortedAsks[i];
 					orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-					etherToTrade = etherToTrade.add(orderSharesFilled.times(new BigNumber(ask.price, 10)));
+					bnPrice = new BigNumber(ask.price, 10);
+					etherToTrade = etherToTrade.add(orderSharesFilled.times(bnPrice));
+					totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
 					remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
 					if (remainingOrderShares.equals(constants.ZERO)) {
 						break;
 					}
 				}
-				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
 
 				if (!remainingOrderShares.equals(constants.ZERO) && !isMarketOrder) {
-					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
+					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, adjustedFees.maker, gasPrice));
 				}
 
 				return buyActions;
@@ -42816,11 +42828,13 @@ module.exports = {
 				remainingOrderShares = orderShares;
 				var remainingPositionShares = userPositionShares;
 				if (areSuitableBids) {
+					totalTakerFeeEth = constants.ZERO;
 					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
 						bid = matchingSortedBids[i];
 						bidAmount = new BigNumber(bid.amount);
+						bnPrice = new BigNumber(bid.price, 10);
 						orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-						etherToSell = etherToSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
+						etherToSell = etherToSell.plus(orderSharesFilled.times(bnPrice));
 						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
 						remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
 						if (orderSharesFilled.equals(bidAmount)) {
@@ -42833,25 +42847,25 @@ module.exports = {
 							newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
 							matchingSortedBids[i] = newBid;
 						}
-
+						totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
 						if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
 							break;
 						}
 					}
 
-					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
 				} else {
 					if (!isMarketOrder) {
 						var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
 						remainingOrderShares = remainingOrderShares.minus(askShares);
 						remainingPositionShares = remainingPositionShares.minus(askShares);
-						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, adjustedFees.maker, gasPrice));
 					}
 				}
 
 				if (remainingOrderShares.greaterThan(constants.ZERO) && !isMarketOrder) {
 					// recursion
-					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, {buy: matchingSortedBids}));
+					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}));
 				}
 			} else {
 				if (isMarketOrder) {
@@ -42861,19 +42875,22 @@ module.exports = {
 				var etherToShortSell = constants.ZERO;
 				remainingOrderShares = orderShares;
 				if (areSuitableBids) {
+					totalTakerFeeEth = constants.ZERO;
 					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
 						bid = matchingSortedBids[i];
+						bnPrice = new BigNumber(bid.price, 10);
 						orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-						etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
+						etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(bnPrice));
+						totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
 						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
 						if (remainingOrderShares.equals(constants.ZERO)) {
 							break;
 						}
 					}
-					sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+					sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
 				}
 				if (remainingOrderShares.greaterThan(constants.ZERO)) {
-					sellActions.push(augur.getRiskyShortSellAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
+					sellActions.push(augur.getRiskyShortSellAction(remainingOrderShares, orderLimitPrice, adjustedFees.maker, gasPrice));
 				}
 			}
 
@@ -42882,7 +42899,7 @@ module.exports = {
 	}
 };
 
-},{"../constants":238,"bignumber.js":83,"clone":120,"ethereumjs-tx":158}],260:[function(require,module,exports){
+},{"../constants":238,"./abacus":242,"bignumber.js":83,"clone":120,"ethereumjs-tx":158}],260:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -42950,375 +42967,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":120}],262:[function(require,module,exports){
-/**
- * multiTrade: allows trading multiple outcomes in market.
- *
- * This method can result in multiple ethereum transactions per trade order (e.g. when user wants to buy 20 shares but
- * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
- * requestId to allow client map transactions to individual trade order
- *
- * Important fields in userTradeOrder are: sharesToSell, etherToBuy (total cost + fees) and limitPrice
- *
- * Algorithm:
- *
- * for each user trade order do this:
- * 1.1/ when user wants to buy: find all asks for that outcome which have less or equal price (user
- * doesn't want to pay more than specified). Sort asks by price ascendingly (lower prices first)
- * 1.2/ when user wants to sell: find all bids in order book for that outcome which have greater or equal price
- * (user doesn't want to sell at lower price than specified). Sort bids by price descendingly (higher prices first)
- *
- * 2/ if there are no orders to match, place order to order book. exit
- *
- * if there are suitable orders in order book let's trade:
- *
- * 3/ Trade user's buy order:
- *      3.1/ if user order was filled there is nothing to do. exit
- *      3.1/ if user order was partially filled we place bid for remaining shares to order book. exit
- *
- * 4/ Trade user's sell order:
- *      4.1/ if user has position, sell shares he owns:
- *          4.1.1/ if user order was filled there is nothing to do. exit
- *          4.1.2/ if order was partially filled place ask to order book. exit
- *      4.2/ if user doesn't have position do short sell
- *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
- *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants,
- * which results in the equal position
- *
- *
- * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this
- *     method
- * @param {String} market The market ID on which trading occurs
- * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Object} userTradeOrder Trade order to execute (usually from UI).
- * @param {Object} userPosition User's position
- * @param {Object} scalarMinMax: {minValue, maxValue} if scalar market; null/undefined otherwise
- * @param {Function} onTradeHash
- * @param {Function} onCommitSent
- * @param {Function} onCommitSuccess
- * @param {Function} onCommitFailed
- * @param {Function} onNextBlock
- * @param {Function} onTradeSent
- * @param {Function} onTradeSuccess
- * @param {Function} onTradeFailed
- * @param {Function} onBuySellSent
- * @param {Function} onBuySellSuccess
- * @param {Function} onBuySellFailed
- * @param {Function} onBuyCompleteSetsSent
- * @param {Function} onBuyCompleteSetsSuccess
- * @param {Function} onBuyCompleteSetsFailed
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var constants = require("./constants");
-var utils = require("./utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = function (
-    requestId, market, marketOrderBook,
-    userTradeOrder, userPosition, scalarMinMax,
-    onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
-    onTradeSent, onTradeSuccess, onTradeFailed,
-    onBuySellSent, onBuySellSuccess, onBuySellFailed,
-    onShortSellSent, onShortSellSuccess, onShortSellFailed,
-    onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
-) {
-    var self = this;
-    if (requestId.constructor === Object && requestId.requestId) {
-        market = requestId.market;
-        marketOrderBook = requestId.marketOrderBook;
-        userTradeOrder = requestId.userTradeOrder;
-        userPosition = requestId.userPosition;
-        scalarMinMax = requestId.scalarMinMax;
-        onTradeHash = requestId.onTradeHash || utils.noop;
-        onCommitSent = requestId.onCommitSent || utils.noop;
-        onCommitSuccess = requestId.onCommitSuccess || utils.noop;
-        onCommitFailed = requestId.onCommitFailed || utils.noop;
-        onNextBlock = requestId.onNextBlock || utils.noop;
-        onTradeSent = requestId.onTradeSent || utils.noop;
-        onTradeSuccess = requestId.onTradeSuccess || utils.noop;
-        onTradeFailed = requestId.onTradeFailed || utils.noop;
-        onBuySellSent = requestId.onBuySellSent || utils.noop;
-        onBuySellSuccess = requestId.onBuySellSuccess || utils.noop;
-        onBuySellFailed = requestId.onBuySellFailed || utils.noop;
-        onBuyCompleteSetsSent = requestId.onBuyCompleteSetsSent || utils.noop;
-        onBuyCompleteSetsSuccess = requestId.onBuyCompleteSetsSuccess || utils.noop;
-        onBuyCompleteSetsFailed = requestId.onBuyCompleteSetsFailed || utils.noop;
-        requestId = requestId.requestId;
-    }
-    var isScalar = scalarMinMax &&
-        scalarMinMax.minValue !== undefined &&
-        scalarMinMax.maxValue !== undefined;
-    var minValue, maxValue;
-    if (isScalar) {
-        minValue = new BigNumber(scalarMinMax.minValue, 10);
-        maxValue = new BigNumber(scalarMinMax.maxValue, 10);
-    }
-    /**
-     * Recursive. Uses either short_sell or buyCompleteSets + sell
-     *
-     * @param tradeOrderId
-     * @param matchingSortedBidIds
-     * @param userTradeOrder
-     */
-    function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
-        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell, 10);
-        if (matchingSortedBidIds.length > 0) {
-            // 4.2.1/ there is order to fill
-            var firstBuyerTradeId = matchingSortedBidIds[0];
-            self.short_sell({
-                buyer_trade_id: firstBuyerTradeId,
-                max_amount: sharesLeft,
-                onTradeHash: function (data) {
-                    onTradeHash(tradeOrderId, data);
-                },
-                onCommitSent: function (data) {
-                    onCommitSent(tradeOrderId, data);
-                },
-                onCommitSuccess: function (data) {
-                    onCommitSuccess(tradeOrderId, data);
-                },
-                onCommitFailed: function (data) {
-                    onCommitFailed(tradeOrderId, data);
-                },
-                onNextBlock: function (data) {
-                    onNextBlock(tradeOrderId, data);
-                },
-                onTradeSent: function (data) {
-                    onTradeSent(tradeOrderId, data);
-                },
-                onTradeSuccess: function (data) {
-                    onTradeSuccess(tradeOrderId, data);
-                    var newSharesLeft = new BigNumber(data.callReturn[1], 10);
-                    if (newSharesLeft.gt(constants.ZERO)) {
-                        // not all user shares were shorted, recursively short
-                        userTradeOrder.sharesToSell = newSharesLeft.toFixed();
-                        shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), userTradeOrder);
-                    }
-                },
-                onTradeFailed: function (data) {
-                    onTradeFailed(tradeOrderId, data);
-                }
-            });
-        } else {
-            // 4.2.2/ no order to fill
-            self.buyCompleteSets({
-                market: market,
-                amount: userTradeOrder.sharesToSell,
-                onSent: function (data) {
-                    onBuyCompleteSetsSent(requestId, data);
-                },
-                onSuccess: function (data) {
-                    onBuyCompleteSetsSuccess(requestId, data);
-                    self.sell({
-                        amount: sharesLeft.toFixed(),
-                        price: userTradeOrder.limitPrice,
-                        market: market,
-                        outcome: userTradeOrder.outcomeID,
-                        onSent: function (data) {
-                            onBuySellSent(requestId, data);
-                        },
-                        onSuccess: function (data) {
-                            onBuySellSuccess(requestId, data);
-                        },
-                        onFailed: function (data) {
-                            onBuySellFailed(requestId, data);
-                        }
-                    });
-                },
-                onFailed: function (data) {
-                    onBuyCompleteSetsFailed(requestId, data);
-                }
-            });
-        }
-    }
-
-    if (isScalar) {
-        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
-    }
-    if (userTradeOrder.type === "buy") {
-        // 1.1/ user wants to buy
-        var matchingSortedAskIds = Object.keys(marketOrderBook.sell)
-            .map(function (askId) {
-                return marketOrderBook.sell[askId];
-            })
-            .filter(function (ask) {
-                return ask.outcome === userTradeOrder.outcomeID &&
-                    parseFloat(ask.price) <= userTradeOrder.limitPrice;
-            }, this)
-            .sort(function compareOrdersByPriceAsc(order1, order2) {
-                return order1.price < order2.price ? -1 : 0;
-            })
-            .map(function (ask) {
-                return ask.id;
-            });
-
-        if (matchingSortedAskIds.length === 0) {
-            // 2/ there are no suitable asks on order book
-            this.buy({
-                amount: userTradeOrder.etherToBuy,
-                price: userTradeOrder.limitPrice,
-                market: market,
-                outcome: userTradeOrder.outcomeID,
-                onSent: function onBuySentInner(data) {
-                    onBuySellSent(requestId, data);
-                },
-                onSuccess: function onBuySuccessInner(data) {
-                    onBuySellSuccess(requestId, data);
-                },
-                onFailed: function onBuyFailureInner(data) {
-                    onBuySellFailed(requestId, data);
-                }
-            });
-        } else {
-            // 3/ there are orders on order book to match
-            this.trade({
-                max_value: userTradeOrder.etherToBuy,
-                max_amount: 0,
-                trade_ids: matchingSortedAskIds,
-                onTradeHash: function (data) {
-                    onTradeHash(requestId, data);
-                },
-                onCommitSent: function (data) {
-                    onCommitSent(requestId, data);
-                },
-                onCommitSuccess: function (data) {
-                    onCommitSuccess(requestId, data);
-                },
-                onCommitFailed: function (data) {
-                    onCommitFailed(requestId, data);
-                },
-                onNextBlock: function (data) {
-                    onNextBlock(requestId, data);
-                },
-                onTradeSent: function (data) {
-                    onTradeSent(requestId, data);
-                },
-                onTradeSuccess: function localOnTradeSuccess(data) {
-                    var etherNotFilled = Number(data.callReturn[1]);
-                    if (etherNotFilled > 0) {
-                        // 3.1/ order was partially filled so place bid on order book
-                        self.buy({
-                            amount: etherNotFilled,
-                            price: userTradeOrder.limitPrice,
-                            market: market,
-                            outcome: userTradeOrder.outcomeID,
-                            onSent: function localOnBuySent(data) {
-                                onBuySellSent(requestId, data);
-                            },
-                            onSuccess: function localOnBuySuccess(data) {
-                                onBuySellSuccess(requestId, data);
-                            },
-                            onFailed: function localOnBuyFailure(data) {
-                                onBuySellFailed(requestId, data);
-                            }
-                        });
-                    }
-                    onTradeSuccess(requestId, data);
-                },
-                onTradeFailed: function (data) {
-                    onTradeFailed(requestId, data);
-                }
-            });
-        }
-    } else {
-        // 1.2/ user wants to sell
-        var matchingSortedBidIds = Object.keys(marketOrderBook.buy)
-            .map(function (buyId) {
-                return marketOrderBook.buy[buyId];
-            })
-            .filter(function (bid) {
-                return bid.outcome === userTradeOrder.outcomeID &&
-                    parseFloat(bid.price) >= userTradeOrder.limitPrice;
-            })
-            .sort(function compareOrdersByPriceDesc(order1, order2) {
-                return order1.price < order2.price ? 1 : 0;
-            })
-            .map(function (bid) {
-                return bid.id;
-            });
-
-        var hasUserPosition = userPosition && userPosition.qtyShares > 0;
-        if (hasUserPosition) {
-            if (matchingSortedBidIds.length === 0) {
-                // 2/ no bids to match => place ask on order book
-                this.sell({
-                    amount: userTradeOrder.sharesToSell,
-                    price: userTradeOrder.limitPrice,
-                    market: market,
-                    outcome: userTradeOrder.outcomeID,
-                    onSent: function localOnSellSent(data) {
-                        onBuySellSent(requestId, data);
-                    },
-                    onSuccess: function localOnSellSuccess(data) {
-                        onBuySellSuccess(requestId, data);
-                    },
-                    onFailed: function localOnSellFailure(data) {
-                        onBuySellFailed(requestId, data);
-                    }
-                });
-            } else {
-                // 4.1/ there are bids to match
-                this.trade({
-                    max_value: 0,
-                    max_amount: userTradeOrder.sharesToSell,
-                    trade_ids: matchingSortedBidIds,
-                    onTradeHash: function (data) {
-                        onTradeHash(requestId, data);
-                    },
-                    onCommitSent: function (data) {
-                        onCommitSent(requestId, data);
-                    },
-                    onCommitSuccess: function (data) {
-                        onCommitSuccess(requestId, data);
-                    },
-                    onCommitFailed: function (data) {
-                        onCommitFailed(requestId, data);
-                    },
-                    onNextBlock: function (data) {
-                        onNextBlock(requestId, data);
-                    },
-                    onTradeSent: function (data) {
-                        onTradeSent(requestId, data);
-                    },
-                    onTradeSuccess: function localOnTradeSuccess(data) {
-                        var sharesNotSold = Number(data.callReturn[2]);
-                        if (sharesNotSold > 0) {
-                            // 4.1.2 order was partially filled
-                            self.sell({
-                                amount: sharesNotSold,
-                                price: userTradeOrder.limitPrice,
-                                market: market,
-                                outcome: userTradeOrder.outcomeID,
-                                onSent: function (data) {
-                                    onBuySellSent(requestId, data);
-                                },
-                                onSuccess: function (data) {
-                                    onBuySellSuccess(requestId, data);
-                                },
-                                onFailed: function (data) {
-                                    onBuySellFailed(requestId, data);
-                                }
-                            });
-                        }
-                        onTradeSuccess(requestId, data);
-                    },
-                    onTradeFailed: function (data) {
-                        onTradeFailed(requestId, data);
-                    }
-                });
-            }
-        } else {
-            // 4.2/ no user position
-            shortSellUntilZero(requestId, matchingSortedBidIds, userTradeOrder);
-        }
-    }
-};
-
-},{"./constants":238,"./utilities":263,"bignumber.js":83}],263:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":120}],262:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -43486,7 +43135,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":238,"_process":192,"augur-abi":1,"bignumber.js":83,"buffer":117,"clone":120,"crypto":127}],264:[function(require,module,exports){
+},{"./constants":238,"_process":192,"augur-abi":1,"bignumber.js":83,"buffer":117,"clone":120,"crypto":127}],263:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -43516,7 +43165,7 @@ module.exports = {
     }    
 };
 
-},{}],265:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -44199,7 +43848,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":238,"../src/modules/reportingTools":255,"../src/utilities":263,"./madlibs":264,"_process":192,"async":80,"augur-abi":1,"bignumber.js":83,"chalk":118,"clone":120,"fs":114,"madlibs":181,"path":189}],266:[function(require,module,exports){
+},{"../src/constants":238,"../src/modules/reportingTools":255,"../src/utilities":262,"./madlibs":263,"_process":192,"async":80,"augur-abi":1,"bignumber.js":83,"chalk":118,"clone":120,"fs":114,"madlibs":181,"path":189}],265:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -44526,9 +44175,9 @@ module.exports = {
 
 };
 
-},{"async":267,"augur-contracts":59,"ethrpc":268}],267:[function(require,module,exports){
+},{"async":266,"augur-contracts":59,"ethrpc":267}],266:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"_process":192,"dup":80}],268:[function(require,module,exports){
+},{"_process":192,"dup":80}],267:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -46175,17 +45824,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":192,"async":269,"augur-abi":1,"augur-contracts":59,"bignumber.js":270,"browser-request":271,"clone":272,"js-sha3":273,"net":114,"request":88,"sync-request":88,"websocket":88}],269:[function(require,module,exports){
+},{"_process":192,"async":268,"augur-abi":1,"augur-contracts":59,"bignumber.js":269,"browser-request":270,"clone":271,"js-sha3":272,"net":114,"request":88,"sync-request":88,"websocket":88}],268:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"_process":192,"dup":80}],270:[function(require,module,exports){
+},{"_process":192,"dup":80}],269:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],271:[function(require,module,exports){
+},{"dup":2}],270:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"dup":87}],272:[function(require,module,exports){
+},{"dup":87}],271:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"buffer":117,"dup":60}],273:[function(require,module,exports){
+},{"buffer":117,"dup":60}],272:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],274:[function(require,module,exports){
+},{"dup":38}],273:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -46791,7 +46440,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":275,"./lib/scrypt":276,"_process":192,"buffer":117,"crypto":127,"elliptic":280,"ethereumjs-util":297,"fs":114,"node-uuid":306,"path":189,"validator":308}],275:[function(require,module,exports){
+},{"./lib/keccak":274,"./lib/scrypt":275,"_process":192,"buffer":117,"crypto":127,"elliptic":279,"ethereumjs-util":296,"fs":114,"node-uuid":305,"path":189,"validator":307}],274:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -46985,7 +46634,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],276:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -58706,7 +58355,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":192,"fs":114,"path":189}],277:[function(require,module,exports){
+},{"_process":192,"fs":114,"path":189}],276:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -61155,9 +60804,9 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],278:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],279:[function(require,module,exports){
+},{"dup":5}],278:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -61183,9 +60832,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"js-sha3":305}],280:[function(require,module,exports){
+},{"buffer":117,"js-sha3":304}],279:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":296,"./elliptic/curve":283,"./elliptic/curves":286,"./elliptic/ec":287,"./elliptic/eddsa":290,"./elliptic/hmac-drbg":293,"./elliptic/utils":295,"brorand":278,"dup":11}],281:[function(require,module,exports){
+},{"../package.json":295,"./elliptic/curve":282,"./elliptic/curves":285,"./elliptic/ec":286,"./elliptic/eddsa":289,"./elliptic/hmac-drbg":292,"./elliptic/utils":294,"brorand":277,"dup":11}],280:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -61538,7 +61187,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":280,"bn.js":277}],282:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],281:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -61946,9 +61595,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],283:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],282:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":281,"./edwards":282,"./mont":284,"./short":285,"dup":14}],284:[function(require,module,exports){
+},{"./base":280,"./edwards":281,"./mont":283,"./short":284,"dup":14}],283:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -62126,7 +61775,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],285:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],284:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -63035,7 +62684,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],286:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],285:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -63194,7 +62843,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":280,"./precomputed/secp256k1":294,"hash.js":298}],287:[function(require,module,exports){
+},{"../elliptic":279,"./precomputed/secp256k1":293,"hash.js":297}],286:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63406,7 +63055,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":280,"./key":288,"./signature":289,"bn.js":277}],288:[function(require,module,exports){
+},{"../../elliptic":279,"./key":287,"./signature":288,"bn.js":276}],287:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63515,7 +63164,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":277}],289:[function(require,module,exports){
+},{"bn.js":276}],288:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63587,9 +63236,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":280,"bn.js":277}],290:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],289:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":280,"./key":291,"./signature":292,"dup":21,"hash.js":298}],291:[function(require,module,exports){
+},{"../../elliptic":279,"./key":290,"./signature":291,"dup":21,"hash.js":297}],290:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -63687,7 +63336,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":280}],292:[function(require,module,exports){
+},{"../../elliptic":279}],291:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63755,11 +63404,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":280,"bn.js":277}],293:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],292:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":280,"dup":24,"hash.js":298}],294:[function(require,module,exports){
+},{"../elliptic":279,"dup":24,"hash.js":297}],293:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],295:[function(require,module,exports){
+},{"dup":25}],294:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -63933,7 +63582,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":277}],296:[function(require,module,exports){
+},{"bn.js":276}],295:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -64034,7 +63683,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],297:[function(require,module,exports){
+},{}],296:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -64382,23 +64031,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":79,"bn.js":277,"buffer":117,"elliptic":280,"rlp":307,"sha3":279}],298:[function(require,module,exports){
+},{"assert":79,"bn.js":276,"buffer":117,"elliptic":279,"rlp":306,"sha3":278}],297:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":299,"./hash/hmac":300,"./hash/ripemd":301,"./hash/sha":302,"./hash/utils":303,"dup":31}],299:[function(require,module,exports){
+},{"./hash/common":298,"./hash/hmac":299,"./hash/ripemd":300,"./hash/sha":301,"./hash/utils":302,"dup":31}],298:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":298,"dup":32}],300:[function(require,module,exports){
+},{"../hash":297,"dup":32}],299:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":298,"dup":33}],301:[function(require,module,exports){
+},{"../hash":297,"dup":33}],300:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":298,"dup":34}],302:[function(require,module,exports){
+},{"../hash":297,"dup":34}],301:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":298,"dup":35}],303:[function(require,module,exports){
+},{"../hash":297,"dup":35}],302:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":304}],304:[function(require,module,exports){
+},{"dup":36,"inherits":303}],303:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],305:[function(require,module,exports){
+},{"dup":37}],304:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],306:[function(require,module,exports){
+},{"dup":38}],305:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -64647,7 +64296,7 @@ arguments[4][38][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],307:[function(require,module,exports){
+},{}],306:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -64876,7 +64525,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":79,"buffer":117}],308:[function(require,module,exports){
+},{"assert":79,"buffer":117}],307:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *

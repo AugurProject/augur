@@ -31,7 +31,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.2";
+    this.version = "2.2.3";
 
     this.options = {
         debug: {
@@ -65,7 +65,6 @@ function Augur() {
         }
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.processOrder = require("./processOrder").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
