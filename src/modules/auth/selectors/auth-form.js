@@ -58,6 +58,8 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		isVisibleRememberMe: isVisibleID,
 		isVisibleFileInput: false,
 
+		instruction: `Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don't forget to copy down your Login ID.`,
+
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
 
@@ -90,6 +92,8 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisibleRememberMe: true,
 		isVisibleFileInput: false,
 
+		instruction: 'Please enter your Login ID and password below.',
+
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
@@ -119,6 +123,8 @@ export const selectImportAccount = (auth, dispatch) => {
 		isVisiblePassword2: false,
 		isVisibleRememberMe: true,
 		isVisibleFileInput: true,
+
+		instruction: 'Please upload your account file and enter the password to unlock the uploaded account.',
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
