@@ -1,6 +1,8 @@
 import { formatEther, formatPercent, formatRep } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
+import { abi } from '../../../services/augurjs';
+import { TWO } from '../../trade/constants/numbers';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import store from '../../../store';
 import memoizerific from 'memoizerific';
@@ -60,8 +62,13 @@ export const getMarketDescription = memoizerific(1000)(marketID => {
 
 export const calculateFeesEarned = (event) => {
 	if (!event.marketFees || !event.repBalance || !event.eventWeight) return null;
-
-	return formatEther(0.5 * event.marketFees * event.repBalance / event.eventWeight, { denomination: ' eth' });
+	return formatEther(
+		abi.bignum(event.marketFees)
+			.times(abi.bignum(event.repBalance))
+			.dividedBy(TWO)
+			.dividedBy(abi.bignum(event.eventWeight)),
+		{ denomination: ' ETH' }
+	);
 };
 
 export const selectMarketOutcome = memoizerific(1000)((outcomeID, marketID) => {

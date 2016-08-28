@@ -1,4 +1,5 @@
 import { abi } from '../services/augurjs';
+import { ZERO, TEN } from '../modules/trade/constants/numbers';
 import addCommas from '../utils/add-commas-to-number';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -133,28 +134,27 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	roundUp = !!roundUp;
 	roundDown = !!roundDown;
 	zeroStyled = zeroStyled !== false;
-	value = parseFloat(num) || 0;
+	value = abi.bignum(num) || ZERO;
 
-	if (!value && zeroStyled) {
+	if (value.eq(ZERO) && zeroStyled) {
 		return formatNone();
 	}
 
-	const decimalsValue = Math.pow(10, decimals);
-	const decimalsRoundedValue = Math.pow(10, decimalsRounded);
-	let roundFunction;
+	const decimalsValue = TEN.toPower(abi.bignum(decimals));
+	const decimalsRoundedValue = TEN.toPower(abi.bignum(decimalsRounded));
 
+	let round;
 	if (roundUp) {
-		roundFunction = Math.ceil;
+		round = 'ceil';
 	} else if (roundDown) {
-		roundFunction = Math.floor;
+		round = 'floor';
 	} else {
-		roundFunction = Math.round;
+		round = 'round';
 	}
-
-	o.value = value;
-	o.formattedValue = roundFunction(value * decimalsValue) / decimalsValue;
+	o.value = value.toNumber();
+	o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
 	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
-	o.roundedValue = roundFunction(value * decimalsRoundedValue) / decimalsRoundedValue;
+	o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
 	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
 	o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
 
