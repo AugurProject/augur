@@ -1,5 +1,7 @@
 import memoizerific from 'memoizerific';
 
+import { abi, constants } from '../../../services/augurjs';
+
 import { formatShares, formatEther } from '../../../utils/format-number';
 
 import { CANCELLED } from '../../bids-asks/constants/order-status';
@@ -79,12 +81,12 @@ function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
 	const key = parseFloat(order.price).toString(); // parseFloat("0.10000000000000000002").toString() => "0.1"
 	if (aggregateOrdersPerPrice[key] == null) {
 		aggregateOrdersPerPrice[key] = {
-			shares: 0,
+			shares: constants.ZERO,
 			isOfCurrentUser: false
 		};
 	}
 
-	aggregateOrdersPerPrice[key].shares += parseFloat(order.amount);
+	aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
 	aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
 
 	return aggregateOrdersPerPrice;

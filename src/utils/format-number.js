@@ -1,3 +1,4 @@
+import { abi } from '../services/augurjs';
 import addCommas from '../utils/add-commas-to-number';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -47,7 +48,7 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 export function formatEther(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 3,
 			decimalsRounded: 1,
@@ -61,7 +62,7 @@ export function formatEther(num, opts) {
 
 export function formatPercent(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 1,
 			decimalsRounded: 0,
@@ -75,7 +76,7 @@ export function formatPercent(num, opts) {
 
 export function formatShares(num, opts) {
 	const formattedShares = formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 2,
 			decimalsRounded: 0,
@@ -95,7 +96,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 0,
 			decimalsRounded: 0,

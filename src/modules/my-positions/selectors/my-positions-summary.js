@@ -1,4 +1,5 @@
 import memoizerific from 'memoizerific';
+import { abi, constants } from '../../../services/augurjs';
 import { formatEther, formatPercent, formatShares, formatNumber } from '../../../utils/format-number';
 import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
 
@@ -12,12 +13,12 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
 		return null;
 	}
-
-	let numShares = 0;
-	let qtyShares = 0;
-	let totalValue = 0;
-	let totalCost = 0;
-	let totalSellShares = 0;
+	const bnLastPrice = abi.bignum(lastPrice);
+	let numShares = constants.ZERO;
+	let qtyShares = constants.ZERO;
+	let totalValue = constants.ZERO;
+	let totalCost = constants.ZERO;
+	let totalSellShares = constants.ZERO;
 	outcomeAccountTrades.forEach(outcomeAccountTrade => {
 		if (!outcomeAccountTrade) {
 			return;
@@ -25,12 +26,12 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 
 		// buy or sell
 		if (outcomeAccountTrade.type === 1) {
-			numShares = parseFloat(outcomeAccountTrade.shares);
-			qtyShares += numShares;
-			totalValue += lastPrice * numShares;
-			totalCost += parseFloat(outcomeAccountTrade.price) * numShares;
+			numShares = abi.bignum(outcomeAccountTrade.shares);
+			qtyShares = qtyShares.plus(numShares);
+			totalValue = totalValue.plus(bnLastPrice.times(numShares));
+			totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
 		} else {
-			totalSellShares += parseFloat(outcomeAccountTrade.shares);
+			totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
 		}
 	});
 
@@ -38,10 +39,10 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	const avgPerShareValue = calculateAvgPrice(qtyShares, totalValue);
 	const avgPerShareCost = calculateAvgPrice(qtyShares, totalCost);
 
-	totalValue -= totalSellShares * avgPerShareValue;
-	totalCost -= totalSellShares * avgPerShareCost;
+	totalValue = totalValue.minus(totalSellShares.times(avgPerShareValue));
+	totalCost = totalCost.minus(totalSellShares.times(avgPerShareCost));
 
-	return generatePositionsSummary(1, sharesPurchased - totalSellShares, totalValue, totalCost);
+	return generatePositionsSummary(1, abi.bignum(sharesPurchased).minus(totalSellShares).toFixed(), totalValue.toFixed(), totalCost.toFixed());
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
@@ -49,9 +50,9 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 		return null;
 	}
 
-	let qtyShares = 0;
-	let totalValue = 0;
-	let totalCost = 0;
+	let qtyShares = constants.ZERO;
+	let totalValue = constants.ZERO;
+	let totalCost = constants.ZERO;
 	const positionOutcomes = [];
 
 	markets.forEach(market => {
@@ -59,14 +60,14 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
 				return;
 			}
-			qtyShares += outcome.position.qtyShares.value;
-			totalValue += outcome.position.totalValue.value;
-			totalCost += outcome.position.totalCost.value;
+			qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
+			totalValue = totalValue.plus(abi.bignum(outcome.position.totalValue.value));
+			totalCost = totalCost.plus(abi.bignum(outcome.position.totalCost.value));
 			positionOutcomes.push(outcome);
 		});
 	});
 
-	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, totalValue, totalCost);
+	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares.toFixed(), totalValue.toFixed(), totalCost.toFixed());
 
 	return {
 		...positionsSummary,
@@ -75,15 +76,21 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 });
 
 export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, totalValue, totalCost) => {
-	const purchasePrice = calculateAvgPrice(qtyShares, totalCost);
-	const valuePrice = calculateAvgPrice(qtyShares, totalValue);
-	const shareChange = valuePrice - purchasePrice;
-	const gainPercent = totalCost && ((totalValue - totalCost) / totalCost * 100) || 0;
-	const netChange = totalValue - totalCost;
+	const bnQtyShares = abi.bignum(qtyShares);
+	const bnTotalCost = abi.bignum(totalCost);
+	const bnTotalValue = abi.bignum(totalValue);
+	const purchasePrice = calculateAvgPrice(bnQtyShares, bnTotalCost);
+	const valuePrice = calculateAvgPrice(bnQtyShares, bnTotalValue);
+	const shareChange = valuePrice.minus(purchasePrice);
+	let gainPercent = 0;
+	if (!bnTotalCost.eq(constants.ZERO)) {
+		gainPercent = bnTotalValue.minus(bnTotalCost).dividedBy(bnTotalCost).times(100);
+	}
+	const netChange = bnTotalValue.minus(bnTotalCost);
 
 	return {
 		numPositions: formatNumber(numPositions, { decimals: 0, decimalsRounded: 0, denomination: 'positions', positiveSign: false, zeroStyled: false }),
-		qtyShares: formatShares(qtyShares),
+		qtyShares: formatShares(bnQtyShares),
 		purchasePrice: formatEther(purchasePrice),
 		totalValue: formatEther(totalValue),
 		totalCost: formatEther(totalCost),
@@ -94,8 +101,8 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 });
 
 function calculateAvgPrice(qtyShares, totalCost) {
-	if (!qtyShares || !totalCost) {
-		return 0;
+	if (!qtyShares || !totalCost || !abi.number(qtyShares) || !abi.number(totalCost)) {
+		return constants.ZERO;
 	}
-	return qtyShares && totalCost / qtyShares;
+	return totalCost.dividedBy(qtyShares);
 }
