@@ -43420,7 +43420,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.4";
+    this.version = "2.2.5";
 
     this.options = {
         debug: {
@@ -44041,13 +44041,6 @@ module.exports = {
     // load each batch of marketdata sequentially and recursively until complete
     loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
         var self = this;
-        console.log({
-            branch: branchID,
-            offset: startIndex,
-            numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex),
-            volumeMin: volumeMin,
-            volumeMax: volumeMax
-        });
         this.getMarketsInfo({
             branch: branchID,
             offset: startIndex,
