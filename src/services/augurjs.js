@@ -10,7 +10,8 @@ ex.connect = function connect(env, cb) {
 		contracts: env.contracts,
 		augurNodes: env.augurNodes
 	};
-	if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+	const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+	if (isHttps) {
 		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
 		const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
 		if (!isEnvHttps) options.http = null;
@@ -22,7 +23,10 @@ ex.connect = function connect(env, cb) {
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
-		if (env.augurNodeURL) augur.augurNode.bootstrap([env.augurNodeURL]);
+		if (env.augurNodeURL && !isHttps) {
+			console.debug('fetching cached data from', env.augurNodeURL);
+			augur.augurNode.bootstrap([env.augurNodeURL]);
+		}
 		cb(null, connection);
 	});
 };
