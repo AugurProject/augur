@@ -99,7 +99,7 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 
-		if (password !== "" && password2 !== "") {
+		if (password !== '' && password2 !== '') {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
 				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
 			}), 300);
