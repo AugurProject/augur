@@ -71,7 +71,7 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		const name = this.refs.name.value;
+		const name = this.refs.accountName.value;
 		const loginID = this.state.loginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
@@ -93,13 +93,13 @@ export default class AuthForm extends Component {
 
 	handlePasswordInput = (e) => {
 		e.preventDefault();
-		const name = this.refs.name.value;
+		const name = this.refs.accountName.value;
 		const loginID = this.state.loginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 
-		if (password === password2 && password.length >= 6) {
+		if (password !== "" && password2 !== "") {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
 				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
 			}), 300);
@@ -131,10 +131,10 @@ export default class AuthForm extends Component {
 					</span>
 				}
 				<input
-					ref="name"
+					ref="accountName"
 					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
-					placeholder="name"
+					placeholder="account name"
 					maxLength="30"
 					autoFocus="autofocus"
 					disabled={s.disableInputs}
