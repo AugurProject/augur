@@ -17,7 +17,7 @@ describe(`modules/auth/actions/process-fund-new-account.js`, () => {
 	const fakeUpdateAssets = { updateAssets: () => {} };
 
 	sinon.stub(fakeAugurJS, 'fundNewAccount', (env, address, branch, onSent, onSuccess, onFailed) => {
-		onSent();
+		onSent({ txHash: '0xdeadbeef' });
 		onSuccess();
 		onFailed({ message: 'this is a failure message' });
 	});

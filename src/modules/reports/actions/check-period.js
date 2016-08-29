@@ -3,6 +3,7 @@ import { UPDATE_BLOCKCHAIN } from '../../app/actions/update-blockchain';
 import { loadReports } from '../../reports/actions/load-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
+import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 const tracker = {
 	feesCollected: false,
@@ -23,6 +24,7 @@ export function checkPeriod(cb) {
 			augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
 				if (err) return cb && cb(err);
 				dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod } });
+				dispatch(loadEventsWithSubmittedReport());
 				dispatch(loadReports((err) => {
 					if (err) return cb && cb(err);
 					if (blockchain.isReportConfirmationPhase) {

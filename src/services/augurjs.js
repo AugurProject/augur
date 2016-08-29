@@ -7,9 +7,11 @@ ex.connect = function connect(env, cb) {
 	const options = {
 		http: env.gethHttpURL,
 		ws: env.gethWebsocketsURL,
-		contracts: env.contracts
+		contracts: env.contracts,
+		augurNodes: env.augurNodes
 	};
-	if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+	const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+	if (isHttps) {
 		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
 		const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
 		if (!isEnvHttps) options.http = null;
@@ -17,9 +19,14 @@ ex.connect = function connect(env, cb) {
 	}
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
 	augur.rpc.retryDroppedTxs = env.retryDroppedTxs;
+	augur.options.debug.trading = true;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
+		if (env.augurNodeURL && !isHttps) {
+			console.debug('fetching cached data from', env.augurNodeURL);
+			augur.augurNode.bootstrap([env.augurNodeURL]);
+		}
 		cb(null, connection);
 	});
 };
@@ -183,5 +190,6 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 };
 
 ex.augur = augur;
+ex.abi = augur.abi;
 
 module.exports = ex;

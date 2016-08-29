@@ -1,3 +1,5 @@
+import { abi } from '../services/augurjs';
+import { ZERO, TEN } from '../modules/trade/constants/numbers';
 import addCommas from '../utils/add-commas-to-number';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -47,7 +49,7 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 export function formatEther(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 3,
 			decimalsRounded: 1,
@@ -61,7 +63,7 @@ export function formatEther(num, opts) {
 
 export function formatPercent(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 1,
 			decimalsRounded: 0,
@@ -75,7 +77,7 @@ export function formatPercent(num, opts) {
 
 export function formatShares(num, opts) {
 	const formattedShares = formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 2,
 			decimalsRounded: 0,
@@ -95,7 +97,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
 	return formatNumber(
-		num,
+		abi.number(num),
 		{
 			decimals: 0,
 			decimalsRounded: 0,
@@ -132,30 +134,40 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	roundUp = !!roundUp;
 	roundDown = !!roundDown;
 	zeroStyled = zeroStyled !== false;
-	value = parseFloat(num) || 0;
+	value = abi.bignum(num) || ZERO;
 
-	if (!value && zeroStyled) {
+	if (value.eq(ZERO) && zeroStyled) {
 		return formatNone();
 	}
 
-	const decimalsValue = Math.pow(10, decimals);
-	const decimalsRoundedValue = Math.pow(10, decimalsRounded);
-	let roundFunction;
+	const decimalsValue = TEN.toPower(abi.bignum(decimals));
+	const decimalsRoundedValue = TEN.toPower(abi.bignum(decimalsRounded));
 
+	let round;
 	if (roundUp) {
-		roundFunction = Math.ceil;
+		round = 'ceil';
 	} else if (roundDown) {
-		roundFunction = Math.floor;
+		round = 'floor';
 	} else {
-		roundFunction = Math.round;
+		round = 'round';
 	}
-
-	o.value = value;
-	o.formattedValue = roundFunction(value * decimalsValue) / decimalsValue;
-	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
-	o.roundedValue = roundFunction(value * decimalsRoundedValue) / decimalsRoundedValue;
-	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
-	o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
+	if (isNaN(parseFloat(num))) {
+		o.value = 0;
+		o.formattedValue = 0;
+		o.formatted = 0;
+		o.roundedValue = 0;
+		o.rounded = 0;
+		o.minimized = 0;
+	} else {
+		o.value = value.toNumber();
+		o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
+		o.formatted = addCommas(o.formattedValue.toFixed(decimals));
+		o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
+		o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
+		o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
+		o.formattedValue = o.formattedValue.toNumber();
+		o.roundedValue = o.roundedValue.toNumber();
+	}
 
 	if (positiveSign) {
 		if (o.formattedValue > 0) {

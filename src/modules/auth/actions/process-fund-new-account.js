@@ -10,8 +10,8 @@ export function processFundNewAccount(transactionID, address) {
 		dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' }));
 
 		AugurJS.fundNewAccount(env, address, branch.id,
-			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
+			(data) => {
+				dispatch(updateExistingTransaction(transactionID, { status: 'processing...', hash: data.txHash }));
 			},
 			() => {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Loaded free ether and rep' }));

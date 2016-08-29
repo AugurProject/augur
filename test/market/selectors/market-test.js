@@ -14,7 +14,8 @@ describe(`modules/market/selectors/market.js`, () => {
 	const stubbedSelectors = { loginAccount };
 
 	let stubbedAugurJS = {
-		getMarketCreatorFeesCollected: () => {}
+		getMarketCreatorFeesCollected: () => {},
+		abi: { bignum: (n) => { return n; } }
 	};
 	sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
 

@@ -1,5 +1,4 @@
 import * as AugurJS from '../../../services/augurjs';
-import { ding } from '../../../assets/media/sound.js';
 import { loadBranch } from '../../app/actions/load-branch';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
@@ -18,7 +17,6 @@ export function reportingTestSetup() {
 			if (err) return console.error('reportingTestSetup failed:', err);
 			console.info('*** REPORTING SETUP STEP', step, 'COMPLETE***');
 			if (newBranchID) return dispatch(loadBranch(newBranchID));
-			if (step === 7) ding.play();
 			const { selectedMarketID, branch } = getState();
 			dispatch(loadMarkets(branch.id));
 			if (selectedMarketID !== null) {

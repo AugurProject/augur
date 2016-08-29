@@ -38,8 +38,8 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		downloadAccountDataString,
 		transferFunds: (amount, toAddress) => dispatch(addTransferFunds(amount, toAddress)),
 		editName: (name) => dispatch(changeAccountName(name)),
-		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
-		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
-		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
+		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
+		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
+		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
 	};
 };

@@ -16,6 +16,7 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
+				// console.log('log_fill_tx:', msg);
 				if (msg && msg.market && msg.outcome && msg.price) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
 				}

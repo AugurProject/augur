@@ -1,6 +1,10 @@
 /*
  * Author: priecint
  */
+
+import { abi } from '../../../../services/augurjs';
+import { ZERO } from '../../../trade/constants/numbers';
+
 /**
  *
  * @param {Object} marketOutcomesData key: outcomeID, value: outcome
@@ -9,5 +13,6 @@
 export default function (marketOutcomesData) {
 	return Object.keys(marketOutcomesData)
 		.map(outcomeId => marketOutcomesData[outcomeId])
-		.reduce((outstandingShares, outcome) => outstandingShares + parseFloat(outcome.outstandingShares), 0);
+		.reduce((outstandingShares, outcome) => outstandingShares.plus(abi.bignum(outcome.outstandingShares)), ZERO)
+        .toNumber();
 }

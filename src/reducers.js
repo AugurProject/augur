@@ -14,6 +14,8 @@ import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
 import reports from './modules/reports/reducers/reports';
+import oldestLoadedEventPeriod from './modules/my-reports/reducers/oldest-loaded-event-period';
+import eventsWithAccountReport from './modules/my-reports/reducers/events-with-account-report';
 
 import orderBooks from './modules/bids-asks/reducers/order-books';
 import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
@@ -24,6 +26,7 @@ import transactionsData from './modules/transactions/reducers/transactions-data'
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
+import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
@@ -50,6 +53,8 @@ module.exports = {
 	pagination,
 
 	reports,
+	oldestLoadedEventPeriod,
+	eventsWithAccountReport,
 
 	selectedMarketID,
 	selectedMarketsHeader,
@@ -61,6 +66,7 @@ module.exports = {
 	selectedOutcomeID,
 
 	tradesInProgress,
+	tradeCommitLock,
 	createMarketInProgress,
 
 	orderBooks,

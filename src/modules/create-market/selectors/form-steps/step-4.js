@@ -13,7 +13,8 @@ import {
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
-
+import { abi } from '../../../../services/augurjs';
+import { ONE, TWO } from '../../../trade/constants/numbers';
 import validateTakerFee from '../../validators/validate-taker-fee';
 import validateMakerFee from '../../validators/validate-maker-fee';
 import validateInitialLiquidity from '../../validators/validate-initial-liquidity';
@@ -36,7 +37,7 @@ export const select = (formState) => {
 			startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 			bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 			priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-			halfPriceWidth: !!formState.priceWidth ? parseFloat(formState.priceWidth) / 2 : PRICE_WIDTH_DEFAULT / 2,
+			halfPriceWidth: !!formState.priceWidth ? abi.bignum(formState.priceWidth).dividedBy(TWO).toNumber() : abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO).toNumber(),
 			priceDepth: PRICE_DEPTH_DEFAULT,
 			isSimulation: formState.isSimulation || IS_SIMULATION
 		};
@@ -47,10 +48,17 @@ export const select = (formState) => {
 
 export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
-		const halfPriceWidth = PRICE_WIDTH_DEFAULT / 2;
+		const halfPriceWidth = abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO);
 		const defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
-					((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
-					((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
+					(abi.bignum(formState.scalarBigNum).plus(halfPriceWidth))
+						.plus(abi.bignum(formState.scalarSmallNum).minus(halfPriceWidth))
+						.dividedBy(TWO)
+						.toNumber() :
+					halfPriceWidth.neg()
+						.plus(ONE)
+						.plus(halfPriceWidth)
+						.dividedBy(TWO)
+						.toNumber();
 
 		const values = [];
 		const raw = [];

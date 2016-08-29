@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
-import { augur } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
 
@@ -61,12 +62,12 @@ export const selectNumberOfTrades = memoizerific(1)(trades => {
 });
 
 export const selectOpenVolume = market => {
-	let openVolume = 0;
+	let openVolume = ZERO;
 
 	market.outcomes.forEach(outcome => {
 		Object.keys(outcome.orderBook).forEach(orderType => {
 			outcome.orderBook[orderType].forEach(type => {
-				openVolume += type.shares.value;
+				openVolume = openVolume.plus(abi.bignum(type.shares.value));
 			});
 		});
 	});
@@ -80,21 +81,21 @@ export const selectAverageTradeSize = memoizerific(1)(marketPriceHistory => {
 	}
 
 	const initialState = {
-		shares: 0,
+		shares: ZERO,
 		trades: 0
 	};
 
 	const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
 		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-			shares: outcomeTotals.shares + Number(trade.shares),
+			shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.shares)),
 			trades: outcomeTotals.trades + 1
 		}), initialState);
 
 		return {
-			shares: historyTotals.shares + outcomeTotals.shares,
+			shares: historyTotals.shares.plus(outcomeTotals.shares),
 			trades: historyTotals.trades + outcomeTotals.trades
 		};
 	}, initialState);
 
-	return priceHistoryTotals.shares / priceHistoryTotals.trades;
+	return priceHistoryTotals.shares.dividedBy(abi.bignum(priceHistoryTotals.trades));
 });

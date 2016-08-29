@@ -193,7 +193,7 @@ export const assembleMarket = memoizerific(1000)((
 				decimalsRounded: 1,
 				denomination: '',
 				positiveSign: false,
-				zeroStyled: false
+				zeroStyled: true
 			});
 		} else {
 			outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });

@@ -1,8 +1,11 @@
 import memoizerific from 'memoizerific';
 
+import { abi } from '../../../services/augurjs';
+
 import { formatShares, formatEther } from '../../../utils/format-number';
 
 import { CANCELLED } from '../../bids-asks/constants/order-status';
+import { ZERO } from '../../trade/constants/numbers';
 
 import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 
@@ -76,15 +79,15 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
  * @return {Object} aggregateOrdersPerPrice
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
-	const key = parseFloat(order.price).toString(); // parseFloat("0.10000000000000000002").toString() => "0.1"
+	const key = abi.bignum(order.price).toFixed();
 	if (aggregateOrdersPerPrice[key] == null) {
 		aggregateOrdersPerPrice[key] = {
-			shares: 0,
+			shares: ZERO,
 			isOfCurrentUser: false
 		};
 	}
 
-	aggregateOrdersPerPrice[key].shares += parseFloat(order.amount);
+	aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
 	aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
 
 	return aggregateOrdersPerPrice;

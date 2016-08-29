@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
@@ -39,9 +39,19 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		// calculate totals
 		const negater = cleanSide === BUY ? -1 : 1;
-		const costEth = cleanNumShares * cleanLimitPrice;
-		const feeEth = market.takerFee * costEth;
-		const totalCost = (costEth * negater) - feeEth;
+		let costEth;
+		let feeEth;
+		let totalCost;
+		if (cleanLimitPrice !== undefined) {
+			costEth = abi.bignum(cleanNumShares).times(abi.bignum(cleanLimitPrice));
+			feeEth = abi.bignum(market.takerFee).times(costEth);
+			totalCost = costEth.times(abi.bignum(negater)).minus(feeEth).toFixed();
+			feeEth = feeEth.toFixed();
+		} else {
+			costEth = NaN;
+			feeEth = NaN;
+			totalCost = NaN;
+		}
 
 		const newTradeDetails = {
 			side: cleanSide,
@@ -62,6 +72,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				loginAccount.id,
 				accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares || 0,
 				outcomeID,
+				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});
 		}
 
