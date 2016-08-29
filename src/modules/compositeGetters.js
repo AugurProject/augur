@@ -66,21 +66,19 @@ module.exports = {
     loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
         var self = this;
 
-        // Try hitting a cache node first
-        if (this.augurNode.nodes.length) {
-            this.augurNode.getMarketsInfo(branchID, function (err, result) {
-                if (err) {
-                    console.warn("cache node getMarketsInfo failed:", err);
-
-                    // fallback to loading in batches from chain
-                    self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-                } else {
-                    chunkCB(null, result);
-                }
-            });
-        } else {
-            this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+        // Try hitting a cache node, if available
+        if (!this.augurNode.nodes.length) {
+            return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
         }
+        this.augurNode.getMarketsInfo(branchID, function (err, result) {
+            if (err) {
+                console.warn("cache node getMarketsInfo failed:", err);
+
+                // fallback to loading in batches from chain
+                return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+            }
+            chunkCB(null, JSON.parse(result));
+        });
     },
 
     loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
@@ -261,23 +259,23 @@ module.exports = {
         }
         // Only use cache if there are nodes available and no offset+numMarkets specified
         // Can't rely on cache for partial markets fetches since no good way to verify partial data.
-        var useCache = (self.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
+        // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
         branch = branch || this.constants.DEFAULT_BRANCH_ID;
         offset = offset || 0;
         numMarketsToLoad = numMarketsToLoad || 0;
         volumeMin = volumeMin || 0;
         volumeMax = volumeMax || 0;
-        if (useCache) {
-            self.augurNode.getMarketsInfo(branch, function (err, result) {
-                // TODO: prob fallback to on chain fetch
-                if (err) return callback(null);
-                return callback(result);
-            });
-        } else {
+        if (!this.augurNode.nodes.length) {
             var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
             tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
             tx.timeout = 240000;
             return this.fire(tx, callback, this.parseMarketsInfo);
         }
+        this.augurNode.getMarketsInfo(branch, function (err, result) {
+            if (err) {
+                return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
+            }
+            callback(JSON.parse(result));
+        });
     }
 };
