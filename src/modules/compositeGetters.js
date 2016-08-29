@@ -16,41 +16,57 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 module.exports = {
 
     // load each batch of marketdata sequentially and recursively until complete
-    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, chunkCB) {
+    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
         var self = this;
-        if (startIndex < numMarkets) {
-            this.getMarketsInfo({
-                branch: branchID,
-                offset: startIndex,
-                numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex)
-            }, function (marketsData) {
-                if (!marketsData || marketsData.error) {
-                    chunkCB(marketsData);
-                } else {
-                    chunkCB(null, marketsData);
-                }
-                if (isDesc && startIndex > 0) {
-                    setTimeout(function () {
-                        self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, chunkCB);
-                    }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
-                } else if (!isDesc && startIndex + chunkSize < numMarkets) {
-                    setTimeout(function () {
-                        self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, chunkCB);
-                    }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
-                }
-            });
-        }
+        console.log({
+            branch: branchID,
+            offset: startIndex,
+            numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex),
+            volumeMin: volumeMin,
+            volumeMax: volumeMax
+        });
+        this.getMarketsInfo({
+            branch: branchID,
+            offset: startIndex,
+            numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex),
+            volumeMin: volumeMin,
+            volumeMax: volumeMax
+        }, function (marketsData) {
+            if (!marketsData || marketsData.error) {
+                chunkCB(marketsData);
+            } else {
+                chunkCB(null, marketsData);
+            }
+            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 0;
+            if (isDesc && startIndex > 0) {
+                setTimeout(function () {
+                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+                }, pause);
+            } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+                setTimeout(function () {
+                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+                }, pause);
+            } else if (utils.is_function(nextPass)) {
+                setTimeout(function () { nextPass(); }, pause);
+            }
+        });
     },
 
     loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
         var self = this;
+
         // load the total number of markets
         this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-            var numMarkets = parseInt(numMarketsRaw, 10);
-            
+            var numMarkets = parseInt(numMarketsRaw, 10);            
             var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+
             // load markets in batches
-            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
+            // first pass: only markets with nonzero volume
+            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
+
+                // second pass: zero-volume markets
+                self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+            });
         });
     },
 
@@ -233,25 +249,31 @@ module.exports = {
         return marketsInfo;
     },
 
-    getMarketsInfo: function (branch, offset, numMarketsToLoad, callback) {
+    getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
         var self = this;
         if (!callback && utils.is_function(offset)) {
             callback = offset;
             offset = null;
             numMarketsToLoad = null;
+            volumeMin = null;
+            volumeMax = null;
         }
         if (branch && branch.branch) {
             offset = branch.offset;
             numMarketsToLoad = branch.numMarketsToLoad;
+            volumeMin = branch.volumeMin;
+            volumeMax = branch.volumeMax;
             callback = callback || branch.callback;
             branch = branch.branch;
         }
-        //Only use cache if there are nodes available and no offset+numMarkets specified
-        //Can't rely on cache for partial markets fetches since no good way to verify partial data.
+        // Only use cache if there are nodes available and no offset+numMarkets specified
+        // Can't rely on cache for partial markets fetches since no good way to verify partial data.
         var useCache = (self.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
         branch = branch || this.constants.DEFAULT_BRANCH_ID;
         offset = offset || 0;
         numMarketsToLoad = numMarketsToLoad || 0;
+        volumeMin = volumeMin || 0;
+        volumeMax = volumeMax || 0;
         if (useCache) {
             self.augurNode.getMarketsInfo(branch, function (err, result) {
                 // TODO: prob fallback to on chain fetch
@@ -260,7 +282,7 @@ module.exports = {
             });
         } else {
             var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-            tx.params = [branch, offset, numMarketsToLoad];
+            tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
             tx.timeout = 240000;
             return this.fire(tx, callback, this.parseMarketsInfo);
         }

@@ -20,7 +20,7 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 
 var cannedMarkets = [{
-    description: "What will the maximum temperature be on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
+    description: "What will the maximum temperature be (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
     expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
     minValue: -10,
     maxValue: 120,
