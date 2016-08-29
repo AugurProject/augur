@@ -151,12 +151,23 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	} else {
 		round = 'round';
 	}
-	o.value = value.toNumber();
-	o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
-	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
-	o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
-	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
-	o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
+	if (isNaN(parseFloat(num))) {
+		o.value = NaN;
+		o.formattedValue = NaN;
+		o.formatted = NaN;
+		o.roundedValue = NaN;
+		o.rounded = NaN;
+		o.minimized = NaN;
+	} else {
+		o.value = value.toNumber();
+		o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
+		o.formatted = addCommas(o.formattedValue.toFixed(decimals));
+		o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
+		o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
+		o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
+		o.formattedValue = o.formattedValue.toNumber();
+		o.roundedValue = o.roundedValue.toNumber();
+	}
 
 	if (positiveSign) {
 		if (o.formattedValue > 0) {

@@ -5,7 +5,12 @@ import { abi } from '../../../services/augurjs';
 
 export default function (makerFee, takerFee) {
 	const parsedMakerFee = parseFloat(makerFee);
-	const parsedHalfTakerFee = abi.bignum(takerFee).dividedBy(TWO).toNumber();
+	let parsedHalfTakerFee;
+	if (isNaN(parseFloat(takerFee))) {
+		parsedHalfTakerFee = 0;
+	} else {
+		parsedHalfTakerFee = abi.bignum(takerFee).dividedBy(TWO).toNumber();
+	}
 
 	if (!makerFee) {
 		return 'Please specify a maker fee %';
