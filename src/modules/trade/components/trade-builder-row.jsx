@@ -15,7 +15,11 @@ const TradeBuilderRow = (p) => {
 	return (
 		<tr className={classnames('trade-builder-row')}>
 			<td className={classnames('outcome-name', { fade: p.isFaded })}>
-				{p.name} {p.marketType !== SCALAR && <span>&nbsp;-&nbsp;</span>} <ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
+				{p.marketType !== SCALAR && <span>
+					{p.name}
+					<span>&nbsp;-&nbsp;</span>
+				</span>}
+				<ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
 			</td>
 			{p.trade.side === 'sell' &&
 				<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
