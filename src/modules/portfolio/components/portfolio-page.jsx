@@ -19,7 +19,7 @@ const PortfolioPage = (p) => {
 		node = <Markets {...p.markets} />;
 		break;
 	case MY_REPORTS:
-		node = <Reports reports={p.reports} />;
+		node = <Reports {...p.reports} />;
 		break;
 	}
 
@@ -54,8 +54,8 @@ PortfolioPage.propTypes = {
 	navItems: PropTypes.array.isRequired,
 	totals: PropTypes.object.isRequired,
 	positions: PropTypes.object.isRequired,
-	markets: PropTypes.array.isRequired,
-	reports: PropTypes.array.isRequired
+	markets: PropTypes.object.isRequired,
+	reports: PropTypes.object.isRequired
 };
 
 export default PortfolioPage;

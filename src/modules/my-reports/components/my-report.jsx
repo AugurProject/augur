@@ -64,8 +64,7 @@ Report.propTypes = {
 	isReportEqual: PropTypes.bool.isRequired,
 	feesEarned: PropTypes.object.isRequired,
 	repEarned: PropTypes.object.isRequired,
-	endDate: PropTypes.object.isRequired,
-	isChallengeable: PropTypes.bool.isRequired
+	endDate: PropTypes.object.isRequired
 };
 
 export default Report;
