@@ -78,17 +78,31 @@ const Transaction = (p) => {
 		);
 		break;
 	case COMMIT_REPORT:
-		nodes.description = (
-			<span className="description">
-				<span>Report</span>
-				<strong>{p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
-				{!!p.data.isUnethical &&
-					<strong className="unethical"> and Unethical</strong>
-				}
-				<br />
-				<span className="market-description" title={p.data.market.description}>{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}</span>
-			</span>
-		);
+		if (p.data.market.type === 'scalar') {
+			nodes.description = (
+				<span className="description">
+					<span>Report</span>
+					<strong>{p.data.market.reportedOutcome || ''}</strong>
+					{!!p.data.isUnethical &&
+						<strong className="unethical"> and Unethical</strong>
+					}
+					<br />
+					<span className="market-description" title={p.data.market.description}>{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}</span>
+				</span>
+			);
+		} else {
+			nodes.description = (
+				<span className="description">
+					<span>Report</span>
+					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
+					{!!p.data.isUnethical &&
+						<strong className="unethical"> and Unethical</strong>
+					}
+					<br />
+					<span className="market-description" title={p.data.market.description}>{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}</span>
+				</span>
+			);
+		}
 		break;
 	case GENERATE_ORDER_BOOK:
 		nodes.description = (
