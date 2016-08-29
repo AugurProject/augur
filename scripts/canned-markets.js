@@ -20,7 +20,7 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 
 var cannedMarkets = [{
-    description: "What will the maximum temperature be on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
+    description: "What will the maximum temperature be (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
     expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
     minValue: -10,
     maxValue: 120,
@@ -52,6 +52,17 @@ var cannedMarkets = [{
     tags: ["Dow Jones", "stock market", "DJIA"],
     extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
     resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
+}, {
+    description: "NFL Preseason Week 3: Falcons @ Dolphins - Who wins?~|>Atlanta Falcons|Miami Dolphins|tie",
+    expDate: parseInt(new Date("8/29/2016").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 3,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["NFL", "sports", "American football"],
+    extraInfo: "",
+    resolution: "http://www.nfl.com/scores"
 }, {
     description: "Who will win the 2016 U.S. Presidential election?~|>Hillary Clinton|Donald Trump|Gary Johnson|Jill Stein|someone else",
     expDate: parseInt(new Date("1/2/2017").getTime() / 1000, 10),

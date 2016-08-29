@@ -147,12 +147,19 @@ module.exports = {
         if (!utils.is_function(cb)) {
             var connection = connector.connect(options);
             this.sync();
+            if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
             return connection;
         }
         var self = this;
         connector.connect(options, function (connection) {
             self.sync();
-            cb(connection);
+            if (options.augurNodes){
+                self.augurNode.bootstrap(options.augurNodes, function () {
+                    cb(connection);
+                });
+            }else{
+                cb(connection);
+            }
         });
     }
 };

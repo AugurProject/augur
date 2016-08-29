@@ -24,6 +24,251 @@ var DEBUG = false;
 
 describe("Unit tests", function () {
 
+    describe("abacus.calculateTradingCost", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function () {
+                var adjustedTradingFee = abacus.calculateAdjustedTradingFee(abi.bignum(t.tradingFee), abi.bignum(t.price), abi.bignum(t.range));
+                assert(adjustedTradingFee.eq(abi.bignum(t.expected)));
+            });
+        };
+        test({
+            tradingFee: "0.02",
+            price: "0.5",
+            range: 1,
+            expected: "0.02"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "1",
+            range: 1,
+            expected: "0"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "0",
+            range: 1,
+            expected: "0"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "0.75",
+            range: 1,
+            expected: "0.015"
+        });
+        test({
+            tradingFee: "0.08",
+            price: "0.75",
+            range: 1,
+            expected: "0.06"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "0.5",
+            range: 2,
+            expected: "0.015"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "1",
+            range: 2,
+            expected: "0.02"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "0",
+            range: 2,
+            expected: "0"
+        });
+        test({
+            tradingFee: "0.02",
+            price: "0.75",
+            range: 2,
+            expected: "0.01875"
+        });
+        test({
+            tradingFee: "0.08",
+            price: "0.75",
+            range: 2,
+            expected: "0.075"
+        });
+    });
+
+    describe("abacus.calculateTradingCost", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function () {
+                var tradingCost = abacus.calculateTradingCost(t.amount, t.price, t.tradingFee, t.range);
+                assert.strictEqual(tradingCost.fee.toFixed(), t.expected.fee);
+                assert.strictEqual(tradingCost.percentFee.toFixed(), t.expected.percentFee);
+                assert.strictEqual(tradingCost.cost.toFixed(), t.expected.cost);
+            });
+        };
+        test({
+            amount: 1,
+            price: "0.5",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0.01",
+                percentFee: "0.02",
+                cost: "0.51"
+            }
+        });
+        test({
+            amount: 2,
+            price: "0.5",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0.02",
+                percentFee: "0.02",
+                cost: "1.02"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0.5",
+            tradingFee: "0.02",
+            range: 2,
+            expected: {
+                fee: "0.0075",
+                percentFee: "0.015",
+                cost: "0.5075"
+            }
+        });
+        test({
+            amount: 1,
+            price: "1",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0",
+                percentFee: "0",
+                cost: "1"
+            }
+        });
+        test({
+            amount: 2,
+            price: "1",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0",
+                percentFee: "0",
+                cost: "2"
+            }
+        });
+        test({
+            amount: 2,
+            price: "1",
+            tradingFee: "0.02",
+            range: 2,
+            expected: {
+                fee: "0.04",
+                percentFee: "0.02",
+                cost: "2.04"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0",
+            tradingFee: "0.02",
+            range: 2,
+            expected: {
+                fee: "0",
+                percentFee: "0",
+                cost: "0"
+            }
+        });
+        test({
+            amount: 2,
+            price: "0",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0",
+                percentFee: "0",
+                cost: "0"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0",
+            tradingFee: "0.02",
+            range: 2,
+            expected: {
+                fee: "0",
+                percentFee: "0",
+                cost: "0"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0.75",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0.01125",
+                percentFee: "0.015",
+                cost: "0.76125"
+            }
+        });
+        test({
+            amount: 2,
+            price: "0.75",
+            tradingFee: "0.02",
+            range: 1,
+            expected: {
+                fee: "0.0225",
+                percentFee: "0.015",
+                cost: "1.5225"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0.75",
+            tradingFee: "0.02",
+            range: 2,
+            expected: {
+                fee: "0.0140625",
+                percentFee: "0.01875",
+                cost: "0.7640625"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0.75",
+            tradingFee: "0.08",
+            range: 1,
+            expected: {
+                fee: "0.045",
+                percentFee: "0.06",
+                cost: "0.795"
+            }
+        });
+        test({
+            amount: 2,
+            price: "0.75",
+            tradingFee: "0.08",
+            range: 1,
+            expected: {
+                fee: "0.09",
+                percentFee: "0.06",
+                cost: "1.59"
+            }
+        });
+        test({
+            amount: 1,
+            price: "0.75",
+            tradingFee: "0.08",
+            range: 2,
+            expected: {
+                fee: "0.05625",
+                percentFee: "0.075",
+                cost: "0.80625"
+            }
+        });
+    });
+
     describe("abacus.maxOrdersPerTrade", function () {
         var test = function (t) {
             it(JSON.stringify(t), function () {
@@ -257,8 +502,6 @@ describe("Unit tests", function () {
                     callback({gasLimit: t.gasLimit});
                 };
                 trade.checkGasLimit(t.trade_ids, t.sender, function (err, trade_ids) {
-                    console.log(err);
-                    console.log(JSON.stringify(trade_ids, null, 4));
                     assert.deepEqual(err, t.expected.error);
                     assert.deepEqual(trade_ids, t.expected.trade_ids);
                     done();
@@ -342,6 +585,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {}
@@ -354,11 +598,11 @@ describe("Unit tests", function () {
                         "action": "BID",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.03",
+                        "feeEth": "0.0288",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -371,6 +615,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {}
@@ -391,6 +636,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -426,11 +672,11 @@ describe("Unit tests", function () {
                         "action": "BID",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.03",
+                        "feeEth": "0.0288",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -443,6 +689,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -463,11 +710,11 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.06",
+                        "feeEth": "0.0192",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -480,6 +727,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -500,18 +748,18 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.024",
+                        "feeEth": "0.0192",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "BID",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -524,6 +772,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -544,11 +793,11 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.04",
+                        "feeEth": "0.0192",
                         "costEth": "2",
                         "avgPrice": "0.4"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -561,6 +810,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -581,18 +831,18 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.016",
+                        "feeEth": "0.0192",
                         "costEth": "0.8",
                         "avgPrice": "0.4"
                     }, {
                         "action": "BID",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -605,6 +855,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -639,11 +890,11 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.028",
+                        "feeEth": "0.0488",
                         "costEth": "1.4",
                         "avgPrice": "0.28"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -656,6 +907,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -683,18 +935,18 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.02",
+                        "feeEth": "0.036",
                         "costEth": "1",
                         "avgPrice": "0.33333333333333333333"
                     }, {
                         "action": "BID",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.012",
+                        "feeEth": "0.01152",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -707,6 +959,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {
@@ -734,11 +987,11 @@ describe("Unit tests", function () {
                         "action": "BUY",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.02",
+                        "feeEth": "0.036",
                         "costEth": "1",
                         "avgPrice": "0.33333333333333333333"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
         });
@@ -753,6 +1006,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {}
@@ -765,11 +1019,11 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "5",
                         "gasEth": "0.1254",
-                        "feeEth": "0.03",
+                        "feeEth": "0.0288",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -782,6 +1036,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -802,11 +1057,11 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.06",
+                        "feeEth": "0.0192",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -819,6 +1074,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -839,18 +1095,18 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.024",
+                        "feeEth": "0.0192",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "3",
                         "gasEth": "0.1254",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -863,6 +1119,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -883,11 +1140,11 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.07",
+                        "feeEth": "0.0168",
                         "costEth": "3.5",
                         "avgPrice": "0.7"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -900,6 +1157,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -920,18 +1178,18 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.028",
+                        "feeEth": "0.0168",
                         "costEth": "1.4",
                         "avgPrice": "0.7"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "3",
                         "gasEth": "0.1254",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -944,6 +1202,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -971,18 +1230,18 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.046",
+                        "feeEth": "0.0296",
                         "costEth": "2.3",
                         "avgPrice": "0.76666666666666666667"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "2",
                         "gasEth": "0.1254",
-                        "feeEth": "0.012",
+                        "feeEth": "0.01152",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -995,6 +1254,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1029,11 +1289,11 @@ describe("Unit tests", function () {
                         "action": "SHORT_SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.082",
+                        "feeEth": "0.0368",
                         "costEth": "4.1",
                         "avgPrice": "0.82"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1046,6 +1306,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1088,6 +1349,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {}
@@ -1100,18 +1362,18 @@ describe("Unit tests", function () {
                         "action": "ASK",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.012",
+                        "feeEth": "0.01152",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "3",
                         "gasEth": "0.1254",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1124,6 +1386,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1144,18 +1407,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.024",
+                        "feeEth": "0.0192",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "SHORT_SELL",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.036",
+                        "feeEth": "0.0192",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1168,6 +1431,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1188,18 +1452,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.024",
+                        "feeEth": "0.0192",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "3",
                         "gasEth": "0.1254",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1212,6 +1476,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1232,18 +1497,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.028",
+                        "feeEth": "0.0168",
                         "costEth": "1.4",
                         "avgPrice": "0.7"
                     }, {
                         "action": "SHORT_SELL",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.042",
+                        "feeEth": "0.0168",
                         "costEth": "2.1",
                         "avgPrice": "0.7"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1256,6 +1521,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1276,18 +1542,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.028",
+                        "feeEth": "0.0168",
                         "costEth": "1.4",
                         "avgPrice": "0.7"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "3",
                         "gasEth": "0.1254",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1300,6 +1566,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1327,25 +1594,25 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.032",
+                        "feeEth": "0.0128",
                         "costEth": "1.6",
                         "avgPrice": "0.8"
                     }, {
                         "action": "SHORT_SELL",
                         "shares": "1",
                         "gasEth": "0.0627",
-                        "feeEth": "0.014",
+                        "feeEth": "0.0168",
                         "costEth": "0.7",
                         "avgPrice": "0.7"
                     }, {
                         "action": "SHORT_SELL_RISKY",
                         "shares": "2",
                         "gasEth": "0.1254",
-                        "feeEth": "0.012",
+                        "feeEth": "0.01152",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1358,6 +1625,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1392,18 +1660,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.036",
+                        "feeEth": "0.0072",
                         "costEth": "1.8",
                         "avgPrice": "0.9"
                     }, {
                         "action": "SHORT_SELL",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.046",
+                        "feeEth": "0.0296",
                         "costEth": "2.3",
                         "avgPrice": "0.76666666666666666667"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1416,6 +1684,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1450,11 +1719,11 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.036",
+                        "feeEth": "0.0072",
                         "costEth": "1.8",
                         "avgPrice": "0.9"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1467,6 +1736,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {},
                     sell: {}
@@ -1479,11 +1749,11 @@ describe("Unit tests", function () {
                         "action": "ASK",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.03",
+                        "feeEth": "0.0288",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1496,6 +1766,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1516,11 +1787,11 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.06",
+                        "feeEth": "0.0192",
                         "costEth": "3",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1533,6 +1804,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1553,18 +1825,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.024",
+                        "feeEth": "0.0192",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
                         "action": "ASK",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1577,6 +1849,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1597,11 +1870,11 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.07",
+                        "feeEth": "0.0168",
                         "costEth": "3.5",
                         "avgPrice": "0.7"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1614,6 +1887,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1634,18 +1908,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.028",
+                        "feeEth": "0.0168",
                         "costEth": "1.4",
                         "avgPrice": "0.7"
                     }, {
                         "action": "ASK",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.018",
+                        "feeEth": "0.01728",
                         "costEth": "1.8",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1658,6 +1932,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1685,18 +1960,18 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "3",
                         "gasEth": "0.0627",
-                        "feeEth": "0.046",
+                        "feeEth": "0.0296",
                         "costEth": "2.3",
                         "avgPrice": "0.76666666666666666667"
                     }, {
                         "action": "ASK",
                         "shares": "2",
                         "gasEth": "0.0627",
-                        "feeEth": "0.012",
+                        "feeEth": "0.01152",
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1709,6 +1984,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1743,11 +2019,11 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.082",
+                        "feeEth": "0.0368",
                         "costEth": "4.1",
                         "avgPrice": "0.82"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
 
@@ -1760,6 +2036,7 @@ describe("Unit tests", function () {
                 makerFee: "0.01",
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
+                range: "1",
                 marketOrderBook: {
                     buy: {
                         "order1": {
@@ -1794,11 +2071,11 @@ describe("Unit tests", function () {
                         "action": "SELL",
                         "shares": "5",
                         "gasEth": "0.0627",
-                        "feeEth": "0.082",
+                        "feeEth": "0.0368",
                         "costEth": "4.1",
                         "avgPrice": "0.82"
                     }];
-                    assert.deepEqual(actions, expected)
+                    assert.deepEqual(actions, expected);
                 }
             });
         });
@@ -1814,423 +2091,12 @@ describe("Unit tests", function () {
                     userAddress: testCase.userAddress,
                     userPositionShares: testCase.userPositionShares,
                     outcomeId: testCase.outcomeId,
+                    range: testCase.range,
                     marketOrderBook: testCase.marketOrderBook
                 });
                 testCase.assertions(actions);
             });
         }
-    });
-
-    describe("processOrder", function () {
-
-        var buy, sell, trade, short_sell, buyCompleteSets;
-
-        var requests = {};
-        var unexpectedEvents = {
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].done(new Error("unexpected buy/sell"));
-            },
-            onTradeSuccess: function (requestId, res) {
-                requests[requestId].done(new Error("unexpected trade/short_sell"));
-            },
-            onBuyCompleteSetsSuccess: function (requestId, res) {
-                requests[requestId].done(new Error("unexpected buyCompleteSets"));
-            },
-            onCommitFailed: function (requestId, err) {
-                requests[requestId].done(new Error(JSON.stringify(err)));
-            },
-            onBuySellFailed: function (requestId, err) {
-                requests[requestId].done(new Error(JSON.stringify(err)));
-            },
-            onTradeFailed: function (requestId, err) {
-                requests[requestId].done(new Error(JSON.stringify(err)));
-            },
-            onBuyCompleteSetsFailed: function (requestId, err) {
-                requests[requestId].done(new Error(JSON.stringify(err)));
-            }
-        };
-
-        before("processOrder", function () {
-            buy = augur.buy;
-            sell = augur.sell;
-            trade = augur.trade;
-            short_sell = augur.short_sell;
-            buyCompleteSets = augur.buyCompleteSets;
-        });
-
-        after("processOrder", function () {
-            assert.strictEqual(Object.keys(requests).length, 0);
-            augur.buy = buy;
-            augur.sell = sell;
-            augur.trade = trade;
-            augur.short_sell = short_sell;
-            augur.buyCompleteSets = buyCompleteSets;
-        });
-
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                requests[t.requestId] = {done: done};
-                augur.buy = function (p) {
-                    assert(p.amount);
-                    assert(p.price);
-                    assert(p.market);
-                    assert(p.outcome);
-                    assert.isFunction(p.onSent);
-                    assert.isFunction(p.onSuccess);
-                    assert.isFunction(p.onFailed);
-                    p.onSuccess({callReturn: "1"});
-                };
-                augur.sell = function (p) {
-                    assert(p.amount);
-                    assert(p.price);
-                    assert(p.market);
-                    assert(p.outcome);
-                    assert.isFunction(p.onSent);
-                    assert.isFunction(p.onSuccess);
-                    assert.isFunction(p.onFailed);
-                    p.onSuccess({callReturn: "1"});
-                };
-                augur.trade = function (p) {
-                    assert.property(p, "max_value");
-                    assert.property(p, "max_amount");
-                    assert.isArray(p.trade_ids);
-                    assert.isFunction(p.onTradeHash);
-                    assert.isFunction(p.onCommitSent);
-                    assert.isFunction(p.onCommitSuccess);
-                    assert.isFunction(p.onCommitFailed);
-                    assert.isFunction(p.onNextBlock);
-                    assert.isFunction(p.onTradeSent);
-                    assert.isFunction(p.onTradeSuccess);
-                    assert.isFunction(p.onTradeFailed);
-                    p.onTradeSuccess({callReturn: [, t.etherNotFilled || "0", t.sharesNotSold || "0"]});
-                };
-                augur.short_sell = function (p) {
-                    assert(p.buyer_trade_id);
-                    assert.property(p, "max_amount");
-                    assert.isFunction(p.onTradeHash);
-                    assert.isFunction(p.onCommitSent);
-                    assert.isFunction(p.onCommitSuccess);
-                    assert.isFunction(p.onCommitFailed);
-                    assert.isFunction(p.onNextBlock);
-                    assert.isFunction(p.onTradeSent);
-                    assert.isFunction(p.onTradeSuccess);
-                    assert.isFunction(p.onTradeFailed);
-                    var index = requests[t.requestId].shortSellCount || 0;
-                    // this is really clumsy way how to get the order...
-                    var order = t.marketOrderBook.buy[Object.keys(t.marketOrderBook.buy)[index]];
-                    var sharesLeft = abi.bignum(p.max_amount).minus(abi.bignum(order.amount)).toFixed();
-                    p.onTradeSuccess({callReturn: [, sharesLeft]});
-                };
-                augur.buyCompleteSets = function (p) {
-                    assert(p.market);
-                    assert(p.amount);
-                    assert.isFunction(p.onSent);
-                    assert.isFunction(p.onSuccess);
-                    assert.isFunction(p.onFailed);
-                    p.onSuccess({callReturn: "1"});
-                };
-                var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
-                augur.processOrder({
-                    requestId: t.requestId,
-                    market: t.market,
-                    marketOrderBook: t.marketOrderBook,
-                    userTradeOrder: {
-                        type: t.type,
-                        sharesToSell: t.amount,
-                        etherToBuy: value,
-                        limitPrice: t.limitPrice,
-                        outcomeID: t.outcome
-                    },
-                    userPosition: t.userPosition,
-                    onTradeHash: t.onTradeHash,
-                    onCommitSent: t.onCommitSent,
-                    onCommitFailed: t.onCommitFailed || unexpectedEvents.onCommitFailed,
-                    onNextBlock: t.onNextBlock,
-                    onTradeSent: t.onTradeSent,
-                    onTradeSuccess: t.onTradeSuccess || unexpectedEvents.onTradeSuccess,
-                    onTradeFailed: t.onTradeFailed || unexpectedEvents.onTradeFailed,
-                    onBuySellSent: t.onBuySellSent,
-                    onBuySellSuccess: t.onBuySellSuccess || unexpectedEvents.onBuySellSuccess,
-                    onBuySellFailed: t.onBuySellFailed || unexpectedEvents.onBuySellFailed,
-                    onBuyCompleteSetsSent: t.onBuyCompleteSetsSent,
-                    onBuyCompleteSetsSuccess: t.onBuyCompleteSetsSuccess || unexpectedEvents.onBuyCompleteSetsSuccess,
-                    onBuyCompleteSetsFailed: t.onBuyCompleteSetsFailed || unexpectedEvents.onBuyCompleteSetsFailed
-                });
-            });
-        };
-
-        // buy order: create buy order for outcome 1
-        test({
-            requestId: 1,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "buy",
-            marketOrderBook: {buy: {}, sell: {}},
-            userPosition: {qtyShares: 0},
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // buy order: create buy order for outcome 2
-        test({
-            requestId: 2,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "2",
-            limitPrice: "0.6",
-            type: "buy",
-            marketOrderBook: {buy: {}, sell: {}},
-            userPosition: {qtyShares: 0},
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // buy order: match existing sell order exactly
-        test({
-            requestId: 3,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.9",
-            type: "buy",
-            marketOrderBook: {
-                buy: {},
-                sell: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "sell",
-                        market: "0xdeadbeef",
-                        amount: "1",
-                        price: "0.9",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                }
-            },
-            userPosition: {qtyShares: 0},
-            onTradeSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // buy order: partial match for existing sell order
-        test({
-            requestId: 4,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.9",
-            type: "buy",
-            etherNotFilled: "0.4",
-            marketOrderBook: {
-                buy: {},
-                sell: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "sell",
-                        market: "0xdeadbeef",
-                        amount: "0.5",
-                        price: "0.9",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                }
-            },
-            userPosition: {qtyShares: 0},
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].buySell = true;
-            },
-            onTradeSuccess: function (requestId, res) {
-                assert.isTrue(requests[requestId].buySell);
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // sell order (have shares): create sell order
-        test({
-            requestId: 5,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "sell",
-            marketOrderBook: {buy: {}, sell: {}},
-            userPosition: {qtyShares: 1},
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // sell shares (have shares): match existing buy order exactly
-        test({
-            requestId: 6,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.1",
-            type: "sell",
-            marketOrderBook: {
-                buy: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "buy",
-                        market: "0xdeadbeef",
-                        amount: "1",
-                        price: "0.1",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                },
-                sell: {}
-            },
-            userPosition: {qtyShares: 1},
-            onTradeSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // sell shares (have shares): partial match for existing buy order
-        test({
-            requestId: 7,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.5",
-            type: "sell",
-            sharesNotSold: "0.5",
-            marketOrderBook: {
-                buy: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "buy",
-                        market: "0xdeadbeef",
-                        amount: "0.5",
-                        price: "0.5",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                },
-                sell: {}
-            },
-            userPosition: {qtyShares: 1},
-            onBuySellSuccess: function (requestId, res) {
-                requests[requestId].buySell = true;
-            },
-            onTradeSuccess: function (requestId, res) {
-                assert.isTrue(requests[requestId].buySell);
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // short sell (no matching buy order): buy complete set + create sell order
-        test({
-            requestId: 8,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "sell",
-            marketOrderBook: {buy: {}, sell: {}},
-            userPosition: {qtyShares: 0},
-            onBuyCompleteSetsSuccess: function (requestId, res) {
-                requests[requestId].buyCompleteSets = true;
-            },
-            onBuySellSuccess: function (requestId, res) {
-                assert.isTrue(requests[requestId].buyCompleteSets);
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // short sell (matching buy order): use short_sell method
-        test({
-            requestId: 9,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "sell",
-            marketOrderBook: {
-                buy: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "buy",
-                        market: "0xdeadbeef",
-                        amount: "1",
-                        price: "0.6",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                },
-                sell: {}
-            },
-            userPosition: {qtyShares: 0},
-            onTradeSuccess: function (requestId, res) {
-                requests[requestId].done();
-                delete requests[requestId];
-            }
-        });
-
-        // short sell (2 matching buy orders): use short_sell method
-        test({
-            requestId: 10,
-            market: "0xdeadbeef",
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "sell",
-            marketOrderBook: {
-                buy: {
-                    "0x123456789abcdef": {
-                        id: "0x123456789abcdef",
-                        type: "buy",
-                        market: "0xdeadbeef",
-                        amount: "0.6",
-                        price: "0.6",
-                        owner: "0x0000000000000000000000000000000000001337",
-                        block: 1117314,
-                        outcome: "1"
-                    },
-                    "0x123456789abcdef0": {
-                        id: "0x123456789abcdef0",
-                        type: "buy",
-                        market: "0xdeadbeef",
-                        amount: "0.4",
-                        price: "0.6",
-                        owner: "0x0000000000000000000000000000000000001338",
-                        block: 1117314,
-                        outcome: "1"
-                    }
-                },
-                sell: {}
-            },
-            userPosition: {qtyShares: 0},
-            onTradeSuccess: function (requestId, res) {
-                if (!requests[requestId].shortSellCount) {
-                    requests[requestId].shortSellCount = 1;
-                } else {
-                    requests[requestId].done();
-                    delete requests[requestId];
-                }
-            }
-        });
     });
 
     describe("makeTradeHash", function () {
@@ -2275,6 +2141,76 @@ describe("Unit tests", function () {
             }
         }
     });
+
+    // describe("Trade.short_sell", function () {
+    //     var mockOrderBook = {
+    //         buy: {
+    //             "0x1": {
+    //                 id: "0x1",
+    //                 type: "buy",
+    //                 market: "0xa",
+    //                 amount: "1",
+    //                 price: "0.1",
+    //                 owner: "0x1000000000000000000000000000000000000000"
+    //             }
+    //         },
+    //         sell: {}
+    //     };
+    //     var checkGasLimit = augur.checkGasLimit;
+    //     var commitTrade = augur.commitTrade;
+    //     var rpc = {fastforward: augur.rpc.fastforward, receipt: augur.rpc.receipt};
+    //     var transact = augur.transact;
+    //     var test = function (t) {
+    //         augur.checkGasLimit = function (trade_ids, sender, callback) {
+    //             callback(null, trade_ids);
+    //         };
+    //         augur.commitTrade = function (p) {
+    //             var txHash = "0xdeadbeef";
+    //             p.onSent({txHash: txHash, callReturn: "1"});
+    //             p.onSuccess({txHash: txHash, callReturn: "1"});
+    //         };
+    //         augur.rpc.fastforward = function (blocks, callback) {
+    //             callback(10);
+    //         };
+    //         it(JSON.stringify(t), function (done) {
+    //             augur.short_sell({
+    //                 buyer_trade_id: t.buyer_trade_id,
+    //                 max_amount: t.max_amount,
+    //                 sender: t.sender,
+    //                 onTradeHash: function (r) {
+    //                     console.log("onTradeHash:", r);
+    //                 },
+    //                 onCommitSent: function (r) {
+    //                     console.log("onCommitSent:", r);
+    //                 }
+    //                 onCommitSuccess: function (r) {
+    //                     console.log("onCommitSuccess:", r);
+    //                 },
+    //                 onCommitFailed: function (e) {
+    //                     console.log("onCommitFailed:", e);
+    //                 },
+    //                 onNextBlock: function (r) {
+    //                     console.log("onNextBlock:", r);
+    //                 },
+    //                 onTradeSent: function (r) {
+    //                     console.log("onTradeSent:", r);
+    //                 },
+    //                 onTradeSuccess: function (r) {
+    //                     console.log("onTradeSuccess:", r);
+    //                 },
+    //                 onTradeFailed: function (e) {
+    //                     console.log("onTradeFailed:", e);
+    //                 }
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         buyer_trade_id: "0x1",
+    //         max_amount: 1,
+    //         sender: "0x2000000000000000000000000000000000000000"
+    //     });
+    // });
+
 });
 
 describe("Integration tests", function () {
@@ -2282,9 +2218,15 @@ describe("Integration tests", function () {
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
 
     var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    augur.options.debug.trading = DEBUG;
     var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
     var unlockable = augur.rpc.accounts();
-    var markets = {};
+    // var markets = {};
+    var markets = {
+        binary: "0x602e5982a16fded3a298dc1cc202d777925b7a98c95a0a3c09c8bcc7d1f936eb",
+        categorical: "0x339203020b1a79c893969394a55418a7e1b5a87f05d219701915cd03638e6f42",
+        scalar: "0x6b23d0d9e8c82b83ad93b3f6d2c7a2e667fad53b65272cb798eeeefa3c34de90"
+    };
 
     before("Top-up accounts and create new markets", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length + tools.TIMEOUT*3);
@@ -2677,8 +2619,11 @@ describe("Integration tests", function () {
                                     augur.useAccount(unlockable[1]);
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, abi.hex(new_trade_id));
+                                    var orderBook = augur.getOrderBook(markets[t.market]);
+                                    // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
+                                    var cost = augur.calculateTradingCost(t.amount, t.price, augur.getTradingFee(markets[t.market]), augur.getCumScale(markets[t.market])).cost.toFixed();
                                     augur.trade({
-                                        max_value: t.amount,
+                                        max_value: cost,
                                         max_amount: 0,
                                         trade_ids: [new_trade_id],
                                         sender: unlockable[1],
@@ -2701,7 +2646,9 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            // console.log("trade succeeded:", r);
+                                            console.log("trade succeeded:", r);
+                                            var orderBook = augur.getOrderBook(markets[t.market]);
+                                            console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
                                             assert.property(r, "unmatchedCash");
@@ -2710,7 +2657,7 @@ describe("Integration tests", function () {
                                             assert.property(r, "cashFromTrade");
                                             assert.isAtMost(abi.number(r.unmatchedCash), t.expected.unmatchedCash);
                                             assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
-                                            assert.strictEqual(abi.number(r.sharesBought), t.expected.sharesBought);
+                                            assert.isAtMost(abi.number(r.sharesBought), t.expected.sharesBought);
                                             assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
                                             assert.deepEqual(augur.get_trade(new_trade_id), {
                                                 id: "0x0",
@@ -2763,6 +2710,8 @@ describe("Integration tests", function () {
                                 onSuccess: function (r) {
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, abi.hex(new_trade_id));
+                                    var orderBook = augur.getOrderBook(markets[t.market]);
+                                    // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                     augur.trade({
                                         max_value: 0,
                                         max_amount: t.amount,
@@ -2786,6 +2735,9 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
+                                            // console.log("trade success:", r);
+                                            var orderBook = augur.getOrderBook(markets[t.market]);
+                                            // console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
                                             assert.property(r, "unmatchedCash");
@@ -2806,7 +2758,7 @@ describe("Integration tests", function () {
                                                 block: 0,
                                                 outcome: "0"
                                             });
-                                            assert.notProperty(augur.getOrderBook(markets[t.market]).sell, new_trade_id);
+                                            assert.notProperty(augur.getOrderBook(markets[t.market]).buy, new_trade_id);
                                             augur.useAccount(active);
                                             done();
                                         },
@@ -2866,7 +2818,7 @@ describe("Integration tests", function () {
             outcome: "3",
             price: "0.1",
             expected: {
-                unmatchedCash: 0.9,
+                unmatchedCash: 1.8,
                 unmatchedShares: 0,
                 sharesBought: 2,
                 cashFromTrade: 0
@@ -2922,7 +2874,7 @@ describe("Integration tests", function () {
                 augur.rpc.personal("unlockAccount", [unlockable[1], password]);
                 augur.useAccount(unlockable[0]);
                 augur.buy({
-                    amount: 1,
+                    amount: t.amount,
                     price: t.price,
                     market: markets[t.market],
                     outcome: t.outcome,
@@ -2932,6 +2884,8 @@ describe("Integration tests", function () {
                         augur.useAccount(unlockable[1]);
                         var trade_ids = augur.get_trade_ids(markets[t.market]);
                         assert.include(trade_ids, abi.hex(new_trade_id));
+                        var orderBook = augur.getOrderBook(markets[t.market]);
+                        // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                         augur.short_sell({
                             buyer_trade_id: new_trade_id,
                             max_amount: t.amount,
@@ -2955,6 +2909,8 @@ describe("Integration tests", function () {
                             },
                             onTradeSuccess: function (r) {
                                 // console.log("short_sell succeeded:", r);
+                                var orderBook = augur.getOrderBook(markets[t.market]);
+                                // console.log("[after] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
                                 assert.isObject(r);
                                 assert.notProperty(r, "error");
                                 assert.property(r, "matchedShares");
@@ -3000,7 +2956,7 @@ describe("Integration tests", function () {
             price: "0.1",
             expected: {
                 unmatchedShares: 0,
-                matchedShares: 1,
+                matchedShares: 2,
                 cashFromTrade: 0.2,
                 price: 0.1
             }

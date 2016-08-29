@@ -31,7 +31,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.1.5";
+    this.version = "2.2.7";
 
     this.options = {
         debug: {
@@ -65,15 +65,16 @@ function Augur() {
         }
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.processOrder = require("./processOrder").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
+    this.augurNode = this.AugurNode();
     if (this.options.debug.tools) this.tools = require("../test/tools");
     this.sync();
 }
 
 Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
+Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();

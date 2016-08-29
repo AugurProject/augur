@@ -15,7 +15,34 @@ var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var ONE = new BigNumber("1", 10);
+var ONE_POINT_FIVE = new BigNumber("1.5", 10);
+
 module.exports = {
+
+    /**
+     * @param tradingfee BigNumber
+     * @param price BigNumber
+     * @param range BigNumber
+     * @returns BigNumber
+     */
+    calculateAdjustedTradingFee: function (tradingFee, price, range) {
+        return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
+    },
+
+    // Calculates adjusted total trade cost at a specified price
+    // @returns {BigNumbers}
+    calculateTradingCost: function (amount, price, tradingFee, range) {
+        var bnAmount = abi.bignum(amount);
+        var bnPrice = abi.bignum(price);
+        var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+        var fee = percentFee.times(bnAmount).times(bnPrice);
+        return {
+            fee: fee,
+            percentFee: percentFee,
+            cost: bnAmount.times(bnPrice).plus(fee)
+        };
+    },
 
     // type: "buy" or "sell"
     // gasLimit (optional): block gas limit as an integer
@@ -50,20 +77,33 @@ module.exports = {
 
     calculateTradingFees: function (makerFee, takerFee) {
         var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
-    // expects fixed-point inputs
-    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
-        tradingFee = abi.unfix(tradingFee);
-        makerProportionOfFee = abi.unfix(makerProportionOfFee);
-        var makerFee = tradingFee.times(makerProportionOfFee);
+    // expects fixed-point inputs if !isUnfixed
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+        var bnTradingFee, bnMakerProportionOfFee, makerFee;
+        if (!isUnfixed) {
+            bnTradingFee = abi.unfix(tradingFee);
+            bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
+        } else {
+            bnTradingFee = abi.bignum(tradingFee);
+            bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+        }
+        makerFee = bnTradingFee.times(bnMakerProportionOfFee);
+        if (returnBigNumber) {
+            return {
+                trading: bnTradingFee,
+                maker: makerFee,
+                taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
+            };
+        }
         return {
-            trading: tradingFee.toFixed(),
+            trading: bnTradingFee.toFixed(),
             maker: makerFee.toFixed(),
-            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
+            taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
         };
     },
 
