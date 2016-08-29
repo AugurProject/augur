@@ -22,6 +22,7 @@ ex.connect = function connect(env, cb) {
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
+		if (env.augurNodeURL) augur.augurNode.bootstrap([env.augurNodeURL]);
 		cb(null, connection);
 	});
 };
