@@ -4,7 +4,6 @@
 import React from 'react';
 
 export default {
-	version: 1,
 	content: (
 		<div>
 			<p className="strong">Welcome to Augur; Beta Test V2. Please note this important information:</p>

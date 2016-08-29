@@ -32,7 +32,7 @@ import myReports from '../test/assertions/my-reports';
 import myReportsSummary from '../test/assertions/my-reports-summary';
 import loginAccountReports from '../test/assertions/login-account-reports';
 import portfolioTotals from '../test/assertions/portfolio-totals';
-import importantInformation from '../test/assertions/important-information';
+import loginMessage from '../test/assertions/login-message';
 
 export default {
 	activePage,
@@ -69,5 +69,5 @@ export default {
 	myReports,
 	myReportsSummary,
 	loginAccountReports,
-	importantInformation
+	loginMessage
 };

@@ -19,7 +19,7 @@ import loginAccountPositions from './selectors/login-account-positions';
 import loginAccountMarkets from './selectors/login-account-markets';
 import loginAccountReports from './selectors/login-account-reports';
 import myReports from './selectors/my-reports';
-import importantInformation from './selectors/important-information';
+import loginMessage from './selectors/login-message';
 
 // all selectors should go here
 const selectors = {
@@ -43,7 +43,7 @@ const selectors = {
 	loginAccountPositions,
 	loginAccountMarkets,
 	loginAccountReports,
-	importantInformation,
+	loginMessage,
 	myReports
 };
 

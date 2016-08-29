@@ -6,8 +6,8 @@ import React, { PropTypes } from 'react';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 
-const ImportantInformationPage = (p) => (
-	<main className="page important-information">
+const LoginMessagePage = (p) => (
+	<main className="page login-message">
 		<SiteHeader {...p.siteHeader} />
 
 		<article className="page-content">
@@ -20,9 +20,9 @@ const ImportantInformationPage = (p) => (
 	</main>
 );
 
-ImportantInformationPage.propTypes = {
+LoginMessagePage.propTypes = {
 	siteHeader: PropTypes.object.isRequired,
 	content: PropTypes.element.isRequired
 };
 
-export default ImportantInformationPage;
+export default LoginMessagePage;
