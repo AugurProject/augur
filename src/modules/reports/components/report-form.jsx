@@ -64,7 +64,7 @@ export default class ReportForm extends React.Component {
 							disabled={s.isReported || s.isIndeterminate}
 							onChange={this.handleOutcomeChange}
 						/>
-						{outcome.price}
+						{outcome.name}
 					</label>
 				))
 			);
