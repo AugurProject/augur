@@ -19,6 +19,7 @@ import loginAccountPositions from './selectors/login-account-positions';
 import loginAccountMarkets from './selectors/login-account-markets';
 import loginAccountReports from './selectors/login-account-reports';
 import myReports from './selectors/my-reports';
+import tradeCommitLock from './selectors/trade-commit-lock';
 
 // all selectors should go here
 const selectors = {
@@ -42,7 +43,8 @@ const selectors = {
 	loginAccountPositions,
 	loginAccountMarkets,
 	loginAccountReports,
-	myReports
+	myReports,
+	tradeCommitLock
 };
 
 // add update helper fn to selectors object

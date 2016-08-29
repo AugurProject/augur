@@ -6,6 +6,8 @@ import ValueDenomination from '../../../modules/common/components/value-denomina
 import Input from '../../../modules/common/components/input';
 import Toggler from '../../../modules/common/components/toggler';
 
+import { SCALAR } from '../../markets/constants/market-types';
+
 const TradeBuilderRow = (p) => {
 	const bids = !p.showFullOrderBook ? p.orderBook.bids.slice(0, 1) : p.orderBook.bids;
 	const asks = !p.showFullOrderBook ? p.orderBook.asks.slice(0, 1) : p.orderBook.asks;
@@ -13,9 +15,7 @@ const TradeBuilderRow = (p) => {
 	return (
 		<tr className={classnames('trade-builder-row')}>
 			<td className={classnames('outcome-name', { fade: p.isFaded })}>
-				{p.name}
-				&nbsp; - &nbsp;
-				<ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
+				{p.name} {p.marketType !== SCALAR && <span>&nbsp;-&nbsp;</span>} <ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
 			</td>
 			{p.trade.side === 'sell' &&
 				<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
@@ -83,7 +83,8 @@ TradeBuilderRow.propTypes = {
 	orderBook: React.PropTypes.object,
 	isFaded: React.PropTypes.bool,
 	showFullOrderBook: React.PropTypes.bool,
-	updateSelectedOutcome: React.PropTypes.func
+	updateSelectedOutcome: React.PropTypes.func,
+	marketType: React.PropTypes.string
 };
 
 export default TradeBuilderRow;

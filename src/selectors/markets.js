@@ -2,13 +2,15 @@ import { makeNumber } from '../utils/make-number';
 import { makeDate } from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
+import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+
 import { M } from '../modules/site/constants/pages';
 
 module.exports = makeMarkets();
 
 function makeMarkets(numMarkets = 10) {
 	const markets = [];
-	const types = ['binary', 'categorical', 'scalar'];
+	const types = [BINARY, CATEGORICAL, SCALAR];
 
 	for (let i = 0; i < 5; i++) {
 		markets.push(makeMarket(i));
