@@ -152,12 +152,12 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 		round = 'round';
 	}
 	if (isNaN(parseFloat(num))) {
-		o.value = NaN;
-		o.formattedValue = NaN;
-		o.formatted = NaN;
-		o.roundedValue = NaN;
-		o.rounded = NaN;
-		o.minimized = NaN;
+		o.value = 0;
+		o.formattedValue = 0;
+		o.formatted = 0;
+		o.roundedValue = 0;
+		o.rounded = 0;
+		o.minimized = 0;
 	} else {
 		o.value = value.toNumber();
 		o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
