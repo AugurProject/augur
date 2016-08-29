@@ -313,6 +313,7 @@ function makeMarkets(numMarkets = 10) {
 									gas: makeNumber(gas, ' ETH'),
 									ether: makeNumber(outcome.trade.totalCost.value - gas, ' ETH'),
 									data: {
+										marketType: m.type,
 										outcomeName: outcome.name,
 										marketDescription: m.description,
 										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, ' ETH'),

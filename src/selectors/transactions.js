@@ -1,9 +1,12 @@
+import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+
 export default [
 	{
 		type: 'buy',
 		data: {
 			marketID: '0xbbfac7f7ac337fab85d67bb8a3061413271c1bc68b1da47fa7cbb53031c78fc8',
 			outcomeID: '7',
+			marketType: CATEGORICAL,
 			marketDescription: 'Which Jess coordinations clap Dwight Mission cube?',
 			outcomeName: 'follow',
 			numShares: {
@@ -36,6 +39,7 @@ export default [
 		data: {
 			marketID: '0xbbfac7f7ac337fab85d67bb8a3061413271c1bc68b1da47fa7cbb53031c78fc8',
 			outcomeID: '1',
+			marketType: BINARY,
 			marketDescription: 'Which Jess coordinations clap Dwight Mission cube?',
 			outcomeName: 'blast',
 			numShares: {
@@ -68,6 +72,7 @@ export default [
 		data: {
 			marketID: '0x3dc3d2eab74ea5b8fea409c5fbb8240a6fa88b3387c26ebcb467911cb8653027',
 			outcomeID: '1',
+			marketType: SCALAR,
 			marketDescription: 'Which political party\'s candidate will win the 2016 U.S. Presidential Election?',
 			outcomeName: 'Democratic',
 			numShares: {
