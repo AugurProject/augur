@@ -138,7 +138,7 @@ export default class AccountPage extends Component {
 							<div className="account-info-item">
 								<h2 className="heading">Transfer Funds</h2>
 								<p>
-									You can transfer funds to another address by selecting the type of curreny you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
+									You can transfer funds to another address by selecting the type of currency you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
 								</p>
 								<div className="transfer-funds-section">
 									<span>Send:</span>

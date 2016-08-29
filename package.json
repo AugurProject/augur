@@ -1,8 +1,8 @@
 {
   "name": "augur-ui-react-components",
-  "version": "3.0.51",
+  "version": "3.0.56",
   "description": "Augur UI React Components",
-  "author": "Augur Developers",
+  "author": "Augur Project",
   "license": "AAL",
   "engines": {
     "node": ">= 4.2.x"

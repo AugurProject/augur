@@ -88,7 +88,7 @@ export default function (appElement, selectors) {
 				orderCancellation={p.orderCancellation}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
-				isTradeWorking={!!p.isTransactionsWorking && !!p.tradesInProgress}
+				isTradeCommitLocked={p.tradeCommitLock.isLocked}
 			/>
 		);
 		break;

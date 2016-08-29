@@ -6,7 +6,9 @@ env:
   - CXX=g++-4.8
 
 node_js:
-  - "4.2"
+  - "6"
+  - "5"
+  - "4"
 
 addons:
   apt:

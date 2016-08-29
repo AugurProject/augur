@@ -20,7 +20,7 @@ export default class MarketPage extends Component {
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
 		orderCancellation: PropTypes.object.isRequired,
-		isTradeWorking: PropTypes.bool
+		isTradeCommitLocked: PropTypes.bool
 	};
 	constructor(props) {
 		super(props);
@@ -63,7 +63,7 @@ export default class MarketPage extends Component {
 						tradeSummary={p.market.tradeSummary}
 						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
-						isTradeWorking={p.isTradeWorking}
+						isTradeCommitLocked={p.isTradeCommitLocked}
 					/>
 				);
 
