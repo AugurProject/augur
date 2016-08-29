@@ -42668,7 +42668,7 @@ module.exports = {
     ASK: 2,
 
     // milliseconds to wait between getMarketsInfo batches
-    PAUSE_BETWEEN_MARKET_BATCHES: 30,
+    PAUSE_BETWEEN_MARKET_BATCHES: 50,
 
     // fixed-point indeterminate: 1.5 * 10^18
     INDETERMINATE: "0x14d1120d7b160000",
@@ -43420,7 +43420,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.5";
+    this.version = "2.2.6";
 
     this.options = {
         debug: {
