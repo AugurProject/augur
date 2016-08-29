@@ -5,6 +5,9 @@ import {
 	USERNAME_REQUIRED,
 	PASSWORDS_DO_NOT_MATCH,
 	PASSWORD_TOO_SHORT,
+	PASSWORD_NEEDS_LOWERCASE,
+	PASSWORD_NEEDS_UPPERCASE,
+	PASSWORD_NEEDS_NUMBER,
 	USERNAME_TAKEN
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
@@ -33,6 +36,12 @@ export const selectErrMsg = (err) => {
 		return 'passwords do not match';
 	case PASSWORD_TOO_SHORT:
 		return err.message; // use message so we dont have to update length requiremenets here
+	case PASSWORD_NEEDS_LOWERCASE:
+		return 'password requires at least one lowercase letter.';
+	case PASSWORD_NEEDS_UPPERCASE:
+		return 'password requires at least one uppercase letter.';
+	case PASSWORD_NEEDS_NUMBER:
+		return 'password requires at least one number.';
 	case USERNAME_TAKEN:
 		return 'username already registered';
 	default:
@@ -42,12 +51,12 @@ export const selectErrMsg = (err) => {
 
 export const selectRegister = (auth, loginAccount, dispatch) => {
 	let errMsg = selectErrMsg(auth.err);
-	let newAccountMessage = null;
+	let newAccountMessage = undefined;
 	if (loginAccount.loginID) {
 		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
 		errMsg = null;
 	}
-	let isVisibleID = newAccountMessage ? true : false;
+	const isVisibleID = typeof newAccountMessage === 'string';
 	return {
 		title: 'Sign Up',
 
@@ -58,7 +67,7 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		isVisibleRememberMe: isVisibleID,
 		isVisibleFileInput: false,
 
-		instruction: `Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don't forget to copy down your Login ID.`,
+		instruction: 'Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don\'t forget to copy down your Login ID.',
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -117,7 +126,7 @@ export const selectImportAccount = (auth, dispatch) => {
 	return {
 		title: 'Import Account',
 
-		isVisibleName: true,
+		isVisibleName: false,
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,

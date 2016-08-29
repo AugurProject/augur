@@ -1,6 +1,4 @@
 import { augur } from '../../../services/augurjs';
-
-import { LOGIN } from '../../auth/constants/auth-types';
 import {
 PASSWORDS_DO_NOT_MATCH
 } from '../../auth/constants/form-errors';
@@ -10,7 +8,6 @@ import {
 } from '../../auth/actions/load-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { selectAuthLink } from '../../link/selectors/links';
 import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import { validatePassword } from '../../auth/validators/password-validator';
 
@@ -38,10 +35,10 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 			return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
 		}
 
-		const passCheck = validatePassword(password)
+		const passCheck = validatePassword(password);
 
 		if (!passCheck.valid) {
-			return dispatch(authError({ code: passCheck.code }));
+			return dispatch(authError({ ...passCheck }));
 		}
 
 		augur.web.register(name, password, (account) => {
@@ -61,7 +58,6 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 			dispatch(loadLoginAccountDependents());
 
 			if (typeof cb === 'function') {
-				console.log(loginAccount);
 				cb(loginAccount);
 			}
 		});

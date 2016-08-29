@@ -6,11 +6,12 @@ PASSWORD_NEEDS_NUMBER,
 } from '../../auth/constants/form-errors';
 
 export function validatePassword(password) {
-	let result = { valid: true };
+	const result = { valid: true };
 
 	if (password.length < 6) {
 		result.valid = false;
 		result.code = PASSWORD_TOO_SHORT;
+		result.message = 'password is too short, must be at least 6 characters.';
 		return result;
 	}
 
