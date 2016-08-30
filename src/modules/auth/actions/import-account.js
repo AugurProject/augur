@@ -12,7 +12,7 @@ export function importAccount(name, password, rememberMe, keystore) {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 		try {
 			augur.web.importAccount(name, password, keystore, (loginAccount) => {
-				const importedAccount = { ...loginAccount, id: loginAccount.address };
+				const importedAccount = { ...loginAccount, id: loginAccount.address, loginID: account.loginID || account.secureLoginID };
 				if (!importedAccount || !importedAccount.keystore) {
 					return;
 				}

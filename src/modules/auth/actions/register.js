@@ -35,11 +35,11 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 			return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
 		}
 
-		const passCheck = validatePassword(password);
-
-		if (!passCheck.valid) {
-			return dispatch(authError({ ...passCheck }));
-		}
+		// const passCheck = validatePassword(password);
+		//
+		// if (!passCheck.valid) {
+		// 	return dispatch(authError({ ...passCheck }));
+		// }
 
 		augur.web.register(name, password, (account) => {
 			if (!account) {
@@ -47,7 +47,7 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address };
+			const loginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}

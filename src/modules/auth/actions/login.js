@@ -16,7 +16,7 @@ export function login(loginID, password, rememberMe) {
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address };
+			const loginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}

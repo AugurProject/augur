@@ -53,12 +53,13 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 	let errMsg = selectErrMsg(auth.err);
 	let newAccountMessage = undefined;
 	if (loginAccount.loginID) {
-		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
+		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID. Click on the Login ID input field and hit ctrl + v (cmd + v on mac) to paste your Login ID. Hit "Sign Up" to complete registration.';
 		errMsg = null;
 	}
 	const isVisibleID = typeof newAccountMessage === 'string';
 	return {
 		title: 'Sign Up',
+		type: auth.selectedAuthType,
 
 		isVisibleName: false,
 		isVisibleID,
@@ -75,6 +76,7 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		bottomLinkText: 'Import Account',
 		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
+		loginID: loginAccount.loginID,
 		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
@@ -87,12 +89,9 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 
 export const selectLogin = (auth, loginAccount, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
-	let newAccountMessage = null;
-	if (errMsg === null && loginAccount.loginID) {
-		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
-	}
 	return {
 		title: 'Login',
+		type: auth.selectedAuthType,
 
 		isVisibleName: false,
 		isVisibleID: true,
@@ -109,9 +108,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		bottomLinkText: 'Import Account',
 		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
-
-		secureLoginID: loginAccount.secureLoginID,
-		msg: errMsg || newAccountMessage,
+		msg: errMsg,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Login',
@@ -125,6 +122,7 @@ export const selectImportAccount = (auth, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
 	return {
 		title: 'Import Account',
+		type: auth.selectedAuthType,
 
 		isVisibleName: false,
 		isVisibleID: false,
