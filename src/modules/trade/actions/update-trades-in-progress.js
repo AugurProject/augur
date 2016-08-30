@@ -32,7 +32,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.dividedBy(TWO)
 				.toNumber() :
 			0.5;
-		console.log('top order:', selectTopAsk(marketOrderBook));
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook) || {}).price || {}).value || defaultPrice :
 			((selectTopBid(marketOrderBook) || {}).price || {}).value || defaultPrice;
