@@ -123,22 +123,22 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | Yes",
-							formatted: "0.5",
+							formatted: '0.5',
 							formattedValue: 0.5,
-							full: "0.5ETH | Yes",
-							minimized: "0.5",
-							rounded: "1",
-							roundedValue: 1,
+							full: '0.5ETH | Yes',
+							minimized: '0.5',
+							rounded: '0',
+							roundedValue: 0,
 							value: 0.5
 						},
 						{
-							denomination: "ETH | No",
-							formatted: "0.5",
+							denomination: 'ETH | No',
+							formatted: '0.5',
 							formattedValue: 0.5,
-							full: "0.5ETH | No",
-							minimized: "0.5",
-							rounded: "1",
-							roundedValue: 1,
+							full: '0.5ETH | No',
+							minimized: '0.5',
+							rounded: '0',
+							roundedValue: 0,
 							value: 0.5
 						}
 					]
@@ -146,11 +146,11 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				outcomes: [
 					{
 						id: 1,
-						name: "No"
+						name: 'No'
 					},
 					{
 						id: 2,
-						name: "Yes"
+						name: 'Yes'
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
@@ -188,45 +188,45 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				bestStartingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "20",
+					denomination: 'Shares',
+					formatted: '20',
 					formattedValue: 20,
-					full: "20Shares",
-					minimized: "20",
-					rounded: "20",
+					full: '20Shares',
+					minimized: '20',
+					rounded: '20',
 					roundedValue: 20,
 					value: 20
 				},
 				priceWidthFormatted: {
-					denomination: "ETH",
-					formatted: "0.1",
+					denomination: 'ETH',
+					formatted: '0.1',
 					formattedValue: 0.1,
-					full: "0.1ETH",
-					minimized: "0.1",
-					rounded: "0",
+					full: '0.1ETH',
+					minimized: '0.1',
+					rounded: '0',
 					roundedValue: 0,
 					value: 0.1
 				},
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
 				startingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "10",
+					denomination: 'Shares',
+					formatted: '10',
 					formattedValue: 10,
-					full: "10Shares",
-					minimized: "10",
-					rounded: "10",
+					full: '10Shares',
+					minimized: '10',
+					rounded: '10',
 					roundedValue: 10,
 					value: 10
 				},
 				isFavorite: false,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialLiquidityFormatted: {
-					denomination: "ETH",
-					formatted: "500",
+					denomination: 'ETH',
+					formatted: '500',
 					formattedValue: 500,
-					full: "500ETH",
-					minimized: "500",
-					rounded: "500",
+					full: '500ETH',
+					minimized: '500',
+					rounded: '500',
 					roundedValue: 500,
 					value: 500
 				},
@@ -396,8 +396,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							formattedValue: 0.5,
 							full: "0.5ETH | test1",
 							minimized: "0.5",
-							rounded: "1",
-							roundedValue: 1,
+							rounded: "0",
+							roundedValue: 0,
 							value: 0.5
 						},
 						{
@@ -406,8 +406,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							formattedValue: 0.5,
 							full: "0.5ETH | test2",
 							minimized: "0.5",
-							rounded: "1",
-							roundedValue: 1,
+							rounded: "0",
+							roundedValue: 0,
 							value: 0.5
 						},
 						{
@@ -416,8 +416,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							formattedValue: 0.5,
 							full: "0.5ETH | test3",
 							minimized: "0.5",
-							rounded: "1",
-							roundedValue: 1,
+							rounded: "0",
+							roundedValue: 0,
 							value: 0.5
 						}
 					]
