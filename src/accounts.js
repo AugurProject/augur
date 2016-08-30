@@ -84,33 +84,35 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-						var self = this;
             cb = cb || utils.pass;
 
             // now set vars based on what is currently in place
-            var keystore = self.account.keystore;
-            var privateKey = self.account.privateKey;
-						var derivedKey = self.account.derivedKey;
+            var keystore = this.account.keystore;
+            var privateKey = this.account.privateKey;
 
             // preparing to redo the secureLoginID to use the new name
             var unsecureLoginIDObject = {
                 name: newName,
                 keystore: keystore
             };
-            var loginID = augur.base58Encrypt(unsecureLoginIDObject);
+            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
             // web.account object is set to use new values
-            self.account = {
+            this.account = {
                 name: newName,
-                loginID: loginID,
+                secureLoginID: secureLoginID,
                 privateKey: privateKey,
                 address: keystore.address,
-                keystore: keystore,
-								derivedKey: derivedKey
+                keystore: keystore
             };
 
             // send back the new updated loginAccount object.
-            return cb(clone(self.account));
+            return cb({
+                name: newName,
+                secureLoginID: secureLoginID,
+                keystore: keystore,
+                address: keystore.address
+            });
         },
 
         register: function (name, password, cb) {
@@ -156,12 +158,12 @@ module.exports = function () {
                         id: uuid.v4()
                     };
                     var unsecureLoginIDObject = {name: name, keystore: keystore};
-                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: plain.privateKey,
                         address: address,
                         keystore: keystore,
@@ -170,7 +172,7 @@ module.exports = function () {
 
                     return cb({
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         keystore: keystore,
                         address: address
                     });
@@ -192,12 +194,12 @@ module.exports = function () {
                         name: name,
                         keystore: keystore
                     };
-                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
@@ -221,29 +223,29 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                loginID: localAccount.loginID,
+                secureLoginID: localAccount.secureLoginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
-            return cb(clone(self.account));
+            return cb(clone(this.account));
         },
 
-        login: function (loginID, password, cb) {
+        login: function (secureLoginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginID;
+            var unencryptedLoginIDObject;
             try {
-                unencryptedLoginID = augur.base58Decrypt(loginID);
+                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
-            var keystore = unencryptedLoginID.keystore;
-            var name = unencryptedLoginID.name;
+            var keystore = unencryptedLoginIDObject.keystore;
+            var name = unencryptedLoginIDObject.name;
             var options = {
                 kdf: keystore.crypto.kdf,
                 kdfparams: keystore.crypto.kdfparams,
@@ -275,7 +277,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
