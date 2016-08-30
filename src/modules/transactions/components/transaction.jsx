@@ -44,7 +44,7 @@ const Transaction = (p) => {
 				<ValueDenomination className="shares" {...p.data.numShares} />
 				{p.data.marketType !== SCALAR &&
 					<span>
-						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
+						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + (p.data.outcomeName.toString().length > 35 && '...' || '')}</span>
 					</span>
 				}
 				<span className="at">@</span>
@@ -82,7 +82,7 @@ const Transaction = (p) => {
 		);
 		break;
 	case COMMIT_REPORT:
-		if (p.data.market.type === 'scalar') {
+		if (p.data.market.type === SCALAR) {
 			nodes.description = (
 				<span className="description">
 					<span>Report</span>
