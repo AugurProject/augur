@@ -5,9 +5,6 @@ import {
 	USERNAME_REQUIRED,
 	PASSWORDS_DO_NOT_MATCH,
 	PASSWORD_TOO_SHORT,
-	PASSWORD_NEEDS_LOWERCASE,
-	PASSWORD_NEEDS_UPPERCASE,
-	PASSWORD_NEEDS_NUMBER,
 	USERNAME_TAKEN
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
@@ -36,12 +33,6 @@ export const selectErrMsg = (err) => {
 		return 'passwords do not match';
 	case PASSWORD_TOO_SHORT:
 		return err.message; // use message so we dont have to update length requiremenets here
-	case PASSWORD_NEEDS_LOWERCASE:
-		return 'password requires at least one lowercase letter.';
-	case PASSWORD_NEEDS_UPPERCASE:
-		return 'password requires at least one uppercase letter.';
-	case PASSWORD_NEEDS_NUMBER:
-		return 'password requires at least one number.';
 	case USERNAME_TAKEN:
 		return 'username already registered';
 	default:
@@ -49,25 +40,17 @@ export const selectErrMsg = (err) => {
 	}
 };
 
-export const selectRegister = (auth, loginAccount, dispatch) => {
-	let errMsg = selectErrMsg(auth.err);
-	let newAccountMessage = undefined;
-	if (loginAccount.loginID) {
-		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
-		errMsg = null;
-	}
-	const isVisibleID = typeof newAccountMessage === 'string';
+export const selectRegister = (auth, dispatch) => {
+	const errMsg = selectErrMsg(auth.err);
 	return {
 		title: 'Sign Up',
 
-		isVisibleName: false,
-		isVisibleID,
+		isVisibleName: true,
+		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
-		isVisibleRememberMe: isVisibleID,
+		isVisibleRememberMe: false,
 		isVisibleFileInput: false,
-
-		instruction: 'Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don\'t forget to copy down your Login ID.',
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -75,20 +58,20 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		bottomLinkText: 'Import Account',
 		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
-		msg: errMsg || newAccountMessage,
+		msg: errMsg,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) => dispatch(register(name, password, password2, loginID, rememberMe, cb))
+		onSubmit: (name, password, password2, secureLoginID) => dispatch(register(name, password, password2))
 	};
 };
 
 export const selectLogin = (auth, loginAccount, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
 	let newAccountMessage = null;
-	if (errMsg === null && loginAccount.loginID) {
+	if (errMsg === null && loginAccount.secureLoginID) {
 		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
 	}
 	return {
@@ -100,8 +83,6 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisiblePassword2: false,
 		isVisibleRememberMe: true,
 		isVisibleFileInput: false,
-
-		instruction: 'Please enter your Login ID and password below.',
 
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
@@ -117,7 +98,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) =>	dispatch(login(loginID, password, rememberMe))
+		onSubmit: (name, password, password2, secureLoginID, rememberMe) =>	dispatch(login(secureLoginID, password, rememberMe))
 	};
 };
 
@@ -126,14 +107,12 @@ export const selectImportAccount = (auth, dispatch) => {
 	return {
 		title: 'Import Account',
 
-		isVisibleName: false,
+		isVisibleName: true,
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
 		isVisibleRememberMe: true,
 		isVisibleFileInput: true,
-
-		instruction: 'Please upload your account file and enter the password to unlock the uploaded account.',
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -147,14 +126,14 @@ export const selectImportAccount = (auth, dispatch) => {
 		submitButtonText: 'Import Account',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (name, password, password2, loginID, rememberMe, keystore, cb) => dispatch(importAccount(name, password, rememberMe, keystore, cb))
+		onSubmit: (name, password, password2, secureLoginID, rememberMe, keystore) => dispatch(importAccount(name, password, rememberMe, keystore))
 	};
 };
 
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
-		return selectRegister(auth, loginAccount, dispatch);
+		return selectRegister(auth, dispatch);
 	case LOGIN:
 		return selectLogin(auth, loginAccount, dispatch);
 	case IMPORT:

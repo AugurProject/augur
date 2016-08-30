@@ -15,16 +15,12 @@ describe(`modules/auth/actions/register.js`, () => {
 	const fakeAuthLink = {};
 	const fakeSelectors = {};
 	const fakeFund = {};
-	const updtLoginAccStub = {};
-	const ldLoginAccStub = {};
-	const autoStub = {};
 
 	let action, store;
 	let thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
 	});
 	store = mockStore(thisTestState);
-	const fakeCallback = sinon.stub();
 	fakeAugurJS.augur.web.register = (name, psswrd, cb) => {
 		cb({
 			address: 'test',
@@ -45,20 +41,11 @@ describe(`modules/auth/actions/register.js`, () => {
 		return { onClick: () => {} };
 	};
 	fakeFund.addFundNewAccount = sinon.stub().returns({ type: 'FUND_NEW_ACCOUNT' });
-	let updateTestString = 'updateLoginAccount(loginAccount) called.';
-	let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-	let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
-
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({type: updateTestString });
-	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({type: ldLoginAccLSTestString });
 
 	action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../../selectors': fakeSelectors,
 		'../../link/selectors/links': fakeAuthLink,
-		'../../auth/actions/update-login-account': updtLoginAccStub,
-		'../../auth/actions/load-login-account': ldLoginAccStub,
 		'../../transactions/actions/add-fund-new-account-transaction': fakeFund
 	});
 
@@ -71,53 +58,30 @@ describe(`modules/auth/actions/register.js`, () => {
 	});
 
 	it(`should register a new account`, () => {
+		// this should be faster, currently taking to long
 		const expectedOutput = [{
-				type: 'FUND_NEW_ACCOUNT'
-			}, {
-				type: 'loadLoginAccountLocalStorage(id) called.'
-			}, {
-				type: 'updateLoginAccount(loginAccount) called.'
-			}, {
-				type: 'loadLoginAccountDependents() called.'
-		}];
+			type: 'UPDATE_LOGIN_ACCOUNT',
+			data: {
+				secureLoginID: 'testid',
+			}
+		}, { type: 'FUND_NEW_ACCOUNT' }];
 
-		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, fakeCallback));
-		assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
+		store.dispatch(action.register('newUser', 'testing', 'testing'));
 		assert(fakeFund.addFundNewAccount.calledOnce, `addFundNewAccount wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
 
-	it(`should fail with no uppercase letter in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_UPPERCASE_LETTER' } } ];
+	it(`should fail with no username entered`, () => {
+		const expectedOutput = [{
+			type: 'AUTH_ERROR',
+			err: {
+				code: 'USERNAME_REQUIRED'
+			}
+		}];
 
-		store.dispatch(action.register('', 't3sting', 't3sting'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no uppercase letter in the passwords.`);
-	});
+		store.dispatch(action.register('', 'testing', 'testing'));
 
-	it(`should fail with no number in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_NUMBER' } } ];
-
-		store.dispatch(action.register('', 'Testing', 'Testing'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no number in the passwords.`);
-	});
-
-	it(`should fail with no lowercase letter in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_LOWERCASE_LETTER' } } ];
-
-		store.dispatch(action.register('', 'T3STING', 'T3STING'));
-		console.log(store.getActions());
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no lowercase letter in the passwords.`);
-	});
-
-	it(`should fail when passwords entered are too short.`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 405, message: 'password is too short, must be at least 6 characters.' } } ];
-
-		store.dispatch(action.register('', 'test', 'test'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when the passwords where too short.`);
+		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when user doesn't pass a username`);
 	});
 
 	it(`should fail with mismatched passwords`, () => {
