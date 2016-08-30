@@ -110,7 +110,6 @@ export default function (appElement, selectors) {
 		node = (
 			<LoginMessagePage
 				siteHeader={p.siteHeader}
-				content={p.loginMessage.content}
 			/>
 		);
 		break;
