@@ -18,16 +18,16 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
-				// console.log('log_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
 					console.log('log_fill_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+					const outcomeIndex = msg.outcome - 1;
+					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping...');
+					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
@@ -37,11 +37,12 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					console.log('log_add_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+					const outcomeIndex = msg.outcome - 1;
+					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping...');
+					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
@@ -51,11 +52,12 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					console.log('log_cancel:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+					const outcomeIndex = msg.outcome - 1;
+					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping...');
+					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
