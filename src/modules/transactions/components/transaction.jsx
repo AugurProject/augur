@@ -29,10 +29,10 @@ const Transaction = (p) => {
 			nodes.action = 'ASK';
 			break;
 		case SHORT_SELL:
-			nodes.action = 'SELL';
+			nodes.action = 'SHORT SELL';
 			break;
 		case SHORT_SELL_RISKY:
-			nodes.action = 'ASK';
+			nodes.action = 'SHORT ASK';
 			break;
 		default:
 			break;
