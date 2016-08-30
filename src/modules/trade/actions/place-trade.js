@@ -9,7 +9,7 @@ import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
-import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
+import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
@@ -38,6 +38,7 @@ export function placeTrade(marketID) {
 						BUY,
 						marketID,
 						outcomeID,
+						market.type,
 						market.description,
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
@@ -58,7 +59,7 @@ export function placeTrade(marketID) {
 
 				// check if user has position
 				//  - if so, sell/ask
-				//  - if not, short sell/short sell risky
+				//  - if not, short sell/short ask
 				let position;
 				if (market.myPositionOutcomes) {
 					const numPositions = market.myPositionOutcomes.length;
@@ -79,6 +80,7 @@ export function placeTrade(marketID) {
 							SELL,
 							marketID,
 							outcomeID,
+							market.type,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
@@ -106,7 +108,7 @@ export function placeTrade(marketID) {
 							outcomeTradeInProgress.limitPrice,
 							totalCost));
 					} else {
-						dispatch(addShortSellRiskyTransaction(
+						dispatch(addShortAskTransaction(
 							marketID,
 							outcomeID,
 							market.description,

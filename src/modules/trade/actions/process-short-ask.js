@@ -5,7 +5,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
-export function processShortSellRisky(transactionID, marketID, outcomeID, numShares, limitPrice) {
+export function processShortAsk(transactionID, marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
 		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
@@ -13,7 +13,7 @@ export function processShortSellRisky(transactionID, marketID, outcomeID, numSha
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'placing short ask...', message: `short asking ${numShares} shares @ ${formatEther(limitPrice).full}` }));
 
-		shortSellRisky(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
+		shortAsk(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
@@ -25,7 +25,7 @@ export function processShortSellRisky(transactionID, marketID, outcomeID, numSha
 	};
 }
 
-function shortSellRisky(transactionID, marketID, outcomeID, limitPrice, totalShares, dispatch, cb) {
+function shortAsk(transactionID, marketID, outcomeID, limitPrice, totalShares, dispatch, cb) {
 	augur.buyCompleteSetsThenSell({
 		amount: totalShares,
 		price: limitPrice,

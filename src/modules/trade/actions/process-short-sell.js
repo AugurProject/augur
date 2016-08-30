@@ -7,7 +7,7 @@ import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-l
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
+import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
@@ -44,7 +44,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				if (res.remainingShares > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
-					dispatch(addShortSellRiskyTransaction(
+					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,

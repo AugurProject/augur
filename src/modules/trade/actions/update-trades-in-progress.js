@@ -4,6 +4,7 @@ import { ZERO, TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
+import { selectMarket } from '../../market/selectors/market';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
@@ -11,7 +12,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 // Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, marketsData, loginAccount, accountTrades, orderBooks, orderCancellation } = getState();
+		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
 
@@ -67,6 +68,18 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
+			const market = selectMarket(marketID);
+			let position;
+			if (market.myPositionOutcomes) {
+				const numPositions = market.myPositionOutcomes.length;
+				for (let i = 0; i < numPositions; ++i) {
+					if (market.myPositionOutcomes[i].id === outcomeID) {
+						position = market.myPositionOutcomes[i].position.qtyShares;
+						break;
+					}
+				}
+			}
+			console.log('position.value:', position.value);
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
 				newTradeDetails.numShares,
@@ -74,7 +87,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				market && market.takerFee || 0,
 				market && market.makerFee || 0,
 				loginAccount.id,
-				accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares || 0,
+				position && position.value || 0,
 				outcomeID,
 				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});

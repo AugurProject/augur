@@ -8,7 +8,7 @@ import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively'
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
-import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
+import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 import { selectMarket } from '../../market/selectors/market';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
@@ -71,7 +71,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							res.remainingShares,
 							limitPrice));
 					} else {
-						dispatch(addShortSellRiskyTransaction(
+						dispatch(addShortAskTransaction(
 							transactionData.data.marketID,
 							transactionData.data.outcomeID,
 							transactionData.data.marketDescription,
