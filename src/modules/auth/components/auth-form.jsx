@@ -8,7 +8,7 @@ export default class AuthForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		title: PropTypes.string,
-		loginID: PropTypes.string,
+		secureLoginID: PropTypes.string,
 		rememberMe: PropTypes.bool,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
@@ -34,26 +34,24 @@ export default class AuthForm extends Component {
 	};
 
 	static defaultProps = {
-		rememberMe: true
+		rememberMe: false
 	};
 
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handlePasswordInput = this.handlePasswordInput.bind(this);
 		if (new FileReader()) {
 			this.fileReader = new FileReader();
 		}
 		this.state = {
 			msg: this.props.msg,
-			loginID: this.props.loginID,
-			rememberMe: this.props.rememberMe,
-			disableInputs: false
+			secureLoginID: this.props.secureLoginID,
+			rememberMe: this.props.rememberMe || true
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, showID: nextProps.isVisibleID });
+		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID });
 	}
 
 	componentDidUpdate() {
@@ -71,39 +69,24 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		const name = this.refs.accountName.value;
-		const loginID = this.state.loginID;
+		const name = this.refs.name.value;
+		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
-		this.setState({ msg: '', disableInputs: false });
-
+		console.log(file);
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
-				setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, importAccount, undefined), 300);
+				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
 			};
 		} else {
-			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 300);
+			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined), 100);
 		}
-		return false;
-	}
 
-	handlePasswordInput = (e) => {
-		e.preventDefault();
-		const name = this.refs.accountName.value;
-		const loginID = this.state.loginID;
-		const password = this.refs.password.value;
-		const password2 = this.refs.password2.value;
-		const rememberMe = this.state.rememberMe;
-
-		if (password !== '' && password2 !== '') {
-			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
-				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
-			}), 300);
-		}
+		this.setState({ msg: '' });
 	}
 
 	render() {
@@ -124,20 +107,18 @@ export default class AuthForm extends Component {
 						</Link>
 					}
 				</h1>
-				{p.instruction && <p className={classnames('instruction')}>{p.instruction}</p>}
 				{s.msg &&
 					<span className={classnames('msg', p.msgClass)}>
 						{s.msg}
 					</span>
 				}
 				<input
-					ref="accountName"
+					ref="name"
 					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
-					placeholder="account name"
+					placeholder="name"
 					maxLength="30"
 					autoFocus="autofocus"
-					disabled={s.disableInputs}
 				/>
 				<input
 					name="importAccount"
@@ -145,18 +126,16 @@ export default class AuthForm extends Component {
 					type="file"
 					placeholder="Import Account"
 					autoFocus="autofocus"
-					disabled={s.disableInputs}
 				/>
 				<Input
-					name="loginID"
-					ref={(ref) => { if (ref && ref.state.value !== s.loginID) { this.setState({ loginID: ref.state.value }); } }}
-					className={classnames('login-id-input', { displayNone: !p.isVisibleID })}
+					name="secureLoginID"
+					ref={(ref) => { if (ref && ref.state.value !== s.secureLoginID) { this.setState({ secureLoginID: ref.state.value }); } }}
+					className={classnames('secure-login-id-input', { displayNone: !p.isVisibleID })}
 					type="text"
-					value={s.loginID}
-					placeholder="Login ID"
+					value={s.secureLoginID}
+					placeholder="secure login ID"
 					autoFocus="autofocus"
-					onChange={(loginID) => this.setState({ loginID })}
-					disabled={s.disableInputs}
+					onChange={(secureLoginID) => this.setState({ secureLoginID })}
 				/>
 				<input
 					ref="password"
@@ -165,8 +144,6 @@ export default class AuthForm extends Component {
 					defaultValue={p.password}
 					placeholder={p.passwordPlaceholder || 'password'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
-					disabled={s.disableInputs}
 				/>
 				<input
 					ref="password2"
@@ -174,8 +151,6 @@ export default class AuthForm extends Component {
 					type="password"
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
-					disabled={s.disableInputs}
 				/>
 				<div className={classnames('bottom-container')}>
 					<Link
@@ -207,7 +182,6 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
-				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length. Passwords should contain at least one number, one lowercase letter, and one uppercase letter.</p>
 			</form>
 		);
 	}
