@@ -38911,35 +38911,33 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
+						var self = this;
             cb = cb || utils.pass;
 
             // now set vars based on what is currently in place
-            var keystore = this.account.keystore;
-            var privateKey = this.account.privateKey;
+            var keystore = self.account.keystore;
+            var privateKey = self.account.privateKey;
+						var derivedKey = self.account.derivedKey;
 
             // preparing to redo the secureLoginID to use the new name
             var unsecureLoginIDObject = {
                 name: newName,
                 keystore: keystore
             };
-            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+            var loginID = augur.base58Encrypt(unsecureLoginIDObject);
 
             // web.account object is set to use new values
-            this.account = {
+            self.account = {
                 name: newName,
-                secureLoginID: secureLoginID,
+                loginID: loginID,
                 privateKey: privateKey,
                 address: keystore.address,
-                keystore: keystore
+                keystore: keystore,
+								derivedKey: derivedKey
             };
 
             // send back the new updated loginAccount object.
-            return cb({
-                name: newName,
-                secureLoginID: secureLoginID,
-                keystore: keystore,
-                address: keystore.address
-            });
+            return cb(clone(self.account));
         },
 
         register: function (name, password, cb) {
@@ -38985,12 +38983,12 @@ module.exports = function () {
                         id: uuid.v4()
                     };
                     var unsecureLoginIDObject = {name: name, keystore: keystore};
-                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: plain.privateKey,
                         address: address,
                         keystore: keystore,
@@ -38999,7 +38997,7 @@ module.exports = function () {
 
                     return cb({
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         keystore: keystore,
                         address: address
                     });
@@ -39021,12 +39019,12 @@ module.exports = function () {
                         name: name,
                         keystore: keystore
                     };
-                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
@@ -39050,29 +39048,29 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
+                loginID: localAccount.loginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
-            return cb(clone(this.account));
+            return cb(clone(self.account));
         },
 
-        login: function (secureLoginID, password, cb) {
+        login: function (loginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginIDObject;
+            var unencryptedLoginID;
             try {
-                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
+                unencryptedLoginID = augur.base58Decrypt(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
-            var keystore = unencryptedLoginIDObject.keystore;
-            var name = unencryptedLoginIDObject.name;
+            var keystore = unencryptedLoginID.keystore;
+            var name = unencryptedLoginID.name;
             var options = {
                 kdf: keystore.crypto.kdf,
                 kdfparams: keystore.crypto.kdfparams,
@@ -39104,7 +39102,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
@@ -40145,13 +40143,13 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.7";
+    this.version = "2.2.9";
 
     this.options = {
         debug: {
             tools: false,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
-            broadcast: false,   // broadcast debug logging in ethrpc 
+            broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false      // trading-related debug logging
         }
@@ -40778,7 +40776,7 @@ module.exports = {
             } else {
                 chunkCB(null, marketsData);
             }
-            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 0;
+            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
             if (isDesc && startIndex > 0) {
                 setTimeout(function () {
                     self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
@@ -40798,7 +40796,7 @@ module.exports = {
 
         // load the total number of markets
         this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-            var numMarkets = parseInt(numMarketsRaw, 10);            
+            var numMarkets = parseInt(numMarketsRaw, 10);
             var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
 
             // load markets in batches
@@ -40806,7 +40804,7 @@ module.exports = {
             self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
 
                 // second pass: zero-volume markets
-                self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                // self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
             });
         });
     },
@@ -41021,8 +41019,6 @@ module.exports = {
         }
         this.augurNode.getMarketsInfo(branch, function (err, result) {
             if (err) {
-                console.warn("cache node getMarketsInfo request failed, falling back to geth:", self.augurNode.nodes, err);
-                self.augurNode.bootstrap([]);
                 return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
             }
             callback(JSON.parse(result));

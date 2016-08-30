@@ -30,7 +30,7 @@ module.exports = {
             } else {
                 chunkCB(null, marketsData);
             }
-            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 0;
+            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
             if (isDesc && startIndex > 0) {
                 setTimeout(function () {
                     self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
@@ -50,7 +50,7 @@ module.exports = {
 
         // load the total number of markets
         this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-            var numMarkets = parseInt(numMarketsRaw, 10);            
+            var numMarkets = parseInt(numMarketsRaw, 10);
             var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
 
             // load markets in batches
@@ -58,7 +58,7 @@ module.exports = {
             self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
 
                 // second pass: zero-volume markets
-                self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                // self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
             });
         });
     },
