@@ -20,13 +20,10 @@ export function listenToUpdates() {
 			log_fill_tx: (msg) => {
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
-					console.log('log_fill_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
 					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
@@ -34,13 +31,10 @@ export function listenToUpdates() {
 			log_add_tx: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					console.log('log_add_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
 					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
@@ -48,13 +42,10 @@ export function listenToUpdates() {
 			log_cancel: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					console.log('log_cancel:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
 					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
-					console.log('market detail not loaded, skipping', market);
 				}
 			},
 
