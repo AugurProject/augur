@@ -11,13 +11,16 @@ var BigNumber = require("bignumber.js");
 var keccak_256 = require("js-sha3").keccak_256;
 var ethabi = require("ethereumjs-abi");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
     debug: false,
 
-    version: "0.6.1",
+    version: "0.6.2",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -17641,15 +17644,11 @@ module.exports={
         "inputs": [
           "branch", 
           "offset", 
-          "numMarketsToLoad", 
-          "volumeMin", 
-          "volumeMax"
+          "numMarketsToLoad"
         ], 
         "method": "getMarketsInfo", 
         "returns": "hash[]", 
         "signature": [
-          "int256", 
-          "int256", 
           "int256", 
           "int256", 
           "int256"
@@ -38846,7 +38845,10 @@ var constants = require("./constants");
 var utils = require("./utilities");
 
 request = request.defaults({timeout: 120000});
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
@@ -39377,7 +39379,10 @@ module.exports = function () {
 
 var BigNumber = require("bignumber.js");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var ONE = new BigNumber(10).toPower(18); 
 
@@ -39896,7 +39901,10 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = function (p, cb) {
     var self = this;
@@ -40145,7 +40153,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.3.2";
+    this.version = "2.3.3";
 
     this.options = {
         debug: {
@@ -40212,7 +40220,10 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var ONE = new BigNumber("1", 10);
 var ONE_POINT_FIVE = new BigNumber("1.5", 10);
@@ -40670,7 +40681,10 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
@@ -40760,7 +40774,10 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
@@ -41313,7 +41330,10 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
@@ -41532,7 +41552,10 @@ var abi = require("augur-abi");
 var constants = require("../constants");
 var utils = require("../utilities");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
@@ -42584,7 +42607,10 @@ var EthTx = require("ethereumjs-tx");
 var constants = require("../constants");
 var abacus = require("./abacus");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var ONE = new BigNumber(1, 10);
 
@@ -43003,7 +43029,10 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 
@@ -43214,7 +43243,10 @@ var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var displayed_connection_info = false;
 
@@ -44228,7 +44260,10 @@ var keccak_256 = require("js-sha3").keccak_256;
 var errors = require("augur-contracts").errors;
 var abi = require("augur-abi");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 function RPCError(err) {
     this.name = "RPCError";

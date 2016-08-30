@@ -11,7 +11,10 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 module.exports = {
 

@@ -19,7 +19,10 @@ var constants = require("./constants");
 var utils = require("./utilities");
 
 request = request.defaults({timeout: 120000});
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;

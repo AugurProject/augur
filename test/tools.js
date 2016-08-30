@@ -21,7 +21,10 @@ var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var displayed_connection_info = false;
 

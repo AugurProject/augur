@@ -6,7 +6,10 @@
 
 var BigNumber = require("bignumber.js");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var ONE = new BigNumber(10).toPower(18); 
 

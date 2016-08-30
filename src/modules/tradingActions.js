@@ -7,7 +7,10 @@ var EthTx = require("ethereumjs-tx");
 var constants = require("../constants");
 var abacus = require("./abacus");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+});
 
 var ONE = new BigNumber(1, 10);
 
