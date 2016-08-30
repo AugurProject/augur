@@ -41,19 +41,20 @@ export default class AuthForm extends Component {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handlePasswordInput = this.handlePasswordInput.bind(this);
+		this.loginIDcp = this.loginIDcp.bind(this);
 		if (new FileReader()) {
 			this.fileReader = new FileReader();
 		}
 		this.state = {
 			msg: this.props.msg,
-			loginID: this.props.loginID,
+			loginID: undefined,
 			rememberMe: this.props.rememberMe,
 			disableInputs: false
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, showID: nextProps.isVisibleID });
+		this.setState({ msg: nextProps.msg });
 	}
 
 	componentDidUpdate() {
@@ -89,7 +90,7 @@ export default class AuthForm extends Component {
 		} else {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 300);
 		}
-		this.setState({ msg: '', disableInputs: false });
+		this.setState({ msg: '', loginID: undefined, disableInputs: false });
 		return false;
 	}
 // ref={(ref) => { if (ref && ref.state.value !== s.loginID) { this.setState({ loginID: ref.state.value }); } }}
@@ -107,6 +108,18 @@ export default class AuthForm extends Component {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
 				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
 			}), 300);
+		}
+	}
+
+	loginIDcp = (e) => {
+		const loginIDInput = e.target;
+
+		try {
+			loginIDInput.select();
+			document.execCommand('copy');
+			loginIDInput.blur();
+		} catch (err) {
+			console.log(err);
 		}
 	}
 
@@ -150,17 +163,20 @@ export default class AuthForm extends Component {
 					placeholder="Import Account"
 					autoFocus="autofocus"
 				/>
+				{p.loginID &&
+					<textarea className={classnames('loginID-generated')} readOnly value={p.loginID} onClick={this.loginIDcp} />
+				}
 				<input
 					name="username"
 					id="username"
 					ref="loginID"
-					className={classnames('login-id-input', { displayNone: !p.isVisibleID })}
+					className={classnames('auth-input', { displayNone: !p.isVisibleID })}
 					type="text"
-					value={s.loginID}
 					placeholder="Login ID"
 					autoFocus="autofocus"
 					autoComplete
 					onChange={(loginID) => this.setState({ loginID })}
+					required={p.isVisibleID}
 				/>
 				<input
 					ref="password"
@@ -170,6 +186,7 @@ export default class AuthForm extends Component {
 					placeholder={p.passwordPlaceholder || 'password'}
 					maxLength="256"
 					onChange={this.handlePasswordInput}
+					required={p.isVisiblePassword}
 				/>
 				<input
 					ref="password2"
@@ -178,6 +195,7 @@ export default class AuthForm extends Component {
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
 					onChange={this.handlePasswordInput}
+					required={p.isVisiblePassword2}
 				/>
 				<div className={classnames('bottom-container')}>
 					<Link
