@@ -6,12 +6,11 @@ import {
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
 
-export function login(secureLoginID, password, rememberMe) {
+export function login(loginID, password, rememberMe) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-		augur.web.login(secureLoginID, password, (account) => {
-			console.log(account);
+		augur.web.login(loginID, password, (account) => {
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to login' }));
 			} else if (account.error) {
@@ -35,7 +34,7 @@ export function login(secureLoginID, password, rememberMe) {
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
 			if (links && links.marketsLink)	{
-				links.marketsLink.onClick(links.marketsLink.href);
+				return links.marketsLink.onClick(links.marketsLink.href);
 			}
 		});
 	};
