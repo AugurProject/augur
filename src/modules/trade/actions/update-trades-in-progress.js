@@ -79,7 +79,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			}
-			console.log('position.value:', position.value);
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
 				newTradeDetails.numShares,
