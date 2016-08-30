@@ -6,18 +6,19 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBuy } from '../../trade/actions/process-buy';
 import { processSell } from '../../trade/actions/process-sell';
 
-export const addTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
+export const addTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
+		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
 	}
 );
 
-export const makeTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
+export const makeTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
 	const transaction = {
 		type,
 		data: {
 			marketID,
 			outcomeID,
+			marketType,
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
