@@ -25,7 +25,7 @@ function makeMarkets(numMarkets = 10) {
 
 	function makeMarket(index) {
 		const id = index.toString();
-		const d = new Date('2017/12/12/');
+		const d = new Date('2017/12/12');
 		const m = {
 			id,
 			author: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',

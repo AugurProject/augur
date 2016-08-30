@@ -71,13 +71,14 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
+		e.stopPropagation();
 		const name = this.refs.accountName.value;
-		const loginID = this.state.loginID;
+		// const loginID = this.state.loginID;
+		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
-		this.setState({ msg: '', disableInputs: false });
 
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
@@ -88,13 +89,16 @@ export default class AuthForm extends Component {
 		} else {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 300);
 		}
+		this.setState({ msg: '', disableInputs: false });
 		return false;
 	}
-
+// ref={(ref) => { if (ref && ref.state.value !== s.loginID) { this.setState({ loginID: ref.state.value }); } }}
 	handlePasswordInput = (e) => {
 		e.preventDefault();
+		e.stopPropagation();
 		const name = this.refs.accountName.value;
-		const loginID = this.state.loginID;
+		// const loginID = this.state.loginID;
+		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
@@ -145,18 +149,18 @@ export default class AuthForm extends Component {
 					type="file"
 					placeholder="Import Account"
 					autoFocus="autofocus"
-					disabled={s.disableInputs}
 				/>
-				<Input
-					name="loginID"
-					ref={(ref) => { if (ref && ref.state.value !== s.loginID) { this.setState({ loginID: ref.state.value }); } }}
+				<input
+					name="username"
+					id="username"
+					ref="loginID"
 					className={classnames('login-id-input', { displayNone: !p.isVisibleID })}
 					type="text"
 					value={s.loginID}
 					placeholder="Login ID"
 					autoFocus="autofocus"
+					autoComplete
 					onChange={(loginID) => this.setState({ loginID })}
-					disabled={s.disableInputs}
 				/>
 				<input
 					ref="password"
@@ -166,7 +170,6 @@ export default class AuthForm extends Component {
 					placeholder={p.passwordPlaceholder || 'password'}
 					maxLength="256"
 					onChange={this.handlePasswordInput}
-					disabled={s.disableInputs}
 				/>
 				<input
 					ref="password2"
@@ -175,7 +178,6 @@ export default class AuthForm extends Component {
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
 					onChange={this.handlePasswordInput}
-					disabled={s.disableInputs}
 				/>
 				<div className={classnames('bottom-container')}>
 					<Link

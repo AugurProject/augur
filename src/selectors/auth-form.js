@@ -1,4 +1,5 @@
 import loginAccount from './login-account';
+import links from './links';
 
 const Shared = {
 	msg: null,
@@ -103,6 +104,9 @@ const accountCreated = {
 
 
 function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, importedAccount, cb) {
+	if (password !== password2) {
+		return false;
+	}
 	require('../selectors').update({
 		authForm: {
 			...accountCreated,
@@ -110,7 +114,12 @@ function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, im
 	});
 
 	if (typeof cb !== 'function') {
-		require('../selectors').update({ activePage: 'markets' });
+		require('../selectors').update({
+			authForm: {
+				...signUp,
+			}
+		});
+		links.marketsLink.onClick('/');
 	} else {
 		cb(require('../selectors').loginAccount);
 	}
