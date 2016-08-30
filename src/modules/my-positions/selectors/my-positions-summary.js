@@ -43,7 +43,7 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	totalValue = totalValue.minus(totalSellShares.times(avgPerShareValue));
 	totalCost = totalCost.minus(totalSellShares.times(avgPerShareCost));
 
-	return generatePositionsSummary(1, abi.bignum(sharesPurchased).minus(totalSellShares).toFixed(), totalValue.toFixed(), totalCost.toFixed());
+	return generatePositionsSummary(1, abi.bignum(qtyShares).minus(totalSellShares).toFixed(), totalValue.toFixed(), totalCost.toFixed());
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
