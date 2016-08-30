@@ -1016,11 +1016,11 @@ describe("Unit tests", function () {
                     assert.isArray(actions);
                     assert.lengthOf(actions, 1);
                     var expected = [{
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "5",
                         "gasEth": "0.1254",
                         "feeEth": "0.0288",
-                        "costEth": "3",
+                        "costEth": "-2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1058,12 +1058,111 @@ describe("Unit tests", function () {
                         "shares": "5",
                         "gasEth": "0.0627",
                         "feeEth": "0.0192",
-                        "costEth": "3",
+                        "costEth": "-2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
                 }
             });
+
+
+            runTestCase({
+                description: "bid with less amount and same price, position greater than remaining order shares",
+                type: "sell",
+                orderShares: "5",
+                orderLimitPrice: "0.6",
+                takerFee: "0.02",
+                makerFee: "0.01",
+                userPositionShares: "6",
+                outcomeId: "outcomeasdf123",
+                range: "1",
+                marketOrderBook: {
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
+                },
+                userAddress: "abcd1234",
+                assertions: function (actions) {
+                    assert.isArray(actions);
+                    assert.lengthOf(actions, 2);
+                    var expected = [{
+                        "action": "SELL",
+                        "shares": "2",
+                        "gasEth": "0.0627",
+                        "feeEth": "0.0192",
+                        "costEth": "1.2",
+                        "avgPrice": "0.6"
+                    }, {
+                        "action": "ASK",
+                        "shares": "3",
+                        "gasEth": "0.0627",
+                        "feeEth": "0.01728",
+                        "costEth": "1.8",
+                        "avgPrice": "0.6"
+                    }];
+                    assert.deepEqual(actions, expected);
+                }
+            });
+
+            runTestCase({
+                description: "bid with less amount and same price, position smaller than remaining order shares",
+                type: "sell",
+                orderShares: "5",
+                orderLimitPrice: "0.6",
+                takerFee: "0.02",
+                makerFee: "0.01",
+                userPositionShares: "4",
+                outcomeId: "outcomeasdf123",
+                range: "1",
+                marketOrderBook: {
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
+                },
+                userAddress: "abcd1234",
+                assertions: function (actions) {
+                    assert.isArray(actions);
+                    assert.lengthOf(actions, 3);
+                    var expected = [{
+                        "action": "SELL",
+                        "shares": "2",
+                        "gasEth": "0.0627",
+                        "feeEth": "0.0192",
+                        "costEth": "1.2",
+                        "avgPrice": "0.6"
+                    }, {
+                        "action": "ASK",
+                        "shares": "2",
+                        "gasEth": "0.0627",
+                        "feeEth": "0.01152",
+                        "costEth": "1.2",
+                        "avgPrice": "0.6"
+                    }, {
+                        "action": "SHORT_ASK",
+                        "shares": "1",
+                        "gasEth": "0.1254",
+                        "feeEth": "0.00576",
+                        "costEth": "-0.4",
+                        "avgPrice": "0.6"
+                    }];
+                    assert.deepEqual(actions, expected);
+                }
+            });
+
 
             runTestCase({
                 description: "bid with less amount and same price, no position",
@@ -1096,14 +1195,14 @@ describe("Unit tests", function () {
                         "shares": "2",
                         "gasEth": "0.0627",
                         "feeEth": "0.0192",
-                        "costEth": "1.2",
+                        "costEth": "-0.8",
                         "avgPrice": "0.6"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "3",
                         "gasEth": "0.1254",
                         "feeEth": "0.01728",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1141,7 +1240,7 @@ describe("Unit tests", function () {
                         "shares": "5",
                         "gasEth": "0.0627",
                         "feeEth": "0.0168",
-                        "costEth": "3.5",
+                        "costEth": "-1.5",
                         "avgPrice": "0.7"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1179,14 +1278,14 @@ describe("Unit tests", function () {
                         "shares": "2",
                         "gasEth": "0.0627",
                         "feeEth": "0.0168",
-                        "costEth": "1.4",
+                        "costEth": "-0.6",
                         "avgPrice": "0.7"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "3",
                         "gasEth": "0.1254",
                         "feeEth": "0.01728",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1231,14 +1330,14 @@ describe("Unit tests", function () {
                         "shares": "3",
                         "gasEth": "0.0627",
                         "feeEth": "0.0296",
-                        "costEth": "2.3",
+                        "costEth": "-0.7",
                         "avgPrice": "0.76666666666666666667"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "2",
                         "gasEth": "0.1254",
                         "feeEth": "0.01152",
-                        "costEth": "1.2",
+                        "costEth": "-0.8",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1290,7 +1389,7 @@ describe("Unit tests", function () {
                         "shares": "5",
                         "gasEth": "0.0627",
                         "feeEth": "0.0368",
-                        "costEth": "4.1",
+                        "costEth": "-0.9",
                         "avgPrice": "0.82"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1366,11 +1465,11 @@ describe("Unit tests", function () {
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "3",
                         "gasEth": "0.1254",
                         "feeEth": "0.01728",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1415,7 +1514,7 @@ describe("Unit tests", function () {
                         "shares": "3",
                         "gasEth": "0.0627",
                         "feeEth": "0.0192",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1456,11 +1555,11 @@ describe("Unit tests", function () {
                         "costEth": "1.2",
                         "avgPrice": "0.6"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "3",
                         "gasEth": "0.1254",
                         "feeEth": "0.01728",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1505,7 +1604,7 @@ describe("Unit tests", function () {
                         "shares": "3",
                         "gasEth": "0.0627",
                         "feeEth": "0.0168",
-                        "costEth": "2.1",
+                        "costEth": "-0.9",
                         "avgPrice": "0.7"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1546,11 +1645,11 @@ describe("Unit tests", function () {
                         "costEth": "1.4",
                         "avgPrice": "0.7"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "3",
                         "gasEth": "0.1254",
                         "feeEth": "0.01728",
-                        "costEth": "1.8",
+                        "costEth": "-1.2",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1602,14 +1701,14 @@ describe("Unit tests", function () {
                         "shares": "1",
                         "gasEth": "0.0627",
                         "feeEth": "0.0168",
-                        "costEth": "0.7",
+                        "costEth": "-0.3",
                         "avgPrice": "0.7"
                     }, {
-                        "action": "SHORT_SELL_RISKY",
+                        "action": "SHORT_ASK",
                         "shares": "2",
                         "gasEth": "0.1254",
                         "feeEth": "0.01152",
-                        "costEth": "1.2",
+                        "costEth": "-0.8",
                         "avgPrice": "0.6"
                     }];
                     assert.deepEqual(actions, expected);
@@ -1668,7 +1767,7 @@ describe("Unit tests", function () {
                         "shares": "3",
                         "gasEth": "0.0627",
                         "feeEth": "0.0296",
-                        "costEth": "2.3",
+                        "costEth": "-0.7",
                         "avgPrice": "0.76666666666666666667"
                     }];
                     assert.deepEqual(actions, expected);
