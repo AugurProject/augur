@@ -6,6 +6,22 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { selectMarket } from '../../market/selectors/market';
 
+export function loadActiveMarketBidsAsks(marketID, outcomeID) {
+	return dispatch => {
+		const market = selectMarket(marketID);
+		if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
+			if (market.myPositionOutcomes) {
+				const numPositions = market.myPositionOutcomes.length;
+				for (let i = 0; i < numPositions; ++i) {
+					if (market.myPositionOutcomes[i].id === outcomeID && market.myPositionOutcomes[i].position.qtyShares) {
+						return dispatch(loadBidsAsks(marketID));
+					}
+				}
+			}
+		}
+	};
+}
+
 export function listenToUpdates() {
 	return (dispatch, getState) => {
 		augur.filters.listen({
@@ -20,10 +36,7 @@ export function listenToUpdates() {
 			log_fill_tx: (msg) => {
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
-					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						loadBidsAsks(msg.market);
-					}
+					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
 				}
 			},
 
@@ -31,10 +44,7 @@ export function listenToUpdates() {
 			log_add_tx: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						loadBidsAsks(msg.market);
-					}
+					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
 				}
 			},
 
@@ -42,10 +52,7 @@ export function listenToUpdates() {
 			log_cancel: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					const market = selectMarket(msg.market);
-					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-						loadBidsAsks(msg.market);
-					}
+					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
 				}
 			},
 
