@@ -17644,11 +17644,15 @@ module.exports={
         "inputs": [
           "branch", 
           "offset", 
-          "numMarketsToLoad"
+          "numMarketsToLoad", 
+          "volumeMin", 
+          "volumeMax"
         ], 
         "method": "getMarketsInfo", 
         "returns": "hash[]", 
         "signature": [
+          "int256", 
+          "int256", 
           "int256", 
           "int256", 
           "int256"
