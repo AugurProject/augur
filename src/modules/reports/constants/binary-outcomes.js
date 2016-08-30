@@ -1,0 +1,1 @@
+export default ['No', 'Yes'];

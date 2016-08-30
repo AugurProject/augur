@@ -3,6 +3,7 @@ import Link from '../../link/components/link';
 import classnames from 'classnames';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_SELL_RISKY, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
+import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const Transaction = (p) => {
@@ -41,8 +42,11 @@ const Transaction = (p) => {
 			<span className="description">
 				<span className="action">{nodes.action}</span>
 				<ValueDenomination className="shares" {...p.data.numShares} />
-				<span className="of">of</span>
-				<span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
+				{p.data.marketType !== SCALAR &&
+					<span>
+						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
+					</span>
+				}
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<br />

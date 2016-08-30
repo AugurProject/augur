@@ -20,6 +20,7 @@ const TradePanel = (p) => (
 				<TradeBuilderRow
 					key={outcome.id}
 					{...outcome}
+					marketType={p.marketType}
 					showFullOrderBook={!!p.selectedOutcome && !!p.selectedOutcome.selectedOutcomeID && p.selectedOutcome.selectedOutcomeID === outcome.id}
 					isFaded={!!p.selectedOutcome && !!p.selectedOutcome.selectedOutcomeID && p.selectedOutcome.selectedOutcomeID !== outcome.id}
 					updateSelectedOutcome={p.selectedOutcome.updateSelectedOutcome}
@@ -31,6 +32,7 @@ const TradePanel = (p) => (
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
+	marketType: React.PropTypes.string,
 	selectedOutcome: React.PropTypes.object,
 	userOpenOrdersSummary: React.PropTypes.object
 };
