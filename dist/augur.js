@@ -40145,7 +40145,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.10";
+    this.version = "2.3.0";
 
     this.options = {
         debug: {
@@ -42583,6 +42583,8 @@ var abacus = require("./abacus");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var ONE = new BigNumber(1, 10);
+
 module.exports = {
 
 	/**
@@ -42723,12 +42725,13 @@ module.exports = {
 	 */
 	getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
 		var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
+		var costEth = shortSellEth.minus(shares);
 		return {
 			action: "SHORT_SELL",
 			shares: shares.toFixed(),
 			gasEth: shortSellGasEth.toFixed(),
 			feeEth: takerFeeEth.toFixed(),
-			costEth: shortSellEth.toFixed(),
+			costEth: costEth.toFixed(),
 			avgPrice: shortSellEth.dividedBy(shares).toFixed()
 		};
 	},
@@ -42745,12 +42748,13 @@ module.exports = {
 		var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
 		var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
 		var riskyShortSellEth = shares.times(limitPrice);
+		var costEth = riskyShortSellEth.minus(shares);
 		return {
 			action: "SHORT_SELL_RISKY",
 			shares: shares.toFixed(),
 			gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
-			feeEth: riskyShortSellEth.times(makerFee).toFixed(),
-			costEth: riskyShortSellEth.toFixed(),
+			feeEth: costEth.times(makerFee).toFixed(),
+			costEth: costEth.toFixed(),
 			avgPrice: limitPrice.toFixed()
 		};
 	},
