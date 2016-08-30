@@ -87,9 +87,13 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: { realEther: 100 }
 		}, {
+			type: 'CLEAR_ACCOUNT_TRADES'
+		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
 		}, {
 			type: 'UPDATE_MARKETS_INFO'
+		}, {
+			type: 'CLEAR_REPORTS'
 		}, {
 			type: 'UPDATE_BLOCKCHAIN',
 			data: { reportPeriod: 19 }

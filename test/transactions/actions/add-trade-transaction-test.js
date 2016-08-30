@@ -60,7 +60,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					formattedValue: 5,
 					formatted: '5',
 					roundedValue: 5,
-					rounded: '5',
+					rounded: '5.0',
 					minimized: '5',
 					denomination: ' shares',
 					full: '5 shares'
@@ -103,7 +103,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					formattedValue: 5,
 					formatted: '5',
 					roundedValue: 5,
-					rounded: '5',
+					rounded: '5.0',
 					minimized: '5',
 					denomination: ' shares',
 					full: '5 shares'
