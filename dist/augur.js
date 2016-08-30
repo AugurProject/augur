@@ -40145,7 +40145,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.3.0";
+    this.version = "2.3.1";
 
     this.options = {
         debug: {
@@ -40154,7 +40154,8 @@ function Augur() {
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false      // trading-related debug logging
-        }
+        },
+        loadZeroVolumeMarkets: false
     };
     this.protocol = NODE_JS || document.location.protocol;
 
@@ -40806,7 +40807,9 @@ module.exports = {
             self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
 
                 // second pass: zero-volume markets
-                // self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                if (self.options.loadZeroVolumeMarkets) {
+                    self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                }
             });
         });
     },

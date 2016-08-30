@@ -58,7 +58,9 @@ module.exports = {
             self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
 
                 // second pass: zero-volume markets
-                // self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                if (self.options.loadZeroVolumeMarkets) {
+                    self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+                }
             });
         });
     },
