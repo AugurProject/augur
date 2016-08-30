@@ -1,6 +1,7 @@
 import { augur, abi } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
-import { ZERO } from '../../trade/constants/numbers';
+import { ZERO, TWO } from '../../trade/constants/numbers';
+import { SCALAR } from '../../markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
 
@@ -24,9 +25,15 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		// find top order to default limit price to
 		const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
+		const defaultPrice = market.type === SCALAR ?
+			abi.bignum(market.maxValue)
+				.plus(abi.bignum(market.minValue))
+				.dividedBy(TWO)
+				.toNumber() :
+			0.5;
 		const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || 1 :
-			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || 0;
+			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice :
+			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
 		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;

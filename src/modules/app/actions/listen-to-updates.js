@@ -22,8 +22,7 @@ export function listenToUpdates() {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
 					console.log('log_fill_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					const outcomeIndex = msg.outcome - 1;
-					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
+					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
@@ -37,8 +36,7 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					console.log('log_add_tx:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					const outcomeIndex = msg.outcome - 1;
-					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
+					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
@@ -52,8 +50,7 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					console.log('log_cancel:', JSON.stringify(msg, null, 2));
 					const market = selectMarket(msg.market);
-					const outcomeIndex = msg.outcome - 1;
-					if (market && market.outcomes && market.outcomes[outcomeIndex] && market.outcomes[outcomeIndex].orderBook) {
+					if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
 						console.log('loading bids/asks for market:', market);
 						loadBidsAsks(msg.market);
 					}
