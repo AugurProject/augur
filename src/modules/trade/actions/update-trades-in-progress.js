@@ -1,5 +1,6 @@
 import { augur, abi } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
+import { ZERO } from '../../trade/constants/numbers';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
 
@@ -38,19 +39,15 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		}
 
 		// calculate totals
-		const negater = cleanSide === BUY ? -1 : 1;
 		let costEth;
 		let feeEth;
-		let totalCost;
 		if (cleanLimitPrice !== undefined) {
 			costEth = abi.bignum(cleanNumShares).times(abi.bignum(cleanLimitPrice));
 			feeEth = abi.bignum(market.takerFee).times(costEth);
-			totalCost = costEth.times(abi.bignum(negater)).minus(feeEth).toFixed();
 			feeEth = feeEth.toFixed();
 		} else {
 			costEth = NaN;
 			feeEth = NaN;
-			totalCost = NaN;
 		}
 
 		const newTradeDetails = {
@@ -58,7 +55,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			numShares: cleanNumShares || undefined,
 			limitPrice: cleanLimitPrice || undefined,
 			totalFee: feeEth,
-			totalCost
+			totalCost: 0
 		};
 
 		// trade actions
@@ -74,6 +71,17 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				outcomeID,
 				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});
+			if (newTradeDetails.tradeActions) {
+				const numTradeActions = newTradeDetails.tradeActions.length;
+				if (numTradeActions) {
+					let totalCost = ZERO;
+					for (let i = 0; i < numTradeActions; ++i) {
+						totalCost = totalCost.plus(abi.bignum(newTradeDetails.tradeActions[i].costEth));
+					}
+					newTradeDetails.totalCost = totalCost.toFixed();
+				}
+			}
+			console.log('newTradeDetails:', newTradeDetails);
 		}
 
 		dispatch({

@@ -13,7 +13,6 @@ import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
-import { clearLoginAccount } from '../../auth/actions/update-login-account';
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {

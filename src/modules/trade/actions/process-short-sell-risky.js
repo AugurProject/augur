@@ -11,7 +11,7 @@ export function processShortSellRisky(transactionID, marketID, outcomeID, numSha
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'buying complete set and placing ask...', message: `asking ${numShares} shares @ ${formatEther(limitPrice).full}` }));
+		dispatch(updateExistingTransaction(transactionID, { status: 'placing short ask...', message: `short asking ${numShares} shares @ ${formatEther(limitPrice).full}` }));
 
 		shortSellRisky(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
@@ -19,7 +19,7 @@ export function processShortSellRisky(transactionID, marketID, outcomeID, numSha
 			}
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
-				message: `ask ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}`
+				message: `short ask ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}`
 			}));
 		});
 	};
@@ -34,7 +34,6 @@ function shortSellRisky(transactionID, marketID, outcomeID, limitPrice, totalSha
 
 		onSent: data => {
 			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-			console.log('shortSellRisky onSent', data);
 		},
 		onFailed: cb,
 		onSuccess: data => cb(null, data)

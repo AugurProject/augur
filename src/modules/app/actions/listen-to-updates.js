@@ -3,6 +3,8 @@ import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { selectMarket } from '../../market/selectors/market';
 
 export function listenToUpdates() {
 	return (dispatch, getState) => {
@@ -17,22 +19,43 @@ export function listenToUpdates() {
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
 				// console.log('log_fill_tx:', msg);
-				if (msg && msg.market && msg.outcome && msg.price) {
+				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
+					console.log('log_fill_tx:', JSON.stringify(msg, null, 2));
+					const market = selectMarket(msg.market);
+					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+						console.log('loading bids/asks for market:', market);
+						loadBidsAsks(msg.market);
+					}
+					console.log('market detail not loaded, skipping...');
 				}
 			},
 
 			// order added to orderbook
 			log_add_tx: (msg) => {
-				if (msg && msg.market) {
-					dispatch(loadMarketsInfo([msg.market]));
+				// exclude own? if (msg.sender !== getState().loginAccount.id)
+				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+					console.log('log_add_tx:', JSON.stringify(msg, null, 2));
+					const market = selectMarket(msg.market);
+					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+						console.log('loading bids/asks for market:', market);
+						loadBidsAsks(msg.market);
+					}
+					console.log('market detail not loaded, skipping...');
 				}
 			},
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
-				if (msg && msg.market) {
-					dispatch(loadMarketsInfo([msg.market]));
+				// exclude own? if (msg.sender !== getState().loginAccount.id)
+				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+					console.log('log_cancel:', JSON.stringify(msg, null, 2));
+					const market = selectMarket(msg.market);
+					if (market && market.outcomes && market.outcomes[msg.outcome] && market.outcomes[msg.outcome].orderBook) {
+						console.log('loading bids/asks for market:', market);
+						loadBidsAsks(msg.market);
+					}
+					console.log('market detail not loaded, skipping...');
 				}
 			},
 

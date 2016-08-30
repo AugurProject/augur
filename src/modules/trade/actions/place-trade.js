@@ -69,7 +69,10 @@ export function placeTrade(marketID) {
 						}
 					}
 				}
-				if (position && position.value) {
+				console.log('positions:', position);
+				console.log('matching trade IDs:', tradeIDs);
+				console.log('num shares:', outcomeTradeInProgress.numShares);
+				if (position && position.value > 0) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addTradeTransaction(
@@ -109,8 +112,7 @@ export function placeTrade(marketID) {
 							market.description,
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							outcomeTradeInProgress.limitPrice));
 					}
 				}
 			}

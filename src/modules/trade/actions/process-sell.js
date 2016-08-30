@@ -8,6 +8,8 @@ import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively'
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
+import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
+import { selectMarket } from '../../market/selectors/market';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
@@ -46,15 +48,37 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
 
 				if (res.remainingShares > 0) {
-					const transactionData = getState().transactionsData[transactionID];
+					const market = selectMarket(marketID);
+					let position = 0;
+					if (market.myPositionOutcomes) {
+						const numPositions = market.myPositionOutcomes.length;
+						for (let i = 0; i < numPositions; ++i) {
+							if (market.myPositionOutcomes[i].id === outcomeID) {
+								position = market.myPositionOutcomes[i].position.qtyShares;
+								break;
+							}
+						}
+					}
+					console.log('sell complete! current position:', position, typeof position, position - numShares);
 
-					dispatch(addAskTransaction(
-						transactionData.data.marketID,
-						transactionData.data.outcomeID,
-						transactionData.data.marketDescription,
-						transactionData.data.outcomeName,
-						res.remainingShares,
-						limitPrice));
+					const transactionData = getState().transactionsData[transactionID];
+					if (position > 0) {
+						dispatch(addAskTransaction(
+							transactionData.data.marketID,
+							transactionData.data.outcomeID,
+							transactionData.data.marketDescription,
+							transactionData.data.outcomeName,
+							res.remainingShares,
+							limitPrice));
+					} else {
+						dispatch(addShortSellRiskyTransaction(
+							transactionData.data.marketID,
+							transactionData.data.outcomeID,
+							transactionData.data.marketDescription,
+							transactionData.data.outcomeName,
+							res.remainingShares,
+							limitPrice));
+					}
 				}
 			}
 		);

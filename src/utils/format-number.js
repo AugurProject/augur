@@ -79,8 +79,8 @@ export function formatShares(num, opts) {
 	const formattedShares = formatNumber(
 		abi.number(num),
 		{
-			decimals: 2,
-			decimalsRounded: 0,
+			decimals: 3,
+			decimalsRounded: 1,
 			denomination: ` share${num !== 1 ? 's' : ''}`,
 			minimized: true,
 			zeroStyled: false,
