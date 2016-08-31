@@ -11,13 +11,12 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import { validatePassword } from '../../auth/validators/password-validator';
 
-export function register(name, password, password2, loginID, rememberMe, cb) {
+export function register(name, password, password2, loginID, rememberMe, loginAccount, cb) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-		if (loginID && links && links.marketsLink && !cb)	{
-			const { loginAccount } = getState();
+		if (loginID && links && links.marketsLink && !cb && loginAccount.keystore)	{
 			if (rememberMe && localStorageRef && localStorageRef.setItem) {
 				const persistentAccount = Object.assign({}, loginAccount);
 				if (Buffer.isBuffer(persistentAccount.privateKey)) {
@@ -28,6 +27,11 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
+
+			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(updateLoginAccount(loginAccount));
+			dispatch(loadLoginAccountDependents());
+
 			return links.marketsLink.onClick(links.marketsLink.href);
 		}
 
@@ -47,18 +51,16 @@ export function register(name, password, password2, loginID, rememberMe, cb) {
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
-			if (!loginAccount || !loginAccount.id) {
+			const localLoginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
+			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
 
-			dispatch(addFundNewAccount(loginAccount.address));
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
-			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
+			dispatch(addFundNewAccount(localLoginAccount.address));
+			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
 
 			if (typeof cb === 'function') {
-				cb(loginAccount);
+				cb(localLoginAccount);
 			}
 		});
 
