@@ -16,7 +16,7 @@ var DEBUG = false;
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 describe("CreateMarket.createSingleEventMarket", function () {

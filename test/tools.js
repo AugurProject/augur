@@ -23,7 +23,7 @@ var reptools = require("../src/modules/reportingTools");
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 var displayed_connection_info = false;

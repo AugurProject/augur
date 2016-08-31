@@ -21,7 +21,7 @@ var utils = require("./utilities");
 request = request.defaults({timeout: 120000});
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_EVEN
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
