@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
-import Input from '../../common/components/input';
 import Checkbox from '../../common/components/checkbox';
 
 export default class AuthForm extends Component {
@@ -41,7 +40,7 @@ export default class AuthForm extends Component {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handlePasswordInput = this.handlePasswordInput.bind(this);
-		this.loginIDcp = this.loginIDcp.bind(this);
+		this.loginIDCopy = this.loginIDCopy.bind(this);
 		if (new FileReader()) {
 			this.fileReader = new FileReader();
 		}
@@ -49,7 +48,8 @@ export default class AuthForm extends Component {
 			msg: this.props.msg,
 			loginID: undefined,
 			rememberMe: this.props.rememberMe,
-			disableInputs: false
+			disableInputs: false,
+			loginAccount: {}
 		};
 	}
 
@@ -79,16 +79,17 @@ export default class AuthForm extends Component {
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
+		const loginAccount = this.state.loginAccount;
 		const file = (this.refs.form[1].files[0] !== undefined);
 
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
-				setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, importAccount, undefined), 300);
+				setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, importAccount, loginAccount, undefined), 300);
 			};
 		} else {
-			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined), 300);
+			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, loginAccount, undefined), 300);
 		}
 		this.setState({ msg: '', loginID: undefined, disableInputs: false });
 		return false;
@@ -105,19 +106,18 @@ export default class AuthForm extends Component {
 		const rememberMe = this.state.rememberMe;
 
 		if (password !== '' && password2 !== '') {
-			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, (loginAccount) => {
-				this.setState({ loginID: loginAccount.loginID, disableInputs: true });
+			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined, (loginAccount) => {
+				this.setState({ loginID: loginAccount.loginID, disableInputs: true, loginAccount });
 			}), 300);
 		}
 	}
 
-	loginIDcp = (e) => {
-		const loginIDInput = e.target;
+	loginIDCopy = (e) => {
+		const loginIDDisplay = this.refs.loginIDDisplay;
 
 		try {
-			loginIDInput.select();
+			loginIDDisplay.select();
 			document.execCommand('copy');
-			loginIDInput.blur();
 		} catch (err) {
 			console.log(err);
 		}
@@ -164,7 +164,10 @@ export default class AuthForm extends Component {
 					autoFocus="autofocus"
 				/>
 				{p.loginID &&
-					<textarea className={classnames('loginID-generated')} readOnly value={p.loginID} onClick={this.loginIDcp} />
+					<textarea ref="loginIDDisplay" className={classnames('loginID-generated')} readOnly value={p.loginID} onClick={this.loginIDCopy} />
+				}
+				{p.loginID &&
+					<button type="button" className={classnames('button submit-button')} onClick={this.loginIDCopy}>Copy Login ID</button>
 				}
 				<input
 					name="username"
