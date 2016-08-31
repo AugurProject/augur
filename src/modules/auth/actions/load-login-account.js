@@ -13,6 +13,7 @@ import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
+import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
@@ -61,6 +62,10 @@ export function loadLoginAccountLocalStorage(accountID) {
 				}
 			});
 			dispatch(updateTransactionsData(localState.transactionsData));
+		}
+
+		if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
+			dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
 		}
 	};
 }

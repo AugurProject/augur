@@ -3,7 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -13,11 +13,12 @@ import { logout } from '../../auth/actions/logout';
 
 import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
+import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
 import store from '../../../store';
 
 export default function () {
-	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();
+	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
 	const { market } = require('../../../selectors');
 	return {
 		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
@@ -30,6 +31,7 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
+		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
 }
 
@@ -170,6 +172,20 @@ export const selectMyReportsLink = memoizerific(1)((dispatch) => {
 		onClick: () => {
 			dispatch(loadEventsWithSubmittedReport());
 			dispatch(updateURL(href));
+		}
+	};
+});
+
+export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessageVersion, dispatch) => {
+	const href = PAGES_PATHS[LOGIN_MESSAGE];
+	return {
+		href,
+		onClick: () => {
+			dispatch(updateURL(href));
+
+			if (userID != null) {
+				dispatch(updateUserLoginMessageVersionRead(currentLoginMessageVersion));
+			}
 		}
 	};
 });
