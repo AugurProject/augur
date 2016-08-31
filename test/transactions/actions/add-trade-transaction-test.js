@@ -44,7 +44,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Buy Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'marketLink', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
 		const actual = store.getActions();
 		actual[0].action();
 
@@ -52,6 +52,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 			type: 'buy',
 			data: {
 				marketID: 'marketID',
+				marketLink: 'marketLink',
 				outcomeID: 'outcomeID',
 				marketType: 'marketType',
 				marketDescription: 'Some Market Description',
@@ -108,7 +109,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Sell Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'marketLink', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
 		const actual = store.getActions();
 		actual[0].action();
 
@@ -116,6 +117,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 			type: 'sell',
 			data: {
 				marketID: 'marketID',
+				marketLink: 'marketLink',
 				outcomeID: 'outcomeID',
 				marketType: 'marketType',
 				marketDescription: 'Some Market Description',
