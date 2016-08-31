@@ -192,7 +192,6 @@ export default class AccountPage extends Component {
 							<div className="account-info-item">
 								<h2 className="heading">Important Information</h2>
 								<p>
-
 									Read <Link {...p.loginMessageLink}>
 										important information
 									</Link> about Augur
