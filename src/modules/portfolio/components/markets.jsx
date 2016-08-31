@@ -9,9 +9,9 @@ const PortfolioMarkets = (p) => (
 				<div className="">
 					<span className="description">{market.description}</span>
 					{!!market &&
-					<section className="portfolio-list">
-						<Market {...market} />
-					</section>
+						<section className="portfolio-list">
+							<Market {...market} />
+						</section>
 					}
 				</div>
 			</Link>

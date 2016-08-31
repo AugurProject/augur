@@ -7,7 +7,7 @@ export default [
 		id: '0',
 		marketLink: {
 			className: 'portfolio-row-link',
-			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: `/m/0` })
+			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
 		},
 		description: 'Will the shoop, shoop de woop?',
 		endDate: makeDate(new Date('2017/12/12')),
@@ -21,7 +21,7 @@ export default [
 		id: '1',
 		marketLink: {
 			className: 'portfolio-row-link',
-			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: `/m/1` })
+			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
 		},
 		description: 'When will the first zipline span the San Francisco Bay?',
 		endDate: makeDate(new Date('2017/12/12')),
@@ -35,7 +35,7 @@ export default [
 		id: '2',
 		marketLink: {
 			className: 'portfolio-row-link',
-			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[2], url: `/m/2` })
+			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[2], url: '/m/2' })
 		},
 		description: 'When will I stop balding?',
 		endDate: makeDate(new Date('2017/12/12')),
