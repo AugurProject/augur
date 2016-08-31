@@ -4,20 +4,19 @@ import { addTradeTransaction } from '../../transactions/actions/add-trade-transa
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { selectTransactionsLink } from '../../link/selectors/links';
+import { selectTransactionsLink, selectMarketLink } from '../../link/selectors/links';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
-import { selectMarketLink } from '../../link/selectors/links';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
-		const marketLink = selectMarketLink({id: marketID}, dispatch);
+		const marketLink = selectMarketLink({ id: marketID }, dispatch);
 
 		if (!marketTradeInProgress || !market) {
 			return;

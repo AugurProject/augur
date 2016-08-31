@@ -68,7 +68,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 		return [];
 	}
 
-	const marketLink = selectMarketLink({id: market.id}, store.dispatch);
+	const marketLink = selectMarketLink({ id: market.id }, store.dispatch);
 
 	return tradeActions.map(tradeAction => (
 		makeTradeTransaction(
