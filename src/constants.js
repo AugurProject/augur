@@ -11,12 +11,22 @@ BigNumber.config({
     ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
-var ONE = new BigNumber(10).toPower(18); 
+var ten = new BigNumber(10, 10);
+var decimals = new BigNumber(2, 10);
+var multiple = ten.toPower(decimals);
+var ONE = ten.toPower(18);
 
 module.exports = {
     ZERO: new BigNumber(0),
     ONE: ONE,
     ETHER: ONE,
+
+    PRECISION: {
+        decimals: decimals.toNumber(),
+        limit: ten.dividedBy(multiple),
+        multiple: multiple
+    },
+    MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
 
     DEFAULT_BRANCH_ID: "0xf69b5",
     DEFAULT_BRANCH_PERIOD_LENGTH: 172800,

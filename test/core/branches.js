@@ -44,25 +44,53 @@ describe("Integration tests", function () {
         }
     });
     describe("getMarketsInBranch(" + branchID + ")", function () {
+        if (parseInt(augur.getNumMarketsBranch(branchID), 10) <= 3000) {
+            var test = function (r) {
+                assert.isArray(r);
+                assert.isAbove(r.length, 1);
+            };
+            it("sync", function () {
+                test(augur.getMarketsInBranch(branchID));
+            });
+            it("async", function (done) {
+                augur.getMarketsInBranch(branchID, function (r) {
+                    test(r); done();
+                });
+            });
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getMarketsInBranch", [branchID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getMarketsInBranch", [branchID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
+                });
+            }
+        }
+    });
+    describe("getSomeMarketsInBranch(" + branchID + ", 0, 10)", function () {
         var test = function (r) {
             assert.isArray(r);
-            assert.isAbove(r.length, 1);
+            assert.strictEqual(r.length, Math.min(parseInt(augur.getNumMarketsBranch(branchID), 10), 10));
         };
         it("sync", function () {
-            test(augur.getMarketsInBranch(branchID));
+            test(augur.getSomeMarketsInBranch(branchID, 0, 10));
         });
         it("async", function (done) {
-            augur.getMarketsInBranch(branchID, function (r) {
+            augur.getSomeMarketsInBranch(branchID, 0, 10, function (r) {
                 test(r); done();
             });
         });
         if (!augur.rpc.wsUrl) {
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                batch.add("getMarketsInBranch", [branchID], function (r) {
+                batch.add("getSomeMarketsInBranch", [branchID, 0, 10], function (r) {
                     test(r);
                 });
-                batch.add("getMarketsInBranch", [branchID], function (r) {
+                batch.add("getSomeMarketsInBranch", [branchID, 0, 10], function (r) {
                     test(r); done();
                 });
                 batch.execute();

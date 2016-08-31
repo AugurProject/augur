@@ -131,8 +131,10 @@ module.exports = {
         var orderBook = {buy: {}, sell: {}};
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-            if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
-            orderBook[order.type][order.id] = order;
+            if (order) {
+                if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
+                orderBook[order.type][order.id] = order;
+            }
         }
         return orderBook;
     },

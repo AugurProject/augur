@@ -231,6 +231,13 @@ module.exports = {
             return markets.scalar && markets.categorical && markets.binary;
         }
 
+        if (!parseInt(augur.getCreator(branchID), 16)) {
+            return this.setup_new_branch(augur, augur.getPeriodLength(augur.constants.DEFAULT_BRANCH_ID), augur.constants.DEFAULT_BRANCH_ID, augur.web.account.address || augur.from, function (err, newBranchID) {
+                if (err) return callback(err);
+                self.create_each_market_type(augur, newBranchID, expDate, callback);
+            });
+        }
+
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
         var streetName = madlibs.streetName();

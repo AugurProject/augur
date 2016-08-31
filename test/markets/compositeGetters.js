@@ -15,10 +15,11 @@ var tools = require("../tools");
 var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
 
 var amount = "1";
-var branchId = augur.constants.DEFAULT_BRANCH_ID;
+var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
 var outcome = 1;
-var markets = augur.getMarketsInBranch(branchId);
+var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
+var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 101, numMarkets - 1);
 var numMarkets = markets.length;
 var marketId = tools.select_random(markets);
 if (numMarkets > tools.MAX_TEST_SAMPLES) {
@@ -71,7 +72,7 @@ var testMarketInfo = function (market, info) {
     if (info.constructor === Array) {
         assert.isAbove(info.length, 43);
         info = augur.rpc.encodeResult(info);
-        assert.strictEqual(parseInt(info[7]), parseInt(branchId));
+        assert.strictEqual(parseInt(info[7]), parseInt(branchID));
         r = augur.parseMarketInfo(info);
         if (r.numEvents > 1) {
             var txList = new Array(r.numEvents);
@@ -104,8 +105,8 @@ var testMarketInfo = function (market, info) {
     assert.property(r, "tradingPeriod");
     assert.isNumber(r.tradingPeriod);
     assert.strictEqual(parseInt(augur.getTradingPeriod(market)), r.tradingPeriod);
-    assert.property(r, "branchId");
-    assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchId));
+    assert.property(r, "branchID");
+    assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchID));
     assert.property(r, "numEvents");
     assert.strictEqual(parseInt(augur.getNumEvents(market)), r.numEvents);
     assert.property(r, "cumulativeScale");
@@ -175,7 +176,7 @@ describe("getMarketsInfo", function () {
         }
         options = options || {};
         assert.isObject(info);
-        var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchId));
+        var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchID));
         var market;
         assert.strictEqual(Object.keys(info).length, numMarkets);
         for (var marketId in info) {
@@ -194,7 +195,7 @@ describe("getMarketsInfo", function () {
         if (done) done();
     };
     var params = {
-        branch: branchId,
+        branch: branchID,
         offset: 0,
         numMarketsToLoad: 3
     };
@@ -220,7 +221,7 @@ describe("getMarketsInfo", function () {
         this.timeout(tools.TIMEOUT);
         var numMarketsToLoad = 3;
         augur.getMarketsInfo({
-            branch: branchId,
+            branch: branchID,
             offset: 1,
             numMarketsToLoad: numMarketsToLoad,
             callback: function (info) {

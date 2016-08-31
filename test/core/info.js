@@ -16,7 +16,8 @@ describe("Integration tests", function () {
     var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var testAccount = accounts[0];
-    var markets = augur.getMarketsInBranch(branchID);
+    var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
+    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 101, numMarkets - 1);
     var marketID = markets[0];
     var market_creator_1 = testAccount;
     var marketID2 = markets[1];

@@ -98,6 +98,10 @@ module.exports = {
         onTradeFailed = onTradeFailed || utils.noop;
         this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
             if (err) return onTradeFailed(err);
+            var bn_max_value = abi.bignum(max_value);
+            if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
+                return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
+            }
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
