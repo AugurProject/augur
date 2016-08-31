@@ -1,10 +1,16 @@
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+import { M } from '../modules/site/constants/pages';
 
 export default [
 	{
 		type: 'buy',
 		data: {
 			marketID: '0xbbfac7f7ac337fab85d67bb8a3061413271c1bc68b1da47fa7cbb53031c78fc8',
+			marketLink: {
+				text: 'Which Jess coordinations clap Dwight Mission cube?',
+				className: 'transaction-text-link',
+				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
+			},
 			outcomeID: '7',
 			marketType: CATEGORICAL,
 			marketDescription: 'Which Jess coordinations clap Dwight Mission cube?',
@@ -38,6 +44,11 @@ export default [
 		type: 'buy',
 		data: {
 			marketID: '0xbbfac7f7ac337fab85d67bb8a3061413271c1bc68b1da47fa7cbb53031c78fc8',
+			marketLink: {
+				text: 'Which Jess coordinations clap Dwight Mission cube?',
+				className: 'transaction-text-link',
+				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
+			},
 			outcomeID: '1',
 			marketType: BINARY,
 			marketDescription: 'Which Jess coordinations clap Dwight Mission cube?',
@@ -71,9 +82,14 @@ export default [
 		type: 'buy',
 		data: {
 			marketID: '0x3dc3d2eab74ea5b8fea409c5fbb8240a6fa88b3387c26ebcb467911cb8653027',
+			marketLink: {
+				text: `Which political party's candidate will win the 2016 U.S. Presidential Election?`,
+				className: 'transaction-text-link',
+				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[2], url: '/m/2' })
+			},
 			outcomeID: '1',
 			marketType: SCALAR,
-			marketDescription: 'Which political party\'s candidate will win the 2016 U.S. Presidential Election?',
+			marketDescription: `Which political party's candidate will win the 2016 U.S. Presidential Election?`,
 			outcomeName: 'Democratic',
 			numShares: {
 				value: 100,

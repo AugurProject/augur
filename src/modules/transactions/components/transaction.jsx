@@ -52,11 +52,12 @@ const Transaction = (p) => {
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<br />
-				<span className="market-description" title={p.data.marketDescription}>
+				<Link className={classnames('market-description', p.data.marketLink.className)} onClick={p.data.marketLink.onClick}>
 					{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
-				</span>
+				</Link>
 			</span>
 		);
+
 		break;
 	case LOGIN:
 		nodes.description = (
@@ -190,3 +191,5 @@ Transaction.propTypes = {
 };
 
 export default Transaction;
+
+
