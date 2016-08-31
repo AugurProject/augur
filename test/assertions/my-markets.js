@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertFormattedDate from '../../test/assertions/common/formatted-date';
+import assertFormattedNumber from './common/formatted-number';
+import assertFormattedDate from './common/formatted-date';
 import assertMarketLink from './common/market-link';
 
 export default function (myMarkets){
@@ -21,7 +21,7 @@ export function assertMyMarkets(market){
 
 		it('marketLink', () => {
 			assert.isDefined(market.marketLink);
-			assertMarketLink(market.marketLink);
+			assertMarketLink(market.marketLink, `myMarkets' marketLink`);
 		});
 
 		it('description', () => {

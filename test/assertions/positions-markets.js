@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from './common/formatted-number';
 import assertMarketLink from './common/market-link';
 
 export default function (positionsMarkets) {
