@@ -191,5 +191,3 @@ Transaction.propTypes = {
 };
 
 export default Transaction;
-
-

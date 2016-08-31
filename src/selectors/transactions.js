@@ -83,13 +83,13 @@ export default [
 		data: {
 			marketID: '0x3dc3d2eab74ea5b8fea409c5fbb8240a6fa88b3387c26ebcb467911cb8653027',
 			marketLink: {
-				text: `Which political party's candidate will win the 2016 U.S. Presidential Election?`,
+				text: 'Which political party\'s candidate will win the 2016 U.S. Presidential Election?',
 				className: 'transaction-text-link',
 				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[2], url: '/m/2' })
 			},
 			outcomeID: '1',
 			marketType: SCALAR,
-			marketDescription: `Which political party's candidate will win the 2016 U.S. Presidential Election?`,
+			marketDescription: 'Which political party\'s candidate will win the 2016 U.S. Presidential Election?',
 			outcomeName: 'Democratic',
 			numShares: {
 				value: 100,
