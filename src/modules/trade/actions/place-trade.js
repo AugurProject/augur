@@ -10,12 +10,14 @@ import { addBidTransaction } from '../../transactions/actions/add-bid-transactio
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
+import { selectMarketLink } from '../../link/selectors/links';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
+		const marketLink = selectMarketLink({id: marketID}, dispatch);
 
 		if (!marketTradeInProgress || !market) {
 			return;
@@ -37,6 +39,7 @@ export function placeTrade(marketID) {
 					dispatch(addTradeTransaction(
 						BUY,
 						marketID,
+						marketLink,
 						outcomeID,
 						market.type,
 						market.description,
@@ -49,6 +52,7 @@ export function placeTrade(marketID) {
 				} else {
 					dispatch(addBidTransaction(
 						marketID,
+						marketLink,
 						outcomeID,
 						market.description,
 						outcomesData[marketID][outcomeID].name,
@@ -80,6 +84,7 @@ export function placeTrade(marketID) {
 						dispatch(addTradeTransaction(
 							SELL,
 							marketID,
+							marketLink,
 							outcomeID,
 							market.type,
 							market.description,
@@ -92,6 +97,7 @@ export function placeTrade(marketID) {
 					} else {
 						dispatch(addAskTransaction(
 							marketID,
+							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
@@ -106,6 +112,7 @@ export function placeTrade(marketID) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addShortSellTransaction(
 							marketID,
+							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
@@ -117,6 +124,7 @@ export function placeTrade(marketID) {
 					} else {
 						dispatch(addShortAskTransaction(
 							marketID,
+							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,

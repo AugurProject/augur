@@ -17,6 +17,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 		type,
 		data: {
 			marketID,
+			marketLink,
 			outcomeID,
 			marketType,
 			marketDescription,
