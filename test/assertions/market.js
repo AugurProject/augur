@@ -93,7 +93,7 @@ export default function (market) {
 
 		it('market.marketLink', () => {
 			assert.isDefined(market.marketLink);
-			assertMarketLink(market.marketLink);
+			assertMarketLink(market.marketLink, 'market.marketLink');
 		});
 
 		const tags = market.tags;

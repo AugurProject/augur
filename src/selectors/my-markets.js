@@ -6,6 +6,7 @@ export default [
 	{
 		id: '0',
 		marketLink: {
+			text: 'Market',
 			className: 'portfolio-row-link',
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
 		},
@@ -20,6 +21,7 @@ export default [
 	{
 		id: '1',
 		marketLink: {
+			text: 'Market',
 			className: 'portfolio-row-link',
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
 		},
@@ -34,6 +36,7 @@ export default [
 	{
 		id: '2',
 		marketLink: {
+			text: 'Market',
 			className: 'portfolio-row-link',
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[2], url: '/m/2' })
 		},

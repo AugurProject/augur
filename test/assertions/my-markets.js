@@ -13,7 +13,7 @@ export default function (myMarkets){
 };
 
 export function assertMyMarkets(market){
-	describe(`market's shape`, () => {
+	describe(`myMarket's shape`, () => {
 		it('id', () => {
 			assert.isDefined(market.id);
 			assert.isString(market.id);
