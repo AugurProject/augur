@@ -33,8 +33,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.toNumber() :
 			0.5;
 		const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook) || {}).price || {}).value || defaultPrice :
-			((selectTopBid(marketOrderBook) || {}).price || {}).value || defaultPrice;
+			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice :
+			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
 		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;

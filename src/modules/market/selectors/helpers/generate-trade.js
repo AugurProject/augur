@@ -76,7 +76,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			market.description,
 			outcome.name,
 			tradeAction.shares,
-			formatEther(tradeAction.avgPrice, { roundUp: outcomeTradeInProgress.side === BUY, roundDown: outcomeTradeInProgress.side === SELL }).formattedValue,
+			formatEther(tradeAction.avgPrice).formattedValue,
 			Math.abs(parseFloat(tradeAction.costEth)),
 			store.dispatch)
 	));
