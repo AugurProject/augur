@@ -74,9 +74,6 @@ export function placeTrade(marketID) {
 						}
 					}
 				}
-				console.log('positions:', position);
-				console.log('matching trade IDs:', tradeIDs);
-				console.log('num shares:', outcomeTradeInProgress.numShares);
 				if (position && position.value > 0) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));

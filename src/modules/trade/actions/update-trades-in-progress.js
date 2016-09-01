@@ -49,7 +49,9 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const newTradeDetails = {
 			side: cleanSide,
 			numShares: cleanNumShares || undefined,
-			limitPrice: cleanLimitPrice || undefined
+			limitPrice: cleanLimitPrice || undefined,
+			totalFee: 0,
+			totalCost: 0
 		};
 
 		// trade actions
