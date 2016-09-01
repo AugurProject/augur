@@ -27,7 +27,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		action,
 		out,
 		clock,
-		transID = 'trans123',
+		transID = 'testtransaction12345',
 		branchID = 1010101,
 		failedMarketData = {
 			type: BINARY,
@@ -80,7 +80,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		if (o.resolution) {
 			o.onFailed({ status: FAILED, message: 'error!' });
 		} else {
-			o.onSuccess({ status: SUCCESS, marketID: 'test123' });
+			o.onSuccess({ status: SUCCESS, marketID: 'test123', callReturn: '0x123' });
 		}
 	});
 
@@ -221,7 +221,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -264,7 +269,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -306,7 +316,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -353,7 +368,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -401,7 +421,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -457,7 +482,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: SUCCESS }
+					status: {
+						status: SUCCESS,
+						data: {
+							id: '0x123'
+						}
+					}
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'

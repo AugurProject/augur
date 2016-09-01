@@ -20,6 +20,8 @@ export function makeCancelTransaction(order, market, outcome, ether, gas, dispat
 		gas,
 		ether,
 		data: {
+			marketID: market.id,
+			marketDescription: market.description,
 			order: {
 				id,
 				type,
