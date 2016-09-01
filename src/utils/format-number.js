@@ -57,6 +57,7 @@ export function formatEther(num, opts) {
 			denomination: ' ETH',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -71,6 +72,7 @@ export function formatRealEther(num, opts) {
 			denomination: ' real ETH',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -80,11 +82,12 @@ export function formatPercent(num, opts) {
 	return formatNumber(
 		abi.number(num),
 		{
-			decimals: 0,
+			decimals: 1,
 			decimalsRounded: 0,
 			denomination: '%',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -99,6 +102,7 @@ export function formatShares(num, opts) {
 			denomination: ` share${num !== 1 ? 's' : ''}`,
 			minimized: true,
 			zeroStyled: false,
+			blankZero: false,
 			roundDown: true,
 			...opts
 		}
@@ -120,6 +124,7 @@ export function formatRep(num, opts) {
 			denomination: ' REP',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
