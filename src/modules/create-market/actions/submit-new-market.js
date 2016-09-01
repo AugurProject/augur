@@ -19,7 +19,7 @@ export function submitNewMarket(newMarket) {
 
 export function createMarket(transactionID, newMarket) {
 	return (dispatch, getState) => {
-		const { branch } = getState();
+		const { branch, transactionsData } = getState();
 
 		if (newMarket.type === BINARY) {
 			newMarket.minValue = 1;
@@ -60,7 +60,14 @@ export function createMarket(transactionID, newMarket) {
 				}));
 			},
 			onSuccess: (res) => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				dispatch(updateExistingTransaction(transactionID, {
+					data: {
+						...transactionsData[transactionID].data,
+						marketID: res.callReturn,
+						marketDescription: transactionsData[transactionID].data.description
+					},
+					status: SUCCESS
+				}));
 				dispatch(clearMakeInProgress());
 				if (newMarket.isCreatingOrderBook) {
 					dispatch(submitGenerateOrderBook({

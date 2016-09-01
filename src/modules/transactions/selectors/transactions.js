@@ -7,8 +7,6 @@ import { selectMarketLink } from '../../link/selectors/links';
 export default function () {
 	const { transactionsData } = store.getState();
 
-	console.log('transactionsData -- ', transactionsData);
-
 	return selectTransactions(transactionsData);
 }
 
@@ -41,8 +39,15 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 			return 1;
 		})
 		.map(id => {
-			// Done this way due to the transactionsData being stringified to localStorage (which will strip the `onClick` key:value due to the function)
-			const marketLink = selectMarketLink({ id: transactionsData[id].data.marketID, description: transactionsData[id].data.marketDescription }, store.dispatch);
+			console.log('transactionData[id] -- ', transactionsData[id]);
+
+			let marketLink = null;
+
+			if (transactionsData[id].data.marketID && transactionsData[id].data.marketDescription) {
+				marketLink = selectMarketLink({ id: transactionsData[id].data.marketID, description: transactionsData[id].data.marketDescription }, store.dispatch);
+			}
+
+			console.log('marketLink -- ', marketLink);
 
 			const obj = {
 				...transactionsData[id],
@@ -57,6 +62,9 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 				formatShares(transactionsData[id].sharesChange),
 				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
 			};
+
+			console.log('ultimate Obj -- ', obj);
+
 			return obj;
 		});
 });
