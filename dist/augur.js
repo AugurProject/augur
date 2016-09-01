@@ -16377,13 +16377,33 @@ module.exports={
       "contract": "CompleteSets", 
       "inputs": [
         {
+          "indexed": true, 
+          "name": "sender", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "market", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "type", 
+          "type": "int256"
+        }, 
+        {
           "indexed": false, 
           "name": "returnValue", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "numOutcomes", 
+          "type": "int256"
         }
       ], 
-      "name": "completeSets_logReturn(int256)", 
-      "signature": "0x70a46893aa026bc51efe8d9b9c21c4d63fe015bb03feeb700d0d5bc537d980f8"
+      "name": "completeSets_logReturn(int256,int256,int256,int256,int256)", 
+      "signature": "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175"
     }, 
     "consensus_logReturn": {
       "contract": "Consensus", 
@@ -17584,7 +17604,7 @@ module.exports={
         ], 
         "method": "buyCompleteSets", 
         "mutable": true, 
-        "returns": "number", 
+        "returns": "hash[]", 
         "send": true, 
         "signature": [
           "int256", 
@@ -17599,7 +17619,7 @@ module.exports={
         ], 
         "method": "sellCompleteSets", 
         "mutable": true, 
-        "returns": "number", 
+        "returns": "hash[]", 
         "send": true, 
         "signature": [
           "int256", 
@@ -21160,13 +21180,13 @@ module.exports={
     "2": {
         "Backstops": "0x569d4bd38aa5ff088fe3c8f9dcfec44addba62eb", 
         "Branches": "0x497e9d4d5eec6ae005e79e161e4f06a31109f3b7", 
-        "BuyAndSellShares": "0xa7290513a061bca7f01aedc1b8c9edf5130825f8", 
+        "BuyAndSellShares": "0x0213c7f85af139093a6b35cff8d7f4e02f041379", 
         "Cash": "0x044ad83bf7054789aa73adb0b50a8ed40e779f05", 
         "CloseMarket": "0x521e6197c08903352d6b94de3dca2df39a2a8b6a", 
         "CloseMarketOne": "0xeebd9569b934f098995cb1d12bb378cad5041773", 
         "CloseMarketTwo": "0x80f9acac741e4eb6de981c11494658c54d591301", 
         "CollectFees": "0x432832594a49a1bd490042a4af603dc089c4b056", 
-        "CompleteSets": "0xfecca16884908c46664637d13a51381bab675f22", 
+        "CompleteSets": "0xe72517b7872bdfc820a489294e1182547fffba99", 
         "CompositeGetters": "0x40e847fda473852f6e1749b88ea6a2ce4fcc84a8", 
         "Consensus": "0xe68918529dc9f11fc45bfe17d464472cbb104282", 
         "ConsensusData": "0x47b9359bd0489f7e4a61d4d55f26930469f4e291", 
@@ -40188,7 +40208,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.3.7";
+    this.version = "2.4.1";
 
     this.options = {
         debug: {
@@ -41676,6 +41696,67 @@ module.exports = {
         });
     },
 
+    getAccountCompleteSets: function (account, type, options, cb) {
+        var self = this;
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        if (!account || !utils.is_function(cb)) return;
+        var typeCode = (type === "buy") ? 1 : 2;
+        console.log('getLogs:', {
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.CompleteSets,
+            topics: [
+                this.api.events.completeSets_logReturn.signature,
+                abi.format_int256(account),
+                null,
+                abi.format_int256(typeCode)
+            ],
+            timeout: 480000
+        });
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.CompleteSets,
+            topics: [
+                this.api.events.completeSets_logReturn.signature,
+                abi.format_int256(account),
+                null,
+                abi.format_int256(typeCode)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            console.log('logs', logs);
+            var market, logdata, actions, numOutcomes;
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return cb(null);
+            }
+            if (logs.error) return cb(logs);
+            actions = {};
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    market = logs[i].topics[2];
+                    logdata = self.rpc.unmarshal(logs[i].data);
+                    if (!actions[market]) actions[market] = {};
+                    numOutcomes = parseInt(logdata[1], 16);
+                    for (var j = 0; j < numOutcomes; ++j) {
+                        if (!actions[market][j + 1]) actions[market][j + 1] = [];
+                        actions[market][j + 1].push({
+                            shares: abi.unfix(logdata[0], "string"),
+                            price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                            blockNumber: parseInt(logs[i].blockNumber, 16)
+                        });
+                    }
+                }
+            }
+            cb(actions);
+        });
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
 
@@ -42477,7 +42558,7 @@ module.exports = {
                                                     // sell (matched buy order)
                                                     // cash received = price per share * shares sold
                                                     } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));                                                        
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
                                                     }
                                                 }
                                             }
@@ -42939,9 +43020,6 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    // bnPrice = new BigNumber(ask.price, 10);
-                    // etherToTrade = etherToTrade.add(orderSharesFilled.times(bnPrice));
-                    // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                     tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, range);
                     totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                     etherToTrade = etherToTrade.plus(tradingCost.cost);
@@ -42976,7 +43054,6 @@ module.exports = {
                         bidAmount = new BigNumber(bid.amount);
                         bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        // etherToSell = etherToSell.plus(orderSharesFilled.times(bnPrice));
                         tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToSell = etherToSell.plus(tradingCost.cost);
@@ -42992,7 +43069,6 @@ module.exports = {
                             newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
                             matchingSortedBids[i] = newBid;
                         }
-                        // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                         if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
                             break;
                         }
@@ -43022,13 +43098,10 @@ module.exports = {
                     totalTakerFeeEth = constants.ZERO;
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
-                        // bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
                         tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cost);
-                        // etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(bnPrice));
-                        // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.equals(constants.ZERO)) {
                             break;

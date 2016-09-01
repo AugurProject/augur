@@ -63,6 +63,67 @@ module.exports = {
         });
     },
 
+    getAccountCompleteSets: function (account, type, options, cb) {
+        var self = this;
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        if (!account || !utils.is_function(cb)) return;
+        var typeCode = (type === "buy") ? 1 : 2;
+        console.log('getLogs:', {
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.CompleteSets,
+            topics: [
+                this.api.events.completeSets_logReturn.signature,
+                abi.format_int256(account),
+                null,
+                abi.format_int256(typeCode)
+            ],
+            timeout: 480000
+        });
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.CompleteSets,
+            topics: [
+                this.api.events.completeSets_logReturn.signature,
+                abi.format_int256(account),
+                null,
+                abi.format_int256(typeCode)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            console.log('logs', logs);
+            var market, logdata, actions, numOutcomes;
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return cb(null);
+            }
+            if (logs.error) return cb(logs);
+            actions = {};
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    market = logs[i].topics[2];
+                    logdata = self.rpc.unmarshal(logs[i].data);
+                    if (!actions[market]) actions[market] = {};
+                    numOutcomes = parseInt(logdata[1], 16);
+                    for (var j = 0; j < numOutcomes; ++j) {
+                        if (!actions[market][j + 1]) actions[market][j + 1] = [];
+                        actions[market][j + 1].push({
+                            shares: abi.unfix(logdata[0], "string"),
+                            price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                            blockNumber: parseInt(logs[i].blockNumber, 16)
+                        });
+                    }
+                }
+            }
+            cb(actions);
+        });
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
 

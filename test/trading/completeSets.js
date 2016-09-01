@@ -28,7 +28,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, "1");
+                        assert.strictEqual(r.callReturn, t.amount.toString());
                         done();
                     },
                     onFailed: done
@@ -64,7 +64,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, "1");
+                        assert.strictEqual(r.callReturn, t.amount.toString());
                         done();
                     },
                     onFailed: done
