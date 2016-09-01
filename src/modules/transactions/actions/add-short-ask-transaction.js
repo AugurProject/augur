@@ -16,7 +16,6 @@ export const makeShortAskTransaction = (marketID, outcomeID, marketDescription, 
 		type: SHORT_ASK,
 		data: {
 			marketID,
-			marketLink,
 			outcomeID,
 			marketDescription,
 			outcomeName,

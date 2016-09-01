@@ -16,7 +16,6 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 		type: BID,
 		data: {
 			marketID,
-			marketLink,
 			outcomeID,
 			marketDescription,
 			outcomeName,

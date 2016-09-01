@@ -4,7 +4,7 @@ import { addTradeTransaction } from '../../transactions/actions/add-trade-transa
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { selectTransactionsLink, selectMarketLink } from '../../link/selectors/links';
+import { selectTransactionsLink } from '../../link/selectors/links';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
@@ -16,7 +16,6 @@ export function placeTrade(marketID) {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
-		const marketLink = selectMarketLink({ id: marketID }, dispatch);
 
 		if (!marketTradeInProgress || !market) {
 			return;
@@ -38,7 +37,6 @@ export function placeTrade(marketID) {
 					dispatch(addTradeTransaction(
 						BUY,
 						marketID,
-						marketLink,
 						outcomeID,
 						market.type,
 						market.description,
@@ -51,7 +49,6 @@ export function placeTrade(marketID) {
 				} else {
 					dispatch(addBidTransaction(
 						marketID,
-						marketLink,
 						outcomeID,
 						market.description,
 						outcomesData[marketID][outcomeID].name,
@@ -83,7 +80,6 @@ export function placeTrade(marketID) {
 						dispatch(addTradeTransaction(
 							SELL,
 							marketID,
-							marketLink,
 							outcomeID,
 							market.type,
 							market.description,
@@ -96,7 +92,6 @@ export function placeTrade(marketID) {
 					} else {
 						dispatch(addAskTransaction(
 							marketID,
-							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
@@ -111,7 +106,6 @@ export function placeTrade(marketID) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addShortSellTransaction(
 							marketID,
-							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
@@ -123,7 +117,6 @@ export function placeTrade(marketID) {
 					} else {
 						dispatch(addShortAskTransaction(
 							marketID,
-							marketLink,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,

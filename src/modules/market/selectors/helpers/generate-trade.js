@@ -8,7 +8,6 @@ import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
 
 import { updateTradesInProgress } from '../../../trade/actions/update-trades-in-progress';
 import { makeTradeTransaction } from '../../../transactions/actions/add-trade-transaction';
-import { selectMarketLink } from '../../../link/selectors/links';
 
 import store from '../../../../store';
 
@@ -68,13 +67,10 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 		return [];
 	}
 
-	const marketLink = selectMarketLink({ id: market.id }, store.dispatch);
-
 	return tradeActions.map(tradeAction => (
 		makeTradeTransaction(
 			TRANSACTIONS_TYPES[tradeAction.action],
 			market.id,
-			marketLink,
 			outcome.id,
 			market.type,
 			market.description,

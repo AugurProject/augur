@@ -16,7 +16,6 @@ export const makeAskTransaction = (marketID, outcomeID, marketDescription, outco
 		type: ASK,
 		data: {
 			marketID,
-			marketLink,
 			outcomeID,
 			marketDescription,
 			outcomeName,

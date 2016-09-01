@@ -41,10 +41,8 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 			return 1;
 		})
 		.map(id => {
-			console.log('transactionsData -- ', transactionsData[id]);
-
-			// Done this way due to the transactionsData being stringified to localStorage (which will strip the `onClick` key:value)
-			const marketLink = selectMarketLink({id: transactionsData[id].data.marketID, description: transactionsData[id].data.marketDescription}, store.dispatch);
+			// Done this way due to the transactionsData being stringified to localStorage (which will strip the `onClick` key:value due to the function)
+			const marketLink = selectMarketLink({ id: transactionsData[id].data.marketID, description: transactionsData[id].data.marketDescription }, store.dispatch);
 
 			const obj = {
 				...transactionsData[id],
@@ -59,7 +57,6 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 				formatShares(transactionsData[id].sharesChange),
 				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
 			};
-			console.log('obj -- ', obj);
 			return obj;
 		});
 });

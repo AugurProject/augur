@@ -16,7 +16,6 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 		type: SHORT_SELL,
 		data: {
 			marketID,
-			marketLink,
 			outcomeID,
 			marketDescription,
 			outcomeName,
