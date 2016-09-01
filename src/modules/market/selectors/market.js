@@ -101,7 +101,7 @@ export const selectMarketFromEventID = (eventID) => {
 
 const assembledMarketsCache = {};
 
-export const assembleMarket = (function (
+export function assembleMarket(
 		marketID,
 		marketData,
 		marketPriceHistory,
@@ -266,5 +266,5 @@ export const assembleMarket = (function (
 		});
 	}
 
-	return assembledMarketsCache[marketID].apply(this, arguments);
-});
+	return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
+}
