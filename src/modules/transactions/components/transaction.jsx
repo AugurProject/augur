@@ -12,9 +12,9 @@ const Transaction = (p) => {
 	const nodes = {};
 
 	const marketDescription = () => {
-		const description = () => <span className="market-description" title={p.data.description}>{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}</span>;
+		const description = () => <span className="market-description" title={p.data.description || p.data.marketDescription}>{p.data.description ? p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '') : p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}</span>;
 
-		if (p.data.marketLink) {
+		if ((p.data.description || p.data.marketDescription) && p.data.marketLink) {
 			return (
 				<Link onClick={p.data.marketLink.onClick}>
 					{description()}
@@ -130,7 +130,7 @@ const Transaction = (p) => {
 			<span className="description">
 				<span>Generate Order Book</span>
 				<br />
-				<span className="market-description" title={p.data.description}>{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}</span>
+				{marketDescription()}
 			</span>
 		);
 		break;
