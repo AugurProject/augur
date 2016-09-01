@@ -63,8 +63,7 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, {
 					data: {
 						...transactionsData[transactionID].data,
-						marketID: res.callReturn,
-						marketDescription: transactionsData[transactionID].data.description
+						id: res.callReturn
 					},
 					status: SUCCESS
 				}));
