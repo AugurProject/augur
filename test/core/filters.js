@@ -23,7 +23,7 @@ var DELAY = 2500;
 
 var branch = constants.DEFAULT_BRANCH_ID;
 var numMarkets = parseInt(augur.getNumMarketsBranch(branch), 10);
-var markets = augur.getSomeMarketsInBranch(branch, numMarkets - 101, numMarkets - 1);
+var markets = augur.getSomeMarketsInBranch(branch, numMarkets - 100, numMarkets);
 var marketId = markets[markets.length - 1];
 var tradeMarket = {};
 tradeMarket[augur.getMarketInfo(marketId).type] = marketId;

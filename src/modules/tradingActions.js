@@ -27,7 +27,6 @@ module.exports = {
         tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
         tx.gasPrice = gasPrice;
         var etx = new EthTx(tx);
-        // TODO replace getUpfrontCost w/ eth_estimateGas RPC
         return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
     },
 
@@ -232,6 +231,7 @@ module.exports = {
 
         var augur = this;
         var gasPrice = augur.rpc.gasPrice;
+        var tradingCost;
         if (type === "buy") {
             var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
             var areSuitableOrders = matchingSortedAsks.length > 0;
@@ -250,9 +250,9 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    bnPrice = new BigNumber(ask.price, 10);
-                    etherToTrade = etherToTrade.add(orderSharesFilled.times(bnPrice));
-                    totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, range);
+                    totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                    etherToTrade = etherToTrade.plus(tradingCost.cost);
                     remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                     if (remainingOrderShares.equals(constants.ZERO)) {
                         break;
@@ -284,7 +284,9 @@ module.exports = {
                         bidAmount = new BigNumber(bid.amount);
                         bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        etherToSell = etherToSell.plus(orderSharesFilled.times(bnPrice));
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                        etherToSell = etherToSell.plus(tradingCost.cost);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
                         if (orderSharesFilled.equals(bidAmount)) {
@@ -297,12 +299,10 @@ module.exports = {
                             newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
                             matchingSortedBids[i] = newBid;
                         }
-                        totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                         if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
                             break;
                         }
                     }
-
                     sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
                 } else {
                     if (!isMarketOrder) {
@@ -328,10 +328,10 @@ module.exports = {
                     totalTakerFeeEth = constants.ZERO;
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
-                        bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(bnPrice));
-                        totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                        etherToShortSell = etherToShortSell.plus(tradingCost.cost);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.equals(constants.ZERO)) {
                             break;

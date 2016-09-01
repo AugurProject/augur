@@ -15,7 +15,7 @@ describe("Integration tests", function () {
     var amount = "1";
     var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
-    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 101, numMarkets - 1);
+    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
     var marketID = markets[markets.length - 1];
     var eventID = augur.getMarketEvent(marketID, 0);
 

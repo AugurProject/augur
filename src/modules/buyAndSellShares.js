@@ -58,7 +58,7 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
-    buyCompleteSetsThenSell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+    shortAsk: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
@@ -73,10 +73,10 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.BuyAndSellShares.buyCompleteSetsThenSell);
+        var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         if (self.options.debug.trading) {
-            console.log("buyCompleteSetsThenSell tx:", JSON.stringify(tx, null, 2));
+            console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     }

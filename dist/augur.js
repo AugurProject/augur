@@ -16545,10 +16545,20 @@ module.exports={
           "indexed": false, 
           "name": "timestamp", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "takerFee", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "makerFee", 
+          "type": "int256"
         }
       ], 
-      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x4867c6b95984b4bd8fba5fa5e12c32c056c2fe64dd1b43dbcec7c6ada2aea9eb"
+      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x89b5973534870b9ec3c4660bd3f3aaa475c70adc745b94e2bc1c6cfc1539e06c"
     }, 
     "makeReports_logReturn": {
       "contract": "MakeReports", 
@@ -17305,6 +17315,7 @@ module.exports={
     }, 
     "BuyAndSellShares": {
       "buy": {
+        "gas": 725202, 
         "inputs": [
           "amount", 
           "price", 
@@ -17322,24 +17333,8 @@ module.exports={
           "int256"
         ]
       }, 
-      "buyCompleteSetsThenSell": {
-        "inputs": [
-          "amount", 
-          "price", 
-          "market", 
-          "outcome"
-        ], 
-        "method": "buyCompleteSetsThenSell", 
-        "mutable": true, 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
       "cancel": {
+        "gas": 288060, 
         "inputs": [
           "trade_id"
         ], 
@@ -17352,6 +17347,7 @@ module.exports={
         ]
       }, 
       "sell": {
+        "gas": 696759, 
         "inputs": [
           "amount", 
           "price", 
@@ -17362,6 +17358,24 @@ module.exports={
         "mutable": true, 
         "returns": "int256", 
         "send": true, 
+        "signature": [
+          "int256", 
+          "int256", 
+          "int256", 
+          "int256"
+        ]
+      }, 
+      "shortAsk": {
+        "gas": 1500000, 
+        "inputs": [
+          "amount", 
+          "price", 
+          "market", 
+          "outcome"
+        ], 
+        "method": "shortAsk", 
+        "mutable": true, 
+        "returns": "int256", 
         "signature": [
           "int256", 
           "int256", 
@@ -17563,6 +17577,7 @@ module.exports={
     }, 
     "CompleteSets": {
       "buyCompleteSets": {
+        "gas": 698875, 
         "inputs": [
           "market", 
           "amount"
@@ -17577,6 +17592,7 @@ module.exports={
         ]
       }, 
       "sellCompleteSets": {
+        "gas": 535220, 
         "inputs": [
           "market", 
           "amount"
@@ -20924,6 +20940,7 @@ module.exports={
     }, 
     "Trade": {
       "short_sell": {
+        "gas": 1059796, 
         "inputs": [
           "buyer_trade_id", 
           "max_amount"
@@ -20938,6 +20955,7 @@ module.exports={
         ]
       }, 
       "trade": {
+        "gas": 787421, 
         "inputs": [
           "max_value", 
           "max_amount", 
@@ -20968,6 +20986,7 @@ module.exports={
         ]
       }, 
       "commitTrade": {
+        "gas": 147581, 
         "inputs": [
           "hash"
         ], 
@@ -21141,7 +21160,7 @@ module.exports={
     "2": {
         "Backstops": "0x569d4bd38aa5ff088fe3c8f9dcfec44addba62eb", 
         "Branches": "0x497e9d4d5eec6ae005e79e161e4f06a31109f3b7", 
-        "BuyAndSellShares": "0xbc537f65f898db72f49dc3b26c2742af4addc2ad", 
+        "BuyAndSellShares": "0xa7290513a061bca7f01aedc1b8c9edf5130825f8", 
         "Cash": "0x044ad83bf7054789aa73adb0b50a8ed40e779f05", 
         "CloseMarket": "0x521e6197c08903352d6b94de3dca2df39a2a8b6a", 
         "CloseMarketOne": "0xeebd9569b934f098995cb1d12bb378cad5041773", 
@@ -21158,21 +21177,21 @@ module.exports={
         "ExpiringEvents": "0x9f143d266a1b1cb5ac4de5a60ba6a0def6c50ad4", 
         "Faucets": "0xbeb114e1b9bcc10866a681ad9e46aaa42cd0236d", 
         "ForkPenalize": "0xd8f4a76222d52b9b63c337c8df1887e37d9300b6", 
-        "Forking": "0x206ed632696cb711c92aaf9ea5d178cc45c1137b", 
+        "Forking": "0xf3a20c02e8654e66af6667b57f4f73372ce7e111", 
         "FxpFunctions": "0xb0303972d429198a623efd207b1feef26069544b", 
         "Info": "0xcd8f592a0f916f6473ee1dd9fb0618a66a5ff396", 
-        "MakeReports": "0x91fe69cc1e553da6d40d3f9721ae8e0534168175", 
+        "MakeReports": "0xaeecbe15c03e935c4bd8d2a7118ac839990cf5d3", 
         "Markets": "0x1af249e385ce1f8724894867f5b06d3961e6bec1", 
         "PenalizationCatchup": "0x6244830d9e7454b6c345967ed3db60f2e3de7d15", 
-        "PenalizeNotEnoughReports": "0xb11f13f3e65e8c84461085eee0ebd0cbfa8f6b0e", 
+        "PenalizeNotEnoughReports": "0x6bc00b3939da27d8b46a593d8a5661b2cc9bc367", 
         "ProportionCorrect": "0x671dec0f24ce09b8f1444907ab675bc4e07b26f3", 
         "Reporting": "0xa18d840b7517fdb6357c06825f5acabd9e19af01", 
-        "ReportingThreshold": "0xcc3deada486befc98a2e8bf7f22850d0fbf8b264", 
-        "RoundTwo": "0xbd3b66cccb2a49a0d2d637ecc1637bd7606c9bcd", 
-        "RoundTwoPenalize": "0x2c877d5357ff54192b2f69e2b8dd1d01cad9ea4c", 
-        "SendReputation": "0xfafb57ccea6f8dd3ea37cc7917fe61c6a5a9ca66", 
+        "ReportingThreshold": "0x9ea8f088099bc7b8d5fb5a4b01de8ad560366e48", 
+        "RoundTwo": "0x8666e062d3337bf0c1ad4fbef44a3d24cfe5490d", 
+        "RoundTwoPenalize": "0xbe15d0d952c21d5fb181dac9941764cce2e0c240", 
+        "SendReputation": "0xc1dc9753a0f143bbdb605805cf27cac9489524b0", 
         "SlashRep": "0xaf0b38b11949930453c9ccaaddb284e8c7b662a5", 
-        "Trade": "0xf48d19e92dbb599faac1f4ed9f6b398376171a54", 
+        "Trade": "0xdeebe2062823831949a255e59961e21948caae05", 
         "Trades": "0x1e997132f2aa4b8d52518e3935cccb59f42210f7"
     }
 }
@@ -39422,10 +39441,12 @@ module.exports = {
     DEFAULT_GAS: 3135000,
 
     // gas needed for trade transactions (values from pyethereum tester)
+    MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
     TRADE_GAS: [
         {sell: 756374, buy: 787421}, // first trade_id only
         {sell: 615817, buy: 661894} // each additional trade_id
     ],
+    CANCEL_GAS: {sell: 288060, buy: 230059},
 
     // expected block interval
     SECONDS_PER_BLOCK: 12,
@@ -40167,7 +40188,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.3.6";
+    this.version = "2.3.7";
 
     this.options = {
         debug: {
@@ -40609,7 +40630,7 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
-    buyCompleteSetsThenSell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+    shortAsk: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
@@ -40624,10 +40645,10 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.BuyAndSellShares.buyCompleteSetsThenSell);
+        var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         if (self.options.debug.trading) {
-            console.log("buyCompleteSetsThenSell tx:", JSON.stringify(tx, null, 2));
+            console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     }
@@ -42181,22 +42202,28 @@ module.exports = {
         }
 
         function checkIncrementPeriod(branch, periodLength, next, callback) {
+            console.log("calling getVotePeriod...", branch);
             self.getVotePeriod(branch, function (votePeriod) {
+                console.log("votePeriod:", votePeriod);
                 if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+                    console.log("votePeriod < currentPeriod - 1, calling increment period...");
                     incrementPeriod(branch, periodLength, function (err, votePeriod) {
                         if (err) return next(err);
                         console.log("New vote period:", votePeriod);
                         next(null, votePeriod);
                     });
                 } else {
+                    console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
                     callback(null, votePeriod);
                 }
             });
         }
 
+        console.log("calling checkIncrementPeriod...", branch, periodLength);
         checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
             console.log("checkIncrementPeriod:", err, votePeriod);
             if (err) return callback(err);
+            console.log("calling checkPenalizeWrong...", branch, votePeriod - 1);
             checkPenalizeWrong(branch, votePeriod - 1, function (err) {
                 console.log("checkPenalizeWrong:", err);
                 if (err) return callback(err);
@@ -42430,16 +42457,18 @@ module.exports = {
                                 self.rpc.receipt(txHash, function (receipt) {
                                     if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                     if (receipt.error) return onTradeFailed(receipt);
-                                    var sharesBought, cashFromTrade;
+                                    var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        var logs = receipt.logs;
-                                        var sig = self.api.events.log_fill_tx.signature;
-                                        sharesBought = abi.bignum(0);
-                                        cashFromTrade = abi.bignum(0);
+                                        logs = receipt.logs;
+                                        sig = self.api.events.log_fill_tx.signature;
+                                        sharesBought = constants.ZERO;
+                                        cashFromTrade = constants.ZERO;
+                                        tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
-                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
 
                                                     // buy (matched sell order)
                                                     if (parseInt(logdata[0], 16) === 1) {
@@ -42448,7 +42477,7 @@ module.exports = {
                                                     // sell (matched buy order)
                                                     // cash received = price per share * shares sold
                                                     } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));                                                        
                                                     }
                                                 }
                                             }
@@ -42459,7 +42488,9 @@ module.exports = {
                                         unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
-                                        cashFromTrade: abi.string(cashFromTrade)
+                                        cashFromTrade: abi.string(cashFromTrade),
+                                        tradingFees: abi.string(tradingFees),
+                                        gasFees: result.gasFees
                                     });
                                 });
                             } else {
@@ -42545,16 +42576,18 @@ module.exports = {
                                 self.rpc.receipt(txHash, function (receipt) {
                                     if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                     if (receipt.error) return onTradeFailed(receipt);
-                                    var cashFromTrade;
+                                    var cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        var logs = receipt.logs;
-                                        var sig = self.api.events.log_fill_tx.signature;
-                                        cashFromTrade = abi.bignum(0);
+                                        logs = receipt.logs;
+                                        sig = self.api.events.log_fill_tx.signature;
+                                        cashFromTrade = constants.ZERO;
+                                        tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
-                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
                                                     cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
                                                 }
                                             }
                                         }
@@ -42564,7 +42597,9 @@ module.exports = {
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                         matchedShares: abi.unfix(result.callReturn[2], "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
-                                        price: abi.unfix(result.callReturn[3], "string")
+                                        price: abi.unfix(result.callReturn[3], "string"),
+                                        tradingFees: abi.string(tradingFees),
+                                        gasFees: result.gasFees
                                     });
                                 });
                             } else {
@@ -42681,7 +42716,6 @@ module.exports = {
         tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
         tx.gasPrice = gasPrice;
         var etx = new EthTx(tx);
-        // TODO replace getUpfrontCost w/ eth_estimateGas RPC
         return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
     },
 
@@ -42886,6 +42920,7 @@ module.exports = {
 
         var augur = this;
         var gasPrice = augur.rpc.gasPrice;
+        var tradingCost;
         if (type === "buy") {
             var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
             var areSuitableOrders = matchingSortedAsks.length > 0;
@@ -42904,9 +42939,12 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    bnPrice = new BigNumber(ask.price, 10);
-                    etherToTrade = etherToTrade.add(orderSharesFilled.times(bnPrice));
-                    totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                    // bnPrice = new BigNumber(ask.price, 10);
+                    // etherToTrade = etherToTrade.add(orderSharesFilled.times(bnPrice));
+                    // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, range);
+                    totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                    etherToTrade = etherToTrade.plus(tradingCost.cost);
                     remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                     if (remainingOrderShares.equals(constants.ZERO)) {
                         break;
@@ -42938,7 +42976,10 @@ module.exports = {
                         bidAmount = new BigNumber(bid.amount);
                         bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        etherToSell = etherToSell.plus(orderSharesFilled.times(bnPrice));
+                        // etherToSell = etherToSell.plus(orderSharesFilled.times(bnPrice));
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                        etherToSell = etherToSell.plus(tradingCost.cost);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
                         if (orderSharesFilled.equals(bidAmount)) {
@@ -42951,12 +42992,11 @@ module.exports = {
                             newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
                             matchingSortedBids[i] = newBid;
                         }
-                        totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                        // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                         if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
                             break;
                         }
                     }
-
                     sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
                 } else {
                     if (!isMarketOrder) {
@@ -42982,10 +43022,13 @@ module.exports = {
                     totalTakerFeeEth = constants.ZERO;
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
-                        bnPrice = new BigNumber(bid.price, 10);
+                        // bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(bnPrice));
-                        totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+                        etherToShortSell = etherToShortSell.plus(tradingCost.cost);
+                        // etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(bnPrice));
+                        // totalTakerFeeEth = totalTakerFeeEth.plus(abacus.calculateMakerTakerFees(abacus.calculateAdjustedTradingFee(fees.tradingFee, bnPrice, bnRange), fees.makerProportionOfFee, true, true).taker);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.equals(constants.ZERO)) {
                             break;
@@ -43507,7 +43550,7 @@ module.exports = {
             return markets.scalar && markets.categorical && markets.binary;
         }
 
-        if (!parseInt(augur.getCreator(branchID), 16)) {
+        if (branchID && !parseInt(augur.getCreator(branchID), 16)) {
             return this.setup_new_branch(augur, augur.getPeriodLength(augur.constants.DEFAULT_BRANCH_ID), augur.constants.DEFAULT_BRANCH_ID, augur.web.account.address || augur.from, function (err, newBranchID) {
                 if (err) return callback(err);
                 self.create_each_market_type(augur, newBranchID, expDate, callback);
@@ -44394,7 +44437,7 @@ module.exports = {
 
     DEFAULT_GAS: "0x2fd618",
 
-    ETHER: new BigNumber(10).toPower(18),
+    ETHER: new BigNumber(10, 10).toPower(18),
 
     Error: RPCError,
 
@@ -44833,6 +44876,10 @@ module.exports = {
             returns = this.strip(command);
         }
 
+        if (this.debug.broadcast) {
+            console.log("[ethrpc] broadcast: " + JSON.stringify(command, null, 2));
+        }
+
         // if we're on Node, use IPC if available and ipcpath is specified
         if (NODE_JS && this.ipcpath && command.method) {
             var loopback = this.nodes.local && (
@@ -45170,16 +45217,13 @@ module.exports = {
 
     // execute functions on contracts on the blockchain
     call: function (tx, f) {
-        tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("call", [tx, "latest"]), f);
     },
 
     sendTx: function (tx, f) {
-        tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("sendTransaction", tx), f);
     },
     sendTransaction: function (tx, f) {
-        tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("sendTransaction", tx), f);
     },
 
@@ -45396,6 +45440,7 @@ module.exports = {
         if (tx.timeout) packaged.timeout = tx.timeout;
         if (tx.value) packaged.value = tx.value;
         if (tx.returns) packaged.returns = tx.returns;
+        if (tx.nonce) packaged.nonce = tx.nonce;
         return packaged;
     },
 
@@ -45655,7 +45700,10 @@ module.exports = {
             if (!log || log.data === null || log.data === undefined) {
                 throw new this.Error(errors.NULL_CALL_RETURN);
             }
-            return log.data;
+            return {
+                returnValue: log.data,
+                gasUsed: new BigNumber(receipt.gasUsed, 16)
+            };
         }
         this.getTransactionReceipt(txHash, function (receipt) {
             if (self.debug.tx) console.debug("got receipt:", receipt);
@@ -45666,7 +45714,10 @@ module.exports = {
             if (!log || log.data === null || log.data === undefined) {
                 return callback(errors.NULL_CALL_RETURN);
             }
-            callback(null, log.data);
+            callback(null, {
+                returnValue: log.data,
+                gasUsed: new BigNumber(receipt.gasUsed, 16)
+            });
         });
     },
 
@@ -45732,7 +45783,7 @@ module.exports = {
     verifyTxSubmitted: function (payload, txHash, callback) {
         var self = this;
         if (!isFunction(callback)) {
-            if (!payload || txHash === null || txHash === undefined) {
+            if (!payload || ((!payload.mutable && payload.returns !== "null") && (txHash === null || txHash === undefined))) {
                 throw new this.Error(errors.TRANSACTION_FAILED);
             }
             if (this.txs[txHash]) throw new this.Error(errors.DUPLICATE_TRANSACTION);
@@ -45833,8 +45884,8 @@ module.exports = {
 
                     // if mutable return value, then lookup logged return
                     // value in transaction receipt (after confirmation)
-                    self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
-                        if (self.debug.tx) console.debug("loggedReturnValue:", err, loggedReturnValue);
+                    self.getLoggedReturnValue(txHash, function (err, log) {
+                        if (self.debug.tx) console.debug("loggedReturnValue:", err, log.returnValue);
                         if (err) {
                             payload.send = false;
                             return self.fire(payload, function (callReturn) {
@@ -45844,9 +45895,13 @@ module.exports = {
                                 onFailed(self.errorCodes(payload.method, payload.returns, callReturn));
                             });
                         }
-                        var e = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
-                        if (e && e.error) return onFailed(e);
-                        tx.callReturn = self.applyReturns(payload.returns, loggedReturnValue);
+                        var e = self.errorCodes(payload.method, payload.returns, log.returnValue);
+                        if (e && e.error) {
+                            e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
+                            return onFailed(e);
+                        }
+                        tx.callReturn = self.applyReturns(payload.returns, log.returnValue);
+                        tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
                         onSuccess(tx);
                         if (isFunction(onConfirmed)) {
                             self.pollForTxConfirmation(txHash, self.REQUIRED_CONFIRMATIONS, function (err) {
@@ -45884,8 +45939,11 @@ module.exports = {
         delete payload.returns;
         var txHash = this.invoke(payload);
         if (this.debug.tx) console.debug("txHash:", txHash);
-        if (!txHash) throw new this.Error(errors.NULL_RESPONSE);
-        if (txHash.error) throw new this.Error(txHash);
+        if (!txHash && !payload.mutable && payload.returns !== "null") {
+            throw new this.Error(errors.NULL_RESPONSE);
+        } else if (txHash && txHash.error) {
+            throw new this.Error(txHash);
+        }
         payload.returns = returns;
         txHash = abi.format_int256(txHash);
         this.verifyTxSubmitted(payload, txHash);
@@ -45904,16 +45962,18 @@ module.exports = {
 
         // if mutable return value, then lookup logged return
         // value in transaction receipt (after confirmation)
-        var loggedReturnValue = this.getLoggedReturnValue(txHash);
-        var e = this.errorCodes(payload.method, payload.returns, loggedReturnValue);
+        var log = this.getLoggedReturnValue(txHash);
+        var e = this.errorCodes(payload.method, payload.returns, log.returnValue);
         if (e && e.error) {
-            callReturn = this.fire(payload);
+            e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
             if (e.error !== errors.NULL_CALL_RETURN.error) {
                 throw new Error(e);
             }
+            callReturn = this.fire(payload);
             throw new Error(this.errorCodes(payload.method, payload.returns, callReturn));
         }
-        tx.callReturn = this.applyReturns(payload.returns, loggedReturnValue);
+        tx.callReturn = this.applyReturns(payload.returns, log.returnValue);
+        tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
         return tx;
     },
 

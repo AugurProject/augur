@@ -24,7 +24,7 @@ describe("Integration tests", function () {
     var traderIndex = "1";
     var outcome = 1;
     var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
-    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 101, numMarkets - 1);
+    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
     var numMarkets = markets.length;
     var marketId = tools.select_random(markets);
     if (numMarkets > tools.MAX_TEST_SAMPLES) {

@@ -36,7 +36,7 @@ var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 var secureLoginID2;
 
 var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
-var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 101, numMarkets - 1);
+var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
 var market_id = markets[markets.length - 1];
 
 function checkAccount(augur, account, noWebAccountCheck) {

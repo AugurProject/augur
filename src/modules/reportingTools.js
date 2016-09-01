@@ -151,22 +151,28 @@ module.exports = {
         }
 
         function checkIncrementPeriod(branch, periodLength, next, callback) {
+            console.log("calling getVotePeriod...", branch);
             self.getVotePeriod(branch, function (votePeriod) {
+                console.log("votePeriod:", votePeriod);
                 if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+                    console.log("votePeriod < currentPeriod - 1, calling increment period...");
                     incrementPeriod(branch, periodLength, function (err, votePeriod) {
                         if (err) return next(err);
                         console.log("New vote period:", votePeriod);
                         next(null, votePeriod);
                     });
                 } else {
+                    console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
                     callback(null, votePeriod);
                 }
             });
         }
 
+        console.log("calling checkIncrementPeriod...", branch, periodLength);
         checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
             console.log("checkIncrementPeriod:", err, votePeriod);
             if (err) return callback(err);
+            console.log("calling checkPenalizeWrong...", branch, votePeriod - 1);
             checkPenalizeWrong(branch, votePeriod - 1, function (err) {
                 console.log("checkPenalizeWrong:", err);
                 if (err) return callback(err);
