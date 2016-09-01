@@ -9,6 +9,8 @@ import ValueDenomination from '../../common/components/value-denomination';
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
 const Transaction = (p) => {
+	console.log('Transaction p --', p);
+
 	const nodes = {};
 
 	switch (p.type) {
@@ -40,6 +42,13 @@ const Transaction = (p) => {
 		default:
 			break;
 		}
+
+		const marketDescription = () => (
+			<span className="market-description" title={p.data.marketDescription}>
+				{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
+			</span>
+		);
+
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
@@ -52,9 +61,15 @@ const Transaction = (p) => {
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<br />
-				<Link className={classnames('market-description', p.data.marketLink.className)} onClick={p.data.marketLink.onClick}>
-					{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
-				</Link>
+				{p.data.marketLink ?
+					<Link onClick={p.data.marketLink.onClick}>
+						{marketDescription()}
+					</Link>
+					:
+					<span>
+						{marketDescription()}
+					</span>
+				}
 			</span>
 		);
 
