@@ -11,6 +11,20 @@ function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeS
 const Transaction = (p) => {
 	const nodes = {};
 
+	const marketDescription = () => {
+		const description = () => <span className="market-description" title={p.data.description}>{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}</span>;
+
+		if (p.data.marketLink) {
+			return (
+				<Link onClick={p.data.marketLink.onClick}>
+					{description()}
+				</Link>
+			);
+		} else {
+			return <span>{description()}</span>;
+		}
+	};
+
 	switch (p.type) {
 	case BUY:
 	case BID:
@@ -41,12 +55,6 @@ const Transaction = (p) => {
 			break;
 		}
 
-		const marketDescription = () => (
-			<span className="market-description" title={p.data.marketDescription}>
-				{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
-			</span>
-		);
-
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
@@ -59,15 +67,7 @@ const Transaction = (p) => {
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<br />
-				{p.data.marketLink ?
-					<Link onClick={p.data.marketLink.onClick}>
-						{marketDescription()}
-					</Link>
-					:
-					<span>
-						{marketDescription()}
-					</span>
-				}
+				{marketDescription()}
 			</span>
 		);
 
@@ -86,43 +86,28 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case CREATE_MARKET: {
-		const marketDescription = () => (
-			<span className="market-description" title={p.data.description}>
-				{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}
-			</span>
-		);
-
+	case CREATE_MARKET:
 		nodes.description = (
 			<span className="description">
 				<span>Make</span>
 				<strong>{p.data.type}</strong>
 				<span>market</span>
 				<br />
-				{p.data.marketLink ?
-					<Link onClick={p.data.marketLink.onClick}>
-						{marketDescription()}
-					</Link>
-					:
-					<span>
-						{marketDescription()}
-					</span>
-				}
+				{marketDescription()}
 			</span>
 		);
 		break;
-	}
-	case COMMIT_REPORT:
+	case COMMIT_REPORT: {
 		if (p.data.market.type === SCALAR) {
 			nodes.description = (
 				<span className="description">
 					<span>Report</span>
 					<strong>{p.data.market.reportedOutcome || ''}</strong>
 					{!!p.data.isUnethical &&
-						<strong className="unethical"> and Unethical</strong>
+					<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
-					<span className="market-description" title={p.data.market.description}>{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}</span>
+					{marketDescription()}
 				</span>
 			);
 		} else {
@@ -131,14 +116,15 @@ const Transaction = (p) => {
 					<span>Report</span>
 					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
 					{!!p.data.isUnethical &&
-						<strong className="unethical"> and Unethical</strong>
+					<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
-					<span className="market-description" title={p.data.market.description}>{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}</span>
+					{marketDescription()}
 				</span>
 			);
 		}
 		break;
+	}
 	case GENERATE_ORDER_BOOK:
 		nodes.description = (
 			<span className="description">
