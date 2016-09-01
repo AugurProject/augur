@@ -20,9 +20,9 @@ const Transaction = (p) => {
 					{description()}
 				</Link>
 			);
-		} else {
-			return <span>{description()}</span>;
 		}
+
+		return <span>{description()}</span>;
 	};
 
 	switch (p.type) {
@@ -116,7 +116,7 @@ const Transaction = (p) => {
 					<span>Report</span>
 					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
 					{!!p.data.isUnethical &&
-					<strong className="unethical"> and Unethical</strong>
+						<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
 					{marketDescription()}
