@@ -6,6 +6,8 @@ import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
+function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
+
 const Transaction = (p) => {
 	const nodes = {};
 
@@ -160,13 +162,13 @@ const Transaction = (p) => {
 			{p.status && p.hash ?
 				<Link href={`https://morden.ether.camp/transaction/${p.hash}`} target="_blank">
 					<div className="status-and-message">
-						<span className="message">{p.message}</span>
+						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
 						<span className="status">{p.status}</span>
 					</div>
 				</Link>
 				: <div className="status-and-message">
-					<span className="message">{p.message}</span>
+					<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 					<br />
 					<span className="status">{p.status}</span>
 				</div>
