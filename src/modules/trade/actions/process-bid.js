@@ -1,17 +1,26 @@
-import { augur } from '../../../services/augurjs';
-import { formatEther, formatShares } from '../../../utils/format-number';
+import { augur, abi } from '../../../services/augurjs';
+import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
-export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
+export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !totalEthWithFee) {
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
+			}));
 		}
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'placing bid...', message: `bidding ${numShares} shares @ ${limitPrice} ETH` }));
+		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: 'placing bid...',
+			message: `bidding ${numShares} shares @ ${limitPrice} ETH<br />
+				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+				(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+		}));
 
 		bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
@@ -19,7 +28,9 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			}
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
-				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}`
+				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
+					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
+					(paid ${formatRealEther(res.gasFees).full} in gas fees)`
 			}));
 		});
 	};

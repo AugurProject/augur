@@ -71,6 +71,14 @@ export function listenToUpdates() {
 				}
 			},
 
+			deposit: (msg) => {
+				if (msg) console.log('deposit:', msg);
+			},
+
+			withdraw: (msg) => {
+				if (msg) console.log('withdraw:', msg);
+			},
+
 			// // Reporter penalization (debugging-only?)
 			// penalize: (msg) => {
 			// 	console.debug('penalize:', msg);

@@ -99,7 +99,8 @@ export const selectMarketFromEventID = (eventID) => {
 	);
 };
 
-export const assembleMarket = memoizerific(1000)((
+// NOTE memoization limit 10000 as a temporary fix
+export const assembleMarket = memoizerific(10000)((
 		marketID,
 		marketData,
 		marketPriceHistory,

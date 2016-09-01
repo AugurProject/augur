@@ -43,7 +43,9 @@ export function placeTrade(marketID) {
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
 						outcomeTradeInProgress.limitPrice,
-						totalCost));
+						totalCost,
+						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.gasFeesRealEth));
 				} else {
 					dispatch(addBidTransaction(
 						marketID,
@@ -52,7 +54,9 @@ export function placeTrade(marketID) {
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
 						outcomeTradeInProgress.limitPrice,
-						totalCost));
+						totalCost,
+						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.gasFeesRealEth));
 				}
 			} else if (outcomeTradeInProgress.side === SELL) {
 				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
@@ -85,7 +89,9 @@ export function placeTrade(marketID) {
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
 						dispatch(addAskTransaction(
 							marketID,
@@ -94,7 +100,9 @@ export function placeTrade(marketID) {
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				} else {
 					if (tradeIDs && tradeIDs.length) {
@@ -106,7 +114,9 @@ export function placeTrade(marketID) {
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
 						dispatch(addShortAskTransaction(
 							marketID,
@@ -114,7 +124,10 @@ export function placeTrade(marketID) {
 							market.description,
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice));
+							outcomeTradeInProgress.limitPrice,
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				}
 			}

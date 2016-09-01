@@ -191,5 +191,6 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 
 ex.augur = augur;
 ex.abi = augur.abi;
+ex.constants = augur.constants;
 
 module.exports = ex;

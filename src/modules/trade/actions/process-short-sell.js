@@ -1,4 +1,4 @@
-import { formatEther, formatShares } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -9,16 +9,24 @@ import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-tra
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
-export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
+export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
 		if (!limitPrice || !numShares) {
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
+			}));
 		}
 
 		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = ZERO;
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `short selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: 'starting...',
+			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
+				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
+				total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+		}));
 
 		const { loginAccount } = getState();
 
@@ -31,7 +39,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			(err, res) => {
 				dispatch(updateTradeCommitLock(false));
 				if (err) {
-					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
+					return dispatch(updateExistingTransaction(transactionID, {
+						status: FAILED,
+						message: err.message
+					}));
 				}
 
 				// update user's position
@@ -39,7 +50,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 				filledEth = filledEth.plus(res.filledEth);
 
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFees, res.gasFees)
+				}));
 
 				if (res.remainingShares > 0) {
 					const transactionData = getState().transactionsData[transactionID];
@@ -50,14 +64,20 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
 						res.remainingShares,
-						limitPrice));
+						limitPrice,
+						totalEthWithFee,
+						tradingFeesEth,
+						gasFeesRealEth));
 				}
 			}
 		);
 	};
 }
 
-function generateMessage(numShares, remainingShares, filledEth) {
+function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, gasFeesRealEth) {
 	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
-	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
+	const totalEthWithFee = abi.bignum(filledEth).plus(tradingFeesEth);
+	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
+		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
+		total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
 }

@@ -46,24 +46,10 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			cleanLimitPrice = topOrderPrice;
 		}
 
-		// calculate totals
-		let costEth;
-		let feeEth;
-		if (cleanLimitPrice !== undefined) {
-			costEth = abi.bignum(cleanNumShares).times(abi.bignum(cleanLimitPrice));
-			feeEth = abi.bignum(market.takerFee).times(costEth);
-			feeEth = feeEth.toFixed();
-		} else {
-			costEth = NaN;
-			feeEth = NaN;
-		}
-
 		const newTradeDetails = {
 			side: cleanSide,
 			numShares: cleanNumShares || undefined,
-			limitPrice: cleanLimitPrice || undefined,
-			totalFee: feeEth,
-			totalCost: 0
+			limitPrice: cleanLimitPrice || undefined
 		};
 
 		// trade actions
@@ -94,10 +80,17 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				const numTradeActions = newTradeDetails.tradeActions.length;
 				if (numTradeActions) {
 					let totalCost = ZERO;
+					let tradingFeesEth = ZERO;
+					let gasFeesRealEth = ZERO;
 					for (let i = 0; i < numTradeActions; ++i) {
 						totalCost = totalCost.plus(abi.bignum(newTradeDetails.tradeActions[i].costEth));
+						tradingFeesEth = tradingFeesEth.plus(abi.bignum(newTradeDetails.tradeActions[i].feeEth));
+						gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(newTradeDetails.tradeActions[i].gasEth));
 					}
 					newTradeDetails.totalCost = totalCost.toFixed();
+					newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
+					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
+					newTradeDetails.totalFee = tradingFeesEth.plus(gasFeesRealEth).toFixed();
 				}
 			}
 			console.log('newTradeDetails:', newTradeDetails);

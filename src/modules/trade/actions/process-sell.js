@@ -1,4 +1,4 @@
-import { formatEther, formatShares } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -11,16 +11,24 @@ import { addAskTransaction } from '../../transactions/actions/add-ask-transactio
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 import { selectMarket } from '../../market/selectors/market';
 
-export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
+export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
 		if (!limitPrice || !numShares) {
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
+			}));
 		}
 
 		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = ZERO;
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: 'starting...',
+			message: `selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
+				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
+				total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+		}));
 
 		const { loginAccount } = getState();
 
@@ -32,12 +40,18 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			},
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
-				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: 'filling...',
+					message: generateMessage(numShares, res.remainingShares, filledEth)
+				}));
 			},
 			(err, res) => {
 				dispatch(updateTradeCommitLock(false));
 				if (err) {
-					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
+					return dispatch(updateExistingTransaction(transactionID, {
+						status: FAILED,
+						message: err.message
+					}));
 				}
 
 				// update user's position
@@ -45,7 +59,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
 
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					message: generateMessage(numShares, res.remainingShares, filledEth)
+				}));
 
 				if (res.remainingShares > 0) {
 					const market = selectMarket(marketID);
@@ -59,8 +76,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							}
 						}
 					}
-					console.log('sell complete! current position:', position, typeof position, position - numShares);
-
+					console.log('sell complete! current position:', position);
 					const transactionData = getState().transactionsData[transactionID];
 					if (position > 0) {
 						dispatch(addAskTransaction(
@@ -69,7 +85,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
 							res.remainingShares,
-							limitPrice));
+							limitPrice,
+							totalEthWithFee,
+							tradingFeesEth,
+							gasFeesRealEth));
 					} else {
 						dispatch(addShortAskTransaction(
 							transactionData.data.marketID,
@@ -77,7 +96,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
 							res.remainingShares,
-							limitPrice));
+							limitPrice,
+							totalEthWithFee,
+							tradingFeesEth,
+							gasFeesRealEth));
 					}
 				}
 			}
@@ -85,7 +107,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 	};
 }
 
-function generateMessage(numShares, remainingShares, filledEth) {
+function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, gasFeesRealEth) {
 	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
-	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
+	const totalEthWithFee = abi.bignum(filledEth).plus(abi.bignum(tradingFeesEth));
+	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
+		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
+		total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
 }

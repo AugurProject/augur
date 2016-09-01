@@ -6,7 +6,9 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 	const res = {
 		remainingShares: numShares,
 		filledShares: ZERO,
-		filledEth: ZERO
+		filledEth: ZERO,
+		tradingFees: ZERO,
+		gasFees: ZERO
 	};
 
 	const matchingIDs = getTradeIDs();
@@ -45,8 +47,10 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 					res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
 				}
 				if (data.cashFromTrade) {
-					res.filledEth = res.filledEth.plus(data.cashFromTrade);
+					res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
 				}
+				res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
+				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				if (res.remainingShares > 0) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
