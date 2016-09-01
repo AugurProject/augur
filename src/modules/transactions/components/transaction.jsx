@@ -9,8 +9,6 @@ import ValueDenomination from '../../common/components/value-denomination';
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
 const Transaction = (p) => {
-	console.log('Transaction p --', p);
-
 	const nodes = {};
 
 	switch (p.type) {
@@ -88,17 +86,32 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case CREATE_MARKET:
+	case CREATE_MARKET: {
+		const marketDescription = () => (
+			<span className="market-description" title={p.data.description}>
+				{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}
+			</span>
+		);
+
 		nodes.description = (
 			<span className="description">
 				<span>Make</span>
 				<strong>{p.data.type}</strong>
 				<span>market</span>
 				<br />
-				<span className="market-description" title={p.data.description}>{p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '')}</span>
+				{p.data.marketLink ?
+					<Link onClick={p.data.marketLink.onClick}>
+						{marketDescription()}
+					</Link>
+					:
+					<span>
+						{marketDescription()}
+					</span>
+				}
 			</span>
 		);
 		break;
+	}
 	case COMMIT_REPORT:
 		if (p.data.market.type === SCALAR) {
 			nodes.description = (
