@@ -5,30 +5,30 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
-export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
+export function processShortAsk(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
-		if ((!limitPrice) || !totalEthWithFee) {
+		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
-				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
+				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
 			}));
 		}
 
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
-			status: 'placing bid...',
-			message: `bidding ${numShares} shares @ ${limitPrice} ETH<br />
+			status: 'placing short ask...',
+			message: `short asking ${numShares} shares @ ${limitPrice} ETH<br />
 				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
 				(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
 		}));
 
-		bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
+		shortAsk(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
-				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
+				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 					(paid ${formatRealEther(res.gasFees).full} in gas fees)`
 			}));
@@ -36,16 +36,15 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 	};
 }
 
-function bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, cb) {
-	augur.buy({
-		amount: numShares,
+function shortAsk(transactionID, marketID, outcomeID, limitPrice, totalShares, dispatch, cb) {
+	augur.shortAsk({
+		amount: totalShares,
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
 
 		onSent: data => {
 			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-			console.log('bid onSent', data);
 		},
 		onFailed: cb,
 		onSuccess: data => cb(null, data)

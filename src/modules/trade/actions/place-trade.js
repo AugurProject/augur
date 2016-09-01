@@ -9,7 +9,7 @@ import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
-import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
+import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
@@ -38,11 +38,14 @@ export function placeTrade(marketID) {
 						BUY,
 						marketID,
 						outcomeID,
+						market.type,
 						market.description,
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
 						outcomeTradeInProgress.limitPrice,
-						totalCost));
+						totalCost,
+						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.gasFeesRealEth));
 				} else {
 					dispatch(addBidTransaction(
 						marketID,
@@ -51,14 +54,16 @@ export function placeTrade(marketID) {
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
 						outcomeTradeInProgress.limitPrice,
-						totalCost));
+						totalCost,
+						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.gasFeesRealEth));
 				}
 			} else if (outcomeTradeInProgress.side === SELL) {
 				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 
 				// check if user has position
 				//  - if so, sell/ask
-				//  - if not, short sell/short sell risky
+				//  - if not, short sell/short ask
 				let position;
 				if (market.myPositionOutcomes) {
 					const numPositions = market.myPositionOutcomes.length;
@@ -69,18 +74,21 @@ export function placeTrade(marketID) {
 						}
 					}
 				}
-				if (position && position.value) {
+				if (position && position.value > 0) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addTradeTransaction(
 							SELL,
 							marketID,
 							outcomeID,
+							market.type,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
 						dispatch(addAskTransaction(
 							marketID,
@@ -89,7 +97,9 @@ export function placeTrade(marketID) {
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				} else {
 					if (tradeIDs && tradeIDs.length) {
@@ -101,16 +111,20 @@ export function placeTrade(marketID) {
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
-						dispatch(addShortSellRiskyTransaction(
+						dispatch(addShortAskTransaction(
 							marketID,
 							outcomeID,
 							market.description,
 							outcomesData[marketID][outcomeID].name,
 							outcomeTradeInProgress.numShares,
 							outcomeTradeInProgress.limitPrice,
-							totalCost));
+							totalCost,
+							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				}
 			}

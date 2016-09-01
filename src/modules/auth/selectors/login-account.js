@@ -11,12 +11,12 @@ export default function () {
 export const setupLoginAccount = (loginAccount, dispatch) => {
 	const prettyAddress = loginAccount.id ? `${loginAccount.id.substring(0, 4)}...${loginAccount.id.substring(loginAccount.id.length - 4)}` : undefined;
 
-	const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
+	const prettySecureLoginID = loginAccount.secureLoginID ? `${loginAccount.secureLoginID.substring(0, 4)}...${loginAccount.secureLoginID.substring(loginAccount.secureLoginID.length - 4)}` : undefined;
 
-	// if loginID is not defined it must be a local geth node account, otherwise it's a hosted node.
-	const localNode = !loginAccount.loginID;
+	// if secureLoginID is not defined it must be a local geth node account, otherwise it's a hosted node.
+	const localNode = !loginAccount.secureLoginID;
 
-	const linkText = localNode ? prettyAddress : loginAccount.name || prettyLoginID;
+	const linkText = localNode ? prettyAddress : loginAccount.name || prettySecureLoginID;
 
 	const date = new Date()
 		.toISOString()
@@ -30,7 +30,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 
 	return {
 		...loginAccount,
-		prettyLoginID,
+		prettySecureLoginID,
 		prettyAddress,
 		localNode,
 		linkText,

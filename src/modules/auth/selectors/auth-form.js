@@ -5,9 +5,6 @@ import {
 	USERNAME_REQUIRED,
 	PASSWORDS_DO_NOT_MATCH,
 	PASSWORD_TOO_SHORT,
-	PASSWORD_NEEDS_LOWERCASE,
-	PASSWORD_NEEDS_UPPERCASE,
-	PASSWORD_NEEDS_NUMBER,
 	USERNAME_TAKEN
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
@@ -36,12 +33,6 @@ export const selectErrMsg = (err) => {
 		return 'passwords do not match';
 	case PASSWORD_TOO_SHORT:
 		return err.message; // use message so we dont have to update length requiremenets here
-	case PASSWORD_NEEDS_LOWERCASE:
-		return 'password requires at least one lowercase letter.';
-	case PASSWORD_NEEDS_UPPERCASE:
-		return 'password requires at least one uppercase letter.';
-	case PASSWORD_NEEDS_NUMBER:
-		return 'password requires at least one number.';
 	case USERNAME_TAKEN:
 		return 'username already registered';
 	default:
@@ -61,11 +52,11 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		title: 'Sign Up',
 		type: auth.selectedAuthType,
 
-		isVisibleName: false,
-		isVisibleID,
+		isVisibleName: true,
+		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
-		isVisibleRememberMe: isVisibleID,
+		isVisibleRememberMe: false,
 		isVisibleFileInput: false,
 
 		instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
@@ -100,8 +91,6 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisibleRememberMe: true,
 		isVisibleFileInput: false,
 
-		instruction: 'Please enter your Login ID and password below.',
-
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
@@ -114,6 +103,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
+
 		onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) =>	dispatch(login(loginID, password, rememberMe))
 	};
 };
@@ -124,14 +114,12 @@ export const selectImportAccount = (auth, dispatch) => {
 		title: 'Import Account',
 		type: auth.selectedAuthType,
 
-		isVisibleName: false,
+		isVisibleName: true,
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
 		isVisibleRememberMe: true,
 		isVisibleFileInput: true,
-
-		instruction: 'Please upload your account file and enter the password to unlock the uploaded account.',
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -152,7 +140,7 @@ export const selectImportAccount = (auth, dispatch) => {
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
-		return selectRegister(auth, loginAccount, dispatch);
+		return selectRegister(auth, dispatch);
 	case LOGIN:
 		return selectLogin(auth, loginAccount, dispatch);
 	case IMPORT:

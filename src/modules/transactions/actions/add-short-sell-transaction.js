@@ -1,17 +1,17 @@
-import { formatShares, formatEther } from '../../../utils/format-number';
+import { formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
 
 import { SHORT_SELL } from '../../transactions/constants/types';
 
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processShortSell } from '../../trade/actions/process-short-sell';
 
-export const addShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice) => (
+export const addShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch)));
+		dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch) => {
+export const makeShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch) => {
 	const transaction = {
 		type: SHORT_SELL,
 		data: {
@@ -20,7 +20,9 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice)
+			avgPrice: formatEther(limitPrice),
+			tradingFees: formatEther(tradingFeesEth),
+			gasFees: formatRealEther(gasFeesRealEth)
 		}
 	};
 
@@ -29,7 +31,10 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 		marketID,
 		outcomeID,
 		numShares,
-		limitPrice));
+		limitPrice,
+		totalCost,
+		tradingFeesEth,
+		gasFeesRealEth));
 
 	return transaction;
 };
