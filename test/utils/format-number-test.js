@@ -12,11 +12,11 @@ describe('utils/format-number.js', () => {
 						value: 1000.1,
 						formattedValue: 1000.1,
 						roundedValue: 1000.1,
-						formatted: '1,000.100',
-						rounded: '1,000.1',
+						formatted: '1,000.10',
+						rounded: '1,000.10',
 						minimized: '1,000.1',
 						denomination: ' ETH',
-						full: '1,000.100 ETH'
+						full: '1,000.10 ETH'
 					}
 				},
 				{
@@ -41,7 +41,7 @@ describe('utils/format-number.js', () => {
 						formattedValue: 1000.1,
 						roundedValue: 1000.1,
 						formatted: '1,000.1',
-						rounded: '1,000.1',
+						rounded: '1,000.10',
 						minimized: '1,000.1',
 						denomination: ' shares',
 						full: '1,000.1 shares'

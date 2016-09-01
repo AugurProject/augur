@@ -32,7 +32,7 @@ export function loadLoginAccountDependents() {
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch, getState) => {
+	return dispatch => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
@@ -49,6 +49,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 			dispatch(updateFavorites(localState.favorites));
 		}
 		if (localState.accountTrades) {
+			dispatch(clearAccountTrades());
 			dispatch(updateAccountTradesData(localState.accountTrades));
 		}
 		if (localState.reports && Object.keys(localState.reports).length) {

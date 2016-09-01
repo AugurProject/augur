@@ -1,17 +1,17 @@
-import { formatShares, formatEther } from '../../../utils/format-number';
+import { formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
 
 import { BID } from '../../transactions/constants/types';
 
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBid } from '../../trade/actions/process-bid';
 
-export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
+export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeBidTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
+		dispatch(addTransaction(makeBidTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
+export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch) => {
 	const transaction = {
 		type: BID,
 		data: {
@@ -20,7 +20,9 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice)
+			avgPrice: formatEther(limitPrice),
+			tradingFees: formatEther(tradingFeesEth),
+			gasFees: formatRealEther(gasFeesRealEth)
 		}
 	};
 
@@ -30,7 +32,9 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 		outcomeID,
 		numShares,
 		limitPrice,
-		totalCost));
+		totalCost,
+		tradingFeesEth,
+		gasFeesRealEth));
 
 	return transaction;
 };

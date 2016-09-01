@@ -61,7 +61,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					formattedValue: 5,
 					formatted: '5',
 					roundedValue: 5,
-					rounded: '5.0',
+					rounded: '5.00',
 					minimized: '5',
 					denomination: ' shares',
 					full: '5 shares'
@@ -69,12 +69,32 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				avgPrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.000',
+					formatted: '10.00',
 					roundedValue: 10,
-					rounded: '10.0',
+					rounded: '10.00',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.000 ETH'
+					full: '10.00 ETH'
+				},
+				tradingFees: {
+					denomination: ' ETH',
+					formatted: 0,
+					formattedValue: 0,
+					full: '0 ETH',
+					minimized: 0,
+					rounded: 0,
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH',
+					formatted: 0,
+					formattedValue: 0,
+					full: '0 real ETH',
+					minimized: 0,
+					rounded: 0,
+					roundedValue: 0,
+					value: 0,
 				}
 			},
 			action: actual[0].action
@@ -105,7 +125,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					formattedValue: 5,
 					formatted: '5',
 					roundedValue: 5,
-					rounded: '5.0',
+					rounded: '5.00',
 					minimized: '5',
 					denomination: ' shares',
 					full: '5 shares'
@@ -113,12 +133,32 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				avgPrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.000',
+					formatted: '10.00',
 					roundedValue: 10,
-					rounded: '10.0',
+					rounded: '10.00',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.000 ETH'
+					full: '10.00 ETH'
+				},
+				tradingFees: {
+					denomination: ' ETH',
+					formatted: 0,
+					formattedValue: 0,
+					full: '0 ETH',
+					minimized: 0,
+					rounded: 0,
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH',
+					formatted: 0,
+					formattedValue: 0,
+					full: '0 real ETH',
+					minimized: 0,
+					rounded: 0,
+					roundedValue: 0,
+					value: 0,
 				}
 			},
 			action: actual[0].action

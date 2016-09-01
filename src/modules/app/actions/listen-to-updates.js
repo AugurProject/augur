@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
@@ -35,7 +35,7 @@ export function listenToUpdates() {
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
+					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
 				}
 			},
@@ -69,6 +69,14 @@ export function listenToUpdates() {
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
 				}
+			},
+
+			deposit: (msg) => {
+				if (msg) console.log('deposit:', msg);
+			},
+
+			withdraw: (msg) => {
+				if (msg) console.log('withdraw:', msg);
 			},
 
 			// // Reporter penalization (debugging-only?)

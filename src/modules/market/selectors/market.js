@@ -204,7 +204,7 @@ export const assembleMarket = (function (
 					...outcomeData,
 					id: outcomeID,
 					marketID,
-					lastPrice: formatEther(parseFloat(outcomeData.price) || 0, { positiveSign: false })
+					lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
 				};
 
 				if (market.type === 'scalar') {
@@ -222,7 +222,7 @@ export const assembleMarket = (function (
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, parseFloat(outcomeData.sharesPurchased));
+				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, outcomeData.sharesPurchased);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
 				outcome.topBid = selectTopBid(orderBook);

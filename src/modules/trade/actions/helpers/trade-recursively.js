@@ -50,6 +50,8 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		res.remainingShares = parseFloat(data.unmatchedShares) || 0;
 		res.filledShares = parseFloat(data.sharesBought) || 0;
 		res.filledEth = parseFloat(data.cashFromTrade) || 0;
+		res.tradingFeesEth = parseFloat(data.tradingFees) || 0;
+		res.gasFeesRealEth = parseFloat(data.gasFees) || 0;
 
 		console.log('* trade success data:', data, res);
 		if ((res.filledEth && res.remainingEth) || (res.filledShares && res.remainingShares)) {
