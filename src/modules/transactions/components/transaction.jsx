@@ -104,7 +104,7 @@ const Transaction = (p) => {
 					<span>Report</span>
 					<strong>{p.data.market.reportedOutcome || ''}</strong>
 					{!!p.data.isUnethical &&
-					<strong className="unethical"> and Unethical</strong>
+						<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
 					{marketDescription()}
@@ -144,9 +144,7 @@ const Transaction = (p) => {
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.order.price} />
 				<br />
-				<span className="market-description" title={p.data.market.description}>
-					{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}
-				</span>
+				{marketDescription()}
 			</span>
 
 		);
