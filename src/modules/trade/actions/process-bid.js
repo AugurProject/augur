@@ -1,9 +1,8 @@
 import { augur, abi } from '../../../services/augurjs';
 import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
-
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
-
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -26,6 +25,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
+			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
 				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
