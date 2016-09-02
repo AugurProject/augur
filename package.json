@@ -76,6 +76,7 @@
     "browserify-shim": "3.8.12",
     "chai": "3.5.0",
     "clean-css": "3.4.19",
+    "core-js": "2.4.1",
     "coveralls": "2.11.12",
     "derequire": "2.0.3",
     "envify": "3.4.1",

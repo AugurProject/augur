@@ -1,3 +1,6 @@
+require('core-js/fn/array/find');
+require('core-js/fn/string/starts-with');
+
 import { App } from 'augur-ui-react-components';
 import selectors from './selectors';
 import AugurJS from './services/augurjs';
