@@ -66,19 +66,19 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				if (res.remainingShares > 0) {
 					const market = selectMarket(marketID);
-					let position = 0;
-					if (market.myPositionOutcomes) {
-						const numPositions = market.myPositionOutcomes.length;
+					let position = ZERO;
+					if (market.outcomes) {
+						const numPositions = market.outcomes.length;
 						for (let i = 0; i < numPositions; ++i) {
-							if (market.myPositionOutcomes[i].id === outcomeID) {
-								position = market.myPositionOutcomes[i].position.qtyShares;
+							if (market.outcomes[i].id === outcomeID) {
+								position = abi.bignum(market.outcomes[i].sharesPurchased);
 								break;
 							}
 						}
 					}
-					console.log('sell complete! current position:', position);
+					console.log('sell complete! current position:', position.toString());
 					const transactionData = getState().transactionsData[transactionID];
-					if (position > 0) {
+					if (position.gt(ZERO)) {
 						dispatch(addAskTransaction(
 							transactionData.data.marketID,
 							transactionData.data.marketLink,

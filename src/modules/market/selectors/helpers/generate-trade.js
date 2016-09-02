@@ -79,7 +79,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			outcome.name,
 			tradeAction.shares,
 			tradeAction.avgPrice,
-			Math.abs(parseFloat(tradeAction.costEth)),
+			abi.bignum(tradeAction.costEth).abs().toNumber(),
 			tradeAction.feeEth,
 			tradeAction.gasEth,
 			store.dispatch)
