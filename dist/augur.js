@@ -40208,7 +40208,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.1";
+    this.version = "2.4.2";
 
     this.options = {
         debug: {
@@ -40218,7 +40218,7 @@ function Augur() {
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false      // trading-related debug logging
         },
-        loadZeroVolumeMarkets: false
+        loadZeroVolumeMarkets: true
     };
     this.protocol = NODE_JS || document.location.protocol;
 
