@@ -1,4 +1,4 @@
-import { augur, abi } from '../../../services/augurjs';
+import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
@@ -57,15 +57,18 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			let position;
-			if (market.myPositionOutcomes) {
-				const numPositions = market.myPositionOutcomes.length;
+			let position = 0;
+			if (market.outcomes) {
+				const numPositions = market.outcomes.length;
 				for (let i = 0; i < numPositions; ++i) {
-					if (market.myPositionOutcomes[i].id === outcomeID) {
-						position = market.myPositionOutcomes[i].position.qtyShares;
+					if (market.outcomes[i].id === outcomeID) {
+						position = abi.bignum(market.outcomes[i].sharesPurchased);
 						break;
 					}
 				}
+			}
+			if (position && newTradeDetails.side === 'sell' && position.minus(abi.bignum(newTradeDetails.numShares)).lt(constants.PRECISION.limit)) {
+				newTradeDetails.numShares = position.toNumber();
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
@@ -74,7 +77,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				market && market.takerFee || 0,
 				market && market.makerFee || 0,
 				loginAccount.id,
-				position && position.value || 0,
+				position,
 				outcomeID,
 				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});
