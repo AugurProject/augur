@@ -24,8 +24,8 @@ ex.connect = function connect(env, cb) {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
 		if (env.augurNodeURL && !isHttps) {
-			// console.debug('fetching cached data from', env.augurNodeURL);
-			// augur.augurNode.bootstrap([env.augurNodeURL]);
+			console.debug('fetching cached data from', env.augurNodeURL);
+			augur.augurNode.bootstrap([env.augurNodeURL]);
 		}
 		cb(null, connection);
 	});
