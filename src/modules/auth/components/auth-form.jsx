@@ -227,7 +227,7 @@ export default class AuthForm extends Component {
 				<Link
 					type="button"
 					className="button x-button"
-					title="Close"
+					title="Back to Markets Page"
 					href={p.closeLink.href}
 					onClick={p.closeLink.onClick}
 				>
