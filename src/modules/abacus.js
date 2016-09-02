@@ -40,10 +40,12 @@ module.exports = {
         var bnPrice = abi.bignum(price);
         var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
         var fee = percentFee.times(bnAmount).times(bnPrice);
+        var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
             percentFee: percentFee,
-            cost: bnAmount.times(bnPrice).plus(fee)
+            cost: noFeeCost.plus(fee),
+            cash: noFeeCost.minus(fee)
         };
     },
 

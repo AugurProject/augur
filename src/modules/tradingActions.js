@@ -286,7 +286,7 @@ module.exports = {
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
                         tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-                        etherToSell = etherToSell.plus(tradingCost.cost);
+                        etherToSell = etherToSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
                         if (orderSharesFilled.equals(bidAmount)) {
@@ -331,7 +331,7 @@ module.exports = {
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
                         tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-                        etherToShortSell = etherToShortSell.plus(tradingCost.cost);
+                        etherToShortSell = etherToShortSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.equals(constants.ZERO)) {
                             break;

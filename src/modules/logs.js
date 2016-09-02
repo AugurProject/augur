@@ -63,6 +63,26 @@ module.exports = {
         });
     },
 
+    getAccountHistory: function (account, options, cb) {
+        var self = this;
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        if (!account || !utils.is_function(cb)) return;
+        var accountHistory = {};
+        self.getAccountTrades(account, options, function (accountTrades) {
+            if (accountTrades && accountTrades.error) return cb(accountTrades);
+            accountHistory.trades = accountTrades;
+            self.getAccountCompleteSets(account, options, function (accountCompleteSets) {
+                if (accountCompleteSets && accountCompleteSets.error) return cb(accountCompleteSets);
+                accountHistory.completeSets = accountCompleteSets;
+                cb(null, accountHistory);
+            });
+        });
+    },
+
     getAccountCompleteSets: function (account, options, cb) {
         var self = this;
         if (!cb && utils.is_function(options)) {
