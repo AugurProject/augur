@@ -310,9 +310,9 @@ function makeMarkets(numMarkets = 10) {
 								p.tradeOrders.push({
 									type: outcome.trade.side,
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
-									gas: makeNumber(gas, ' ETH'),
 									ether: makeNumber(outcome.trade.totalCost.value - gas, ' ETH'),
 									data: {
+										gasFees: makeNumber(gas, ' ETH'),
 										marketType: m.type,
 										outcomeName: outcome.name,
 										marketDescription: m.description,

@@ -164,8 +164,8 @@ const Transaction = (p) => {
 			{nodes.description}
 
 			<span className="value-changes">
-				{!!p.gas && !!p.gas.value &&
-					<ValueDenomination className="value-change gas" {...p.gas} prefix="gas:" />
+				{!!p.data.gasFees && !!p.data.gasFees.value &&
+					<ValueDenomination className="value-change gasFees" {...p.data.gasFees} prefix="estimated gas cost:" />
 				}
 				{!!p.ether && !!p.ether.value &&
 					<ValueDenomination className="value-change ether" {...p.ether} prefix="total:" />
