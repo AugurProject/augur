@@ -1,8 +1,14 @@
 import { makeNumber } from '../utils/make-number';
+import { M } from '../modules/site/constants/pages';
 
 export default [
 	{
 		id: '123',
+		marketLink: {
+			text: 'Market',
+			className: 'portfolio-row-link',
+			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
+		},
 		description: 'will there be a referendum on may 1?',
 		myPositionOutcomes: [
 			{
@@ -39,6 +45,11 @@ export default [
 	},
 	{
 		id: '234',
+		marketLink: {
+			text: 'Market',
+			className: 'portfolio-row-link',
+			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
+		},
 		description: 'Yoooooooooooooo, sup guy?',
 		myPositionOutcomes: [
 			{

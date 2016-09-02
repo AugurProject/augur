@@ -1,6 +1,7 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertFormattedDate from '../../test/assertions/common/formatted-date';
+import assertFormattedNumber from './common/formatted-number';
+import assertFormattedDate from './common/formatted-date';
+import assertMarketLink from './common/market-link';
 
 export default function (reports) {
 	describe(`augur-ui-react-components loginAccountReports.reports' shape`, () => {
@@ -16,6 +17,11 @@ export function assertAccountReport(report) {
 		it('id', () => {
 			assert.isDefined(report.id);
 			assert.isString(report.id);
+		});
+
+		it('marketLink', () => {
+			assert.isDefined(report.marketLink);
+			assertMarketLink(report.marketLink, `reports' marketLink`);
 		});
 
 		it('description', () => {
