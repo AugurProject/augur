@@ -18,7 +18,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing ask...',
 			message: `asking ${numShares} shares @ ${limitPrice} ETH<br />
-				freezing ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+				freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 				expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
@@ -29,7 +29,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
 				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					freezing ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 					expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(res.gasFees).full} in gas fees)</small>`
 			}));
 		});

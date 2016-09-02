@@ -18,7 +18,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing bid...',
 			message: `bidding ${numShares} shares @ ${limitPrice} ETH<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 

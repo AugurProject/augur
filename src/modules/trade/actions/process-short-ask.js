@@ -18,7 +18,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing short ask...',
 			message: `short asking ${numShares} shares @ ${limitPrice} ETH<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
