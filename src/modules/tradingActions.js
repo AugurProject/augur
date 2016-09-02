@@ -175,14 +175,13 @@ module.exports = {
     getShortAskAction: function (shares, limitPrice, makerFee, gasPrice) {
         var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
         var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-        var shortAskEth = shares.times(limitPrice);
-        var costEth = shortAskEth.minus(shares);
+        var feeEth = shares.times(limitPrice).times(makerFee);
         return {
             action: "SHORT_ASK",
             shares: shares.toFixed(),
             gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
-            feeEth: shortAskEth.times(makerFee).toFixed(),
-            costEth: costEth.toFixed(),
+            feeEth: feeEth.toFixed(),
+            costEth: shares.neg().minus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
     },
