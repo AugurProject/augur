@@ -26,8 +26,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
 			message: `selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
-				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cash: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+				paying ${formatEther(tradingFeesEth).full} in trading fees (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
 		}));
 
 		const { loginAccount } = getState();
@@ -61,7 +60,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
-					message: generateMessage(numShares, res.remainingShares, filledEth)
+					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFeesEth, res.gasFeesRealEth)
 				}));
 
 				if (res.remainingShares > 0) {
@@ -112,5 +111,5 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, gasFeesRealEth) {
 	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
 	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
-		paid ${formatEther(tradingFeesEth).full} in trading fees (+${formatRealEther(gasFeesRealEth).full} in gas fees)<br />`;
+		paid ${formatEther(tradingFeesEth).full} in trading fees (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
 }

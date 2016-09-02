@@ -92,7 +92,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.totalCost = totalCost.toFixed();
 					newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
 					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
-					newTradeDetails.totalFee = tradingFeesEth.plus(gasFeesRealEth).toFixed();
+					newTradeDetails.totalFee = tradingFeesEth.toFixed();
 				}
 			}
 			console.log('newTradeDetails:', newTradeDetails);

@@ -23,9 +23,8 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `buying ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
-				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+			message: `buying ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
+				paying ${formatEther(tradingFeesEth).full} in trading fees (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
 		}));
 
 		const { loginAccount } = getState();
@@ -90,6 +89,5 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 function generateMessage(totalEthWithFee, remainingEth, filledShares, tradingFeesEth, gasFeesRealEth) {
 	const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(remainingEth));
 	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
-		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
-		total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
+		paid ${formatEther(tradingFeesEth).full} in trading fees (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
 }
