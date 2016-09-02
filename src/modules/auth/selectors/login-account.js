@@ -9,6 +9,11 @@ export default function () {
 }
 
 export const setupLoginAccount = (loginAccount, dispatch) => {
+	// temporary fix until we don't have accounts with secureLoginID
+	if (loginAccount.secureLoginID && !loginAccount.loginID) {
+		loginAccount.loginID = loginAccount.secureLoginID;
+	}
+
 	const prettyAddress = loginAccount.id ? `${loginAccount.id.substring(0, 4)}...${loginAccount.id.substring(loginAccount.id.length - 4)}` : undefined;
 
 	const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
