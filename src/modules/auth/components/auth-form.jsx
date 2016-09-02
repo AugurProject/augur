@@ -128,7 +128,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
+			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data" autoComplete>
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
@@ -182,6 +182,8 @@ export default class AuthForm extends Component {
 					required={p.isVisibleID}
 				/>
 				<input
+					name="password"
+					id="password"
 					ref="password"
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword })}
 					type="password"
