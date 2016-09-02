@@ -190,6 +190,7 @@ export default class AuthForm extends Component {
 					maxLength="256"
 					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword}
+					autoComplete
 				/>
 				<input
 					ref="password2"

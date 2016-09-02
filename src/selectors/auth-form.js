@@ -98,12 +98,12 @@ const importAccount = {
 const accountCreated = {
 	...signUp,
 	isVisibleID: true,
-	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
+	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. Click on the Login ID input field and hit ctrl + v (cmd + v on mac) to paste your Login ID. Hit "Sign Up" to complete registration.',
 	loginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };
 
 
-function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, importedAccount, cb) {
+function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, importedAccount, account, cb) {
 	if (password !== password2) {
 		return false;
 	}
