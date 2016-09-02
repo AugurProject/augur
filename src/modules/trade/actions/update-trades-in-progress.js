@@ -67,7 +67,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			}
-			if (position && newTradeDetails.side === 'sell' && position.minus(abi.bignum(newTradeDetails.numShares)).lt(constants.PRECISION.limit)) {
+			const bnNumShares = abi.bignum(newTradeDetails.numShares);
+			if (position && position.gt(ZERO) && position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
 				newTradeDetails.numShares = position.toNumber();
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
@@ -77,7 +78,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				market && market.takerFee || 0,
 				market && market.makerFee || 0,
 				loginAccount.id,
-				position,
+				position && position.toNumber(),
 				outcomeID,
 				market.cumulativeScale,
 				orderBooks && orderBooks[marketID] || {});

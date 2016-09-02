@@ -1,5 +1,6 @@
 import { BUY, SELL } from '../../trade/constants/types';
-
+import { ZERO } from '../../trade/constants/numbers';
+import { abi } from '../../../services/augurjs';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
@@ -65,16 +66,16 @@ export function placeTrade(marketID) {
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
 				let position;
-				if (market.myPositionOutcomes) {
-					const numPositions = market.myPositionOutcomes.length;
+				if (market.outcomes) {
+					const numPositions = market.outcomes.length;
 					for (let i = 0; i < numPositions; ++i) {
-						if (market.myPositionOutcomes[i].id === outcomeID) {
-							position = market.myPositionOutcomes[i].position.qtyShares;
+						if (market.outcomes[i].id === outcomeID) {
+							position = abi.bignum(market.outcomes[i].sharesPurchased);
 							break;
 						}
 					}
 				}
-				if (position && position.value > 0) {
+				if (position && position.gt(ZERO)) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));
 						dispatch(addTradeTransaction(
