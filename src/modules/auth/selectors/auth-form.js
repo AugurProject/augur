@@ -5,7 +5,10 @@ import {
 	USERNAME_REQUIRED,
 	PASSWORDS_DO_NOT_MATCH,
 	PASSWORD_TOO_SHORT,
-	USERNAME_TAKEN
+	USERNAME_TAKEN,
+	PASSWORD_NEEDS_LOWERCASE,
+	PASSWORD_NEEDS_UPPERCASE,
+	PASSWORD_NEEDS_NUMBER
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
 import { register } from '../../auth/actions/register';
@@ -33,6 +36,12 @@ export const selectErrMsg = (err) => {
 		return 'passwords do not match';
 	case PASSWORD_TOO_SHORT:
 		return err.message; // use message so we dont have to update length requiremenets here
+	case PASSWORD_NEEDS_LOWERCASE:
+		return err.message;
+	case PASSWORD_NEEDS_UPPERCASE:
+		return err.message;
+	case PASSWORD_NEEDS_NUMBER:
+		return err.message;
 	case USERNAME_TAKEN:
 		return 'username already registered';
 	default:
@@ -52,11 +61,11 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		title: 'Sign Up',
 		type: auth.selectedAuthType,
 
-		isVisibleName: true,
+		isVisibleName: false,
 		isVisibleID,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
-		isVisibleRememberMe: false,
+		isVisibleRememberMe: isVisibleID,
 		isVisibleFileInput: false,
 
 		instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
@@ -78,7 +87,7 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 	};
 };
 
-export const selectLogin = (auth, loginAccount, dispatch) => {
+export const selectLogin = (auth, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
 	return {
 		title: 'Login',
@@ -116,7 +125,7 @@ export const selectImportAccount = (auth, dispatch) => {
 		title: 'Import Account',
 		type: auth.selectedAuthType,
 
-		isVisibleName: true,
+		isVisibleName: false,
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
@@ -144,9 +153,9 @@ export const selectImportAccount = (auth, dispatch) => {
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
-		return selectRegister(auth, dispatch);
+		return selectRegister(auth, loginAccount, dispatch);
 	case LOGIN:
-		return selectLogin(auth, loginAccount, dispatch);
+		return selectLogin(auth, dispatch);
 	case IMPORT:
 		return selectImportAccount(auth, dispatch);
 	default:

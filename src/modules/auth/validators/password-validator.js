@@ -18,18 +18,21 @@ export function validatePassword(password) {
 	if (!hasLowercase(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_LOWERCASE;
+		result.message = 'password requires at least one lowercase letter.';
 		return result;
 	}
 
 	if (!hasUppercase(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_UPPERCASE;
+		result.message = 'password requires at least one uppercase letter.';
 		return result;
 	}
 
 	if (!hasNumber(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_NUMBER;
+		result.message = 'password requires at least one number.';
 		return result;
 	}
 
