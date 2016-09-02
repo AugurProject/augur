@@ -369,7 +369,6 @@ module.exports = {
                         assert(r.callReturn === null);
                     },
                     onSuccess: function (r) {
-                        assert(r.callReturn === "1");
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
                         augur.sell({
                             amount: amountPerMarket,
