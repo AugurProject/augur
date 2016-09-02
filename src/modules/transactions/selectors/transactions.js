@@ -40,7 +40,7 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 		})
 		.map(id => {
 			let marketLink = null;
-			if ((transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
+			if (transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
 				marketLink = selectMarketLink(
 					{
 						id: transactionsData[id].data.id || transactionsData[id].data.marketID,
