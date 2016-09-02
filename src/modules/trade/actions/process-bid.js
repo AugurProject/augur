@@ -19,7 +19,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			status: 'placing bid...',
 			message: `bidding ${numShares} shares @ ${limitPrice} ETH<br />
 				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
-				(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
 		bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
@@ -30,7 +30,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 				status: SUCCESS,
 				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					(paid ${formatRealEther(res.gasFees).full} in gas fees)`
+					<small>(paid ${formatRealEther(res.gasFees).full} in gas fees)</small>`
 			}));
 		});
 	};

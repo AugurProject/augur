@@ -19,7 +19,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			status: 'placing short ask...',
 			message: `short asking ${numShares} shares @ ${limitPrice} ETH<br />
 				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
-				(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
 		shortAsk(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
@@ -30,7 +30,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 				status: SUCCESS,
 				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					(paid ${formatRealEther(res.gasFees).full} in gas fees)`
+					<small>(paid ${formatRealEther(res.gasFees).full} in gas fees)</small>`
 			}));
 		});
 	};

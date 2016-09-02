@@ -15,12 +15,11 @@ export function sellCompleteSets() {
 		const positions = selectLoginAccountPositions();
 		async.eachSeries(positions.markets, (market, nextMarket) => {
 			const outcomes = market.outcomes;
-			console.log('full set?', market.id, outcomes.length, market.numOutcomes);
 			if (outcomes.length !== market.numOutcomes) return nextMarket();
 			let smallestPosition = new BigNumber(outcomes[0].sharesPurchased, 10);
 			for (let i = 0; i < outcomes.length; ++i) {
 				smallestPosition = BigNumber.min(smallestPosition, new BigNumber(outcomes[i].sharesPurchased, 10));
-				console.log('smallest position:', smallestPosition.toFixed());
+				console.log('smallest position:', market.id, smallestPosition.toFixed());
 			}
 			if (smallestPosition.lte(ZERO)) return nextMarket();
 			console.debug('selling complete set:', market.id, smallestPosition.toFixed());
