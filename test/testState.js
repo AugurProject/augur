@@ -226,7 +226,8 @@ const testState = {
 			id: 'testtransaction12345',
 			message: 'CORS request rejected: https://faucet.augur.net/faucet/0xtest123',
 			status: 'failed',
-			type: 'register'
+			type: 'register',
+			data: {}
 		}
 	},
 	marketTrades: {

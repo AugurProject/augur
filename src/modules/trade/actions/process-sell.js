@@ -81,6 +81,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					if (position > 0) {
 						dispatch(addAskTransaction(
 							transactionData.data.marketID,
+							transactionData.data.marketLink,
 							transactionData.data.outcomeID,
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
@@ -92,6 +93,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					} else {
 						dispatch(addShortAskTransaction(
 							transactionData.data.marketID,
+							transactionData.data.marketLink,
 							transactionData.data.outcomeID,
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
