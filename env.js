@@ -24,6 +24,7 @@ global.augur = (global.reload = function () {
 global.comments = augur.comments;
 global.b = augur.constants.DEFAULT_BRANCH_ID
 global.log = console.log;
+global.logger = function (r) { console.log(JSON.stringify(r, null, 2)); };
 global.rpc = augur.rpc;
 try {
     global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();

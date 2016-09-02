@@ -5,6 +5,7 @@
 
 "use strict";
 
+var abi = require("augur-abi");
 var assert = require("chai").assert;
 var tools = require("../tools");
 
@@ -28,7 +29,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, t.amount.toString());
+                        assert.strictEqual(abi.unfix(r.callReturn[0], "string"), t.amount.toString());
                         done();
                     },
                     onFailed: done
@@ -64,7 +65,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, t.amount.toString());
+                        assert.strictEqual(abi.unfix(r.callReturn[0], "string"), t.amount.toString());
                         done();
                     },
                     onFailed: done

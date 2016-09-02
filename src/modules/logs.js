@@ -63,7 +63,7 @@ module.exports = {
         });
     },
 
-    getAccountCompleteSets: function (account, type, options, cb) {
+    getAccountCompleteSets: function (account, options, cb) {
         var self = this;
         if (!cb && utils.is_function(options)) {
             cb = options;
@@ -71,19 +71,18 @@ module.exports = {
         }
         options = options || {};
         if (!account || !utils.is_function(cb)) return;
-        var typeCode = (type === "buy") ? 1 : 2;
-        console.log('getLogs:', {
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
-            address: this.contracts.CompleteSets,
-            topics: [
-                this.api.events.completeSets_logReturn.signature,
-                abi.format_int256(account),
-                null,
-                abi.format_int256(typeCode)
-            ],
-            timeout: 480000
-        });
+        var typeCode;
+        switch (options.type) {
+        case "buy":
+            typeCode = abi.format_int256(1);
+            break;
+        case "sell":
+            typeCode = abi.format_int256(2);
+            break;
+        default:
+            typeCode = null;
+        }
+        var market = (options.market) ? abi.format_int256(options.market) : null;
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
@@ -91,30 +90,41 @@ module.exports = {
             topics: [
                 this.api.events.completeSets_logReturn.signature,
                 abi.format_int256(account),
-                null,
-                abi.format_int256(typeCode)
+                market,
+                typeCode
             ],
             timeout: 480000
         }, function (logs) {
-            console.log('logs', logs);
-            var market, logdata, actions, numOutcomes;
+            var market, logdata, actions, numOutcomes, logTypeCode, logType;
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return cb(null);
             }
             if (logs.error) return cb(logs);
-            actions = {};
+            actions = {buy: {}, sell: {}};
             for (var i = 0, n = logs.length; i < n; ++i) {
                 if (logs[i] && logs[i].data !== undefined &&
                     logs[i].data !== null && logs[i].data !== "0x") {
                     market = logs[i].topics[2];
+                    logTypeCode = logs[i].topics[3];
+                    if (typeCode && logTypeCode !== typeCode) continue;
+                    logType = (parseInt(logTypeCode, 16) === 1) ? "buy" : "sell";
                     logdata = self.rpc.unmarshal(logs[i].data);
-                    if (!actions[market]) actions[market] = {};
                     numOutcomes = parseInt(logdata[1], 16);
-                    for (var j = 0; j < numOutcomes; ++j) {
-                        if (!actions[market][j + 1]) actions[market][j + 1] = [];
-                        actions[market][j + 1].push({
-                            shares: abi.unfix(logdata[0], "string"),
-                            price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                    if (options.tradeLogStyle) {
+                        if (!actions[logType][market]) actions[logType][market] = {};
+                        for (var j = 0; j < numOutcomes; ++j) {
+                            if (!actions[logType][market][j + 1]) actions[logType][market][j + 1] = [];
+                            actions[logType][market][j + 1].push({
+                                shares: abi.unfix(logdata[0], "string"),
+                                price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                                blockNumber: parseInt(logs[i].blockNumber, 16)
+                            });
+                        }
+                    } else {
+                        if (!actions[logType][market]) actions[logType][market] = [];
+                        actions[logType][market].push({
+                            amount: abi.unfix(logdata[0], "string"),
+                            numOutcomes: numOutcomes,
                             blockNumber: parseInt(logs[i].blockNumber, 16)
                         });
                     }
@@ -162,13 +172,15 @@ module.exports = {
 
         if (!account || !utils.is_function(cb)) return;
 
+        var market = (options.market) ? abi.format_int256(options.market) : null;
+
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [
                 this.api.events.log_fill_tx.signature,
-                null,
+                market,
                 null,
                 abi.format_int256(account)
             ],
@@ -182,7 +194,7 @@ module.exports = {
                     address: self.contracts.Trade,
                     topics: [
                         self.api.events.log_fill_tx.signature,
-                        null,
+                        market,
                         abi.format_int256(account),
                         null
                     ],
