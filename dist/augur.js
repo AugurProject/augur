@@ -21180,7 +21180,7 @@ module.exports={
     "2": {
         "Backstops": "0x569d4bd38aa5ff088fe3c8f9dcfec44addba62eb", 
         "Branches": "0x497e9d4d5eec6ae005e79e161e4f06a31109f3b7", 
-        "BuyAndSellShares": "0x0213c7f85af139093a6b35cff8d7f4e02f041379", 
+        "BuyAndSellShares": "0x674480390ba3eef8e5c0fe5483c3af9cf05a7521", 
         "Cash": "0x044ad83bf7054789aa73adb0b50a8ed40e779f05", 
         "CloseMarket": "0x521e6197c08903352d6b94de3dca2df39a2a8b6a", 
         "CloseMarketOne": "0xeebd9569b934f098995cb1d12bb378cad5041773", 
@@ -40208,7 +40208,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.5";
+    this.version = "2.4.6";
 
     this.options = {
         debug: {
