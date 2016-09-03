@@ -21,6 +21,29 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			return;
 		}
 
+		// If either field is cleared, reset outcomeTradeInProgress while preserving the companion field's value
+		if (numShares === '' && typeof limitPrice === 'undefined') {
+			return dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: {
+						limitPrice: outcomeTradeInProgress.limitPrice
+					}
+				}
+			});
+		} else if (limitPrice === '' && typeof numShares === 'undefined') {
+			return dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: {
+						numShares: outcomeTradeInProgress.numShares,
+					}
+				}
+			});
+		}
+
 		// if new side not provided, use old side
 		const cleanSide = side || outcomeTradeInProgress.side;
 
