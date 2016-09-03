@@ -43483,7 +43483,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.8";
+    this.version = "2.4.9";
 
     this.options = {
         debug: {
@@ -46151,12 +46151,14 @@ module.exports = {
     getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
         var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
         var etherToBid = shares.times(limitPrice);
+        var feeEth = etherToBid.times(makerFee);
         return {
             action: "BID",
             shares: shares.toFixed(),
             gasEth: bidGasEth.toFixed(),
-            feeEth: etherToBid.times(makerFee).toFixed(),
-            costEth: etherToBid.toFixed(),
+            feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
+            costEth: etherToBid.plus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
     },
@@ -46176,6 +46178,7 @@ module.exports = {
             shares: sharesFilled.toFixed(),
             gasEth: tradeGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(buyEth).times(100).toFixed(),
             costEth: buyEth.toFixed(),
             avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
         };
@@ -46192,12 +46195,14 @@ module.exports = {
     getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
         var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
         var costEth = shares.times(limitPrice);
+        var feeEth = costEth.times(makerFee);
         return {
             action: "ASK",
             shares: shares.toFixed(),
             gasEth: askGasEth.toFixed(),
-            feeEth: costEth.times(makerFee).toFixed(),
-            costEth: costEth.toFixed(),
+            feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
+            costEth: costEth.minus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
     },
@@ -46217,6 +46222,7 @@ module.exports = {
             shares: sharesFilled.toFixed(),
             gasEth: tradeGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(sellEth).times(100).toFixed(),
             costEth: sellEth.toFixed(),
             avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
         };
@@ -46238,6 +46244,7 @@ module.exports = {
             shares: shares.toFixed(),
             gasEth: shortSellGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(shortSellEth).times(100).toFixed(),
             costEth: costEth.toFixed(),
             avgPrice: shortSellEth.dividedBy(shares).toFixed()
         };
@@ -46260,6 +46267,7 @@ module.exports = {
             shares: shares.toFixed(),
             gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
             feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
             costEth: shares.neg().minus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
