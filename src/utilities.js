@@ -8,7 +8,10 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
 
 module.exports = {
 

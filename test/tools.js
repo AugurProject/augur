@@ -21,7 +21,10 @@ var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
 
 var displayed_connection_info = false;
 
@@ -228,6 +231,13 @@ module.exports = {
             return markets.scalar && markets.categorical && markets.binary;
         }
 
+        if (branchID && !parseInt(augur.getCreator(branchID), 16)) {
+            return this.setup_new_branch(augur, augur.getPeriodLength(augur.constants.DEFAULT_BRANCH_ID), augur.constants.DEFAULT_BRANCH_ID, augur.web.account.address || augur.from, function (err, newBranchID) {
+                if (err) return callback(err);
+                self.create_each_market_type(augur, newBranchID, expDate, callback);
+            });
+        }
+
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
         var streetName = madlibs.streetName();
@@ -359,7 +369,6 @@ module.exports = {
                         assert(r.callReturn === null);
                     },
                     onSuccess: function (r) {
-                        assert(r.callReturn === "1");
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
                         augur.sell({
                             amount: amountPerMarket,

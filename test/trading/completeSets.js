@@ -5,6 +5,7 @@
 
 "use strict";
 
+var abi = require("augur-abi");
 var assert = require("chai").assert;
 var tools = require("../tools");
 
@@ -14,7 +15,8 @@ describe("CompleteSets", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var branchID = augur.constants.DEFAULT_BRANCH_ID;
-    var markets = augur.getMarketsInBranch(branchID);
+    var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
+    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
 
     describe("CompleteSets.buyCompleteSets", function () {
         var test = function (t) {
@@ -27,7 +29,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, "1");
+                        assert.strictEqual(abi.unfix(r.callReturn[0], "string"), t.amount.toString());
                         done();
                     },
                     onFailed: done
@@ -63,7 +65,7 @@ describe("CompleteSets", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        assert.strictEqual(r.callReturn, "1");
+                        assert.strictEqual(abi.unfix(r.callReturn[0], "string"), t.amount.toString());
                         done();
                     },
                     onFailed: done

@@ -19,11 +19,12 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     var amount = "1";
-    var branchId = augur.constants.DEFAULT_BRANCH_ID;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var traderIndex = "1";
     var outcome = 1;
-    var markets = augur.getMarketsInBranch(branchId);
+    var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
+    var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
     var numMarkets = markets.length;
     var marketId = tools.select_random(markets);
     if (numMarkets > tools.MAX_TEST_SAMPLES) {

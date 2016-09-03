@@ -19,7 +19,10 @@ var constants = require("./constants");
 var utils = require("./utilities");
 
 request = request.defaults({timeout: 120000});
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
@@ -84,9 +87,7 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-						var self = this;
             cb = cb || utils.pass;
-
             // web.account object is set to use new name
             self.account.name = newName;
 
@@ -142,7 +143,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: plain.privateKey,
                         address: address,
                         keystore: keystore,
@@ -170,7 +171,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
@@ -194,24 +195,24 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                loginID: localAccount.loginID,
+                secureLoginID: localAccount.secureLoginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
-            return cb(clone(self.account));
+            return cb(clone(this.account));
         },
 
-        login: function (loginID, password, cb) {
+        login: function (secureLoginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginID;
+            var unencryptedLoginIDObject;
             try {
-                unencryptedLoginID = augur.base58Decrypt(loginID);
+                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
@@ -247,7 +248,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        loginID: loginID,
+                        secureLoginID: secureLoginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,

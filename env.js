@@ -24,6 +24,7 @@ global.augur = (global.reload = function () {
 global.comments = augur.comments;
 global.b = augur.constants.DEFAULT_BRANCH_ID
 global.log = console.log;
+global.logger = function (r) { console.log(JSON.stringify(r, null, 2)); };
 global.rpc = augur.rpc;
 try {
     global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
@@ -44,7 +45,8 @@ global.balances = (global.balance = function (account, branch) {
     console.log(balances);
     return balances;
 })();
-global.markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
+var numMarkets = parseInt(augur.getNumMarketsBranch(augur.constants.DEFAULT_BRANCH_ID), 10);
+global.markets = augur.getSomeMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID, 0, Math.min(numMarkets, 2000));
 if (markets && markets.constructor === Array && markets.length) {
     global.market = markets[markets.length - 1];
 }

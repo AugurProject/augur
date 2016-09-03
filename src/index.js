@@ -31,16 +31,17 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.2.7";
+    this.version = "2.4.7";
 
     this.options = {
         debug: {
             tools: false,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
-            broadcast: false,   // broadcast debug logging in ethrpc 
+            broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false      // trading-related debug logging
-        }
+        },
+        loadZeroVolumeMarkets: true
     };
     this.protocol = NODE_JS || document.location.protocol;
 

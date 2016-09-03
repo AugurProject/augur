@@ -13,7 +13,10 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
 
 var ONE = new BigNumber("1", 10);
 var ONE_POINT_FIVE = new BigNumber("1.5", 10);
@@ -37,10 +40,12 @@ module.exports = {
         var bnPrice = abi.bignum(price);
         var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
         var fee = percentFee.times(bnAmount).times(bnPrice);
+        var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
             percentFee: percentFee,
-            cost: bnAmount.times(bnPrice).plus(fee)
+            cost: noFeeCost.plus(fee),
+            cash: noFeeCost.minus(fee)
         };
     },
 
@@ -258,14 +263,48 @@ module.exports = {
     },
 
     parseTradeInfo: function (trade) {
+        var type, round, roundingMode;
+        if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
+
+        // 0x1=buy, 0x2=sell
+        switch (trade[1]) {
+        case "0x1":
+            type = "buy";
+            round = "floor";
+            roundingMode = BigNumber.ROUND_DOWN;
+            break;
+        case "0x2":
+            type = "sell";
+            round = "ceil";
+            roundingMode = BigNumber.ROUND_UP;
+            break;
+        default:
+            return null;
+        }
+
+        var amount = abi.unfix(trade[3]);
+        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
+        if (amount.lt(constants.PRECISION.limit)) {
+            amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+        } else {
+            amount = amount.times(constants.PRECISION.multiple).floor().dividedBy(constants.PRECISION.multiple).toFixed();
+        }
+
+        var price = abi.unfix(trade[4]);
+        if (price.lt(constants.PRECISION.limit)) {
+            price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
+        } else {
+            price = price.times(constants.PRECISION.multiple)[round]().dividedBy(constants.PRECISION.multiple).toFixed();
+        }
+
         return {
             id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            type: type,
             market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
+            amount: amount,
+            price: price,
             owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
+            block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
         };
     },

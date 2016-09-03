@@ -98,6 +98,10 @@ module.exports = {
         onTradeFailed = onTradeFailed || utils.noop;
         this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
             if (err) return onTradeFailed(err);
+            var bn_max_value = abi.bignum(max_value);
+            if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
+                return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
+            }
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
@@ -132,16 +136,18 @@ module.exports = {
                                 self.rpc.receipt(txHash, function (receipt) {
                                     if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                     if (receipt.error) return onTradeFailed(receipt);
-                                    var sharesBought, cashFromTrade;
+                                    var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        var logs = receipt.logs;
-                                        var sig = self.api.events.log_fill_tx.signature;
-                                        sharesBought = abi.bignum(0);
-                                        cashFromTrade = abi.bignum(0);
+                                        logs = receipt.logs;
+                                        sig = self.api.events.log_fill_tx.signature;
+                                        sharesBought = constants.ZERO;
+                                        cashFromTrade = constants.ZERO;
+                                        tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
-                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
 
                                                     // buy (matched sell order)
                                                     if (parseInt(logdata[0], 16) === 1) {
@@ -161,7 +167,9 @@ module.exports = {
                                         unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
-                                        cashFromTrade: abi.string(cashFromTrade)
+                                        cashFromTrade: abi.string(cashFromTrade),
+                                        tradingFees: abi.string(tradingFees),
+                                        gasFees: result.gasFees
                                     });
                                 });
                             } else {
@@ -247,16 +255,18 @@ module.exports = {
                                 self.rpc.receipt(txHash, function (receipt) {
                                     if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                     if (receipt.error) return onTradeFailed(receipt);
-                                    var cashFromTrade;
+                                    var cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        var logs = receipt.logs;
-                                        var sig = self.api.events.log_fill_tx.signature;
-                                        cashFromTrade = abi.bignum(0);
+                                        logs = receipt.logs;
+                                        sig = self.api.events.log_fill_tx.signature;
+                                        cashFromTrade = constants.ZERO;
+                                        tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
-                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
                                                     cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
                                                 }
                                             }
                                         }
@@ -266,7 +276,9 @@ module.exports = {
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                         matchedShares: abi.unfix(result.callReturn[2], "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
-                                        price: abi.unfix(result.callReturn[3], "string")
+                                        price: abi.unfix(result.callReturn[3], "string"),
+                                        tradingFees: abi.string(tradingFees),
+                                        gasFees: result.gasFees
                                     });
                                 });
                             } else {

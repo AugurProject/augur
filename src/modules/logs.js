@@ -10,7 +10,10 @@ var abi = require("augur-abi");
 var constants = require("../constants");
 var utils = require("../utilities");
 
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
 
 module.exports = {
 
@@ -60,6 +63,97 @@ module.exports = {
         });
     },
 
+    getAccountHistory: function (account, options, cb) {
+        var self = this;
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        if (!account || !utils.is_function(cb)) return;
+        var accountHistory = {};
+        self.getAccountTrades(account, options, function (accountTrades) {
+            if (accountTrades && accountTrades.error) return cb(accountTrades);
+            accountHistory.trades = accountTrades;
+            self.getAccountCompleteSets(account, options, function (accountCompleteSets) {
+                if (accountCompleteSets && accountCompleteSets.error) return cb(accountCompleteSets);
+                accountHistory.completeSets = accountCompleteSets;
+                cb(null, accountHistory);
+            });
+        });
+    },
+
+    getAccountCompleteSets: function (account, options, cb) {
+        var self = this;
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        if (!account || !utils.is_function(cb)) return;
+        var typeCode;
+        switch (options.type) {
+        case "buy":
+            typeCode = abi.format_int256(1);
+            break;
+        case "sell":
+            typeCode = abi.format_int256(2);
+            break;
+        default:
+            typeCode = null;
+        }
+        var market = (options.market) ? abi.format_int256(options.market) : null;
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.CompleteSets,
+            topics: [
+                this.api.events.completeSets_logReturn.signature,
+                abi.format_int256(account),
+                market,
+                typeCode
+            ],
+            timeout: 480000
+        }, function (logs) {
+            var market, logdata, actions, numOutcomes, logTypeCode, logType;
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return cb(null);
+            }
+            if (logs.error) return cb(logs);
+            actions = {buy: {}, sell: {}};
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    market = logs[i].topics[2];
+                    logTypeCode = logs[i].topics[3];
+                    if (typeCode && logTypeCode !== typeCode) continue;
+                    logType = (parseInt(logTypeCode, 16) === 1) ? "buy" : "sell";
+                    logdata = self.rpc.unmarshal(logs[i].data);
+                    numOutcomes = parseInt(logdata[1], 16);
+                    if (options.tradeLogStyle) {
+                        if (!actions[logType][market]) actions[logType][market] = {};
+                        for (var j = 0; j < numOutcomes; ++j) {
+                            if (!actions[logType][market][j + 1]) actions[logType][market][j + 1] = [];
+                            actions[logType][market][j + 1].push({
+                                shares: abi.unfix(logdata[0], "string"),
+                                price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                                blockNumber: parseInt(logs[i].blockNumber, 16)
+                            });
+                        }
+                    } else {
+                        if (!actions[logType][market]) actions[logType][market] = [];
+                        actions[logType][market].push({
+                            amount: abi.unfix(logdata[0], "string"),
+                            numOutcomes: numOutcomes,
+                            blockNumber: parseInt(logs[i].blockNumber, 16)
+                        });
+                    }
+                }
+            }
+            cb(actions);
+        });
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
 
@@ -98,13 +192,15 @@ module.exports = {
 
         if (!account || !utils.is_function(cb)) return;
 
+        var market = (options.market) ? abi.format_int256(options.market) : null;
+
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [
                 this.api.events.log_fill_tx.signature,
-                null,
+                market,
                 null,
                 abi.format_int256(account)
             ],
@@ -118,7 +214,7 @@ module.exports = {
                     address: self.contracts.Trade,
                     topics: [
                         self.api.events.log_fill_tx.signature,
-                        null,
+                        market,
                         abi.format_int256(account),
                         null
                     ],
