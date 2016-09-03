@@ -9,7 +9,6 @@ import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-tra
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
-import { selectMarket } from '../../market/selectors/market';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -65,19 +64,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				}));
 
 				if (res.remainingShares > 0) {
-					const market = selectMarket(marketID);
-					let position = ZERO;
-					if (market.outcomes) {
-						const numPositions = market.outcomes.length;
-						for (let i = 0; i < numPositions; ++i) {
-							if (market.outcomes[i].id === outcomeID) {
-								position = abi.bignum(market.outcomes[i].sharesPurchased);
-								break;
-							}
-						}
-					}
+					const { transactionsData, outcomesData } = getState();
+					const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
 					console.log('sell complete! current position:', position.toString());
-					const transactionData = getState().transactionsData[transactionID];
+					const transactionData = transactionsData[transactionID];
 					if (position.gt(ZERO)) {
 						dispatch(addAskTransaction(
 							transactionData.data.marketID,

@@ -12,7 +12,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 // Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
+		const { tradesInProgress, marketsData, outcomesData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
 
@@ -80,16 +80,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			let position = 0;
-			if (market.outcomes) {
-				const numPositions = market.outcomes.length;
-				for (let i = 0; i < numPositions; ++i) {
-					if (market.outcomes[i].id === outcomeID) {
-						position = abi.bignum(market.outcomes[i].sharesPurchased);
-						break;
-					}
-				}
-			}
+			const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
 			const bnNumShares = abi.bignum(newTradeDetails.numShares);
 			if (position && position.gt(ZERO) && position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
 				newTradeDetails.numShares = position.toNumber();

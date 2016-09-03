@@ -65,16 +65,7 @@ export function placeTrade(marketID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-				let position;
-				if (market.outcomes) {
-					const numPositions = market.outcomes.length;
-					for (let i = 0; i < numPositions; ++i) {
-						if (market.outcomes[i].id === outcomeID) {
-							position = abi.bignum(market.outcomes[i].sharesPurchased);
-							break;
-						}
-					}
-				}
+				const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
 				if (position && position.gt(ZERO)) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));

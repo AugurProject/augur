@@ -14,11 +14,11 @@ export function loadMarketsInfo(marketIDs, cb) {
 					console.error('ERROR loadMarketsInfo()', marketsData);
 				} else {
 					const branchID = getState().branch.id;
-					let marketID;
-					for (marketID in marketsData) {
-						if (!marketsData.hasOwnProperty(marketID)) continue;
-						if (marketsData[marketID].branchId !== branchID) {
-							delete marketsData[marketID];
+					const marketInfoIDs = Object.keys(marketsData);
+					const numMarkets = marketInfoIDs.length;
+					for (let i = 0; i < numMarkets; ++i) {
+						if (marketsData[marketInfoIDs[i]].branchId !== branchID) {
+							delete marketsData[marketInfoIDs[i]];
 						}
 					}
 					if (Object.keys(marketsData).length) {
