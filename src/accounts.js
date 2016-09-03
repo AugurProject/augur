@@ -139,8 +139,8 @@ module.exports = function () {
                         version: 3,
                         id: uuid.v4()
                     };
-                    var unsecureLoginIDObject = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var unencryptedLoginID = { keystore: keystore };
+                    var loginID = augur.base58Encrypt(unencryptedLoginID);
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -167,8 +167,8 @@ module.exports = function () {
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
                 keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
-                    var unsecureLoginIDObject = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var unencryptedLoginID = { keystore: keystore };
+                    var loginID = augur.base58Encrypt(unencryptedLoginID);
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -212,9 +212,9 @@ module.exports = function () {
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginIDObject;
+            var unencryptedLoginID;
             try {
-                unencryptedLoginIDObject = augur.base58Decrypt(loginID);
+                unencryptedLoginID = augur.base58Decrypt(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
