@@ -143,7 +143,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: plain.privateKey,
                         address: address,
                         keystore: keystore,
@@ -171,7 +171,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
@@ -195,7 +195,7 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
+                loginID: localAccount.loginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore,
@@ -204,7 +204,7 @@ module.exports = function () {
             return cb(clone(this.account));
         },
 
-        login: function (secureLoginID, password, cb) {
+        login: function (loginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
 
@@ -212,7 +212,7 @@ module.exports = function () {
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
             var unencryptedLoginIDObject;
             try {
-                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
+                unencryptedLoginIDObject = augur.base58Decrypt(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
@@ -248,7 +248,7 @@ module.exports = function () {
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: privateKey,
                         address: keystore.address,
                         keystore: keystore,
