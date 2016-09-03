@@ -105,8 +105,8 @@ var testMarketInfo = function (market, info) {
     assert.property(r, "tradingPeriod");
     assert.isNumber(r.tradingPeriod);
     assert.strictEqual(parseInt(augur.getTradingPeriod(market)), r.tradingPeriod);
-    assert.property(r, "branchID");
-    assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchID));
+    assert.property(r, "branchId");
+    assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchId));
     assert.property(r, "numEvents");
     assert.strictEqual(parseInt(augur.getNumEvents(market)), r.numEvents);
     assert.property(r, "cumulativeScale");
