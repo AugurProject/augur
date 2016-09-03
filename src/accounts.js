@@ -87,27 +87,8 @@ module.exports = function () {
 						var self = this;
             cb = cb || utils.pass;
 
-            // now set vars based on what is currently in place
-            var keystore = self.account.keystore;
-            var privateKey = self.account.privateKey;
-						var derivedKey = self.account.derivedKey;
-
-            // preparing to redo the secureLoginID to use the new name
-            var unsecureLoginIDObject = {
-                name: newName,
-                keystore: keystore
-            };
-            var loginID = augur.base58Encrypt(unsecureLoginIDObject);
-
-            // web.account object is set to use new values
-            self.account = {
-                name: newName,
-                loginID: loginID,
-                privateKey: privateKey,
-                address: keystore.address,
-                keystore: keystore,
-								derivedKey: derivedKey
-            };
+            // web.account object is set to use new name
+            self.account.name = newName;
 
             // send back the new updated loginAccount object.
             return cb(clone(self.account));
@@ -155,7 +136,7 @@ module.exports = function () {
                         version: 3,
                         id: uuid.v4()
                     };
-                    var unsecureLoginIDObject = {name: name, keystore: keystore};
+                    var unsecureLoginIDObject = { keystore: keystore };
                     var loginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
@@ -168,12 +149,7 @@ module.exports = function () {
                         derivedKey: derivedKey
                     };
 
-                    return cb({
-                        name: name,
-                        loginID: loginID,
-                        keystore: keystore,
-                        address: address
-                    });
+                    return cb(clone(self.account));
                 }); // deriveKey
             }); // create
         },
@@ -188,10 +164,7 @@ module.exports = function () {
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
                 keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
-                    var unsecureLoginIDObject = {
-                        name: name,
-                        keystore: keystore
-                    };
+                    var unsecureLoginIDObject = { keystore: keystore };
                     var loginID = augur.base58Encrypt(unsecureLoginIDObject);
 
                     // while logged in, web.account object is set
@@ -243,7 +216,6 @@ module.exports = function () {
                 return cb(errors.BAD_CREDENTIALS);
             }
             var keystore = unencryptedLoginID.keystore;
-            var name = unencryptedLoginID.name;
             var options = {
                 kdf: keystore.crypto.kdf,
                 kdfparams: keystore.crypto.kdfparams,
