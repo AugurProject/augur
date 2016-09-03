@@ -87,7 +87,9 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
+						var self = this;
             cb = cb || utils.pass;
+
             // web.account object is set to use new name
             self.account.name = newName;
 
