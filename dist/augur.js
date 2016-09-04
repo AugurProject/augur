@@ -43483,7 +43483,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.9";
+    this.version = "2.4.10";
 
     this.options = {
         debug: {
@@ -45279,7 +45279,7 @@ module.exports = {
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
         return {
             salt: salt,
-            report: abi.string(this.decryptReport(arr[0], secret.derivedKey, salt))
+            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string")
         };
     },
 
