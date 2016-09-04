@@ -12,6 +12,7 @@ export const addAskTransaction = (marketID, outcomeID, marketDescription, outcom
 );
 
 export const makeAskTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('ask transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: ASK,
 		data: {

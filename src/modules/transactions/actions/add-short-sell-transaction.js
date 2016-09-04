@@ -12,6 +12,7 @@ export const addShortSellTransaction = (marketID, outcomeID, marketDescription, 
 );
 
 export const makeShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('short sell transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: SHORT_SELL,
 		data: {

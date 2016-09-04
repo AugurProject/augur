@@ -72,7 +72,6 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 					dispatch(addBidTransaction(
 						transactionData.data.marketID,
-						transactionData.data.marketLink,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,

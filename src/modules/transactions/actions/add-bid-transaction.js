@@ -12,6 +12,7 @@ export const addBidTransaction = (marketID, outcomeID, marketDescription, outcom
 );
 
 export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('bid transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: BID,
 		data: {
