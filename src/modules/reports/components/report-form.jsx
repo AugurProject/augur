@@ -49,9 +49,6 @@ export default class ReportForm extends React.Component {
 		const p = this.props;
 		const s = this.state;
 
-		console.log('report-form props:', p);
-		console.log('report-form state:', s);
-
 		let outcomeOptions;
 		if (p.type === CATEGORICAL) {
 			outcomeOptions = (
