@@ -79,6 +79,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							limitPrice,
 							totalEthWithFee,
 							tradingFeesEth,
+							transactionData.data.feePercent.value,
 							gasFeesRealEth));
 					} else {
 						dispatch(addShortAskTransaction(
@@ -91,6 +92,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							limitPrice,
 							totalEthWithFee,
 							tradingFeesEth,
+							transactionData.data.feePercent.value,
 							gasFeesRealEth));
 					}
 				}

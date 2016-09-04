@@ -24,6 +24,8 @@ export function placeTrade(marketID) {
 
 		let outcomeTradeInProgress;
 		Object.keys(marketTradeInProgress).forEach(outcomeID => {
+			// console.log('trades in progress:', Object.keys(marketTradeInProgress));
+			// const outcomeID = Object.keys(marketTradeInProgress)[0];
 			outcomeTradeInProgress = marketTradeInProgress[outcomeID];
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
 				return;
@@ -46,6 +48,7 @@ export function placeTrade(marketID) {
 						outcomeTradeInProgress.limitPrice,
 						totalCost,
 						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.feePercent,
 						outcomeTradeInProgress.gasFeesRealEth));
 				} else {
 					dispatch(addBidTransaction(
@@ -57,6 +60,7 @@ export function placeTrade(marketID) {
 						outcomeTradeInProgress.limitPrice,
 						totalCost,
 						outcomeTradeInProgress.tradingFeesEth,
+						outcomeTradeInProgress.feePercent,
 						outcomeTradeInProgress.gasFeesRealEth));
 				}
 			} else if (outcomeTradeInProgress.side === SELL) {
@@ -80,6 +84,7 @@ export function placeTrade(marketID) {
 							outcomeTradeInProgress.limitPrice,
 							totalCost,
 							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.feePercent,
 							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
 						dispatch(addAskTransaction(
@@ -91,6 +96,7 @@ export function placeTrade(marketID) {
 							outcomeTradeInProgress.limitPrice,
 							totalCost,
 							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.feePercent,
 							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				} else {
@@ -105,6 +111,7 @@ export function placeTrade(marketID) {
 							outcomeTradeInProgress.limitPrice,
 							totalCost,
 							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.feePercent,
 							outcomeTradeInProgress.gasFeesRealEth));
 					} else {
 						dispatch(addShortAskTransaction(
@@ -116,6 +123,7 @@ export function placeTrade(marketID) {
 							outcomeTradeInProgress.limitPrice,
 							totalCost,
 							outcomeTradeInProgress.tradingFeesEth,
+							outcomeTradeInProgress.feePercent,
 							outcomeTradeInProgress.gasFeesRealEth));
 					}
 				}

@@ -68,6 +68,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						limitPrice,
 						totalEthWithFee,
 						tradingFeesEth,
+						transactionData.data.feePercent.value,
 						gasFeesRealEth));
 				}
 			}
