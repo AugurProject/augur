@@ -140,7 +140,7 @@ const Transaction = (p) => {
 				<span className="action">Cancel {p.data.order.type} order</span>
 				<ValueDenomination className="shares" {...p.data.order.shares} />
 				<span className="of">of</span>
-				<span className="outcome-name">{p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
+				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
 				<span className="at">@</span>
 				<ValueDenomination className="avgPrice" {...p.data.order.price} />
 				<br />
