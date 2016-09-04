@@ -164,6 +164,14 @@ const Transaction = (p) => {
 			{nodes.description}
 
 			<span className="value-changes">
+				{!!p.data.tradingFees && !!p.data.tradingFees.value &&
+					<ValueDenomination className="value-change tradingFees" {...p.data.tradingFees} prefix="trading fees:" />
+				}
+				<span className="spacer">&nbsp;</span>
+				{!!p.data.feePercent && !!p.data.feePercent.value &&
+					<ValueDenomination className="value-change feePercent" {...p.data.feePercent} prefix="[" postfix="]" />
+				}
+				<br />
 				{!!p.data.gasFees && !!p.data.gasFees.value &&
 					<ValueDenomination className="value-change gasFees" {...p.data.gasFees} prefix="estimated gas cost:" />
 				}
