@@ -43483,7 +43483,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.10";
+    this.version = "2.4.11";
 
     this.options = {
         debug: {
@@ -44963,7 +44963,7 @@ module.exports = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
-            topics: [this.api.events.log_fill_tx.signature, market]
+            topics: [this.api.events.log_fill_tx.signature, abi.format_int256(market)]
         };
         if (!utils.is_function(cb)) {
             return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));

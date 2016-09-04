@@ -53,7 +53,7 @@ module.exports = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
-            topics: [this.api.events.log_fill_tx.signature, market]
+            topics: [this.api.events.log_fill_tx.signature, abi.format_int256(market)]
         };
         if (!utils.is_function(cb)) {
             return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
