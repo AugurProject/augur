@@ -7,10 +7,11 @@ export default class AuthForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		title: PropTypes.string,
-		secureLoginID: PropTypes.string,
+		loginID: PropTypes.string,
 		rememberMe: PropTypes.bool,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
+		instruction: PropTypes.string,
 		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
@@ -33,7 +34,7 @@ export default class AuthForm extends Component {
 	};
 
 	static defaultProps = {
-		rememberMe: false
+		rememberMe: true
 	};
 
 	constructor(props) {
@@ -74,6 +75,7 @@ export default class AuthForm extends Component {
 		e.preventDefault();
 		e.stopPropagation();
 		const name = this.refs.accountName.value;
+		// const loginID = this.state.loginID;
 		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
@@ -140,18 +142,20 @@ export default class AuthForm extends Component {
 						</Link>
 					}
 				</h1>
+				{p.instruction && <p className={classnames('instruction')}>{p.instruction}</p>}
 				{s.msg &&
 					<span className={classnames('msg', p.msgClass)}>
 						{s.msg}
 					</span>
 				}
 				<input
-					ref="name"
+					ref="accountName"
 					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
-					placeholder="name"
+					placeholder="account name"
 					maxLength="30"
 					autoFocus="autofocus"
+					disabled={s.disableInputs}
 				/>
 				<input
 					name="importAccount"
@@ -230,6 +234,7 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
+				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length. Passwords should contain at least one number, one lowercase letter, and one uppercase letter.</p>
 			</form>
 		);
 	}
