@@ -2,7 +2,7 @@
  * Author: priecint
  */
 
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 
@@ -20,8 +20,7 @@ const LoginMessagePage = (p) => (
 					months.
 					Your thoughtful feedback now is essential. Please use the feedback button at the bottom right of
 					every page
-					to submit your feedback, or feel free to send an email to: <a className="link"
-						href="mailto:hugs@augur.net?subject=Beta Testing feedback">hugs@augur.net</a>
+					to submit your feedback, or feel free to send an email to: <a className="link" href="mailto:hugs@augur.net?subject=Beta Testing feedback">hugs@augur.net</a>
 					From your submissions, the Dev team will coordinate fixes and new features. Changes and fixes
 					will be
 					displayed when you log-in again.
