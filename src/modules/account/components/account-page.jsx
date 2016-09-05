@@ -120,11 +120,11 @@ export default class AccountPage extends Component {
 									</tr>
 
 									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
-										<th className="title">Secure Login ID:</th>
+										<th className="title">Login ID:</th>
 										<td className="item">
 											{!s.showFullID &&
 												<span>
-													{p.account.prettySecureLoginID}
+													{p.account.prettyLoginID}
 												</span>
 											}
 											{s.showFullID &&
