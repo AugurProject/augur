@@ -120,7 +120,7 @@ export default class ReportForm extends React.Component {
 					/>
 
 					<span className="indeterminate-message">
-						If this question is subjective, vague, or does not yet have a clear answer, you should report indeterminate.
+						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
 					</span>
 				</div>
 

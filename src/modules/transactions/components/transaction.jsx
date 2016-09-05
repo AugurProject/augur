@@ -164,11 +164,11 @@ const Transaction = (p) => {
 			{nodes.description}
 
 			<span className="value-changes">
-				{!!p.data.tradingFees && !!p.data.tradingFees.value &&
+				{!!p.data.tradingFees && p.data.tradingFees.value !== null && p.data.tradingFees.value !== undefined &&
 					<ValueDenomination className="value-change tradingFees" {...p.data.tradingFees} prefix="trading fees:" />
 				}
 				<span className="spacer">&nbsp;</span>
-				{!!p.data.feePercent && !!p.data.feePercent.value &&
+				{!!p.data.feePercent && p.data.feePercent.value !== null && p.data.feePercent !== undefined &&
 					<ValueDenomination className="value-change feePercent" {...p.data.feePercent} prefix="[" postfix="]" />
 				}
 				<br />
