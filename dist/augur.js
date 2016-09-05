@@ -40220,7 +40220,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.5.0";
+    this.version = "2.5.1";
 
     this.options = {
         debug: {
@@ -41792,29 +41792,31 @@ module.exports = {
                 return cb(null);
             }
             if (logs.error) return cb(logs);
-            actions = {buy: {}, sell: {}};
+            actions = {};
             for (var i = 0, n = logs.length; i < n; ++i) {
                 if (logs[i] && logs[i].data !== undefined &&
                     logs[i].data !== null && logs[i].data !== "0x") {
                     market = logs[i].topics[2];
                     logTypeCode = logs[i].topics[3];
                     if (typeCode && logTypeCode !== typeCode) continue;
-                    logType = (parseInt(logTypeCode, 16) === 1) ? "buy" : "sell";
+                    logTypeCode = parseInt(logTypeCode, 16);
                     logdata = self.rpc.unmarshal(logs[i].data);
                     numOutcomes = parseInt(logdata[1], 16);
                     if (options.tradeLogStyle) {
-                        if (!actions[logType][market]) actions[logType][market] = {};
+                        if (!actions[market]) actions[market] = {};
                         for (var j = 0; j < numOutcomes; ++j) {
-                            if (!actions[logType][market][j + 1]) actions[logType][market][j + 1] = [];
-                            actions[logType][market][j + 1].push({
+                            if (!actions[market][j + 1]) actions[market][j + 1] = [];
+                            actions[market][j + 1].push({
+                                type: logTypeCode,
                                 shares: abi.unfix(logdata[0], "string"),
                                 price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
                                 blockNumber: parseInt(logs[i].blockNumber, 16)
                             });
                         }
                     } else {
-                        if (!actions[logType][market]) actions[logType][market] = [];
-                        actions[logType][market].push({
+                        if (!actions[market]) actions[market] = [];
+                        actions[market].push({
+                            type: logTypeCode,
                             amount: abi.unfix(logdata[0], "string"),
                             numOutcomes: numOutcomes,
                             blockNumber: parseInt(logs[i].blockNumber, 16)
