@@ -40,7 +40,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'filling...',
@@ -57,7 +57,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 

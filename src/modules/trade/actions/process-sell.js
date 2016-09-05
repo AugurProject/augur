@@ -57,7 +57,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
 
@@ -115,7 +115,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									gasFeesRealEth));
 							}
 						} else {
-							dispatch(loadBidsAsks(marketID, updatedOrderBook => {
+							dispatch(loadBidsAsks(marketID, (updatedOrderBook) => {
 								const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.id);
 								console.log('new trade IDs:', tradeIDs);
 								if (tradeIDs && tradeIDs.length) {

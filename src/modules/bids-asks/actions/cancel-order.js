@@ -65,7 +65,7 @@ export function processCancelOrder(transactionID, orderID) {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				dispatch(loadBidsAsks(transaction.data.market.id, () => {
 					dispatch(updateAssets());
-					dispatch(loadAccountTrades());
+					dispatch(loadAccountTrades(transaction.data.market.id));
 				}));
 			},
 			onFailed: (res) => {

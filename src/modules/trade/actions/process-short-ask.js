@@ -3,6 +3,7 @@ import { formatEther, formatShares, formatRealEther } from '../../../utils/forma
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { sellCompleteSets } from '../../my-positions/actions/sell-complete-sets';
 
 export function processShortAsk(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -26,6 +27,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
 			dispatch(loadBidsAsks(marketID));
+			dispatch(sellCompleteSets(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
 				message: `short ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />

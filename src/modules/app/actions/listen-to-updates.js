@@ -1,23 +1,16 @@
 import { augur, abi } from '../../../services/augurjs';
+import { ZERO } from '../../trade/constants/numbers';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { selectMarket } from '../../market/selectors/market';
 
 export function loadActiveMarketBidsAsks(marketID, outcomeID) {
-	return dispatch => {
-		const market = selectMarket(marketID);
-		if (market && market.outcomes && market.outcomes.length && market.outcomes[0] && market.outcomes[0].orderBook) {
-			if (market.myPositionOutcomes) {
-				const numPositions = market.myPositionOutcomes.length;
-				for (let i = 0; i < numPositions; ++i) {
-					if (market.myPositionOutcomes[i].id === outcomeID && market.myPositionOutcomes[i].position.qtyShares) {
-						return dispatch(loadBidsAsks(marketID));
-					}
-				}
-			}
+	return (dispatch, getState) => {
+		const marketOutcomesData = getState().outcomesData[marketID];
+		if (marketOutcomesData && marketOutcomesData[outcomeID] && abi.bignum(marketOutcomesData[outcomeID].sharesPurchased).gt(ZERO)) {
+			dispatch(loadBidsAsks(marketID));
 		}
 	};
 }

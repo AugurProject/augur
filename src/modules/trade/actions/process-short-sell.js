@@ -46,7 +46,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				filledEth = filledEth.plus(res.filledEth);
 
