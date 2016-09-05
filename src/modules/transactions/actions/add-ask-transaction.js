@@ -1,7 +1,6 @@
 import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
-
 import { ASK } from '../../transactions/constants/types';
-
+import { abi } from '../../../services/augurjs';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processAsk } from '../../trade/actions/process-ask';
 
@@ -21,7 +20,8 @@ export const makeAskTransaction = (marketID, outcomeID, marketDescription, outco
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice),
+			noFeePrice: formatEther(limitPrice),
+			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
 			tradingFees: formatEther(tradingFeesEth),
 			feePercent: formatPercent(feePercent),
 			gasFees: formatRealEther(gasFeesRealEth)

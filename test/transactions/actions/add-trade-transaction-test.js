@@ -96,6 +96,16 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					roundedValue: 2,
 					value: 2
 				},
+				noFeePrice: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.00',
+					roundedValue: 10,
+					rounded: '10.00',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.00 ETH'
+				},
 				gasFees: {
 					denomination: ' real ETH',
 					formatted: '1.00',
@@ -141,6 +151,16 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					full: '5 shares'
 				},
 				avgPrice: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.00',
+					roundedValue: 10,
+					rounded: '10.00',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.00 ETH'
+				},
+				noFeePrice: {
 					value: 10,
 					formattedValue: 10,
 					formatted: '10.00',

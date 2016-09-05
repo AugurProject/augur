@@ -1,7 +1,6 @@
 import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
-
 import { SHORT_SELL } from '../../transactions/constants/types';
-
+import { abi } from '../../../services/augurjs';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processShortSell } from '../../trade/actions/process-short-sell';
 
@@ -21,7 +20,8 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice),
+			noFeePrice: formatEther(limitPrice),
+			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
 			tradingFees: formatEther(tradingFeesEth),
 			feePercent: formatPercent(feePercent),
 			gasFees: formatRealEther(gasFeesRealEth)
