@@ -80,7 +80,8 @@ module.exports = {
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
             costEth: etherToBid.plus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed()
+            avgPrice: limitPrice.toFixed(),
+            noFeePrice: limitPrice.toFixed()
         };
     },
 
@@ -101,7 +102,8 @@ module.exports = {
             feeEth: takerFeeEth.toFixed(),
             feePercent: takerFeeEth.dividedBy(buyEth).times(100).toFixed(),
             costEth: buyEth.toFixed(),
-            avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
+            avgPrice: buyEth.dividedBy(sharesFilled).toFixed(),
+            noFeePrice: buyEth.minus(takerFeeEth).dividedBy(sharesFilled).toFixed()
         };
     },
 
@@ -124,7 +126,8 @@ module.exports = {
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
             costEth: costEth.minus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed()
+            avgPrice: limitPrice.toFixed(),
+            noFeePrice: limitPrice.toFixed()
         };
     },
 
@@ -145,7 +148,8 @@ module.exports = {
             feeEth: takerFeeEth.toFixed(),
             feePercent: takerFeeEth.dividedBy(sellEth).times(100).toFixed(),
             costEth: sellEth.toFixed(),
-            avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
+            avgPrice: sellEth.dividedBy(sharesFilled).toFixed(),
+            noFeePrice: sellEth.plus(takerFeeEth).dividedBy(sharesFilled).toFixed()
         };
     },
 
@@ -167,7 +171,8 @@ module.exports = {
             feeEth: takerFeeEth.toFixed(),
             feePercent: takerFeeEth.dividedBy(shortSellEth).times(100).toFixed(),
             costEth: costEth.toFixed(),
-            avgPrice: shortSellEth.dividedBy(shares).toFixed()
+            avgPrice: shortSellEth.dividedBy(shares).toFixed(),
+            noFeePrice: shortSellEth.plus(takerFeeEth).dividedBy(shares).toFixed()
         };
     },
 
@@ -190,7 +195,8 @@ module.exports = {
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
             costEth: shares.neg().minus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed()
+            avgPrice: limitPrice.toFixed(),
+            noFeePrice: limitPrice.toFixed()
         };
     },
 
