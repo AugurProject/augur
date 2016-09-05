@@ -122,6 +122,31 @@ module.exports = {
         });
     },
 
+    parsePositionInMarket: function (positionInMarket) {
+        if (!positionInMarket || positionInMarket.error) return positionInMarket;
+        var numOutcomes = positionInMarket.length;
+        var position = {};
+        for (var i = 0; i < numOutcomes; ++i) {
+            position[i + 1] = abi.unfix(positionInMarket[i], "string");
+        }
+        return position;
+    },
+
+    getPositionInMarket: function (market, account, callback) {
+        if (!callback && utils.is_function(account)) {
+            callback = account;
+            account = null;
+        }
+        if (market && market.market) {
+            account = market.account;
+            callback = callback || market.callback;
+            market = market.market;
+        }
+        var tx = clone(this.tx.CompositeGetters.getPositionInMarket);
+        tx.params = [market, account || this.from];
+        return this.fire(tx, callback, this.parsePositionInMarket);
+    },
+
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
         var minValue, order;

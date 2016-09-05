@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "2.4.12",
+  "version": "2.5.0",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -16,16 +16,16 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "0.6.3",
-    "augur-contracts": "1.9.6",
+    "augur-contracts": "1.9.7",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "1.0.26",
+    "ethereumjs-connect": "1.1.0",
     "ethereumjs-tx": "1.1.1",
     "ethereumjs-util": "4.4.1",
-    "ethrpc": "1.7.3",
+    "ethrpc": "1.7.4",
     "keythereum": "0.2.6",
     "locks": "0.2.2",
     "node-uuid": "1.4.7",
