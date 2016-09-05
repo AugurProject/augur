@@ -42,8 +42,8 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 			console.log('merged history:', mergedHistory);
 			if (!marketID) dispatch(clearAccountTrades());
 			dispatch(updateAccountTradesData(mergedHistory));
-			if (!marketID) {
-				dispatch(loadMarketsInfo(Object.keys(accountHistory.trades)));
+			if (!marketID && Object.keys(mergedHistory).length) {
+				dispatch(loadMarketsInfo(Object.keys(mergedHistory)));
 			} else {
 				dispatch(loadMarketsInfo([marketID]));
 			}
