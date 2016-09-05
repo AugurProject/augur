@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
@@ -65,21 +66,44 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				if (res.remainingShares > 0) {
 					const { transactionsData, outcomesData } = getState();
-					const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
+					const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased).round(2, BigNumber.ROUND_DOWN);
 					console.log('sell complete! current position:', position.toString());
 					const transactionData = transactionsData[transactionID];
 					if (position.gt(ZERO)) {
+						const remainingShares = abi.bignum(res.remainingShares);
+						let askShares;
+						let shortAskShares;
+						if (position.gt(remainingShares)) {
+							askShares = res.remainingShares;
+							shortAskShares = 0;
+						} else {
+							askShares = position.toNumber();
+							shortAskShares = remainingShares.minus(position).toNumber();
+						}
 						dispatch(addAskTransaction(
 							transactionData.data.marketID,
 							transactionData.data.outcomeID,
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
-							res.remainingShares,
+							askShares,
 							limitPrice,
 							totalEthWithFee,
 							tradingFeesEth,
 							transactionData.data.feePercent.value,
 							gasFeesRealEth));
+						if (shortAskShares > 0) {
+							dispatch(addShortAskTransaction(
+								transactionData.data.marketID,
+								transactionData.data.outcomeID,
+								transactionData.data.marketDescription,
+								transactionData.data.outcomeName,
+								shortAskShares,
+								limitPrice,
+								totalEthWithFee,
+								tradingFeesEth,
+								transactionData.data.feePercent.value,
+								gasFeesRealEth));
+						}
 					} else {
 						dispatch(addShortAskTransaction(
 							transactionData.data.marketID,

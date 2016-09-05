@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
@@ -80,10 +81,15 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
+			let position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
 			const bnNumShares = abi.bignum(newTradeDetails.numShares);
-			if (position && position.gt(ZERO) && position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
-				newTradeDetails.numShares = position.toNumber();
+			if (position && position.gt(ZERO)) {
+				if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
+					newTradeDetails.numShares = position.toNumber();
+				} else {
+					position = position.round(2, BigNumber.ROUND_DOWN);
+				}
+				console.log('position:', position.toFixed());
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
