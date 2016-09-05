@@ -44,7 +44,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Buy Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50, 3, 2, 1));
 		const actual = store.getActions();
 		actual[0].action();
 
@@ -78,23 +78,33 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				},
 				tradingFees: {
 					denomination: ' ETH',
-					formatted: 0,
-					formattedValue: 0,
-					full: '0 ETH',
-					minimized: 0,
-					rounded: 0,
-					roundedValue: 0,
-					value: 0
+					formatted: '3.00',
+					formattedValue: 3,
+					full: '3.00 ETH',
+					minimized: '3',
+					rounded: '3.00',
+					roundedValue: 3,
+					value: 3
+				},
+				feePercent: {
+					denomination: '%',
+					formatted: '2.0',
+					formattedValue: 2,
+					full: '2.0%',
+					minimized: '2',
+					rounded: '2',
+					roundedValue: 2,
+					value: 2
 				},
 				gasFees: {
 					denomination: ' real ETH',
-					formatted: 0,
-					formattedValue: 0,
-					full: '0 real ETH',
-					minimized: 0,
-					rounded: 0,
-					roundedValue: 0,
-					value: 0,
+					formatted: '1.00',
+					formattedValue: 1,
+					full: '1.00 real ETH',
+					minimized: '1',
+					rounded: '1.00',
+					roundedValue: 1,
+					value: 1,
 				}
 			},
 			action: actual[0].action
@@ -108,7 +118,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	it(`should add a Sell Trade Transaction`, () => {
-		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50, 3, 2, 1));
 		const actual = store.getActions();
 		actual[0].action();
 
@@ -142,23 +152,33 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				},
 				tradingFees: {
 					denomination: ' ETH',
-					formatted: 0,
-					formattedValue: 0,
-					full: '0 ETH',
-					minimized: 0,
-					rounded: 0,
-					roundedValue: 0,
-					value: 0
+					formatted: '3.00',
+					formattedValue: 3,
+					full: '3.00 ETH',
+					minimized: '3',
+					rounded: '3.00',
+					roundedValue: 3,
+					value: 3
+				},
+				feePercent: {
+					denomination: '%',
+					formatted: '2.0',
+					formattedValue: 2,
+					full: '2.0%',
+					minimized: '2',
+					rounded: '2',
+					roundedValue: 2,
+					value: 2
 				},
 				gasFees: {
 					denomination: ' real ETH',
-					formatted: 0,
-					formattedValue: 0,
-					full: '0 real ETH',
-					minimized: 0,
-					rounded: 0,
-					roundedValue: 0,
-					value: 0,
+					formatted: '1.00',
+					formattedValue: 1,
+					full: '1.00 real ETH',
+					minimized: '1',
+					rounded: '1.00',
+					roundedValue: 1,
+					value: 1,
 				}
 			},
 			action: actual[0].action

@@ -15,8 +15,6 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 
 	if (!matchingIDs.length) return cb(null, res);
 
-	console.log('* short_sell inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'max_amount', numShares, 'buyer_trade_id', matchingIDs);
-
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
 		augur.short_sell({
 			max_amount: res.remainingShares.toFixed(),
@@ -27,10 +25,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 
 			onCommitSent: data => cbStatus({ status: 'committing', hash: data.txHash }),
 			onCommitSuccess: data => cbStatus({ status: 'sending' }),
-			onCommitFailed: err => {
-				console.log('!!!! onCommitFailed', err);
-				nextMatchingID(err);
-			},
+			onCommitFailed: err => nextMatchingID,
 			onNextBlock: data => console.log('short_sell-onNextBlock', data),
 
 			onTradeSent: data => {
@@ -54,10 +49,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				if (res.remainingShares > 0) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
-			onTradeFailed: err => {
-				console.log('!!!! onTradeFailed', err);
-				nextMatchingID(err);
-			}
+			onTradeFailed: err => nextMatchingID
 		});
 	}, err => {
 		if (err && !err.isComplete) return cb(err);

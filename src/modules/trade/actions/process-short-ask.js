@@ -1,9 +1,8 @@
 import { augur, abi } from '../../../services/augurjs';
 import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
-
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
-
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function processShortAsk(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -17,8 +16,8 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing short ask...',
-			message: `short asking ${numShares} shares @ ${limitPrice} ETH<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees)<br />
+			message: `short asking ${numShares} shares for ${limitPrice} ETH each<br />
+				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
@@ -26,9 +25,10 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
+			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: SUCCESS,
-				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
+				message: `short ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 					<small>(paid ${formatRealEther(res.gasFees).full} in gas fees)</small>`
 			}));

@@ -66,13 +66,12 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth, res.gasFeesRealEth)
 				}));
 
-				const sharesRemaining = abi.bignum(numShares).minus(filledShares);
+				const sharesRemaining = abi.bignum(numShares).minus(filledShares).toNumber();
 				if (sharesRemaining > 0 && res.remainingEth > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
 					dispatch(addBidTransaction(
 						transactionData.data.marketID,
-						transactionData.data.marketLink,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
@@ -80,6 +79,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						limitPrice,
 						res.remainingEth,
 						tradingFeesEth,
+						transactionData.data.feePercent.value,
 						gasFeesRealEth));
 				}
 			}

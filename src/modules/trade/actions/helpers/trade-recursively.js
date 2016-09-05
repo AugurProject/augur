@@ -15,8 +15,6 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		return cb(null, res);
 	}
 
-	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'max_amount', numShares, 'max_value', totalEthWithFee, 'trade_ids', matchingIDs);
-
 	augur.trade({
 		max_value: totalEthWithFee,
 		max_amount: numShares,
@@ -27,10 +25,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 
 		onCommitSent: data => cbStatus({ status: 'committing', hash: data.txHash }),
 		onCommitSuccess: data => cbStatus({ status: 'sending' }),
-		onCommitFailed: err => {
-			console.log('!!!! onCommitFailed', err);
-			cb(err);
-		},
+		onCommitFailed: err => cb,
 
 		onNextBlock: data => console.log('trade-onNextBlock', data),
 
@@ -39,10 +34,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 			cbStatus({ status: 'filling', hash: data.txHash });
 		},
 		onTradeSuccess: doSuccess,
-		onTradeFailed: err => {
-			console.log('!!!! onTradeFailed', err);
-			cb(err);
-		}
+		onTradeFailed: err => cb
 	});
 
 	function doSuccess(data) {

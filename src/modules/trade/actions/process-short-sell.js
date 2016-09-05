@@ -60,7 +60,6 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
-						transactionData.data.marketLink,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
@@ -68,6 +67,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						limitPrice,
 						totalEthWithFee,
 						tradingFeesEth,
+						transactionData.data.feePercent.value,
 						gasFeesRealEth));
 				}
 			}

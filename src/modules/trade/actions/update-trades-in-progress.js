@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
@@ -12,13 +13,36 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 // Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
+		const { tradesInProgress, marketsData, outcomesData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
 
 		// if nothing changed, exit
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
+		}
+
+		// If either field is cleared, reset outcomeTradeInProgress while preserving the companion field's value
+		if (numShares === '' && typeof limitPrice === 'undefined') {
+			return dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: {
+						limitPrice: outcomeTradeInProgress.limitPrice
+					}
+				}
+			});
+		} else if (limitPrice === '' && typeof numShares === 'undefined') {
+			return dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: {
+						numShares: outcomeTradeInProgress.numShares,
+					}
+				}
+			});
 		}
 
 		// if new side not provided, use old side
@@ -57,19 +81,15 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			let position = 0;
-			if (market.outcomes) {
-				const numPositions = market.outcomes.length;
-				for (let i = 0; i < numPositions; ++i) {
-					if (market.outcomes[i].id === outcomeID) {
-						position = abi.bignum(market.outcomes[i].sharesPurchased);
-						break;
-					}
-				}
-			}
+			let position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
 			const bnNumShares = abi.bignum(newTradeDetails.numShares);
-			if (position && position.gt(ZERO) && position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
-				newTradeDetails.numShares = position.toNumber();
+			if (position && position.gt(ZERO)) {
+				if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
+					newTradeDetails.numShares = position.toNumber();
+				} else {
+					position = position.round(2, BigNumber.ROUND_DOWN);
+				}
+				console.log('position:', position.toFixed());
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
@@ -97,6 +117,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
 					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
 					newTradeDetails.totalFee = tradingFeesEth.toFixed();
+					newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth)).times(100).toFixed();
 				}
 			}
 			console.log('newTradeDetails:', newTradeDetails);

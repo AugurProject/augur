@@ -9,7 +9,7 @@ function decryptReport(loginAccount, branchID, period, eventID, report, callback
 		salt: loginAccount.keystore.crypto.kdfparams.salt
 	}, (plaintext) => {
 		if (!plaintext) return callback('getAndDecryptReport failed');
-		if (!plaintext.reportedOutcomeID || plaintext.error) {
+		if (!plaintext.report || plaintext.error) {
 			return callback(plaintext);
 		}
 		report.reportedOutcomeID = plaintext.report;
@@ -32,6 +32,7 @@ export function loadReports(callback) {
 			console.log('eventsToReportOn:', eventsToReportOn);
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
 				if (!reports[branchID]) reports[branchID] = {};
+				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
 				const report = reports[branchID][eventID] || { eventID };
 				console.log('report for', eventID, report);
 				if (report.reportedOutcomeID && report.salt) {
@@ -46,7 +47,7 @@ export function loadReports(callback) {
 					});
 				} else {
 					augur.getReportHash(branchID, period, account, eventID, (reportHash) => {
-						console.log('reportHash:', reportHash);
+						console.log('augur.getReportHash:', reportHash);
 						if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
 							report.reportHash = null;
 							reports[branchID][eventID] = report;

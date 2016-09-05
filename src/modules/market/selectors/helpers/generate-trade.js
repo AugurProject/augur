@@ -13,8 +13,8 @@ import store from '../../../../store';
 
 export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
 	const side = outcomeTradeInProgress && outcomeTradeInProgress.side || BUY;
-	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0;
-	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || (numShares ? 1 : 0);
+	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || null;
+	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || null;
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
 	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
@@ -79,8 +79,9 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			outcome.name,
 			tradeAction.shares,
 			tradeAction.avgPrice,
-			Math.abs(parseFloat(tradeAction.costEth)),
+			abi.bignum(tradeAction.costEth).abs().toNumber(),
 			tradeAction.feeEth,
+			tradeAction.feePercent,
 			tradeAction.gasEth,
 			store.dispatch)
 	));
