@@ -43483,7 +43483,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.4.11";
+    this.version = "2.4.12";
 
     this.options = {
         debug: {
@@ -46367,7 +46367,7 @@ module.exports = {
                     totalTakerFeeEth = constants.ZERO;
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
-                        bidAmount = new BigNumber(bid.amount);
+                        bidAmount = new BigNumber(bid.amount, 10);
                         bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
                         tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
