@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
@@ -69,17 +69,25 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased).round(2, BigNumber.ROUND_DOWN);
 					console.log('sell complete! current position:', position.toString());
 					const transactionData = transactionsData[transactionID];
+					const remainingShares = abi.bignum(res.remainingShares);
 					if (position.gt(ZERO)) {
-						const remainingShares = abi.bignum(res.remainingShares);
 						let askShares;
 						let shortAskShares;
 						if (position.gt(remainingShares)) {
-							askShares = res.remainingShares;
+							if (position.minus(remainingShares).lt(constants.PRECISION.limit)) {
+								askShares = position.toNumber();
+							} else {
+								askShares = remainingShares.round(2, BigNumber.ROUND_DOWN);
+							}
 							shortAskShares = 0;
 						} else {
 							askShares = position.toNumber();
-							shortAskShares = remainingShares.minus(position).toNumber();
+							shortAskShares = remainingShares.minus(position).round(2, BigNumber.ROUND_DOWN).toNumber();
 						}
+						console.log('position:', position.toString());
+						console.log('remainingShares:', remainingShares.toString());
+						console.log('askShares:', askShares.toString());
+						console.log('shortAskShares:', shortAskShares.toString());
 						dispatch(addAskTransaction(
 							transactionData.data.marketID,
 							transactionData.data.outcomeID,
