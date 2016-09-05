@@ -85,7 +85,7 @@ export const selectMarket = (marketID) => {
 		endDate.getMonth(),
 		endDate.getDate(),
 
-		blockchain && blockchain.isReportConfirmationPhase,
+		blockchain && !!blockchain.isReportConfirmationPhase,
 
 		orderBooks[marketID],
 		orderCancellation,
@@ -99,7 +99,9 @@ export const selectMarketFromEventID = (eventID) => {
 	);
 };
 
-export const assembleMarket = memoizerific(1000)((
+const assembledMarketsCache = {};
+
+export function assembleMarket(
 		marketID,
 		marketData,
 		marketPriceHistory,
@@ -115,131 +117,154 @@ export const assembleMarket = memoizerific(1000)((
 		isReportConfirmationPhase,
 		orderBooks,
 		orderCancellation,
-		dispatch) => { // console.log('>>assembleMarket<<');
+		dispatch) {
 
-	const market = {
-		...marketData,
-		description: marketData.description || '',
-		id: marketID
-	};
-
-	switch (market.type) {
-	case BINARY:
-		market.isBinary = true;
-		market.isCategorical = false;
-		market.isScalar = false;
-		break;
-	case CATEGORICAL:
-		market.isBinary = false;
-		market.isCategorical = true;
-		market.isScalar = false;
-		break;
-	case SCALAR:
-		market.isBinary = false;
-		market.isCategorical = false;
-		market.isScalar = true;
-		break;
-	default:
-		break;
-	}
-
-	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
-	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
-	market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
-
-	market.isOpen = isOpen;
-	market.isExpired = !isOpen;
-	market.isFavorite = isFavorite;
-
-	market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
-	market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
-	market.volume = formatShares(marketData.volume, { positiveSign: false });
-
-	market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-	market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
-	market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
-	market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
-	market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
-	market.isMissedOrReported = market.isMissedReport || market.isReported;
-
-	market.marketLink = selectMarketLink(market, dispatch);
-	market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-	market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
-
-	market.report = {
-		...marketReport,
-		onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
-	};
-
-	market.outcomes = [];
-
-	let marketTradeOrders = [];
-
-	market.outcomes = Object.keys(marketOutcomesData || {}).map(outcomeID => {
-		const outcomeData = marketOutcomesData[outcomeID];
-		const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
-
-		const outcome = {
-			...outcomeData,
-			id: outcomeID,
+	if (!assembledMarketsCache[marketID]) {
+		assembledMarketsCache[marketID] = memoizerific(1)((
 			marketID,
-			lastPrice: formatEther(parseFloat(outcomeData.price) || 0, { positiveSign: false })
-		};
+			marketData,
+			marketPriceHistory,
+			isOpen,
+			isFavorite,
+			marketOutcomesData,
+			marketReport,
+			marketAccountTrades,
+			marketTradeInProgress,
+			endDateYear,
+			endDateMonth,
+			endDateDay,
+			isReportConfirmationPhase,
+			orderBooks,
+			orderCancellation,
+			dispatch) => { // console.log('>>assembleMarket<<');
 
-		if (market.type === 'scalar') {
-			// note: not actually a percent
-			outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
-				decimals: 2,
-				decimalsRounded: 1,
-				denomination: '',
-				positiveSign: false,
-				zeroStyled: true
-			});
-		} else {
-			outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
-		}
+			const market = {
+				...marketData,
+				description: marketData.description || '',
+				id: marketID
+			};
 
-		outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
+			switch (market.type) {
+			case BINARY:
+				market.isBinary = true;
+				market.isCategorical = false;
+				market.isScalar = false;
+				break;
+			case CATEGORICAL:
+				market.isBinary = false;
+				market.isCategorical = true;
+				market.isScalar = false;
+				break;
+			case SCALAR:
+				market.isBinary = false;
+				market.isCategorical = false;
+				market.isScalar = true;
+				break;
+			default:
+				break;
+			}
 
-		outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, parseFloat(outcomeData.sharesPurchased));
-		const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
-		outcome.orderBook = orderBook;
-		outcome.topBid = selectTopBid(orderBook);
-		outcome.topAsk = selectTopAsk(orderBook);
+			market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+			market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
-		marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
+			market.isOpen = isOpen;
+			market.isExpired = !isOpen;
+			market.isFavorite = isFavorite;
 
-		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks);
+			market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
+			market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
+			market.volume = formatShares(marketData.volume, { positiveSign: false });
 
-		return outcome;
-	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
+			market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
+			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+			market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
+			market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
+			market.isMissedOrReported = market.isMissedReport || market.isReported;
 
-	market.tags = (market.tags || []).map(tag => {
-		const obj = {
-			name: tag && tag.toString().toLowerCase().trim(),
-			onClick: () => dispatch(toggleTag(tag))
-		};
-		return obj;
-	}).filter(tag => !!tag.name);
+			market.marketLink = selectMarketLink(market, dispatch);
+			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
+			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
-	market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
+			market.report = {
+				...marketReport,
+				onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
+			};
 
-	market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
+			market.outcomes = [];
 
-	market.reportableOutcomes = market.outcomes.slice();
-	market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
+			let marketTradeOrders = [];
 
-	market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
+			market.outcomes = Object.keys(marketOutcomesData || {}).map(outcomeID => {
+				const outcomeData = marketOutcomesData[outcomeID];
+				const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
-	market.tradeSummary = generateTradeSummary(marketTradeOrders);
+				const outcome = {
+					...outcomeData,
+					id: outcomeID,
+					marketID,
+					lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
+				};
 
-	market.myPositionsSummary = generateMarketsPositionsSummary([market]);
-	if (market.myPositionsSummary) {
-		market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
-		delete market.myPositionsSummary.positionOutcomes;
+				if (market.type === 'scalar') {
+					// note: not actually a percent
+					outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
+						decimals: 2,
+						decimalsRounded: 1,
+						denomination: '',
+						positiveSign: false,
+						zeroStyled: true
+					});
+				} else {
+					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+				}
+
+				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
+
+				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, outcomeData.sharesPurchased);
+				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
+				outcome.orderBook = orderBook;
+				outcome.topBid = selectTopBid(orderBook);
+				outcome.topAsk = selectTopAsk(orderBook);
+
+				marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
+
+				outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks);
+
+				return outcome;
+			}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
+
+			market.tags = (market.tags || []).map(tag => {
+				const obj = {
+					name: tag && tag.toString().toLowerCase().trim(),
+					onClick: () => dispatch(toggleTag(tag))
+				};
+				return obj;
+			}).filter(tag => !!tag.name);
+
+			market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
+
+			market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
+
+			market.reportableOutcomes = market.outcomes.slice();
+			market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
+
+			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
+
+			market.tradeSummary = generateTradeSummary(marketTradeOrders);
+
+			market.myPositionsSummary = generateMarketsPositionsSummary([market]);
+			if (market.myPositionsSummary) {
+				market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
+				delete market.myPositionsSummary.positionOutcomes;
+			}
+
+			market.myMarketSummary = selectMyMarket(market)[0];
+
+			return market;
+		});
 	}
 
-	market.myMarketSummary = selectMyMarket(market)[0];
-
-	return market;
-});
+	return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
+}

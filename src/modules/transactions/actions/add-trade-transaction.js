@@ -1,4 +1,4 @@
-import { formatShares, formatEther } from '../../../utils/format-number';
+import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
 
 import { BUY, SELL } from '../../trade/constants/types';
 
@@ -6,22 +6,27 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBuy } from '../../trade/actions/process-buy';
 import { processSell } from '../../trade/actions/process-sell';
 
-export const addTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
+export const addTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
+		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
+export const makeTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('trade transaction:', type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type,
 		data: {
 			marketID,
 			outcomeID,
+			marketType,
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice)
+			avgPrice: formatEther(limitPrice),
+			tradingFees: formatEther(tradingFeesEth),
+			feePercent: formatPercent(feePercent),
+			gasFees: formatRealEther(gasFeesRealEth)
 		}
 	};
 
@@ -32,7 +37,9 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketDescriptio
 				outcomeID,
 				numShares,
 				limitPrice,
-				totalCost));
+				totalCost,
+				tradingFeesEth,
+				gasFeesRealEth));
 
 	} else if (type === SELL) {
 		transaction.action = (transactionID) => dispatch(processSell(
@@ -41,7 +48,9 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketDescriptio
 				outcomeID,
 				numShares,
 				limitPrice,
-				totalCost));
+				totalCost,
+				tradingFeesEth,
+				gasFeesRealEth));
 	}
 
 	return transaction;

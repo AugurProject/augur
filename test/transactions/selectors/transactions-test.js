@@ -22,7 +22,10 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 				gas: 40,
 				repChange: 100,
 				sharesChange: 10,
-				etherWithoutGas: 150
+				etherWithoutGas: 150,
+				data: {
+					id: '0x123'
+				}
 			}
 		}
 	});

@@ -4,11 +4,11 @@ import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statu
 
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { clearAccountTrades } from '../../my-positions/actions/clear-account-trades';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-// import { updateReports, clearReports } from '../../reports/actions/update-reports';
+import { updateReports, clearReports } from '../../reports/actions/update-reports';
 import { checkPeriod } from '../../reports/actions/check-period';
-import { updateReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
@@ -18,6 +18,7 @@ import updateUserLoginMessageVersionRead from '../../login-message/actions/updat
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
 		dispatch(updateAssets());
+		dispatch(clearAccountTrades());
 		dispatch(loadAccountTrades());
 		dispatch(loadEventsWithSubmittedReport());
 
@@ -26,13 +27,13 @@ export function loadLoginAccountDependents() {
 
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)
-		// dispatch(clearReports());
+		dispatch(clearReports());
 		dispatch(checkPeriod());
 	};
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch, getState) => {
+	return dispatch => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
@@ -49,6 +50,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 			dispatch(updateFavorites(localState.favorites));
 		}
 		if (localState.accountTrades) {
+			dispatch(clearAccountTrades());
 			dispatch(updateAccountTradesData(localState.accountTrades));
 		}
 		if (localState.reports && Object.keys(localState.reports).length) {

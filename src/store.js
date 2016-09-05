@@ -11,9 +11,7 @@ const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
 const consoleLog = store => next => action => {
 	if (typeof action !== 'function') {
-		if (action.type !== 'UPDATE_MARKETS_DATA' || (action.marketsData && Object.keys(action.marketsData).length)) {
-			console.log(action);
-		}
+		console.log(action);
 	}
 	return next(action);
 };

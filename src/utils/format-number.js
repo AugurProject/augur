@@ -1,4 +1,5 @@
-import { abi } from '../services/augurjs';
+import { abi, constants } from '../services/augurjs';
+import BigNumber from 'bignumber.js';
 import { ZERO, TEN } from '../modules/trade/constants/numbers';
 import addCommas from '../utils/add-commas-to-number';
 
@@ -51,11 +52,27 @@ export function formatEther(num, opts) {
 	return formatNumber(
 		abi.number(num),
 		{
-			decimals: 3,
-			decimalsRounded: 1,
+			decimals: 2,
+			decimalsRounded: 2,
 			denomination: ' ETH',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
+			...opts
+		}
+	);
+}
+
+export function formatRealEther(num, opts) {
+	return formatNumber(
+		abi.number(num),
+		{
+			decimals: 2,
+			decimalsRounded: 2,
+			denomination: ' real ETH',
+			positiveSign: false,
+			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -70,6 +87,7 @@ export function formatPercent(num, opts) {
 			denomination: '%',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -80,10 +98,12 @@ export function formatShares(num, opts) {
 		abi.number(num),
 		{
 			decimals: 2,
-			decimalsRounded: 0,
+			decimalsRounded: 2,
 			denomination: ` share${num !== 1 ? 's' : ''}`,
 			minimized: true,
 			zeroStyled: false,
+			blankZero: false,
+			roundDown: true,
 			...opts
 		}
 	);
@@ -104,6 +124,7 @@ export function formatRep(num, opts) {
 			denomination: ' REP',
 			positiveSign: false,
 			zeroStyled: false,
+			blankZero: false,
 			...opts
 		}
 	);
@@ -122,10 +143,23 @@ export function formatNone() {
 	};
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false }) {
+export function formatBlank() {
+	return {
+		value: 0,
+		formattedValue: 0,
+		formatted: '',
+		roundedValue: 0,
+		rounded: '',
+		minimized: '',
+		denomination: '',
+		full: ''
+	};
+}
+
+export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false, blankZero: false }) {
 	const { minimized } = opts;
 	const o = {};
-	let { value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled } = opts;
+	let { value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled, blankZero } = opts;
 
 	decimals = decimals || 0;
 	decimalsRounded = decimalsRounded || 0;
@@ -134,22 +168,28 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	roundUp = !!roundUp;
 	roundDown = !!roundDown;
 	zeroStyled = zeroStyled !== false;
+	blankZero = blankZero !== false;
 	value = abi.bignum(num) || ZERO;
 
-	if (value.eq(ZERO) && zeroStyled) {
-		return formatNone();
+	if (value.eq(ZERO)) {
+		if (zeroStyled) return formatNone();
+		if (blankZero) return formatBlank();
 	}
 
 	const decimalsValue = TEN.toPower(abi.bignum(decimals));
 	const decimalsRoundedValue = TEN.toPower(abi.bignum(decimalsRounded));
 
 	let round;
-	if (roundUp) {
-		round = 'ceil';
-	} else if (roundDown) {
+	let roundingMode;
+	if (roundDown) {
 		round = 'floor';
+		roundingMode = BigNumber.ROUND_DOWN;
+	} else if (roundUp) {
+		round = 'ceil';
+		roundingMode = BigNumber.ROUND_UP;
 	} else {
 		round = 'round';
+		roundingMode = BigNumber.ROUND_HALF_EVEN;
 	}
 	if (isNaN(parseFloat(num))) {
 		o.value = 0;
@@ -160,12 +200,22 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 		o.minimized = 0;
 	} else {
 		o.value = value.toNumber();
-		o.formattedValue = value.times(decimalsValue)[round]().dividedBy(decimalsValue);
-		o.formatted = addCommas(o.formattedValue.toFixed(decimals));
+		if (value.abs().lt(constants.PRECISION.limit)) {
+			if (!decimals) {
+				o.formattedValue = '0';
+			} else {
+				o.formattedValue = value.toPrecision(decimals, roundingMode);
+			}
+		} else {
+			o.formattedValue = value.times(decimalsValue)[round]()
+				.dividedBy(decimalsValue)
+				.toFixed(decimals);
+		}
+		o.formatted = addCommas(o.formattedValue);
 		o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
 		o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
-		o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
-		o.formattedValue = o.formattedValue.toNumber();
+		o.minimized = addCommas(abi.string(o.formattedValue));
+		o.formattedValue = abi.number(o.formattedValue);
 		o.roundedValue = o.roundedValue.toNumber();
 	}
 

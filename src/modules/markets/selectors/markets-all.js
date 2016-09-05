@@ -38,7 +38,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			(accountTrades || {})[marketID],
 			tradesInProgress[marketID],
 
-			// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
+			// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, never hitting the memoization cache
 			endDate.getFullYear(),
 			endDate.getMonth(),
 			endDate.getDate(),

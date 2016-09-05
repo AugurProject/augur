@@ -4,7 +4,6 @@ import { updateMarketsData } from '../../markets/actions/update-markets-data';
 export function loadMarkets(branchID) {
 	const chunkSize = 10;
 	return (dispatch) => {
-		console.log('loadMarkets:', branchID);
 		augur.loadMarkets(branchID, chunkSize, true, (err, marketsData) => {
 			if (err) {
 				console.log('ERROR loadMarkets()', err);
@@ -14,7 +13,9 @@ export function loadMarkets(branchID) {
 				console.log('WARN loadMarkets()', 'no markets data returned');
 				return;
 			}
-			dispatch(updateMarketsData(marketsData));
+			if (marketsData.constructor === Object && Object.keys(marketsData).length) {
+				dispatch(updateMarketsData(marketsData));
+			}
 		});
 	};
 }

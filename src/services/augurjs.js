@@ -10,7 +10,8 @@ ex.connect = function connect(env, cb) {
 		contracts: env.contracts,
 		augurNodes: env.augurNodes
 	};
-	if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
+	const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+	if (isHttps) {
 		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
 		const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
 		if (!isEnvHttps) options.http = null;
@@ -22,6 +23,10 @@ ex.connect = function connect(env, cb) {
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
+		if (env.augurNodeURL && !isHttps) {
+			console.debug('fetching cached data from', env.augurNodeURL);
+			augur.augurNode.bootstrap([env.augurNodeURL]);
+		}
 		cb(null, connection);
 	});
 };
@@ -126,10 +131,10 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 			if (err) return callback(err);
 			cb(null, 2);
 			const events = {};
-			let type;
-			for (type in markets) {
-				if (!markets.hasOwnProperty(type)) continue;
-				events[type] = augur.getMarketEvent(markets[type], 0);
+			const types = Object.keys(markets);
+			const numTypes = types.length;
+			for (let i = 0; i < numTypes; ++i) {
+				events[types[i]] = augur.getMarketEvent(markets[types[i]], 0);
 			}
 			const eventID = events.binary;
 			console.debug('Binary event:', events.binary);
@@ -186,5 +191,6 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 
 ex.augur = augur;
 ex.abi = augur.abi;
+ex.constants = augur.constants;
 
 module.exports = ex;

@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { formatEther } from '../../../../utils/format-number';
+import { formatEther, formatRealEther } from '../../../../utils/format-number';
 import { abi } from '../../../../services/augurjs';
 
 import { BUY, SELL } from '../../../trade/constants/types';
@@ -13,9 +13,10 @@ import store from '../../../../store';
 
 export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
 	const side = outcomeTradeInProgress && outcomeTradeInProgress.side || BUY;
-	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0;
-	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || (numShares ? 1 : 0);
+	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || null;
+	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || null;
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
+	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
 
 	return {
@@ -23,8 +24,9 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 		numShares,
 		limitPrice,
 
-		totalFee: formatEther(totalFee),
-		totalCost: formatEther(totalCost),
+		totalFee: formatEther(totalFee, { blankZero: true }),
+		gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
+		totalCost: formatEther(totalCost, { blankZero: true }),
 
 		tradeTypeOptions: [
 			{ label: BUY, value: BUY },
@@ -43,8 +45,8 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
 		tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
 
 			// total gas
-			if (tradeOrder.gasEth && tradeOrder.gasEth.value) {
-				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.gasEth.value));
+			if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
+				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
 			}
 
 			// trade order
@@ -55,7 +57,7 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
 		}, tradeSummary);
 	}
 
-	tradeSummary.totalGas = formatEther(tradeSummary.totalGas);
+	tradeSummary.totalGas = formatRealEther(tradeSummary.totalGas);
 
 	return tradeSummary;
 });
@@ -72,11 +74,15 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			TRANSACTIONS_TYPES[tradeAction.action],
 			market.id,
 			outcome.id,
+			market.type,
 			market.description,
 			outcome.name,
 			tradeAction.shares,
-			formatEther(tradeAction.avgPrice, { roundUp: outcomeTradeInProgress.side === BUY, roundDown: outcomeTradeInProgress.side === SELL }).formattedValue,
-			Math.abs(parseFloat(tradeAction.costEth)),
+			tradeAction.avgPrice,
+			abi.bignum(tradeAction.costEth).abs().toNumber(),
+			tradeAction.feeEth,
+			tradeAction.feePercent,
+			tradeAction.gasEth,
 			store.dispatch)
 	));
 });

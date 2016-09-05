@@ -1,17 +1,18 @@
-import { formatShares, formatEther } from '../../../utils/format-number';
+import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
 
 import { BID } from '../../transactions/constants/types';
 
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBid } from '../../trade/actions/process-bid';
 
-export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
+export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeBidTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
+		dispatch(addTransaction(makeBidTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
+export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('bid transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: BID,
 		data: {
@@ -20,7 +21,10 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice)
+			avgPrice: formatEther(limitPrice),
+			tradingFees: formatEther(tradingFeesEth),
+			feePercent: formatPercent(feePercent),
+			gasFees: formatRealEther(gasFeesRealEth)
 		}
 	};
 
@@ -30,7 +34,9 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 		outcomeID,
 		numShares,
 		limitPrice,
-		totalCost));
+		totalCost,
+		tradingFeesEth,
+		gasFeesRealEth));
 
 	return transaction;
 };

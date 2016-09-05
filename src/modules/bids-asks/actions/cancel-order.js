@@ -5,6 +5,8 @@ import { addCancelTransaction } from '../../transactions/actions/add-cancel-tran
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
+import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
 import { augur } from '../../../services/augurjs';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
@@ -54,17 +56,20 @@ export function processCancelOrder(transactionID, orderID) {
 		augur.cancel({
 			trade_id: orderID,
 			onSent: (res) => {
-				console.log('onSent %o', res);
+				console.log('augur.cancel sent: %o', res);
 				dispatch(updateExistingTransaction(transactionID, { hash: res.txHash }));
 			},
 			onSuccess: (res) => {
-				console.log('onSucc %o', res);
+				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
-				setTimeout(() => dispatch(loadBidsAsks(transaction.data.market.id)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
+				dispatch(loadBidsAsks(transaction.data.market.id, () => {
+					dispatch(updateAssets());
+					dispatch(loadAccountTrades());
+				}));
 			},
 			onFailed: (res) => {
-				console.log('onFail %o', res);
+				console.log('augur.cancel failed: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 				setTimeout(() => dispatch(updateOrderStatus(orderID, null, transaction.data.market.id, transaction.data.order.type)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);

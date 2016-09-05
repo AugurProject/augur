@@ -15,6 +15,18 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	const { store } = mockStore.default;
 	const { loginAccount, allMarkets } = store.getState();
 
+	const mockedLinks = {
+		selectMarketLink: () => {}
+	};
+	sinon.stub(mockedLinks, 'selectMarketLink', () => (
+		{
+			text: 'test',
+			className: 'test-class',
+			href: '/fake/path',
+			onClick: 'fake function for testing'
+		}
+	));
+
 	let stubbedAugurJS = {
 		augur: { getMarketCreatorFeesCollected: () => {} },
 		abi: { bignum: (n) => { return n; } }
@@ -27,6 +39,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	};
 
 	let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+		'../../link/selectors/links': mockedLinks,
 		'../../../services/augurjs': stubbedAugurJS,
 		'../../../selectors': stubbedSelectors,
 		'../../../store': store
@@ -37,6 +50,12 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	expected = [
 		{
 			id: '0xMARKET1',
+			marketLink: {
+				className: "test-class",
+				href: "/fake/path",
+				onClick: 'fake function for testing',
+				text: "test"
+			},
 			description: 'test-market-1',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
@@ -47,6 +66,12 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 		},
 		{
 			id: '0xMARKET2',
+			marketLink: {
+				className: "test-class",
+				href: "/fake/path",
+				onClick: 'fake function for testing',
+				text: "test"
+			},
 			description: 'test-market-2',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
@@ -62,6 +87,14 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	});
 
 	it('should deliver the expected shape to augur-ui-react-components', () => {
+		let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+			'../../../services/augurjs': stubbedAugurJS,
+			'../../../selectors': stubbedSelectors,
+			'../../../store': store
+		});
+
+		actual = proxiedSelector.default();
+
 		assertions.myMarkets(actual);
 	});
 });
