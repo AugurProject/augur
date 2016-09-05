@@ -1,5 +1,6 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from './common/formatted-number';
+import assertMarketLink from './common/market-link';
 
 export default function (positionsMarkets) {
 	assert.isDefined(positionsMarkets, `positionsMarkets isn't defined`);
@@ -9,10 +10,25 @@ export default function (positionsMarkets) {
 }
 
 function assertPositionMarket(positionMarket) {
-	assert.isString(positionMarket.id, `id isn't a string`);
-	assert.isString(positionMarket.description, `description isn't a string`);
+	describe('positionMarket', () => {
+		it('id', () => {
+			assert.isDefined(positionMarket.id, `'positionMarket.id' is not defined`);
+			assert.isString(positionMarket.id, `'positionMarket.id' isn't a string`);
+		});
 
-	positionMarket.positionOutcomes.forEach(function(positionOutcome) { assertOutcome(positionOutcome) });
+		it('marketLink', () => {
+			assert.isDefined(positionMarket.marketLink, `'positionMarket.marketLink' is not defined`);
+			assertMarketLink(positionMarket.marketLink, 'positionMarket.marketLink');
+		});
+
+
+		it('description', () => {
+			assert.isDefined(positionMarket.description, `'positionMarket.description' is not defined`);
+			assert.isString(positionMarket.description, `'positionMarket.description' isn't a string`);
+		});
+
+		positionMarket.myPositionOutcomes.forEach(function(positionOutcome) { assertOutcome(positionOutcome) });
+	});
 }
 
 function assertOutcome(outcome) {

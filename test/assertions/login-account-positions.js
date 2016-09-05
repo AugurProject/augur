@@ -14,5 +14,10 @@ export default function (loginAccountPositions){
 			assert.isDefined(loginAccountPositions.summary);
 			assert.isObject(loginAccountPositions.summary);
 		});
+
+		it('sharesPurchased', () => {
+			assert.isDefined(loginAccountPositions.sharesPurchased);
+			assert.isArray(loginAccountPositions.sharesPurchased);
+		});
 	});
 };

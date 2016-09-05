@@ -6,6 +6,7 @@ const TradePanel = (p) => (
 	<div className="trade-panel" onClick={() => p.selectedOutcome.updateSelectedOutcome(null)}>
 		<TradeBuilder
 			outcomes={p.outcomes}
+			marketType={p.marketType}
 			userOpenOrdersSummary={p.userOpenOrdersSummary}
 			selectedOutcome={p.selectedOutcome}
 		/>
@@ -32,6 +33,7 @@ const TradePanel = (p) => (
 TradePanel.propTypes = {
 	isTradeCommitLocked: React.PropTypes.bool,
 	outcomes: React.PropTypes.array,
+	marketType: React.PropTypes.string,
 	selectedOutcome: React.PropTypes.object,
 	tradeSummary: React.PropTypes.object,
 	userOpenOrdersSummary: React.PropTypes.object,
