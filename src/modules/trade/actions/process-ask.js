@@ -16,7 +16,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing ask...',
-			message: `asking ${numShares} shares @ ${limitPrice} ETH<br />
+			message: `asking ${numShares} shares for ${limitPrice} ETH each<br />
 				freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
 				expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
