@@ -23,9 +23,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `buying ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
+			message: `buying ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+				<small>(+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
 		const { loginAccount } = getState();
@@ -40,7 +40,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'filling...',
@@ -57,7 +57,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
@@ -66,7 +66,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth, res.gasFeesRealEth)
 				}));
 
-				const sharesRemaining = abi.bignum(numShares).minus(filledShares);
+				const sharesRemaining = abi.bignum(numShares).minus(filledShares).toNumber();
 				if (sharesRemaining > 0 && res.remainingEth > 0) {
 					const transactionData = getState().transactionsData[transactionID];
 
@@ -79,6 +79,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						limitPrice,
 						res.remainingEth,
 						tradingFeesEth,
+						transactionData.data.feePercent.value,
 						gasFeesRealEth));
 				}
 			}
@@ -90,5 +91,5 @@ function generateMessage(totalEthWithFee, remainingEth, filledShares, tradingFee
 	const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(remainingEth));
 	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
 		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
-		total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
+		<small>(+${formatRealEther(gasFeesRealEth).full} in gas fees)</small>`;
 }

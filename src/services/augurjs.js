@@ -24,8 +24,8 @@ ex.connect = function connect(env, cb) {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
 		if (env.augurNodeURL && !isHttps) {
-			// console.debug('fetching cached data from', env.augurNodeURL);
-			// augur.augurNode.bootstrap([env.augurNodeURL]);
+			console.debug('fetching cached data from', env.augurNodeURL);
+			augur.augurNode.bootstrap([env.augurNodeURL]);
 		}
 		cb(null, connection);
 	});
@@ -131,10 +131,10 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 			if (err) return callback(err);
 			cb(null, 2);
 			const events = {};
-			let type;
-			for (type in markets) {
-				if (!markets.hasOwnProperty(type)) continue;
-				events[type] = augur.getMarketEvent(markets[type], 0);
+			const types = Object.keys(markets);
+			const numTypes = types.length;
+			for (let i = 0; i < numTypes; ++i) {
+				events[types[i]] = augur.getMarketEvent(markets[types[i]], 0);
 			}
 			const eventID = events.binary;
 			console.debug('Binary event:', events.binary);

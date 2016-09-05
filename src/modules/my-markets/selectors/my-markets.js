@@ -3,6 +3,7 @@ import { augur, abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
+import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
 	const { allMarkets, loginAccount } = require('../../../selectors');
@@ -37,12 +38,14 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
 		const openVolume = formatNumber(selectOpenVolume(market));
+		const marketLink = selectMarketLink(market, store.dispatch);
 
 		markets.push({
 			id: market.id,
 			description: market.description,
 			endDate: market.endDate,
 			volume: market.volume,
+			marketLink,
 			fees,
 			numberOfTrades,
 			averageTradeSize,

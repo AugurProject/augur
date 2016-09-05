@@ -41,7 +41,7 @@ npm run watch
 npm start
 ```
 
-Visit [http://localhost](http://localhost)
+Visit [http://localhost:8080](http://localhost:8080)
 
 Documentation
 -------------

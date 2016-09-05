@@ -1,4 +1,4 @@
-import { formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
+import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
 
 import { BUY, SELL } from '../../trade/constants/types';
 
@@ -6,13 +6,14 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBuy } from '../../trade/actions/process-buy';
 import { processSell } from '../../trade/actions/process-sell';
 
-export const addTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth) => (
+export const addTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch)));
+		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, gasFeesRealEth, dispatch) => {
+export const makeTradeTransaction = (type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('trade transaction:', type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type,
 		data: {
@@ -24,6 +25,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 			numShares: formatShares(numShares),
 			avgPrice: formatEther(limitPrice),
 			tradingFees: formatEther(tradingFeesEth),
+			feePercent: formatPercent(feePercent),
 			gasFees: formatRealEther(gasFeesRealEth)
 		}
 	};

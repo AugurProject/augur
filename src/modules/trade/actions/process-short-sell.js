@@ -25,7 +25,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			status: 'starting...',
 			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
 				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)`
+				total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
 		}));
 
 		const { loginAccount } = getState();
@@ -46,7 +46,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades());
+				dispatch(loadAccountTrades(marketID));
 
 				filledEth = filledEth.plus(res.filledEth);
 
@@ -67,6 +67,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						limitPrice,
 						totalEthWithFee,
 						tradingFeesEth,
+						transactionData.data.feePercent.value,
 						gasFeesRealEth));
 				}
 			}
@@ -79,5 +80,5 @@ function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, 
 	const totalEthWithFee = abi.bignum(filledEth).plus(tradingFeesEth);
 	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
 		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
-		total cost: ${formatEther(totalEthWithFee).full} (+${formatRealEther(gasFeesRealEth).full} in gas fees)`;
+		total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in gas fees)</small>`;
 }

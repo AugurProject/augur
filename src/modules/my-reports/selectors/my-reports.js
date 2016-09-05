@@ -6,6 +6,7 @@ import { TWO } from '../../trade/constants/numbers';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import store from '../../../store';
 import memoizerific from 'memoizerific';
+import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
 	const { eventsWithAccountReport } = store.getState();
@@ -20,6 +21,7 @@ export default function () {
 
 		const marketId = eventsWithAccountReport[eventId].marketID || null;
 		const description = getMarketDescription(marketId);
+		const marketLink = marketId && description && selectMarketLink({ id: marketId, description }, store.dispatch) || null;
 		const outcome = selectMarketOutcome(eventsWithAccountReport[eventId].marketOutcome, marketId);
 		const outcomePercentage = eventsWithAccountReport[eventId].proportionCorrect && formatPercent(eventsWithAccountReport[eventId].proportionCorrect) || null;
 		const reported = selectMarketOutcome(eventsWithAccountReport[eventId].accountReport, marketId);
@@ -33,6 +35,7 @@ export default function () {
 		return {
 			eventId,
 			marketId,
+			marketLink,
 			description,
 			outcome,
 			outcomePercentage,

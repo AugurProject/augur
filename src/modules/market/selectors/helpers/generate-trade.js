@@ -13,9 +13,10 @@ import store from '../../../../store';
 
 export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
 	const side = outcomeTradeInProgress && outcomeTradeInProgress.side || BUY;
-	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0;
-	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || (numShares ? 1 : 0);
+	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || null;
+	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || null;
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
+	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
 
 	return {
@@ -24,6 +25,7 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 		limitPrice,
 
 		totalFee: formatEther(totalFee, { blankZero: true }),
+		gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
 		totalCost: formatEther(totalCost, { blankZero: true }),
 
 		tradeTypeOptions: [
@@ -43,8 +45,8 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
 		tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
 
 			// total gas
-			if (tradeOrder.gasEth && tradeOrder.gasEth.value) {
-				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.gasEth.value));
+			if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
+				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
 			}
 
 			// trade order
@@ -77,9 +79,10 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			outcome.name,
 			tradeAction.shares,
 			tradeAction.avgPrice,
-			Math.abs(parseFloat(tradeAction.costEth)),
-			tradeAction.tradingFeesEth,
-			tradeAction.gasFeesRealEth,
+			abi.bignum(tradeAction.costEth).abs().toNumber(),
+			tradeAction.feeEth,
+			tradeAction.feePercent,
+			tradeAction.gasEth,
 			store.dispatch)
 	));
 });

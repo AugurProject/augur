@@ -5,6 +5,7 @@ import { addCancelTransaction } from '../../transactions/actions/add-cancel-tran
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
 import { augur } from '../../../services/augurjs';
@@ -62,8 +63,10 @@ export function processCancelOrder(transactionID, orderID) {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
-				dispatch(updateAssets());
-				dispatch(loadBidsAsks(transaction.data.market.id));
+				dispatch(loadBidsAsks(transaction.data.market.id, () => {
+					dispatch(updateAssets());
+					dispatch(loadAccountTrades(transaction.data.market.id));
+				}));
 			},
 			onFailed: (res) => {
 				console.log('augur.cancel failed: %o', res);
