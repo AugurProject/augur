@@ -72,12 +72,14 @@ module.exports = {
     getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
         var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
         var etherToBid = shares.times(limitPrice);
+        var feeEth = etherToBid.times(makerFee);
         return {
             action: "BID",
             shares: shares.toFixed(),
             gasEth: bidGasEth.toFixed(),
-            feeEth: etherToBid.times(makerFee).toFixed(),
-            costEth: etherToBid.toFixed(),
+            feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
+            costEth: etherToBid.plus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
     },
@@ -97,6 +99,7 @@ module.exports = {
             shares: sharesFilled.toFixed(),
             gasEth: tradeGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(buyEth).times(100).toFixed(),
             costEth: buyEth.toFixed(),
             avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
         };
@@ -113,12 +116,14 @@ module.exports = {
     getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
         var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
         var costEth = shares.times(limitPrice);
+        var feeEth = costEth.times(makerFee);
         return {
             action: "ASK",
             shares: shares.toFixed(),
             gasEth: askGasEth.toFixed(),
-            feeEth: costEth.times(makerFee).toFixed(),
-            costEth: costEth.toFixed(),
+            feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
+            costEth: costEth.minus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
     },
@@ -138,6 +143,7 @@ module.exports = {
             shares: sharesFilled.toFixed(),
             gasEth: tradeGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(sellEth).times(100).toFixed(),
             costEth: sellEth.toFixed(),
             avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
         };
@@ -159,6 +165,7 @@ module.exports = {
             shares: shares.toFixed(),
             gasEth: shortSellGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
+            feePercent: takerFeeEth.dividedBy(shortSellEth).times(100).toFixed(),
             costEth: costEth.toFixed(),
             avgPrice: shortSellEth.dividedBy(shares).toFixed()
         };
@@ -181,6 +188,7 @@ module.exports = {
             shares: shares.toFixed(),
             gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
             feeEth: feeEth.toFixed(),
+            feePercent: makerFee.times(100).toFixed(),
             costEth: shares.neg().minus(feeEth).toFixed(),
             avgPrice: limitPrice.toFixed()
         };
@@ -249,7 +257,7 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, range);
+                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, fees.makerProportionOfFee, range);
                     totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                     etherToTrade = etherToTrade.plus(tradingCost.cost);
                     remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -280,10 +288,10 @@ module.exports = {
                     totalTakerFeeEth = constants.ZERO;
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
-                        bidAmount = new BigNumber(bid.amount);
+                        bidAmount = new BigNumber(bid.amount, 10);
                         bnPrice = new BigNumber(bid.price, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToSell = etherToSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -328,7 +336,7 @@ module.exports = {
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, range);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);

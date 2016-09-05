@@ -35,15 +35,16 @@ module.exports = {
 
     // Calculates adjusted total trade cost at a specified price
     // @returns {BigNumbers}
-    calculateTradingCost: function (amount, price, tradingFee, range) {
+    calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var bnAmount = abi.bignum(amount);
         var bnPrice = abi.bignum(price);
         var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
-        var fee = percentFee.times(bnAmount).times(bnPrice);
+        var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+        var fee = takerFee.times(percentFee.times(bnAmount).times(bnPrice));
         var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
-            percentFee: percentFee,
+            percentFee: takerFee,
             cost: noFeeCost.plus(fee),
             cash: noFeeCost.minus(fee)
         };

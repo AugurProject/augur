@@ -549,7 +549,6 @@ describe("getTradingActions", function () {
             }
         });
 
-
         runTestCase({
             description: "bid with less amount and same price, position greater than remaining order shares",
             type: "sell",

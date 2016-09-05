@@ -61,7 +61,7 @@ module.exports = {
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
         return {
             salt: salt,
-            report: abi.string(this.decryptReport(arr[0], secret.derivedKey, salt))
+            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string")
         };
     },
 
