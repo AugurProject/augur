@@ -10,6 +10,8 @@ import sinon from 'sinon';
 // import * as action from '../../../src/modules/markets/actions/update-selected-page-num';
 
 describe(`modules/markets/actions/update-selected-page-num.js`, () => {
+	proxyquire.noPreserveCache().noCallThru();
+
 	let { state, store } = mockStore.default;
 	let out, action;
 	let mockUpdateURL = { updateURL: () => {} };
@@ -19,7 +21,12 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
-		'../../link/actions/update-url': mockUpdateURL
+		'../../link/actions/update-url': mockUpdateURL,
+		'../../../selectors': proxyquire('../../../src/selectors', {
+			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+				'../../../store': store
+			})
+		})
 	});
 
 	beforeEach(() => {
@@ -47,13 +54,13 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 			selectedPageNum: 2
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?filters=isOpen'
+			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
 		}, {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 5
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?filters=isOpen'
+			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
 		}];
 		store.dispatch(action.updateSelectedPageNum(2));
 		store.dispatch(action.updateSelectedPageNum(5));
