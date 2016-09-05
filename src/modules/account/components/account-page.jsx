@@ -14,6 +14,7 @@ export default class AccountPage extends Component {
 	constructor(props) {
 		super(props);
 		this.handleTransfer = this.handleTransfer.bind(this);
+		this.loginIDCopy = this.loginIDCopy.bind(this);
 		this.state = {
 			name: this.props.account.name,
 			editName: false,
@@ -29,6 +30,17 @@ export default class AccountPage extends Component {
 		this.refs.sendAmount.value = '';
 		this.refs.recipientAddress.value = '';
 		this.props.account.transferFunds(amount, recipient);
+	}
+
+	loginIDCopy = (e) => {
+		const loginIDDisplay = this.refs.loginIDDisplay;
+
+		try {
+			loginIDDisplay.select();
+			document.execCommand('copy');
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
@@ -58,7 +70,6 @@ export default class AccountPage extends Component {
 												<Input
 													type="text"
 													value={p.account.name}
-													isClearable={false}
 													onChange={(value) => this.setState({ name: value })}
 												/>
 											}
@@ -117,7 +128,7 @@ export default class AccountPage extends Component {
 												</span>
 											}
 											{s.showFullID &&
-												<textarea className="full-secure-login-id" value={p.account.loginID} readOnly />
+												<textarea ref="loginIDDisplay" className="display-full-login-id" title="Click here to copy your Login ID." value={p.account.loginID} readOnly onClick={this.loginIDCopy} />
 											}
 											<button
 												className="link"
@@ -129,6 +140,9 @@ export default class AccountPage extends Component {
 											>
 												{s.showFullID ? '(hide id)' : '(show full id)'}
 											</button>
+											{s.showFullID &&
+												<button className="button" title="Click here to copy your Login ID." onClick={this.loginIDCopy}>Copy Login ID</button>
+											}
 										</td>
 									</tr>
 								</tbody>
