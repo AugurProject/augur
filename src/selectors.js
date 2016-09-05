@@ -19,6 +19,9 @@ import loginAccountPositions from './selectors/login-account-positions';
 import loginAccountMarkets from './selectors/login-account-markets';
 import loginAccountReports from './selectors/login-account-reports';
 import myReports from './selectors/my-reports';
+import tradeCommitLock from './selectors/trade-commit-lock';
+import positionsMarkets from './selectors/positions-markets';
+import myMarkets from './selectors/my-markets';
 
 // all selectors should go here
 const selectors = {
@@ -42,7 +45,12 @@ const selectors = {
 	loginAccountPositions,
 	loginAccountMarkets,
 	loginAccountReports,
-	myReports
+	tradeCommitLock,
+	// For inclusion in AURC solo testing (former may accumulate from below)
+	// TODO -- may be an improvement available for how the tests run such that this wouldn't be necessary
+	myReports,
+	myMarkets,
+	positionsMarkets
 };
 
 // add update helper fn to selectors object

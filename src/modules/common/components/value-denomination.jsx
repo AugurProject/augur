@@ -15,6 +15,9 @@ const ValueDenomination = (p) => (
 		{p.denomination &&
 			<span className="denomination">{p.denomination}</span>
 		}
+		{p.postfix &&
+			<span className="postfix">{p.postfix}</span>
+		}
 	</span>
 );
 
@@ -25,6 +28,7 @@ ValueDenomination.propTypes = {
 	formatted: PropTypes.string,
 	denomination: PropTypes.string,
 	prefix: PropTypes.string,
+	postfix: PropTypes.string,
 	title: PropTypes.string
 };
 

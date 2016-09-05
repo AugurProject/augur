@@ -19,19 +19,17 @@ const loginParts = {
 	isVisiblePassword2: false,
 	isVisibleRememberMe: true,
 	topLinkText: 'Sign Up',
-	instruction: 'Please enter your Login ID and password below.'
 };
 
 const signUp = {
 	...Shared,
 	submitButtonClass: 'register-button',
-	submitButtonText: 'Sign In',
+	submitButtonText: 'Generate Account',
 	title: 'Sign Up',
-	isVisibleName: false,
+	isVisibleName: true,
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
-	instruction: 'Please enter your password, then enter it again to generate an account. Once your account has been generated you can hit the Sign Up button to start using Augur. Don\'t forget to copy down your Login ID.',
 	topLinkText: 'login',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
@@ -55,22 +53,22 @@ const signUp = {
 	}
 };
 
-// const logIn = {
-// 	...Shared,
-// 	...loginParts,
-// 	topLink: {
-// 		href: '/register',
-// 		onClick: () => {
-// 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
-// 		}
-// 	},
-// 	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
-// 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
-// 		clearPassword: true } });
-// 		loginAccount.signIn();
-// 		require('../selectors').update({ activePage: 'account' });
-// 	}
-// };
+const logIn = {
+	...Shared,
+	...loginParts,
+	topLink: {
+		href: '/register',
+		onClick: () => {
+			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
+		}
+	},
+	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
+		require('../selectors').update({ authForm: { ...signUp, clearName: true,
+		clearPassword: true } });
+		loginAccount.signIn();
+		require('../selectors').update({ activePage: 'account' });
+	}
+};
 
 const importAccount = {
 	...signUp,
@@ -80,7 +78,6 @@ const importAccount = {
 	bottomLinkText: 'Sign Up',
 	submitButtonClass: 'login-button',
 	submitButtonText: 'Import Account',
-	instruction: 'Please upload your account file and enter the password to unlock the uploaded account.',
 	bottomLink: {
 		href: '/register',
 		onClick: () => {
@@ -91,7 +88,7 @@ const importAccount = {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
-		return () => { require('../selectors').update({ activePage: 'account' }); };
+		require('../selectors').update({ activePage: 'account' });
 	}
 };
 

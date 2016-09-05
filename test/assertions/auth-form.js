@@ -20,9 +20,6 @@ export default function(authForm) {
 		// assert.isDefined(authForm.className, `authForm.className isn't defined`);
 		// assert.isString(authForm.className, `authForm.className isn't a string`);
 
-		assert.isDefined(authForm.instruction, `authForm.instruction isn't defined`);
-		assert.isString(authForm.instruction, `authForm.instruction isn't a string`);
-
 		assert.isDefined(authForm.isVisibleName, `authForm.isVisibleName isn't defined`);
 		assert.isBoolean(authForm.isVisibleName, `authForm.isVisibleName isn't a boolean`);
 

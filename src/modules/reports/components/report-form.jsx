@@ -1,6 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import Checkbox from '../../common/components/checkbox';
+import { BINARY, CATEGORICAL } from '../../markets/constants/market-types';
+import BINARY_OUTCOMES from '../../reports/constants/binary-outcomes';
 
 export default class ReportForm extends React.Component {
 	static propTypes = {
@@ -47,11 +49,8 @@ export default class ReportForm extends React.Component {
 		const p = this.props;
 		const s = this.state;
 
-		console.log('report-form props:', p);
-		console.log('report-form state:', s);
-
 		let outcomeOptions;
-		if (p.type !== 'scalar') {
+		if (p.type === CATEGORICAL) {
 			outcomeOptions = (
 				(p.reportableOutcomes || []).map(outcome => (
 					<label key={outcome.id} className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}>
@@ -65,6 +64,23 @@ export default class ReportForm extends React.Component {
 							onChange={this.handleOutcomeChange}
 						/>
 						{outcome.name}
+					</label>
+				))
+			);
+		} else if (p.type === BINARY) {
+			outcomeOptions = (
+				(p.reportableOutcomes || []).map(outcome => (
+					<label key={outcome.id} className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}>
+						<input
+							type="radio"
+							className="outcome-option-radio"
+							name="outcome-option-radio"
+							value={outcome.id}
+							checked={s.reportedOutcomeID === outcome.id}
+							disabled={s.isReported || s.isIndeterminate}
+							onChange={this.handleOutcomeChange}
+						/>
+						{BINARY_OUTCOMES[outcome.id - 1]}
 					</label>
 				))
 			);
@@ -104,7 +120,7 @@ export default class ReportForm extends React.Component {
 					/>
 
 					<span className="indeterminate-message">
-						If this question is subjective, vague, or does not yet have a clear answer, you should report indeterminate.
+						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
 					</span>
 				</div>
 
