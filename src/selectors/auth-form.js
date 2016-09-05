@@ -53,23 +53,6 @@ const signUp = {
 	}
 };
 
-const logIn = {
-	...Shared,
-	...loginParts,
-	topLink: {
-		href: '/register',
-		onClick: () => {
-			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
-		}
-	},
-	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
-		require('../selectors').update({ authForm: { ...signUp, clearName: true,
-		clearPassword: true } });
-		loginAccount.signIn();
-		require('../selectors').update({ activePage: 'account' });
-	}
-};
-
 const importAccount = {
 	...signUp,
 	isVisiblePassword2: false,
