@@ -1,5 +1,4 @@
 import async from 'async';
-import BigNumber from 'bignumber.js';
 import { augur, abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
@@ -32,25 +31,25 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 				: tradeMarketIDs.concat(completeSetsMarketIDs).filter((value, index, self) => self.indexOf(value) === index);
 			if (marketIDs.length) {
 				dispatch(loadMarketsInfo(marketIDs, () => {
-					// TODO move this madness to augur.js (getAccountShortSells)
+					// TODO move this madness to augur.js
 					let i;
 					let j;
 					let id;
 					let outcomes;
 					let numOutcomes;
 					let outcome;
+					let completeSetsEntries;
+					let numCompleteSetsEntries;
+					let outcomesWithTrades;
+					let numOutcomesWithTrades;
+					let sharesBought;
+					let sharesSold;
+					let outcomeTrades;
+					let numOutcomeTrades;
+					let k;
+					let l;
+					let m;
 					if (numTradeMarketIDs) {
-						let outcomesWithTrades;
-						let numOutcomesWithTrades;
-						let shares;
-						let outcomeTrades;
-						let numOutcomeTrades;
-						let completeSetsEntries;
-						let numCompleteSetsEntries;
-						let bnShares;
-						let k;
-						let l;
-						let m;
 						const { marketsData } = getState();
 						const shortSellMarketIDs = [];
 						accountHistory.completeSets = accountHistory.completeSets || {};
@@ -70,20 +69,26 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 										if (!shortSellMarketIDs.length || shortSellMarketIDs[shortSellMarketIDs.length - 1] !== id) {
 											shortSellMarketIDs.push(id);
 										}
-										shares = abi.bignum(outcomeTrades[l].shares);
-										if (!accountHistory.completeSets[id]) {
-											accountHistory.completeSets[id] = {};
-										}
+										if (!accountHistory.completeSets[id]) accountHistory.completeSets[id] = {};
 										for (k = 1; k <= numOutcomes; ++k) {
+											sharesBought = abi.bignum(outcomeTrades[l].shares);
 											if (accountHistory.completeSets[id][k]) {
 												completeSetsEntries = accountHistory.completeSets[id][k];
 												numCompleteSetsEntries = completeSetsEntries.length;
 												for (m = 0; m < numCompleteSetsEntries; ++m) {
-													bnShares = abi.bignum(completeSetsEntries[m].shares);
-													if (completeSetsEntries[m].type === 2 && bnShares.gt(ZERO)) {
-														bnShares = bnShares.minus(shares);
-														bnShares = BigNumber.max(bnShares, ZERO);
-														completeSetsEntries[m].shares = bnShares.toFixed();
+													if (completeSetsEntries[m].type === 2) {
+														sharesSold = abi.bignum(completeSetsEntries[m].shares);
+														if (sharesSold.gt(ZERO)) {
+															if (sharesBought.gt(sharesSold)) {
+																sharesBought = sharesBought.minus(sharesSold);
+																sharesSold = ZERO;
+															} else {
+																sharesSold = sharesSold.minus(sharesBought);
+																sharesBought = ZERO;
+															}
+															completeSetsEntries[m].shares = sharesSold.toFixed();
+															if (sharesBought.lte(ZERO)) break;
+														}
 													}
 												}
 												// console.log('complete sets entry:', k, accountHistory.completeSets[id]);
@@ -104,9 +109,35 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 							numOutcomes = outcomes.length;
 							for (j = 0; j < numOutcomes; ++j) {
 								outcome = outcomes[j];
-								if (!mergedHistory[id][outcome]) {
-									mergedHistory[id][outcome] = [];
+								completeSetsEntries = accountHistory.completeSets[id][outcome];
+								numCompleteSetsEntries = completeSetsEntries.length;
+								sharesBought = ZERO;
+								for (m = 0; m < numCompleteSetsEntries; ++m) {
+									if (completeSetsEntries[m].type === 1) {
+										sharesBought = sharesBought.plus(abi.bignum(completeSetsEntries[m].shares));
+										completeSetsEntries.splice(m, 1);
+										--m;
+										--numCompleteSetsEntries;
+									}
 								}
+								for (m = 0; m < numCompleteSetsEntries; ++m) {
+									if (completeSetsEntries[m].type === 2) {
+										sharesSold = abi.bignum(completeSetsEntries[m].shares);
+										if (sharesSold.gt(ZERO)) {
+											if (sharesBought.gt(sharesSold)) {
+												sharesBought = sharesBought.minus(sharesSold);
+												sharesSold = ZERO;
+											} else {
+												sharesSold = sharesSold.minus(sharesBought);
+												sharesBought = ZERO;
+											}
+											completeSetsEntries[m].shares = sharesSold.toFixed();
+											if (sharesBought.lte(ZERO)) break;
+										}
+									}
+								}
+								// console.log('final complete sets entry:', accountHistory.completeSets[id]);
+								if (!mergedHistory[id][outcome]) mergedHistory[id][outcome] = [];
 								mergedHistory[id][outcome] = mergedHistory[id][outcome].concat(accountHistory.completeSets[id][outcome]);
 							}
 						}

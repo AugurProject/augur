@@ -89,7 +89,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				} else {
 					position = position.round(2, BigNumber.ROUND_DOWN);
 				}
-				console.log('position:', position.toFixed());
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
