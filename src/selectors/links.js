@@ -1,4 +1,4 @@
-import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from '../modules/site/constants/pages';
 import { LOGIN } from '../modules/auth/constants/auth-types';
 
 export default {
@@ -11,5 +11,6 @@ export default {
 	accountLink: { href: '/account', onClick: (url) => require('../selectors').update({ activePage: ACCOUNT, url }) },
 	myPositionsLink: { href: '/my-positions', onClick: (url) => require('../selectors').update({ activePage: MY_POSITIONS, url }) },
 	myMarketsLink: { href: '/my-markets', onClick: (url) => require('../selectors').update({ activePage: MY_MARKETS, url }) },
-	myReportsLink: { href: '/my-reports', onClick: (url) => require('../selectors').update({ activePage: MY_REPORTS, url }) }
+	myReportsLink: { href: '/my-reports', onClick: (url) => require('../selectors').update({ activePage: MY_REPORTS, url }) },
+	loginMessageLink: { href: '/login-message', onClick: (url) => require('../selectors').update({ activePage: LOGIN_MESSAGE, url }) }
 };

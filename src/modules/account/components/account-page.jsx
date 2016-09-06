@@ -7,6 +7,7 @@ import Input from '../../common/components/input';
 
 export default class AccountPage extends Component {
 	static propTypes = {
+		loginMessageLink: PropTypes.object.isRequired,
 		account: PropTypes.object,
 		siteHeader: PropTypes.object
 	};
@@ -199,6 +200,16 @@ export default class AccountPage extends Component {
 								>
 									Download Account
 								</a>
+							</div>
+						</div>
+						<div className={classnames('account-section')}>
+							<div className="account-info-item">
+								<h2 className="heading">Important Information</h2>
+								<p>
+									Read <Link {...p.loginMessageLink}>
+										important information
+									</Link> about Augur
+								</p>
 							</div>
 						</div>
 					</div>
