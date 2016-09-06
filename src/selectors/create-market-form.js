@@ -41,10 +41,10 @@ function createMarketForm() {
 			const labels = [];
 			switch (form.type) {
 			case BINARY:
-				setInitialFairPrices(['Yes', 'No'], BINARY);
+				setInitialFairPrices(['Yes'], BINARY);
 				break;
 			case SCALAR:
-				setInitialFairPrices(['⇧', '⇩'], SCALAR);
+				setInitialFairPrices(['⇧|⇩'], SCALAR);
 				break;
 			case CATEGORICAL:
 				form.categoricalOutcomes.map((val, i) => {
