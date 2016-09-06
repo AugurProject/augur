@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 import assertFormattedDate from './common/formatted-date';
 import assertMarketLink from './common/market-link';
+import assertReportableOutcomes from '../../test/assertions/reportable-outcomes';
 
 export default function (market) {
 
@@ -261,9 +262,7 @@ export default function (market) {
 		});
 
 		it('market.reportableOutcomes', () => {
-			// NOTE -- shallow check here due to deep check further down of the same selector method
-			assert.isDefined(market.reportableOutcomes);
-			assert.isArray(market.reportableOutcomes);
+			assertReportableOutcomes(market.reportableOutcomes);
 		});
 
 		const indeterminateItem = market.reportableOutcomes[market.reportableOutcomes.length - 1];

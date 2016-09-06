@@ -1,6 +1,7 @@
 import { makeNumber } from '../utils/make-number';
 import { makeDate } from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
+import selectReportableOutcomes from '../selectors/reportable-outcomes';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 
@@ -58,7 +59,7 @@ function makeMarkets(numMarkets = 10) {
 		m.outcomes = makeOutcomes(index);
 
 		// reportable outcomes
-		m.reportableOutcomes = m.outcomes.slice();
+		m.reportableOutcomes = selectReportableOutcomes(m.type, m.outcomes);
 		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
 
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
@@ -130,10 +131,10 @@ function makeMarkets(numMarkets = 10) {
 		};
 		m.myPositionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
+		// console.log('OUTCOMES -- ', m.outcomes);
+
 		m.userOpenOrdersSummary = {
-			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
-				openOrdersCount + outcome.userOpenOrders.length
-			), 0), 'Open Orders')
+			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => openOrdersCount + !!outcome && !!outcome.userOpenOrders && outcome.userOpenOrders.length, 0), 'Open Orders')
 		};
 
 		// market summary
