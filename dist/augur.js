@@ -43495,7 +43495,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.5.7";
+    this.version = "2.5.8";
 
     this.options = {
         debug: {
@@ -46210,7 +46210,7 @@ module.exports = {
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
             costEth: etherToBid.plus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed(),
+            avgPrice: etherToBid.plus(feeEth).dividedBy(shares).toFixed(),
             noFeePrice: limitPrice.toFixed()
         };
     },
@@ -46256,7 +46256,7 @@ module.exports = {
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
             costEth: costEth.minus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed(),
+            avgPrice: costEth.minus(feeEth).dividedBy(shares).toFixed(),
             noFeePrice: limitPrice.toFixed()
         };
     },
@@ -46318,14 +46318,16 @@ module.exports = {
         var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
         var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
         var feeEth = shares.times(limitPrice).times(makerFee);
+        // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
+        var costEth = shares.neg().minus(feeEth);
         return {
             action: "SHORT_ASK",
             shares: shares.toFixed(),
             gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
             feeEth: feeEth.toFixed(),
             feePercent: makerFee.times(100).toFixed(),
-            costEth: shares.neg().minus(feeEth).toFixed(),
-            avgPrice: limitPrice.toFixed(),
+            costEth: costEth.toFixed(),
+            avgPrice: costEth.dividedBy(shares).toFixed(),
             noFeePrice: limitPrice.toFixed()
         };
     },
