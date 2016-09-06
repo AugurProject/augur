@@ -5,10 +5,10 @@ import {
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
+import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 
 export function login(secureLoginID, password, rememberMe) {
 	return (dispatch, getState) => {
-		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 		augur.web.login(secureLoginID, password, (account) => {
 
@@ -34,8 +34,13 @@ export function login(secureLoginID, password, rememberMe) {
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
-			if (links && links.marketsLink)	{
+
+			// need to load selectors here as they get updated above
+			const { links } = require('../../../selectors');
+			if (isCurrentLoginMessageRead(getState().loginMessage)) {
 				links.marketsLink.onClick(links.marketsLink.href);
+			} else {
+				links.loginMessageLink.onClick();
 			}
 		});
 	};

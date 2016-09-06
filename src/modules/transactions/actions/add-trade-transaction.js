@@ -1,7 +1,6 @@
 import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
-
 import { BUY, SELL } from '../../trade/constants/types';
-
+import { abi } from '../../../services/augurjs';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processBuy } from '../../trade/actions/process-buy';
 import { processSell } from '../../trade/actions/process-sell';
@@ -23,7 +22,8 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 			marketDescription,
 			outcomeName,
 			numShares: formatShares(numShares),
-			avgPrice: formatEther(limitPrice),
+			noFeePrice: formatEther(limitPrice),
+			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
 			tradingFees: formatEther(tradingFeesEth),
 			feePercent: formatPercent(feePercent),
 			gasFees: formatRealEther(gasFeesRealEth)

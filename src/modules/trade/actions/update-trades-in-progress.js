@@ -89,7 +89,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				} else {
 					position = position.round(2, BigNumber.ROUND_DOWN);
 				}
-				console.log('position:', position.toFixed());
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
@@ -124,7 +123,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			}
-			console.log('newTradeDetails:', newTradeDetails);
+			console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
 		}
 
 		dispatch({

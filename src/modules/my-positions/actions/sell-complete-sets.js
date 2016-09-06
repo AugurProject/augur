@@ -2,6 +2,7 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
+import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
@@ -38,6 +39,7 @@ function sellCompleteSetsMarket(marketID, callback) {
 				},
 				onSuccess: (r) => {
 					console.log('sellCompleteSets success:', r);
+					dispatch(updateAssets());
 					dispatch(loadAccountTrades(marketID, true));
 				},
 				onFailed: cb

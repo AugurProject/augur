@@ -6,6 +6,8 @@ import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
 
 describe(`modules/markets/actions/update-keywords.js`, () => {
+	proxyquire.noPreserveCache().noCallThru();
+
 	let out, action;
 	let { state, store } = mockStore.default;
 	let mockUpdateURL = { updateURL: () => {} };
@@ -15,7 +17,12 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/update-keywords', {
-		'../../link/actions/update-url': mockUpdateURL
+		'../../link/actions/update-url': mockUpdateURL,
+		'../../../selectors': proxyquire('../../../src/selectors', {
+			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+				'../../../store': store
+			})
+		})
 	});
 
 	beforeEach(() => {
@@ -44,7 +51,7 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 			keywords: ['key', 'words']
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?filters=isOpen'
+			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
 		}];
 
 		store.dispatch(action.updateKeywords(keywords));

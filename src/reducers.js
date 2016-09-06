@@ -35,6 +35,7 @@ import selectedSort from './modules/markets/reducers/selected-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
+import loginMessage from './modules/login-message/reducers/login-message';
 
 module.exports = {
 	env,
@@ -64,6 +65,7 @@ module.exports = {
 	selectedSort,
 	priceHistory,
 	selectedOutcomeID,
+	loginMessage,
 
 	tradesInProgress,
 	tradeCommitLock,
