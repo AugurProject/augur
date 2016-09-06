@@ -14,6 +14,7 @@ const loginParts = {
 	submitButtonClass: 'login-button',
 	submitButtonText: 'Login',
 	title: 'Login',
+	type: 'login',
 	isVisibleName: false,
 	isVisibleID: true,
 	isVisiblePassword2: false,
@@ -23,6 +24,7 @@ const loginParts = {
 
 const signUp = {
 	...Shared,
+	type: 'register',
 	submitButtonClass: 'register-button',
 	submitButtonText: 'Generate Account',
 	title: 'Sign Up',
@@ -55,6 +57,7 @@ const signUp = {
 
 const importAccount = {
 	...signUp,
+	type: 'import',
 	isVisiblePassword2: false,
 	isVisibleFileInput: true,
 	title: 'Import Account',

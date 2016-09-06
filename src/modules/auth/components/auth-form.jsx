@@ -8,6 +8,7 @@ export default class AuthForm extends Component {
 		className: PropTypes.string,
 		title: PropTypes.string,
 		loginID: PropTypes.string,
+		type: PropTypes.string,
 		rememberMe: PropTypes.bool,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
@@ -18,9 +19,6 @@ export default class AuthForm extends Component {
 		isVisibleID: PropTypes.bool,
 		isVisibleFileInput: PropTypes.bool,
 		isVisibleRememberMe: PropTypes.bool,
-		clearName: PropTypes.bool,
-		clearPassword: PropTypes.bool,
-		clearCode: PropTypes.bool,
 		msg: PropTypes.string,
 		msgClass: PropTypes.string,
 		topLinkText: PropTypes.string,
@@ -58,24 +56,10 @@ export default class AuthForm extends Component {
 		this.setState({ msg: nextProps.msg });
 	}
 
-	componentDidUpdate() {
-		if (this.props.clearName) {
-			this.refs.name.value = '';
-		}
-		if (this.props.clearPassword) {
-			this.refs.password.value = '';
-			this.refs.password2.value = '';
-		}
-		if (this.props.clearCode) {
-			this.refs.code.value = '';
-		}
-	}
-
 	handleSubmit = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		const name = this.refs.accountName.value;
-		// const loginID = this.state.loginID;
 		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
@@ -83,7 +67,7 @@ export default class AuthForm extends Component {
 		const loginAccount = this.state.loginAccount;
 		const file = (this.refs.form[1].files[0] !== undefined);
 
-		if (file && this.fileReader) {
+		if (this.props.type === 'import' && file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
@@ -95,12 +79,11 @@ export default class AuthForm extends Component {
 		this.setState({ msg: '', loginID: undefined, disableInputs: false });
 		return false;
 	}
-// ref={(ref) => { if (ref && ref.state.value !== s.loginID) { this.setState({ loginID: ref.state.value }); } }}
+
 	handlePasswordInput = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		const name = this.refs.accountName.value;
-		// const loginID = this.state.loginID;
 		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
