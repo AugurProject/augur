@@ -14,6 +14,10 @@
       padding-left: 40px;
     }
 
+    .l-container {
+      padding: 2em;
+    }
+
     .link {
       color: @color-primary-active;
 
@@ -22,5 +26,107 @@
         text-decoration: underline;
       }
     }
+
+    .lets-do-this-button {
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #fff;
+      background-color: #43505c;
+      font-size: 2vmin;
+      text-align: center;
+      margin-top: 1em;
+      padding: 0 1em;
+      display: inline-block;
+      height: 2.8em;
+      line-height: 2.8em;
+      border: 0;
+      border-radius: 1px;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .lets-do-this-button:hover {
+      color: #fff;
+      background-color: #32323a;
+      text-decoration: none;
+    }
   }
+}
+
+
+.site-header {
+    position: fixed; z-index: 9;
+    top: 0; left: 0;
+    width: 100%; height: @site-header-height;
+    background: white;
+
+    .site-nav {
+        display: flex;
+        padding: 0 2vmin;
+        border-bottom: 3px solid @color-dark-hover;
+        font-size: 2.5vmin;
+        .l-container();
+
+        .spacer {
+            width:100%;
+        }
+
+        .site-nav-link {
+            display: block;
+            height: @site-header-height;
+            line-height: @site-header-height;
+            padding: 0 2vw;
+            white-space: nowrap;
+
+          > *:not(:last-child) {
+              margin-right: 0.8em;
+          }
+
+            &:hover, &:active {
+                background: @color-light-hover;
+            }
+
+            &.active {
+                background: @color-dark-hover;
+                color: @color-light-normal;
+            }
+
+            &:focus {
+                text-shadow: 0 0 @color-light-normal;
+            }
+
+            &.augur {
+              font-family: CoreMellow;
+                font-size: 2em;
+                font-weight: 700;
+            }
+
+            &.positions {
+            }
+
+            &.transactions {
+              &.working {
+                  &:not(.active) {
+                    animation-name: site-header-item-bg;
+                      animation-duration: 0.7s;
+                      animation-iteration-count: infinite;
+                      animation-direction: alternate;
+                  }
+              }
+                strong {
+                    margin-left: 0 !important;
+                    margin-right: 1.5vw !important;
+                    &:last-child {
+                        margin-right: 0 !important;
+                    }
+                }
+
+                .link-text {
+                  white-space: nowrap;
+                }
+            }
+
+            strong {
+                font-weight: 900;
+            }
+        }
+    }
 }
