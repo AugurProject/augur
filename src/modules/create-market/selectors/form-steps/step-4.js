@@ -77,9 +77,9 @@ export const initialFairPrices = (formState) => {
 	const labels = [];
 	switch (formState.type) {
 	case BINARY:
-		return setInitialFairPrices(['Yes', 'No']);
+		return setInitialFairPrices([null]);
 	case SCALAR:
-		return setInitialFairPrices(['⇧', '⇩']);
+		return setInitialFairPrices([null]);
 	case CATEGORICAL:
 
 		formState.categoricalOutcomes.map((val, i) => {
