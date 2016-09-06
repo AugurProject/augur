@@ -15,7 +15,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 				if (!trades || trades.error) return callback(trades);
 				callback(null, trades);
 			}),
-			completeSets: (callback) => augur.getAccountCompleteSets(account, { type: 'sell', tradeLogStyle: true, market: marketID }, (completeSets) => {
+			completeSets: (callback) => augur.getAccountCompleteSets(account, { tradeLogStyle: true, market: marketID }, (completeSets) => {
 				if (!completeSets || completeSets.error) return callback(completeSets);
 				callback(null, completeSets);
 			})
