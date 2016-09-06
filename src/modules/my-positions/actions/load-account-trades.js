@@ -94,7 +94,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets) {
 							}
 						}
 					}
-					completeSetsMarketIDs = Object.keys(accountHistory.completeSets);
+					completeSetsMarketIDs = Object.keys(accountHistory.completeSets || {});
 					numCompleteSetsMarketIDs = completeSetsMarketIDs.length;
 					if (numCompleteSetsMarketIDs) {
 						for (i = 0; i < numCompleteSetsMarketIDs; ++i) {
