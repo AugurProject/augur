@@ -98,16 +98,11 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 					type: BINARY,
 					values: [
 						{
-							label: 'Yes',
-							value: 0.5
-						},
-						{
-							label: 'No',
+							label: null,
 							value: 0.5
 						}
 					],
 					raw: [
-						0.5,
 						0.5
 					]
 				},
@@ -196,16 +191,11 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 					type: SCALAR,
 					values: [
 						{
-							label: '⇧',
-							value: 55
-						},
-						{
-							label: '⇩',
+							label: null,
 							value: 55
 						}
 					],
 					raw: [
-						55,
 						55
 					]
 				},
