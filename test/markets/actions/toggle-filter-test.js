@@ -5,6 +5,8 @@ import * as mockStore from '../../mockStore';
 // import * as action from '../../../src/modules/markets/actions/toggle-filter.js';
 
 describe(`modules/markets/actions/toggle-filter.js`, () => {
+	proxyquire.noPreserveCache().noCallThru();
+
 	let { state, store } = mockStore.default;
 	let out, action
 	let mockUpdateURL = { updateURL: () => {} };
@@ -14,7 +16,12 @@ describe(`modules/markets/actions/toggle-filter.js`, () => {
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/toggle-filter', {
-		'../../link/actions/update-url': mockUpdateURL
+		'../../link/actions/update-url': mockUpdateURL,
+		'../../../selectors': proxyquire('../../../src/selectors', {
+			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+				'../../../store': store
+			})
+		})
 	});
 
 	beforeEach(() => {
@@ -43,7 +50,7 @@ describe(`modules/markets/actions/toggle-filter.js`, () => {
 			filterID: '123test456'
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?filters=isOpen'
+			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
 		}];
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions for toggle-filter`);

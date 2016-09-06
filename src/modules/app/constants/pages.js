@@ -6,4 +6,5 @@ export const MY_REPORTS = 'my-reports';
 export const TRANSACTIONS = 'transactions';
 export const M = 'm';
 export const ACCOUNT = 'account';
+export const LOGIN_MESSAGE = 'login-message';
 export const DEFAULT_PAGE = MARKETS;

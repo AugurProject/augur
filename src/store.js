@@ -30,7 +30,8 @@ const localStorageMiddleware = store => next => action => {
 			favorites: state.favorites,
 			transactionsData: state.transactionsData,
 			accountTrades: state.accountTrades,
-			reports: state.reports
+			reports: state.reports,
+			loginMessageVersionRead: state.loginMessage.userVersionRead
 		}));
 	}
 };

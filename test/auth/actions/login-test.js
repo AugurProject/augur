@@ -14,7 +14,8 @@ describe(`modules/auth/actions/login.js`, () => {
 	const fakeAugurJS = { augur: { web: {} } };
 	const fakeSelectors = {
 		links: {
-			marketsLink: {}
+			marketsLink: {},
+			loginMessageLink: {}
 		}
 	};
 	const updtLoginAccStub = {};
@@ -36,6 +37,7 @@ describe(`modules/auth/actions/login.js`, () => {
 	});
 
 	fakeSelectors.links.marketsLink.onClick = sinon.stub();
+	fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
 
 	let updateTestString = 'updateLoginAccount(loginAccount) called.';
 	let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
