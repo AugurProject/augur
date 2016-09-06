@@ -12,6 +12,7 @@ import { register } from '../../auth/actions/register';
 import { importAccount } from '../../auth/actions/import-account';
 import { login } from '../../auth/actions/login';
 import { selectAuthLink } from '../../link/selectors/links';
+import { selectAirbitzLink } from '../../link/selectors/links';
 
 export default function () {
 	const { auth, loginAccount } = store.getState();
@@ -63,6 +64,9 @@ export const selectRegister = (auth, dispatch) => {
 
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
+		
+		airbitzLinkText: 'Sign Up With Airbitz',
+		airbitzLink: selectAirbitzLink(REGISTER, dispatch),
 
 		onSubmit: (name, password, password2, secureLoginID) => dispatch(register(name, password, password2))
 	};
@@ -90,13 +94,15 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		bottomLinkText: 'Import Account',
 		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
-
 		secureLoginID: loginAccount.secureLoginID,
 		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
+
+		airbitzLinkText: 'Login With Airbitz',
+		airbitzLink: selectAirbitzLink(LOGIN, dispatch),
 
 		onSubmit: (name, password, password2, secureLoginID, rememberMe) =>	dispatch(login(secureLoginID, password, rememberMe))
 	};
@@ -125,6 +131,9 @@ export const selectImportAccount = (auth, dispatch) => {
 
 		submitButtonText: 'Import Account',
 		submitButtonClass: 'register-button',
+
+		airbitzLinkText: 'Sign Up With Airbitz',
+		airbitzLink: selectAirbitzLink(REGISTER, dispatch),
 
 		onSubmit: (name, password, password2, secureLoginID, rememberMe, keystore) => dispatch(importAccount(name, password, rememberMe, keystore))
 	};

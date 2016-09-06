@@ -15,6 +15,7 @@ import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-l
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 import store from '../../../store';
+import { IMPORT, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 
 export default function () {
 	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();
@@ -61,6 +62,27 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 		}
 	};
 });
+
+export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
+	if (authType === LOGIN) {
+		return {
+			onClick: () => {
+				require('../../../selectors').abc.openLoginWindow((result, account) => {
+					// dispatch(updateURL(href));
+				});
+			}
+		};
+	} else if (authType === REGISTER || authType === IMPORT) {
+		return {
+			onClick: () => {
+				require('../../../selectors').abc.openRegisterWindow((result, account) => {
+					// dispatch(updateURL(href));
+				});
+			}
+		};
+	}
+});
+
 
 export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, selectedSort, selectedTags, selectedPageNum, dispatch) => {
 	const params = {};
