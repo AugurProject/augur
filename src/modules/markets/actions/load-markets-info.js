@@ -26,7 +26,7 @@ export function loadMarketsInfo(marketIDs, cb) {
 					}
 				}
 				if (stepEnd < numMarketsToLoad) return loader(stepEnd);
-				cb && cb();
+				if (cb) cb();
 			});
 		}(0));
 	};

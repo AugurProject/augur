@@ -124,7 +124,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			}
-			console.log('newTradeDetails:', newTradeDetails);
+			console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
 		}
 
 		dispatch({
