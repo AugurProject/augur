@@ -134,7 +134,7 @@ function makeMarkets(numMarkets = 10) {
 		// console.log('OUTCOMES -- ', m.outcomes);
 
 		m.userOpenOrdersSummary = {
-			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => openOrdersCount + !!outcome && !!outcome.userOpenOrders && outcome.userOpenOrders.length, 0), 'Open Orders')
+			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (openOrdersCount + outcome && outcome.userOpenOrders && outcome.userOpenOrders.length), 0), 'Open Orders')
 		};
 
 		// market summary
