@@ -127,7 +127,7 @@ module.exports = {
         var numOutcomes = positionInMarket.length;
         var position = {};
         for (var i = 0; i < numOutcomes; ++i) {
-            position[i + 1] = abi.unfix(positionInMarket[i], "string");
+            position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
         }
         return position;
     },
