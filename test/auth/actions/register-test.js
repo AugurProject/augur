@@ -6,6 +6,16 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import {
+PASSWORD_TOO_SHORT,
+PASSWORD_NEEDS_LOWERCASE,
+PASSWORD_NEEDS_UPPERCASE,
+PASSWORD_NEEDS_NUMBER,
+PASSWORD_TOO_SHORT_MSG,
+PASSWORD_NEEDS_LOWERCASE_MSG,
+PASSWORD_NEEDS_UPPERCASE_MSG,
+PASSWORD_NEEDS_NUMBER_MSG,
+} from '../../../src/modules/auth/constants/form-errors';
 
 describe(`modules/auth/actions/register.js`, () => {
 	proxyquire.noPreserveCache();
@@ -98,7 +108,7 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	it(`should fail with no uppercase letter in passwords entered`, () => {
 		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_UPPERCASE_LETTER' } } ];
+    err: { valid: false, code: PASSWORD_NEEDS_UPPERCASE, message: PASSWORD_NEEDS_UPPERCASE_MSG } } ];
 
 		store.dispatch(action.register('', 't3sting', 't3sting'));
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no uppercase letter in the passwords.`);
@@ -106,7 +116,7 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	it(`should fail with no number in passwords entered`, () => {
 		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_NUMBER' } } ];
+    err: { valid: false, code: PASSWORD_NEEDS_NUMBER, message: PASSWORD_NEEDS_NUMBER_MSG } } ];
 
 		store.dispatch(action.register('', 'Testing', 'Testing'));
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no number in the passwords.`);
@@ -114,7 +124,7 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	it(`should fail with no lowercase letter in passwords entered`, () => {
 		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 'PASSWORD_NEEDS_A_LOWERCASE_LETTER' } } ];
+    err: { valid: false, code: PASSWORD_NEEDS_LOWERCASE, message: PASSWORD_NEEDS_LOWERCASE_MSG } } ];
 
 		store.dispatch(action.register('', 'T3STING', 'T3STING'));
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no lowercase letter in the passwords.`);
@@ -122,7 +132,7 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	it(`should fail when passwords entered are too short.`, () => {
 		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: 405, message: 'password is too short, must be at least 6 characters.' } } ];
+    err: { valid: false, code: PASSWORD_TOO_SHORT, message: PASSWORD_TOO_SHORT_MSG } } ];
 
 		store.dispatch(action.register('', 'test', 'test'));
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when the passwords where too short.`);

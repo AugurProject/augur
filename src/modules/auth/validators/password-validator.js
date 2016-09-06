@@ -3,6 +3,10 @@ PASSWORD_TOO_SHORT,
 PASSWORD_NEEDS_LOWERCASE,
 PASSWORD_NEEDS_UPPERCASE,
 PASSWORD_NEEDS_NUMBER,
+PASSWORD_TOO_SHORT_MSG,
+PASSWORD_NEEDS_LOWERCASE_MSG,
+PASSWORD_NEEDS_UPPERCASE_MSG,
+PASSWORD_NEEDS_NUMBER_MSG,
 } from '../../auth/constants/form-errors';
 
 export function validatePassword(password) {
@@ -11,28 +15,28 @@ export function validatePassword(password) {
 	if (password.length < 6) {
 		result.valid = false;
 		result.code = PASSWORD_TOO_SHORT;
-		result.message = 'password is too short, must be at least 6 characters.';
+		result.message = PASSWORD_TOO_SHORT_MSG;
 		return result;
 	}
 
 	if (!hasLowercase(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_LOWERCASE;
-		result.message = 'password requires at least one lowercase letter.';
+		result.message = PASSWORD_NEEDS_LOWERCASE_MSG;
 		return result;
 	}
 
 	if (!hasUppercase(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_UPPERCASE;
-		result.message = 'password requires at least one uppercase letter.';
+		result.message = PASSWORD_NEEDS_UPPERCASE_MSG;
 		return result;
 	}
 
 	if (!hasNumber(password)) {
 		result.valid = false;
 		result.code = PASSWORD_NEEDS_NUMBER;
-		result.message = 'password requires at least one number.';
+		result.message = PASSWORD_NEEDS_NUMBER_MSG;
 		return result;
 	}
 
