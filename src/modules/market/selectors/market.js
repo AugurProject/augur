@@ -51,6 +51,8 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 
 import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
 
+import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
+
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
@@ -247,7 +249,7 @@ export function assembleMarket(
 
 			market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
-			market.reportableOutcomes = market.outcomes.slice();
+			market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
 			market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
 			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
