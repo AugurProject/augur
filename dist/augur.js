@@ -43495,7 +43495,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.5.6";
+    this.version = "2.5.7";
 
     this.options = {
         debug: {
@@ -45051,56 +45051,67 @@ module.exports = {
             typeCode = null;
         }
         var market = (options.market) ? abi.format_int256(options.market) : null;
+        var topics = [
+            this.api.events.completeSets_logReturn.signature,
+            abi.format_int256(account),
+            market,
+            typeCode
+        ];
+        var fromBlock = options.fromBlock || "0x1";
+        var toBlock = options.toBlock || "latest";
         this.rpc.getLogs({
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
+            fromBlock: fromBlock,
+            toBlock: toBlock,
             address: this.contracts.CompleteSets,
-            topics: [
-                this.api.events.completeSets_logReturn.signature,
-                abi.format_int256(account),
-                market,
-                typeCode
-            ],
+            topics: topics,
             timeout: 480000
-        }, function (logs) {
-            var market, logdata, actions, numOutcomes, logTypeCode, logType;
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) return cb(logs);
-            actions = {};
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    market = logs[i].topics[2];
-                    logTypeCode = logs[i].topics[3];
-                    if (typeCode && logTypeCode !== typeCode) continue;
-                    logTypeCode = parseInt(logTypeCode, 16);
-                    logdata = self.rpc.unmarshal(logs[i].data);
-                    numOutcomes = parseInt(logdata[1], 16);
-                    if (options.tradeLogStyle) {
-                        if (!actions[market]) actions[market] = {};
-                        for (var j = 0; j < numOutcomes; ++j) {
-                            if (!actions[market][j + 1]) actions[market][j + 1] = [];
-                            actions[market][j + 1].push({
+        }, function (completeSetsLogs) {
+            if (completeSetsLogs && completeSetsLogs.error) return cb(completeSetsLogs);
+            var logs = completeSetsLogs || [];
+            self.rpc.getLogs({
+                fromBlock: fromBlock,
+                toBlock: toBlock,
+                address: self.contracts.BuyAndSellShares,
+                topics: topics,
+                timeout: 480000
+            }, function (buyAndSellSharesLogs) {
+                var market, logdata, actions, numOutcomes, logTypeCode, logType;
+                if (buyAndSellSharesLogs && buyAndSellSharesLogs.error) return cb(buyAndSellSharesLogs);
+                logs = logs.concat(buyAndSellSharesLogs);
+                actions = {};
+                for (var i = 0, n = logs.length; i < n; ++i) {
+                    if (logs[i] && logs[i].data !== undefined &&
+                        logs[i].data !== null && logs[i].data !== "0x") {
+                        market = logs[i].topics[2];
+                        logTypeCode = logs[i].topics[3];
+                        if (typeCode && logTypeCode !== typeCode) continue;
+                        logTypeCode = parseInt(logTypeCode, 16);
+                        logdata = self.rpc.unmarshal(logs[i].data);
+                        numOutcomes = parseInt(logdata[1], 16);
+                        if (options.tradeLogStyle) {
+                            if (!actions[market]) actions[market] = {};
+                            for (var j = 0; j < numOutcomes; ++j) {
+                                if (!actions[market][j + 1]) actions[market][j + 1] = [];
+                                actions[market][j + 1].push({
+                                    type: logTypeCode,
+                                    shares: abi.unfix(logdata[0], "string"),
+                                    price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                                    blockNumber: parseInt(logs[i].blockNumber, 16)
+                                });
+                            }
+                        } else {
+                            if (!actions[market]) actions[market] = [];
+                            actions[market].push({
                                 type: logTypeCode,
-                                shares: abi.unfix(logdata[0], "string"),
-                                price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
+                                amount: abi.unfix(logdata[0], "string"),
+                                numOutcomes: numOutcomes,
                                 blockNumber: parseInt(logs[i].blockNumber, 16)
                             });
                         }
-                    } else {
-                        if (!actions[market]) actions[market] = [];
-                        actions[market].push({
-                            type: logTypeCode,
-                            amount: abi.unfix(logdata[0], "string"),
-                            numOutcomes: numOutcomes,
-                            blockNumber: parseInt(logs[i].blockNumber, 16)
-                        });
                     }
                 }
-            }
-            cb(actions);
+                cb(actions);
+            });
         });
     },
 
