@@ -6,7 +6,8 @@ const TradePanel = (p) => (
 		<thead className="trade-builder-header">
 			<tr>
 				<th className="outcome-name">Outcome</th>
-				<th className="bid">{!!p.selectedOutcome.selectedOutcomeID ? 'Top Orders' : 'Best Price'}</th>
+				<th className="bid">{!!p.selectedOutcome.selectedOutcomeID ? 'Buy Orders' : 'Top Buy'}</th>
+				<th className="ask">{!!p.selectedOutcome.selectedOutcomeID ? 'Sell Orders' : 'Top Sell'}</th>
 				<th className="buy-sell-button"></th>
 				<th className="num-shares">Shares</th>
 				<th className="limit-price">Limit</th>
