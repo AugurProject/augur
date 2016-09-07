@@ -15,7 +15,7 @@ export const selectReportableOutcomes = (type, outcomes) => {
 			}
 		];
 	case CATEGORICAL:
-		return outcomes;
+		return outcomes.slice();
 	default:
 		return [];
 	}
