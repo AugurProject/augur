@@ -15,8 +15,8 @@ const ReportPanel = (p) => (
 
 ReportPanel.propTypes = {
 	type: React.PropTypes.string,
-	minValue: React.PropTypes.number,
-	maxValue: React.PropTypes.number,
+	minValue: React.PropTypes.string,
+	maxValue: React.PropTypes.string,
 	className: React.PropTypes.string,
 	numPendingReports: React.PropTypes.number,
 	outcomes: React.PropTypes.array,

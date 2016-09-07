@@ -60,8 +60,8 @@ MarketInfo.propTypes = {
 	outstandingShares: PropTypes.object,
 	creationTime: PropTypes.object,
 	type: PropTypes.string,
-	minValue: PropTypes.number,
-	maxValue: PropTypes.number
+	minValue: PropTypes.string,
+	maxValue: PropTypes.string
 };
 
 export default MarketInfo;

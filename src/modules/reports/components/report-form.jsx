@@ -7,8 +7,8 @@ import BINARY_OUTCOMES from '../../reports/constants/binary-outcomes';
 export default class ReportForm extends React.Component {
 	static propTypes = {
 		type: React.PropTypes.string,
-		minValue: React.PropTypes.number,
-		maxValue: React.PropTypes.number,
+		minValue: React.PropTypes.string,
+		maxValue: React.PropTypes.string,
 		reportableOutcomes: React.PropTypes.array,
 		reportedOutcomeID: React.PropTypes.any,
 		isIndeterminate: React.PropTypes.bool,
