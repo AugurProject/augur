@@ -33,6 +33,7 @@ import myReportsSummary from '../test/assertions/my-reports-summary';
 import loginAccountReports from '../test/assertions/login-account-reports';
 import portfolioTotals from '../test/assertions/portfolio-totals';
 import tradeCommitLock from '../test/assertions/trade-commit-lock';
+import reportableOutcomes from '../test/assertions/reportable-outcomes';
 
 export default {
 	activePage,
@@ -69,5 +70,6 @@ export default {
 	myReports,
 	myReportsSummary,
 	loginAccountReports,
-	tradeCommitLock
+	tradeCommitLock,
+	reportableOutcomes
 };
