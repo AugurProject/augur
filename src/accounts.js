@@ -249,7 +249,7 @@ module.exports = function () {
 
                     // while logged in, web.account object is set
                     self.account = {
-                        name: name,
+                        name: "",
                         loginID: loginID,
                         privateKey: privateKey,
                         address: keystore.address,

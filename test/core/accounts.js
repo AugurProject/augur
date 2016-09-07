@@ -27,13 +27,13 @@ var address = keys.privateKeyToAddress(privateKey);
 var name = utils.sha256(new Date().toString());
 var password = utils.sha256(Math.random().toString(36).substring(4));
 
-var secureLoginID;
+var loginID;
 var generatedKeystore;
 
 var name2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
-var secureLoginID2;
+var loginID2;
 
 var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
 var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
@@ -70,7 +70,7 @@ describe("Register", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.register(name, password, function (result) {
             checkAccount(augur, result, true);
-            secureLoginID = result.secureLoginID;
+            loginID = result.loginID;
             var rec = result.keystore;
 						generatedKeystore = result.keystore;
             assert.notProperty(rec, "error");
@@ -97,7 +97,7 @@ describe("Register", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.register(name2, password2, function (result) {
             checkAccount(augur, result, true);
-            secureLoginID2 = result.secureLoginID;
+            loginID2 = result.loginID;
             var rec = result.keystore;
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
@@ -127,7 +127,7 @@ describe("Import Account", function () {
 				assert.notProperty(user, "error");
 				assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
 				assert.isString(user.address);
-				assert.isString(user.secureLoginID);
+				assert.isString(user.loginID);
 				assert.isString(user.name);
 				assert.isObject(user.keystore);
 				assert.strictEqual(
@@ -144,7 +144,7 @@ describe("Login", function () {
     it("login and decrypt the stored private key", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        augur.web.login(secureLoginID, password, function (user) {
+        augur.web.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
             assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
             assert.isString(user.address);
@@ -160,7 +160,7 @@ describe("Login", function () {
     it("login twice as the same user", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        augur.web.login(secureLoginID, password, function (user) {
+        augur.web.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
             assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
             assert.isString(user.address);
@@ -170,23 +170,23 @@ describe("Login", function () {
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
-            augur.web.login(secureLoginID, password, function (same_user) {
+            augur.web.login(loginID, password, function (same_user) {
                 assert(!same_user.error);
                 assert.strictEqual(user.address, same_user.address);
                 done();
             });
         });
     });
-    it("fail with error 403 when given an incorrect secureLoginID", function (done) {
+    it("fail with error 403 when given an incorrect loginID", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var bad_secureLoginID = utils.sha256(new Date().toString());
-        augur.web.login(bad_secureLoginID, password, function (user) {
+        var badLoginID = utils.sha256(new Date().toString());
+        augur.web.login(badLoginID, password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
-    it("fail with error 403 when given a blank secureLoginID", function (done) {
+    it("fail with error 403 when given a blank loginID", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", password, function (user) {
@@ -197,12 +197,12 @@ describe("Login", function () {
     it("fail with error 403 when given a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        augur.web.login(secureLoginID, "", function (user) {
+        augur.web.login(loginID, "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
-    it("fail with error 403 when given a blank secureLoginID and a blank password", function (done) {
+    it("fail with error 403 when given a blank loginID and a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", "", function (user) {
@@ -214,17 +214,17 @@ describe("Login", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-        augur.web.login(secureLoginID, bad_password, function (user) {
+        augur.web.login(loginID, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
-    it("fail with error 403 when given an incorrect secureLoginID and an incorrect password", function (done) {
+    it("fail with error 403 when given an incorrect loginID and an incorrect password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var bad_secureLoginID = utils.sha256(new Date().toString());
+        var bad_loginID = utils.sha256(new Date().toString());
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-        augur.web.login(bad_secureLoginID, bad_password, function (user) {
+        augur.web.login(bad_loginID, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
@@ -235,12 +235,12 @@ describe("Logout", function () {
     it("logout and unset the account object", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        augur.web.login(secureLoginID, password, function (user) {
+        augur.web.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.strictEqual(user.secureLoginID, secureLoginID);
+            assert.strictEqual(user.loginID, loginID);
             for (var i = 0; i < 2; ++i) {
                 augur.web.logout();
-                assert.notProperty(augur.web.account, "secureLoginID");
+                assert.notProperty(augur.web.account, "loginID");
                 assert.notProperty(augur.web.account, "address");
                 assert.notProperty(augur.web.account, "privateKey");
             }
@@ -253,7 +253,7 @@ describe("Change Account Name", function () {
 	it("Should be able to update the account object", function (done) {
 		this.timeout(tools.TIMEOUT);
 		var augur = tools.setup(require("../../src"), process.argv.slice(2));
-		augur.web.login(secureLoginID, password, function (user) {
+		augur.web.login(loginID, password, function (user) {
 			var privateKey = augur.web.account.privateKey;
 			augur.web.changeAccountName("testingName", function (updatedUser) {
 				assert.deepEqual(user.keystore, updatedUser.keystore);
@@ -353,7 +353,7 @@ describe("eth_call", function () {
     it("call getBranches using web.invoke", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        augur.web.login(secureLoginID, password, function (user) {
+        augur.web.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
             assert.strictEqual(user.address, augur.web.account.address);
 
@@ -391,7 +391,7 @@ describe("Integration tests", function () {
             this.timeout(tools.TIMEOUT*2);
             var augur = tools.setup(tools.reset("../../src/index"), process.argv.slice(2));
             var sender = augur.from;
-            augur.web.login(secureLoginID, password, function (account) {
+            augur.web.login(loginID, password, function (account) {
                 // console.log("login:", account);
                 checkAccount(augur, account);
                 var recipient = account.address;
@@ -429,7 +429,7 @@ describe("Integration tests", function () {
             // faucet only exists on network 2!
             if (augur.network_id !== "2") return done();
 
-            augur.web.login(secureLoginID2, password2, function (account) {
+            augur.web.login(loginID2, password2, function (account) {
                 // console.log("login:", account);
                 checkAccount(augur, account);
                 var recipient = account.address;
@@ -466,7 +466,7 @@ describe("Integration tests", function () {
         it("sign and send transaction using account 1", function (done) {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
-            augur.web.login(secureLoginID, password, function (user) {
+            augur.web.login(loginID, password, function (user) {
                 assert.notProperty(user, "error");
                 var tx = clone(augur.tx.Faucets.reputationFaucet);
                 tx.params = augur.constants.DEFAULT_BRANCH_ID;
@@ -491,7 +491,7 @@ describe("Integration tests", function () {
         it("detect logged in user and default to web.invoke", function (done) {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
-            augur.web.login(secureLoginID, password, function (user) {
+            augur.web.login(loginID, password, function (user) {
                 assert.notProperty(user, "error");
                 assert.strictEqual(user.address, augur.web.account.address);
                 augur.reputationFaucet({
@@ -535,7 +535,7 @@ describe("Integration tests", function () {
             };
             augur.connect(connectParams, function (connection) {
                 assert.deepEqual(connection, connectParams);
-                augur.web.login(secureLoginID, password, function (user) {
+                augur.web.login(loginID, password, function (user) {
                     assert.notProperty(user, "error");
                     assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
@@ -595,7 +595,7 @@ describe("Integration tests", function () {
             };
             augur.connect(connectParams, function (connection) {
                 assert.deepEqual(connection, connectParams);
-                augur.web.login(secureLoginID, password, function (user) {
+                augur.web.login(loginID, password, function (user) {
                     assert.notProperty(user, "error");
                     assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
@@ -655,7 +655,7 @@ describe("Integration tests", function () {
             };
             augur.connect(connectParams, function (connection) {
                 assert.deepEqual(connection, connectParams);
-                augur.web.login(secureLoginID, password, function (user) {
+                augur.web.login(loginID, password, function (user) {
                     assert.notProperty(user, "error");
                     assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
@@ -715,7 +715,7 @@ describe("Integration tests", function () {
             };
             augur.connect(connectParams, function (connection) {
                 assert.deepEqual(connection, connectParams);
-                augur.web.login(secureLoginID, password, function (user) {
+                augur.web.login(loginID, password, function (user) {
                     assert.notProperty(user, "error");
                     assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
