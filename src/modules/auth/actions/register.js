@@ -38,11 +38,6 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 		if (password !== password2) {
 			return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
 		}
-		const passCheck = validatePassword(password);
-
-		if (!passCheck.valid) {
-			return dispatch(authError({ ...passCheck }));
-		}
 
 		augur.web.register(name, password, (account) => {
 			if (!account) {
