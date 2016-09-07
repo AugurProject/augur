@@ -37,6 +37,8 @@ module.exports = {
     // milliseconds to wait between getMarketsInfo batches
     PAUSE_BETWEEN_MARKET_BATCHES: 50,
 
+    PARALLEL_LIMIT: 5,
+
     // fixed-point indeterminate: 1.5 * 10^18
     INDETERMINATE: "0x14d1120d7b160000",
     INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",

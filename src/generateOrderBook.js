@@ -141,10 +141,10 @@ module.exports = function (p, cb) {
                 for (var i = 0; i < numOutcomes; ++i) {
                     outcomes[i] = i + 1;
                 }
-                async.forEachOf(outcomes, function (outcome, index, nextOutcome) {
-                    async.parallel([
+                async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
+                    async.parallelLimit([
                         function (callback) {
-                            async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
+                            async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
                                     buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
@@ -181,7 +181,7 @@ module.exports = function (p, cb) {
                             });
                         },
                         function (callback) {
-                            async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
+                            async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
                                     sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
@@ -217,7 +217,7 @@ module.exports = function (p, cb) {
                                 callback(err);
                             });
                         }
-                    ], function (err) {
+                    ], constants.PARALLEL_LIMIT, function (err) {
                         // if (err) console.error("buy/sell:", err);
                         onSetupOutcome({market: p.market, outcome: outcome});
                         nextOutcome(err);

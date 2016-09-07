@@ -302,16 +302,23 @@ module.exports = function () {
             augur.rpc.clear();
         },
 
+        highNonce: 0,
+
         submitTx: function (packaged, cb) {
             var self = this;
             var mutex = locks.createMutex();
             mutex.lock(function () {
                 for (var rawTxHash in augur.rpc.rawTxs) {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-                    if (augur.rpc.rawTxs[rawTxHash].nonce === packaged.nonce) {
+                    if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce) {
                         ++packaged.nonce;
                         break;
                     }
+                }
+                if (packaged.nonce <= self.highNonce) {
+                    packaged.nonce = ++self.highNonce;
+                } else {
+                    self.highNonce = packaged.nonce;
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
