@@ -29,6 +29,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { abi } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -209,13 +210,25 @@ export function assembleMarket(
 
 				if (market.type === 'scalar') {
 					// note: not actually a percent
-					outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
-						decimals: 2,
-						decimalsRounded: 1,
-						denomination: '',
-						positiveSign: false,
-						zeroStyled: true
-					});
+					if (outcome.lastPrice.value) {
+						outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
+							decimals: 2,
+							decimalsRounded: 1,
+							denomination: '',
+							positiveSign: false,
+							zeroStyled: true
+						});
+					} else {
+						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(abi.bignum(2));
+
+						outcome.lastPricePercent = formatNumber(midPoint, {
+							decimals: 2,
+							decimalsRounded: 1,
+							denomination: '',
+							positiveSign: false,
+							zeroStyled: true
+						});
+					}
 				} else {
 					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
 				}
