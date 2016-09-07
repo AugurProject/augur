@@ -101,7 +101,7 @@ const CreateMarketForm4 = (p) => (
 									}
 								}
 							/>
-							<span className="denomination">ETH {cV.label && <span>| {cV.label}</span>}</span>
+							<span className="denomination">ETH | {cV.label}</span>
 							{!!get(p.errors, `initialFairPrice.${i}`) &&
 								<span className="error-message">
 									{p.errors.initialFairPrice[`${i}`]}
