@@ -35,6 +35,9 @@ export default function(authForm) {
 		assert.isDefined(authForm.isVisibleRememberMe, `authForm.isVisibleRememberMe isn't defined`);
 		assert.isBoolean(authForm.isVisibleRememberMe, `authForm.isVisibleRememberMe isn't a boolean`);
 
+		assert.isDefined(authForm.instruction, `authForm.instruction isn't defined`);
+		assert.isString(authForm.instruction, `authForm.instruction isn't a string`);
+
 		assert.isDefined(authForm.msgClass, `authForm.msgClass isn't defined`);
 		assert.isString(authForm.msgClass, `authForm.msgClass isn't a string`);
 

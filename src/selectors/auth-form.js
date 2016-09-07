@@ -19,6 +19,7 @@ const loginParts = {
 	isVisibleID: true,
 	isVisiblePassword2: false,
 	isVisibleRememberMe: true,
+	instruction: 'Please enter your Login ID and password below.',
 	topLinkText: 'Sign Up',
 };
 
@@ -32,6 +33,7 @@ const signUp = {
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
+	instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
 	topLinkText: 'login',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
@@ -60,6 +62,7 @@ const importAccount = {
 	type: 'import',
 	isVisiblePassword2: false,
 	isVisibleFileInput: true,
+	instruction: 'Please upload your account file and enter the password to unlock the uploaded account.',
 	title: 'Import Account',
 	bottomLinkText: 'Sign Up',
 	submitButtonClass: 'login-button',
