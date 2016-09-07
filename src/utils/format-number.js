@@ -194,10 +194,10 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	if (isNaN(parseFloat(num))) {
 		o.value = 0;
 		o.formattedValue = 0;
-		o.formatted = 0;
+		o.formatted = '0';
 		o.roundedValue = 0;
-		o.rounded = 0;
-		o.minimized = 0;
+		o.rounded = '0';
+		o.minimized = '0';
 	} else {
 		o.value = value.toNumber();
 		if (value.abs().lt(constants.PRECISION.limit)) {

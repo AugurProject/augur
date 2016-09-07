@@ -17,6 +17,7 @@ export function collectFees() {
 					dispatch(updateAssets());
 				},
 				onFailed: (err) => {
+					if (err.error === '-1') return console.info('collectFees:', err.message);
 					console.error('collectFees failed:', err);
 				}
 			});
