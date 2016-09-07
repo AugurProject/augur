@@ -1,20 +1,9 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import testState from '../../testState';
 import reducer from '../../../src/modules/auth/reducers/auth';
-import {
-	DEFAULT_AUTH_TYPE
-} from '../../../src/modules/auth/constants/auth-types';
-import {
-	PATHS_AUTH
-} from '../../../src/modules/link/constants/paths';
-import {
-	UPDATE_URL
-} from '../../../src/modules/link/actions/update-url';
-import {
-	AUTH_ERROR
-} from '../../../src/modules/auth/actions/auth-error';
+import { DEFAULT_AUTH_TYPE } from '../../../src/modules/auth/constants/auth-types';
+import { UPDATE_URL } from '../../../src/modules/link/actions/update-url';
+import { AUTH_ERROR } from '../../../src/modules/auth/actions/auth-error';
 
 describe(`modules/auth/reducers/auth.js`, () => {
 	let action;
@@ -23,7 +12,7 @@ describe(`modules/auth/reducers/auth.js`, () => {
 		action = {
 			type: UPDATE_URL,
 			parsedURL: {
-				pathArray: ['/login']
+				searchParams: { page: 'login' }
 			}
 		};
 		const expectedOutput = {

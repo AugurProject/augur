@@ -1,6 +1,4 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import * as action from '../../../src/modules/markets/actions/update-selected-markets-header';
 
 describe(`modules/markets/actions/update-selected-markets-header.js`, () => {

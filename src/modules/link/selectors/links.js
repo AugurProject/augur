@@ -2,7 +2,6 @@ import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
-import { PAGES_PATHS } from '../../link/constants/paths';
 import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
@@ -37,7 +36,7 @@ export default function () {
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {
-		href: PAGES_PATHS[ACCOUNT],
+		href: makeLocation({ page: ACCOUNT }).url,
 		onClick: (href) => dispatch(updateURL(href))
 	};
 	return obj;
@@ -45,14 +44,14 @@ export const selectAccountLink = memoizerific(1)((dispatch) => {
 
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {
-		href: PAGES_PATHS[MARKETS],
+		href: makeLocation({ page: MARKETS }).url,
 		onClick: (href) => dispatch(updateURL(href))
 	};
 	return obj;
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-	const href = PAGES_PATHS[authType];
+	const href = makeLocation({ page: authType }).url;
 	return {
 		href,
 		onClick: () => {
@@ -94,7 +93,7 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 		params[TAGS_PARAM_NAME] = tagsParams;
 	}
 
-	const href = makeLocation([PAGES_PATHS[MARKETS]], params).url;
+	const href = makeLocation(params).url;
 
 	return {
 		href,
@@ -103,8 +102,8 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 });
 
 export const selectMarketLink = memoizerific(1)((market, dispatch) => {
-	const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_');
-	const href = `${PAGES_PATHS[M]}/${words}_${market.id}`;
+	const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id;
+	const href = makeLocation({ page: M, m: words }).url;
 	const link = {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -131,7 +130,7 @@ export const selectMarketLink = memoizerific(1)((market, dispatch) => {
 });
 
 export const selectTransactionsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[TRANSACTIONS];
+	const href = makeLocation({ page: TRANSACTIONS }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -139,7 +138,7 @@ export const selectTransactionsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MAKE];
+	const href = makeLocation({ page: MAKE }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -147,7 +146,7 @@ export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_POSITIONS];
+	const href = makeLocation({ page: MY_POSITIONS }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -155,7 +154,7 @@ export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_MARKETS];
+	const href = makeLocation({ page: MY_MARKETS }).url;
 	return {
 		href,
 		onClick: () => {
@@ -166,7 +165,7 @@ export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyReportsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_REPORTS];
+	const href = makeLocation({ page: MY_REPORTS }).url;
 	return {
 		href,
 		onClick: () => {
@@ -177,7 +176,7 @@ export const selectMyReportsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessageVersion, dispatch) => {
-	const href = PAGES_PATHS[LOGIN_MESSAGE];
+	const href = makeLocation({ page: LOGIN_MESSAGE }).url;
 	return {
 		href,
 		onClick: () => {

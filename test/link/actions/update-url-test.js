@@ -42,11 +42,10 @@ describe(`modules/link/actions/update-url.js`, () => {
 		out = [{
 			type: 'UPDATE_URL',
 			parsedURL: {
-				pathArray: ['/test'],
 				searchParams: {
 					search: 'example'
 				},
-				url: '/test?search=example'
+				url: '/?search=example'
 			}
 		}, {
 			type: 'UPDATE_URL',
