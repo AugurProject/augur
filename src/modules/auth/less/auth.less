@@ -13,7 +13,10 @@
 			margin: 1vmin 0 2vmin 0;
 			font-size: 140%;
 		}
-
+		.instruction {
+			margin: .5em 0;
+			font-size: .8em;
+		}
 		.msg {
 			display: inline-block; position: relative;
 			margin: 0; padding: 0 0 0 1.6vmin;
@@ -23,6 +26,17 @@
 			&.success {
 				color: @color-success-normal;
 			}
+		}
+
+		.loginID-generated {
+			margin: .5em 0;
+			font-size: .45em;
+			width: 100%;
+			height: 10em;
+			overflow: hidden;
+			resize: none;
+			word-break: break-all;
+			word-wrap: break-word;
 		}
 
 		.account-info-container {
@@ -58,7 +72,7 @@
 			padding: 3vmin 3vmin;
 		}
 
-				.secure-login-id-input {
+				.login-id-input {
 					display: block; position: relative;
 					width: 100%;
 
