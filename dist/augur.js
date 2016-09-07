@@ -39153,23 +39153,31 @@ module.exports = function () {
             augur.rpc.clear();
         },
 
-        highNonce: 0,
-
         submitTx: function (packaged, cb) {
             var self = this;
             var mutex = locks.createMutex();
             mutex.lock(function () {
+                if (augur.rpc.debug.nonce) {
+                    console.debug('nonce:', packaged.nonce, augur.rpc.rawTxMaxNonce);
+                }
                 for (var rawTxHash in augur.rpc.rawTxs) {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-                    if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce) {
+                    if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                        console.debug(rawTxHash, augur.rpc.rawTxs[rawTxHash].tx.nonce);
+                    }
+                    if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
+                        augur.rpc.txs[rawTxHash].status !== "failed") {
                         ++packaged.nonce;
+                        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                            console.debug("duplicate nonce, incremented:", packaged.nonce);
+                        }
                         break;
                     }
                 }
-                if (packaged.nonce <= self.highNonce) {
-                    packaged.nonce = ++self.highNonce;
+                if (packaged.nonce <= augur.rpc.rawTxMaxNonce) {
+                    packaged.nonce = ++augur.rpc.rawTxMaxNonce;
                 } else {
-                    self.highNonce = packaged.nonce;
+                    augur.rpc.rawTxMaxNonce = packaged.nonce;
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
@@ -39198,9 +39206,10 @@ module.exports = function () {
                             err.packaged = packaged;
                             return cb(err);
                         } else if (res.message.indexOf("Nonce too low") > -1) {
-                            if (augur.rpc.debug.broadcast) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
+                            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                                console.debug("Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
                             }
+                            --augur.rpc.rawTxMaxNonce;
                             delete packaged.nonce;
                             return self.getTxNonce(packaged, cb);
                         }
@@ -40199,7 +40208,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.1";
+    this.version = "2.6.2";
 
     this.options = {
         debug: {
@@ -44549,7 +44558,8 @@ module.exports = {
 
     debug: {
         tx: false,
-        broadcast: false
+        broadcast: false,
+        nonce: false
     },
 
     // if set to true, dropped transactions are automatically resubmitted
@@ -44604,6 +44614,8 @@ module.exports = {
     txs: {},
 
     rawTxs: {},
+
+    rawTxMaxNonce: 0,
 
     notifications: {},
 
@@ -45903,6 +45915,7 @@ module.exports = {
         if (!isFunction(callback)) {
             var tx = this.getTransaction(txHash);
             if (tx) return tx;
+            --this.rawTxMaxNonce;
             this.txs[txHash].status = "failed";
 
             // only resubmit if this is a raw transaction and has a duplicate nonce
@@ -45913,6 +45926,7 @@ module.exports = {
         }
         this.getTransaction(txHash, function (tx) {
             if (tx) return callback(null, tx);
+            --self.rawTxMaxNonce;
             self.txs[txHash].status = "failed";
             if (self.retryDroppedTxs) {
                 if (self.debug.broadcast) console.debug(" *** Re-submitting transaction:", txHash);
