@@ -1,5 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
+import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
 
 const MARKETS_PER_BATCH = 10;
 
@@ -23,6 +24,11 @@ export function loadMarketsInfo(marketIDs, cb) {
 					}
 					if (Object.keys(marketsData).length) {
 						dispatch(updateMarketsData(marketsData));
+
+						const { loginAccount } = require('../../../selectors');
+						Object.keys(marketsData).forEach(marketId => {
+							if (marketsData[marketId].author === loginAccount.id) dispatch(loadFullLoginAccountMarkets());
+						});
 					}
 				}
 				if (stepEnd < numMarketsToLoad) return loader(stepEnd);

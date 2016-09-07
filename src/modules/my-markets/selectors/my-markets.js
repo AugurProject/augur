@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { augur, abi } from '../../../services/augurjs';
+import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
@@ -20,6 +20,7 @@ export const selectMyMarket = market => {
 	const { loginAccount } = require('../../../selectors');
 
 	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [];
+	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [];
 
 	return selectLoginAccountMarkets([market]);
 };
@@ -27,13 +28,12 @@ export const selectMyMarket = market => {
 export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
 
 export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
-	const { marketTrades, priceHistory } = store.getState();
+	const { marketTrades, priceHistory, marketCreatorFees } = store.getState();
 
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		// TODO augur.getMarketCreatorFeesCollected should be async (provide callback)
-		const fees = formatEther((augur) ? augur.getMarketCreatorFeesCollected(market.id) : 0);
+		const fees = formatEther(marketCreatorFees[market.id] || 0);
 
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
