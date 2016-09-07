@@ -60,7 +60,7 @@ function makeMarkets(numMarkets = 10) {
 
 		// reportable outcomes
 		m.reportableOutcomes = selectReportableOutcomes(m.type, m.outcomes);
-		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
+		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate', userOpenOrders: [] });
 
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
