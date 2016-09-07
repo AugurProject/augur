@@ -71,7 +71,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		if (unlocked && !unlocked.error) {
 			augur.web.logout();
 			console.log('using unlocked account:', augur.from);
-			return cb(null, { id: augur.from });
+			return cb(null, { address: augur.from, id: augur.from });
 		}
 
 		// otherwise, no account available

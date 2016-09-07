@@ -11,13 +11,13 @@ export function login(secureLoginID, password, rememberMe) {
 	return (dispatch, getState) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 		augur.web.login(secureLoginID, password, (account) => {
-			console.log(account);
+
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to login' }));
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address };
+			const loginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
