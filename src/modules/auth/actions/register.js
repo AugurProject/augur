@@ -10,7 +10,6 @@ import {
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
-import { validatePassword } from '../../auth/validators/password-validator';
 
 export function register(name, password, password2, loginID, rememberMe, loginAccount, cb) {
 	return (dispatch, getState) => {

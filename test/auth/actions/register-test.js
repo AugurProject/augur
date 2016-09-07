@@ -106,37 +106,37 @@ describe(`modules/auth/actions/register.js`, () => {
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
 
-	it(`should fail with no uppercase letter in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: PASSWORD_NEEDS_UPPERCASE, message: PASSWORD_NEEDS_UPPERCASE_MSG } } ];
-
-		store.dispatch(action.register('', 't3sting', 't3sting'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no uppercase letter in the passwords.`);
-	});
-
-	it(`should fail with no number in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: PASSWORD_NEEDS_NUMBER, message: PASSWORD_NEEDS_NUMBER_MSG } } ];
-
-		store.dispatch(action.register('', 'Testing', 'Testing'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no number in the passwords.`);
-	});
-
-	it(`should fail with no lowercase letter in passwords entered`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: PASSWORD_NEEDS_LOWERCASE, message: PASSWORD_NEEDS_LOWERCASE_MSG } } ];
-
-		store.dispatch(action.register('', 'T3STING', 'T3STING'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no lowercase letter in the passwords.`);
-	});
-
-	it(`should fail when passwords entered are too short.`, () => {
-		const expectedOutput = [ { type: 'AUTH_ERROR',
-    err: { valid: false, code: PASSWORD_TOO_SHORT, message: PASSWORD_TOO_SHORT_MSG } } ];
-
-		store.dispatch(action.register('', 'test', 'test'));
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when the passwords where too short.`);
-	});
+	// it(`should fail with no uppercase letter in passwords entered`, () => {
+	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
+  //   err: { valid: false, code: PASSWORD_NEEDS_UPPERCASE, message: PASSWORD_NEEDS_UPPERCASE_MSG } } ];
+	//
+	// 	store.dispatch(action.register('', 't3sting', 't3sting'));
+	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no uppercase letter in the passwords.`);
+	// });
+	//
+	// it(`should fail with no number in passwords entered`, () => {
+	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
+  //   err: { valid: false, code: PASSWORD_NEEDS_NUMBER, message: PASSWORD_NEEDS_NUMBER_MSG } } ];
+	//
+	// 	store.dispatch(action.register('', 'Testing', 'Testing'));
+	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no number in the passwords.`);
+	// });
+	//
+	// it(`should fail with no lowercase letter in passwords entered`, () => {
+	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
+  //   err: { valid: false, code: PASSWORD_NEEDS_LOWERCASE, message: PASSWORD_NEEDS_LOWERCASE_MSG } } ];
+	//
+	// 	store.dispatch(action.register('', 'T3STING', 'T3STING'));
+	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no lowercase letter in the passwords.`);
+	// });
+	//
+	// it(`should fail when passwords entered are too short.`, () => {
+	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
+  //   err: { valid: false, code: PASSWORD_TOO_SHORT, message: PASSWORD_TOO_SHORT_MSG } } ];
+	//
+	// 	store.dispatch(action.register('', 'test', 'test'));
+	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when the passwords where too short.`);
+	// });
 
 	it(`should fail with mismatched passwords`, () => {
 		const expectedOutput = [{
