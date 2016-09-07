@@ -1,5 +1,7 @@
 export const BINARY_NO_ID = 1;
+export const BINARY_NO_OUTCOME_NAME = 'No';
 export const BINARY_YES_ID = 2;
+export const BINARY_YES_OUTCOME_NAME = 'Yes';
 
 export const CATEGORICAL_OUTCOMES_SEPARATOR = '~|>';
 export const CATEGORICAL_OUTCOME_SEPARATOR = '|';
