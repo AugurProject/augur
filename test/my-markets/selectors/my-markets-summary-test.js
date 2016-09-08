@@ -15,14 +15,8 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
 	const { loginAccount, allMarkets } = store.getState();
 
 	const stubbedSelectors = { loginAccount, allMarkets };
-	let stubbedAugurJS = {
-		augur: { getMarketCreatorFeesCollected: () => {} },
-		abi: { bignum: (n) => { return n; } }
-	};
-	sinon.stub(stubbedAugurJS.augur, 'getMarketCreatorFeesCollected', () => 10);
 
 	const proxiedMyMarkets = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-		'../../../services/augurjs': stubbedAugurJS,
 		'../../../selectors': stubbedSelectors,
 		'../../../store': store
 	});
@@ -35,7 +29,7 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
 
 	expected = {
 		numMarkets: 2,
-		totalValue: 20
+		totalValue: 21
 	};
 
 	before(() => {
