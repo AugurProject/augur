@@ -3,21 +3,30 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 
-export function processTransferFunds(transactionID, fromAddress, amount, toAddress) {
+export function processTransferFunds(transactionID, fromAddress, amount, currency, toAddress) {
 	return (dispatch, getState) => {
-		dispatch(updateExistingTransaction(transactionID, { status: `submitting a request to transfer ${amount} ETH to ${toAddress}...` }));
+		dispatch(updateExistingTransaction(transactionID, { status: `submitting a request to transfer ${amount} ${currency} to ${toAddress}...` }));
 
-		augur.sendCashFrom(toAddress, amount, fromAddress,
-			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ETH to ${toAddress}` }));
-			},
-			(data) => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ETH to ${toAddress} Complete.`, hash: data.hash }));
-				dispatch(updateAssets());
-			},
-			(failedTransaction) => {
-				dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: failedTransaction.message }));
-			}
-		);
+		const sent = () => {
+			dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ${currency} to ${toAddress}` }));
+		};
+		const success = (data) => {
+			dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ${currency} to ${toAddress} Complete.`, hash: data.hash }));
+			dispatch(updateAssets());
+		};
+		const failed = (failedTransaction) => {
+			dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: failedTransaction.message }));
+		};
+
+		switch (currency) {
+		case 'eth':
+			return augur.sendCashFrom(toAddress, amount, fromAddress, sent, success, failed);
+		case 'realEth':
+			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'This failed because sending realEther has not been implemented.' }));
+		case 'REP':
+			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'This failed because sending REP has not been implemented.' }));
+		default:
+			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'Unrecognized currency selected. Transaction failed.' }));
+		}
 	};
 }
