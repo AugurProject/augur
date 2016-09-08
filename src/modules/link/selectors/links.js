@@ -1,6 +1,8 @@
 import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
+import { augur } from '../../../services/augurjs';
+import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
 import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS } from '../../app/constants/pages';
@@ -67,16 +69,24 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
 	if (authType === LOGIN) {
 		return {
 			onClick: () => {
-				require('../../../selectors').abc.openLoginWindow((result, account) => {
-					// dispatch(updateURL(href));
+				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+          if (airbitzAccount) {
+            dispatch(loginWithAirbitz(airbitzAccount));
+          } else {
+            alert('error logging in: ' + result);
+          }
 				});
 			}
 		};
 	} else if (authType === REGISTER || authType === IMPORT) {
 		return {
 			onClick: () => {
-				require('../../../selectors').abc.openRegisterWindow((result, account) => {
-					// dispatch(updateURL(href));
+				require('../../../selectors').abc.openRegisterWindow((result, airbitzAccount) => {
+          if (airbitzAccount) {
+            dispatch(loginWithAirbitz(airbitzAccount));
+          } else {
+            alert('error registering in: ' + result);
+          }
 				});
 			}
 		};
