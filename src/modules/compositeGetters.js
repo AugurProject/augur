@@ -171,13 +171,16 @@ module.exports = {
             callback = scalarMinMax;
             scalarMinMax = null;
         }
+        var offset, numTradesToLoad;
         if (market && market.market) {
-            scalarMinMax = market.scalarMinMax;
+            offset = market.offset;
+            numTradesToLoad = market.numTradesToLoad;
+            scalarMinMax = scalarMinMax || market.scalarMinMax;
             callback = callback || market.callback;
             market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = market;
+        tx.params = [market, offset || 0, numTradesToLoad || 0];
         return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
     },
 

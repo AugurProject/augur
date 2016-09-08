@@ -17696,11 +17696,15 @@ module.exports={
       }, 
       "getOrderBook": {
         "inputs": [
-          "marketID"
+          "marketID", 
+          "offset", 
+          "numTradesToLoad"
         ], 
         "method": "getOrderBook", 
         "returns": "hash[]", 
         "signature": [
+          "int256", 
+          "int256", 
           "int256"
         ]
       }, 
@@ -21199,7 +21203,7 @@ module.exports={
         "CloseMarketTwo": "0x80f9acac741e4eb6de981c11494658c54d591301", 
         "CollectFees": "0x432832594a49a1bd490042a4af603dc089c4b056", 
         "CompleteSets": "0xa6e7271ef58e108e4fecdb2c812abc50f90513f5", 
-        "CompositeGetters": "0xfee435381e2c281fb48b0f33045702639220404c", 
+        "CompositeGetters": "0x56b7212e4920a12cf9f263f3965f7fcd495d0832", 
         "Consensus": "0xe68918529dc9f11fc45bfe17d464472cbb104282", 
         "ConsensusData": "0x47b9359bd0489f7e4a61d4d55f26930469f4e291", 
         "CreateBranch": "0xa0b6bd39ba1f8c91a35553fa81c7f3182f7fa07d", 
@@ -40206,7 +40210,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.4";
+    this.version = "2.6.5";
 
     this.options = {
         debug: {
@@ -41024,13 +41028,16 @@ module.exports = {
             callback = scalarMinMax;
             scalarMinMax = null;
         }
+        var offset, numTradesToLoad;
         if (market && market.market) {
-            scalarMinMax = market.scalarMinMax;
+            offset = market.offset;
+            numTradesToLoad = market.numTradesToLoad;
+            scalarMinMax = scalarMinMax || market.scalarMinMax;
             callback = callback || market.callback;
             market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = market;
+        tx.params = [market, offset || 0, numTradesToLoad || 0];
         return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
     },
 
