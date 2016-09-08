@@ -21,18 +21,29 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	let totalCost = ZERO;
 	let totalSellShares = ZERO;
 	outcomeAccountTrades.forEach(outcomeAccountTrade => {
-		if (!outcomeAccountTrade) {
+		if (!outcomeAccountTrade || outcomeAccountTrade.maker) {
 			return;
 		}
 
 		// buy or sell
-		if (outcomeAccountTrade.type === 1) {
-			numShares = abi.bignum(outcomeAccountTrade.shares);
-			qtyShares = qtyShares.plus(numShares);
-			totalValue = totalValue.plus(bnLastPrice.times(numShares));
-			totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+		if (!outcomeAccountTrade.maker) {
+			if (outcomeAccountTrade.type === 1) {
+				numShares = abi.bignum(outcomeAccountTrade.shares);
+				qtyShares = qtyShares.plus(numShares);
+				totalValue = totalValue.plus(bnLastPrice.times(numShares));
+				totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+			} else {
+				totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
+			}
 		} else {
-			totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
+			if (outcomeAccountTrade.type === 2) {
+				numShares = abi.bignum(outcomeAccountTrade.shares);
+				qtyShares = qtyShares.plus(numShares);
+				totalValue = totalValue.plus(bnLastPrice.times(numShares));
+				totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+			} else {
+				totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
+			}
 		}
 	});
 
