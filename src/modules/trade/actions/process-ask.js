@@ -27,6 +27,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			}
 			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
+				hash: res.hash,
 				status: SUCCESS,
 				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
@@ -43,10 +44,7 @@ function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, dispat
 		market: marketID,
 		outcome: outcomeID,
 
-		onSent: data => {
-			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-			console.log('ask onSent', data);
-		},
+		onSent: data => console.log('ask onSent', data),
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
 	});

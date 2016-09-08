@@ -27,6 +27,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			}
 			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
+				hash: res.hash,
 				status: SUCCESS,
 				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
@@ -43,10 +44,7 @@ function bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch
 		market: marketID,
 		outcome: outcomeID,
 
-		onSent: data => {
-			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-			console.log('bid onSent', data);
-		},
+		onSent: data => console.log('bid onSent', data),
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
 	});

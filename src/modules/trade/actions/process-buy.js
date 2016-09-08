@@ -43,6 +43,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				dispatch(loadAccountTrades(marketID));
 
 				dispatch(updateExistingTransaction(transactionID, {
+					hash: res.txHash,
 					status: 'filling...',
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, tradingFeesEth, gasFeesRealEth)
 				}));
@@ -62,6 +63,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 
 				dispatch(updateExistingTransaction(transactionID, {
+					hash: res.txHash,
 					status: SUCCESS,
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth, res.gasFeesRealEth)
 				}));

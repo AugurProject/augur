@@ -43,6 +43,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, {
+					hash: res.txHash,
 					status: 'filling...',
 					message: generateMessage(numShares, res.remainingShares, filledEth)
 				}));
@@ -62,6 +63,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
 
 				dispatch(updateExistingTransaction(transactionID, {
+					hash: res.txHash,
 					status: SUCCESS,
 					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFeesEth, res.gasFeesRealEth)
 				}));

@@ -223,6 +223,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -271,6 +272,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -318,6 +320,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -370,6 +373,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -423,6 +427,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -484,6 +489,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					transactionID: transID,
 					status: {
 						status: SUCCESS,
+						hash: undefined,
 						data: {
 							id: '0x123'
 						}

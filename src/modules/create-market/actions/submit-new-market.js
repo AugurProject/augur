@@ -54,10 +54,7 @@ export function createMarket(transactionID, newMarket) {
 			makerFee: newMarket.makerFee / 100,
 			extraInfo: newMarket.detailsText,
 			onSent: (res) => {
-				dispatch(updateExistingTransaction(transactionID, {
-					status: CREATING_MARKET,
-					hash: res.txHash
-				}));
+				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
 			},
 			onSuccess: (res) => {
 				dispatch(updateExistingTransaction(transactionID, {
@@ -65,6 +62,7 @@ export function createMarket(transactionID, newMarket) {
 						...transactionsData[transactionID].data,
 						id: res.callReturn
 					},
+					hash: res.hash,
 					status: SUCCESS
 				}));
 				dispatch(clearMakeInProgress());

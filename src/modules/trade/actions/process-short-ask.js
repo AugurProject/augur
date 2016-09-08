@@ -29,6 +29,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			dispatch(loadBidsAsks(marketID));
 			dispatch(sellCompleteSets(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
+				hash: res.hash,
 				status: SUCCESS,
 				message: `short ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
@@ -45,9 +46,7 @@ function shortAsk(transactionID, marketID, outcomeID, limitPrice, totalShares, d
 		market: marketID,
 		outcome: outcomeID,
 
-		onSent: data => {
-			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-		},
+		onSent: () => {},
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
 	});

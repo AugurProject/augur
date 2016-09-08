@@ -17,8 +17,8 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	const fakeUpdateAssets = { updateAssets: () => {} };
 
 	sinon.stub(fakeAugurJS, 'sendCashFrom', (toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed) => {
-		onSent({ txHash: '0xdeadbeef' });
-		onSuccess();
+		onSent();
+		onSuccess({ hash: '0xdeadbeef' });
 		onFailed({ message: 'this is a failure message' });
 	});
 
@@ -57,13 +57,13 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				hash: '0xdeadbeef',
 				status: 'processing transferring of 5 ETH to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
 				status: 'success',
+				hash: '0xdeadbeef',
 				message: 'Transfer of 5 ETH to toTestAddress456 Complete.'
 			}
 		}, {
