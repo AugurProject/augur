@@ -277,12 +277,12 @@ module.exports = function () {
             var mutex = locks.createMutex();
             mutex.lock(function () {
                 if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                    console.debug('[augur.js] nonce:', packaged.nonce, augur.rpc.rawTxMaxNonce);
+                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 for (var rawTxHash in augur.rpc.rawTxs) {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
                     if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
-                        augur.rpc.txs[rawTxHash].status !== "failed") {
+                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
                         packaged.nonce = augur.rpc.rawTxMaxNonce + 1;
                         if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
                             console.debug("[augur.js] duplicate nonce, incremented:",
