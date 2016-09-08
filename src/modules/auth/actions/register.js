@@ -31,6 +31,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
+			setTimeout(() => dispatch(addFundNewAccount(loginAccount.address)), 1500);
 
 			return links.marketsLink.onClick(links.marketsLink.href);
 		}
@@ -49,8 +50,8 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 				return;
 			}
 
-			dispatch(addFundNewAccount(localLoginAccount.address));
 			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
+			// dispatch(addFundNewAccount(localLoginAccount.address));
 
 			if (typeof cb === 'function') {
 				cb(localLoginAccount);

@@ -51,7 +51,7 @@ export const selectPreviousLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-	const href = makeLocation({ page: authType }).url;
+	const href = alsoLogout ? makeLocation({ page: 'login' }).url : makeLocation({ page: authType }).url;
 	return {
 		href,
 		onClick: () => {

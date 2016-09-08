@@ -29,7 +29,7 @@ describe(`modules/auth/actions/register.js`, () => {
 	const ldLoginAccStub = {};
 	const autoStub = {};
 
-	let action, store;
+	let action, clock, store;
 	let thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
 	});
@@ -74,16 +74,16 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
+		clock = sinon.useFakeTimers();
 	});
 
 	afterEach(() => {
 		store.clearActions();
+		clock.restore();
 	});
 
 	it(`should register a new account`, () => {
 		const expectedOutput = [{
-				type: 'FUND_NEW_ACCOUNT'
-			}, {
 				type: 'updateLoginAccount(loginAccount) called.'
 			}, {
 				type: 'loadLoginAccountLocalStorage(id) called.'
@@ -91,11 +91,15 @@ describe(`modules/auth/actions/register.js`, () => {
 				type: 'updateLoginAccount(loginAccount) called.'
 			}, {
 				type: 'loadLoginAccountDependents() called.'
+			},{
+				type: 'FUND_NEW_ACCOUNT'
 		}];
 
 		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
 		// Call again to simulate someone pasting loginID and then hitting signUp
 		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
+
+		clock.tick(2000);
 
 		assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
 		assert(fakeFund.addFundNewAccount.calledOnce, `addFundNewAccount wasn't called once as expected`);
