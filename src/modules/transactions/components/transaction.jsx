@@ -66,7 +66,7 @@ const Transaction = (p) => {
 				}
 				<span className="at">@</span>
 				<ValueDenomination className="noFeePrice" {...p.data.noFeePrice} postfix="(average)" />
-				<br />
+				<br className="hide-in-tx-display" />
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} prefix="including trading fees:" postfix="/ share" />
 				<br />
 				{marketDescription()}
