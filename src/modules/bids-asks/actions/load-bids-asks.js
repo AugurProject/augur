@@ -10,15 +10,27 @@ export function loadBidsAsks(marketID, cb) {
 			scalarMinMax.minValue = market.minValue;
 			scalarMinMax.maxValue = market.maxValue;
 		}
-		augur.getOrderBook(marketID, scalarMinMax, (marketOrderBook) => {
-			if (marketOrderBook == null || marketOrderBook.error != null) {
-				console.error(`load-bids-asks.js: getOrderBook(${marketID}) error: %o`, marketOrderBook);
-				if (cb) return cb(marketOrderBook);
-				// todo: how do we handle failures in UI? retry ???
+		augur.get_total_trades(marketID, (totalTrades) => {
+			if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
+				if (cb) cb(totalTrades);
 			} else {
-				dispatch(updateMarketOrderBook(marketID, marketOrderBook));
-				if (cb) cb(null, marketOrderBook);
+				getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 50), scalarMinMax, totalTrades, cb, dispatch);
 			}
 		});
 	};
+}
+
+function getOrderBookChunked(market, offset, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch) {
+	augur.getOrderBook({ market, offset, numTradesToLoad, scalarMinMax }, (marketOrderBook) => {
+		if (marketOrderBook == null || marketOrderBook.error != null) {
+			console.error(`load-bids-asks.js: getOrderBook(${market}) error: %o`, marketOrderBook);
+			if (callback) return callback(marketOrderBook);
+		} else {
+			dispatch(updateMarketOrderBook(market, marketOrderBook));
+			if (offset + numTradesToLoad < totalTrades) {
+				return getOrderBookChunked(market, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
+			}
+			if (callback) callback(null, marketOrderBook);
+		}
+	});
 }
