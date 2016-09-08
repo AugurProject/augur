@@ -113,6 +113,10 @@
 				margin: 1.5vmin;
 			}
 
+			select {
+				margin: 1.5vmin;
+			}
+
 			input {
 				margin: 1.5vmin;
 			}
@@ -127,28 +131,26 @@
 			}
 			// responsive design for mobile display.
 			@media screen and (max-width: @media-mobile-width) {
+				margin-top: 3vmin;
+
 				span:first-of-type {
 					margin: 1.5vmin 1.5vmin 1.5vmin 0;
-					width: 12%;
+					width: 100%;
+				}
+
+				select {
+					margin: 1.5vmin 0 1.5vmin 0.5vmin;
+					width: 45%;
 				}
 
 				span {
 					margin: 1.5vmin 1.5vmin 1.5vmin 0;
-					width: 22%;
-				}
-
-				span:last-of-type {
-					margin: 1.5vmin 1.5vmin 1.5vmin 0;
 					width: 12%;
-				}
-
-				select {
-					width: 45%;
 				}
 
 				input:first-of-type {
 					margin: 1.5vmin .5vmin 1.5vmin 0;
-					width: 62%;
+					width: 53%;
 				}
 
 				input {
