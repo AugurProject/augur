@@ -49,7 +49,10 @@ describe(`modules/auth/actions/register.js`, () => {
 	fakeSelectors.links = {
 		marketsLink: {
 			onClick: () => {}
-		}
+		},
+		loginMessageLink: {
+			onClick: () => {}
+		},
 	};
 	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => {
 		return { onClick: () => {} };
