@@ -1,6 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
+import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-account-markets';
 
 const MARKETS_PER_BATCH = 10;
 
