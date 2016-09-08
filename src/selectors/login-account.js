@@ -10,7 +10,10 @@ const loginAccount = {
 	rep: makeNumber(47, ' REP'),
 	ether: makeNumber(10000, ' ETH'),
 	realEther: makeNumber(2.5, ' ETH'),
-	name: 'MrTestTesterson'
+	name: 'MrTestTesterson',
+	onAirbitzManageAccount: () => {
+		console.log('Airbitz Manage Account')
+	}
 };
 
 loginAccount.linkText = loginAccount.localNode ? loginAccount.prettyAddress : loginAccount.name || loginAccount.prettySecureLoginID;

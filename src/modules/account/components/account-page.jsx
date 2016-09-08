@@ -131,6 +131,15 @@ export default class AccountPage extends Component {
 											</button>
 										</td>
 									</tr>
+                  { p.onAirbitzManageAccount &&
+                    <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                      <td colSpan="2">
+                        <button className="button" onClick={p.onAirbitzManageAccount}>
+                          Manage Authentication
+                        </button>
+                      </td>
+                    </tr>
+                  }
 								</tbody>
 							</table>
 						</div>

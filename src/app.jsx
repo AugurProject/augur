@@ -57,6 +57,7 @@ export default function (appElement, selectors) {
 				siteHeader={p.siteHeader}
 				account={p.loginAccount}
 				onChangePass={p.loginAccount.onChangePass}
+				onAirbitzManageAccount={p.loginAccount.onAirbitzManageAccount}
 			/>
 		);
 		break;
