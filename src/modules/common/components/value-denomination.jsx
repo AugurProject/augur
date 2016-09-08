@@ -10,7 +10,7 @@ const ValueDenomination = (p) => (
 			<span className="prefix">{p.prefix}</span>
 		}
 		{p.formatted &&
-			<span className="value">{p.formatted}</span>
+			<span className="value" title={p.fullPrecision}>{p.formatted}</span>
 		}
 		{p.denomination &&
 			<span className="denomination">{p.denomination}</span>
@@ -26,6 +26,7 @@ ValueDenomination.propTypes = {
 	value: PropTypes.number,
 	formattedValue: PropTypes.number,
 	formatted: PropTypes.string,
+	fullPrecision: PropTypes.string,
 	denomination: PropTypes.string,
 	prefix: PropTypes.string,
 	postfix: PropTypes.string,
