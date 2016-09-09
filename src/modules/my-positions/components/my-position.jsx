@@ -1,10 +1,14 @@
 import React from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
+import { SCALAR } from '../../markets/constants/market-types';
 
 const Position = (p) => (
 	<div className="position">
 		<div className="position-group main-group">
-			<span className="position-name">{p.name}</span>
+			{p.type === SCALAR ?
+				<span className="position-name">{p.lastPricePercent.rounded}</span> :
+				<span className="position-name">{p.name}</span>
+			}
 			<ValueDenomination {...p.qtyShares} />
 			<ValueDenomination
 				{...p.gainPercent}
@@ -45,10 +49,12 @@ const Position = (p) => (
 
 Position.propTypes = {
 	name: React.PropTypes.string,
+	type: React.PropTypes.string,
 	qtyShares: React.PropTypes.object,
 	totalValue: React.PropTypes.object,
 	gainPercent: React.PropTypes.object,
 	lastPrice: React.PropTypes.object,
+	lastPricePercent: React.PropTypes.object,
 	purchasePrice: React.PropTypes.object,
 	shareChange: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
