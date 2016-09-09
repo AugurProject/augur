@@ -3,14 +3,14 @@ import Position from './my-position';
 
 const Positions = (p) => (
 	<section className="positions-list">
-			{(p.outcomes || []).map(outcome => (
-				<Position
-					key={outcome.id}
-					type={p.type}
-					{...outcome}
-					{...outcome.position}
-				/>
-			)}
+		{(p.outcomes || []).map(outcome =>
+			<Position
+				key={outcome.id}
+				type={p.type}
+				{...outcome}
+				{...outcome.position}
+			/>
+		)}
 	</section>
 );
 
