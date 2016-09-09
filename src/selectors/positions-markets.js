@@ -1,7 +1,6 @@
 import { makeNumber } from '../utils/make-number';
-import { M } from '../modules/site/constants/pages';
-
 import { randomNum } from '../../src/utils/random-number';
+import { M } from '../modules/site/constants/pages';
 
 export default [
 	{
@@ -13,7 +12,8 @@ export default [
 		},
 		description: 'will there be a referendum on may 1?',
 		myPositionsSummary: {
-
+			unrealizedNet: makeNumber(randomNum(), ' ETH'),
+			realizedNet: makeNumber(randomNum(), ' ETH')
 		},
 		myPositionOutcomes: [
 			{
@@ -60,6 +60,10 @@ export default [
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
 		},
 		description: 'Yoooooooooooooo, sup guy?',
+		myPositionsSummary: {
+			unrealizedNet: makeNumber(randomNum(), ' ETH'),
+			realizedNet: makeNumber(randomNum(), ' ETH')
+		},
 		myPositionOutcomes: [
 			{
 				id: 1,
