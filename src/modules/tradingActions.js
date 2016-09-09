@@ -4,6 +4,7 @@
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
+var abi = require("augur-abi");
 var constants = require("../constants");
 var abacus = require("./abacus");
 
@@ -232,6 +233,7 @@ module.exports = {
             type = type.type;
         }
 
+        userAddress = abi.format_address(userAddress);
         orderShares = new BigNumber(orderShares, 10);
         orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
         var bnTakerFee = new BigNumber(takerFee, 10);

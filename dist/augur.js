@@ -39060,7 +39060,7 @@ module.exports = function () {
                         name: name,
                         loginID: loginID,
                         privateKey: privateKey,
-                        address: keystore.address,
+                        address: abi.format_address(keystore.address),
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
@@ -40210,7 +40210,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.5";
+    this.version = "2.6.6";
 
     this.options = {
         debug: {
@@ -40568,7 +40568,7 @@ module.exports = {
             market: trade[2],
             amount: amount,
             price: price,
-            owner: abi.format_address(trade[5], true),
+            owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
         };
@@ -42852,6 +42852,7 @@ module.exports = {
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
+var abi = require("augur-abi");
 var constants = require("../constants");
 var abacus = require("./abacus");
 
@@ -43080,6 +43081,7 @@ module.exports = {
             type = type.type;
         }
 
+        userAddress = abi.format_address(userAddress);
         orderShares = new BigNumber(orderShares, 10);
         orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
         var bnTakerFee = new BigNumber(takerFee, 10);
@@ -43212,7 +43214,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"./abacus":242,"bignumber.js":83,"clone":120,"ethereumjs-tx":158}],260:[function(require,module,exports){
+},{"../constants":238,"./abacus":242,"augur-abi":1,"bignumber.js":83,"clone":120,"ethereumjs-tx":158}],260:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
