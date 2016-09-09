@@ -45,6 +45,5 @@ function assertPosition(position) {
 	assertFormattedNumber(position.totalValue, 'positionsMarkets.positionOutcomes[outcome].position.totalValue');
 	assertFormattedNumber(position.totalCost, 'positionsMarkets.positionOutcomes[outcome].position.totalCost');
 	assertFormattedNumber(position.shareChange, 'positionsMarkets.positionOutcomes[outcome].position.shareChange');
-	assertFormattedNumber(position.gainPercent, 'positionsMarkets.positionOutcomes[outcome].position.gainPercent');
 	assertFormattedNumber(position.netChange, 'positionsMarkets.positionOutcomes[outcome].position.netChange');
 }
