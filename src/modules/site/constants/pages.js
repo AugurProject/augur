@@ -1,6 +1,7 @@
 export const MARKETS = 'markets';
 export const MAKE = 'make';
 export const TRANSACTIONS = 'transactions';
+export const BALANCES = 'balances';
 export const M = 'm';
 export const ACCOUNT = 'account';
 export const MY_POSITIONS = 'my-positions';
