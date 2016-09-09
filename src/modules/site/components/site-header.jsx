@@ -12,6 +12,8 @@ const SiteHeader = (p) => (
 
 			<span className="spacer">&nbsp;</span>
 
+			<Link className={classnames('site-nav-link', { active: p.activePage === MARKETS })} {...p.marketsLink}>Markets</Link>
+
 			{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 					Portfolio
