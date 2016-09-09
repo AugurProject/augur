@@ -5,6 +5,7 @@ import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPOR
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
+import ValueTimestamp from '../../common/components/value-timestamp';
 
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
@@ -70,6 +71,10 @@ const Transaction = (p) => {
 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} prefix="including trading fees:" postfix="/ share" />
 				<br />
 				{marketDescription()}
+				<br className="hide-in-trade-summary-display" />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 
@@ -83,6 +88,10 @@ const Transaction = (p) => {
 				<ValueDenomination className="shares" {...p.data.numShares} postfix="of each outcome" />
 				<br />
 				{marketDescription()}
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 		break;
@@ -109,6 +118,10 @@ const Transaction = (p) => {
 				<span>market</span>
 				<br />
 				{marketDescription()}
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 		break;
@@ -123,6 +136,10 @@ const Transaction = (p) => {
 					}
 					<br />
 					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
 				</span>
 			);
 		} else {
@@ -135,6 +152,10 @@ const Transaction = (p) => {
 					}
 					<br />
 					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
 				</span>
 			);
 		}
@@ -146,6 +167,10 @@ const Transaction = (p) => {
 				<span>Generate Order Book</span>
 				<br />
 				{marketDescription()}
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 		break;
@@ -159,6 +184,10 @@ const Transaction = (p) => {
 				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
 				<br />
 				{marketDescription()}
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 
 		);
@@ -221,7 +250,8 @@ Transaction.propTypes = {
 	shares: React.PropTypes.object,
 	ether: React.PropTypes.object,
 	gas: React.PropTypes.object,
-	hash: React.PropTypes.string
+	hash: React.PropTypes.string,
+	timestamp: React.PropTypes.object
 };
 
 export default Transaction;
