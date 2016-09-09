@@ -177,6 +177,7 @@ export default class AuthForm extends Component {
 					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword}
 					autoComplete
+					disabled={s.disableInputs}
 				/>
 				<input
 					ref="password2"
@@ -186,6 +187,7 @@ export default class AuthForm extends Component {
 					maxLength="256"
 					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword2}
+					disabled={s.disableInputs}
 				/>
 				<div className={classnames('bottom-container')}>
 					<Link
