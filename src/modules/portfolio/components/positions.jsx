@@ -10,7 +10,7 @@ const PortfolioPositions = (p) => (
 				<div className="positions-container" >
 					<PositionsMarketOverview
 						description={market.description}
-						{ ...market.myPositionsSummary }
+						{...market.myPositionsSummary}
 					/>
 					{!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
 						<Positions
