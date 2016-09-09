@@ -37,6 +37,8 @@ import priceHistory from './modules/markets/reducers/price-history';
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
 import loginMessage from './modules/login-message/reducers/login-message';
 
+import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
+
 module.exports = {
 	env,
 	blockchain,
@@ -75,5 +77,7 @@ module.exports = {
 	orderCancellation,
 	marketTrades,
 	accountTrades,
-	transactionsData
+	transactionsData,
+
+	marketCreatorFees
 };
