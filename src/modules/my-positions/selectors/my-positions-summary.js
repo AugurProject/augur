@@ -21,7 +21,7 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	let totalCost = ZERO;
 	let totalSellShares = ZERO;
 	outcomeAccountTrades.forEach(outcomeAccountTrade => {
-		if (!outcomeAccountTrade || outcomeAccountTrade.maker) {
+		if (!outcomeAccountTrade) {
 			return;
 		}
 
