@@ -1,6 +1,9 @@
 import { makeNumber } from '../utils/make-number';
 import { M } from '../modules/site/constants/pages';
 
+const randomSign = () => (Math.random() > 0.5 ? 1 : -1);
+const randomNum = (multiplier = 10) => Math.random() * multiplier * randomSign();
+
 export default [
 	{
 		id: '123',
@@ -15,31 +18,35 @@ export default [
 				id: 1,
 				name: 'outcome 1',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					netChange: makeNumber(randomNum(900), ' ETH'),
+					netChangePercent: makeNumber(randomNum(), '%'),
+					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
+					netChangePercentUnrealized: makeNumber(randomNum(), '%')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
 			{
 				id: 2,
 				name: 'outcome 2',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					netChange: makeNumber(randomNum(900), ' ETH'),
+					netChangePercent: makeNumber(randomNum(), '%'),
+					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
+					netChangePercentUnrealized: makeNumber(randomNum(), '%')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}
 		]
 	},
@@ -56,31 +63,35 @@ export default [
 				id: 1,
 				name: 'outcome 1',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					netChange: makeNumber(randomNum(900), ' ETH'),
+					netChangePercent: makeNumber(randomNum(), '%'),
+					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
+					netChangePercentUnrealized: makeNumber(randomNum(), '%')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
 			{
 				id: 2,
 				name: 'outcome 2',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					netChange: makeNumber(randomNum(900), ' ETH'),
+					netChangePercent: makeNumber(randomNum(), '%'),
+					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
+					netChangePercentUnrealized: makeNumber(randomNum(), '%')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}
 		]
 	}
