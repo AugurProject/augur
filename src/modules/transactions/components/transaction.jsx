@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from '../../link/components/link';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -74,6 +74,19 @@ const Transaction = (p) => {
 		);
 
 		break;
+
+	case SELL_COMPLETE_SETS:
+		nodes.action = 'AUTOMATIC SELL';
+		nodes.description = (
+			<span className="description">
+				<span className="action">{nodes.action}</span>
+				<ValueDenomination className="shares" {...p.data.numShares} postfix="of each outcome" />
+				<br />
+				{marketDescription()}
+			</span>
+		);
+		break;
+
 	case LOGIN:
 		nodes.description = (
 			<span className="description">
@@ -140,11 +153,10 @@ const Transaction = (p) => {
 		nodes.description = (
 			<span className="description">
 				<span className="action">Cancel {p.data.order.type} order</span>
+				<span className="at">for</span>
 				<ValueDenomination className="shares" {...p.data.order.shares} />
 				<span className="of">of</span>
 				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
-				<span className="at">@</span>
-				<ValueDenomination className="avgPrice" {...p.data.order.price} />
 				<br />
 				{marketDescription()}
 			</span>
