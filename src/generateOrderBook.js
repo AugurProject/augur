@@ -166,7 +166,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            buyPrice: buyPrice
+                                            buyPrice: buyPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextBuyPrice();
                                     },
@@ -203,7 +206,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            sellPrice: sellPrice
+                                            sellPrice: sellPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextSellPrice();
                                     },

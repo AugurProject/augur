@@ -40101,7 +40101,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            buyPrice: buyPrice
+                                            buyPrice: buyPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextBuyPrice();
                                     },
@@ -40138,7 +40141,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            sellPrice: sellPrice
+                                            sellPrice: sellPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextSellPrice();
                                     },
@@ -40210,7 +40216,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.7";
+    this.version = "2.6.8";
 
     this.options = {
         debug: {
@@ -42649,7 +42655,8 @@ module.exports = {
                                         sharesBought: abi.string(sharesBought),
                                         cashFromTrade: abi.string(cashFromTrade),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {
@@ -42758,7 +42765,8 @@ module.exports = {
                                         cashFromTrade: abi.string(cashFromTrade),
                                         price: abi.unfix(result.callReturn[3], "string"),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {
@@ -46040,45 +46048,48 @@ module.exports = {
                         }
                         return self.transact(payload, onSent, onSuccess, onFailed);
                     }
-                    if (!payload.mutable) {
-                        tx.callReturn = callReturn;
-                        onSuccess(tx);
-                        if (isFunction(onConfirmed)) {
-                            self.pollForTxConfirmation(txHash, self.REQUIRED_CONFIRMATIONS, function (err) {
-                                if (err) return onFailed(err);
-                                onConfirmed(tx);
-                            });
+                    self.getBlock(tx.blockNumber, false, function (block) {
+                        tx.timestamp = parseInt(block.timestamp, 16);
+                        if (!payload.mutable) {
+                            tx.callReturn = callReturn;
+                            onSuccess(tx);
+                            if (isFunction(onConfirmed)) {
+                                self.pollForTxConfirmation(txHash, self.REQUIRED_CONFIRMATIONS, function (err) {
+                                    if (err) return onFailed(err);
+                                    onConfirmed(tx);
+                                });
+                            }
+                            return;
                         }
-                        return;
-                    }
 
-                    // if mutable return value, then lookup logged return
-                    // value in transaction receipt (after confirmation)
-                    self.getLoggedReturnValue(txHash, function (err, log) {
-                        if (self.debug.tx) console.debug("loggedReturnValue:", err, log.returnValue);
-                        if (err) {
-                            payload.send = false;
-                            return self.fire(payload, function (callReturn) {
-                                if (err.error !== errors.NULL_CALL_RETURN.error) {
-                                    return onFailed(err);
-                                }
-                                onFailed(self.errorCodes(payload.method, payload.returns, callReturn));
-                            });
-                        }
-                        var e = self.errorCodes(payload.method, payload.returns, log.returnValue);
-                        if (e && e.error) {
-                            e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
-                            return onFailed(e);
-                        }
-                        tx.callReturn = self.applyReturns(payload.returns, log.returnValue);
-                        tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
-                        onSuccess(tx);
-                        if (isFunction(onConfirmed)) {
-                            self.pollForTxConfirmation(txHash, self.REQUIRED_CONFIRMATIONS, function (err) {
-                                if (err) return onFailed(err);
-                                onConfirmed(tx);
-                            });
-                        }
+                        // if mutable return value, then lookup logged return
+                        // value in transaction receipt (after confirmation)
+                        self.getLoggedReturnValue(txHash, function (err, log) {
+                            if (self.debug.tx) console.debug("loggedReturnValue:", err, log.returnValue);
+                            if (err) {
+                                payload.send = false;
+                                return self.fire(payload, function (callReturn) {
+                                    if (err.error !== errors.NULL_CALL_RETURN.error) {
+                                        return onFailed(err);
+                                    }
+                                    onFailed(self.errorCodes(payload.method, payload.returns, callReturn));
+                                });
+                            }
+                            var e = self.errorCodes(payload.method, payload.returns, log.returnValue);
+                            if (e && e.error) {
+                                e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
+                                return onFailed(e);
+                            }
+                            tx.callReturn = self.applyReturns(payload.returns, log.returnValue);
+                            tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
+                            onSuccess(tx);
+                            if (isFunction(onConfirmed)) {
+                                self.pollForTxConfirmation(txHash, self.REQUIRED_CONFIRMATIONS, function (err) {
+                                    if (err) return onFailed(err);
+                                    onConfirmed(tx);
+                                });
+                            }
+                        });
                     });
                 });
             });
@@ -46125,6 +46136,7 @@ module.exports = {
             }
             return this.transact(payload);
         }
+        tx.timestamp = parseInt(this.getBlock(tx.blockNumber, false).timestamp, 16);
         if (!payload.mutable) {
             tx.callReturn = callReturn;
             return tx;

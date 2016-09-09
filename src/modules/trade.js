@@ -169,7 +169,8 @@ module.exports = {
                                         sharesBought: abi.string(sharesBought),
                                         cashFromTrade: abi.string(cashFromTrade),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {
@@ -278,7 +279,8 @@ module.exports = {
                                         cashFromTrade: abi.string(cashFromTrade),
                                         price: abi.unfix(result.callReturn[3], "string"),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {
