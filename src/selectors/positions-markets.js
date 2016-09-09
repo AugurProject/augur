@@ -1,8 +1,7 @@
 import { makeNumber } from '../utils/make-number';
 import { M } from '../modules/site/constants/pages';
 
-const randomSign = () => (Math.random() > 0.5 ? 1 : -1);
-const randomNum = (multiplier = 10) => Math.random() * multiplier * randomSign();
+import { randomNum } from '../../src/utils/random-number';
 
 export default [
 	{
@@ -13,6 +12,9 @@ export default [
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
 		},
 		description: 'will there be a referendum on may 1?',
+		myPositionsSummary: {
+
+		},
 		myPositionOutcomes: [
 			{
 				id: 1,
