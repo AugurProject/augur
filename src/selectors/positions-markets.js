@@ -13,7 +13,8 @@ export default [
 		description: 'will there be a referendum on may 1?',
 		myPositionsSummary: {
 			unrealizedNet: makeNumber(randomNum(), ' ETH'),
-			realizedNet: makeNumber(randomNum(), ' ETH')
+			realizedNet: makeNumber(randomNum(), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		},
 		myPositionOutcomes: [
 			{
@@ -26,10 +27,9 @@ export default [
 					shareChange: makeNumber(randomNum(1), ' ETH'),
 					totalCost: makeNumber(randomNum(1000), ' ETH'),
 					totalValue: makeNumber(randomNum(100), ' ETH'),
-					netChange: makeNumber(randomNum(900), ' ETH'),
-					netChangePercent: makeNumber(randomNum(), '%'),
-					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
-					netChangePercentUnrealized: makeNumber(randomNum(), '%')
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
 				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
@@ -43,10 +43,9 @@ export default [
 					shareChange: makeNumber(randomNum(1), ' ETH'),
 					totalCost: makeNumber(randomNum(1000), ' ETH'),
 					totalValue: makeNumber(randomNum(100), ' ETH'),
-					netChange: makeNumber(randomNum(900), ' ETH'),
-					netChangePercent: makeNumber(randomNum(), '%'),
-					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
-					netChangePercentUnrealized: makeNumber(randomNum(), '%')
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
 				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}
@@ -62,7 +61,8 @@ export default [
 		description: 'Yoooooooooooooo, sup guy?',
 		myPositionsSummary: {
 			unrealizedNet: makeNumber(randomNum(), ' ETH'),
-			realizedNet: makeNumber(randomNum(), ' ETH')
+			realizedNet: makeNumber(randomNum(), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		},
 		myPositionOutcomes: [
 			{
@@ -75,10 +75,9 @@ export default [
 					shareChange: makeNumber(randomNum(1), ' ETH'),
 					totalCost: makeNumber(randomNum(1000), ' ETH'),
 					totalValue: makeNumber(randomNum(100), ' ETH'),
-					netChange: makeNumber(randomNum(900), ' ETH'),
-					netChangePercent: makeNumber(randomNum(), '%'),
-					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
-					netChangePercentUnrealized: makeNumber(randomNum(), '%')
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
 				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
@@ -92,10 +91,9 @@ export default [
 					shareChange: makeNumber(randomNum(1), ' ETH'),
 					totalCost: makeNumber(randomNum(1000), ' ETH'),
 					totalValue: makeNumber(randomNum(100), ' ETH'),
-					netChange: makeNumber(randomNum(900), ' ETH'),
-					netChangePercent: makeNumber(randomNum(), '%'),
-					netChangeUnrealized: makeNumber(randomNum(100), ' ETH'),
-					netChangePercentUnrealized: makeNumber(randomNum(), '%')
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
 				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}

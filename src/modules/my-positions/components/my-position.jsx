@@ -16,29 +16,19 @@ const Position = (p) => (
 				<span className="title">last trade price</span>
 				<ValueDenomination {...p.lastPrice} />
 			</div>
-			<div className="position-pair per-share-gain">
-				<span className="title">per share P/L</span>
-				<ValueDenomination {...p.shareChange} />
-			</div>
 		</div>
 		<div className="position-group">
-			<div className="position-pair total-cost">
-				<span className="title">total cost</span>
-				<ValueDenomination {...p.totalCost} />
-			</div>
-			<div className="position-pair total-value">
-				<span className="title">total value</span>
-				<ValueDenomination {...p.totalValue} />
-			</div>
-		</div>
-		<div className="position-group">
-			<div className="position-pair unrealized-net">
+			<div className="position-pair realized-net">
 				<span className="title">realized P/L</span>
-				<ValueDenomination {...p.netChange} />
+				<ValueDenomination {...p.realizedNet} />
 			</div>
 			<div className="position-pair unrealized-net">
 				<span className="title">unrealized P/L</span>
-				<ValueDenomination {...p.netChangeUnrealized} />
+				<ValueDenomination {...p.unrealizedNet} />
+			</div>
+			<div className="position-pair total-net">
+				<span className="title">total P/L</span>
+				<ValueDenomination {...p.totalNet} />
 			</div>
 		</div>
 	</div>
@@ -53,9 +43,9 @@ Position.propTypes = {
 	purchasePrice: React.PropTypes.object,
 	shareChange: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
-	netChange: React.PropTypes.object,
-	netChangeUnrealized: React.PropTypes.object,
-	netChangePercentUnrealized: React.PropTypes.object
+	realizedNet: React.PropTypes.object,
+	unrealizedNet: React.PropTypes.object,
+	totalNet: React.PropTypes.object
 };
 
 export default Position;
