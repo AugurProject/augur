@@ -21,10 +21,10 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
 			label: 'Positions',
 			link: links.myPositionsLink,
 			page: MY_POSITIONS,
-			leadingTitle: 'Total Positions',
+			leadingTitle: 'Total Number of Positions',
 			leadingValue: positionsSummary && positionsSummary.numPositions || 0,
-			trailingTitle: 'Total Gain/Loss',
-			trailingValue: positionsSummary && positionsSummary.netChange || 0
+			trailingTitle: 'Total Profit/Loss',
+			trailingValue: positionsSummary && positionsSummary.totalNet || 0
 		},
 		{
 			label: 'Markets',
