@@ -457,21 +457,6 @@ export default function (market) {
 			assertFormattedNumber(myMarketSummary.openVolume, 'myMarketSummary.openVolume');
 		});
 
-		it('market.myMarketSummary.realizedNet', () => {
-			assert.isDefined(myMarketSummary.realizedNet);
-			assertFormattedNumber(myMarketSummary.realizedNet, 'myMarketSummary.realizedNet');
-		});
-
-		it('market.myMarketSummary.unrealizedNet', () => {
-			assert.isDefined(myMarketSummary.unrealizedNet);
-			assertFormattedNumber(myMarketSummary.unrealizedNet, 'myMarketSummary.unrealizedNet');
-		});
-
-		it('market.myMarketSummary.totalNet', () => {
-			assert.isDefined(myMarketSummary.totalNet);
-			assertFormattedNumber(myMarketSummary.totalNet, 'myMarketSummary.totalNet');
-		});
-
 		const report = market.report;
 		it('market.report', () => {
 			assert.isDefined(report);
