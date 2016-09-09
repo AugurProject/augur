@@ -39084,7 +39084,7 @@ module.exports = function () {
                 name: localAccount.name,
                 loginID: localAccount.loginID,
                 privateKey: privateKey,
-                address: localAccount.keystore.address,
+                address: abi.format_address(localAccount.keystore.address),
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
@@ -39137,7 +39137,7 @@ module.exports = function () {
                         name: "",
                         loginID: loginID,
                         privateKey: privateKey,
-                        address: keystore.address,
+                        address: abi.format_address(keystore.address),
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
@@ -40210,7 +40210,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.6";
+    this.version = "2.6.7";
 
     this.options = {
         debug: {

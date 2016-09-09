@@ -199,7 +199,7 @@ module.exports = function () {
                 name: localAccount.name,
                 loginID: localAccount.loginID,
                 privateKey: privateKey,
-                address: localAccount.keystore.address,
+                address: abi.format_address(localAccount.keystore.address),
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
@@ -252,7 +252,7 @@ module.exports = function () {
                         name: "",
                         loginID: loginID,
                         privateKey: privateKey,
-                        address: keystore.address,
+                        address: abi.format_address(keystore.address),
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
