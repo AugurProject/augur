@@ -240,8 +240,8 @@ export function assembleMarket(
 				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, outcomeData.sharesPurchased);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
-				outcome.topBid = selectTopBid(orderBook);
-				outcome.topAsk = selectTopAsk(orderBook);
+				outcome.topBid = selectTopBid(orderBook, false);
+				outcome.topAsk = selectTopAsk(orderBook, false);
 
 				marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 

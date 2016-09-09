@@ -57,8 +57,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.toNumber() :
 			0.5;
 		const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice :
-			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice;
+			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
+			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
 		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
