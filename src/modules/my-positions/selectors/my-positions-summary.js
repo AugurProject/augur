@@ -37,12 +37,12 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 			}
 		} else {
 			if (outcomeAccountTrade.type === 2) {
-				totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
-			} else {
 				numShares = abi.bignum(outcomeAccountTrade.shares);
 				qtyShares = qtyShares.plus(numShares);
 				totalValue = totalValue.plus(bnLastPrice.times(numShares));
 				totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+			} else {
+				totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
 			}
 		}
 	});
