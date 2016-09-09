@@ -1,9 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 
-const BalancePage = (p) => (
+const BalancesPage = (p) => (
 	<main className={classnames('page account')}>
 		<SiteHeader {...p.siteHeader} />
 		<header className="page-header">
@@ -20,8 +20,8 @@ const BalancePage = (p) => (
 	</main>
 );
 
-BalancePage.propTypes = {
-	className: PropTypes.string
+BalancesPage.propTypes = {
+	className: React.PropTypes.string
 };
 
-export default BalancePage;
+export default BalancesPage;

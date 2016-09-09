@@ -11,6 +11,7 @@ const PortfolioPositions = (p) => (
 					{!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
 						<Positions
 							className="page-content positions-content"
+							type={market.type}
 							outcomes={market.myPositionOutcomes}
 						/>
 					}
