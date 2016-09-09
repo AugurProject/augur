@@ -10,6 +10,8 @@ import {
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
+import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
+import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
 export function register(name, password, password2, loginID, rememberMe, loginAccount, cb) {
 	return (dispatch, getState) => {
@@ -27,10 +29,15 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
-
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
+			setTimeout(() => dispatch(addFundNewAccount(loginAccount.address)), 1500);
+			// decide if we need to display the loginMessage
+			const { loginMessage } = getState();
+			if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
+				return links.loginMessageLink.onClick();
+			}
 
 			return links.marketsLink.onClick(links.marketsLink.href);
 		}
@@ -49,8 +56,8 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 				return;
 			}
 
-			dispatch(addFundNewAccount(localLoginAccount.address));
 			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
+			// dispatch(addFundNewAccount(localLoginAccount.address));
 
 			if (typeof cb === 'function') {
 				cb(localLoginAccount);
