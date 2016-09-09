@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -14,9 +15,9 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	store = mockStore(state);
 	let mockAugurJS = {
 		augur: {
-			filters: {
-				listen: () => {}
-			}
+			options: { debug: { trading: false } },
+			filters: { listen: () => {} },
+			getParticipantSharesPurchased: () => {}
 		},
 		abi: {
 			bignum: () => {}
@@ -25,6 +26,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	let mockUpBlockchain = {};
 	let mockUpdateAssets = {};
 	let mockOutcomePrice = {};
+	let mockLoadBidsAsks = {};
 	let mockLoadMarketsInfo = {
 		loadMarketsInfo: () => {}
 	};
@@ -37,12 +39,16 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockOutcomePrice.updateOutcomePrice = sinon.stub().returns({
 		type: 'UPDATE_OUTCOME_PRICE'
 	});
+	mockLoadBidsAsks.loadBidsAsks = sinon.stub().returns({
+		type: 'UPDATE_MARKET_ORDER_BOOK'
+	});
 	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', (marketID) => {
 		return {
 			type: 'LOAD_BASIC_MARKET',
 			marketID
 		};
 	});
+	mockAugurJS.abi.bignum = sinon.stub().returns(new BigNumber('1', 10));
 	sinon.stub(mockAugurJS.augur.filters, 'listen', (cb) => {
 		cb.block('blockhash');
 		cb.log_fill_tx({
@@ -55,13 +61,17 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		cb.marketCreated({ marketID: 'testID1' });
 		cb.tradingFeeUpdated({ marketID: 'testID1' });
 	});
+	sinon.stub(mockAugurJS.augur, 'getParticipantSharesPurchased', (market, trader, outcome, cb) => {
+		cb('1');
+	});
 
 	action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../app/actions/update-blockchain': mockUpBlockchain,
 		'../../auth/actions/update-assets': mockUpdateAssets,
 		'../../markets/actions/update-outcome-price': mockOutcomePrice,
-		'../../markets/actions/load-markets-info': mockLoadMarketsInfo
+		'../../markets/actions/load-markets-info': mockLoadMarketsInfo,
+		'../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks
 	});
 
 	beforeEach(() => {
@@ -80,6 +90,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			type: 'UPDATE_BLOCKCHAIN'
 		}, {
 			type: 'UPDATE_OUTCOME_PRICE'
+		}, {
+			type: 'UPDATE_MARKET_ORDER_BOOK'
 		}, {
 			type: 'LOAD_BASIC_MARKET',
 			marketID: ['testID1']

@@ -8,10 +8,10 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function loadActiveMarketBidsAsks(marketID, outcomeID) {
 	return (dispatch, getState) => {
-		const marketOutcomesData = getState().outcomesData[marketID];
-		if (marketOutcomesData && marketOutcomesData[outcomeID] && abi.bignum(marketOutcomesData[outcomeID].sharesPurchased).gt(ZERO)) {
-			dispatch(loadBidsAsks(marketID));
-		}
+		augur.getParticipantSharesPurchased(marketID, getState().loginAccount.id, outcomeID, (position) => {
+			if (!position || position.error) return console.error('loadActiveMarketBidsAsks:', position);
+			if (abi.bignum(position).gt(ZERO)) dispatch(loadBidsAsks(marketID));
+		});
 	};
 }
 
@@ -27,6 +27,9 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
+				if (augur.options.debug.trading) {
+					console.debug('log_fill_tx:', JSON.stringify(msg, null, 2));
+				}
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
