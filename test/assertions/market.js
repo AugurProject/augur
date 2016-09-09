@@ -411,14 +411,19 @@ export default function (market) {
 			assertFormattedNumber(myPositionsSummary.shareChange, 'myPositionsSummary.shareChange');
 		});
 
-		it('market.myPositionsSummary.gainPercent', () => {
-			assert.isDefined(myPositionsSummary.gainPercent);
-			assertFormattedNumber(myPositionsSummary.gainPercent, 'myPositionsSummary.gainPercent');
+		it('market.myPositionsSummary.realizedNet', () => {
+			assert.isDefined(myPositionsSummary.realizedNet);
+			assertFormattedNumber(myPositionsSummary.realizedNet, 'myPositionsSummary.realizedNet');
 		});
 
-		it('market.myPositionsSummary.netChange', () => {
-			assert.isDefined(myPositionsSummary.netChange);
-			assertFormattedNumber(myPositionsSummary.netChange, 'myPositionsSummary.netChange');
+		it('market.myPositionsSummary.unrealizedNet', () => {
+			assert.isDefined(myPositionsSummary.unrealizedNet);
+			assertFormattedNumber(myPositionsSummary.unrealizedNet, 'myPositionsSummary.unrealizedNet');
+		});
+
+		it('market.myPositionsSummary.totalNet', () => {
+			assert.isDefined(myPositionsSummary.totalNet);
+			assertFormattedNumber(myPositionsSummary.totalNet, 'myPositionsSummary.totalNet');
 		});
 
 		const myMarketSummary = market.myMarketSummary;
@@ -450,6 +455,21 @@ export default function (market) {
 		it('market.myMarketSummary.openVolume', () => {
 			assert.isDefined(myMarketSummary.openVolume);
 			assertFormattedNumber(myMarketSummary.openVolume, 'myMarketSummary.openVolume');
+		});
+
+		it('market.myMarketSummary.realizedNet', () => {
+			assert.isDefined(myMarketSummary.realizedNet);
+			assertFormattedNumber(myMarketSummary.realizedNet, 'myMarketSummary.realizedNet');
+		});
+
+		it('market.myMarketSummary.unrealizedNet', () => {
+			assert.isDefined(myMarketSummary.unrealizedNet);
+			assertFormattedNumber(myMarketSummary.unrealizedNet, 'myMarketSummary.unrealizedNet');
+		});
+
+		it('market.myMarketSummary.totalNet', () => {
+			assert.isDefined(myMarketSummary.totalNet);
+			assertFormattedNumber(myMarketSummary.totalNet, 'myMarketSummary.totalNet');
 		});
 
 		const report = market.report;

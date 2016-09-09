@@ -1,4 +1,5 @@
 import { makeNumber } from '../utils/make-number';
+import { randomNum } from '../utils/random-number';
 import { makeDate } from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 import selectReportableOutcomes from '../selectors/reportable-outcomes';
@@ -103,9 +104,10 @@ function makeMarkets(numMarkets = 10) {
 			purchasePrice: makeNumber(0.5, ' ETH'),
 			totalCost: makeNumber(5, ' ETH'),
 			shareChange: makeNumber(1, 'shares'),
-			netChange: makeNumber(1, ' ETH'),
 			totalValue: makeNumber(985, ' ETH'),
-			gainPercent: makeNumber(14, '%')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 
 		// position-outcomes
@@ -113,21 +115,23 @@ function makeMarkets(numMarkets = 10) {
 		randomPositionOutcome.position = {
 			qtyShares: makeNumber(16898, 'shares'),
 			totalValue: makeNumber(14877, ' ETH'),
-			gainPercent: makeNumber(14, '%'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
 			shareChange: makeNumber(0.107, ' ETH'),
 			totalCost: makeNumber(12555, ' ETH'),
-			netChange: makeNumber(3344, ' ETH')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 		const randomPositionOutcome2 = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome2.position = {
 			qtyShares: makeNumber(16898, 'shares'),
 			totalValue: makeNumber(14877, ' ETH'),
-			gainPercent: makeNumber(14, '%'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
 			shareChange: makeNumber(0.107, ' ETH'),
 			totalCost: makeNumber(12555, ' ETH'),
-			netChange: makeNumber(3344, ' ETH')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 		m.myPositionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
@@ -144,7 +148,10 @@ function makeMarkets(numMarkets = 10) {
 			volume: makeNumber(Math.floor(Math.random() * 100), null, true),
 			numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
 			averageTradeSize: makeNumber(Math.random() * 100, ' ETH', true),
-			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
+			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true),
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 
 		// report
