@@ -34,6 +34,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			(data) => {
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;
+				if (data.timestamp) update.timestamp = data.timestamp;
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {

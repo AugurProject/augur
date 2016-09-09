@@ -14,7 +14,7 @@ export function processFundNewAccount(transactionID, address) {
 				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
 			},
 			(data) => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Loaded free ether and rep', hash: data.hash }));
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Loaded free ether and rep', hash: data.hash, timestamp: data.timestamp }));
 				dispatch(updateAssets());
 			},
 			(failedTransaction) => {

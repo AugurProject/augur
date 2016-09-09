@@ -34,6 +34,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			(data) => {
 				const update = { status: `${data.status} buy...` };
 				if (data.hash) update.hash = data.hash;
+				if (data.timestamp) update.timestamp = data.timestamp;
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(res) => {
@@ -44,6 +45,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.txHash,
+					timestamp: res.timestamp,
 					status: 'filling...',
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, tradingFeesEth, gasFeesRealEth)
 				}));
@@ -64,6 +66,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.txHash,
+					timestamp: res.timestamp,
 					status: SUCCESS,
 					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth, res.gasFeesRealEth)
 				}));

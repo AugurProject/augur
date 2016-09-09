@@ -171,7 +171,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: 'transID1',
-			status: { status: 'success', hash: undefined }
+			status: { status: 'success', hash: undefined, timestamp: undefined }
 		}, {
 			[testState.branch.id]: {
 				testEventID1: {

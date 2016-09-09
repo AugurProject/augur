@@ -28,6 +28,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
+				timestamp: res.timestamp,
 				status: SUCCESS,
 				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />

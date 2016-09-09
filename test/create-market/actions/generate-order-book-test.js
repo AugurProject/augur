@@ -186,7 +186,11 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 action.handleGenerateOrderBookResponse(
                     null,
                     {
-                        status: COMPLETE_SET_BOUGHT
+                        status: COMPLETE_SET_BOUGHT,
+                        payload: {
+                            hash: "0xdeadbeef",
+                            timestamp: 1
+                        }
                     },
                     'trans123'
                 )
@@ -197,7 +201,9 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: COMPLETE_SET_BOUGHT,
-                    message: null
+                    message: null,
+                    hash: "0xdeadbeef",
+                    timestamp: 1
                 }
             }], `Didn't correctly handle onCompleteSets callback`);
         });
@@ -261,6 +267,8 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: ORDER_BOOK_ORDER_COMPLETE,
+                    hash: undefined,
+                    timestamp: undefined,
                     message: `Bid for 1 share of outcome 'outcome 1' at 1 ETH created.`
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);

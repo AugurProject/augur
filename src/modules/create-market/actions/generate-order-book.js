@@ -47,6 +47,8 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 					transactionID,
 					{
 						status: COMPLETE_SET_BOUGHT,
+						hash: p.hash,
+						timestamp: p.timestamp,
 						message
 					}
 				)
@@ -71,6 +73,8 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 					transactionID,
 					{
 						status: ORDER_BOOK_ORDER_COMPLETE,
+						hash: p.hash,
+						timestamp: p.timestamp,
 						message
 					}
 				)

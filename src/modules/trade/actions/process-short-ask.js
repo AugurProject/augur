@@ -30,6 +30,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			dispatch(sellCompleteSets(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
+				timestamp: res.timestamp,
 				status: SUCCESS,
 				message: `short ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />

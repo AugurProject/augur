@@ -59,7 +59,7 @@ export function processCancelOrder(transactionID, orderID) {
 			onSuccess: (res) => {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, hash: res.hash }));
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, hash: res.hash, timestamp: res.timestamp }));
 				dispatch(loadBidsAsks(transaction.data.market.id, () => {
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(transaction.data.market.id));

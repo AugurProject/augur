@@ -12,7 +12,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, toAddre
 				dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ETH to ${toAddress}` }));
 			},
 			(data) => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ETH to ${toAddress} Complete.`, hash: data.hash }));
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ETH to ${toAddress} Complete.`, hash: data.hash, timestamp: data.timestamp }));
 				dispatch(updateAssets());
 			},
 			(failedTransaction) => {

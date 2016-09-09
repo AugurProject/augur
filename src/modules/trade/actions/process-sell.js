@@ -38,12 +38,14 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			(data) => {
 				const update = { status: `${data.status} sell...` };
 				if (data.hash) update.hash = data.hash;
+				if (data.timestamp) update.timestamp = data.timestamp;
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.txHash,
+					timestamp: res.timestamp,
 					status: 'filling...',
 					message: generateMessage(numShares, res.remainingShares, filledEth)
 				}));
@@ -64,6 +66,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.txHash,
+					timestamp: res.timestamp,
 					status: SUCCESS,
 					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFeesEth, res.gasFeesRealEth)
 				}));

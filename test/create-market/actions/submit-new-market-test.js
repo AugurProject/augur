@@ -224,6 +224,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -273,6 +274,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -321,6 +323,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -374,6 +377,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -428,6 +432,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}
@@ -490,6 +495,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					status: {
 						status: SUCCESS,
 						hash: undefined,
+						timestamp: undefined,
 						data: {
 							id: '0x123'
 						}

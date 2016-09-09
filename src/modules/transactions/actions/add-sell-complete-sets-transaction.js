@@ -42,6 +42,7 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 					dispatch(updateExistingTransaction(transactionID, {
 						status: SUCCESS,
 						hash: r.hash,
+						timestamp: r.timestamp,
 						message: `sold ${fmtNumShares.full} of each outcome for ${fmtValue.full}<br />
 							<small>(paid ${formatRealEther(r.gasFees).full} in gas fees)</small>`
 					}));

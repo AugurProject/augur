@@ -79,7 +79,11 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			},
 			onSuccess: (res) => {
 				console.debug('SRH successful:', res.callReturn);
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, hash: res.hash }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					hash: res.hash,
+					timestamp: res.timestamp
+				}));
 				report.reportHash = reportHash;
 				dispatch(updateReports({ [branchID]: { [eventID]: report } }));
 			},

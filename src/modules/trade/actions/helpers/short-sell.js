@@ -24,7 +24,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 			onTradeHash: data => cbStatus({ status: 'submitting' }),
 
 			onCommitSent: data => cbStatus({ status: 'committing' }),
-			onCommitSuccess: data => cbStatus({ status: 'sending', hash: data.txHash }),
+			onCommitSuccess: data => cbStatus({ status: 'sending', hash: data.txHash, timestamp: data.timestamp }),
 			onCommitFailed: err => nextMatchingID,
 			onNextBlock: data => console.log('short_sell-onNextBlock', data),
 
@@ -33,7 +33,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				cbStatus({ status: 'filling' });
 			},
 			onTradeSuccess: data => {
-				cbStatus({ status: 'success', hash: data.txHash });
+				cbStatus({ status: 'success', hash: data.txHash, timestamp: data.timestamp });
 				if (data.unmatchedShares) {
 					res.remainingShares = parseFloat(data.unmatchedShares);
 				} else {
