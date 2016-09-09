@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -15,11 +14,11 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	store = mockStore(state);
 	let mockAugurJS = {
 		augur: {
-			options: { debug: { trading: false } },
 			filters: { listen: () => {} },
-			getParticipantSharesPurchased: () => {}
+			CompositeGetters: { getPositionInMarket: () => {} }
 		},
 		abi: {
+			number: () => {},
 			bignum: () => {}
 		}
 	};
@@ -27,6 +26,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	let mockUpdateAssets = {};
 	let mockOutcomePrice = {};
 	let mockLoadBidsAsks = {};
+	let mockLoadAccountTrades = {};
 	let mockLoadMarketsInfo = {
 		loadMarketsInfo: () => {}
 	};
@@ -42,13 +42,16 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockLoadBidsAsks.loadBidsAsks = sinon.stub().returns({
 		type: 'UPDATE_MARKET_ORDER_BOOK'
 	});
+	mockLoadAccountTrades.loadAccountTrades = sinon.stub().returns({
+		type: 'UPDATE_ACCOUNT_TRADES_DATA'
+	});
 	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', (marketID) => {
 		return {
 			type: 'LOAD_BASIC_MARKET',
 			marketID
 		};
 	});
-	mockAugurJS.abi.bignum = sinon.stub().returns(new BigNumber('1', 10));
+	mockAugurJS.abi.number = sinon.stub().returns([0, 1]);
 	sinon.stub(mockAugurJS.augur.filters, 'listen', (cb) => {
 		cb.block('blockhash');
 		cb.log_fill_tx({
@@ -61,8 +64,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		cb.marketCreated({ marketID: 'testID1' });
 		cb.tradingFeeUpdated({ marketID: 'testID1' });
 	});
-	sinon.stub(mockAugurJS.augur, 'getParticipantSharesPurchased', (market, trader, outcome, cb) => {
-		cb('1');
+	sinon.stub(mockAugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
+		cb(['0x0', '0x1']);
 	});
 
 	action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
@@ -71,7 +74,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		'../../auth/actions/update-assets': mockUpdateAssets,
 		'../../markets/actions/update-outcome-price': mockOutcomePrice,
 		'../../markets/actions/load-markets-info': mockLoadMarketsInfo,
-		'../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks
+		'../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
+		'../../my-positions/actions/load-account-trades': mockLoadAccountTrades
 	});
 
 	beforeEach(() => {
@@ -92,6 +96,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
 			type: 'UPDATE_MARKET_ORDER_BOOK'
+		}, {
+			type: 'UPDATE_ACCOUNT_TRADES_DATA'
 		}, {
 			type: 'LOAD_BASIC_MARKET',
 			marketID: ['testID1']

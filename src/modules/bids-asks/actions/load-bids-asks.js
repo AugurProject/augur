@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
+import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
 import { selectMarket } from '../../market/selectors/market';
 
 export function loadBidsAsks(marketID, cb) {
@@ -26,6 +26,7 @@ function getOrderBookChunked(market, offset, numTradesToLoad, scalarMinMax, tota
 			console.error(`load-bids-asks.js: getOrderBook(${market}) error: %o`, marketOrderBook);
 			if (callback) return callback(marketOrderBook);
 		} else {
+			if (!offset) dispatch(clearMarketOrderBook(market));
 			dispatch(updateMarketOrderBook(market, marketOrderBook));
 			if (offset + numTradesToLoad < totalTrades) {
 				return getOrderBookChunked(market, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);

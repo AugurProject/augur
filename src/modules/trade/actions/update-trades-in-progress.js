@@ -117,9 +117,13 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
 					newTradeDetails.totalFee = tradingFeesEth.toFixed();
 					if (newTradeDetails.side === 'sell') {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth)).times(100).toFixed();
+						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
+							.times(100).abs()
+							.toFixed();
 					} else {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth)).times(100).toFixed();
+						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
+							.times(100)
+							.toFixed();
 					}
 				}
 			}

@@ -1,16 +1,19 @@
 import { augur, abi } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 
-export function loadActiveMarketBidsAsks(marketID, outcomeID) {
+export function refreshActiveMarket(marketID, outcomeID) {
 	return (dispatch, getState) => {
-		augur.getParticipantSharesPurchased(marketID, getState().loginAccount.id, outcomeID, (position) => {
-			if (!position || position.error) return console.error('loadActiveMarketBidsAsks:', position);
-			if (abi.bignum(position).gt(ZERO)) dispatch(loadBidsAsks(marketID));
+		augur.CompositeGetters.getPositionInMarket(marketID, getState().loginAccount.id, (position) => {
+			if (!position || position.error) return console.error('refreshActiveMarket:', position);
+			if (Math.max.apply(null, abi.number(position))) {
+				dispatch(loadBidsAsks(marketID));
+				dispatch(loadAccountTrades(marketID));
+			}
 		});
 	};
 }
@@ -27,12 +30,10 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
-				if (augur.options.debug.trading) {
-					console.debug('log_fill_tx:', JSON.stringify(msg, null, 2));
-				}
+				console.debug('log_fill_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
+					dispatch(refreshActiveMarket(msg.market, msg.outcome));
 				}
 			},
 
@@ -40,7 +41,7 @@ export function listenToUpdates() {
 			log_add_tx: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
+					dispatch(refreshActiveMarket(msg.market, msg.outcome));
 				}
 			},
 
@@ -48,7 +49,7 @@ export function listenToUpdates() {
 			log_cancel: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadActiveMarketBidsAsks(msg.market, msg.outcome));
+					dispatch(refreshActiveMarket(msg.market, msg.outcome));
 				}
 			},
 

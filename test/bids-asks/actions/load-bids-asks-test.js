@@ -18,7 +18,8 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 		augur: { getOrderBook: getOrderBookStub, get_total_trades: get_total_tradesStub }
 	};
 	const updateMarketOrderBookModule = {
-		updateMarketOrderBook: mocks.actionCreator()
+		updateMarketOrderBook: mocks.actionCreator(),
+		clearMarketOrderBook: mocks.actionCreator()
 	};
 	const store = mocks.store;
 	const loadBidsAsksModule = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
@@ -34,6 +35,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 		augurJsMock.augur.getOrderBook.reset();
 		augurJsMock.augur.get_total_trades.reset();
 		updateMarketOrderBookModule.updateMarketOrderBook.reset();
+		updateMarketOrderBookModule.clearMarketOrderBook.reset();
 	});
 
 	describe('loadBidsAsks', () => {
@@ -45,6 +47,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 			sinon.assert.calledWith(augurJsMock.augur.getOrderBook, { market: 'testMarketID', offset: 0, numTradesToLoad: 1, scalarMinMax: { minValue: 1, maxValue: 2 } });
 			assert.lengthOf(augurJsMock.augur.getOrderBook.getCall(0).args, 2);
 			sinon.assert.calledOnce(updateMarketOrderBookModule.updateMarketOrderBook);
+			sinon.assert.calledOnce(updateMarketOrderBookModule.clearMarketOrderBook);
 		});
 
 		it(`shouldn't load orders for a market where there are no orders`, () => {
@@ -54,6 +57,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 			sinon.assert.calledWith(augurJsMock.augur.get_total_trades, 'nonExistingMarketID');
 			assert.lengthOf(augurJsMock.augur.get_total_trades.getCall(0).args, 2);
 			sinon.assert.notCalled(updateMarketOrderBookModule.updateMarketOrderBook);
+			sinon.assert.notCalled(updateMarketOrderBookModule.clearMarketOrderBook);
 		});
 	});
 });
