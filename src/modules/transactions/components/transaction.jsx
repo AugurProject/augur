@@ -126,10 +126,11 @@ const Transaction = (p) => {
 		);
 		break;
 	case COMMIT_REPORT: {
+		nodes.action = 'Commit report';
 		if (p.data.market.type === SCALAR) {
 			nodes.description = (
 				<span className="description">
-					<span>Report</span>
+					<span className="action">{nodes.action}</span>
 					<strong>{p.data.market.reportedOutcome || ''}</strong>
 					{!!p.data.isUnethical &&
 						<strong className="unethical"> and Unethical</strong>
@@ -145,7 +146,7 @@ const Transaction = (p) => {
 		} else {
 			nodes.description = (
 				<span className="description">
-					<span>Report</span>
+					<span className="action">{nodes.action}</span>
 					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
 					{!!p.data.isUnethical &&
 						<strong className="unethical"> and Unethical</strong>
@@ -162,9 +163,10 @@ const Transaction = (p) => {
 		break;
 	}
 	case GENERATE_ORDER_BOOK:
+		nodes.action = 'Generate order book';
 		nodes.description = (
 			<span className="description">
-				<span>Generate Order Book</span>
+				<span className="action">{nodes.action}</span>
 				<br />
 				{marketDescription()}
 				<br />
