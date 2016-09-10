@@ -14,7 +14,7 @@ export function loadBidsAsks(marketID, cb) {
 			if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
 				if (cb) cb(totalTrades);
 			} else {
-				getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 50), scalarMinMax, totalTrades, cb, dispatch);
+				getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 100), scalarMinMax, totalTrades, cb, dispatch);
 			}
 		});
 	};

@@ -7,7 +7,7 @@ import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { augur, abi } from '../../../services/augurjs';
 
-export const addSellCompleteSetsTransaction = (marketID, numShares, callback) => (
+export const addSellCompleteSetsTransaction = (marketID, numShares, callback, cb) => (
 	(dispatch, getState) => {
 		const marketData = getState().marketsData[marketID];
 		const fmtNumShares = formatShares(numShares);
@@ -35,7 +35,6 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 						message: `selling ${fmtNumShares.full} of each outcome for ${fmtValue.full}<br />
 							<small>(paying ${fmtGasFees.full} in estimated gas fees)</small>`
 					}));
-					if (callback) callback();
 				},
 				onSuccess: (r) => {
 					console.debug('sellCompleteSets success:', r);
@@ -48,6 +47,7 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 					}));
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(marketID, true));
+					if (callback) callback(null, marketID, cb);
 				},
 				onFailed: (e) => {
 					console.error('sellCompleteSets failed:', e);
@@ -55,7 +55,7 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 						status: FAILED,
 						message: `transaction failed: ${e.message}`
 					}));
-					if (callback) callback(e);
+					if (callback) callback(e, marketID, cb);
 				}
 			});
 		};

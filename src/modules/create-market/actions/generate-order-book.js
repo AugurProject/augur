@@ -8,6 +8,8 @@ import {
 } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addGenerateOrderBookTransaction } from '../../transactions/actions/add-generate-order-book-transaction';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import AugurJS from '../../../services/augurjs';
 
 export function submitGenerateOrderBook(marketData) {
@@ -107,6 +109,10 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 					}
 				)
 			);
+			if (marketData && marketData.id) {
+				dispatch(loadBidsAsks(marketData.id));
+				dispatch(loadAccountTrades(marketData.id, true));
+			}
 
 			break;
 		default:

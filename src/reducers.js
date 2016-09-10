@@ -21,6 +21,7 @@ import orderBooks from './modules/bids-asks/reducers/order-books';
 import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
 import marketTrades from './modules/portfolio/reducers/market-trades';
 import accountTrades from './modules/my-positions/reducers/account-trades';
+import completeSetsBought from './modules/my-positions/reducers/complete-sets-bought';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
@@ -77,6 +78,7 @@ module.exports = {
 	orderCancellation,
 	marketTrades,
 	accountTrades,
+	completeSetsBought,
 	transactionsData,
 
 	marketCreatorFees

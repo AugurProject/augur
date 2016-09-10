@@ -20,6 +20,7 @@ ex.connect = function connect(env, cb) {
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
 	augur.rpc.retryDroppedTxs = env.retryDroppedTxs;
 	augur.options.debug.trading = false;
+	augur.options.debug.nonce = false;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);

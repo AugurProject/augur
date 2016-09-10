@@ -7,6 +7,8 @@ import selectLoginAccountPositions from '../../../modules/my-positions/selectors
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
 
+const isLocked = {};
+
 export function sellCompleteSets(marketID) {
 	return (dispatch, getState) => {
 		if (marketID) return dispatch(sellCompleteSetsMarket(marketID));
@@ -19,18 +21,41 @@ export function sellCompleteSets(marketID) {
 	};
 }
 
-function sellCompleteSetsMarket(marketID, callback) {
+function sellCompleteSetsMarket(marketID, cb) {
 	return (dispatch, getState) => {
-		augur.getPositionInMarket(marketID, getState().loginAccount.id, (position) => {
-			const smallestPosition = getSmallestPositionInMarket(position);
-			console.log('smallest position:', smallestPosition.toFixed());
-			if (smallestPosition.gt(ZERO)) {
-				console.info('selling complete set:', marketID, smallestPosition.toFixed());
-				dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback));
-			} else {
-				if (callback) callback();
-			}
-		});
+		const callback = (err, marketID, cb) => {
+			console.log('unlocking market:', marketID, isLocked[marketID]);
+			isLocked[marketID] = false;
+			if (cb) cb(err);
+		};
+		if (!isLocked[marketID]) {
+			isLocked[marketID] = true;
+			augur.getPositionInMarket(marketID, getState().loginAccount.id, (position) => {
+				if (!position || position.error) return callback(null, marketID);
+				const completeSetsBought = getState().completeSetsBought[marketID];
+				const outcomes = Object.keys(position);
+				const numPositions = outcomes.length;
+				if (completeSetsBought) {
+					for (let i = 0; i < numPositions; ++i) {
+						if (completeSetsBought[outcomes[i]]) {
+							position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
+								.minus(completeSetsBought[outcomes[i]])
+								.toFixed(), ZERO);
+						}
+					}
+				}
+				const smallestPosition = getSmallestPositionInMarket(position);
+				console.log('smallest position:', marketID, smallestPosition.toFixed());
+				console.log('lock:', marketID, isLocked[marketID]);
+				if (smallestPosition.gt(ZERO)) {
+					console.info('selling complete set:', marketID, smallestPosition.toFixed());
+					console.log('locking market:', marketID, isLocked[marketID]);
+					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback, cb));
+				} else {
+					callback(null, marketID);
+				}
+			});
+		}
 	};
 }
 
