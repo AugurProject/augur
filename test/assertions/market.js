@@ -411,14 +411,19 @@ export default function (market) {
 			assertFormattedNumber(myPositionsSummary.shareChange, 'myPositionsSummary.shareChange');
 		});
 
-		it('market.myPositionsSummary.gainPercent', () => {
-			assert.isDefined(myPositionsSummary.gainPercent);
-			assertFormattedNumber(myPositionsSummary.gainPercent, 'myPositionsSummary.gainPercent');
+		it('market.myPositionsSummary.realizedNet', () => {
+			assert.isDefined(myPositionsSummary.realizedNet);
+			assertFormattedNumber(myPositionsSummary.realizedNet, 'myPositionsSummary.realizedNet');
 		});
 
-		it('market.myPositionsSummary.netChange', () => {
-			assert.isDefined(myPositionsSummary.netChange);
-			assertFormattedNumber(myPositionsSummary.netChange, 'myPositionsSummary.netChange');
+		it('market.myPositionsSummary.unrealizedNet', () => {
+			assert.isDefined(myPositionsSummary.unrealizedNet);
+			assertFormattedNumber(myPositionsSummary.unrealizedNet, 'myPositionsSummary.unrealizedNet');
+		});
+
+		it('market.myPositionsSummary.totalNet', () => {
+			assert.isDefined(myPositionsSummary.totalNet);
+			assertFormattedNumber(myPositionsSummary.totalNet, 'myPositionsSummary.totalNet');
 		});
 
 		const myMarketSummary = market.myMarketSummary;

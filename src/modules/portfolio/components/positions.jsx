@@ -1,5 +1,6 @@
 import React from 'react';
 import Positions from '../../../modules/my-positions/components/my-positions';
+import PositionsMarketOverview from '../../my-positions/components/my-positions-market-overview';
 import Link from '../../link/components/link';
 
 const PortfolioPositions = (p) => (
@@ -7,7 +8,10 @@ const PortfolioPositions = (p) => (
 		{!!p.markets && !!p.markets.length && p.markets.map(market => (
 			<Link key={market.id} {...market.marketLink} >
 				<div className="positions-container" >
-					<span className="description">{market.description}</span>
+					<PositionsMarketOverview
+						description={market.description}
+						{...market.myPositionsSummary}
+					/>
 					{!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
 						<Positions
 							className="page-content positions-content"

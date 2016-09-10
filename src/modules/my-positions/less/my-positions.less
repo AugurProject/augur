@@ -1,4 +1,4 @@
-.positions-list {
+.positions-market-overview, .positions-list {
 	display: table;
 	width: 92%;
 	margin: 1vmin 0 0 4%;
@@ -24,7 +24,7 @@
 				line-height: 1.1em;
 				white-space: nowrap;
 
-				&.per-share-gain, &.net-change {
+				&.realized-net, &.unrealized-net, &.total-net {
 					.colorize();
 				}
 
@@ -57,6 +57,14 @@
 				min-width: 4.5em;
 				text-transform: uppercase;
 			}
+		}
+	}
+}
+
+.positions-market-overview {
+	.position {
+		.description {
+			padding-left: 0;
 		}
 	}
 }

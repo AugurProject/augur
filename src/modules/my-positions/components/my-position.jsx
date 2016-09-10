@@ -10,38 +10,29 @@ const Position = (p) => (
 				<span className="position-name">{p.name}</span>
 			}
 			<ValueDenomination {...p.qtyShares} />
-			<ValueDenomination
-				{...p.gainPercent}
-				formatted={p.gainPercent.minimized}
-				denomination={`${p.gainPercent.denomination} return`}
-			/>
 		</div>
 		<div className="position-group">
 			<div className="position-pair purchase-price">
-				<span className="title">avg. purchase price</span>
+				<span className="title">avg. trade price</span>
 				<ValueDenomination {...p.purchasePrice} />
 			</div>
 			<div className="position-pair last-price">
 				<span className="title">last trade price</span>
 				<ValueDenomination {...p.lastPrice} />
 			</div>
-			<div className="position-pair per-share-gain">
-				<span className="title">per share gain/loss</span>
-				<ValueDenomination {...p.shareChange} />
-			</div>
 		</div>
 		<div className="position-group">
-			<div className="position-pair total-cost">
-				<span className="title">total cost</span>
-				<ValueDenomination {...p.totalCost} />
+			<div className="position-pair realized-net">
+				<span className="title">realized P/L</span>
+				<ValueDenomination {...p.realizedNet} />
 			</div>
-			<div className="position-pair total-value">
-				<span className="title">total value</span>
-				<ValueDenomination {...p.totalValue} />
+			<div className="position-pair unrealized-net">
+				<span className="title">unrealized P/L</span>
+				<ValueDenomination {...p.unrealizedNet} />
 			</div>
-			<div className="position-pair net-change">
-				<span className="title">net gain/loss</span>
-				<ValueDenomination {...p.netChange} />
+			<div className="position-pair total-net">
+				<span className="title">total P/L</span>
+				<ValueDenomination {...p.totalNet} />
 			</div>
 		</div>
 	</div>
@@ -58,7 +49,9 @@ Position.propTypes = {
 	purchasePrice: React.PropTypes.object,
 	shareChange: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
-	netChange: React.PropTypes.object
+	realizedNet: React.PropTypes.object,
+	unrealizedNet: React.PropTypes.object,
+	totalNet: React.PropTypes.object
 };
 
 export default Position;
