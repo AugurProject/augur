@@ -148,7 +148,8 @@ module.exports = {
                                     type: logTypeCode,
                                     shares: abi.unfix(logdata[0], "string"),
                                     price: abi.bignum(1).dividedBy(abi.bignum(numOutcomes)).toFixed(),
-                                    blockNumber: parseInt(logs[i].blockNumber, 16)
+                                    blockNumber: parseInt(logs[i].blockNumber, 16),
+                                    address: logs[i].address
                                 });
                             }
                         } else {
@@ -157,7 +158,8 @@ module.exports = {
                                 type: logTypeCode,
                                 amount: abi.unfix(logdata[0], "string"),
                                 numOutcomes: numOutcomes,
-                                blockNumber: parseInt(logs[i].blockNumber, 16)
+                                blockNumber: parseInt(logs[i].blockNumber, 16),
+                                address: logs[i].address
                             });
                         }
                     }
