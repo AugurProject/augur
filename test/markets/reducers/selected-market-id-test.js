@@ -19,7 +19,7 @@ describe(`modules/markets/reducers/selected-market-id.js`, () => {
 			}
 		};
 		test = reducer(state.selectedMarketID, action);
-		out = 'test';
+		out = '0xtest';
 		assert.equal(test, out, `Didn't get the markt id`);
 	});
 });
