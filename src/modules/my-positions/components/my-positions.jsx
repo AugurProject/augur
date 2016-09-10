@@ -6,6 +6,7 @@ const Positions = (p) => (
 		{(p.outcomes || []).map(outcome =>
 			<Position
 				key={outcome.id}
+				type={p.type}
 				{...outcome}
 				{...outcome.position}
 			/>
@@ -15,6 +16,7 @@ const Positions = (p) => (
 
 Positions.propTypes = {
 	className: React.PropTypes.string,
+	type: React.PropTypes.string,
 	outcomes: React.PropTypes.array
 };
 export default Positions;
