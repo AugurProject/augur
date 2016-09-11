@@ -37,7 +37,7 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     store = mockStore(state);
 
     marketData = {
-        market: 'test-market-id',
+        id: 'test-market-id',
         liquidity: 50,
         initialFairPrices: [
             '0.5',
@@ -131,6 +131,10 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
             status: {
                 status: GENERATING_ORDER_BOOK
             }
+        }, {
+            type: 'UPDATE_SELL_COMPLETE_SETS_LOCK',
+            isLocked: true,
+            marketID: marketData.id
         }], `Didn't correctly create order book`);
     });
 

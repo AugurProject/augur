@@ -10,6 +10,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { addGenerateOrderBookTransaction } from '../../transactions/actions/add-generate-order-book-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
+import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 import AugurJS from '../../../services/augurjs';
 
 export function submitGenerateOrderBook(marketData) {
@@ -19,7 +20,7 @@ export function submitGenerateOrderBook(marketData) {
 export function createOrderBook(transactionID, marketData) {
 	return dispatch => {
 		dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
-
+		dispatch(updateSellCompleteSetsLock(marketData.id, true));
 		AugurJS.generateOrderBook(marketData, (err, res) => {
 			dispatch(handleGenerateOrderBookResponse(err, res, transactionID, marketData));
 		});
@@ -111,7 +112,9 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 			);
 			if (marketData && marketData.id) {
 				dispatch(loadBidsAsks(marketData.id));
-				dispatch(loadAccountTrades(marketData.id, true));
+				dispatch(loadAccountTrades(marketData.id, true, () => {
+					dispatch(updateSellCompleteSetsLock(marketData.id, false));
+				}));
 			}
 
 			break;
