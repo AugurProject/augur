@@ -69,7 +69,6 @@ export default class InputList extends Component {
 						type="text"
 						maxLength={p.itemMaxLength}
 						value={item}
-						debounceMS={0}
 						onChange={(newValue) => this.handleChange(i, newValue)}
 					/>
 					{p.errors && p.errors[i] && p.errors[i].length &&
