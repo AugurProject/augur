@@ -8,12 +8,11 @@ import { loadAccountTrades } from '../../../modules/my-positions/actions/load-ac
 import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 import { augur, abi } from '../../../services/augurjs';
 
-export const addSellCompleteSetsTransaction = (marketID, numShares, callback) => (
-	(dispatch, getState) => {
+export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
+	return (dispatch, getState) => {
 		const marketData = getState().marketsData[marketID];
 		const fmtNumShares = formatShares(numShares);
 		const fmtValue = formatEther(abi.bignum(numShares).times(abi.bignum(marketData.cumulativeScale)));
-		const fmtGasFees = formatRealEther(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice));
 		const transaction = {
 			type: SELL_COMPLETE_SETS,
 			data: {
@@ -21,10 +20,10 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 				marketDescription: marketData.description,
 				numShares: fmtNumShares,
 				value: fmtValue,
-				gasFees: fmtGasFees
+				gasFees: formatRealEther(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
 			}
 		};
-		console.log('sell complete sets transaction:', transaction.data);
+		console.info(SELL_COMPLETE_SETS, transaction.data);
 		transaction.action = (transactionID) => {
 			augur.sellCompleteSets({
 				market: marketID,
@@ -33,8 +32,7 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 					console.debug('sellCompleteSets sent:', r);
 					dispatch(updateExistingTransaction(transactionID, {
 						status: SUBMITTED,
-						message: `selling ${fmtNumShares.full} of each outcome for ${fmtValue.full}<br />
-							<small>(paying ${fmtGasFees.full} in estimated gas fees)</small>`
+						message: `selling ${fmtNumShares.full} of each outcome for ${fmtValue.full}`
 					}));
 				},
 				onSuccess: (r) => {
@@ -43,8 +41,8 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 						status: SUCCESS,
 						hash: r.hash,
 						timestamp: r.timestamp,
-						message: `sold ${fmtNumShares.full} of each outcome for ${fmtValue.full}<br />
-							<small>(paid ${formatRealEther(r.gasFees).full} in gas fees)</small>`
+						message: `sold ${fmtNumShares.full} of each outcome for ${fmtValue.full}`,
+						gasFees: formatRealEther(r.gasFees).full
 					}));
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(marketID, true));
@@ -63,5 +61,5 @@ export const addSellCompleteSetsTransaction = (marketID, numShares, callback) =>
 			});
 		};
 		dispatch(addTransaction(transaction));
-	}
-);
+	};
+}
