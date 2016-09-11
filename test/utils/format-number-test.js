@@ -7,7 +7,7 @@ describe('utils/format-number.js', () => {
 			utils = [
 				{
 					func: 'formatEther',
-					denom: 'eth',
+					denom: 'ETH',
 					out: {
 						value: 1000.1,
 						formattedValue: 1000.1,
@@ -17,6 +17,34 @@ describe('utils/format-number.js', () => {
 						minimized: '1,000.1',
 						denomination: ' ETH',
 						full: '1,000.1000 ETH'
+					}
+				},
+				{
+					func: 'formatRealEther',
+					denom: 'real ETH',
+					out: {
+						value: 1000.1,
+						formattedValue: 1000.1,
+						roundedValue: 1000.1,
+						formatted: '1,000.1000',
+						rounded: '1,000.1000',
+						minimized: '1,000.1',
+						denomination: ' real ETH',
+						full: '1,000.1000 real ETH'
+					}
+				},
+				{
+					func: 'formatRealEtherEstimate',
+					denom: 'real ETH (estimated)',
+					out: {
+						value: 1000.1,
+						formattedValue: 1000.1,
+						roundedValue: 1000.1,
+						formatted: '1,000.1000',
+						rounded: '1,000.1000',
+						minimized: '1,000.1',
+						denomination: ' real ETH (estimated)',
+						full: '1,000.1000 real ETH (estimated)'
 					}
 				},
 				{
@@ -49,7 +77,7 @@ describe('utils/format-number.js', () => {
 				},
 				{
 					func: 'formatRep',
-					denom: 'rep',
+					denom: 'REP',
 					out: {
 						value: 1000.1,
 						formattedValue: 1000.1,
