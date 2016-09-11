@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import MarketsHeader from '../../markets/components/markets-header';
 import Filters from '../../filters/components/filters';
 import MarketItem from '../../market/components/market-item';
@@ -7,7 +8,7 @@ import Link from '../../link/components/link';
 const Markets = (p) => (
 	<section className={p.className}>
 		<div className="component-header">
-			<Link className="button make" {...p.createMarketLink}>
+			<Link className={classnames('button make', { displayNone: !p.loginAccount.id })} {...p.createMarketLink}>
 				Make a Market
 			</Link>
 			<MarketsHeader {...p.marketsHeader} />
