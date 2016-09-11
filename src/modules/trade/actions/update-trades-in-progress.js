@@ -87,7 +87,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
 					newTradeDetails.numShares = position.toNumber();
 				} else {
-					position = position.round(2, BigNumber.ROUND_DOWN);
+					position = position.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 				}
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(

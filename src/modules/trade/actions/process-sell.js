@@ -73,7 +73,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				if (res.remainingShares > 0) {
 					augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
-						const position = abi.bignum(sharesPurchased).round(2, BigNumber.ROUND_DOWN);
+						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						console.log('sell complete! current position:', position.toString());
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
@@ -84,12 +84,12 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								if (position.minus(remainingShares).lt(constants.PRECISION.limit)) {
 									askShares = position.toNumber();
 								} else {
-									askShares = remainingShares.round(2, BigNumber.ROUND_DOWN);
+									askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 								}
 								shortAskShares = 0;
 							} else {
 								askShares = position.toNumber();
-								shortAskShares = remainingShares.minus(position).round(2, BigNumber.ROUND_DOWN).toNumber();
+								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toNumber();
 							}
 							console.log('position:', position.toString());
 							console.log('remainingShares:', remainingShares.toString());
