@@ -18,12 +18,10 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	let mockAugurJS = {
 		augur: { batchGetMarketInfo: () => {} }
 	};
-	const mockPortfolioAction = {};
-	mockPortfolioAction.loadFullLoginAccountMarkets = sinon.stub().returns({ type: 'MOCK_LOAD_FULL_LOGIN_ACCOUNT_MARKETS' });
-
-	const mockSelectors = {
-		loginAccount
-	};
+	const mockLoadFullMarket = {};
+	const mockLoadMarketCreatorFees = {};
+	mockLoadFullMarket.loadFullMarket = sinon.stub().returns({ type: 'MOCK_LOAD_FULL_MARKET' });
+	mockLoadMarketCreatorFees.loadMarketCreatorFees = sinon.stub().returns({ type: 'MOCK_LOAD_MARKET_CREATOR_FEES' });
 
 	beforeEach(() => {
 		store.clearActions();
@@ -57,8 +55,8 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/load-markets-info', {
-		'../../portfolio/actions/load-full-login-account-markets': mockPortfolioAction,
-		'../../../selectors': mockSelectors,
+		'../../market/actions/load-full-market': mockLoadFullMarket,
+		'../../my-markets/actions/load-market-creator-fees': mockLoadMarketCreatorFees,
 		'../../../services/augurjs': mockAugurJS
 	});
 
@@ -88,12 +86,16 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 				}
 			},
 			{
-				type: 'MOCK_LOAD_FULL_LOGIN_ACCOUNT_MARKETS'
+				type: 'MOCK_LOAD_FULL_MARKET'
+			},
+			{
+				type: 'MOCK_LOAD_MARKET_CREATOR_FEES'
 			}
 		];
 		store.dispatch(action.loadMarketsInfo(['test123']));
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockPortfolioAction.loadFullLoginAccountMarkets.calledOnce, `loadFullLoginAccountMarkets wasn't called once as expected`);
+		// assert(mockLoadFullMarket.loadFullMarket.calledOnce, `loadFullMarket wasn't called once as expected`);
+		// assert(mockLoadMarketCreatorFees.loadMarketCreatorFees.calledOnce, `loadFullMarket wasn't called once as expected`);
 	});
 });
