@@ -80,6 +80,22 @@ export function formatRealEther(num, opts) {
 	);
 }
 
+export function formatEtherEstimate(num, opts) {
+	return formatNumber(
+		abi.number(num),
+		{
+			decimals: constants.PRECISION.decimals,
+			decimalsRounded: constants.PRECISION.decimals,
+			denomination: ' ETH (estimated)',
+			positiveSign: false,
+			zeroStyled: false,
+			blankZero: false,
+			bigUnitPostfix: false,
+			...opts
+		}
+	);
+}
+
 export function formatRealEtherEstimate(num, opts) {
 	return formatNumber(
 		abi.number(num),
