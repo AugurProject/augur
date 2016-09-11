@@ -241,11 +241,60 @@ const Transaction = (p) => {
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
-						{p.data && p.data.gasFees &&
+						{p.tradingFees &&
 							<span>
 								<ValueDenomination
-									className="gas-message"
-									{...p.data.gasFees}
+									className="tradingFees-message"
+									{...p.data.tradingFees}
+									prefix="trading fees:"
+								/>
+								<br />
+							</span>
+						}
+						{p.freeze &&
+							<span className="freeze-message">
+								{p.freeze.noFeeCost &&
+									<ValueDenomination
+										className="freeze-noFeeCost-message"
+										{...p.freeze.noFeeCost}
+										prefix={p.freeze.verb}
+										postfix="+"
+									/>
+								}
+								<ValueDenomination
+									className="freeze-tradingFees-message"
+									{...p.freeze.tradingFees}
+									prefix={!p.freeze.noFeeCost && p.freeze.verb}
+									postfix="in potential trading fees"
+								/>
+								<br />
+							</span>
+						}
+						{p.totalCost &&
+							<span>
+								<ValueDenomination
+									className="totalCost-message"
+									{...p.totalCost}
+									prefix="total cost:"
+								/>
+								<br />
+							</span>
+						}
+						{p.totalReturn &&
+							<span>
+								<ValueDenomination
+									className="totalReturn-message"
+									{...p.totalReturn}
+									prefix="total return:"
+								/>
+								<br />
+							</span>
+						}
+						{p.gasFees &&
+							<span>
+								<ValueDenomination
+									className="gasFees-message"
+									{...p.gasFees}
 									prefix="gas cost:"
 								/>
 								<br />
@@ -274,6 +323,11 @@ Transaction.propTypes = {
 	ether: React.PropTypes.object,
 	gas: React.PropTypes.object,
 	hash: React.PropTypes.string,
+	freeze: React.PropTypes.object,
+	gasFees: React.PropTypes.object,
+	tradingFees: React.PropTypes.object,
+	totalCost: React.PropTypes.object,
+	totalReturn: React.PropTypes.object,
 	timestamp: React.PropTypes.object
 };
 
