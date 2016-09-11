@@ -28,6 +28,7 @@ import selectedMarketsHeader from './modules/markets/reducers/selected-markets-h
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
+import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-sets-lock';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
@@ -72,6 +73,7 @@ module.exports = {
 
 	tradesInProgress,
 	tradeCommitLock,
+	sellCompleteSetsLock,
 	createMarketInProgress,
 
 	orderBooks,

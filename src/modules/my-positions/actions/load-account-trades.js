@@ -8,19 +8,17 @@ import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-com
 export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 	return (dispatch, getState) => {
 		const account = getState().loginAccount.id;
-		console.log('loading account trades for:', marketID, account);
 		async.parallel({
-			trades: (callback) => augur.getAccountTrades(account, { market: marketID }, (trades) => {
+			trades: (callback) => augur.getAccountTrades(account, { market: marketID, toBlock: 'pending' }, (trades) => {
 				if (!trades || trades.error) return callback(trades);
 				callback(null, trades);
 			}),
-			completeSets: (callback) => augur.getAccountCompleteSets(account, { tradeLogStyle: true, market: marketID }, (completeSets) => {
+			completeSets: (callback) => augur.getAccountCompleteSets(account, { tradeLogStyle: true, market: marketID, toBlock: 'pending' }, (completeSets) => {
 				if (!completeSets || completeSets.error) return callback(completeSets);
 				callback(null, completeSets);
 			})
 		}, (err, accountHistory) => {
 			if (err) console.error('loadAccountTrades error:', err);
-			console.log('account history:', accountHistory);
 			const mergedHistory = accountHistory.trades || {};
 			const completeSetsHistory = accountHistory.completeSets || {};
 			const tradeMarketIDs = Object.keys(mergedHistory);
@@ -103,7 +101,6 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 				}
 				completeSetsMarketIDs = Object.keys(accountHistory.completeSets || {});
 				numCompleteSetsMarketIDs = completeSetsMarketIDs.length;
-				console.log('checking complete sets:', completeSetsMarketIDs);
 				if (numCompleteSetsMarketIDs) {
 					for (i = 0; i < numCompleteSetsMarketIDs; ++i) {
 						id = completeSetsMarketIDs[i];
@@ -125,14 +122,14 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 								//  - buyCompleteSets logs emitted during a shortAsk should be netted with
 								//    sellCompleteSets from the same market, but not otherwise counted
 								if (completeSetsEntries[m].type === 1) {
-									if (completeSetsEntries[m].address === augur.contracts.CompleteSets) {
+									if (completeSetsEntries[m].address === augur.contracts.BuyAndSellShares) {
 										sharesBought = sharesBought.plus(abi.bignum(completeSetsEntries[m].shares));
 										completeSetsEntries.splice(m, 1);
 										--m;
 										--numCompleteSetsEntries;
+									} else {
+										completeSetsBought[id][outcome] = completeSetsBought[id][outcome].plus(abi.bignum(completeSetsEntries[m].shares));
 									}
-								} else {
-									completeSetsBought[id][outcome] = completeSetsBought[id][outcome].plus(abi.bignum(completeSetsEntries[m].shares));
 								}
 							}
 							// net out user's sellCompleteSets with their buyCompleteSets for this market
@@ -158,8 +155,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 						}
 					}
 				}
-				console.log('merged history:', mergedHistory);
-				console.log('complete sets bought:', JSON.stringify(completeSetsBought, null, 2));
+				console.log('merged history:', mergedHistory, completeSetsBought);
 				if (!marketID) dispatch(clearAccountTrades());
 				dispatch(updateAccountTradesData(mergedHistory));
 				dispatch(updateCompleteSetsBought(completeSetsBought));
