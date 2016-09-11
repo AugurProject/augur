@@ -12,7 +12,7 @@ BigNumber.config({
 });
 
 var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(2, 10);
+var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 var ONE = ten.toPower(18);
 

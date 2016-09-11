@@ -42436,9 +42436,6 @@ module.exports = function () {
             var self = this;
             var mutex = locks.createMutex();
             mutex.lock(function () {
-                if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
-                }
                 for (var rawTxHash in augur.rpc.rawTxs) {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
                     if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
@@ -42455,6 +42452,9 @@ module.exports = function () {
                     packaged.nonce = ++augur.rpc.rawTxMaxNonce;
                 } else {
                     augur.rpc.rawTxMaxNonce = packaged.nonce;
+                }
+                if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
@@ -42703,7 +42703,7 @@ BigNumber.config({
 });
 
 var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(2, 10);
+var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 var ONE = ten.toPower(18);
 
@@ -43491,7 +43491,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.6.9";
+    this.version = "2.7.0";
 
     this.options = {
         debug: {
