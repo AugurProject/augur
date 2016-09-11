@@ -28,7 +28,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 	});
 	store = mockStore(state);
 	let mockAugurJS = { augur: { submitReportHash: () => {} } };
-	let mockAddReportTransaction = {};
+	let mockAddCommitReportTransaction = {};
 	let mockUpdateExistingTransaction = {
 		updateExistingTransaction: () => {}
 	};
@@ -45,7 +45,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 			...obj
 		}
 	});
-	mockAddReportTransaction.addCommitReportTransaction = sinon.stub().returns({
+	mockAddCommitReportTransaction.addCommitReportTransaction = sinon.stub().returns({
 		type: 'ADD_REPORT_TRANSACTION'
 	});
 	mockMarket.selectMarketFromEventID = sinon.stub().returns('testID123');
@@ -86,7 +86,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 
 	action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../transactions/actions/add-report-transaction': mockAddReportTransaction,
+		'../../transactions/actions/add-commit-report-transaction': mockAddCommitReportTransaction,
 		'../../transactions/actions/update-existing-transaction': mockUpdateExistingTransaction,
 		'../../reports/actions/update-reports': mockUpdateReports,
 		'../../market/selectors/market': mockMarket,
@@ -101,7 +101,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 	afterEach(() => {
 		store.clearActions();
 		mockUpdateReports.updateReports.reset();
-		mockAddReportTransaction.addCommitReportTransaction.reset();
+		mockAddCommitReportTransaction.addCommitReportTransaction.reset();
 		mockMarket.selectMarketFromEventID.reset();
 		mockAugurJS.augur.submitReportHash.reset();
 		mockLinks.selectMarketLink.reset();
@@ -121,7 +121,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 
 		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
 
-		assert(mockAddReportTransaction.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
+		assert(mockAddCommitReportTransaction.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketLink wasn't called once as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledOnce, `selectMarketFromEventID wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
@@ -136,7 +136,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 			type: 'SELECT_MARKETS_LINK'
 		}];
 
-		assert(mockAddReportTransaction.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
+		assert(mockAddCommitReportTransaction.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketsLink wasn't called once as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledTwice, `selectMarketFromEventID wasn't called twice as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions.`);
