@@ -69,20 +69,20 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				avgPrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.00',
+					formatted: '10.0000',
 					roundedValue: 10,
-					rounded: '10.00',
+					rounded: '10.0000',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.00 ETH'
+					full: '10.0000 ETH'
 				},
 				tradingFees: {
 					denomination: ' ETH',
-					formatted: '3.00',
+					formatted: '3.0000',
 					formattedValue: 3,
-					full: '3.00 ETH',
+					full: '3.0000 ETH',
 					minimized: '3',
-					rounded: '3.00',
+					rounded: '3.0000',
 					roundedValue: 3,
 					value: 3
 				},
@@ -99,20 +99,20 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				noFeePrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.00',
+					formatted: '10.0000',
 					roundedValue: 10,
-					rounded: '10.00',
+					rounded: '10.0000',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.00 ETH'
+					full: '10.0000 ETH'
 				},
 				gasFees: {
 					denomination: ' real ETH',
-					formatted: '1.00',
+					formatted: '1.0000',
 					formattedValue: 1,
-					full: '1.00 real ETH',
+					full: '1.0000 real ETH',
 					minimized: '1',
-					rounded: '1.00',
+					rounded: '1.0000',
 					roundedValue: 1,
 					value: 1,
 				}
@@ -153,30 +153,30 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				avgPrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.00',
+					formatted: '10.0000',
 					roundedValue: 10,
-					rounded: '10.00',
+					rounded: '10.0000',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.00 ETH'
+					full: '10.0000 ETH'
 				},
 				noFeePrice: {
 					value: 10,
 					formattedValue: 10,
-					formatted: '10.00',
+					formatted: '10.0000',
 					roundedValue: 10,
-					rounded: '10.00',
+					rounded: '10.0000',
 					minimized: '10',
 					denomination: ' ETH',
-					full: '10.00 ETH'
+					full: '10.0000 ETH'
 				},
 				tradingFees: {
 					denomination: ' ETH',
-					formatted: '3.00',
+					formatted: '3.0000',
 					formattedValue: 3,
-					full: '3.00 ETH',
+					full: '3.0000 ETH',
 					minimized: '3',
-					rounded: '3.00',
+					rounded: '3.0000',
 					roundedValue: 3,
 					value: 3
 				},
@@ -192,11 +192,11 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				},
 				gasFees: {
 					denomination: ' real ETH',
-					formatted: '1.00',
+					formatted: '1.0000',
 					formattedValue: 1,
-					full: '1.00 real ETH',
+					full: '1.0000 real ETH',
 					minimized: '1',
-					rounded: '1.00',
+					rounded: '1.0000',
 					roundedValue: 1,
 					value: 1,
 				}

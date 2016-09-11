@@ -12,11 +12,11 @@ describe('utils/format-number.js', () => {
 						value: 1000.1,
 						formattedValue: 1000.1,
 						roundedValue: 1000.1,
-						formatted: '1,000.10',
-						rounded: '1,000.10',
+						formatted: '1,000.1000',
+						rounded: '1,000.1000',
 						minimized: '1,000.1',
 						denomination: ' ETH',
-						full: '1,000.10 ETH'
+						full: '1,000.1000 ETH'
 					}
 				},
 				{
@@ -52,13 +52,13 @@ describe('utils/format-number.js', () => {
 					denom: 'rep',
 					out: {
 						value: 1000.1,
-						formattedValue: 1000,
+						formattedValue: 1000.1,
 						roundedValue: 1000,
-						formatted: '1,000',
+						formatted: '1,000.10',
 						rounded: '1,000',
-						minimized: '1,000',
+						minimized: '1,000.1',
 						denomination: ' REP',
-						full: '1,000 REP'
+						full: '1,000.10 REP'
 					}
 				}
 			];
