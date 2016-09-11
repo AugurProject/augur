@@ -241,19 +241,16 @@ const Transaction = (p) => {
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
-						{p.data && p.data.gasFees && p.status === 'success' ?
-							<ValueDenomination
-								className="gas-message"
-								{...p.data.gasFees}
-								prefix="gas cost:"
-							/> :
-							<ValueDenomination
-								className="gas-message"
-								{...p.data.gasFees}
-								prefix="estimated gas cost:"
-							/>
+						{p.data && p.data.gasFees &&
+							<span>
+								<ValueDenomination
+									className="gas-message"
+									{...p.data.gasFees}
+									prefix="gas cost:"
+								/>
+								<br />
+							</span>
 						}
-						<br />
 						<span className="status">{p.status}</span>
 					</div>
 				</Link> :
