@@ -255,7 +255,7 @@ const Transaction = (p) => {
 										className="freeze-noFeeCost-message"
 										{...p.freeze.noFeeCost}
 										prefix={p.freeze.verb}
-										postfix="+"
+										postfix="+ "
 									/>
 								}
 								<ValueDenomination
