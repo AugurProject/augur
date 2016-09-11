@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from '../../link/components/link';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -125,9 +125,20 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case COMMIT_REPORT: {
-		nodes.action = 'Commit report';
-		if (p.data.market.type === SCALAR) {
+
+	case COMMIT_REPORT:
+	case REVEAL_REPORT:
+		switch (p.type) {
+		case REVEAL_REPORT:
+			nodes.action = 'Reveal report';
+			break;
+		case COMMIT_REPORT:
+			nodes.action = 'Commit report';
+			break;
+		default:
+			break;
+		}
+		if (p.data.isScalar || p.data.market.type === SCALAR) {
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
@@ -161,7 +172,7 @@ const Transaction = (p) => {
 			);
 		}
 		break;
-	}
+
 	case GENERATE_ORDER_BOOK:
 		nodes.action = 'Generate order book';
 		nodes.description = (
@@ -230,10 +241,23 @@ const Transaction = (p) => {
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
+						{p.data && p.data.gasFees && p.status === 'success' ?
+							<ValueDenomination
+								className="gas-message"
+								{...p.data.gasFees}
+								prefix="gas cost:"
+							/> :
+							<ValueDenomination
+								className="gas-message"
+								{...p.data.gasFees}
+								prefix="estimated gas cost:"
+							/>
+						}
+						<br />
 						<span className="status">{p.status}</span>
 					</div>
-				</Link>
-				: <div className="status-and-message">
+				</Link> :
+				<div className="status-and-message">
 					<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 					<br />
 					<span className="status">{p.status}</span>
