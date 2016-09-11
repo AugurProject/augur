@@ -45,8 +45,8 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 		}
 
 		const p = res.payload;
-		if (p.gasFees) {
-			if (!totalGasFees[transactionID]) totalGasFees[transactionID] = ZERO;
+		if (!totalGasFees[transactionID]) totalGasFees[transactionID] = ZERO;
+		if (p && p.gasFees) {
 			totalGasFees[transactionID] = totalGasFees[transactionID].plus(abi.bignum(p.gasFees));
 		}
 		const totalGasFeesMessage = formatRealEther(totalGasFees[transactionID]).full;
