@@ -24,7 +24,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 				const { intentions, completeSetsBought } = readMindOfUserToDetermineIntentions(marketID, accountHistory, getState().marketsData);
 				if (!marketID) dispatch(clearAccountTrades());
 				if (Object.keys(intentions).length) {
-					console.log('user intentions:', intentions);
+					console.log('intentions:', intentions);
 					dispatch(updateAccountTradesData(intentions));
 				}
 				if (Object.keys(completeSetsBought).length) {

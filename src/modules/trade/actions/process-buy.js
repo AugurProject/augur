@@ -1,4 +1,4 @@
-import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -23,8 +23,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `buying ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-				paying ${formatEther(tradingFeesEth).full} in trading fees`,
+			message: `buying ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			totalCost: formatEtherEstimate(totalEthWithFee),
+			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
@@ -35,20 +36,25 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				const update = { status: `${data.status} buy...` };
 				if (data.hash) update.hash = data.hash;
 				if (data.timestamp) update.timestamp = data.timestamp;
+				if (data.tradingFees) update.tradingFees = formatEther(data.tradingFees);
 				if (data.gasFees) update.gasFees = formatRealEther(data.gasFees);
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(res) => {
-				filledShares = filledShares.plus(abi.bignum(res.filledShares));
-
 				// update user's position
 				dispatch(loadAccountTrades(marketID));
+
+				filledShares = filledShares.plus(abi.bignum(res.filledShares));
+				const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(res.remainingEth));
+				const pricePerShare = filledShares.dividedBy(filledEth);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
 					timestamp: res.timestamp,
 					status: 'filling...',
-					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth),
+					message: `bought ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					totalCost: formatEther(filledEth),
+					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
 			},
@@ -65,12 +71,16 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				dispatch(loadAccountTrades(marketID));
 
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
+				const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(res.remainingEth));
+				const pricePerShare = filledShares.dividedBy(filledEth);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
 					timestamp: res.timestamp,
 					status: SUCCESS,
-					message: generateMessage(totalEthWithFee, res.remainingEth, filledShares, res.tradingFeesEth),
+					message: `bought ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full}`,
+					totalCost: formatEther(filledEth),
+					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
 
@@ -87,16 +97,10 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						limitPrice,
 						res.remainingEth,
 						tradingFeesEth,
-						transactionData.data.feePercent.value,
+						transactionData.feePercent.value,
 						gasFeesRealEth));
 				}
 			}
 		);
 	};
-}
-
-function generateMessage(totalEthWithFee, remainingEth, filledShares, tradingFeesEth) {
-	const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(remainingEth));
-	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
-		paid ${formatEther(tradingFeesEth).full} in trading fees`;
 }

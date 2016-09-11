@@ -19,8 +19,12 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing short ask...',
-			message: `short asking ${numShares} shares for ${limitPrice} ETH each<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees`,
+			message: `short asking ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			freeze: {
+				verb: 'freezing',
+				noFeeCost: formatEther(totalEthWithoutFee),
+				tradingFees: formatEther(tradingFeesEth)
+			},
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
@@ -34,8 +38,12 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 				hash: res.hash,
 				timestamp: res.timestamp,
 				status: SUCCESS,
-				message: `short ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees`,
+				message: `short ask ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+				freeze: {
+					verb: 'froze',
+					noFeeCost: formatEther(totalEthWithoutFee),
+					tradingFees: formatEther(tradingFeesEth)
+				},
 				gasFees: formatRealEther(res.gasFees)
 			}));
 		});
@@ -48,7 +56,6 @@ function shortAsk(transactionID, marketID, outcomeID, limitPrice, totalShares, d
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
-
 		onSent: noop,
 		onFailed: cb,
 		onSuccess: data => cb(null, data)

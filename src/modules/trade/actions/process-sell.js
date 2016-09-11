@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -27,8 +27,9 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `selling ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-				paying ${formatEther(tradingFeesEth).full} in trading fees`,
+			message: `selling ${formatShares(numShares).full} for ${formatEtherEstimate(limitPrice).full} each`,
+			totalReturn: formatEtherEstimate(totalEthWithFee),
+			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
@@ -39,18 +40,24 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				const update = { status: `${data.status} sell...` };
 				if (data.hash) update.hash = data.hash;
 				if (data.timestamp) update.timestamp = data.timestamp;
+				if (data.tradingFees) update.tradingFees = formatEther(data.tradingFees);
 				if (data.gasFees) update.gasFees = formatRealEther(data.gasFees);
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
-				dispatch(updateExistingTransaction(transactionID, {
+				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
+				const pricePerShare = filledShares.dividedBy(filledEth);
+				const update = {
 					hash: res.hash,
 					timestamp: res.timestamp,
 					status: 'filling...',
-					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFeesEth),
+					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					totalReturn: formatEther(filledEth),
 					gasFees: formatRealEther(res.gasFees)
-				}));
+				};
+				if (res.tradingFees) update.tradingfees = formatEther(res.tradingFees);
+				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {
 				dispatch(updateTradeCommitLock(false));
@@ -65,12 +72,16 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				dispatch(loadAccountTrades(marketID));
 
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
+				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
+				const pricePerShare = filledShares.dividedBy(filledEth);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
 					timestamp: res.timestamp,
 					status: SUCCESS,
-					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFeesEth),
+					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					totalReturn: formatEther(filledEth),
+					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
 
@@ -102,7 +113,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								limitPrice,
 								totalEthWithFee,
 								tradingFeesEth,
-								transactionData.data.feePercent.value,
+								transactionData.feePercent.value,
 								gasFeesRealEth));
 							if (shortAskShares > 0) {
 								dispatch(addShortAskTransaction(
@@ -114,7 +125,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									limitPrice,
 									totalEthWithFee,
 									tradingFeesEth,
-									transactionData.data.feePercent.value,
+									transactionData.feePercent.value,
 									gasFeesRealEth));
 							}
 						} else {
@@ -131,7 +142,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										limitPrice,
 										totalEthWithFee,
 										tradingFeesEth,
-										transactionData.data.feePercent.value,
+										transactionData.feePercent.value,
 										gasFeesRealEth));
 								} else {
 									dispatch(addShortAskTransaction(
@@ -143,7 +154,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										limitPrice,
 										totalEthWithFee,
 										tradingFeesEth,
-										transactionData.data.feePercent.value,
+										transactionData.feePercent.value,
 										gasFeesRealEth));
 								}
 							}));
@@ -153,10 +164,4 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			}
 		);
 	};
-}
-
-function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth) {
-	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
-	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
-		paid ${formatEther(tradingFeesEth).full} in trading fees`;
 }

@@ -49,7 +49,7 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 		if (p && p.gasFees) {
 			totalGasFees[transactionID] = totalGasFees[transactionID].plus(abi.bignum(p.gasFees));
 		}
-		const totalGasFeesMessage = formatRealEther(totalGasFees[transactionID]).full;
+		const totalGasFeesMessage = formatRealEther(totalGasFees[transactionID]);
 		let message = null;
 
 		switch (res.status) {

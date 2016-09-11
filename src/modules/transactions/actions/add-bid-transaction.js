@@ -18,14 +18,14 @@ export const makeBidTransaction = (marketID, outcomeID, marketDescription, outco
 			marketID,
 			outcomeID,
 			marketDescription,
-			outcomeName,
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		}
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
 	transaction.action = (transactionID) => dispatch(processBid(

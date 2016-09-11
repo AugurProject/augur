@@ -17,11 +17,11 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 			type: SELL_COMPLETE_SETS,
 			data: {
 				marketID,
-				marketDescription: marketData.description,
-				numShares: fmtNumShares,
-				value: fmtValue,
-				gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
-			}
+				marketDescription: marketData.description
+			},
+			numShares: fmtNumShares,
+			value: fmtValue,
+			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
 		};
 		console.info(SELL_COMPLETE_SETS, transaction.data);
 		transaction.action = (transactionID) => {

@@ -39,7 +39,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 			res.remainingShares = abi.number(data.unmatchedShares) || 0;
 			res.filledShares = abi.number(data.sharesBought) || 0;
 			res.filledEth = abi.number(data.cashFromTrade) || 0;
-			res.tradingFeesEth = abi.number(data.tradingFees) || 0;
+			res.tradingFees = abi.number(data.tradingFees) || 0;
 			res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 			res.timestamp = data.timestamp;
 			res.hash = data.hash;

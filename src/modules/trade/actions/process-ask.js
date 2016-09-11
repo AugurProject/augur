@@ -1,5 +1,5 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -16,9 +16,12 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing ask...',
-			message: `asking ${numShares} shares for ${limitPrice} ETH each<br />
-				freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-				expected return: ${formatEther(totalEthWithoutFee).full}`,
+			message: `asking ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			freeze: {
+				verb: 'freezing',
+				tradingFees: formatEther(tradingFeesEth)
+			},
+			totalReturn: formatEtherEstimate(totalEthWithoutFee),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
@@ -27,13 +30,16 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
 			dispatch(loadBidsAsks(marketID));
-			return dispatch(updateExistingTransaction(transactionID, {
+			dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
 				timestamp: res.timestamp,
 				status: SUCCESS,
-				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					expected return: ${formatEther(totalEthWithoutFee).full}`,
+				message: `ask ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+				freeze: {
+					verb: 'froze',
+					tradingFees: formatEther(tradingFeesEth)
+				},
+				totalReturn: formatEtherEstimate(totalEthWithoutFee),
 				gasFees: formatRealEther(res.gasFees)
 			}));
 		});
@@ -46,7 +52,6 @@ function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, dispat
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
-
 		onSent: data => console.log('ask onSent', data),
 		onFailed: cb,
 		onSuccess: data => cb(null, data)

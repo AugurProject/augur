@@ -23,9 +23,9 @@ export function addRevealReportTransaction(eventID, reportedOutcomeID, salt, isU
 						reportedOutcomeID,
 						isUnethical,
 						isScalar,
-						isIndeterminate,
-						gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
-					}
+						isIndeterminate
+					},
+					gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
 				};
 				console.info(REVEAL_REPORT, transaction.data);
 				transaction.action = (transactionID) => dispatch(processRevealReport(

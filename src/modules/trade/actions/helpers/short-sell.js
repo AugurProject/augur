@@ -56,6 +56,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 					status: SUCCESS,
 					hash: data.txHash,
 					timestamp: data.timestamp,
+					tradingFees: res.tradingFees,
 					gasFees: res.gasFees
 				});
 				if (res.remainingShares > 0) return nextMatchingID();
