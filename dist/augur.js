@@ -43491,7 +43491,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.7.0";
+    this.version = "2.7.1";
 
     this.options = {
         debug: {
@@ -47543,7 +47543,11 @@ module.exports = {
                     } else {
                         return callback(version);
                     }
-                    if (is_function(callback)) callback(null, version);
+                    self.rpc.getGasPrice(function (gasPrice) {
+                        if (!gasPrice || gasPrice.error) return callback(gasPrice);
+                        self.rpc.gasPrice = parseInt(gasPrice, 16);
+                        callback(null, version);
+                    });
                 });
             } else {
                 var key, method;
@@ -47557,6 +47561,7 @@ module.exports = {
                     if (key) this.api.functions[method].to = this.contracts[key];
                 }
                 this.tx = this.api.functions;
+                this.rpc.gasPrice = parseInt(this.rpc.getGasPrice(), 16);
                 return this.network_id;
             }
         } else {
