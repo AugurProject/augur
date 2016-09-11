@@ -160,6 +160,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 						}
 					}
 					console.log('merged history:', mergedHistory);
+					console.log('complete sets bought:', JSON.stringify(completeSetsBought, null, 2));
 					if (!marketID) dispatch(clearAccountTrades());
 					dispatch(updateAccountTradesData(mergedHistory));
 					dispatch(updateCompleteSetsBought(completeSetsBought));
