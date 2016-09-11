@@ -46,7 +46,7 @@ function sellCompleteSetsMarket(marketID, callback) {
 					console.info('selling complete set:', marketID, smallestPosition.toFixed());
 					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback));
 				} else {
-					callback(null);
+					if (callback) callback(null);
 				}
 			});
 		}

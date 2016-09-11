@@ -1,4 +1,4 @@
-import { formatShares, formatEther, formatRealEther } from '../../../utils/format-number';
+import { formatShares, formatEther, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -20,7 +20,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 				marketDescription: marketData.description,
 				numShares: fmtNumShares,
 				value: fmtValue,
-				gasFees: formatRealEther(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
+				gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
 			}
 		};
 		console.info(SELL_COMPLETE_SETS, transaction.data);
@@ -42,7 +42,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 						hash: r.hash,
 						timestamp: r.timestamp,
 						message: `sold ${fmtNumShares.full} of each outcome for ${fmtValue.full}`,
-						gasFees: formatRealEther(r.gasFees).full
+						gasFees: formatRealEther(r.gasFees)
 					}));
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(marketID, true));

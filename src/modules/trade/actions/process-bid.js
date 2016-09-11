@@ -1,5 +1,5 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -17,8 +17,8 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing bid...',
 			message: `bidding ${numShares} shares for ${limitPrice} ETH each<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees`,
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
 		bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
@@ -31,8 +31,8 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 				timestamp: res.timestamp,
 				status: SUCCESS,
 				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					<small>(paid ${formatRealEther(res.gasFees).full} in gas fees)</small>`
+					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees`,
+				gasFees: formatRealEther(res.gasFees)
 			}));
 		});
 	};

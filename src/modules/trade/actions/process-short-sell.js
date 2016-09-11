@@ -1,4 +1,4 @@
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -25,7 +25,8 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			status: 'starting...',
 			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
 				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+				total cost: ${formatEther(totalEthWithFee).full}`,
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
 		const { loginAccount } = getState();
@@ -35,6 +36,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;
 				if (data.timestamp) update.timestamp = data.timestamp;
+				if (data.gasFees) update.gasFees = formatRealEther(data.gasFees);
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {
@@ -53,7 +55,8 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
-					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFees, res.gasFees)
+					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFees),
+					gasFees: formatRealEther(res.gasFees)
 				}));
 
 				if (res.remainingShares > 0) {
@@ -76,10 +79,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 	};
 }
 
-function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, gasFeesRealEth) {
+function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth) {
 	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
 	const totalEthWithFee = abi.bignum(filledEth).plus(tradingFeesEth);
 	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
 		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
-		total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in gas fees)</small>`;
+		total cost: ${formatEther(totalEthWithFee).full}`;
 }

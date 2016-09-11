@@ -1,5 +1,5 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -18,7 +18,8 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			status: 'placing ask...',
 			message: `asking ${numShares} shares for ${limitPrice} ETH each<br />
 				freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-				expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+				expected return: ${formatEther(totalEthWithoutFee).full}`,
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
 		ask(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
@@ -32,7 +33,8 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 				status: SUCCESS,
 				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
 					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(res.gasFees).full} in gas fees)</small>`
+					expected return: ${formatEther(totalEthWithoutFee).full}`,
+				gasFees: formatRealEther(res.gasFees)
 			}));
 		});
 	};

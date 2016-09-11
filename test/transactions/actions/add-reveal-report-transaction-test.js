@@ -94,10 +94,10 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 					isScalar: false,
 					isIndeterminate: false,
 					gasFees: {
-						denomination: ' real ETH',
+						denomination: ' real ETH (estimated)',
 						formatted: '1.0000',
 						formattedValue: 1,
-						full: '1.0000 real ETH',
+						full: '1.0000 real ETH (estimated)',
 						minimized: '1',
 						rounded: '1.0000',
 						roundedValue: 1,
@@ -126,7 +126,16 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 			hash: '0xdeadbeef',
 			timestamp: 100,
 			message: 'revealed reported outcome: testOutcome 2',
-			gasFees: '1.0000 real ETH'
+			gasFees: {
+				denomination: ' real ETH',
+				formatted: '1.0000',
+				formattedValue: 1,
+				full: '1.0000 real ETH',
+				minimized: '1',
+				rounded: '1.0000',
+				roundedValue: 1,
+				value: 1
+			}
 		}, {
 			type: 'UPDATE_ASSETS'
 		}];

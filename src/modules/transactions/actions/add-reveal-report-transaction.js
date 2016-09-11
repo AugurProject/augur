@@ -1,4 +1,4 @@
-import { formatRealEther } from '../../../utils/format-number';
+import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { REVEAL_REPORT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -24,7 +24,7 @@ export function addRevealReportTransaction(eventID, reportedOutcomeID, salt, isU
 						isUnethical,
 						isScalar,
 						isIndeterminate,
-						gasFees: formatRealEther(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
+						gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
 					}
 				};
 				console.info(REVEAL_REPORT, transaction.data);
@@ -75,7 +75,7 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 					hash: r.hash,
 					timestamp: r.timestamp,
 					message: `revealed reported outcome: ${outcomeName}`,
-					gasFees: formatRealEther(r.gasFees).full
+					gasFees: formatRealEther(r.gasFees)
 				}));
 				dispatch(updateAssets());
 				if (callback) callback(null);
