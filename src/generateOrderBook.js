@@ -23,11 +23,6 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 module.exports = function (p, cb) {
     var self = this;
     var liquidity = abi.bignum(p.liquidity);

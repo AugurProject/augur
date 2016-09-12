@@ -72,6 +72,10 @@ module.exports = {
         return { params: params, cb: cb };
     },
 
+    unique: function (value, index, self) {
+        return self.indexOf(value) === index;
+    },
+
     sha256: function (hashable) {
         var x = clone(hashable);
         if (x && x.constructor === Array) {

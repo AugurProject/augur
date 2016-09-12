@@ -11,11 +11,6 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 module.exports = {
 
     // load each batch of marketdata sequentially and recursively until complete

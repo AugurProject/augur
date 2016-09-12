@@ -14,11 +14,6 @@ var utils = require("../../src/utilities");
 var tools = require("../tools");
 var DEBUG = false;
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 describe("CreateMarket.createSingleEventMarket", function () {
 
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
