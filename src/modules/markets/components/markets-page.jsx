@@ -10,6 +10,7 @@ export default class MarketsPage extends Component {
 		className: PropTypes.string,
 		siteHeader: PropTypes.object,
 		createMarketLink: PropTypes.object,
+		loginAccount: PropTypes.object,
 		markets: PropTypes.array,
 		favoriteMarkets: PropTypes.array,
 		marketsHeader: PropTypes.object,
@@ -29,6 +30,7 @@ export default class MarketsPage extends Component {
 
 	render() {
 		const p = this.props;
+
 		return (
 			<div className="page markets">
 				<SiteHeader {...p.siteHeader} />
