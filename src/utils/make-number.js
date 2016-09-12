@@ -10,7 +10,7 @@ export function makeNumber(num, denomination, omitSign, noRandom) {
 		formatted: rndNum.toFixed(2),
 		roundedValue: Math.round(rndNum),
 		rounded: Math.round(rndNum).toFixed(2),
-		minimized: rndNum.toFixed(2),
+		minimized: rndNum.toFixed(0),
 		denomination: denomination || ''
 	};
 	if (denomination === ' shares') {

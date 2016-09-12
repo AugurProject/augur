@@ -166,6 +166,11 @@ export default function (market) {
 					assert.isNumber(trade.numShares);
 				});
 
+				it(`market.outcomes[${i}].trade.maxNumShares`, () => {
+					assert.isDefined(trade.maxNumShares);
+					assert.isNumber(trade.maxNumShares);
+				});
+
 				it(`market.outcomes[${i}].trade.limitPrice`, () => {
 					assert.isDefined(trade.limitPrice);
 					assert.isNumber(trade.limitPrice);
