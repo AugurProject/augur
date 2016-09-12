@@ -56,66 +56,66 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				marketType: 'marketType',
 				marketDescription: 'Some Market Description',
 				outcomeName: 'anOutcomeName',
-				numShares: {
-					value: 5,
-					formattedValue: 5,
-					formatted: '5',
-					roundedValue: 5,
-					rounded: '5.00',
-					minimized: '5',
-					denomination: ' shares',
-					full: '5 shares'
-				},
-				avgPrice: {
-					value: 10,
-					formattedValue: 10,
-					formatted: '10.0000',
-					roundedValue: 10,
-					rounded: '10.0000',
-					minimized: '10',
-					denomination: ' ETH',
-					full: '10.0000 ETH'
-				},
-				tradingFees: {
-					denomination: ' ETH',
-					formatted: '3.0000',
-					formattedValue: 3,
-					full: '3.0000 ETH',
-					minimized: '3',
-					rounded: '3.0000',
-					roundedValue: 3,
-					value: 3
-				},
-				feePercent: {
-					denomination: '%',
-					formatted: '2.0',
-					formattedValue: 2,
-					full: '2.0%',
-					minimized: '2',
-					rounded: '2',
-					roundedValue: 2,
-					value: 2
-				},
-				noFeePrice: {
-					value: 10,
-					formattedValue: 10,
-					formatted: '10.0000',
-					roundedValue: 10,
-					rounded: '10.0000',
-					minimized: '10',
-					denomination: ' ETH',
-					full: '10.0000 ETH'
-				},
-				gasFees: {
-					denomination: ' real ETH',
-					formatted: '1.0000',
-					formattedValue: 1,
-					full: '1.0000 real ETH',
-					minimized: '1',
-					rounded: '1.0000',
-					roundedValue: 1,
-					value: 1,
-				}
+			},
+			numShares: {
+				value: 5,
+				formattedValue: 5,
+				formatted: '5',
+				roundedValue: 5,
+				rounded: '5.00',
+				minimized: '5',
+				denomination: ' shares',
+				full: '5 shares'
+			},
+			avgPrice: {
+				value: 10,
+				formattedValue: 10,
+				formatted: '10.0000',
+				roundedValue: 10,
+				rounded: '10.0000',
+				minimized: '10',
+				denomination: ' ETH',
+				full: '10.0000 ETH'
+			},
+			tradingFees: {
+				denomination: ' ETH',
+				formatted: '3.0000',
+				formattedValue: 3,
+				full: '3.0000 ETH',
+				minimized: '3',
+				rounded: '3.0000',
+				roundedValue: 3,
+				value: 3
+			},
+			feePercent: {
+				denomination: '%',
+				formatted: '2.0',
+				formattedValue: 2,
+				full: '2.0%',
+				minimized: '2',
+				rounded: '2',
+				roundedValue: 2,
+				value: 2
+			},
+			noFeePrice: {
+				value: 10,
+				formattedValue: 10,
+				formatted: '10.0000',
+				roundedValue: 10,
+				rounded: '10.0000',
+				minimized: '10',
+				denomination: ' ETH',
+				full: '10.0000 ETH'
+			},
+			gasFees: {
+				denomination: ' real ETH',
+				formatted: '1.0000',
+				formattedValue: 1,
+				full: '1.0000 real ETH',
+				minimized: '1',
+				rounded: '1.0000',
+				roundedValue: 1,
+				value: 1,
 			},
 			action: actual[0].action
 		}, {
@@ -140,66 +140,66 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 				marketType: 'marketType',
 				marketDescription: 'Some Market Description',
 				outcomeName: 'anOutcomeName',
-				numShares: {
-					value: 5,
-					formattedValue: 5,
-					formatted: '5',
-					roundedValue: 5,
-					rounded: '5.00',
-					minimized: '5',
-					denomination: ' shares',
-					full: '5 shares'
-				},
-				avgPrice: {
-					value: 10,
-					formattedValue: 10,
-					formatted: '10.0000',
-					roundedValue: 10,
-					rounded: '10.0000',
-					minimized: '10',
-					denomination: ' ETH',
-					full: '10.0000 ETH'
-				},
-				noFeePrice: {
-					value: 10,
-					formattedValue: 10,
-					formatted: '10.0000',
-					roundedValue: 10,
-					rounded: '10.0000',
-					minimized: '10',
-					denomination: ' ETH',
-					full: '10.0000 ETH'
-				},
-				tradingFees: {
-					denomination: ' ETH',
-					formatted: '3.0000',
-					formattedValue: 3,
-					full: '3.0000 ETH',
-					minimized: '3',
-					rounded: '3.0000',
-					roundedValue: 3,
-					value: 3
-				},
-				feePercent: {
-					denomination: '%',
-					formatted: '2.0',
-					formattedValue: 2,
-					full: '2.0%',
-					minimized: '2',
-					rounded: '2',
-					roundedValue: 2,
-					value: 2
-				},
-				gasFees: {
-					denomination: ' real ETH',
-					formatted: '1.0000',
-					formattedValue: 1,
-					full: '1.0000 real ETH',
-					minimized: '1',
-					rounded: '1.0000',
-					roundedValue: 1,
-					value: 1,
-				}
+			},
+			numShares: {
+				value: 5,
+				formattedValue: 5,
+				formatted: '5',
+				roundedValue: 5,
+				rounded: '5.00',
+				minimized: '5',
+				denomination: ' shares',
+				full: '5 shares'
+			},
+			avgPrice: {
+				value: 10,
+				formattedValue: 10,
+				formatted: '10.0000',
+				roundedValue: 10,
+				rounded: '10.0000',
+				minimized: '10',
+				denomination: ' ETH',
+				full: '10.0000 ETH'
+			},
+			noFeePrice: {
+				value: 10,
+				formattedValue: 10,
+				formatted: '10.0000',
+				roundedValue: 10,
+				rounded: '10.0000',
+				minimized: '10',
+				denomination: ' ETH',
+				full: '10.0000 ETH'
+			},
+			tradingFees: {
+				denomination: ' ETH',
+				formatted: '3.0000',
+				formattedValue: 3,
+				full: '3.0000 ETH',
+				minimized: '3',
+				rounded: '3.0000',
+				roundedValue: 3,
+				value: 3
+			},
+			feePercent: {
+				denomination: '%',
+				formatted: '2.0',
+				formattedValue: 2,
+				full: '2.0%',
+				minimized: '2',
+				rounded: '2',
+				roundedValue: 2,
+				value: 2
+			},
+			gasFees: {
+				denomination: ' real ETH',
+				formatted: '1.0000',
+				formattedValue: 1,
+				full: '1.0000 real ETH',
+				minimized: '1',
+				rounded: '1.0000',
+				roundedValue: 1,
+				value: 1,
 			},
 			action: actual[0].action
 		}, {

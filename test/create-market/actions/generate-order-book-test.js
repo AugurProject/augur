@@ -185,6 +185,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 status: {
                     status: SUCCESS,
                     gasFees: '0.000 real ETH',
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '0.000',
+                        formattedValue: 0,
+                        full: '0.000 real ETH',
+                        minimized: '0',
+                        rounded: '0.0000',
+                        roundedValue: 0,
+                        value: 0
+                    },
                     message: null
                 }
             }], `Didn't correctly handle onSuccess callback`);
@@ -212,7 +222,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 status: {
                     status: COMPLETE_SET_BOUGHT,
                     message: null,
-                    gasFees: '2.0000 real ETH',
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
                     hash: '0xdeadbeef',
                     timestamp: 1
                 }
@@ -245,7 +264,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: ORDER_BOOK_OUTCOME_COMPLETE,
-                    gasFees: '2.0000 real ETH',
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
                     message: `Order book creation for outcome 'outcome 1' completed.`
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);
@@ -281,7 +309,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                     status: ORDER_BOOK_ORDER_COMPLETE,
                     hash: undefined,
                     timestamp: undefined,
-                    gasFees: '2.0000 real ETH',
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
                     message: `Bid for 1 share of outcome 'outcome 1' at 1 ETH created.`
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);

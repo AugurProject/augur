@@ -92,17 +92,17 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 					reportedOutcomeID: '2',
 					isUnethical: false,
 					isScalar: false,
-					isIndeterminate: false,
-					gasFees: {
-						denomination: ' real ETH (estimated)',
-						formatted: '1.0000',
-						formattedValue: 1,
-						full: '1.0000 real ETH (estimated)',
-						minimized: '1',
-						rounded: '1.0000',
-						roundedValue: 1,
-						value: 1
-					}
+					isIndeterminate: false
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '1.0000',
+					formattedValue: 1,
+					full: '1.0000 real ETH (estimated)',
+					minimized: '1',
+					rounded: '1.0000',
+					roundedValue: 1,
+					value: 1
 				}
 			}
 		}];
