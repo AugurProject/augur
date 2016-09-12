@@ -544,7 +544,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "4 short ask logs, 1 short sell log, ",
+            description: "4 short ask logs, 1 short sell log, 2 complete sets logs",
             logs: {
                 shortAskBuyCompleteSets: [{
                     data: fix("50"),

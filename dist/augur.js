@@ -40278,7 +40278,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.7.3";
+    this.version = "2.7.4";
 
     this.options = {
         debug: {
@@ -42440,12 +42440,6 @@ module.exports = {
 },{"../utilities":263,"clone":120}],255:[function(require,module,exports){
 /**
  * Tools to adjust positions in Augur markets for display.
- *
- * Rules:
- *   1. Shares from buyCompleteSets (from short sell / short ask) are not shown.
- *   2. Shares from sellCompleteSets are netted with those from buyCompleteSets.
- *      The excess sellCompleteSets shares are subtracted from the position.
- *
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -42537,9 +42531,7 @@ module.exports = {
 
     /**
      * Adjusts positions by subtracting out contributions from auto-generated
-     * buy/sellCompleteSets due to short sell and/or short ask:
-     *
-     * adjusted position = on-chain position - auto-generated completeSets
+     * buy/sellCompleteSets due to short sell and/or short ask.
      *
      * Note: for short sell, decrease positions by the number of shares short sold
      * (the short_sell on-contract method does not create a buyCompleteSets log).
