@@ -8,7 +8,7 @@ import ValueDenomination from '../../common/components/value-denomination';
 const SiteHeader = (p) => (
 	<header className="site-header">
 		<nav className="site-nav">
-			<Link className={classnames('site-nav-link', 'augur', { active: p.activePage === MARKETS })} {...p.marketsLink}>augur</Link>
+			<Link className={classnames('site-nav-link', 'augur')} {...p.marketsLink}>augur</Link>
 
 			<span className="spacer">&nbsp;</span>
 
