@@ -47,24 +47,24 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	});
 
 	it('should process the transfer of funds from one account to another', () => {
-		store.dispatch(action.processTransferFunds('myTransactionID', 'fromTestAddress123', 5, 'toTestAddress456'));
+		store.dispatch(action.processTransferFunds('myTransactionID', 'fromTestAddress123', 5, 'eth', 'toTestAddress456'));
 		const actual = store.getActions();
 		const expected = [{
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'submitting a request to transfer 5 ETH to toTestAddress456...'
+				status: 'submitting a request to transfer 5 eth to toTestAddress456...'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'processing transferring of 5 ETH to toTestAddress456'
+				status: 'processing transferring of 5 eth to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
 				status: 'success',
 				hash: '0xdeadbeef',
-				message: 'Transfer of 5 ETH to toTestAddress456 Complete.'
+				message: 'Transfer of 5 eth to toTestAddress456 Complete.'
 			}
 		}, {
 			type: 'UPDATE_ASSETS'
