@@ -1,7 +1,7 @@
 import {
     assert
 } from 'chai';
-
+import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -72,9 +72,13 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     });
 
     stubbedAugurJS = {
-        generateOrderBook: () => {}
+        generateOrderBook: () => {},
+        abi: { bignum: () => {} }
     };
     sinon.stub(stubbedAugurJS, 'generateOrderBook');
+    sinon.stub(stubbedAugurJS.abi, 'bignum', (n) => {
+        return new BigNumber(n, 10);
+    });
 
     action = proxyquire(
         '../../../src/modules/create-market/actions/generate-order-book',
@@ -180,6 +184,17 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: SUCCESS,
+                    gasFees: '0.000 real ETH',
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '0.000',
+                        formattedValue: 0,
+                        full: '0.000 real ETH',
+                        minimized: '0',
+                        rounded: '0.0000',
+                        roundedValue: 0,
+                        value: 0
+                    },
                     message: null
                 }
             }], `Didn't correctly handle onSuccess callback`);
@@ -192,7 +207,8 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                     {
                         status: COMPLETE_SET_BOUGHT,
                         payload: {
-                            hash: "0xdeadbeef",
+                            hash: '0xdeadbeef',
+                            gasFees: 2,
                             timestamp: 1
                         }
                     },
@@ -206,7 +222,17 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 status: {
                     status: COMPLETE_SET_BOUGHT,
                     message: null,
-                    hash: "0xdeadbeef",
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
+                    hash: '0xdeadbeef',
                     timestamp: 1
                 }
             }], `Didn't correctly handle onCompleteSets callback`);
@@ -238,6 +264,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: ORDER_BOOK_OUTCOME_COMPLETE,
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
                     message: `Order book creation for outcome 'outcome 1' completed.`
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);
@@ -273,6 +309,16 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                     status: ORDER_BOOK_ORDER_COMPLETE,
                     hash: undefined,
                     timestamp: undefined,
+                    gasFees: {
+                        denomination: ' real ETH',
+                        formatted: '2.0000',
+                        formattedValue: 2,
+                        full: '2.0000 real ETH',
+                        minimized: '2',
+                        rounded: '2.0000',
+                        roundedValue: 2,
+                        value: 2
+                    },
                     message: `Bid for 1 share of outcome 'outcome 1' at 1 ETH created.`
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);

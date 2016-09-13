@@ -52,8 +52,8 @@ export function formatEther(num, opts) {
 	return formatNumber(
 		abi.number(num),
 		{
-			decimals: 2,
-			decimalsRounded: 2,
+			decimals: constants.PRECISION.decimals,
+			decimalsRounded: constants.PRECISION.decimals,
 			denomination: ' ETH',
 			positiveSign: false,
 			zeroStyled: false,
@@ -68,9 +68,41 @@ export function formatRealEther(num, opts) {
 	return formatNumber(
 		abi.number(num),
 		{
-			decimals: 2,
-			decimalsRounded: 2,
+			decimals: constants.PRECISION.decimals,
+			decimalsRounded: constants.PRECISION.decimals,
 			denomination: ' real ETH',
+			positiveSign: false,
+			zeroStyled: false,
+			blankZero: false,
+			bigUnitPostfix: false,
+			...opts
+		}
+	);
+}
+
+export function formatEtherEstimate(num, opts) {
+	return formatNumber(
+		abi.number(num),
+		{
+			decimals: constants.PRECISION.decimals,
+			decimalsRounded: constants.PRECISION.decimals,
+			denomination: ' ETH (estimated)',
+			positiveSign: false,
+			zeroStyled: false,
+			blankZero: false,
+			bigUnitPostfix: false,
+			...opts
+		}
+	);
+}
+
+export function formatRealEtherEstimate(num, opts) {
+	return formatNumber(
+		abi.number(num),
+		{
+			decimals: constants.PRECISION.decimals,
+			decimalsRounded: constants.PRECISION.decimals,
+			denomination: ' real ETH (estimated)',
 			positiveSign: false,
 			zeroStyled: false,
 			blankZero: false,
@@ -123,7 +155,7 @@ export function formatRep(num, opts) {
 	return formatNumber(
 		abi.number(num),
 		{
-			decimals: 0,
+			decimals: 2,
 			decimalsRounded: 0,
 			denomination: ' REP',
 			positiveSign: false,

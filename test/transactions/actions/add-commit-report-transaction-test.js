@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/transactions/actions/add-report-transaction.js`, () => {
+describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -29,7 +29,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 		}
 	});
 
-	action = proxyquire('../../../src/modules/transactions/actions/add-report-transaction.js', {
+	action = proxyquire('../../../src/modules/transactions/actions/add-commit-report-transaction.js', {
 		'../../reports/actions/commit-report': mockSubmit,
 		'../../transactions/actions/add-transactions': mockAdd
 	});
@@ -53,7 +53,8 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 					id: 'test2'
 				},
 				find: () => [market.reportableOutcomes.test1, market.reportableOutcomes.test2]
-			}
+			},
+			description: 'the best market ever'
 		};
 
 		store.dispatch(action.addCommitReportTransaction(market, 'test1', false, false, 1, 5));
@@ -71,9 +72,21 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 					}, {
 						id: 'test2'
 					}],
+					description: 'the best market ever',
 					reportedOutcomeID: 'test1',
 					isUnethical: false,
-					isIndeterminate: false
+					isIndeterminate: false,
+					gasFees: {
+						denomination: ' real ETH',
+						formatted: '0.0627',
+						formattedValue: 0.0627,
+						full: '0.0627 real ETH',
+						minimized: '0.0627',
+						rounded: '0.0627',
+						roundedValue: 0.0627,
+						value: 0.0627
+					}
+
 				},
 				action: store.getActions()[0].data.action
 			}
@@ -83,7 +96,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 		// make sure to trigger the action function to confirm stub is being added.
 		store.getActions()[0].data.action();
 		assert(mockSubmit.sendCommitReport.calledOnce, `sendCommitReport didn't fire once when triggered`);
-		assert(mockAdd.addTransaction.calledOnce, `addTranscation wasn't called exactly one time as expected`);
+		assert(mockAdd.addTransaction.calledOnce, `addTransaction wasn't called exactly one time as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't return the expected object`);
 	});
 

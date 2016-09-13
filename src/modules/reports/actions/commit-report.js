@@ -3,7 +3,7 @@ import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
-import { addCommitReportTransaction } from '../../transactions/actions/add-report-transaction';
+import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateReports } from '../../reports/actions/update-reports';
 import { selectMarketFromEventID } from '../../market/selectors/market';

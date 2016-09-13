@@ -1,4 +1,4 @@
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -23,9 +23,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full}<br />
-				paying ${formatEther(tradingFeesEth).full} in trading fees<br />
-				total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			totalCost: formatEtherEstimate(totalEthWithFee),
+			tradingFees: formatEtherEstimate(tradingFeesEth),
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
 		const { loginAccount } = getState();
@@ -35,6 +36,8 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;
 				if (data.timestamp) update.timestamp = data.timestamp;
+				if (data.tradingFees) update.tradingFees = formatEther(data.tradingFees);
+				if (data.gasFees) update.gasFees = formatRealEther(data.gasFees);
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {
@@ -51,9 +54,14 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 				filledEth = filledEth.plus(res.filledEth);
 
+				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
+				const totalEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
-					message: generateMessage(numShares, res.remainingShares, filledEth, res.tradingFees, res.gasFees)
+					message: `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}`,
+					totalCost: formatEther(totalEthWithFee),
+					tradingFees: formatEther(res.tradingFees),
+					gasFees: formatRealEther(res.gasFees)
 				}));
 
 				if (res.remainingShares > 0) {
@@ -68,18 +76,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						limitPrice,
 						totalEthWithFee,
 						tradingFeesEth,
-						transactionData.data.feePercent.value,
+						transactionData.feePercent.value,
 						gasFeesRealEth));
 				}
 			}
 		);
 	};
-}
-
-function generateMessage(numShares, remainingShares, filledEth, tradingFeesEth, gasFeesRealEth) {
-	const filledShares = abi.bignum(numShares).minus(abi.bignum(remainingShares));
-	const totalEthWithFee = abi.bignum(filledEth).plus(tradingFeesEth);
-	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}<br />
-		paid ${formatEther(tradingFeesEth).full} in trading fees<br />
-		total cost: ${formatEther(totalEthWithFee).full} <small>(+${formatRealEther(gasFeesRealEth).full} in gas fees)</small>`;
 }

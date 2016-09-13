@@ -37,6 +37,15 @@ export function listenToUpdates() {
 				}
 			},
 
+			// short ask filled
+			log_short_fill_tx: (msg) => {
+				console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
+				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
+					dispatch(refreshActiveMarket(msg.market, msg.outcome));
+				}
+			},
+
 			// order added to orderbook
 			log_add_tx: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
