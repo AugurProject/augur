@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from '../../link/components/link';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -59,16 +59,16 @@ const Transaction = (p) => {
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.data.numShares} />
+				<ValueDenomination className="shares" {...p.numShares} />
 				{p.data.marketType !== SCALAR &&
 					<span>
 						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + (p.data.outcomeName.toString().length > 35 && '...' || '')}</span>
 					</span>
 				}
 				<span className="at">@</span>
-				<ValueDenomination className="noFeePrice" {...p.data.noFeePrice} postfix="(average)" />
+				<ValueDenomination className="noFeePrice" {...p.noFeePrice} postfix="(average)" />
 				<br className="hide-in-tx-display" />
-				<ValueDenomination className="avgPrice" {...p.data.avgPrice} prefix="including trading fees:" postfix="/ share" />
+				<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="including trading fees:" postfix="/ share" />
 				<br />
 				{marketDescription()}
 				<br className="hide-in-trade-summary-display" />
@@ -81,11 +81,11 @@ const Transaction = (p) => {
 		break;
 
 	case SELL_COMPLETE_SETS:
-		nodes.action = 'AUTOMATIC SELL';
+		nodes.action = 'CLOSE POSITION';
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.data.numShares} postfix="of each outcome" />
+				<ValueDenomination className="shares" {...p.numShares} postfix="of each outcome" />
 				<br />
 				{marketDescription()}
 				<br />
@@ -125,9 +125,20 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case COMMIT_REPORT: {
-		nodes.action = 'Commit report';
-		if (p.data.market.type === SCALAR) {
+
+	case COMMIT_REPORT:
+	case REVEAL_REPORT:
+		switch (p.type) {
+		case REVEAL_REPORT:
+			nodes.action = 'Reveal report';
+			break;
+		case COMMIT_REPORT:
+			nodes.action = 'Commit report';
+			break;
+		default:
+			break;
+		}
+		if (p.data.isScalar || p.data.market.type === SCALAR) {
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
@@ -161,7 +172,7 @@ const Transaction = (p) => {
 			);
 		}
 		break;
-	}
+
 	case GENERATE_ORDER_BOOK:
 		nodes.action = 'Generate order book';
 		nodes.description = (
@@ -209,19 +220,16 @@ const Transaction = (p) => {
 			{nodes.description}
 
 			<span className="value-changes">
-				{!!p.data && !!p.data.tradingFees && p.data.tradingFees.value !== null && p.data.tradingFees.value !== undefined &&
-					<ValueDenomination className="value-change tradingFees" {...p.data.tradingFees} prefix="trading fees:" />
+				{!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
+					<ValueDenomination className="value-change tradingFees" {...p.tradingFees} prefix="trading fees:" />
 				}
 				<span className="spacer">&nbsp;</span>
-				{!!p.data && !!p.data.feePercent && p.data.feePercent.value !== null && p.data.feePercent !== undefined &&
-					<ValueDenomination className="value-change feePercent" {...p.data.feePercent} prefix="[" postfix="]" />
+				{!!p.feePercent && p.feePercent.value !== null && p.feePercent !== undefined &&
+					<ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
 				}
 				<br />
-				{!!p.data && !!p.data.gasFees && !!p.data.gasFees.value &&
-					<ValueDenomination className="value-change gasFees" {...p.data.gasFees} prefix="estimated gas cost:" />
-				}
-				{!!p.ether && !!p.ether.value &&
-					<ValueDenomination className="value-change ether" {...p.ether} prefix="total:" />
+				{!!p.gasFees && !!p.gasFees.value &&
+					<ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
 				}
 			</span>
 
@@ -230,12 +238,130 @@ const Transaction = (p) => {
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
+						{!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
+							<span>
+								<ValueDenomination
+									className="tradingFees-message"
+									{...p.tradingFees}
+									prefix="trading fees:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.freeze &&
+							<span className="freeze-message">
+								{p.freeze.noFeeCost &&
+									<ValueDenomination
+										className="freeze-noFeeCost-message"
+										{...p.freeze.noFeeCost}
+										prefix={p.freeze.verb}
+										postfix="+ "
+									/>
+								}
+								<ValueDenomination
+									className="freeze-tradingFees-message"
+									{...p.freeze.tradingFees}
+									prefix={!p.freeze.noFeeCost && p.freeze.verb}
+									postfix="in potential trading fees"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.totalCost && p.totalCost.value !== null && p.totalCost.value !== undefined &&
+							<span>
+								<ValueDenomination
+									className="totalCost-message"
+									{...p.totalCost}
+									prefix="total cost:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.totalReturn && p.totalReturn.value !== null && p.totalReturn.value !== undefined &&
+							<span>
+								<ValueDenomination
+									className="totalReturn-message"
+									{...p.totalReturn}
+									prefix="total return:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
+							<span>
+								<ValueDenomination
+									className="gasFees-message"
+									{...p.gasFees}
+									prefix="gas cost:"
+								/>
+								<br />
+							</span>
+						}
 						<span className="status">{p.status}</span>
 					</div>
-				</Link>
-				: <div className="status-and-message">
+				</Link> :
+				<div className="status-and-message">
 					<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 					<br />
+					{!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
+						<span>
+							<ValueDenomination
+								className="tradingFees-message"
+								{...p.tradingFees}
+								prefix="trading fees:"
+							/>
+							<br />
+						</span>
+					}
+					{!!p.freeze &&
+						<span className="freeze-message">
+							{p.freeze.noFeeCost &&
+								<ValueDenomination
+									className="freeze-noFeeCost-message"
+									{...p.freeze.noFeeCost}
+									prefix={p.freeze.verb}
+									postfix="+"
+								/>
+							}
+							<ValueDenomination
+								className="freeze-tradingFees-message"
+								{...p.freeze.tradingFees}
+								prefix={!p.freeze.noFeeCost && p.freeze.verb}
+								postfix="in potential trading fees"
+							/>
+							<br />
+						</span>
+					}
+					{!!p.totalCost && p.totalCost.value !== null && p.totalCost.value !== undefined &&
+						<span>
+							<ValueDenomination
+								className="totalCost-message"
+								{...p.totalCost}
+								prefix="total cost:"
+							/>
+							<br />
+						</span>
+					}
+					{!!p.totalReturn && p.totalReturn.value !== null && p.totalReturn.value !== undefined &&
+						<span>
+							<ValueDenomination
+								className="totalReturn-message"
+								{...p.totalReturn}
+								prefix="total return:"
+							/>
+							<br />
+						</span>
+					}
+					{!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
+						<span>
+							<ValueDenomination
+								className="gasFees-message"
+								{...p.gasFees}
+								prefix="gas cost:"
+							/>
+							<br />
+						</span>
+					}
 					<span className="status">{p.status}</span>
 				</div>
 			}
@@ -250,9 +376,13 @@ Transaction.propTypes = {
 	status: React.PropTypes.string,
 	data: React.PropTypes.object,
 	shares: React.PropTypes.object,
-	ether: React.PropTypes.object,
 	gas: React.PropTypes.object,
 	hash: React.PropTypes.string,
+	freeze: React.PropTypes.object,
+	gasFees: React.PropTypes.object,
+	tradingFees: React.PropTypes.object,
+	totalCost: React.PropTypes.object,
+	totalReturn: React.PropTypes.object,
 	timestamp: React.PropTypes.object
 };
 
