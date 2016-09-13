@@ -81,7 +81,7 @@ const Transaction = (p) => {
 		break;
 
 	case SELL_COMPLETE_SETS:
-		nodes.action = 'AUTOMATIC SELL';
+		nodes.action = 'CLOSE POSITION';
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
