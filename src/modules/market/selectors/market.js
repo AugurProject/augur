@@ -60,7 +60,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -80,6 +80,7 @@ export const selectMarket = (marketID) => {
 		outcomesData[marketID],
 
 		marketReport,
+		(accountPositions || {})[marketID],
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
@@ -112,6 +113,7 @@ export function assembleMarket(
 		isFavorite,
 		marketOutcomesData,
 		marketReport,
+		marketAccountPositions,
 		marketAccountTrades,
 		marketTradeInProgress,
 		endDateYear,
@@ -131,6 +133,7 @@ export function assembleMarket(
 			isFavorite,
 			marketOutcomesData,
 			marketReport,
+			marketAccountPositions,
 			marketAccountTrades,
 			marketTradeInProgress,
 			endDateYear,
@@ -237,11 +240,11 @@ export function assembleMarket(
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, outcomeData.sharesPurchased);
+				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
-				outcome.topBid = selectTopBid(orderBook);
-				outcome.topAsk = selectTopAsk(orderBook);
+				outcome.topBid = selectTopBid(orderBook, false);
+				outcome.topAsk = selectTopAsk(orderBook, false);
 
 				marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 

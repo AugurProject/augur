@@ -105,7 +105,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
 					type: BINARY,
@@ -259,7 +259,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
 					{
@@ -365,7 +365,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -552,7 +552,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -659,7 +659,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
 					type: SCALAR,
@@ -818,7 +818,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
 					{

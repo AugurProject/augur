@@ -147,21 +147,21 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 					values: [
 						{
 							label: 'test1',
-							value: 0.5
+							value: 0.3333
 						},
 						{
 							label: 'test2',
-							value: 0.5
+							value: 0.3333
 						},
 						{
 							label: 'test3',
-							value: 0.5
+							value: 0.3333
 						}
 					],
 					raw: [
-						0.5,
-						0.5,
-						0.5
+						0.3333,
+						0.3333,
+						0.3333
 					]
 				},
 				startingQuantity: STARTING_QUANTITY_DEFAULT,

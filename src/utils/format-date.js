@@ -9,6 +9,6 @@ export function formatDate(d) {
 	return {
 		value: date,
 		formatted: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`,
-		full: d.toISOString()
+		full: d.toUTCString()
 	};
 }

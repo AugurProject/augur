@@ -63,6 +63,7 @@ export function createMarket(transactionID, newMarket) {
 						id: res.callReturn
 					},
 					hash: res.hash,
+					timestamp: res.timestamp,
 					status: SUCCESS
 				}));
 				dispatch(clearMakeInProgress());

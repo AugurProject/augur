@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, BALANCES } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -10,7 +10,7 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
 
-import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
+import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-account-markets';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
@@ -30,9 +30,18 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
+		balancesLink: selectBalancesLink(store.dispatch),
 		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
 }
+
+export const selectBalancesLink = memoizerific(1)((dispatch) => {
+	const obj = {
+		href: makeLocation({ page: BALANCES }).url,
+		onClick: (href) => dispatch(updateURL(href))
+	};
+	return obj;
+});
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {
@@ -51,7 +60,7 @@ export const selectPreviousLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-	const href = makeLocation({ page: authType }).url;
+	const href = alsoLogout ? makeLocation({ page: 'login' }).url : makeLocation({ page: authType }).url;
 	return {
 		href,
 		onClick: () => {

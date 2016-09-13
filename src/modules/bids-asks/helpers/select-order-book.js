@@ -29,13 +29,39 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrde
 	};
 });
 
-export const selectTopBid = memoizerific(10)((marketOrderBook) => {
-	const topBid = marketOrderBook.bids[0];
+export const selectTopBid = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
+	let topBid;
+	if (excludeCurrentUser) {
+		const numBids = marketOrderBook.bids.length;
+		if (numBids) {
+			for (let i = 0; i < numBids; ++i) {
+				if (!marketOrderBook.bids[i].isOfCurrentUser) {
+					topBid = marketOrderBook.bids[i];
+					break;
+				}
+			}
+		}
+	} else {
+		topBid = marketOrderBook.bids[0];
+	}
 	return topBid != null ? topBid : null;
 });
 
-export const selectTopAsk = memoizerific(10)((marketOrderBook) => {
-	const topAsk = marketOrderBook.asks[0];
+export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
+	let topAsk;
+	if (excludeCurrentUser) {
+		const numAsks = marketOrderBook.asks.length;
+		if (numAsks) {
+			for (let i = 0; i < numAsks; ++i) {
+				if (!marketOrderBook.asks[i].isOfCurrentUser) {
+					topAsk = marketOrderBook.asks[i];
+					break;
+				}
+			}
+		}
+	} else {
+		topAsk = marketOrderBook.asks[0];
+	}
 	return topAsk != null ? topAsk : null;
 });
 

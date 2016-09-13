@@ -57,8 +57,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.toNumber() :
 			0.5;
 		const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice :
-			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice;
+			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
+			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
 		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
@@ -87,7 +87,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
 					newTradeDetails.numShares = position.toNumber();
 				} else {
-					position = position.round(2, BigNumber.ROUND_DOWN);
+					position = position.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 				}
 			}
 			newTradeDetails.tradeActions = augur.getTradingActions(
@@ -117,9 +117,13 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
 					newTradeDetails.totalFee = tradingFeesEth.toFixed();
 					if (newTradeDetails.side === 'sell') {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth)).times(100).toFixed();
+						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
+							.times(100).abs()
+							.toFixed();
 					} else {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth)).times(100).toFixed();
+						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
+							.times(100)
+							.toFixed();
 					}
 				}
 			}

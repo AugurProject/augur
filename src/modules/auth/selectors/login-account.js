@@ -13,8 +13,9 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 	if (loginAccount.secureLoginID && !loginAccount.loginID) {
 		loginAccount.loginID = loginAccount.secureLoginID;
 	}
+	const cleanAddress = loginAccount.id ? loginAccount.id.replace('0x', '') : undefined;
 
-	const prettyAddress = loginAccount.id ? `${loginAccount.id.substring(0, 4)}...${loginAccount.id.substring(loginAccount.id.length - 4)}` : undefined;
+	const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
 
 	const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
 

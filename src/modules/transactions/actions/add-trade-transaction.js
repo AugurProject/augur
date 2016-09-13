@@ -20,14 +20,14 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 			outcomeID,
 			marketType,
 			marketDescription,
-			outcomeName,
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		}
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
 	if (type === BUY) {

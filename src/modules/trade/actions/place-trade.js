@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
 import { ZERO } from '../../trade/constants/numbers';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
@@ -68,7 +68,7 @@ export function placeTrade(marketID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-				const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased).round(2, BigNumber.ROUND_DOWN);
+				const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 				if (position && position.gt(ZERO)) {
 					if (tradeIDs && tradeIDs.length) {
 						dispatch(updateTradeCommitLock(true));

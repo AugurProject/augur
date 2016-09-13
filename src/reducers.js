@@ -21,12 +21,15 @@ import orderBooks from './modules/bids-asks/reducers/order-books';
 import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
 import marketTrades from './modules/portfolio/reducers/market-trades';
 import accountTrades from './modules/my-positions/reducers/account-trades';
+import accountPositions from './modules/my-positions/reducers/account-positions';
+import completeSetsBought from './modules/my-positions/reducers/complete-sets-bought';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
+import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-sets-lock';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
@@ -36,6 +39,8 @@ import priceHistory from './modules/markets/reducers/price-history';
 
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
 import loginMessage from './modules/login-message/reducers/login-message';
+
+import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
 
 module.exports = {
 	env,
@@ -69,11 +74,16 @@ module.exports = {
 
 	tradesInProgress,
 	tradeCommitLock,
+	sellCompleteSetsLock,
 	createMarketInProgress,
 
 	orderBooks,
 	orderCancellation,
 	marketTrades,
 	accountTrades,
-	transactionsData
+	accountPositions,
+	completeSetsBought,
+	transactionsData,
+
+	marketCreatorFees
 };

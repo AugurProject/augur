@@ -1,5 +1,5 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -12,15 +12,17 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
 			}));
 		}
-
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing bid...',
-			message: `bidding ${numShares} shares for ${limitPrice} ETH each<br />
-				freezing ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-				<small>(paying ${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+			message: `bidding ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			freeze: {
+				verb: 'freezing',
+				noFeeCost: formatEther(totalEthWithoutFee),
+				tradingFees: formatEther(tradingFeesEth)
+			},
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
-
 		bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
@@ -28,10 +30,15 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			dispatch(loadBidsAsks(marketID));
 			return dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
+				timestamp: res.timestamp,
 				status: SUCCESS,
-				message: `bid ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					froze ${formatEther(totalEthWithoutFee).full} + ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					<small>(paid ${formatRealEther(res.gasFees).full} in gas fees)</small>`
+				message: `bid ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+				freeze: {
+					verb: 'froze',
+					noFeeCost: formatEther(totalEthWithoutFee),
+					tradingFees: formatEther(tradingFeesEth)
+				},
+				gasFees: formatRealEther(res.gasFees)
 			}));
 		});
 	};
@@ -43,7 +50,6 @@ function bid(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
-
 		onSent: data => console.log('bid onSent', data),
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
