@@ -33,11 +33,9 @@ function sellCompleteSetsMarket(marketID, callback) {
 				const numPositions = outcomes.length;
 				if (completeSetsBought) {
 					for (let i = 0; i < numPositions; ++i) {
-						if (completeSetsBought[outcomes[i]]) {
-							position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
-								.minus(completeSetsBought[outcomes[i]])
-								.toFixed(), ZERO);
-						}
+						position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
+							.minus(completeSetsBought)
+							.toFixed(), ZERO);
 					}
 				}
 				const smallestPosition = getSmallestPositionInMarket(position);

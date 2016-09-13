@@ -6,46 +6,52 @@ import selectMyPositions from '../../../modules/my-positions/selectors/my-positi
 
 export default function () {
 	const myPositions = selectMyPositions();
-
 	return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice) => {
-	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
+export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountPosition, outcomeAccountTrades, lastPrice) => {
+	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !outcomeAccountPosition) {
 		return null;
 	}
 	const bnLastPrice = abi.bignum(lastPrice);
-	let qtyShares = ZERO;
+	let qtyShares;
+	if (outcomeAccountPosition) {
+		qtyShares = abi.bignum(outcomeAccountPosition);
+	} else {
+		qtyShares = ZERO;
+	}
 	let totalValue = ZERO;
 	let totalCost = ZERO;
 	let totalSellShares = ZERO;
 
-	outcomeAccountTrades.forEach(outcomeAccountTrade => {
-		if (!outcomeAccountTrade) {
-			return;
-		}
-
-		const numShares = abi.bignum(outcomeAccountTrade.shares);
-
-		// Logic to count open vs. closed positions
-		if (!outcomeAccountTrade.maker) {
-			if (outcomeAccountTrade.type === 1) { // Open Positions
-				qtyShares = qtyShares.plus(numShares);
-				totalValue = totalValue.plus(bnLastPrice.times(numShares));
-				totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
-			} else { // Closed Positions
-				totalSellShares = totalSellShares.plus(numShares);
+	if (outcomeAccountTrades) {
+		outcomeAccountTrades.forEach(outcomeAccountTrade => {
+			if (!outcomeAccountTrade) {
+				return;
 			}
-		} else {
-			if (outcomeAccountTrade.type === 2) { // Open Positions
-				qtyShares = qtyShares.plus(numShares);
-				totalValue = totalValue.plus(bnLastPrice.times(numShares));
-				totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
-			} else { // Closed Positions
-				totalSellShares = totalSellShares.plus(numShares);
+
+			const numShares = abi.bignum(outcomeAccountTrade.shares);
+
+			// Logic to count open vs. closed positions
+			if (!outcomeAccountTrade.maker) {
+				if (outcomeAccountTrade.type === 1) { // Open Positions
+					if (!outcomeAccountPosition) qtyShares = qtyShares.plus(numShares);
+					totalValue = totalValue.plus(bnLastPrice.times(numShares));
+					totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+				} else { // Closed Positions
+					totalSellShares = totalSellShares.plus(numShares);
+				}
+			} else {
+				if (outcomeAccountTrade.type === 2) { // Open Positions
+					if (!outcomeAccountPosition) qtyShares = qtyShares.plus(numShares);
+					totalValue = totalValue.plus(bnLastPrice.times(numShares));
+					totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
+				} else { // Closed Positions
+					totalSellShares = totalSellShares.plus(numShares);
+				}
 			}
-		}
-	});
+		});
+	}
 
 	// remove sells
 	const avgPerShareValue = calculateAvgPrice(qtyShares, totalValue);
@@ -57,7 +63,8 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	totalValue = totalValue.minus(totalSellShares.times(avgPerShareValue));
 	totalCost = totalCost.minus(totalSellShares.times(avgPerShareCost));
 
-	return generatePositionsSummary(1, abi.bignum(qtyShares).minus(totalSellShares), totalValue, totalCost, realizedNet, unrealizedNet);
+	if (!outcomeAccountTrades) qtyShares = qtyShares.minus(totalSellShares);
+	return generatePositionsSummary(1, qtyShares, totalValue, totalCost, realizedNet, unrealizedNet);
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {

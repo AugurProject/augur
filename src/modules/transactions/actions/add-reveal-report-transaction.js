@@ -9,6 +9,7 @@ import { augur } from '../../../services/augurjs';
 export function addRevealReportTransaction(eventID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) {
 	return (dispatch, getState) => {
 		augur.getDescription(eventID, (eventDescription) => {
+			// TODO use selectMarketFromEventID
 			augur.getMarket(eventID, 0, (marketID) => {
 				if (!marketID || marketID.error) {
 					return callback(marketID || `market not found for event ${eventID}`);
