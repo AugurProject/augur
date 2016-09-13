@@ -250,18 +250,19 @@ module.exports = {
     getAccountTrades: function (account, options, cb) {
         var self = this;
         function parseLogs(logs, trades, maker, isShortSell, callback) {
+            var market, parsed, outcome;
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return callback();
             }
             if (logs.error) return cb(logs);
-            for (var i = 0, n = logs.length; i < n; ++i) {
+            for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                 if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                    var market = logs[i].topics[1];
+                    market = logs[i].topics[1];
                     if (!trades[market]) trades[market] = {};
-                    var parsed = self.rpc.unmarshal(logs[i].data);
-                    var outcome = parseInt(parsed[4]);
-                    if (!trades[market][outcome]) trades[market][outcome] = [];
+                    parsed = self.rpc.unmarshal(logs[i].data);
                     if (isShortSell) {
+                        outcome = parseInt(parsed[3]);
+                        if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: 2,
                             price: abi.unfix(parsed[0], "string"),
@@ -271,6 +272,8 @@ module.exports = {
                             maker: maker
                         });
                     } else {
+                        outcome = parseInt(parsed[4]);
+                        if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: parseInt(parsed[0], 16),
                             price: abi.unfix(parsed[1], "string"),
