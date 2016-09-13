@@ -56,20 +56,26 @@ module.exports = {
     },
 
     /**
-     * Calculates the total number of shares short sold per market (any outcome).
+     * Calculates the largest number of shares short sold in any outcome per market.
      *
      * @param {Array} logs Event logs from eth_getLogs request.
-     * @return Object Total number of shares sold keyed by market ID.
+     * @return Object Largest total number of shares sold keyed by market ID.
      */
     calculateShortSellShareTotals: function (logs) {
-        var marketID, logData, shareTotals, numOutcomes, outcomeID, sharesSold;
+        var marketID, logData, shareTotals, sharesOutcomes, numOutcomes, outcomeID;
         shareTotals = {};
+        sharesOutcomes = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
             if (logs[i] && logs[i].data && logs[i].data !== "0x") {
                 marketID = logs[i].topics[1];
                 logData = this.rpc.unmarshal(logs[i].data);
-                if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
-                shareTotals[marketID] = shareTotals[marketID].plus(abi.unfix(logData[1]));
+                if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
+                outcomeID = parseInt(logData[3], 16).toString();
+                if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
+                sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
+                shareTotals[marketID] = BigNumber.max(
+                    sharesOutcomes[marketID][outcomeID],
+                    shareTotals[marketID] || constants.ZERO);
             }
         }
         return shareTotals;
@@ -91,10 +97,14 @@ module.exports = {
 
     /**
      * Adjusts positions by subtracting out contributions from auto-generated
-     * buy/sellCompleteSets due to short sell and/or short ask.
+     * buyCompleteSets during shortAsk (or implicitly during short_sell).
      *
-     * Note: for short sell, decrease positions by the number of shares short sold
-     * (the short_sell on-contract method does not create a buyCompleteSets log).
+     * Standalone (non-delegated) buyCompleteSets are assumed to be part of
+     * generateOrderBook, and are included in the user's position.
+     *
+     * sellCompleteSets - shortAskBuyCompleteSets
+     *
+     * Note: short_sell on-contract does not create a buyCompleteSets log.
      *
      * @param {string} account Ethereum account address.
      * @param {Array} marketIDs List of market IDs for position adjustment.
@@ -106,16 +116,16 @@ module.exports = {
         var self = this;
         var adjustedPositions = {};
         if (!utils.is_function(callback)) {
-            var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, completeSetsShareTotal;
+            var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
             for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
                 marketID = marketIDs[i];
                 onChainPosition = this.getPositionInMarket(marketID, account);
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-                completeSetsShareTotal = shareTotals.completeSets[marketID] || constants.ZERO;
+                sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
                 adjustedPositions[marketID] = this.decreasePosition(
                     onChainPosition,
-                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(completeSetsShareTotal));
+                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
             }
             return adjustedPositions;
         }
@@ -125,10 +135,10 @@ module.exports = {
                 if (onChainPosition.error) return nextMarket(onChainPosition);
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-                completeSetsShareTotal = shareTotals.completeSets[marketID] || constants.ZERO;
+                sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
                 adjustedPositions[marketID] = self.decreasePosition(
                     onChainPosition,
-                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(completeSetsShareTotal));
+                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
                 nextMarket();
             });
         }, function (err) {
@@ -144,7 +154,7 @@ module.exports = {
     findUniqueMarketIDs: function (shareTotals) {
         return Object.keys(shareTotals.shortAskBuyCompleteSets)
             .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
-            .concat(Object.keys(shareTotals.completeSets))
+            .concat(Object.keys(shareTotals.sellCompleteSets))
             .filter(utils.unique);
     },
 
@@ -156,7 +166,7 @@ module.exports = {
         return {
             shortAskBuyCompleteSets: this.calculateCompleteSetsShareTotals(logs.shortAskBuyCompleteSets),
             shortSellBuyCompleteSets: this.calculateShortSellShareTotals(logs.shortSellBuyCompleteSets),
-            completeSets: this.calculateCompleteSetsShareTotals(logs.completeSets)
+            sellCompleteSets: this.calculateCompleteSetsShareTotals(logs.sellCompleteSets)
         };
     },
 
@@ -177,7 +187,7 @@ module.exports = {
             var shareTotals = this.calculateShareTotals({
                 shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
                 shortSellBuyCompleteSets: this.getMakerShortSellLogs(account, options),
-                completeSets: this.getCompleteSetsLogs(account, options)
+                sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
             });
             return this.adjustPositions(account, this.findUniqueMarketIDs(shareTotals), shareTotals);
         }
@@ -188,8 +198,8 @@ module.exports = {
             shortSellBuyCompleteSets: function (done) {
                 self.getMakerShortSellLogs(account, options, done);
             },
-            completeSets: function (done) {
-                self.getCompleteSetsLogs(account, options, done);
+            sellCompleteSets: function (done) {
+                self.getSellCompleteSetsLogs(account, options, done);
             }
         }, function (err, logs) {
             if (err) return callback(err);

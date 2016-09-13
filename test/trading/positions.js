@@ -515,7 +515,7 @@ describe("positions", function () {
             }],
             assertions: function (output) {
                 assert.deepEqual(output, {
-                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("63.1415", 10),
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("60", 10),
                     "0x8000000000000000000000000000000000000000000000000000000000000000": new BigNumber("123.456789", 10)
                 });
             }
@@ -533,13 +533,13 @@ describe("positions", function () {
             logs: {
                 shortAskBuyCompleteSets: [],
                 shortSellBuyCompleteSets: [],
-                completeSets: []
+                sellCompleteSets: []
             },
             assertions: function (output) {
                 assert.deepEqual(output, {
                     shortAskBuyCompleteSets: {},
                     shortSellBuyCompleteSets: {},
-                    completeSets: {}
+                    sellCompleteSets: {}
                 });
             }
         });
@@ -592,21 +592,13 @@ describe("positions", function () {
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
                     ]
                 }],
-                completeSets: [{
+                sellCompleteSets: [{
                     data: fix("3.1415"),
                     topics: [
                         "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b",
                         "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
                         "0x0000000000000000000000000000000000000000000000000000000000000002"
-                    ]
-                }, {
-                    data: fix("2.1"),
-                    topics: [
-                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                        "0x0000000000000000000000000000000000000000000000000000000000000001"
                     ]
                 }]
             },
@@ -619,8 +611,8 @@ describe("positions", function () {
                     shortSellBuyCompleteSets: {
                         "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("1", 10)
                     },
-                    completeSets: {
-                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("-1.0415", 10)
+                    sellCompleteSets: {
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": new BigNumber("-3.1415", 10)
                     }
                 });
             }
@@ -744,7 +736,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, []);
@@ -755,7 +747,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null},
                 shortSellBuyCompleteSets: {},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1"]);
@@ -766,7 +758,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {"0x1": null},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1"]);
@@ -777,7 +769,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {},
-                completeSets: {"0x1": null}
+                sellCompleteSets: {"0x1": null}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1"]);
@@ -788,7 +780,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null},
                 shortSellBuyCompleteSets: {},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2"]);
@@ -799,7 +791,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {"0x1": null, "0x2": null},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2"]);
@@ -810,7 +802,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null},
                 shortSellBuyCompleteSets: {"0x3": null},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2", "0x3"]);
@@ -821,7 +813,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null},
                 shortSellBuyCompleteSets: {"0x1": null},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2"]);
@@ -832,7 +824,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null},
                 shortSellBuyCompleteSets: {"0x3": null},
-                completeSets: {"0x1": null, "0x2": null, "0x3": null}
+                sellCompleteSets: {"0x1": null, "0x2": null, "0x3": null}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2", "0x3"]);
@@ -843,7 +835,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null, "0x3": null},
                 shortSellBuyCompleteSets: {"0x4": null, "0x5": null, "0x6": null},
-                completeSets: {"0x7": null}
+                sellCompleteSets: {"0x7": null}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7"]);
@@ -854,7 +846,7 @@ describe("positions", function () {
             shareTotals: {
                 shortAskBuyCompleteSets: {"0x1": null, "0x2": null, "0x3": null},
                 shortSellBuyCompleteSets: {"0x2": null, "0x4": null, "0x5": null},
-                completeSets: {"0x6": null}
+                sellCompleteSets: {"0x6": null}
             },
             assertions: function (output) {
                 assert.deepEqual(output, ["0x1", "0x2", "0x3", "0x4", "0x5", "0x6"]);
@@ -873,8 +865,8 @@ describe("positions", function () {
         var test = function (t) {
             it(t.description, function (done) {
                 augur.getPositionInMarket = function (marketID, account, callback) {
-                    if (!callback) return t.onChainPosition;
-                    callback(t.onChainPosition);
+                    if (!callback) return t.onChainPosition[marketID];
+                    callback(t.onChainPosition[marketID]);
                 };
                 augur.adjustPositions(t.account, t.marketIDs, t.shareTotals, function (err, adjusted) {
                     assert.isNull(err);
@@ -887,17 +879,19 @@ describe("positions", function () {
             });
         };
         test({
-            description: "1 market, 2 outcomes, no position, short ask 0, short sell 0, complete sets 0",
+            description: "1 market, 2 outcomes, no position, short ask 0, short sell 0",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "0",
-                "2": "0"
+                "0x1": {
+                    "1": "0",
+                    "2": "0"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -913,17 +907,19 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 0, complete sets 0",
+            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 0",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
                 shortAskBuyCompleteSets: {},
                 shortSellBuyCompleteSets: {},
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "1",
-                "2": "0"
+                "0x1": {
+                    "1": "1",
+                    "2": "0"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -939,7 +935,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 1, complete sets 0",
+            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 1",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -947,11 +943,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("1", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "0",
-                "2": "1"
+                "0x1": {
+                    "1": "0",
+                    "2": "1"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -967,7 +965,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 0, complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 0",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -975,11 +973,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("1", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "1",
-                "2": "1"
+                "0x1": {
+                    "1": "1",
+                    "2": "1"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -995,7 +995,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 1, complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 1",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1005,11 +1005,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("1", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "1",
-                "2": "2"
+                "0x1": {
+                    "1": "1",
+                    "2": "2"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1025,7 +1027,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 2, complete sets 0",
+            description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 2",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1033,11 +1035,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "2",
-                "2": "0"
+                "0x1": {
+                    "1": "2",
+                    "2": "0"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1053,7 +1057,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 0, short sell 2 [1 of 1, 1 of 2], complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 0, short sell 2 [1 outcome 1, 1 outcome 2]",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1061,11 +1065,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "1",
-                "2": "1"
+                "0x1": {
+                    "1": "1",
+                    "2": "1"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1081,7 +1087,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2, complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1091,11 +1097,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "2",
-                "2": "4"
+                "0x1": {
+                    "1": "2",
+                    "2": "4"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1111,7 +1119,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2 [1 of 1, 1 of 2], complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2 [1 outcome 1, 1 outcome 2]",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1121,11 +1129,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "3",
-                "2": "3"
+                "0x1": {
+                    "1": "3",
+                    "2": "3"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1141,7 +1151,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 5, complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 5",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1151,11 +1161,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("5", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "7",
-                "2": "2"
+                "0x1": {
+                    "1": "7",
+                    "2": "2"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1171,7 +1183,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 5, short sell 2, complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 5, short sell 2",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1181,11 +1193,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "5",
-                "2": "7"
+                "0x1": {
+                    "1": "5",
+                    "2": "7"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1201,7 +1215,7 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 2 outcomes, 2 positions, short ask 5.1, short sell 2.2 [1.2 of 1, 1 of 2], complete sets 0",
+            description: "1 market, 2 outcomes, 2 positions, short ask 5.1, short sell 2.2 [1.2 outcome 1, 1 outcome 2]",
             account: "0xb0b",
             marketIDs: ["0x1"],
             shareTotals: {
@@ -1211,11 +1225,13 @@ describe("positions", function () {
                 shortSellBuyCompleteSets: {
                     "0x1": new BigNumber("2.2", 10)
                 },
-                completeSets: {}
+                sellCompleteSets: {}
             },
             onChainPosition: {
-                "1": "6.1",
-                "2": "6.3"
+                "0x1": {
+                    "1": "6.1",
+                    "2": "6.3"
+                }
             },
             assertions: function (output) {
                 assert.isObject(output);
@@ -1226,6 +1242,369 @@ describe("positions", function () {
                     "0x1": {
                         "1": "-1.2",
                         "2": "-1"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, short ask 5.1 market 1, short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
+            account: "0xb0b",
+            marketIDs: ["0x1", "0x2"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("2.2", 10),
+                    "0x2": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {}
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "6.1",
+                    "2": "6.3"
+                },
+                "0x2": {
+                    "1": "2",
+                    "2": "2",
+                    "3": "2",
+                    "4": "2",
+                    "5": "0",
+                    "6": "2",
+                    "7": "2"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-1.2",
+                        "2": "-1"
+                    },
+                    "0x2": {
+                        "1": "0",
+                        "2": "0",
+                        "3": "0",
+                        "4": "0",
+                        "5": "-2",
+                        "6": "0",
+                        "7": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, short ask [5.1 market 1, 0.1 market 2], short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
+            account: "0xb0b",
+            marketIDs: ["0x1", "0x2"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10),
+                    "0x2": new BigNumber("0.1", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("2.2", 10),
+                    "0x2": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {}
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "6.1",
+                    "2": "6.3"
+                },
+                "0x2": {
+                    "1": "2.1",
+                    "2": "2.1",
+                    "3": "2.1",
+                    "4": "2.1",
+                    "5": "0.1",
+                    "6": "2.1",
+                    "7": "2.1"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-1.2",
+                        "2": "-1"
+                    },
+                    "0x2": {
+                        "1": "0",
+                        "2": "0",
+                        "3": "0",
+                        "4": "0",
+                        "5": "-2",
+                        "6": "0",
+                        "7": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
+            account: "0xb0b",
+            marketIDs: ["0x1"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "0", // change:  +5   0  +1  -6
+                              // balance: +5  +5  +6   0
+                              // display:  0  -2  -2  -1
+                              //           0  -2   0  +1
+
+                    "2": "1"  // change:  +5  +2   0  -6
+                              // balance: +5  +7  +7  +1
+                              // display:  0   0  -1   0
+                              //           0   0  -1  +1
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-1",
+                        "2": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
+            account: "0xb0b",
+            marketIDs: ["0x1"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("1.2", 10),
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6.1", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "0",  // change:  +5.1   0.0  +1.0  -6.1
+                               // balance: +5.1  +5.1  +6.1   0.0
+                               // display:  0.0  -1.2  -1.2  -0.2
+                               //           0.0  -1.2  -1.2  +1.0
+
+                    "2": "0.2" // change:  +5.1  +1.2   0.0  -6.1
+                               // balance: +5.1  +6.3  +6.3  +0.2
+                               // display:  0.0   0.0  -1.0   0.0
+                               //           0.0   0.0  -1.0  +1.0
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-0.2",
+                        "2": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
+            account: "0xb0b",
+            marketIDs: ["0x1", "0x2"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10),
+                    "0x2": new BigNumber("1.2345", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("1.2", 10),
+                    "0x2": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6.1", 10),
+                    "0x2": new BigNumber("-1.2345", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "0",
+                    "2": "0.2"
+                },
+                "0x2": {
+                    "1": "2",
+                    "2": "2",
+                    "3": "2",
+                    "4": "2",
+                    "5": "0",
+                    "6": "2",
+                    "7": "2"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-0.2",
+                        "2": "0"
+                    },
+                    "0x2": {
+                        "1": "0",
+                        "2": "0",
+                        "3": "0",
+                        "4": "0",
+                        "5": "-2",
+                        "6": "0",
+                        "7": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, initial position [3, 1], short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
+            account: "0xb0b",
+            marketIDs: ["0x1"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "3",
+                    "2": "2"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "2",
+                        "2": "1"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, initial position [1.2, 10.101], short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
+            account: "0xb0b",
+            marketIDs: ["0x1"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("1.2", 10),
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6.1", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "1.2",
+                    "2": "10.301"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "1",
+                        "2": "10.101"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, initial position ([0.1, 0], [0, 71, 0, 0, 0, 0.112, 0]), short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
+            account: "0xb0b",
+            marketIDs: ["0x1", "0x2"],
+            shareTotals: {
+                shortAskBuyCompleteSets: {
+                    "0x1": new BigNumber("5.1", 10),
+                    "0x2": new BigNumber("1.2345", 10)
+                },
+                shortSellBuyCompleteSets: {
+                    "0x1": new BigNumber("1.2", 10),
+                    "0x2": new BigNumber("2", 10)
+                },
+                sellCompleteSets: {
+                    "0x1": new BigNumber("-6.1", 10),
+                    "0x2": new BigNumber("-1.2345", 10)
+                }
+            },
+            onChainPosition: {
+                "0x1": {
+                    "1": "0.1",
+                    "2": "0.2"
+                },
+                "0x2": {
+                    "1": "2",
+                    "2": "73",
+                    "3": "2",
+                    "4": "2",
+                    "5": "0",
+                    "6": "2.112",
+                    "7": "2"
+                }
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x1": {
+                        "1": "-0.1",
+                        "2": "0"
+                    },
+                    "0x2": {
+                        "1": "0",
+                        "2": "71",
+                        "3": "0",
+                        "4": "0",
+                        "5": "-2",
+                        "6": "0.112",
+                        "7": "0"
                     }
                 });
             }
@@ -1249,10 +1628,10 @@ describe("positions", function () {
             augur.getCompleteSetsLogs = getCompleteSetsLogs;
         });
         var test = function (t) {
-            it(t.description, function () {
+            it(t.description, function (done) {
                 augur.getPositionInMarket = function (marketID, account, callback) {
-                    if (!callback) return t.onChainPosition;
-                    callback(t.onChainPosition);
+                    if (!callback) return t.onChainPosition[marketID];
+                    callback(t.onChainPosition[marketID]);
                 };
                 augur.getShortAskBuyCompleteSetsLogs = function (account, options, callback) {
                     if (!callback) return t.logs.shortAskBuyCompleteSets;
@@ -1263,33 +1642,79 @@ describe("positions", function () {
                     callback(null, t.logs.shortSellBuyCompleteSets);
                 }
                 augur.getCompleteSetsLogs = function (account, options, callback) {
-                    if (!callback) return t.logs.completeSets;
-                    callback(null, t.logs.completeSets);
+                    if (!callback) return t.logs.sellCompleteSets;
+                    callback(null, t.logs.sellCompleteSets);
                 }
-                t.assertions({
-                    sync: augur.getAdjustedPositions(t.account, t.options)
+                augur.getAdjustedPositions(t.account, t.options, function (err, adjusted) {
+                    assert.isNull(err);
+                    t.assertions({
+                        async: adjusted,
+                        sync: augur.getAdjustedPositions(t.account, t.options)
+                    });
+                    done();
                 });
             });
         };
         test({
             description: "no logs",
             account: "0xb0b",
-            options: {},
+            onChainPosition: {},
             logs: {
                 shortAskBuyCompleteSets: [],
                 shortSellBuyCompleteSets: [],
-                completeSets: []
+                sellCompleteSets: []
             },
             assertions: function (output) {
-                assert.deepEqual(output.sync, {});
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {});
             }
         });
         test({
-            description: "1 market, 1 short sell log",
+            description: "1 market, 1 short ask",
             account: "0xb0b",
             onChainPosition: {
-                "1": "0",
-                "2": "1"
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "3",
+                    "2": "3"
+                }
+            },
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("3"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [],
+                sellCompleteSets: []
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        "1": "0",
+                        "2": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, 1 short sell",
+            account: "0xb0b",
+            onChainPosition: {
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "0",
+                    "2": "1"
+                }
             },
             logs: {
                 shortAskBuyCompleteSets: [],
@@ -1306,10 +1731,14 @@ describe("positions", function () {
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
                     ]
                 }],
-                completeSets: []
+                sellCompleteSets: []
             },
             assertions: function (output) {
-                assert.deepEqual(output.sync, {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
                     "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
                         "1": "-1",
                         "2": "0"
@@ -1318,80 +1747,24 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 1 short ask log",
+            description: "1 market, 2 sell complete sets",
             account: "0xb0b",
             onChainPosition: {
-                "1": "3",
-                "2": "3"
-            },
-            logs: {
-                shortAskBuyCompleteSets: [{
-                    data: fix("3"),
-                    topics: [
-                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                        "0x0000000000000000000000000000000000000000000000000000000000000001"
-                    ]
-                }],
-                shortSellBuyCompleteSets: [],
-                completeSets: []
-            },
-            assertions: function (output) {
-                assert.deepEqual(output.sync, {
-                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-                        "1": "0",
-                        "2": "0"
-                    }
-                });
-            }
-        });
-        test({
-            description: "1 market, 1 buy complete sets log",
-            account: "0xb0b",
-            onChainPosition: {
-                "1": "3",
-                "2": "3"
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "1.2",
+                    "2": "1.2"
+                }
             },
             logs: {
                 shortAskBuyCompleteSets: [],
                 shortSellBuyCompleteSets: [],
-                completeSets: [{
+                sellCompleteSets: [{
                     data: fix("3"),
                     topics: [
                         "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b",
                         "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                        "0x0000000000000000000000000000000000000000000000000000000000000001"
-                    ]
-                }]
-            },
-            assertions: function (output) {
-                assert.deepEqual(output.sync, {
-                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-                        "1": "0",
-                        "2": "0"
-                    }
-                });
-            }
-        });
-        test({
-            description: "1 market, 2 complete sets logs [1 buy, 1 sell]",
-            account: "0xb0b",
-            onChainPosition: {
-                "1": "0.9",
-                "2": "0.9"
-            },
-            logs: {
-                shortAskBuyCompleteSets: [],
-                shortSellBuyCompleteSets: [],
-                completeSets: [{
-                    data: fix("3"),
-                    topics: [
-                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
                     ]
                 }, {
                     data: fix("2.1"),
@@ -1404,24 +1777,30 @@ describe("positions", function () {
                 }]
             },
             assertions: function (output) {
-                assert.deepEqual(output.sync, {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
                     "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-                        "1": "0",
-                        "2": "0"
+                        "1": "6.3",
+                        "2": "6.3"
                     }
                 });
             }
         });
         test({
-            description: "1 market, 1 short ask log, 2 complete sets logs [1 buy, 1 sell]",
+            description: "1 market, 1 short ask, 2 sell complete sets",
             account: "0xb0b",
             onChainPosition: {
-                "1": "3.9",
-                "2": "3.9"
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "0.9",
+                    "2": "0.9"
+                }
             },
             logs: {
                 shortAskBuyCompleteSets: [{
-                    data: fix("3"),
+                    data: fix("6"),
                     topics: [
                         "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b",
@@ -1430,13 +1809,13 @@ describe("positions", function () {
                     ]
                 }],
                 shortSellBuyCompleteSets: [],
-                completeSets: [{
+                sellCompleteSets: [{
                     data: fix("3"),
                     topics: [
                         "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b",
                         "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
                     ]
                 }, {
                     data: fix("2.1"),
@@ -1449,7 +1828,11 @@ describe("positions", function () {
                 }]
             },
             assertions: function (output) {
-                assert.deepEqual(output.sync, {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
                     "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
                         "1": "0",
                         "2": "0"
@@ -1458,11 +1841,13 @@ describe("positions", function () {
             }
         });
         test({
-            description: "1 market, 1 short ask log, 1 short sell log, 2 complete sets logs [1 buy, 1 sell]",
+            description: "1 market, 1 short ask, 1 short sell, 1 sell complete sets",
             account: "0xb0b",
             onChainPosition: {
-                "1": "3.9",
-                "2": "4.9"
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "3.9",
+                    "2": "4.9"
+                }
             },
             logs: {
                 shortAskBuyCompleteSets: [{
@@ -1487,7 +1872,141 @@ describe("positions", function () {
                         "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
                     ]
                 }],
-                completeSets: [{
+                sellCompleteSets: [{
+                    data: fix("0.9"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        "1": "-1",
+                        "2": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 1], 1 sell complete sets",
+            account: "0xb0b",
+            onChainPosition: {
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "3.9",
+                    "2": "4.2"
+                }
+            },
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("3"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.2").replace("0x", "")+
+                        "0000000000000000000000000000000200000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("0.9"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        "1": "-0.3",
+                        "2": "0"
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 2], 2 complete sets [buy 3, sell 2.1]",
+            account: "0xb0b",
+            onChainPosition: {
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "4.1",
+                    "2": "4.0"
+                }
+            },
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("3"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.2").replace("0x", "")+
+                        "0000000000000000000000000000000200000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
                     data: fix("3"),
                     topics: [
                         "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
@@ -1506,10 +2025,184 @@ describe("positions", function () {
                 }]
             },
             assertions: function (output) {
-                assert.deepEqual(output.sync, {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
                     "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-                        "1": "-1",
+                        "1": "0",
+                        "2": "-0.1"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, position ([0, 0], [2, 2, 2, 2, 2, 2, 2, 2]), 2 short sells [0.1 outcome 2 market 1, 0.2 outcome 2 market 2], 1 sell complete sets [1 market 2]",
+            account: "0xb0b",
+            onChainPosition: {
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "0.0",
+                    "2": "0.1"
+                },
+                "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                    "1": "1.2",
+                    "2": "1",
+                    "3": "1.2",
+                    "4": "1.2",
+                    "5": "1.2",
+                    "6": "1.2",
+                    "7": "1.2",
+                    "8": "1.2"
+                }
+            },
+            logs: {
+                shortAskBuyCompleteSets: [],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.2").replace("0x", "")+
+                        "0000000000000000000000000000000200000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("1"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        "1": "-0.1",
                         "2": "0"
+                    },
+                    "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                        "1": "2",
+                        "2": "1.8",
+                        "3": "2",
+                        "4": "2",
+                        "5": "2",
+                        "6": "2",
+                        "7": "2",
+                        "8": "2"
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets, 3 short sells [0.1 outcome 2 market 1, 1.2 outcome 2 market 2, 10000.00001 outcome 7 market 2], 1 sell complete sets [1.2 market 2]",
+            account: "0xb0b",
+            onChainPosition: {
+                "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                    "1": "0.0",
+                    "2": "0.1"
+                },
+                "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                    "1": "10001.00001",
+                    "2": "9998.80001",
+                    "3": "10001.00001",
+                    "4": "10001.00001",
+                    "5": "10001.00001",
+                    "6": "10001.00001",
+                    "7": "0",
+                    "8": "10001.00001"
+                }
+            },
+            logs: {
+                shortAskBuyCompleteSets: [],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("0.2").replace("0x", "")+
+                        "0000000000000000000000000000000200000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("10000.00001").replace("0x", "")+
+                        "0000000000000000000000000000000300000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000007", // outcome
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("1.2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isObject(output.async);
+                assert.isObject(output.sync);
+                assert.deepEqual(output.async, output.sync);
+                assert.deepEqual(output.async, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        "1": "-0.1",
+                        "2": "0"
+                    },
+                    "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                        "1": "2.2",
+                        "2": "0",
+                        "3": "2.2",
+                        "4": "2.2",
+                        "5": "2.2",
+                        "6": "2.2",
+                        "7": "-9998.80001",
+                        "8": "2.2"
                     }
                 });
             }
