@@ -186,17 +186,18 @@ module.exports = {
         if (!utils.is_function(callback)) {
             var shareTotals = this.calculateShareTotals({
                 shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
-                shortSellBuyCompleteSets: this.getMakerShortSellLogs(account, options),
+                shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
                 sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
             });
-            return this.adjustPositions(account, this.findUniqueMarketIDs(shareTotals), shareTotals);
+            var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
+            return this.adjustPositions(account, marketIDs, shareTotals);
         }
         async.parallel({
             shortAskBuyCompleteSets: function (done) {
                 self.getShortAskBuyCompleteSetsLogs(account, options, done);
             },
             shortSellBuyCompleteSets: function (done) {
-                self.getMakerShortSellLogs(account, options, done);
+                self.getTakerShortSellLogs(account, options, done);
             },
             sellCompleteSets: function (done) {
                 self.getSellCompleteSetsLogs(account, options, done);
@@ -204,7 +205,8 @@ module.exports = {
         }, function (err, logs) {
             if (err) return callback(err);
             var shareTotals = self.calculateShareTotals(logs);
-            self.adjustPositions(account, self.findUniqueMarketIDs(shareTotals), shareTotals, callback);
+            var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
+            self.adjustPositions(account, marketIDs, shareTotals, callback);
         });
     },
 

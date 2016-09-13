@@ -249,27 +249,37 @@ module.exports = {
 
     getAccountTrades: function (account, options, cb) {
         var self = this;
-        function parseLogs(logs, trades, maker, callback) {
+        function parseLogs(logs, trades, maker, isShortSell, callback) {
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return callback();
             }
             if (logs.error) return cb(logs);
             for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
+                if (logs[i] && logs[i].data && logs[i].data !== "0x") {
                     var market = logs[i].topics[1];
                     if (!trades[market]) trades[market] = {};
                     var parsed = self.rpc.unmarshal(logs[i].data);
                     var outcome = parseInt(parsed[4]);
                     if (!trades[market][outcome]) trades[market][outcome] = [];
-                    trades[market][outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16),
-                        maker: maker
-                    });
+                    if (isShortSell) {
+                        trades[market][outcome].push({
+                            type: 2,
+                            price: abi.unfix(parsed[0], "string"),
+                            shares: abi.unfix(parsed[1], "string"),
+                            trade_id: parsed[2],
+                            blockNumber: parseInt(logs[i].blockNumber, 16),
+                            maker: maker
+                        });
+                    } else {
+                        trades[market][outcome].push({
+                            type: parseInt(parsed[0], 16),
+                            price: abi.unfix(parsed[1], "string"),
+                            shares: abi.unfix(parsed[2], "string"),
+                            trade_id: parsed[3],
+                            blockNumber: parseInt(logs[i].blockNumber, 16),
+                            maker: maker
+                        });
+                    }
                 }
             }
             return callback();
@@ -294,7 +304,7 @@ module.exports = {
             timeout: constants.GET_LOGS_TIMEOUT
         }, function (logs) {
             var trades = {};
-            parseLogs(logs, trades, true, function () {
+            parseLogs(logs, trades, true, false, function () {
                 self.rpc.getLogs({
                     fromBlock: options.fromBlock || "0x1",
                     toBlock: options.toBlock || "latest",
@@ -307,11 +317,21 @@ module.exports = {
                     ],
                     timeout: constants.GET_LOGS_TIMEOUT
                 }, function (logs) {
-                    parseLogs(logs, trades, false, function () {
-                        if (!trades || Object.keys(trades).length === 0) {
-                            return cb(null);
-                        }
-                        cb(trades);
+                    parseLogs(logs, trades, false, false, function () {
+                        self.getMakerShortSellLogs(account, options, function (err, logs) {
+                            if (err) return cb(err);
+                            parseLogs(logs, trades, true, true, function () {
+                                self.getTakerShortSellLogs(account, options, function (err, logs) {
+                                    if (err) return cb(err);
+                                    parseLogs(logs, trades, false, true, function () {
+                                        if (!trades || Object.keys(trades).length === 0) {
+                                            return cb(null);
+                                        }
+                                        cb(trades);
+                                    });
+                                });
+                            });
+                        });
                     });
                 });              
             });
@@ -415,9 +435,10 @@ module.exports = {
             callback = options;
             options = null;
         }
+        options = options || {};
         this.getShortSellLogs(account, options, function (err, logs) {
             if (err) return callback(err);
-            callback(null, self.parseShortSellLogs(logs));
+            callback(null, self.parseShortSellLogs(logs, options.maker));
         });
     },
 

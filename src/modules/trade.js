@@ -259,15 +259,15 @@ module.exports = {
                                     var cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
                                         logs = receipt.logs;
-                                        sig = self.api.events.log_fill_tx.signature;
+                                        sig = self.api.events.log_short_fill_tx.signature;
                                         cashFromTrade = constants.ZERO;
                                         tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
-                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[0]).times(abi.unfix(logdata[1])));
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }
                                         }

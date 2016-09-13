@@ -40278,7 +40278,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.7.6";
+    this.version = "2.7.7";
 
     this.options = {
         debug: {
@@ -41968,27 +41968,37 @@ module.exports = {
 
     getAccountTrades: function (account, options, cb) {
         var self = this;
-        function parseLogs(logs, trades, maker, callback) {
+        function parseLogs(logs, trades, maker, isShortSell, callback) {
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return callback();
             }
             if (logs.error) return cb(logs);
             for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
+                if (logs[i] && logs[i].data && logs[i].data !== "0x") {
                     var market = logs[i].topics[1];
                     if (!trades[market]) trades[market] = {};
                     var parsed = self.rpc.unmarshal(logs[i].data);
                     var outcome = parseInt(parsed[4]);
                     if (!trades[market][outcome]) trades[market][outcome] = [];
-                    trades[market][outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16),
-                        maker: maker
-                    });
+                    if (isShortSell) {
+                        trades[market][outcome].push({
+                            type: 2,
+                            price: abi.unfix(parsed[0], "string"),
+                            shares: abi.unfix(parsed[1], "string"),
+                            trade_id: parsed[2],
+                            blockNumber: parseInt(logs[i].blockNumber, 16),
+                            maker: maker
+                        });
+                    } else {
+                        trades[market][outcome].push({
+                            type: parseInt(parsed[0], 16),
+                            price: abi.unfix(parsed[1], "string"),
+                            shares: abi.unfix(parsed[2], "string"),
+                            trade_id: parsed[3],
+                            blockNumber: parseInt(logs[i].blockNumber, 16),
+                            maker: maker
+                        });
+                    }
                 }
             }
             return callback();
@@ -42013,7 +42023,7 @@ module.exports = {
             timeout: constants.GET_LOGS_TIMEOUT
         }, function (logs) {
             var trades = {};
-            parseLogs(logs, trades, true, function () {
+            parseLogs(logs, trades, true, false, function () {
                 self.rpc.getLogs({
                     fromBlock: options.fromBlock || "0x1",
                     toBlock: options.toBlock || "latest",
@@ -42026,11 +42036,21 @@ module.exports = {
                     ],
                     timeout: constants.GET_LOGS_TIMEOUT
                 }, function (logs) {
-                    parseLogs(logs, trades, false, function () {
-                        if (!trades || Object.keys(trades).length === 0) {
-                            return cb(null);
-                        }
-                        cb(trades);
+                    parseLogs(logs, trades, false, false, function () {
+                        self.getMakerShortSellLogs(account, options, function (err, logs) {
+                            if (err) return cb(err);
+                            parseLogs(logs, trades, true, true, function () {
+                                self.getTakerShortSellLogs(account, options, function (err, logs) {
+                                    if (err) return cb(err);
+                                    parseLogs(logs, trades, false, true, function () {
+                                        if (!trades || Object.keys(trades).length === 0) {
+                                            return cb(null);
+                                        }
+                                        cb(trades);
+                                    });
+                                });
+                            });
+                        });
                     });
                 });              
             });
@@ -42134,9 +42154,10 @@ module.exports = {
             callback = options;
             options = null;
         }
+        options = options || {};
         this.getShortSellLogs(account, options, function (err, logs) {
             if (err) return callback(err);
-            callback(null, self.parseShortSellLogs(logs));
+            callback(null, self.parseShortSellLogs(logs, options.maker));
         });
     },
 
@@ -42626,17 +42647,18 @@ module.exports = {
         if (!utils.is_function(callback)) {
             var shareTotals = this.calculateShareTotals({
                 shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
-                shortSellBuyCompleteSets: this.getMakerShortSellLogs(account, options),
+                shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
                 sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
             });
-            return this.adjustPositions(account, this.findUniqueMarketIDs(shareTotals), shareTotals);
+            var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
+            return this.adjustPositions(account, marketIDs, shareTotals);
         }
         async.parallel({
             shortAskBuyCompleteSets: function (done) {
                 self.getShortAskBuyCompleteSetsLogs(account, options, done);
             },
             shortSellBuyCompleteSets: function (done) {
-                self.getMakerShortSellLogs(account, options, done);
+                self.getTakerShortSellLogs(account, options, done);
             },
             sellCompleteSets: function (done) {
                 self.getSellCompleteSetsLogs(account, options, done);
@@ -42644,7 +42666,8 @@ module.exports = {
         }, function (err, logs) {
             if (err) return callback(err);
             var shareTotals = self.calculateShareTotals(logs);
-            self.adjustPositions(account, self.findUniqueMarketIDs(shareTotals), shareTotals, callback);
+            var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
+            self.adjustPositions(account, marketIDs, shareTotals, callback);
         });
     },
 
@@ -43200,15 +43223,15 @@ module.exports = {
                                     var cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
                                         logs = receipt.logs;
-                                        sig = self.api.events.log_fill_tx.signature;
+                                        sig = self.api.events.log_short_fill_tx.signature;
                                         cashFromTrade = constants.ZERO;
                                         tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
-                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[0]).times(abi.unfix(logdata[1])));
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }
                                         }

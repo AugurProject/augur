@@ -1613,18 +1613,18 @@ describe("positions", function () {
     describe("getAdjustedPositions", function () {
         var getPositionInMarket;
         var getShortAskBuyCompleteSetsLogs;
-        var getMakerShortSellLogs;
+        var getTakerShortSellLogs;
         var getCompleteSetsLogs;
         beforeEach(function () {
             getPositionInMarket = augur.getPositionInMarket;
             getShortAskBuyCompleteSetsLogs = augur.getShortAskBuyCompleteSetsLogs;
-            getMakerShortSellLogs = augur.getMakerShortSellLogs;
+            getTakerShortSellLogs = augur.getTakerShortSellLogs;
             getCompleteSetsLogs = augur.getCompleteSetsLogs;
         });
         afterEach(function () {
             augur.getPositionInMarket = getPositionInMarket;
             augur.getShortAskBuyCompleteSetsLogs = getShortAskBuyCompleteSetsLogs;
-            augur.getMakerShortSellLogs = getMakerShortSellLogs;
+            augur.getTakerShortSellLogs = getTakerShortSellLogs;
             augur.getCompleteSetsLogs = getCompleteSetsLogs;
         });
         var test = function (t) {
@@ -1637,7 +1637,7 @@ describe("positions", function () {
                     if (!callback) return t.logs.shortAskBuyCompleteSets;
                     callback(null, t.logs.shortAskBuyCompleteSets);
                 }
-                augur.getMakerShortSellLogs = function (account, options, callback) {
+                augur.getTakerShortSellLogs = function (account, options, callback) {
                     if (!callback) return t.logs.shortSellBuyCompleteSets;
                     callback(null, t.logs.shortSellBuyCompleteSets);
                 }
