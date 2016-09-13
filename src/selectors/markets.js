@@ -288,6 +288,7 @@ function makeMarkets(numMarkets = 10) {
 							}
 							if (typeof limitPrice !== 'undefined') {
 								outcome.trade.limitPrice = limitPrice;
+								outcome.trade.maxNumShares = makeNumber(Math.round(10 / limitPrice) * 1000);
 							}
 							if (typeof side !== 'undefined') {
 								outcome.trade.side = side;

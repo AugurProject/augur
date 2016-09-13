@@ -101,6 +101,7 @@ export default function (appElement, selectors) {
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
 				isTradeCommitLocked={p.tradeCommitLock.isLocked}
+
 			/>
 		);
 		break;
@@ -138,6 +139,7 @@ export default function (appElement, selectors) {
 				selectedSort={p.searchSort.selectedSort}
 				sortOptions={p.searchSort.sortOptions}
 				onChangeSort={p.searchSort.onChangeSort}
+				loginAccount={p.loginAccount}
 			/>
 		);
 		break;
