@@ -162,6 +162,7 @@ export default class AccountPage extends Component {
 									<span>Send:</span>
 									<input
 										type="number"
+										step="0.1"
 										className={classnames('auth-input')}
 										min="0.0"
 										ref="sendAmount"
