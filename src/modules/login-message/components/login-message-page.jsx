@@ -25,7 +25,7 @@ const LoginMessagePage = (p) => (
 				<ol>
 					<li>
 						Because Augur is a <b>completely decentralized</b> system, if you lose your login credentials it
-						is impossible to recover them. Please <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/">take
+						is impossible to recover them. Please <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/" target="_blank">take
 						appropriate measures</a> to protect the safety of your password, and create a way to
 						recover your credentials if you forget them.
 					</li>
@@ -41,7 +41,7 @@ const LoginMessagePage = (p) => (
 						two-day cycle will consist of a commit phase, a reveal phase, and a challenge phase. Because the test
 						cycle is dramatically compressed (the main net cycle will be 60 days long) it is recommended that
 						users visit the site at least every 2 days to maintain your REP and simulate “real money” trading,
-						resolution, and reporting conditions. Learn <a className="link" href="https://www.youtube.com/watch?v=sCms-snzHk4">how Augur's Reputation tokens
+						resolution, and reporting conditions. Learn <a className="link" href="https://www.youtube.com/watch?v=sCms-snzHk4" target="_blank">how Augur's Reputation tokens
 						work</a>.
 					</li>
 					<li>

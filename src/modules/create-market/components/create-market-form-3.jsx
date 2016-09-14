@@ -61,7 +61,6 @@ const CreateMarketForm4 = (p) => (
 			<Input
 				className="details-text-input"
 				value={p.detailsText}
-				isMultiline
 				maxLength={500}
 				placeholder="Optional: enter a more detailed description of your market."
 				onChange={(value) => p.onValuesUpdated({ detailsText: value })}

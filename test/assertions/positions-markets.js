@@ -6,7 +6,7 @@ export default function (positionsMarkets) {
 	assert.isDefined(positionsMarkets, `positionsMarkets isn't defined`);
 	assert.isArray(positionsMarkets, `positionsMarkets isn't an array`);
 
-	positionsMarkets.forEach(function(positionMarket) { assertPositionMarket(positionMarket) });
+	positionsMarkets.forEach(positionMarket => assertPositionMarket(positionMarket));
 }
 
 function assertPositionMarket(positionMarket) {
@@ -27,7 +27,9 @@ function assertPositionMarket(positionMarket) {
 			assert.isString(positionMarket.description, `'positionMarket.description' isn't a string`);
 		});
 
-		positionMarket.myPositionOutcomes.forEach(function(positionOutcome) { assertOutcome(positionOutcome) });
+		positionMarket.myPositionOutcomes.forEach(positionOutcome => assertOutcome(positionOutcome));
+
+		assertPositionMarketSummary(positionMarket.myPositionsSummary);
 	});
 }
 
@@ -39,12 +41,19 @@ function assertOutcome(outcome) {
 }
 
 function assertPosition(position) {
-	assertFormattedNumber(position.numPositions, 'positionsMarkets.positionOutcomes[outcome].position.numPositions');
-	assertFormattedNumber(position.qtyShares, 'positionsMarkets.positionOutcomes[outcome].position.qtyShares');
-	assertFormattedNumber(position.purchasePrice, 'positionsMarkets.positionOutcomes[outcome].position.purchasePrice');
-	assertFormattedNumber(position.totalValue, 'positionsMarkets.positionOutcomes[outcome].position.totalValue');
-	assertFormattedNumber(position.totalCost, 'positionsMarkets.positionOutcomes[outcome].position.totalCost');
-	assertFormattedNumber(position.shareChange, 'positionsMarkets.positionOutcomes[outcome].position.shareChange');
-	assertFormattedNumber(position.gainPercent, 'positionsMarkets.positionOutcomes[outcome].position.gainPercent');
-	assertFormattedNumber(position.netChange, 'positionsMarkets.positionOutcomes[outcome].position.netChange');
+	assertFormattedNumber(position.numPositions, 'position.numPositions');
+	assertFormattedNumber(position.qtyShares, 'position.qtyShares');
+	assertFormattedNumber(position.purchasePrice, 'position.purchasePrice');
+	assertFormattedNumber(position.totalValue, 'position.totalValue');
+	assertFormattedNumber(position.totalCost, 'position.totalCost');
+	assertFormattedNumber(position.shareChange, 'position.shareChange');
+	assertFormattedNumber(position.unrealizedNet, 'position..unrealizedNet');
+	assertFormattedNumber(position.realizedNet, 'position.realizedNet');
+	assertFormattedNumber(position.totalNet, 'position.totalNet');
+}
+
+function assertPositionMarketSummary(summary) {
+	assertFormattedNumber(summary.unrealizedNet, 'myPositionsSummary.unrealizedNet');
+	assertFormattedNumber(summary.realizedNet, 'myPositionsSummary.realizedNet');
+	assertFormattedNumber(summary.totalNet, 'myPositionsSummary.totalNet');
 }

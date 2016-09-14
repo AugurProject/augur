@@ -1,4 +1,5 @@
 import { makeNumber } from '../utils/make-number';
+import { randomNum } from '../../src/utils/random-number';
 import { M } from '../modules/site/constants/pages';
 
 export default [
@@ -10,36 +11,43 @@ export default [
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
 		},
 		description: 'will there be a referendum on may 1?',
+		myPositionsSummary: {
+			unrealizedNet: makeNumber(randomNum(), ' ETH'),
+			realizedNet: makeNumber(randomNum(), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
+		},
 		myPositionOutcomes: [
 			{
 				id: 1,
 				name: 'outcome 1',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
 			{
 				id: 2,
 				name: 'outcome 2',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}
 		]
 	},
@@ -51,36 +59,43 @@ export default [
 			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
 		},
 		description: 'Yoooooooooooooo, sup guy?',
+		myPositionsSummary: {
+			unrealizedNet: makeNumber(randomNum(), ' ETH'),
+			realizedNet: makeNumber(randomNum(), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
+		},
 		myPositionOutcomes: [
 			{
 				id: 1,
 				name: 'outcome 1',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			},
 			{
 				id: 2,
 				name: 'outcome 2',
 				position: {
-					numPositions: makeNumber(10, 'Positions', true),
-					qtyShares: makeNumber(50, 'shares'),
-					purchasePrice: makeNumber(0.2, ' ETH'),
-					shareChange: makeNumber(-0.1, ' ETH'),
-					totalCost: makeNumber(1000, ' ETH'),
-					totalValue: makeNumber(100, ' ETH'),
-					netChange: makeNumber(-900, ' ETH'),
-					gainPercent: makeNumber(-9, '%')
+					numPositions: makeNumber(randomNum(), 'Positions', true),
+					qtyShares: makeNumber(randomNum(50), 'shares'),
+					purchasePrice: makeNumber(randomNum(1), ' ETH'),
+					shareChange: makeNumber(randomNum(1), ' ETH'),
+					totalCost: makeNumber(randomNum(1000), ' ETH'),
+					totalValue: makeNumber(randomNum(100), ' ETH'),
+					realizedNet: makeNumber(randomNum(900), ' ETH'),
+					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+					totalNet: makeNumber(randomNum(), ' ETH')
 				},
-				lastPrice: makeNumber(0.1, ' ETH')
+				lastPrice: makeNumber(randomNum(1), ' ETH')
 			}
 		]
 	}
