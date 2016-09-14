@@ -28,7 +28,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 		case 'eth':
 			return augur.sendCashFrom(toAddress, amount, fromAddress, sent, success, failed);
 		case 'realEth':
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'This failed because sending realEther has not been implemented.' }));
+			return augur.rpc.sendEther(toAddress, amount, fromAddress, sent, success, failed);
 		case 'REP':
 			// return augur.SendReputation.sendReputation(branch.id, toAddress, amount, sent, success, failed, confirmed);
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'This failed because sending REP has not been implemented.' }));
