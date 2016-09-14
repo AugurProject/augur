@@ -83,7 +83,7 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-						var self = this;
+            var self = this;
             cb = cb || utils.pass;
 
             // web.account object is set to use new name
@@ -103,7 +103,7 @@ module.exports = function () {
                 if (plain.error) return cb(plain);
 
                 // derive secret key from password
-                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
                     if (derivedKey.error) return cb(derivedKey);
                     if (!Buffer.isBuffer(derivedKey)) {
                         derivedKey = new Buffer(derivedKey, "hex");
@@ -117,6 +117,18 @@ module.exports = function () {
                     // encrypt private key using derived key and IV, then
                     // store encrypted key & IV, indexed by handle
                     var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+                    var kdfparams = {
+                        dklen: keys.constants[constants.KDF].dklen,
+                        salt: plain.salt.toString("hex")
+                    };
+                    if (constants.KDF === "scrypt") {
+                        kdfparams.n = keys.constants.scrypt.n;
+                        kdfparams.r = keys.constants.scrypt.r;
+                        kdfparams.p = keys.constants.scrypt.p;
+                    } else {
+                        kdfparams.c = keys.constants.pbkdf2.c;
+                        kdfparams.prf = keys.constants.pbkdf2.prf;
+                    }
                     var keystore = {
                         address: address,
                         crypto: {
@@ -124,12 +136,7 @@ module.exports = function () {
                             ciphertext: encryptedPrivateKey,
                             cipherparams: {iv: plain.iv.toString("hex")},
                             kdf: constants.KDF,
-                            kdfparams: {
-                                c: keys.constants[constants.KDF].c,
-                                dklen: keys.constants[constants.KDF].dklen,
-                                prf: keys.constants[constants.KDF].prf,
-                                salt: plain.salt.toString("hex")
-                            },
+                            kdfparams: kdfparams,
                             mac: keys.getMAC(derivedKey, encryptedPrivateKey)
                         },
                         version: 3,
@@ -162,7 +169,7 @@ module.exports = function () {
 
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
-                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+                keys.deriveKey(password, keystore.crypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
                     var unencryptedLoginID = { keystore: keystore };
                     var loginID = augur.base58Encrypt(unencryptedLoginID);
 

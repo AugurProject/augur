@@ -39025,7 +39025,7 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-						var self = this;
+            var self = this;
             cb = cb || utils.pass;
 
             // web.account object is set to use new name
@@ -39045,7 +39045,7 @@ module.exports = function () {
                 if (plain.error) return cb(plain);
 
                 // derive secret key from password
-                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
                     if (derivedKey.error) return cb(derivedKey);
                     if (!Buffer.isBuffer(derivedKey)) {
                         derivedKey = new Buffer(derivedKey, "hex");
@@ -39059,6 +39059,18 @@ module.exports = function () {
                     // encrypt private key using derived key and IV, then
                     // store encrypted key & IV, indexed by handle
                     var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+                    var kdfparams = {
+                        dklen: keys.constants[constants.KDF].dklen,
+                        salt: plain.salt.toString("hex")
+                    };
+                    if (constants.KDF === "scrypt") {
+                        kdfparams.n = keys.constants.scrypt.n;
+                        kdfparams.r = keys.constants.scrypt.r;
+                        kdfparams.p = keys.constants.scrypt.p;
+                    } else {
+                        kdfparams.c = keys.constants.pbkdf2.c;
+                        kdfparams.prf = keys.constants.pbkdf2.prf;
+                    }
                     var keystore = {
                         address: address,
                         crypto: {
@@ -39066,12 +39078,7 @@ module.exports = function () {
                             ciphertext: encryptedPrivateKey,
                             cipherparams: {iv: plain.iv.toString("hex")},
                             kdf: constants.KDF,
-                            kdfparams: {
-                                c: keys.constants[constants.KDF].c,
-                                dklen: keys.constants[constants.KDF].dklen,
-                                prf: keys.constants[constants.KDF].prf,
-                                salt: plain.salt.toString("hex")
-                            },
+                            kdfparams: kdfparams,
                             mac: keys.getMAC(derivedKey, encryptedPrivateKey)
                         },
                         version: 3,
@@ -39104,7 +39111,7 @@ module.exports = function () {
 
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
-                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+                keys.deriveKey(password, keystore.crypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
                     var unencryptedLoginID = { keystore: keystore };
                     var loginID = augur.base58Encrypt(unencryptedLoginID);
 
@@ -39533,9 +39540,10 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // keythereum crypto parameters
-    KDF: "pbkdf2",
-    SCRYPT: "scrypt",
-    ROUNDS: 65536,
+    // KDF: "pbkdf2",
+    KDF: "scrypt",
+    ROUNDS: 4096,
+    // ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
 
@@ -40278,7 +40286,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.7.8";
+    this.version = "2.7.9";
 
     this.options = {
         debug: {
@@ -61668,8 +61676,65 @@ Mont.prototype.invm = function invm(a) {
 })(typeof module === 'undefined' || module, this);
 
 },{}],278:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],279:[function(require,module,exports){
+var r;
+
+module.exports = function rand(len) {
+  if (!r)
+    r = new Rand(null);
+
+  return r.generate(len);
+};
+
+function Rand(rand) {
+  this.rand = rand;
+}
+module.exports.Rand = Rand;
+
+Rand.prototype.generate = function generate(len) {
+  return this._rand(len);
+};
+
+if (typeof window === 'object') {
+  if (window.crypto && window.crypto.getRandomValues) {
+    // Modern browsers
+    Rand.prototype._rand = function _rand(n) {
+      var arr = new Uint8Array(n);
+      window.crypto.getRandomValues(arr);
+      return arr;
+    };
+  } else if (window.msCrypto && window.msCrypto.getRandomValues) {
+    // IE
+    Rand.prototype._rand = function _rand(n) {
+      var arr = new Uint8Array(n);
+      window.msCrypto.getRandomValues(arr);
+      return arr;
+    };
+  } else {
+    // Old junk
+    Rand.prototype._rand = function() {
+      throw new Error('Not implemented yet');
+    };
+  }
+} else {
+  // Node.js or Web worker
+  try {
+    var crypto = require('crypto');
+
+    Rand.prototype._rand = function _rand(n) {
+      return crypto.randomBytes(n);
+    };
+  } catch (e) {
+    // Emulate crypto API using randy
+    Rand.prototype._rand = function _rand(n) {
+      var res = new Uint8Array(n);
+      for (var i = 0; i < res.length; i++)
+        res[i] = this.rand.getByte();
+      return res;
+    };
+  }
+}
+
+},{"crypto":88}],279:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
