@@ -1,21 +1,63 @@
-.font-face(@family: arial, @weight: 500, @style: normal, @path: ''){
-    @font-face{
-        font-family: @family;
-        src:url('@{path}.eot');
-        src:url('@{path}.eot?#iefix') format('embedded-opentype'),
-            url('@{path}.woff') format('woff'),
-            url('@{path}.ttf') format('truetype'),
-            url('@{path}.svg#icon') format('svg');
-        font-weight: @weight;
-        font-style: @style;
-    }
+// only used for logo
+// font is customized to only include `a, u, g, r` for optimization
+@font-face{
+    font-family: 'Core Mellow Light';
+    src: url('../../../assets/fonts/core-mellow-light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
 }
 
-.font-face('FontAwesome', normal, normal, '//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/fonts/fontawesome-webfont');
-
+// icon set
 @font-face{
-    font-family: CoreMellow;
-    src: url('fonts/core-mellow/core-mellow-35-light.otf');
+    font-family: 'Font Awesome';
+    src: url('../../../assets/fonts/font-awesome.woff') format('woff');
     font-weight: 400;
     font-style: normal;
+}
+
+// primary site font -- Source Sans Pro
+// Light
+@font-face{
+    font-family: 'Source Sans Pro';
+    src: url('../../../assets/fonts/source-sans-pro-light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+// Regular
+@font-face{
+    font-family: 'Source Sans Pro';
+    src: url('../../../assets/fonts/source-sans-pro-regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+// Semi-Bold
+@font-face{
+    font-family: 'Source Sans Pro';
+    src: url('../../../assets/fonts/source-sans-pro-semibold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+
+// General Typographic Establishments
+.augur-brand{
+    font-family: 'Core Mellow Light', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+    font-weight: 300;
+}
+
+.fa{
+    font-family: 'Font Awesome';
+}
+
+body{
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+    font-weight: 400;
+
+    .subtle {
+        font-weight: 300;
+    }
+    .emphasized {
+        font-weight: 600;
+    }
 }
