@@ -35,7 +35,8 @@ var modules = [
     require("./modules/abacus"),
     require("./modules/reportingTools"),
     require("./modules/tradingActions"),
-    require("./modules/positions")
+    require("./modules/positions"),
+    require("./modules/sessions")
 ];
 
 function Augur() {
