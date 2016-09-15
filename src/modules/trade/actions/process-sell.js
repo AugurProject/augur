@@ -47,7 +47,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledShares.dividedBy(filledEth);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 				const update = {
 					hash: res.hash,
 					timestamp: res.timestamp,
@@ -73,7 +73,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledShares.dividedBy(filledEth);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
