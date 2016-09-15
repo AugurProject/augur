@@ -46,7 +46,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 				const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(res.remainingEth));
-				const pricePerShare = filledShares.dividedBy(filledEth);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
@@ -72,13 +72,13 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				filledShares = filledShares.plus(abi.bignum(res.filledShares));
 				const filledEth = abi.bignum(totalEthWithFee).minus(abi.bignum(res.remainingEth));
-				const pricePerShare = filledShares.dividedBy(filledEth);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
 					timestamp: res.timestamp,
 					status: SUCCESS,
-					message: `bought ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full}`,
+					message: `bought ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
 					totalCost: formatEther(filledEth),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)

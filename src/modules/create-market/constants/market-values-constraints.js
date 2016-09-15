@@ -15,7 +15,7 @@ export const EXPIRY_SOURCE_GENERIC = '';
 export const EXPIRY_SOURCE_SPECIFIC = 'specific';
 
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
-export const INITIAL_LIQUIDITY_MIN = 50;
+export const INITIAL_LIQUIDITY_MIN = 250;
 
 export const TAKER_FEE_DEFAULT = 2;
 export const TAKER_FEE_MIN = 1;
