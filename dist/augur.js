@@ -42587,7 +42587,7 @@ module.exports = function () {
                             if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
                                 console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
                             }
-                            --augur.rpc.rawTxMaxNonce;
+                            ++augur.rpc.rawTxMaxNonce;
                             delete packaged.nonce;
                             return self.getTxNonce(packaged, cb);
                         }
@@ -43613,7 +43613,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.8.0";
+    this.version = "2.8.1";
 
     this.options = {
         debug: {
