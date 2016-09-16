@@ -104,9 +104,16 @@ const Transaction = (p) => {
 		);
 		break;
 	case FUND_ACCOUNT:
+		nodes.action = 'REGISTER';
 		nodes.description = (
 			<span className="description">
-				Load free beta ether and rep
+				<span className="action">{nodes.action}</span>
+				<br />
+				<span className="market-description">Request testnet Ether and Reputation</span>
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 		break;
