@@ -1,6 +1,6 @@
-import { formatNumber, formatPercent } from '../../../../utils/format-number';
+import { formatNumber, formatPercent, formatRealEther, formatRealEtherEstimate } from '../../../../utils/format-number';
 import { formatDate } from '../../../../utils/format-date';
-
+import { augur, abi } from '../../../../services/augurjs';
 import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../markets/constants/market-types';
 import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
@@ -31,6 +31,9 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
 	o.isFavorite = false;
+	o.eventBond = formatEther(0); // 0 for testing
+	o.gasCost = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
+	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
 
 	if (!!o.isCreatingOrderBook) {
 		const formattedFairPrices = [];
