@@ -42,13 +42,10 @@ Position.propTypes = {
 	name: React.PropTypes.string,
 	type: React.PropTypes.string,
 	qtyShares: React.PropTypes.object,
-	totalValue: React.PropTypes.object,
 	gainPercent: React.PropTypes.object,
 	lastPrice: React.PropTypes.object,
 	lastPricePercent: React.PropTypes.object,
 	purchasePrice: React.PropTypes.object,
-	shareChange: React.PropTypes.object,
-	totalCost: React.PropTypes.object,
 	realizedNet: React.PropTypes.object,
 	unrealizedNet: React.PropTypes.object,
 	totalNet: React.PropTypes.object
