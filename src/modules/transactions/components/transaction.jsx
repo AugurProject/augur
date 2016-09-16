@@ -235,14 +235,6 @@ const Transaction = (p) => {
 					<ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
 				}
 				<br />
-				{!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
-					<ValueDenomination className="value-change marketCreationFee" {...p.marketCreationFee} prefix="market creation fee:" />
-				}
-				<br />
-				{!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
-					<ValueDenomination className="value-change eventBond" {...p.eventBond} prefix="bond (refundable):" />
-				}
-				<br />
 				{!!p.gasFees && !!p.gasFees.value &&
 					<ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
 				}
@@ -298,6 +290,26 @@ const Transaction = (p) => {
 									className="totalReturn-message"
 									{...p.totalReturn}
 									prefix="total return:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
+							<span>
+								<ValueDenomination
+									className="marketCreationFee-message"
+									{...p.marketCreationFee}
+									prefix="market creation fee:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
+							<span>
+								<ValueDenomination
+									className="eventBond-message"
+									{...p.eventBond}
+									prefix="event creation bond:"
 								/>
 								<br />
 							</span>
