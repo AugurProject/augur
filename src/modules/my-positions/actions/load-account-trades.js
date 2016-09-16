@@ -20,7 +20,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 			})
 		}, (err, data) => {
 			if (err) return console.error('loadAccountTrades error:', err);
-			console.log('loadAccountTrades data:', data);
+			console.log('loadAccountTrades data:', data, skipSellCompleteSets);
 			if (!marketID) dispatch(clearAccountTrades());
 			if (data.positions) {
 				dispatch(updateAccountPositionsData(data.positions));

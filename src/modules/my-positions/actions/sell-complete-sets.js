@@ -27,23 +27,34 @@ function sellCompleteSetsMarket(marketID, callback) {
 		if (!sellCompleteSetsLock[marketID]) {
 			dispatch(updateSellCompleteSetsLock(marketID, true));
 			augur.getPositionInMarket(marketID, loginAccount.id, (position) => {
-				if (!position || position.error) return callback(null, marketID);
+				if (!position || position.error) {
+					dispatch(updateSellCompleteSetsLock(marketID, false));
+					return callback(null, marketID);
+				}
 				const completeSetsBought = getState().completeSetsBought[marketID];
 				const outcomes = Object.keys(position);
 				const numPositions = outcomes.length;
 				if (completeSetsBought) {
-					for (let i = 0; i < numPositions; ++i) {
-						position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
-							.minus(completeSetsBought)
-							.toFixed(), ZERO);
+					const numCompleteSetsBought = completeSetsBought.length;
+					if (numCompleteSetsBought) {
+						let totalCompleteSetsBought = ZERO;
+						let i;
+						for (i = 0; i < numCompleteSetsBought; ++i) {
+							totalCompleteSetsBought = totalCompleteSetsBought.plus(completeSetsBought[i].amount);
+						}
+						for (i = 0; i < numPositions; ++i) {
+							position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
+								.minus(totalCompleteSetsBought)
+								.toFixed(), ZERO);
+						}
 					}
 				}
 				const smallestPosition = getSmallestPositionInMarket(position);
 				console.log('smallest position:', marketID, smallestPosition.toFixed());
 				if (smallestPosition.gt(ZERO)) {
-					console.info('selling complete set:', marketID, smallestPosition.toFixed());
 					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback));
 				} else {
+					dispatch(updateSellCompleteSetsLock(marketID, false));
 					if (callback) callback(null);
 				}
 			});

@@ -9,7 +9,7 @@ export function loadFullMarket(marketID) {
 		// the necessary actions to save each part in relevant state
 		const loadDetails = () => {
 			dispatch(loadBidsAsks(marketID));
-			dispatch(loadAccountTrades(marketID, () => {
+			dispatch(loadAccountTrades(marketID, false, () => {
 				dispatch(loadPriceHistory(marketID));
 			}));
 		};
