@@ -44,6 +44,7 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 });
 
 export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
+	const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
 	return {
 		numPositions: formatNumber(numPositions, {
 			decimals: 0,
@@ -56,6 +57,6 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 		purchasePrice: formatEther(meanTradePrice),
 		realizedNet: formatEther(realizedNet),
 		unrealizedNet: formatEther(unrealizedNet),
-		totalNet: formatEther(abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet)))
+		totalNet: formatEther(totalNet)
 	};
 });
