@@ -1,12 +1,16 @@
 // TYPOGRAPHY
 // site-wide typographic rules + values
 
+@font-weight-light: 300;
+@font-weight-normal: 400;
+@font-weight-semi-bold: 600;
+
 //  augur brand -- Core Mellow
 //  font is optimized to just include `a, u, g, r`
 @font-face{
     font-family: 'Core Mellow';
     src: url('assets/fonts/core-mellow-light.woff') format('woff');
-    font-weight: 300;
+    font-weight: @font-weight-light;
     font-style: normal;
 }
 
@@ -14,7 +18,7 @@
 @font-face{
     font-family: 'Font Awesome';
     src: url('assets/fonts/font-awesome.woff') format('woff');
-    font-weight: 400;
+    font-weight: @font-weight-normal;
     font-style: normal;
 }
 
@@ -23,7 +27,7 @@
 @font-face{
     font-family: 'Source Sans Pro';
     src: url('assets/fonts/source-sans-pro-light.woff') format('woff');
-    font-weight: 300;
+    font-weight: @font-weight-light;
     font-style: normal;
 }
 
@@ -31,7 +35,7 @@
 @font-face{
     font-family: 'Source Sans Pro';
     src: url('assets/fonts/source-sans-pro-regular.woff') format('woff');
-    font-weight: 400;
+    font-weight: @font-weight-normal;
     font-style: normal;
 }
 
@@ -39,32 +43,29 @@
 @font-face{
     font-family: 'Source Sans Pro';
     src: url('assets/fonts/source-sans-pro-semibold.woff') format('woff');
-    font-weight: 600;
+    font-weight: @font-weight-semi-bold;
     font-style: normal;
 }
 
 //  General Typographic Establishments
 .augur-brand{
     font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-    font-weight: 300;
+    font-weight: @font-weight-light;
 }
 
 .fa{
     font-family: 'Font Awesome';
-    font-weight: 400;
+    font-weight: @font-weight-normal;
 }
-
-@text-light: 300;
-@text-semi-bold: 600;
 
 body{
     font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-    font-weight: 400;
+    font-weight: @font-weight-normal;
 
-    .subtle {
-        font-weight: @text-light;
+    .light-weight {
+        font-weight: @font-weight-light;
     }
-    .emphasized {
-        font-weight: @text-semi-bold;
+    .semi-bold-weight {
+        font-weight: @font-weight-semi-bold;
     }
 }
