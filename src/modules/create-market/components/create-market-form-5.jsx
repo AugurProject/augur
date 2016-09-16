@@ -9,7 +9,7 @@ const CreateMarketForm5 = (p) => (
 		<MarketItem {...p} />
 		<ValueDenomination className="market-creation-fee" {...p.marketCreationFee} prefix="Market creation fee:" />
 		<br />
-		<ValueDenomination className="gas-cost" {...p.gasCost} prefix="Gas cost:" />
+		<ValueDenomination className="gas-fees" {...p.gasFees} prefix="Gas cost:" />
 		<br />
 		<ValueDenomination className="event-bond" {...p.eventBond} prefix="Bond (refundable):" />
 		<br />
