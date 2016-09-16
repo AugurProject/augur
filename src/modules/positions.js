@@ -211,21 +211,110 @@ module.exports = {
     },
 
     /**
-     * Convenience getAdjustedPositions wrapper for a single market.
+     * Calculates the weighted average trade price from a list of trades.
      *
-     * @param {string} account Ethereum account address.
-     * @param {string} marketID Augur market ID.
-     * @param {Object=} options eth_getLogs parameters (optional).
-     * @param {function=} callback Callback function (optional).
-     * @return {Object} Adjusted positions keyed by marketID.
+     * @param {Array} trades Trades to be averaged {type, shares, price, maker}.
+     * @return {string} Weighted average trade price.
      */
-    getAdjustedPositionInMarket: function (account, marketID, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
+    calculateMeanTradePrice: function (trades) {
+        var totalShares, totalValue, shares, numTrades, meanTradePrice;
+        totalShares = constants.ZERO;
+        totalValue = constants.ZERO;
+        meanTradePrice = constants.ZERO;
+        if (trades) {
+            numTrades = trades.length;
+            if (numTrades) {
+                for (var i = 0; i < numTrades; ++i) {
+                    shares = abi.bignum(trades[i].shares).abs();
+                    totalShares = totalShares.plus(shares);
+                    totalValue = totalValue.plus(abi.bignum(trades[i].price).times(shares));
+                }
+                meanTradePrice = totalValue.dividedBy(totalShares);
+            }
         }
-        options = options || {};
-        options.market = marketID;
-        return this.getAdjustedPositions(account, options, callback);
+        return meanTradePrice.toFixed();
+    },
+
+    /**
+     * Calculates realized and unrealized profit/loss for trades in a single outcome.
+     *
+     * Note: buy/sell labels are from taker's point-of-view.
+     *
+     * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
+     * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
+     * @param {BigNumber|string=} adjustedPosition Position adjusted for short sells (optional).
+     * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
+     */
+    calculateProfitLoss: function (trades, lastTradePrice, adjustedPosition) {
+        var shares, price, position, weightedPrice, realized, numTrades;
+        position = constants.ZERO;
+        weightedPrice = constants.ZERO;
+        realized = constants.ZERO;
+        if (trades) {
+            numTrades = trades.length;
+            if (numTrades) {
+                for (var i = 0; i < numTrades; ++i) {
+                    shares = abi.bignum(trades[i].shares);
+                    price = abi.bignum(trades[i].price);
+
+                    // Trades where user is the maker:
+                    //  - buy orders (matched user's ask): user loses shares, gets cash
+                    //  - sell orders (matched user's bid): user loses cash, gets shares
+                    if (trades[i].maker) {
+
+                        // Sell order: update realized P/L and total shares bought.
+                        // realized P/L = shares sold * (price on cash out - price on buy in)
+                        if (trades[i].type === 2) {
+                            if (position.eq(constants.ZERO)) {
+                                weightedPrice = price;
+                            } else {
+                                weightedPrice = position.dividedBy(shares.plus(position))
+                                    .times(weightedPrice)
+                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            }
+                            position = position.plus(shares);
+
+                        // Buy orders: update weighted price sum and total shares bought.
+                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+                        } else {
+                            realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                            position = position.minus(shares);
+                        }
+
+                    // Trades where user is the taker:
+                    //  - buy orders: user loses cash, gets shares
+                    //  - sell orders: user loses shares, gets cash
+                    } else {
+
+                        // Buy orders: update weighted price sum and total shares bought.
+                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+                        if (trades[i].type === 1) {
+                            if (position.eq(constants.ZERO)) {
+                                weightedPrice = price;
+                            } else {
+                                weightedPrice = position.dividedBy(shares.plus(position))
+                                    .times(weightedPrice)
+                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            }
+                            position = position.plus(shares);
+
+                        // Sell order: update realized P/L and total shares bought.
+                        // realized P/L = shares sold * (price on cash out - price on buy in)
+                        } else {
+                            realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                            position = position.minus(shares);
+                        }
+                    }
+                }
+            }
+        }
+        position = (adjustedPosition) ? abi.bignum(adjustedPosition) : position;
+
+        // unrealized P/L: shares held * (last trade price - price on buy in)
+        return {
+            position: position.toFixed(),
+            realized: realized.toFixed(),
+            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed()
+        };
     }
 };

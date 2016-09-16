@@ -2208,4 +2208,1772 @@ describe("positions", function () {
             }
         });
     });
+
+    describe("calculateMeanTradePrice", function () {
+        var test = function (t) {
+            it(t.description, function () {
+                t.assertions(augur.calculateMeanTradePrice(t.trades));
+            });
+        };
+        test({
+            description: "no trades",
+            trades: [],
+            assertions: function (output) {
+                assert.deepEqual(output, "0");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.1");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1, buy 5 @ 0.2]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 1,
+                shares: "5",
+                price: "0.2",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.13333333333333333333");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1, buy 5 @ 0.2, sell 7 @ 0.9]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 1,
+                shares: "5",
+                price: "0.2",
+                maker: false
+            }, {
+                type: 1,
+                shares: "7",
+                price: "0.9",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.37727272727272727273");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.1, sell 5 @ 0.2]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.2",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.11666666666666666667");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.2, sell 5 @ 0.2]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 1,
+                shares: "10",
+                price: "0.2",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.2",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.15");
+            }
+        });
+        test({
+            description: "trades: [buy 10 @ 0.1, sell 5 @ 0.2, buy 10 @ 0.2, sell 5 @ 0.3]",
+            trades: [{
+                type: 1,
+                shares: "10",
+                price: "0.1",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.2",
+                maker: false
+            }, {
+                type: 1,
+                shares: "10",
+                price: "0.2",
+                maker: false
+            }, {
+                type: 2,
+                shares: "5",
+                price: "0.3",
+                maker: false
+            }],
+            assertions: function (output) {
+                assert.deepEqual(output, "0.18333333333333333333");
+            }
+        });
+    });
+
+    describe("calculateProfitLoss", function () {
+        var test = function (t) {
+            it(t.description, function () {
+                t.assertions(augur.calculateProfitLoss(t.trades, t.lastPrice, t.adjustedPosition));
+            });
+        };
+        test({
+            description: "no trades, last price 2",
+            trades: [],
+            lastPrice: "2",
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    position: "0",
+                    realized: "0",
+                    unrealized: "0"
+                });
+            }
+        });
+        test({
+            description: "no trades, adjusted position 1, last price 2",
+            trades: [],
+            lastPrice: "2",
+            adjustedPosition: "1",
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    position: "1",
+                    realized: "0",
+                    unrealized: "2"
+                });
+            }
+        });
+
+        describe("taker trades", function () {
+            describe("no adjusted position", function () {
+                test({
+                    description: "trades: [buy 1 @ 2], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 1], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 3], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 3], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 1], last price 1",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 1, sell 1 @ 1], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 1, sell 1 @ 2], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 1, sell 2 @ 2], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "2",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "2",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 1, sell 1 @ 1, sell 1 @ 2], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 1, sell 1 @ 1, sell 1 @ 2], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 1, sell 1 @ 2, sell 1 @ 1], last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 1, sell 1 @ 2, sell 1 @ 1], last price 1",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 1, sell 1 @ 3, sell 1 @ 1], last price 1",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "3",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "2",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 2, sell 1 @ 1], last price 1",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "-1",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 3 @ 2, sell 1 @ 1, sell 2 @ 2], last price 1",
+                    trades: [{
+                        type: 1,
+                        shares: "3",
+                        price: "2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "2",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "-1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 100 @ 0.5, sell 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 1,
+                        shares: "100",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "90",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.5, buy 90 @ 0.5, sell 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "90",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "90",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.4, sell 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.4",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.6",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.4",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.6",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "3"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.3",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.4",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.3",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "-3"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.1",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.4",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "-7"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, buy 10 @ 0.5, sell 10 @ 0.2], last price 0.2",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }],
+                    lastPrice: "0.2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "-1",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 15 @ 0.1, buy 5 @ 0.5, sell 10 @ 0.2], last price 0.2",
+                    trades: [{
+                        type: 1,
+                        shares: "15",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }],
+                    lastPrice: "0.2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 15 @ 0.1, buy 5 @ 0.5, sell 10 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 1,
+                        shares: "15",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.5",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.1, sell 5 @ 0.1], last price 0.1",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.1",
+                        maker: false
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.1, sell 5 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.2",
+                        maker: false
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0.5",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.2, sell 5 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.2",
+                        maker: false
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0.166666666666666666665",
+                            unrealized: "-0.66666666666666666667"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.2, buy 10 @ 0.2, sell 5 @ 0.3], last price 0.3",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.3",
+                        maker: false
+                    }],
+                    lastPrice: "0.3",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "1.166666666666666666665",
+                            unrealized: "1.33333333333333333333"
+                        });
+                    }
+                });
+            });
+
+            describe("adjusted position", function () {
+                test({
+                    description: "trades: [buy 1 @ 2], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 1], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.2, buy 10 @ 0.2, sell 5 @ 0.3], last price 0.3",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.3",
+                        maker: false
+                    }],
+                    lastPrice: "0.3",
+                    adjustedPosition: "6",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "6",
+                            realized: "1.166666666666666666665",
+                            unrealized: "0.799999999999999999998"
+                        });
+                    }
+                });
+            });
+        });
+
+        describe("maker trades", function () {
+            describe("no adjusted position", function () {
+                test({
+                    description: "trades: [ask 1 @ 2], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 1 @ 1], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 1 @ 3], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "3",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 3], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "3",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 1], last price 1",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 1, bid 1 @ 1], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 1, bid 1 @ 2], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 1, bid 2 @ 2], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "2",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "2",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 1, bid 1 @ 1, bid 1 @ 2], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 1, bid 1 @ 1, bid 1 @ 2], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 1, bid 1 @ 2, bid 1 @ 1], last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 1, bid 1 @ 2, bid 1 @ 1], last price 1",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 1, bid 1 @ 3, bid 1 @ 1], last price 1",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "3",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "2",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 2, bid 1 @ 1], last price 1",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "-1",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 3 @ 2, bid 1 @ 1, bid 2 @ 2], last price 1",
+                    trades: [{
+                        type: 2,
+                        shares: "3",
+                        price: "2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "2",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "-1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 100 @ 0.5, bid 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 2,
+                        shares: "100",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "90",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.5, ask 90 @ 0.5, bid 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "90",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "90",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.4, bid 10 @ 0.5], last price 0.5",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.4",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.5",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "0",
+                            realized: "1",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.6",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.4",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.6",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "3"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.3",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.4",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.3",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "-3"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.1",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.4",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "20",
+                            realized: "0",
+                            unrealized: "-7"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, ask 10 @ 0.5, bid 10 @ 0.2], last price 0.2",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }],
+                    lastPrice: "0.2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "-1",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 15 @ 0.1, ask 5 @ 0.5, bid 10 @ 0.2], last price 0.2",
+                    trades: [{
+                        type: 2,
+                        shares: "15",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }],
+                    lastPrice: "0.2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 15 @ 0.1, ask 5 @ 0.5, bid 10 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 2,
+                        shares: "15",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.5",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.1, bid 5 @ 0.1], last price 0.1",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.1",
+                        maker: true
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.1, bid 5 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.2",
+                        maker: true
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0.5",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.2, bid 5 @ 0.2], last price 0.1",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.2",
+                        maker: true
+                    }],
+                    lastPrice: "0.1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "0.166666666666666666665",
+                            unrealized: "-0.66666666666666666667"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, bid 5 @ 0.2, ask 10 @ 0.2, bid 5 @ 0.3], last price 0.3",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.2",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.3",
+                        maker: true
+                    }],
+                    lastPrice: "0.3",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "10",
+                            realized: "1.166666666666666666665",
+                            unrealized: "1.33333333333333333333"
+                        });
+                    }
+                });
+            });
+
+            describe("adjusted position", function () {
+                test({
+                    description: "trades: [ask 1 @ 2], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "2",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "0"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 1 @ 1], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "1",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 1 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "1",
+                        price: "3",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 2 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 2,
+                        shares: "2",
+                        price: "3",
+                        maker: true
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [ask 10 @ 0.1, bid 5 @ 0.2, ask 10 @ 0.2, bid 5 @ 0.3], last price 0.3",
+                    trades: [{
+                        type: 2,
+                        shares: "10",
+                        price: "0.1",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.2",
+                        maker: true
+                    }, {
+                        type: 2,
+                        shares: "10",
+                        price: "0.2",
+                        maker: true
+                    }, {
+                        type: 1,
+                        shares: "5",
+                        price: "0.3",
+                        maker: true
+                    }],
+                    lastPrice: "0.3",
+                    adjustedPosition: "6",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "6",
+                            realized: "1.166666666666666666665",
+                            unrealized: "0.799999999999999999998"
+                        });
+                    }
+                });
+            });
+        });
+    });
 });
