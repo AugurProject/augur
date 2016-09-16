@@ -1,160 +1,160 @@
 .transactions {
-    .page-content {
-        font-size: 1.2rem;
-        background: white;
+	.page-content {
+		font-size: 1.2rem;
+		background: white;
 
-        .transactions-container {
-            display: table;
-            width: 100%;
+		.transactions-container {
+			display: table;
+			width: 100%;
 
-            .transaction-item {
-    			display: table-row;
-    			padding: 2.4vh 0 1.3vh 0;
-                line-height: 2.5rem;
-                border-bottom: 1px solid @color-border;
-                background: fade(orange, 6%);
-                font-weight: 900;
-                font-size: 1.3rem;
-            	animation-name: transactions-active-bg;
-                animation-duration: 0.7s;
-                animation-iteration-count: infinite;
-                animation-direction: alternate;
+			.transaction-item {
+				display: table-row;
+				padding: 2.4vh 0 1.3vh 0;
+				line-height: 2.5rem;
+				border-bottom: 1px solid @color-border;
+				background: fade(orange, 6%);
+				font-weight: 900;
+				font-size: 1.3rem;
+				animation-name: transactions-active-bg;
+				animation-duration: 0.7s;
+				animation-iteration-count: infinite;
+				animation-direction: alternate;
 
-                &.failed, &.interrupted {
-                    background: fade(@color-danger-normal, 6%);
-                    animation-name: unset;
-    				.status-and-message {
-    					color: @color-danger-normal;
-    				}
-                }
+				&.failed, &.interrupted {
+					background: fade(@color-danger-normal, 6%);
+					animation-name: unset;
+					.status-and-message {
+						color: @color-danger-normal;
+					}
+				}
 
-                &.pending {
-                    background: fade(@color-light-normal, 50%);
-                    animation-name: unset;
-    				.status-and-message {
-    					color: @color-dark-normal;
-    				}
-                }
+				&.pending {
+					background: fade(@color-light-normal, 50%);
+					animation-name: unset;
+					.status-and-message {
+						color: @color-dark-normal;
+					}
+				}
 
-                &.success {
-                    background: fade(@color-success-normal, 6%);
-                    animation-name: unset;
-    				.status-and-message {
-    					color: @color-success-normal;
-    				}
-                }
+				&.success {
+					background: fade(@color-success-normal, 6%);
+					animation-name: unset;
+					.status-and-message {
+						color: @color-success-normal;
+					}
+				}
 
-                > * {
-                    display: table-cell;
-                    padding: 2vh 2vw 2vh 2vw;
-                    vertical-align: middle;
-                }
+				> * {
+					display: table-cell;
+					padding: 2vh 2vw 2vh 2vw;
+					vertical-align: middle;
+				}
 
-                .index {
-                    padding-right: 0;
-                    text-align: right;
-                }
+				.index {
+					padding-right: 0;
+					text-align: right;
+				}
 
-                .description {
-                    line-height: 1.5em;
-                    text-align: left;
-                    font-weight: 400;
+				.description {
+					line-height: 1.5em;
+					text-align: left;
+					font-weight: 400;
 
-                    > * {
-                    	display: inline-block;
-                    	margin-right: 0.3rem;
-                    }
+					> * {
+						display: inline-block;
+						margin-right: 0.3rem;
+					}
 
-                    .action {
-                        text-transform: uppercase;
-                    }
+					.action {
+						text-transform: uppercase;
+					}
 
-                    .action, .shares, .avg-price {
-                    	font-weight: 900;
-                    }
+					.action, .shares, .avg-price {
+						font-weight: 900;
+					}
 
-                    .outcome-name {
-                    	text-transform: uppercase;
-                    }
+					.outcome-name {
+						text-transform: uppercase;
+					}
 
-                    .market-description {
-                    	line-height: 1.5em;
-                    	font-size: 0.8em;
-                    }
+					.market-description {
+						line-height: 1.5em;
+						font-size: 0.8em;
+					}
 
-                    .hide-in-tx-display {
-                        display: none;
-                    }
+					.hide-in-tx-display {
+						display: none;
+					}
 
-                    .avgPrice {
-                        display: none;
-                    }
+					.avgPrice {
+						display: none;
+					}
 
-                    .value-timestamp {
-                        font-size: 75%;
-                        color: #6d6d6d;
-                    }
-                }
+					.value-timestamp {
+						font-size: 75%;
+						color: #6d6d6d;
+					}
+				}
 
-                .value-changes {
-                    display: none;
-                }
+				.value-changes {
+					display: none;
+				}
 
-                .status-and-message {
-                    display: block;
-    				line-height: 1.4rem;
-                    text-align: right;
-                    color: orange;
-                    overflow: hidden;
+				.status-and-message {
+					display: block;
+					line-height: 1.4rem;
+					text-align: right;
+					color: orange;
+					overflow: hidden;
 
-    	            .status {
-                    	font-size: 0.75em;
-    	            }
+					.status {
+						font-size: 0.75em;
+					}
 
-    	            .message {
-    	                font-size: 0.95em;
-    	            }
+					.message {
+						font-size: 0.95em;
+					}
 
-                    .gasFees-message {
-                        font-size: 0.8em;
-                    }
+					.gasFees-message {
+						font-size: 0.8em;
+					}
 
-                    .eventBond-message {
-                        font-size: 0.8em;
-                    }
+					.eventBond-message {
+						font-size: 0.8em;
+					}
 
-                    .marketCreationFee-message {
-                        font-size: 0.8em;
-                    }
+					.marketCreationFee-message {
+						font-size: 0.8em;
+					}
 
-                    .tradingFees-message {
-                        font-size: 0.85em;
-                    }
+					.tradingFees-message {
+						font-size: 0.85em;
+					}
 
-                    .totalCost-message {
-                        font-size: 0.85em;
-                    }
+					.totalCost-message {
+						font-size: 0.85em;
+					}
 
-                    .totalReturn-message {
-                        font-size: 0.85em;
-                    }
+					.totalReturn-message {
+						font-size: 0.85em;
+					}
 
-                    .freeze-message {
-                        font-size: 0.85em
-                    }
-                }
-            }
-        }
+					.freeze-message {
+						font-size: 0.85em
+					}
+				}
+			}
+		}
 
-        .feel-free {
+		.feel-free {
 			display: block;
 			padding: 2rem 3rem 5rem 3rem;
 			text-align: right;
 			color: @color-plain-active;
 			font-size: 1.1rem;
 			font-style: italic;
-        }
-    }
+		}
+	}
 }
 
 @keyframes transactions-active-bg {
