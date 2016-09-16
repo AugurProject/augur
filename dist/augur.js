@@ -21205,6 +21205,7 @@ module.exports={
         "RoundTwo": "0x8666e062d3337bf0c1ad4fbef44a3d24cfe5490d", 
         "RoundTwoPenalize": "0xbe15d0d952c21d5fb181dac9941764cce2e0c240", 
         "SendReputation": "0xc1dc9753a0f143bbdb605805cf27cac9489524b0", 
+        "Sessions": "0xda41d613542f0f3f05e54d21e6aabbb1acc265b8", 
         "SlashRep": "0xaf0b38b11949930453c9ccaaddb284e8c7b662a5", 
         "Trade": "0xb293ca705fe4b44c3a89933b6c73e87864136c02", 
         "Trades": "0x1e997132f2aa4b8d52518e3935cccb59f42210f7"
@@ -49337,6 +49338,7 @@ module.exports = {
             }
         }
         this.notifications = {};
+        this.rawTxMaxNonce = -1;
     },
 
     // reset to default Ethereum nodes
