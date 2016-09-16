@@ -235,6 +235,14 @@ const Transaction = (p) => {
 					<ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
 				}
 				<br />
+				{!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
+					<ValueDenomination className="value-change marketCreationFee" {...p.marketCreationFee} prefix="market creation fee:" />
+				}
+				<br />
+				{!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
+					<ValueDenomination className="value-change eventBond" {...p.eventBond} prefix="bond (refundable):" />
+				}
+				<br />
 				{!!p.gasFees && !!p.gasFees.value &&
 					<ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
 				}
@@ -388,6 +396,8 @@ Transaction.propTypes = {
 	freeze: React.PropTypes.object,
 	gasFees: React.PropTypes.object,
 	tradingFees: React.PropTypes.object,
+	marketCreationFee: React.PropTypes.object,
+	eventBond: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
 	totalReturn: React.PropTypes.object,
 	timestamp: React.PropTypes.object
