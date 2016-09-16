@@ -56,6 +56,6 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 		purchasePrice: formatEther(meanTradePrice),
 		realizedNet: formatEther(realizedNet),
 		unrealizedNet: formatEther(unrealizedNet),
-		totalNet: formatEther(realizedNet.plus(unrealizedNet))
+		totalNet: formatEther(abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet)))
 	};
 });
