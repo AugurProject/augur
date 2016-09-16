@@ -10,7 +10,7 @@ export default function () {
 }
 
 export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice) => {
-	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !outcomeAccountPosition) {
+	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
 		return null;
 	}
 	const { position, realized, unrealized } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition);

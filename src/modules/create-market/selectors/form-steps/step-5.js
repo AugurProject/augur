@@ -1,4 +1,4 @@
-import { formatNumber, formatPercent, formatRealEther, formatRealEtherEstimate } from '../../../../utils/format-number';
+import { formatNumber, formatPercent, formatRealEther, formatRealEtherEstimate, formatEther } from '../../../../utils/format-number';
 import { formatDate } from '../../../../utils/format-date';
 import { augur, abi } from '../../../../services/augurjs';
 import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
