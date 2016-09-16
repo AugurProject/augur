@@ -351,6 +351,9 @@ module.exports = function () {
             var self = this;
             if (packaged.nonce) return this.submitTx(packaged, cb);
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
+                if (augur.rpc.debug.nonce) {
+                    console.debug('[augur.js] txCount:', parseInt(txCount, 16));
+                }
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount, 16);
                 }
