@@ -2,6 +2,7 @@ import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
@@ -10,12 +11,21 @@ describe(`modules/auth/actions/logout.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = { augur: { web: {} } };
+	const fakeAugurJS = {
+		augur: {
+			web: {},
+			Sessions: { logout: () => {} }
+		}
+	};
 	let action, store;
 	store = mockStore(testState);
 	fakeAugurJS.augur.web.logout = () => {
 		return;
 	};
+	sinon.stub(fakeAugurJS.augur.Sessions, 'logout', (o) => {
+		o.onSent({ callReturn: 1 });
+		o.onSuccess({ callReturn: 1 });
+	});
 	action = proxyquire('../../../src/modules/auth/actions/logout', {
 		'../../../services/augurjs': fakeAugurJS
 	});

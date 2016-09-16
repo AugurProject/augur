@@ -188,7 +188,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -216,7 +221,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -227,6 +237,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},
@@ -266,7 +286,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -277,6 +302,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},
@@ -315,7 +350,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -326,6 +366,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},
@@ -369,7 +419,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -380,6 +435,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},
@@ -424,7 +489,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -435,6 +505,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},
@@ -487,7 +567,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: transID,
-					status: { status: 'sending...' }
+					status: {
+						status: 'sending...',
+						eventBond: undefined,
+						gasFees: undefined,
+						marketCreationFee: undefined
+					}
 				},
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -498,6 +583,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 						timestamp: undefined,
 						data: {
 							id: '0x123'
+						},
+						gasFees: {
+							denomination: ' real ETH',
+							formatted: '0',
+							formattedValue: 0,
+							full: '0 real ETH',
+							minimized: '0',
+							rounded: '0',
+							roundedValue: 0,
+							value: 0
 						}
 					}
 				},

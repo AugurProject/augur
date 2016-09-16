@@ -10,12 +10,11 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 	it(`should return a summary of positions`, () => {
 		let numPositions = randomNum();
 		let qtyShares = randomNum();
-		let totalValue = randomNum();
-		let totalCost = randomNum();
+		let meanTradeValue = randomNum();
 		let realizedNet = randomNum();
 		let unrealizedNet = randomNum();
 
-		actual = selector.generatePositionsSummary(numPositions, qtyShares, totalValue, totalCost, realizedNet, unrealizedNet);
+		actual = selector.generatePositionsSummary(numPositions, qtyShares, meanTradeValue, realizedNet, unrealizedNet);
 
 		assertions.positionsSummary(actual);
 	});
