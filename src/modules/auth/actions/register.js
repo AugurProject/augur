@@ -55,11 +55,6 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
-			augur.Sessions.register({
-				onSent: (r) => console.log('augur.Sessions.register sent:', r),
-				onSuccess: (r) => console.log('augur.Sessions.register success:', r),
-				onFailed: (e) => console.error('augur.Sessions.register failed:', e)
-			});
 
 			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
 			// dispatch(addFundNewAccount(localLoginAccount.address));
