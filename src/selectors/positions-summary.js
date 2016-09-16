@@ -5,9 +5,6 @@ export default {
 	numPositions: makeNumber(randomNum(), 'Positions', true),
 	qtyShares: makeNumber(randomNum(), 'shares'),
 	purchasePrice: makeNumber(randomNum(), ' ETH'),
-	totalValue: makeNumber(randomNum(), ' ETH'),
-	totalCost: makeNumber(randomNum(), ' ETH'),
-	shareChange: makeNumber(randomNum(), ' ETH'),
 	realizedNet: makeNumber(randomNum(900), ' ETH'),
 	unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 	totalNet: makeNumber(randomNum(), ' ETH')

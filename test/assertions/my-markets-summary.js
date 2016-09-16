@@ -18,10 +18,5 @@ export function assertMyMarketsSummary(summary){
 			assert.isDefined(summary.numMarkets);
 			assert.isNumber(summary.numMarkets);
 		});
-
-		it('totalValue', () => {
-			assert.isDefined(summary.totalValue);
-			assert.isNumber(summary.totalValue);
-		});
 	});
 };

@@ -7,15 +7,8 @@ export default function (portfolioTotals){
 		assert.isDefined(portfolioTotals);
 		assert.isObject(portfolioTotals);
 
-		it('value', () => {
-			assert.isDefined(portfolioTotals.totalValue);
-
-			assertFormattedNumber(portfolioTotals.totalValue, 'portfolio.totals.totalValue');
-		});
-
 		it('net', () => {
 			assert.isDefined(portfolioTotals.netChange);
-
 			assertFormattedNumber(portfolioTotals.netChange, 'portfolio.totals.netChange');
 		});
 	});
