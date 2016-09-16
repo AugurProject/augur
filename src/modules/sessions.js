@@ -47,6 +47,37 @@ module.exports = {
         }
     },
 
+    getLatestUserTime: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (!utils.is_function(callback)) {
+            var logoutTime = this.getLastLogoutTime(account, options);
+            var loginTime = this.getLastLoginTime(account, options);
+            if (logoutTime && loginTime) {
+                return new Date(Math.max(logoutTime, loginTime));
+            }
+            if (logoutTime) return logoutTime;
+            if (loginTime) return loginTime;
+            return this.getRegisterTime(account, options);
+        }
+        this.getLastLogoutTime(account, options, function (err, logoutTime) {
+            if (err) return callback(err);
+            self.getLastLoginTime(account, options, function (err, loginTime) {
+                if (err) return callback(err);
+                if (logoutTime && loginTime) {
+                    return callback(null, new Date(Math.max(logoutTime, loginTime)));
+                }
+                if (logoutTime) return callback(null, logoutTime);
+                if (loginTime) return callback(null, loginTime);
+                self.getRegisterTime(account, options, callback);
+            });
+        });
+    },
+
     getLastLoginTime: function (account, options, callback) {
         var self = this;
         if (!callback && utils.is_function(options)) {

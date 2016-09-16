@@ -73,6 +73,191 @@ describe("sessions", function () {
         });
     });
 
+    describe("getLatestUserTime: look up user's most recent logout, login, or register timestamp", function () {
+        var test = function (t) {
+            var getLastLogoutTime;
+            var getLastLoginTime;
+            var getRegisterTime;
+            before(function () {
+                getLastLogoutTime = augur.getLastLogoutTime;
+                getLastLoginTime = augur.getLastLoginTime;
+                getRegisterTime = augur.getRegisterTime;
+            });
+            after(function () {
+                augur.getLastLogoutTime = getLastLogoutTime;
+                augur.getLastLoginTime = getLastLoginTime;
+                augur.getRegisterTime = getRegisterTime;
+            });
+            it(t.description, function (done) {
+                augur.getLastLogoutTime = function (account, options, callback) {
+                    var lastLogoutTime = t.timestamps.logout && new Date(t.timestamps.logout);
+                    if (!callback) return lastLogoutTime;
+                    callback(null, lastLogoutTime);
+                };
+                augur.getLastLoginTime = function (account, options, callback) {
+                    var lastLoginTime = t.timestamps.login && new Date(t.timestamps.login);
+                    if (!callback) return lastLoginTime;
+                    callback(null, lastLoginTime);
+                };
+                augur.getRegisterTime = function (account, options, callback) {
+                    var registerTime = t.timestamps.register && new Date(t.timestamps.register);
+                    if (!callback) return registerTime;
+                    callback(null, registerTime);
+                };
+                augur.getLatestUserTime(t.account, t.options, function (err, timestamp) {
+                    assert.isNull(err);
+                    t.assertions({
+                        async: timestamp,
+                        sync: augur.getLatestUserTime(t.account, t.options)
+                    });
+                    done();
+                });
+            });
+        };
+        test({
+            description: "no timestamps",
+            account: "0xbob",
+            timestamps: {
+                logout: null,
+                login: null,
+                register: null
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isNull(output.sync);
+                assert.isNull(output.async);
+            }
+        });
+        test({
+            description: "register-only",
+            account: "0xbob",
+            timestamps: {
+                logout: null,
+                login: null,
+                register: new Date(1473976051000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976051000);
+            }
+        });
+        test({
+            description: "register -> login",
+            account: "0xbob",
+            timestamps: {
+                logout: null,
+                login: new Date(1473976052000),
+                register: new Date(1473976051000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976052000);
+            }
+        });
+        test({
+            description: "register -> logout",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976053000),
+                login: null,
+                register: new Date(1473976051000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+        test({
+            description: "login -> logout",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976053000),
+                login: new Date(1473976052000),
+                register: null
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+        test({
+            description: "logout -> login",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976052000),
+                login: new Date(1473976053000),
+                register: null
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+        test({
+            description: "register -> login -> logout",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976053000),
+                login: new Date(1473976052000),
+                register: new Date(1473976051000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+        test({
+            description: "register -> logout -> login",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976052000),
+                login: new Date(1473976053000),
+                register: new Date(1473976051000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+        test({
+            description: "logout -> login -> register",
+            account: "0xbob",
+            timestamps: {
+                logout: new Date(1473976052000),
+                login: new Date(1473976053000),
+                register: new Date(1473976054000)
+            },
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.strictEqual(output.sync.constructor, Date);
+                assert.strictEqual(output.async.constructor, Date);
+                assert.strictEqual(output.sync.getTime(), output.async.getTime());
+                assert.strictEqual(output.async.getTime(), 1473976053000);
+            }
+        });
+    });
+
     describe("getLastLoginTime: look up user's most recent login timestamp", function () {
         var test = function (t) {
             it(t.description, function (done) {
@@ -90,6 +275,16 @@ describe("sessions", function () {
                 });
             });
         };
+        test({
+            description: "no logins",
+            account: "0xbob",
+            logs: [],
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isNull(output.sync);
+                assert.isNull(output.async);
+            }
+        });
         test({
             description: "1 login",
             account: "0xbob",
@@ -155,6 +350,16 @@ describe("sessions", function () {
             });
         };
         test({
+            description: "no logouts",
+            account: "0xbob",
+            logs: [],
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isNull(output.sync);
+                assert.isNull(output.async);
+            }
+        });
+        test({
             description: "1 logout",
             account: "0xbob",
             logs: [{
@@ -218,6 +423,16 @@ describe("sessions", function () {
                 });
             });
         };
+        test({
+            description: "no registers",
+            account: "0xbob",
+            logs: [],
+            assertions: function (output) {
+                assert.isObject(output);
+                assert.isNull(output.sync);
+                assert.isNull(output.async);
+            }
+        });
         test({
             description: "1 register",
             account: "0xb0b",
