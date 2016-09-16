@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { abi } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { formatEther, formatShares, formatNumber } from '../../../utils/format-number';
 import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
