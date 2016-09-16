@@ -1,207 +1,208 @@
 .button, .button:visited {
-    display: inline-block;
-    height: 2.8em;
-    line-height: 2.8em;
-    margin: 0;
-    padding: 0 1em;
+	display: inline-block;
+	height: 2.8em;
+	line-height: 2.8em;
+	margin: 0;
+	padding: 0 1em;
 
-    color: #ffffff;
-    background: @color-dark-active;
-    border: 0;
-    border-radius: 1px;
-    font-family: 'Roboto', Arial, sans-serif;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    outline: 0;
-    white-space: nowrap;
-    transition: background .3s ease;
+	color: #ffffff;
+	background: @color-dark-active;
+	border: 0;
+	border-radius: 1px;
+	font-family: 'Roboto', Arial, sans-serif;
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	outline: 0;
+	white-space: nowrap;
+	transition: background .3s ease;
 
-    &:hover {
-        color: white;
-        background: @color-dark-hover;
-    }
+	&:hover {
+		color: white;
+		background: @color-dark-hover;
+	}
 
-    &:focus, &:active {
-        color: white;
-        background: @color-dark-active;
-    }
+	&:focus, &:active {
+		color: white;
+		background: @color-dark-active;
+	}
 
-    &[disabled] {
-        color: @color-light-active !important;
-        background: @color-dark-active !important;
-        cursor: default !important;
-        opacity: 0.3 !important;
-        &:hover, &:focus, &:active {
-            color: @color-light-active !important;
-            background: @color-dark-active !important;
-            cursor: default !important;
-            opacity: 0.3 !important;
-        }
-    }
+	&[disabled] {
+		color: @color-light-active !important;
+		background: @color-dark-active !important;
+		cursor: default !important;
+		opacity: 0.3 !important;
+		&:hover, &:focus, &:active {
+			color: @color-light-active !important;
+			background: @color-dark-active !important;
+			cursor: default !important;
+			opacity: 0.3 !important;
+		}
+	}
 }
 
 .button.buy, .button.make, .button.select, .button.next {
-    color: white;
-    background: @color-primary-active;
-    &:hover {
-        background: @color-primary-hover;
-    }
-    &:focus, &:active {
-        background: @color-primary-active;
-    }
+	color: white;
+	background: @color-primary-active;
+	&:hover {
+		background: @color-primary-hover;
+	}
+	&:focus, &:active {
+		background: @color-primary-active;
+	}
 }
 
 .button.sell {
-    color: white;
-    background: @color-danger-active;
-    &:hover {
-        background: @color-danger-hover;
-    }
-    &:focus, &:active {
-        background: @color-danger-active;
-    }
+	color: white;
+	background: @color-danger-active;
+	&:hover {
+		background: @color-danger-hover;
+	}
+	&:focus, &:active {
+		background: @color-danger-active;
+	}
 }
 
 .chart-button {
-    font-family: FontAwesome;
-    font-size: 1rem;
+	font-family: 'Font Awesome';
+	font-size: 1rem;
 }
 
 .x-button, .x-button:visited {
-	width: unset; height: unset;
+	width: unset;
+	height: unset;
 	padding: 0;
 	line-height: unset;
 	color: @color-dark-active;
 	background: transparent;
 	font-size: 2.7rem;
-    font-family: "FontAwesome";
-    text-align: center;
+	font-family: 'Font Awesome';
+	text-align: center;
 
-    &:hover, &:focus, &:active {
-        color: @color-dark-hover;
-        background: transparent;
-    }
+	&:hover, &:focus, &:active {
+		color: @color-dark-hover;
+		background: transparent;
+	}
 }
 
 .favorite-button {
-    width: 1em; height: 1em;
-    line-height: unset;
-    color: #bbbbcc;
-    background: transparent;
-    border: 0;
-    font-family: "FontAwesome";
-    font-size: 1.5rem;
-    text-shadow: none;
-    transform: rotate(0deg);
-    transition: 0.25s;
-    transition-timing-function: ease-out;
-    outline: 0;
+	width: 1em;
+	height: 1em;
+	line-height: unset;
+	color: #bbbbcc;
+	background: transparent;
+	border: 0;
+	font-family: 'Font Awesome';
+	font-size: 1.5rem;
+	text-shadow: none;
+	transform: rotate(0deg);
+	transition: 0.25s;
+	transition-timing-function: ease-out;
+	outline: 0;
 
-    &:focus, &:active {
-        color: #aaaabb;
-        background: transparent;
-    }
-    &:hover {
-        color: #ffda00;
-        background: transparent;
-        text-shadow: 0 0 1px #dddd00;
-        opacity: 0.8;
-    }
+	&:focus, &:active {
+		color: #aaaabb;
+		background: transparent;
+	}
+	&:hover {
+		color: #ffda00;
+		background: transparent;
+		text-shadow: 0 0 1px #dddd00;
+		opacity: 0.8;
+	}
 
-    &.on {
-        color: #ffda00;
-        background: transparent;
-        font-size: 1.2em;
-        transform: rotate(58deg);
-        text-shadow: 0 0 1px #ffff00;
-        opacity: 0.7;
+	&.on {
+		color: #ffda00;
+		background: transparent;
+		font-size: 1.2em;
+		transform: rotate(58deg);
+		text-shadow: 0 0 1px #ffff00;
+		opacity: 0.7;
 
-        &:focus, &:active {
-            background: transparent;
-        }
-        &:hover {
-            opacity: 1;
-        }
-    }
+		&:focus, &:active {
+			background: transparent;
+		}
+		&:hover {
+			opacity: 1;
+		}
+	}
 }
 
 .place-trade {
-    background: #FCB531;
-    font-weight:900;
-    &:hover, &:focus, &:active {
-        background: #f19e04;
-    }
+	background: #FCB531;
+	font-weight: 900;
+	&:hover, &:focus, &:active {
+		background: #f19e04;
+	}
 }
 
 .button.trade {
-    color: white;
-    background: @color-warning-normal;
+	color: white;
+	background: @color-warning-normal;
 
-    &:hover {
-        color: white;
-        background: @color-warning-hover;
-    }
+	&:hover {
+		color: white;
+		background: @color-warning-hover;
+	}
 
-    &:focus, &:active {
-        color: white;
-        background: @color-warning-active;
-    }
+	&:focus, &:active {
+		color: white;
+		background: @color-warning-active;
+	}
 }
 
 .button.view {
-    color: white;
-    background: @color-plain-active;
+	color: white;
+	background: @color-plain-active;
 
-    &:hover {
-        color: white;
-        background: fade(@color-plain-active, 80%);
-    }
+	&:hover {
+		color: white;
+		background: fade(@color-plain-active, 80%);
+	}
 
-    &:focus, &:active {
-        color: white;
-        background: fade(@color-plain-active, 80%);
-    }
+	&:focus, &:active {
+		color: white;
+		background: fade(@color-plain-active, 80%);
+	}
 }
 
 .button.report {
-    color: white;
-    background: @color-danger-normal;
+	color: white;
+	background: @color-danger-normal;
 
-    &:hover {
-        color: white;
-        background: @color-danger-hover;
-    }
+	&:hover {
+		color: white;
+		background: @color-danger-hover;
+	}
 
-    &:focus, &:active {
-        color: white;
-        background: @color-danger-active;
-    }
+	&:focus, &:active {
+		color: white;
+		background: @color-danger-active;
+	}
 }
 
-
 .button.prev {
-    color: white;
-    background: @color-dark-active;
+	color: white;
+	background: @color-dark-active;
 
-    &:hover {
-        color: white;
-        background: @color-dark-hover;
-    }
+	&:hover {
+		color: white;
+		background: @color-dark-hover;
+	}
 
-    &:focus, &:active {
-        color: white;
-        background: @color-dark-normal;
-    }
+	&:focus, &:active {
+		color: white;
+		background: @color-dark-normal;
+	}
 }
 
 .component-header {
-    .button.make {
-        width: @filters-width;
-        height: @markets-header-height;
-        line-height: @markets-header-height;
-        padding: 0;
-        text-align: center;
-        border-radius: 1px;
-        font-size: 1.6rem;
-    }
+	.button.make {
+		width: @filters-width;
+		height: @markets-header-height;
+		line-height: @markets-header-height;
+		padding: 0;
+		text-align: center;
+		border-radius: 1px;
+		font-size: 1.6rem;
+	}
 }

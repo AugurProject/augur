@@ -35,7 +35,7 @@
     "_______": "On change create build",
     "watch:all": "npm run -s clean:demo && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s watch:assets:do",
-    "watch:assets:do": "cp -R ./src/assets/. ./demo && echo ---------ASSETS---------`date +%r`",
+    "watch:assets:do": "cp -R ./src/assets/. ./demo/assets && echo ---------ASSETS---------`date +%r`",
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s watch:css:do",
     "watch:css:do": "lessc $npm_package_config_less_entry_file > ./demo/styles.css && echo ---------CSS------------`date +%r`",
     "watch:js": "watchify $npm_package_config_js_entry_file_demo --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./demo/build.js.map > ./demo/build.js && echo ---------WATCHIFY--------`date +%r`'",
