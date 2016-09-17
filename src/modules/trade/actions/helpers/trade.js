@@ -4,32 +4,30 @@ import { ZERO } from '../../../trade/constants/numbers';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, cbStatus, cb) {
+	const bnTotalEth = abi.bignum(totalEthWithFee);
+	const bnNumShares = abi.bignum(numShares);
 	const res = {
-		remainingEth: abi.bignum(totalEthWithFee),
-		remainingShares: abi.bignum(numShares),
+		remainingEth: bnTotalEth,
+		remainingShares: bnNumShares,
 		filledShares: ZERO,
 		filledEth: ZERO,
 		tradingFees: ZERO,
 		gasFees: ZERO
 	};
-	const matchingIDs = getTradeIDs();
-	console.log('matching trade IDs:', matchingIDs);
-	const numTradeIDs = matchingIDs.length;
-	if (!numTradeIDs) return cb(null, res);
-	const chunkedIDs = [];
-	for (let i = 0; i < numTradeIDs; i += 5) {
-		chunkedIDs.push(matchingIDs.slice(i, i + 5));
-	}
-	console.log('chunked trade IDs:', chunkedIDs);
-	console.info('iterating...');
-	async.eachSeries(chunkedIDs, (chunk, nextChunk) => {
-		console.debug('chunk:', chunk);
-		console.debug('max_value (remainingEth):', res.remainingEth);
-		console.debug('max_amount (remainingShares):', res.remainingShares);
+	let matchingTradeIDs;
+	async.until(() => {
+		matchingTradeIDs = getTradeIDs();
+		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.filledEth.eq(ZERO));
+	}, (nextTrade) => {
+		console.debug(JSON.stringify({
+			max_value: res.remainingEth.toFixed(),
+			max_amount: res.remainingShares.toFixed(),
+			trade_ids: matchingTradeIDs.slice(0, 5)
+		}), null, 2);
 		augur.trade({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
-			trade_ids: chunk,
+			trade_ids: matchingTradeIDs.slice(0, 5),
 			sender: takerAddress,
 			onTradeHash: (data) => cbStatus({ status: 'submitting' }),
 			onCommitSent: (data) => cbStatus({ status: 'committing' }),
@@ -42,38 +40,38 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					gasFees: res.gasFees
 				});
 			},
-			onCommitFailed: (err) => nextChunk,
+			onCommitFailed: (err) => nextTrade,
 			onNextBlock: (data) => console.log('trade-onNextBlock', data),
 			onTradeSent: (data) => {
-				console.debug('trade sent:', data);
+				console.log('trade sent:', data);
 				cbStatus({ status: 'filling' });
 			},
 			onTradeSuccess: (data) => {
-				console.debug('trade success:', data);
-				res.remainingShares = abi.bignum(data.unmatchedShares);
+				console.log('trade success:', data);
 				res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
-				res.remainingEth = res.remainingEth.plus(abi.bignum(data.unmatchedCash));
 				res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
+				res.remainingShares = abi.bignum(data.unmatchedShares);
+				res.remainingEth = abi.bignum(data.unmatchedCash);
 				res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-				console.debug('res:', JSON.stringify(res, null, 2));
 				cbStatus({
 					status: 'filled',
 					hash: data.hash,
 					timestamp: data.timestamp,
 					tradingFees: res.tradingFees,
-					gasFees: res.gasFees
+					gasFees: res.gasFees,
+					filledShares: res.filledShares,
+					filledEth: res.filledEth,
+					remainingShares: res.remainingShares,
+					remainingEth: res.remainingEth
 				});
-				if ((res.filledShares.gt(ZERO) && res.remainingEth.gt(ZERO)) || (res.filledEth.gt(ZERO) && res.remainingShares.gt(ZERO))) {
-					return nextChunk();
-				}
-				nextChunk({ isComplete: true });
+				nextTrade();
 			},
-			onTradeFailed: (err) => nextChunk
+			onTradeFailed: (err) => nextTrade
 		});
 	}, (err) => {
-		if (err && !err.isComplete) return cb(err);
-		console.log('trade success:', res);
+		if (err) return cb(err);
+		console.log('full trade success:', JSON.stringify(res, null, 2));
 		cb(null, res);
 	});
 }
