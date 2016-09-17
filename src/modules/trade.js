@@ -97,19 +97,23 @@ module.exports = {
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
         this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
+            if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
             if (err) return onTradeFailed(err);
             var bn_max_value = abi.bignum(max_value);
             if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
                 return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
             }
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+            if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
             onTradeHash(tradeHash);
             self.commitTrade({
                 hash: tradeHash,
                 onSent: onCommitSent,
                 onSuccess: function (res) {
+                    if (self.options.debug.trading) console.log('commitTrade:', res);
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
+                        if (self.options.debug.trading) console.log('fastforward::', blockNumber);
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
