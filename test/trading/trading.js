@@ -991,13 +991,13 @@ describe("Integration tests", function () {
                                 assert.isNull(r.callReturn);
                             },
                             onSuccess: function (r) {
-                                assert(r.txHash);
+                                assert(r.hash);
                                 assert.isNotNull(r.callReturn);
                                 assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
                                 augur.cancel(r.callReturn, function (r) {
                                     assert.isNull(r.callReturn);
                                 }, function (r) {
-                                    assert(r.txHash);
+                                    assert(r.hash);
                                     assert.strictEqual(r.callReturn, "1");
                                     done();
                                 }, done);
