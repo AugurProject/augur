@@ -22,7 +22,7 @@ ex.connect = function connect(env, cb) {
 	augur.options.debug.trading = true;
 	augur.options.debug.nonce = true;
 	augur.rpc.debug.broadcast = false;
-	augur.rpc.debug.tx = false;
+	augur.rpc.debug.tx = true;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);

@@ -1,5 +1,5 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
@@ -41,7 +41,6 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {
-				console.log('trade callback:', err, res);
 				dispatch(updateTradeCommitLock(false));
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, {
@@ -61,18 +60,21 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				}));
 				const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
 				if (sharesRemaining.gt(ZERO) && res.remainingEth.gt(ZERO)) {
-					const transactionData = getState().transactionsData[transactionID];
-					dispatch(addBidTransaction(
-						transactionData.data.marketID,
-						transactionData.data.outcomeID,
-						transactionData.data.marketDescription,
-						transactionData.data.outcomeName,
-						sharesRemaining.toNumber(),
-						limitPrice,
-						res.remainingEth,
-						tradingFeesEth,
-						transactionData.feePercent.value,
-						gasFeesRealEth));
+					console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
+					if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
+						const transactionData = getState().transactionsData[transactionID];
+						dispatch(addBidTransaction(
+							transactionData.data.marketID,
+							transactionData.data.outcomeID,
+							transactionData.data.marketDescription,
+							transactionData.data.outcomeName,
+							sharesRemaining.toNumber(),
+							limitPrice,
+							res.remainingEth,
+							tradingFeesEth,
+							transactionData.feePercent.value,
+							gasFeesRealEth));
+					}
 				}
 			}
 		);
