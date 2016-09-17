@@ -104,7 +104,7 @@ const Transaction = (p) => {
 		);
 		break;
 	case FUND_ACCOUNT:
-		nodes.action = 'REGISTER';
+		nodes.action = 'REGISTER NEW ACCOUNT';
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
