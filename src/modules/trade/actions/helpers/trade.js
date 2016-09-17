@@ -17,17 +17,19 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 	let matchingTradeIDs;
 	async.until(() => {
 		matchingTradeIDs = getTradeIDs();
-		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.filledEth.eq(ZERO));
+		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.remainingShares.eq(ZERO));
 	}, (nextTrade) => {
 		console.debug(JSON.stringify({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
 			trade_ids: matchingTradeIDs.slice(0, 5)
 		}), null, 2);
+		const tradeIDs = matchingTradeIDs.slice(0, 5);
+		tradeIDs.reverse();
 		augur.trade({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
-			trade_ids: matchingTradeIDs.slice(0, 5),
+			trade_ids: tradeIDs,
 			sender: takerAddress,
 			onTradeHash: (data) => cbStatus({ status: 'submitting' }),
 			onCommitSent: (data) => cbStatus({ status: 'committing' }),
