@@ -11,11 +11,9 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 		tradingFees: ZERO,
 		gasFees: ZERO
 	};
-
 	const matchingIDs = getTradeIDs();
-
+	console.log('matching trade IDs:', matchingIDs);
 	if (!matchingIDs.length) return cb(null, res);
-
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
 		augur.short_sell({
 			max_amount: res.remainingShares.toFixed(),
@@ -35,12 +33,12 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 			onCommitFailed: (err) => nextMatchingID,
 			onNextBlock: (data) => console.log('short_sell-onNextBlock', data),
 			onTradeSent: (data) => {
-				console.log('!!!! onTradeSent', data);
+				console.debug('trade sent', data);
 				cbStatus({ status: 'filling' });
 			},
 			onTradeSuccess: (data) => {
 				if (data.unmatchedShares) {
-					res.remainingShares = parseFloat(data.unmatchedShares);
+					res.remainingShares = abi.number(data.unmatchedShares);
 				} else {
 					res.remainingShares = 0;
 				}
@@ -66,7 +64,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 		});
 	}, (err) => {
 		if (err && !err.isComplete) return cb(err);
-		console.log('* short_sell success:', res);
-		return cb(null, res);
+		console.log('short_sell success:', res);
+		cb(null, res);
 	});
 }

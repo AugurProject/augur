@@ -1,15 +1,15 @@
 import async from 'async';
 import { augur, abi } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
-import { SUCCESS } from '../../../transactions/constants/statuses';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
-		remainingEth: totalEthWithFee,
-		remainingShares: numShares,
+		remainingEth: abi.bignum(totalEthWithFee),
+		remainingShares: abi.bignum(numShares),
 		filledShares: ZERO,
 		filledEth: ZERO,
+		tradingFees: ZERO,
 		gasFees: ZERO
 	};
 	const matchingIDs = getTradeIDs();
@@ -27,8 +27,8 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 		console.debug('max_value (remainingEth):', res.remainingEth);
 		console.debug('max_amount (remainingShares):', res.remainingShares);
 		augur.trade({
-			max_value: res.remainingEth,
-			max_amount: res.remainingShares,
+			max_value: res.remainingEth.toFixed(),
+			max_amount: res.remainingShares.toFixed(),
 			trade_ids: chunk,
 			sender: takerAddress,
 			onTradeHash: (data) => cbStatus({ status: 'submitting' }),
@@ -52,12 +52,13 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 				console.debug('trade success:', data);
 				res.remainingShares = abi.bignum(data.unmatchedShares);
 				res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
+				res.remainingEth = res.remainingEth.plus(abi.bignum(data.unmatchedCash));
 				res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
 				res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				console.debug('res:', JSON.stringify(res, null, 2));
 				cbStatus({
-					status: SUCCESS,
+					status: 'filled',
 					hash: data.hash,
 					timestamp: data.timestamp,
 					tradingFees: res.tradingFees,

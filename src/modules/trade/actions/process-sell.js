@@ -5,7 +5,7 @@ import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
+import { trade } from '../../trade/actions/helpers/trade';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -35,7 +35,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		const { loginAccount } = getState();
 
-		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		trade(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
 			(data) => {
 				const update = { status: `${data.status} sell...` };
 				if (data.hash) update.hash = data.hash;
@@ -47,7 +47,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			(res) => {
 				filledEth = filledEth.plus(res.filledEth);
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledEth.dividedBy(filledShares);
+				const pricePerShare = filledShares.dividedBy(filledEth);
 				const update = {
 					hash: res.hash,
 					timestamp: res.timestamp,
@@ -73,7 +73,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 				filledEth = filledEth.plus(abi.bignum(res.filledEth));
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledEth.dividedBy(filledShares);
+				const pricePerShare = filledShares.dividedBy(filledEth);
 
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
