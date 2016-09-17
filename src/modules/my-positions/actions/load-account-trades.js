@@ -4,15 +4,14 @@ import { updateAccountTradesData, updateAccountPositionsData, updateCompleteSets
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 
-let loadAccountTradesLock = false;
+const loadAccountTradesLock = {};
 
 export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 	return (dispatch, getState) => {
 		const account = getState().loginAccount.id;
 		const options = { market: marketID };
-		console.log('loadAccountTradesLock:', loadAccountTradesLock);
-		if (account && !loadAccountTradesLock) {
-			loadAccountTradesLock = true;
+		if (account && !loadAccountTradesLock[marketID]) {
+			loadAccountTradesLock[marketID] = true;
 			async.parallel({
 				positions: (callback) => augur.getAdjustedPositions(account, options, callback),
 				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
@@ -25,7 +24,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 				})
 			}, (err, data) => {
 				if (err) {
-					loadAccountTradesLock = false;
+					loadAccountTradesLock[marketID] = false;
 					return console.error('loadAccountTrades error:', err);
 				}
 				console.log('loadAccountTrades data:', data, skipSellCompleteSets);
@@ -39,7 +38,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 				if (data.completeSetsBought) {
 					dispatch(updateCompleteSetsBought(data.completeSetsBought));
 				}
-				loadAccountTradesLock = false;
+				loadAccountTradesLock[marketID] = false;
 				if (!skipSellCompleteSets) dispatch(sellCompleteSets(marketID));
 				if (cb) cb();
 			});
