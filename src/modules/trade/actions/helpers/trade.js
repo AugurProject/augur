@@ -19,14 +19,14 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 		matchingTradeIDs = getTradeIDs();
 		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.remainingShares.eq(ZERO));
 	}, (nextTrade) => {
+		let tradeIDs = matchingTradeIDs;
+		tradeIDs.reverse();
+		tradeIDs = tradeIDs.slice(0, 3);
 		console.debug(JSON.stringify({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
-			trade_ids: matchingTradeIDs.slice(0, 5)
+			trade_ids: tradeIDs
 		}), null, 2);
-		let tradeIDs = matchingTradeIDs;
-		tradeIDs.reverse();
-		tradeIDs = tradeIDs.slice(0, 5)
 		augur.trade({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
