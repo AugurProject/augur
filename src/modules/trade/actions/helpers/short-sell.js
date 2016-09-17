@@ -27,7 +27,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				cbStatus({
 					status: 'sending',
-					hash: data.txHash,
+					hash: data.hash,
 					timestamp: data.timestamp,
 					gasFees: res.gasFees
 				});
@@ -54,7 +54,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				cbStatus({
 					status: SUCCESS,
-					hash: data.txHash,
+					hash: data.hash,
 					timestamp: data.timestamp,
 					tradingFees: res.tradingFees,
 					gasFees: res.gasFees
