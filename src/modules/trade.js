@@ -121,7 +121,7 @@ module.exports = {
                                 console.log("trade response:", JSON.stringify(result, null, 2));
                             }
                             var err;
-                            var txHash = result.txHash;
+                            var txHash = result.hash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
                                 result.callReturn[0] = parseInt(result.callReturn[0], 16);
                                 if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
@@ -163,7 +163,7 @@ module.exports = {
                                         }
                                     }
                                     cb({
-                                        txHash: txHash,
+                                        hash: txHash,
                                         unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
@@ -241,7 +241,7 @@ module.exports = {
                                 console.log("short_sell response:", JSON.stringify(result, null, 2));
                             }
                             var err;
-                            var txHash = result.txHash;
+                            var txHash = result.hash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
                                 result.callReturn[0] = parseInt(result.callReturn[0], 16);
                                 if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
@@ -273,7 +273,7 @@ module.exports = {
                                         }
                                     }
                                     cb({
-                                        txHash: txHash,
+                                        hash: txHash,
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                         matchedShares: abi.unfix(result.callReturn[2], "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
