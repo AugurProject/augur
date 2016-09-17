@@ -24,8 +24,9 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 			max_amount: res.remainingShares.toFixed(),
 			trade_ids: matchingTradeIDs.slice(0, 5)
 		}), null, 2);
-		const tradeIDs = matchingTradeIDs.slice(0, 5);
+		let tradeIDs = matchingTradeIDs;
 		tradeIDs.reverse();
+		tradeIDs = tradeIDs.slice(0, 5)
 		augur.trade({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),
