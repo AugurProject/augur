@@ -37,7 +37,7 @@ const CreateMarketForm4 = (p) => (
 				<span className="error-message">{p.errors.makerFee}</span>
 			}
 		</div>
-		<div className="initial-order-book">
+		<div className="initial-order-book displayNone">
 			<h4>Set the initial order book</h4>
 			<p>
 				Allows you to place an initial set of orders in this market's order book, which will allow traders to begin buying and selling immediately.

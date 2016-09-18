@@ -104,9 +104,16 @@ const Transaction = (p) => {
 		);
 		break;
 	case FUND_ACCOUNT:
+		nodes.action = 'REGISTER NEW ACCOUNT';
 		nodes.description = (
 			<span className="description">
-				Load free beta ether and rep
+				<span className="action">{nodes.action}</span>
+				<br />
+				<span className="market-description">Request testnet Ether and Reputation</span>
+				<br />
+				{p.timestamp &&
+					<ValueTimestamp className="property-value" {...p.timestamp} />
+				}
 			</span>
 		);
 		break;
@@ -287,6 +294,26 @@ const Transaction = (p) => {
 								<br />
 							</span>
 						}
+						{!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
+							<span>
+								<ValueDenomination
+									className="marketCreationFee-message"
+									{...p.marketCreationFee}
+									prefix="market creation fee:"
+								/>
+								<br />
+							</span>
+						}
+						{!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
+							<span>
+								<ValueDenomination
+									className="eventBond-message"
+									{...p.eventBond}
+									prefix="event creation bond:"
+								/>
+								<br />
+							</span>
+						}
 						{!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
 							<span>
 								<ValueDenomination
@@ -320,7 +347,7 @@ const Transaction = (p) => {
 									className="freeze-noFeeCost-message"
 									{...p.freeze.noFeeCost}
 									prefix={p.freeze.verb}
-									postfix="+"
+									postfix="+ "
 								/>
 							}
 							<ValueDenomination
@@ -381,6 +408,8 @@ Transaction.propTypes = {
 	freeze: React.PropTypes.object,
 	gasFees: React.PropTypes.object,
 	tradingFees: React.PropTypes.object,
+	marketCreationFee: React.PropTypes.object,
+	eventBond: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
 	totalReturn: React.PropTypes.object,
 	timestamp: React.PropTypes.object

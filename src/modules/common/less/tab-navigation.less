@@ -1,75 +1,75 @@
 .tab-navigator {
-    width: 100%;
+	width: 100%;
 
-    display: flex;
-    align-items: stretch;
+	display: flex;
+	align-items: stretch;
 
-    font-size: 2vmin;
+	font-size: 2vmin;
 
-    .nav-item {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+	.nav-item {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-        background: white;
-        color: black;
+		background: white;
+		color: black;
 
-        line-height: 2em;
+		line-height: 2em;
 
-        &:hover, &:active {
-            background: @color-light-hover;
-        }
+		&:hover, &:active {
+			background: @color-light-hover;
+		}
 
-        &.active {
-            background: @color-dark-hover;
-            color: @color-light-normal;
-        }
+		&.active {
+			background: @color-dark-hover;
+			color: @color-light-normal;
+		}
 
-        border: 1px solid @color-border-dark;
-        &:not(:last-of-type) {
-            border-right: none;
-        }
+		border: 1px solid @color-border-dark;
+		&:not(:last-of-type) {
+			border-right: none;
+		}
 
-        .nav-label {
-            flex: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+		.nav-label {
+			flex: 5;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 
-            font-size: 2.5vmin;
-        }
+			font-size: 2.5vmin;
+		}
 
-        .nav-values {
-            width: 100%;
-            flex: 2;
+		.nav-values {
+			width: 100%;
+			flex: 2;
 
-            display: flex;
-            align-items: center;
+			display: flex;
+			align-items: center;
 
-            font-size: 1.6vmin;
+			font-size: 1.6vmin;
 
-            border-top: 1px solid @color-border;
+			border-top: 1px solid @color-border;
 
-            .value-denomination {
-                flex: 1;
-                height: 100%;
+			.value-denomination {
+				flex: 1;
+				height: 100%;
 
-                display: flex;
-                justify-content: center;
-                align-items: center;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 
-                border-right: 1px solid @color-border;
+				border-right: 1px solid @color-border;
 
-                &:last-of-type {
-                    padding-right: 0;
-                    border-right: none;
-                }
+				&:last-of-type {
+					padding-right: 0;
+					border-right: none;
+				}
 
-                &.colorize {
-                    .colorize();
-                }
-            }
-        }
-    }
+				&.colorize {
+					.colorize();
+				}
+			}
+		}
+	}
 }

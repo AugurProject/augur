@@ -401,21 +401,6 @@ export default function (market) {
 			assertFormattedNumber(myPositionsSummary.purchasePrice, 'myPositionsSummary.purchasePrice');
 		});
 
-		it('market.myPositionsSummary.totalValue', () => {
-			assert.isDefined(myPositionsSummary.totalValue);
-			assertFormattedNumber(myPositionsSummary.totalValue, 'myPositionsSummary.totalValue');
-		});
-
-		it('market.myPositionsSummary.totalCost', () => {
-			assert.isDefined(myPositionsSummary.totalCost);
-			assertFormattedNumber(myPositionsSummary.totalCost, 'myPositionsSummary.totalCost');
-		});
-
-		it('market.myPositionsSummary.shareChange', () => {
-			assert.isDefined(myPositionsSummary.shareChange);
-			assertFormattedNumber(myPositionsSummary.shareChange, 'myPositionsSummary.shareChange');
-		});
-
 		it('market.myPositionsSummary.realizedNet', () => {
 			assert.isDefined(myPositionsSummary.realizedNet);
 			assertFormattedNumber(myPositionsSummary.realizedNet, 'myPositionsSummary.realizedNet');

@@ -102,9 +102,6 @@ function makeMarkets(numMarkets = 10) {
 			numPositions: makeNumber(2, 'Positions', true),
 			qtyShares: makeNumber(16898, 'shares'),
 			purchasePrice: makeNumber(0.5, ' ETH'),
-			totalCost: makeNumber(5, ' ETH'),
-			shareChange: makeNumber(1, 'shares'),
-			totalValue: makeNumber(985, ' ETH'),
 			realizedNet: makeNumber(randomNum(900), ' ETH'),
 			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 			totalNet: makeNumber(randomNum(), ' ETH')
@@ -114,10 +111,7 @@ function makeMarkets(numMarkets = 10) {
 		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, ' ETH'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
-			shareChange: makeNumber(0.107, ' ETH'),
-			totalCost: makeNumber(12555, ' ETH'),
 			realizedNet: makeNumber(randomNum(900), ' ETH'),
 			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 			totalNet: makeNumber(randomNum(), ' ETH')
@@ -125,10 +119,7 @@ function makeMarkets(numMarkets = 10) {
 		const randomPositionOutcome2 = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome2.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, ' ETH'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
-			shareChange: makeNumber(0.107, ' ETH'),
-			totalCost: makeNumber(12555, ' ETH'),
 			realizedNet: makeNumber(randomNum(900), ' ETH'),
 			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 			totalNet: makeNumber(randomNum(), ' ETH')

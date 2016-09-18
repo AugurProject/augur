@@ -5,7 +5,8 @@
 		color: @color-dark-hover;
 
 		.markets-content {
-			display: flex; flex-wrap: wrap;
+			display: flex;
+			flex-wrap: wrap;
 			width: 100%;
 			.l-container();
 		}
@@ -39,12 +40,13 @@
 					&.favorites {
 						.name {
 							&:before {
-								display: inline-block; position: relative;
+								display: inline-block;
+								position: relative;
 								top: 0.3vmin;
 								margin-right: 0.5rem;
 								content: '';
 								color: #FFDA00;
-								font-family: FontAwesome;
+								font-family: 'Font Awesome';
 								font-size: 1.2em;
 								transform: rotate(58deg);
 								opacity: 0.45;
@@ -59,12 +61,13 @@
 
 						.name {
 							&:before {
-								display: inline-block; position: relative;
+								display: inline-block;
+								position: relative;
 								top: 0.1em;
 								margin-right: 0.5rem;
 								content: '\f12a';
 								color: fade(@color-danger-active, 70%);
-								font-family: FontAwesome;
+								font-family: 'Font Awesome';
 								font-size: 1.2em;
 							}
 						}
