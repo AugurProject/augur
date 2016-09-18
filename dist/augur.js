@@ -43613,7 +43613,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.8.4";
+    this.version = "2.8.5";
 
     this.options = {
         debug: {
@@ -46767,12 +46767,21 @@ module.exports = {
         var count = {buy: 0, sell: 0};
         self.rpc.blockNumber(function (blockNumber) {
             self.rpc.getBlock(blockNumber, false, function (block) {
+                var checked_trade_ids = trade_ids.slice();
                 async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
                     self.get_trade(trade_id, function (trade) {
                         if (!trade || !trade.id) {
-                            return next(self.errors.TRADE_NOT_FOUND);
+                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+                            if (!checked_trade_ids.length) {
+                                return callback(self.errors.TRADE_NOT_FOUND);
+                            }
+                            console.warn('[augur.js] checkGasLimit:', self.errors.TRADE_NOT_FOUND);
                         } else if (trade.owner === sender) {
-                            return next({error: "-5", message: self.errors.trade["-5"]});
+                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+                            if (!checked_trade_ids.length) {
+                                return callback({error: "-5", message: self.errors.trade["-5"]});
+                            }
+                            console.warn('[augur.js] checkGasLimit:', self.errors.trade["-5"]);
                         }
                         ++count[trade.type];
                         gas += constants.TRADE_GAS[Number(!!i)][trade.type];
@@ -46781,10 +46790,10 @@ module.exports = {
                 }, function (e) {
                     if (e) return callback(e);
                     if (gas <= parseInt(block.gasLimit, 16)) {
-                        return callback(null, trade_ids);
+                        return callback(null, checked_trade_ids);
                     } else if (!count.buy || !count.sell) {
                         var type = (count.buy) ? "buy" : "sell";
-                        return callback(null, trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+                        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
                     }
                     callback(self.errors.GAS_LIMIT_EXCEEDED);
                 });
