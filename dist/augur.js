@@ -16514,10 +16514,15 @@ module.exports={
           "indexed": false, 
           "name": "makerFee", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "numOutcomes", 
+          "type": "int256"
         }
       ], 
-      "name": "log_short_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7"
+      "name": "log_short_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xb0f55c4ca782b084744311876a38f397e8e3ba3211c64c3d24cf92f217c35241"
     }, 
     "makeReports_logReturn": {
       "contract": "MakeReports", 
@@ -21207,7 +21212,7 @@ module.exports={
         "SendReputation": "0xc1dc9753a0f143bbdb605805cf27cac9489524b0", 
         "Sessions": "0xda41d613542f0f3f05e54d21e6aabbb1acc265b8", 
         "SlashRep": "0xaf0b38b11949930453c9ccaaddb284e8c7b662a5", 
-        "Trade": "0xb293ca705fe4b44c3a89933b6c73e87864136c02", 
+        "Trade": "0x1d730c812ddf968c4c06ef0f8cc129cbcf85162f", 
         "Trades": "0x1e997132f2aa4b8d52518e3935cccb59f42210f7"
     }
 }
@@ -43613,7 +43618,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.8.5";
+    this.version = "2.8.6";
 
     this.options = {
         debug: {
