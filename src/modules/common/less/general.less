@@ -2,8 +2,8 @@ html,
 body {
 	color: @color-dark-hover;
 	background: @color-body-bg;
-	background: linear-gradient(to right, rgba(250,250,255,1) 0%, @color-body-bg 50%, rgba(250,250,255,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeef', endColorstr='#eeeeef', GradientType=1 );
+	background: linear-gradient(to right, rgba(250, 250, 255, 1) 0%, @color-body-bg 50%, rgba(250, 250, 255, 1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeef', endColorstr='#eeeeef', GradientType=1);
 	font-family: 'Roboto', Arial, sans-serif;
 	font-size: 10px;
 	font-weight: 400;
@@ -39,11 +39,11 @@ a {
 }
 
 th {
-    padding: 0 0.5em;
-    text-align: left;
-    font-size: 0.8em;
-    font-weight: 700;
-    text-transform: uppercase;
+	padding: 0 0.5em;
+	text-align: left;
+	font-size: 0.8em;
+	font-weight: 700;
+	text-transform: uppercase;
 }
 
 hr {
@@ -76,23 +76,26 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
 	display: none;
 }
+
 ::-ms-clear {
-    display: none;
+	display: none;
 }
 
 ::-webkit-input-placeholder {
 	color: @color-plain-hover;
 }
+
 :-moz-placeholder {
 	color: @color-plain-hover;
 }
+
 ::-moz-placeholder {
 	color: @color-plain-hover;
 }
+
 :-ms-input-placeholder {
 	color: @color-plain-hover;
 }
-
 
 [contenteditable=true] {
 	outline: 1px solid @color-border;

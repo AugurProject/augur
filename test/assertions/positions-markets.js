@@ -44,10 +44,7 @@ function assertPosition(position) {
 	assertFormattedNumber(position.numPositions, 'position.numPositions');
 	assertFormattedNumber(position.qtyShares, 'position.qtyShares');
 	assertFormattedNumber(position.purchasePrice, 'position.purchasePrice');
-	assertFormattedNumber(position.totalValue, 'position.totalValue');
-	assertFormattedNumber(position.totalCost, 'position.totalCost');
-	assertFormattedNumber(position.shareChange, 'position.shareChange');
-	assertFormattedNumber(position.unrealizedNet, 'position..unrealizedNet');
+	assertFormattedNumber(position.unrealizedNet, 'position.unrealizedNet');
 	assertFormattedNumber(position.realizedNet, 'position.realizedNet');
 	assertFormattedNumber(position.totalNet, 'position.totalNet');
 }

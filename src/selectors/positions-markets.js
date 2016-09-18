@@ -24,9 +24,6 @@ export default [
 					numPositions: makeNumber(randomNum(), 'Positions', true),
 					qtyShares: makeNumber(randomNum(50), 'shares'),
 					purchasePrice: makeNumber(randomNum(1), ' ETH'),
-					shareChange: makeNumber(randomNum(1), ' ETH'),
-					totalCost: makeNumber(randomNum(1000), ' ETH'),
-					totalValue: makeNumber(randomNum(100), ' ETH'),
 					realizedNet: makeNumber(randomNum(900), ' ETH'),
 					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 					totalNet: makeNumber(randomNum(), ' ETH')
@@ -40,9 +37,6 @@ export default [
 					numPositions: makeNumber(randomNum(), 'Positions', true),
 					qtyShares: makeNumber(randomNum(50), 'shares'),
 					purchasePrice: makeNumber(randomNum(1), ' ETH'),
-					shareChange: makeNumber(randomNum(1), ' ETH'),
-					totalCost: makeNumber(randomNum(1000), ' ETH'),
-					totalValue: makeNumber(randomNum(100), ' ETH'),
 					realizedNet: makeNumber(randomNum(900), ' ETH'),
 					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 					totalNet: makeNumber(randomNum(), ' ETH')
@@ -72,9 +66,6 @@ export default [
 					numPositions: makeNumber(randomNum(), 'Positions', true),
 					qtyShares: makeNumber(randomNum(50), 'shares'),
 					purchasePrice: makeNumber(randomNum(1), ' ETH'),
-					shareChange: makeNumber(randomNum(1), ' ETH'),
-					totalCost: makeNumber(randomNum(1000), ' ETH'),
-					totalValue: makeNumber(randomNum(100), ' ETH'),
 					realizedNet: makeNumber(randomNum(900), ' ETH'),
 					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 					totalNet: makeNumber(randomNum(), ' ETH')
@@ -88,9 +79,6 @@ export default [
 					numPositions: makeNumber(randomNum(), 'Positions', true),
 					qtyShares: makeNumber(randomNum(50), 'shares'),
 					purchasePrice: makeNumber(randomNum(1), ' ETH'),
-					shareChange: makeNumber(randomNum(1), ' ETH'),
-					totalCost: makeNumber(randomNum(1000), ' ETH'),
-					totalValue: makeNumber(randomNum(100), ' ETH'),
 					realizedNet: makeNumber(randomNum(900), ' ETH'),
 					unrealizedNet: makeNumber(randomNum(100), ' ETH'),
 					totalNet: makeNumber(randomNum(), ' ETH')
