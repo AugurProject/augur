@@ -27,6 +27,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
                 topics: [
                     this.api.events.session.signature,
                     abi.format_int256(account),
@@ -126,6 +127,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
                 topics: [
                     this.api.events.session.signature,
                     abi.format_int256(account),
@@ -152,6 +154,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
                 topics: [
                     this.api.events.session.signature,
                     abi.format_int256(account),
@@ -178,6 +181,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
                 topics: [
                     this.api.events.session.signature,
                     abi.format_int256(account),
