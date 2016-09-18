@@ -43,6 +43,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			(err, res) => {
 				dispatch(updateTradeCommitLock(false));
 				if (err) {
+					console.log('trade failed:', err);
 					return dispatch(updateExistingTransaction(transactionID, {
 						status: FAILED,
 						message: err.message

@@ -9,11 +9,11 @@ export default function () {
 	return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice) => {
-	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
+export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, netEffectiveTrades, outcomeAccountTrades, lastPrice) => {
+	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition && !netEffectiveTrades) {
 		return null;
 	}
-	const { position, realized, unrealized } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition);
+	const { position, realized, unrealized } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition, netEffectiveTrades);
 	return generatePositionsSummary(1, position, augur.calculateMeanTradePrice(outcomeAccountTrades), realized, unrealized);
 });
 

@@ -1,6 +1,6 @@
 import async from 'async';
 import { augur } from '../../../services/augurjs';
-import { updateAccountTradesData, updateAccountPositionsData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
+import { updateAccountPositionsData, updateAccountTradesData, updateNetEffectiveTradesData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 
@@ -12,15 +12,28 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 		const options = { market: marketID };
 		if (account && !loadAccountTradesLock[marketID]) {
 			loadAccountTradesLock[marketID] = true;
+			if (!marketID) dispatch(clearAccountTrades());
 			async.parallel({
-				positions: (callback) => augur.getAdjustedPositions(account, options, callback),
+				positions: (callback) => {
+					augur.getAdjustedPositions(account, options, (err, positions) => {
+						if (err) return callback(err);
+						dispatch(updateAccountPositionsData(positions, marketID));
+						callback(null, positions);
+					});
+				},
 				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
 					if (!trades || trades.error) return callback(trades);
+					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
 				}),
+				shortAskBuyCompleteSetsLogs: (callback) => augur.getShortAskBuyCompleteSetsLogs(account, options, callback),
+				shortSellBuyCompleteSetsLogs: (callback) => augur.getTakerShortSellLogs(account, options, callback),
+				completeSetsSold: (callback) => augur.getSellCompleteSetsLogs(account, options, callback),
 				completeSetsBought: (callback) => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
 					if (err) return callback(err);
-					callback(null, augur.parseCompleteSetsLogs(logs));
+					const completeSetsBought = augur.parseCompleteSetsLogs(logs);
+					dispatch(updateCompleteSetsBought(completeSetsBought, marketID));
+					callback(null, completeSetsBought);
 				})
 			}, (err, data) => {
 				if (err) {
@@ -28,15 +41,13 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 					return console.error('loadAccountTrades error:', err);
 				}
 				console.log('loadAccountTrades data:', data, skipSellCompleteSets);
-				if (!marketID) dispatch(clearAccountTrades());
-				if (data.positions) {
-					dispatch(updateAccountPositionsData(data.positions));
-				}
-				if (data.trades) {
-					dispatch(updateAccountTradesData(data.trades));
-				}
-				if (data.completeSetsBought) {
-					dispatch(updateCompleteSetsBought(data.completeSetsBought));
+				if (data.shortAskBuyCompleteSetsLogs || data.shortSellBuyCompleteSetsLogs || data.completeSetsSold) {
+					const netEffectiveTrades = augur.calculateNetEffectiveTrades({
+						shortAskBuyCompleteSets: data.shortAskBuyCompleteSetsLogs,
+						shortSellBuyCompleteSets: data.shortSellBuyCompleteSetsLogs,
+						sellCompleteSets: data.completeSetsSold
+					});
+					dispatch(updateNetEffectiveTradesData(netEffectiveTrades, marketID));
 				}
 				loadAccountTradesLock[marketID] = false;
 				if (!skipSellCompleteSets) dispatch(sellCompleteSets(marketID));

@@ -23,6 +23,7 @@ import marketTrades from './modules/portfolio/reducers/market-trades';
 import accountTrades from './modules/my-positions/reducers/account-trades';
 import accountPositions from './modules/my-positions/reducers/account-positions';
 import completeSetsBought from './modules/my-positions/reducers/complete-sets-bought';
+import netEffectiveTrades from './modules/my-positions/reducers/net-effective-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
@@ -83,6 +84,7 @@ module.exports = {
 	accountTrades,
 	accountPositions,
 	completeSetsBought,
+	netEffectiveTrades,
 	transactionsData,
 
 	marketCreatorFees

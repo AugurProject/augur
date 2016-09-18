@@ -6,6 +6,14 @@ export default function (completeSetsBought = {}, action) {
 	switch (action.type) {
 	case UPDATE_COMPLETE_SETS_BOUGHT:
 		if (action.data) {
+			if (action.marketID) {
+				return {
+					...completeSetsBought,
+					[action.marketID]: {
+						...action.data[action.marketID]
+					}
+				};
+			}
 			return {
 				...completeSetsBought,
 				...action.data

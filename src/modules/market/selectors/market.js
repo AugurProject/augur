@@ -60,7 +60,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -81,6 +81,7 @@ export const selectMarket = (marketID) => {
 
 		marketReport,
 		(accountPositions || {})[marketID],
+		(netEffectiveTrades || {})[marketID],
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
@@ -114,6 +115,7 @@ export function assembleMarket(
 		marketOutcomesData,
 		marketReport,
 		marketAccountPositions,
+		marketNetEffectiveTrades,
 		marketAccountTrades,
 		marketTradeInProgress,
 		endDateYear,
@@ -134,6 +136,7 @@ export function assembleMarket(
 			marketOutcomesData,
 			marketReport,
 			marketAccountPositions,
+			marketNetEffectiveTrades,
 			marketAccountTrades,
 			marketTradeInProgress,
 			endDateYear,
@@ -240,7 +243,7 @@ export function assembleMarket(
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
+				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], marketNetEffectiveTrades, (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
 				outcome.topBid = selectTopBid(orderBook, false);
