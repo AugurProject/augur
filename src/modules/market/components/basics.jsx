@@ -5,27 +5,29 @@ import classNames from 'classnames';
 
 const Basics = (p) => (
 	<section className="basics">
-		{!!p.tags && !!p.tags.length &&
-			<ul className="tags">
-				{p.tags.map((tag, i) => (
-					<li key={i} className={classNames('tag', { link: !!tag.name })} onClick={!!tag.onClick && tag.onClick}>{!!tag.name ? tag.name : tag}</li>
-				))}
-			</ul>
-		}
+		<div className="l-space-between">
+			{!!p.tags && !!p.tags.length &&
+				<ul className="tags">
+					{p.tags.map((tag, i) => (
+						<li key={i} className={classNames('tag', { link: !!tag.name })} onClick={!!tag.onClick && tag.onClick}>{!!tag.name ? tag.name : tag}</li>
+					))}
+				</ul>
+			}
 
-		{p.isUpdaterVisible &&
-			<div className="updater">
-				Last updated {p.lastUpdatedBefore}
-				<button
-					className="button"
-					disabled={p.isUpdateButtonDisabled}
-					title={p.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
-					onClick={() => p.updateData(p.id)}
-				>
-					Update
-				</button>
-			</div>
-		}
+			{p.isUpdaterVisible &&
+				<div className="updater">
+					Last updated {p.lastUpdatedBefore}
+					<button
+						className="button"
+						disabled={p.isUpdateButtonDisabled}
+						title={p.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
+						onClick={() => p.updateData(p.id)}
+					>
+						Update
+					</button>
+				</div>
+			}
+		</div>
 
 		<span className="description" title={p.description}>{p.description}</span>
 
