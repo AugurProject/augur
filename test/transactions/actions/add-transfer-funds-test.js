@@ -39,7 +39,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 		store.getActions()[0].action('testTransactionID');
 		const expectedOutput = [
 			{
-				type: 'transfer_funds',
+				type: 'Fund Transfer',
 				fromAddress: '0xtest123',
 				amount: 5,
 				currency: 'eth',
