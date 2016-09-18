@@ -20,7 +20,11 @@ export default class MarketPage extends Component {
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
 		orderCancellation: PropTypes.object.isRequired,
-		isTradeCommitLocked: PropTypes.bool
+		isTradeCommitLocked: PropTypes.bool,
+		marketDataUpdater: React.PropTypes.shape({
+			update: PropTypes.func.isRequired,
+			updateIntervalSecs: PropTypes.number.isRequired
+		}).isRequired,
 	};
 	constructor(props) {
 		super(props);
@@ -40,7 +44,13 @@ export default class MarketPage extends Component {
 			);
 		} else {
 			// market exists
-			nodes.push(<Basics key="basics" {...p.market} />);
+			nodes.push(<Basics
+				key="basics"
+				{...p.market}
+				isUpdaterVisible
+				updateData={p.marketDataUpdater.update}
+				updateIntervalSecs={p.marketDataUpdater.updateIntervalSecs}
+			/>);
 			nodes.push(<MarketInfo key="market-info" {...p.market} />);
 
 			// report form

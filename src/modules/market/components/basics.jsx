@@ -13,6 +13,20 @@ const Basics = (p) => (
 			</ul>
 		}
 
+		{p.isUpdaterVisible &&
+			<div className="updater">
+				Last updated {p.lastUpdatedBefore}
+				<button
+					className="button"
+					disabled={p.isUpdateButtonDisabled}
+					title={p.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
+					onClick={() => p.updateData(p.id)}
+				>
+					Update
+				</button>
+			</div>
+		}
+
 		<span className="description" title={p.description}>{p.description}</span>
 
 		<ul className="properties">
@@ -44,7 +58,12 @@ Basics.propTypes = {
 	makerFeePercent: PropTypes.object,
 	takerFeePercent: PropTypes.object,
 	volume: PropTypes.object,
-	tags: PropTypes.array
+	tags: PropTypes.array,
+	lastUpdatedBefore: PropTypes.string,
+	updateData: PropTypes.func,
+	isUpdateButtonDisabled: PropTypes.bool,
+	updateIntervalSecs: PropTypes.number,
+	isUpdaterVisible: PropTypes.bool
 };
 
 export default Basics;

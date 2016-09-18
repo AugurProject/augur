@@ -375,6 +375,9 @@ function makeMarkets(numMarkets = 10) {
 			}
 		}
 
+		m.lastUpdatedBefore = '1 second ago';
+		m.isUpdateButtonDisabled = true;
+
 		return m;
 	}
 }

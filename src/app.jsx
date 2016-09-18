@@ -98,6 +98,7 @@ export default function (appElement, selectors) {
 				siteHeader={p.siteHeader}
 				selectedOutcome={p.selectedOutcome}
 				orderCancellation={p.orderCancellation}
+				marketDataUpdater={p.marketDataUpdater}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
 				isTradeCommitLocked={p.tradeCommitLock.isLocked}
