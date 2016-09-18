@@ -1,4 +1,5 @@
-import * as AugurJS from '../../../services/augurjs';
+import { formatRealEther } from '../../../utils/format-number';
+import { augur, fundNewAccount } from '../../../services/augurjs';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
@@ -9,16 +10,47 @@ export function processFundNewAccount(transactionID, address) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' }));
 
-		AugurJS.fundNewAccount(env, address, branch.id,
+		fundNewAccount(env, address, branch.id,
 			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: 'processing...'
+				}));
 			},
 			(data) => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Loaded free ether and rep', hash: data.hash, timestamp: data.timestamp }));
+				dispatch(updateExistingTransaction(transactionID, {
+					message: 'Received free Ether and Reputation!',
+					hash: data.hash,
+					timestamp: data.timestamp,
+					gasFees: formatRealEther(data.gasFees)
+				}));
 				dispatch(updateAssets());
+				augur.Sessions.register({
+					onSent: (r) => {
+						dispatch(updateExistingTransaction(transactionID, {
+							message: `Received free Ether and Reputation.<br />
+								Saving registration timestamp...`
+						}));
+						console.log('augur.Sessions.register sent:', r);
+					},
+					onSuccess: (r) => {
+						dispatch(updateExistingTransaction(transactionID, {
+							status: SUCCESS,
+							message: `Received free Ether and Reputation.<br />
+								Registration timestamp saved.`,
+							hash: r.hash,
+							timestamp: r.timestamp,
+							gasFees: formatRealEther(r.gasFees)
+						}));
+						console.log('augur.Sessions.register success:', r);
+					},
+					onFailed: (e) => console.error('augur.Sessions.register failed:', e)
+				});
 			},
 			(failedTransaction) => {
-				dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: failedTransaction.message }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: FAILED,
+					message: failedTransaction.message
+				}));
 			}
 		);
 	};

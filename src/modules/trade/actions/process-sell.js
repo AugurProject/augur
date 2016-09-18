@@ -5,7 +5,7 @@ import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
+import { trade } from '../../trade/actions/helpers/trade';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -21,10 +21,6 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
 			}));
 		}
-
-		// we track filled eth here as well to take into account the recursiveness of trading
-		let filledEth = ZERO;
-
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
 			message: `selling ${formatShares(numShares).full} for ${formatEtherEstimate(limitPrice).full} each`,
@@ -32,31 +28,20 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
-
 		const { loginAccount } = getState();
-
-		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
-			(data) => {
-				const update = { status: `${data.status} sell...` };
-				if (data.hash) update.hash = data.hash;
-				if (data.timestamp) update.timestamp = data.timestamp;
-				if (data.tradingFees) update.tradingFees = formatEther(data.tradingFees);
-				if (data.gasFees) update.gasFees = formatRealEther(data.gasFees);
-				dispatch(updateExistingTransaction(transactionID, update));
-			},
+		trade(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
 			(res) => {
-				filledEth = filledEth.plus(res.filledEth);
-				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledEth.dividedBy(filledShares);
-				const update = {
-					hash: res.hash,
-					timestamp: res.timestamp,
-					status: 'filling...',
-					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
-					totalReturn: formatEther(filledEth),
-					gasFees: formatRealEther(res.gasFees)
-				};
-				if (res.tradingFees) update.tradingfees = formatEther(res.tradingFees);
+				const update = { status: `${res.status} sell` };
+				if (res.hash) update.hash = res.hash;
+				if (res.timestamp) update.timestamp = res.timestamp;
+				if (res.tradingFees) update.tradingFees = formatEther(res.tradingFees);
+				if (res.gasFees) update.gasFees = formatRealEther(res.gasFees);
+				if (res.filledEth && res.remainingShares) {
+					const filledShares = abi.bignum(numShares).minus(res.remainingShares);
+					const pricePerShare = filledShares.dividedBy(res.filledEth);
+					update.message = `sold ${formatShares(filledShares).formatted} of ${formatShares(numShares).full} for ${formatEther(pricePerShare).full} each`;
+					update.totalReturn = formatEther(res.filledEth);
+				}
 				dispatch(updateExistingTransaction(transactionID, update));
 			},
 			(err, res) => {
@@ -67,24 +52,16 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						message: err.message
 					}));
 				}
-
-				// update user's position
-				dispatch(loadAccountTrades(marketID));
-
-				filledEth = filledEth.plus(abi.bignum(res.filledEth));
-				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const pricePerShare = filledEth.dividedBy(filledShares);
-
+				dispatch(loadAccountTrades(marketID)); // update user's position
+				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
+				const pricePerShare = filledShares.dividedBy(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, {
-					hash: res.hash,
-					timestamp: res.timestamp,
 					status: SUCCESS,
 					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
-					totalReturn: formatEther(filledEth),
+					totalReturn: formatEther(res.filledEth),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-
 				if (res.remainingShares > 0) {
 					augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);

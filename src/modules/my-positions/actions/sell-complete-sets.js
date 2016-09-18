@@ -10,21 +10,22 @@ BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND
 
 export function sellCompleteSets(marketID) {
 	return (dispatch, getState) => {
-		if (marketID) return dispatch(sellCompleteSetsMarket(marketID));
-		async.eachSeries(selectLoginAccountPositions().markets, (market, nextMarket) => {
-			if (market.outcomes.length !== market.numOutcomes) return nextMarket();
-			dispatch(sellCompleteSetsMarket(market.id, nextMarket));
-		}, (err) => {
-			if (err) console.error('sellCompleteSets error:', err);
-		});
+		if (getState().loginAccount.id) {
+			if (marketID) return dispatch(sellCompleteSetsMarket(marketID));
+			async.eachSeries(selectLoginAccountPositions().markets, (market, nextMarket) => {
+				if (market.outcomes.length !== market.numOutcomes) return nextMarket();
+				dispatch(sellCompleteSetsMarket(market.id, nextMarket));
+			}, (err) => {
+				if (err) console.error('sellCompleteSets error:', err);
+			});
+		}
 	};
 }
 
 function sellCompleteSetsMarket(marketID, callback) {
 	return (dispatch, getState) => {
 		const { sellCompleteSetsLock, loginAccount } = getState();
-		console.log('lock:', marketID, sellCompleteSetsLock[marketID]);
-		if (!sellCompleteSetsLock[marketID]) {
+		if (loginAccount.id && !sellCompleteSetsLock[marketID]) {
 			dispatch(updateSellCompleteSetsLock(marketID, true));
 			augur.getPositionInMarket(marketID, loginAccount.id, (position) => {
 				if (!position || position.error) {

@@ -230,6 +230,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					roundedValue: 500,
 					value: 500
 				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
+				},
 				isCreatingOrderBook: true
 			};
 
@@ -302,6 +332,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false
 			};
@@ -513,6 +573,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					roundedValue: 500,
 					value: 500
 				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
+				},
 				isCreatingOrderBook: true
 			};
 
@@ -604,6 +694,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false
 			};
@@ -786,6 +906,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					roundedValue: 500,
 					value: 500
 				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
+				},
 				isCreatingOrderBook: true
 			};
 
@@ -861,6 +1011,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false,
 				scalarSmallNum: 10,

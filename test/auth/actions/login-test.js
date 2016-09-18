@@ -11,7 +11,17 @@ describe(`modules/auth/actions/login.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = { augur: { web: {} } };
+	const fakeAugurJS = {
+		augur: {
+			web: {},
+			getLatestUserTime: () => {},
+			Sessions: {
+				login: () => {},
+				logout: () => {},
+				register: () => {}
+			}
+		}
+	};
 	const fakeSelectors = {
 		links: {
 			marketsLink: {},
@@ -34,6 +44,21 @@ describe(`modules/auth/actions/login.js`, () => {
 		ether: 0,
 		realEther: 0,
 		rep: 0
+	});
+	sinon.stub(fakeAugurJS.augur.Sessions, 'login', (o) => {
+		o.onSent({ callReturn: 1 });
+		o.onSuccess({ callReturn: 1 });
+	});
+	sinon.stub(fakeAugurJS.augur.Sessions, 'logout', (o) => {
+		o.onSent({ callReturn: 1 });
+		o.onSuccess({ callReturn: 1 });
+	});
+	sinon.stub(fakeAugurJS.augur.Sessions, 'register', (o) => {
+		o.onSent({ callReturn: 1 });
+		o.onSuccess({ callReturn: 1 });
+	});
+	sinon.stub(fakeAugurJS.augur, 'getLatestUserTime', (account, cb) => {
+		cb(null, 123456789);
 	});
 
 	fakeSelectors.links.marketsLink.onClick = sinon.stub();

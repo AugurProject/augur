@@ -6,15 +6,14 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 
-export function refreshActiveMarket(marketID, outcomeID) {
+export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
-		augur.CompositeGetters.getPositionInMarket(marketID, getState().loginAccount.id, (position) => {
-			if (!position || position.error) return console.error('refreshActiveMarket:', position);
-			if (Math.max.apply(null, abi.number(position))) {
-				dispatch(loadBidsAsks(marketID));
+		if (getState().marketsData[marketID]) {
+			dispatch(loadBidsAsks(marketID));
+			if (getState().loginAccount.id) {
 				dispatch(loadAccountTrades(marketID));
 			}
-		});
+		}
 	};
 }
 
@@ -30,35 +29,37 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
-				console.debug('log_fill_tx:', JSON.stringify(msg, null, 2));
+				// console.debug('log_fill_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshActiveMarket(msg.market, msg.outcome));
+					dispatch(refreshMarket(msg.market));
 				}
 			},
 
 			// short ask filled
 			log_short_fill_tx: (msg) => {
-				console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
+				// console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshActiveMarket(msg.market, msg.outcome));
+					dispatch(refreshMarket(msg.market));
 				}
 			},
 
 			// order added to orderbook
 			log_add_tx: (msg) => {
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
+				// console.debug('log_add_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(refreshActiveMarket(msg.market, msg.outcome));
+					dispatch(loadBidsAsks(msg.market));
 				}
 			},
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
+				// console.debug('log_cancel:', JSON.stringify(msg, null, 2));
 				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(refreshActiveMarket(msg.market, msg.outcome));
+					dispatch(loadBidsAsks(msg.market));
 				}
 			},
 

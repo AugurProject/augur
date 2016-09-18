@@ -1,3 +1,4 @@
+import { formatRealEther } from '../../../utils/format-number';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
@@ -39,7 +40,14 @@ export function createMarket(transactionID, newMarket) {
 			return;
 		}
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: 'sending...',
+			marketCreationFee: newMarket.marketCreationFee,
+			eventBond: newMarket.eventBond,
+			gasFees: newMarket.gasFees
+		}));
+
+		console.log('creating market:', newMarket);
 
 		augur.createSingleEventMarket({
 			branchId: branch.id || BRANCH_ID,
@@ -57,6 +65,7 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
 			},
 			onSuccess: (res) => {
+				console.log('success:', res);
 				dispatch(updateExistingTransaction(transactionID, {
 					data: {
 						...transactionsData[transactionID].data,
@@ -64,6 +73,7 @@ export function createMarket(transactionID, newMarket) {
 					},
 					hash: res.hash,
 					timestamp: res.timestamp,
+					gasFees: formatRealEther(res.gasFees),
 					status: SUCCESS
 				}));
 				dispatch(clearMakeInProgress());
