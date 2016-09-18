@@ -2356,10 +2356,446 @@ describe("positions", function () {
         });
     });
 
+    describe("calculateNetEffectiveTrades", function () {
+        var test = function (t) {
+            it(t.description, function () {
+                t.assertions(augur.calculateNetEffectiveTrades(t.logs));
+            });
+        };
+        test({
+            description: "no logs",
+            logs: {
+                shortAskBuyCompleteSets: [],
+                shortSellBuyCompleteSets: [],
+                sellCompleteSets: []
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {});
+            }
+        });
+        test({
+            description: "1 market (2 outcomes): 2 short sell logs, 2 complete sets logs",
+            logs: {
+                shortAskBuyCompleteSets: [],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("31.2").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("3.1415") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("32.2", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("3.1415", 10)
+                        }
+                    }
+                });
+            }
+        });
+        test({
+            description: "1 market (2 outcomes): 1 short ask log, 2 short sell logs, 2 complete sets logs",
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("50") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }, {
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("31.2").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("3.1415") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("50", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("32.2", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("3.1415", 10)
+                        }
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets (5 outcomes, 4 outcomes): 4 short ask logs, 1 short sell log, 2 complete sets logs",
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("50") + abi.pad_left("5"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("5"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.42") + abi.pad_left("4"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("4"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000005", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("3.1415") + abi.pad_left("5"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.2", 10),
+                            shares: new BigNumber("50.1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.2", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.2", 10),
+                            shares: new BigNumber("3.1415", 10)
+                        }
+                    },
+                    "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.25", 10),
+                            shares: new BigNumber("0.32", 10)
+                        }
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets (2 outcomes, 4 outcomes): 4 short ask logs, 1 short sell log, 2 complete sets logs",
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("50") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.42") + abi.pad_left("4"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("4"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("3.1415") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("50.1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("3.1415", 10)
+                        }
+                    },
+                    "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.25", 10),
+                            shares: new BigNumber("0.32", 10)
+                        }
+                    }
+                });
+            }
+        });
+        test({
+            description: "2 markets (2 outcomes each): 4 short ask logs, 1 short sell log, 2 complete sets logs",
+            logs: {
+                shortAskBuyCompleteSets: [{
+                    data: fix("50") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.42") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000001"
+                    ]
+                }, {
+                    data: fix("0.1") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x8000000000000000000000000000000000000000000000000000000000000000",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }],
+                shortSellBuyCompleteSets: [{
+                    data: "0x"+
+                        "1000000000000000000000000000000000000000000000000000000000000000"+
+                        fix("1").replace("0x", "")+
+                        "0000000000000000000000000000000100000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000001"+ // outcome
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000000"+
+                        "0000000000000000000000000000000000000000000000000000000000000002", // numOutcomes
+                    topics: [
+                        "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+                    ]
+                }],
+                sellCompleteSets: [{
+                    data: fix("3.1415") + abi.pad_left("2"),
+                    topics: [
+                        "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+                        "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+                        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                        "0x0000000000000000000000000000000000000000000000000000000000000002"
+                    ]
+                }]
+            },
+            assertions: function (output) {
+                assert.deepEqual(output, {
+                    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("50.1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("3.1415", 10)
+                        }
+                    },
+                    "0x8000000000000000000000000000000000000000000000000000000000000000": {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("0.32", 10)
+                        }
+                    }
+                });
+            }
+        });
+    });
+
     describe("calculateProfitLoss", function () {
         var test = function (t) {
             it(t.description, function () {
-                t.assertions(augur.calculateProfitLoss(t.trades, t.lastPrice, t.adjustedPosition));
+                t.assertions(augur.calculateProfitLoss(t.trades, t.lastPrice, t.adjustedPosition, t.netEffectiveTrades));
             });
         };
         test({
@@ -3092,6 +3528,200 @@ describe("positions", function () {
                         });
                     }
                 });
+                test({
+                    description: "trades: [buy 1 @ 1], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "1",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "1",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "1",
+                            realized: "0",
+                            unrealized: "-1"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 2 @ 3], adjusted position 1, last price 2",
+                    trades: [{
+                        type: 1,
+                        shares: "2",
+                        price: "3",
+                        maker: false
+                    }],
+                    lastPrice: "2",
+                    adjustedPosition: "2",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "2",
+                            realized: "0",
+                            unrealized: "-2"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 10 @ 0.1, sell 5 @ 0.2, buy 10 @ 0.2, sell 5 @ 0.3], last price 0.3",
+                    trades: [{
+                        type: 1,
+                        shares: "10",
+                        price: "0.1",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 1,
+                        shares: "10",
+                        price: "0.2",
+                        maker: false
+                    }, {
+                        type: 2,
+                        shares: "5",
+                        price: "0.3",
+                        maker: false
+                    }],
+                    lastPrice: "0.3",
+                    adjustedPosition: "6",
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "6",
+                            realized: "1.166666666666666666665",
+                            unrealized: "0.799999999999999999998"
+                        });
+                    }
+                });
+            });
+
+            describe("net effective trades", function () {
+                test({
+                    description: "trades: [buy 1 @ 0.25], last price 0.5, BCS 2, SCS 1",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "0.25",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    netEffectiveTrades: {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("2", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        }
+                    },
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "3",
+                            realized: "0.0625",
+                            unrealized: "0.1875"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 0.75], last price 0.5, BCS 2, SCS 1",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "0.75",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    netEffectiveTrades: {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("2", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        }
+                    },
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "3",
+                            realized: "-0.0625",
+                            unrealized: "-0.1875"
+                        });
+                    }
+                });
+                test({
+                    description: "trades: [buy 1 @ 0.75], last price 0.75, BCS 2, SCS 1",
+                    trades: [{
+                        type: 1,
+                        shares: "1",
+                        price: "0.75",
+                        maker: false
+                    }],
+                    lastPrice: "0.5",
+                    netEffectiveTrades: {
+                        shortAskBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        },
+                        shortSellBuyCompleteSets: {
+                            type: 1,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("2", 10)
+                        },
+                        sellCompleteSets: {
+                            type: 2,
+                            price: new BigNumber("0.5", 10),
+                            shares: new BigNumber("1", 10)
+                        }
+                    },
+                    assertions: function (output) {
+                        assert.deepEqual(output, {
+                            position: "3",
+                            realized: "-0.0625",
+                            unrealized: "-0.1875"
+                        });
+                    }
+                });
+
+
                 test({
                     description: "trades: [buy 1 @ 1], adjusted position 1, last price 2",
                     trades: [{

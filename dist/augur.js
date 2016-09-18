@@ -43613,7 +43613,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.8.3";
+    this.version = "2.8.4";
 
     this.options = {
         debug: {
@@ -45827,6 +45827,8 @@ var abi = require("augur-abi");
 var constants = require("../constants");
 var utils = require("../utilities");
 
+var ONE = new BigNumber("1", 10);
+
 module.exports = {
 
     /**
@@ -45872,13 +45874,59 @@ module.exports = {
     },
 
     /**
+     * Calculates the effective price of each complete set (1/numOutcomes).
+     *
+     * @param {Array} logs Event logs from eth_getLogs request.
+     * @return {Object} Effective price keyed by market ID.
+     */
+    calculateCompleteSetsEffectivePrice: function (logs) {
+        var marketID, logData, effectivePrice;
+        effectivePrice = {};
+        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+                marketID = logs[i].topics[2];
+                if (!effectivePrice[marketID]) {
+                    logData = this.rpc.unmarshal(logs[i].data);
+                    if (logData && logData.length) {
+                        effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
+                    }
+                }
+            }
+        }
+        return effectivePrice;
+    },
+
+    /**
+     * Calculates the effective price of each complete set (1/numOutcomes).
+     *
+     * @param {Array} logs Event logs from eth_getLogs request.
+     * @return {Object} Effective price keyed by market ID.
+     */
+    calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
+        var marketID, logData, effectivePrice, outcomeID;
+        effectivePrice = {};
+        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+                marketID = logs[i].topics[1];
+                if (!effectivePrice[marketID]) {
+                    logData = this.rpc.unmarshal(logs[i].data);
+                    if (logData && logData.length && logData.length === 8) {
+                        effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
+                    }
+                }
+            }
+        }
+        return effectivePrice;
+    },
+
+    /**
      * Calculates the largest number of shares short sold in any outcome per market.
      *
      * @param {Array} logs Event logs from eth_getLogs request.
      * @return Object Largest total number of shares sold keyed by market ID.
      */
     calculateShortSellShareTotals: function (logs) {
-        var marketID, logData, shareTotals, sharesOutcomes, numOutcomes, outcomeID;
+        var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
         shareTotals = {};
         sharesOutcomes = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -46052,6 +46100,48 @@ module.exports = {
     },
 
     /**
+     * Calculates aggregate trade from buy/sell complete sets.
+     *
+     * @param {Array} logs Event logs from eth_getLogs request.
+     * @return Object Aggregate trades keyed by market ID.
+     */
+    calculateNetEffectiveTrades: function (logs) {
+        var marketID, shareTotal, effectivePrice;
+        var shareTotals = this.calculateShareTotals({
+            shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
+            shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
+            sellCompleteSets: logs.sellCompleteSets
+        });
+        var effectivePrices = {
+            shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
+            shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
+            sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
+        };
+        var netEffectiveTrades = {};
+        var marketIDs = this.findUniqueMarketIDs(effectivePrices);
+        var numMarketIDs = marketIDs.length;
+        for (var i = 0; i < numMarketIDs; ++i) {
+            marketID = marketIDs[i];
+            if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
+            var completeSetsTypes = Object.keys(effectivePrices);
+            var numCompleteSetsTypes = completeSetsTypes.length;
+            for (var j = 0; j < numCompleteSetsTypes; ++j) {
+                var completeSetsType = completeSetsTypes[j];
+                shareTotal = shareTotals[completeSetsType][marketID];
+                effectivePrice = effectivePrices[completeSetsType][marketID];
+                if (shareTotal && effectivePrice) {
+                    netEffectiveTrades[marketID][completeSetsType] = {
+                        type: completeSetsType === "sellCompleteSets" ? 2 : 1,
+                        price: effectivePrice,
+                        shares: shareTotal.abs()
+                    };
+                }
+            }
+        }
+        return netEffectiveTrades;
+    },
+
+    /**
      * Calculates realized and unrealized profit/loss for trades in a single outcome.
      *
      * Note: buy/sell labels are from taker's point-of-view.
@@ -46059,9 +46149,10 @@ module.exports = {
      * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
      * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
      * @param {BigNumber|string=} adjustedPosition Position adjusted for short sells (optional).
+     * @param {Object=} netEffectiveTrades Net effective trades for this market (optional).
      * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
      */
-    calculateProfitLoss: function (trades, lastTradePrice, adjustedPosition) {
+    calculateProfitLoss: function (trades, lastTradePrice, adjustedPosition, netEffectiveTrades) {
         var shares, price, position, weightedPrice, realized, numTrades;
         position = constants.ZERO;
         weightedPrice = constants.ZERO;
@@ -46119,6 +46210,34 @@ module.exports = {
                         } else {
                             realized = realized.plus(shares.times(price.minus(weightedPrice)));
                             position = position.minus(shares);
+                        }
+                    }
+                }
+
+                // Include contribution of short sells / complete sets.
+                if (netEffectiveTrades) {
+                    var completeSetsTypes = Object.keys(netEffectiveTrades);
+                    var numCompleteSetsTypes = completeSetsTypes.length;
+                    var completeSetsType, netEffectiveTrade;
+                    for (var j = 0; j < numCompleteSetsTypes; ++j) {
+                        completeSetsType = completeSetsTypes[j];
+                        netEffectiveTrade = netEffectiveTrades[completeSetsType];
+                        if (netEffectiveTrade) {
+                            shares = netEffectiveTrade.shares;
+                            price = netEffectiveTrade.price;
+                            if (netEffectiveTrade.type === 1) {
+                                if (position.eq(constants.ZERO)) {
+                                    weightedPrice = price;
+                                } else {
+                                    weightedPrice = position.dividedBy(shares.plus(position))
+                                        .times(weightedPrice)
+                                        .plus(shares.dividedBy(shares.plus(position)).times(price));
+                                }
+                                position = position.plus(shares);
+                            } else {
+                                realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                                position = position.minus(shares);
+                            }
                         }
                     }
                 }
