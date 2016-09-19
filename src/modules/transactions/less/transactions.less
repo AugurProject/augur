@@ -9,7 +9,7 @@
 
 			.transaction-item {
 				display: table-row;
-				padding: 2.4vh 0 1.3vh 0;
+				padding: 2.4vh 0 1.3vh;
 				line-height: 2.5rem;
 				border-bottom: 1px solid @color-border;
 				background: fade(orange, 6%);
@@ -20,9 +20,11 @@
 				animation-iteration-count: infinite;
 				animation-direction: alternate;
 
-				&.failed, &.interrupted {
+				&.failed,
+				&.interrupted {
 					background: fade(@color-danger-normal, 6%);
 					animation-name: unset;
+
 					.status-and-message {
 						color: @color-danger-normal;
 					}
@@ -31,6 +33,7 @@
 				&.pending {
 					background: fade(@color-light-normal, 50%);
 					animation-name: unset;
+
 					.status-and-message {
 						color: @color-dark-normal;
 					}
@@ -39,6 +42,7 @@
 				&.success {
 					background: fade(@color-success-normal, 6%);
 					animation-name: unset;
+
 					.status-and-message {
 						color: @color-success-normal;
 					}
@@ -46,7 +50,7 @@
 
 				> * {
 					display: table-cell;
-					padding: 2vh 2vw 2vh 2vw;
+					padding: 2vh 2vw;
 					vertical-align: middle;
 				}
 
@@ -69,7 +73,9 @@
 						text-transform: uppercase;
 					}
 
-					.action, .shares, .avg-price {
+					.action,
+					.shares,
+					.avg-price {
 						font-weight: 900;
 					}
 
@@ -118,7 +124,7 @@
 					.gasFees-message {
 						font-size: 0.8em;
 					}
-					
+
 					.eventBond-message {
 						font-size: 0.8em;
 					}
@@ -140,7 +146,7 @@
 					}
 
 					.freeze-message {
-						font-size: 0.85em
+						font-size: 0.85em;
 					}
 				}
 			}
@@ -148,7 +154,7 @@
 
 		.feel-free {
 			display: block;
-			padding: 2rem 3rem 5rem 3rem;
+			padding: 2rem 3rem 5rem;
 			text-align: right;
 			color: @color-plain-active;
 			font-size: 1.1rem;
@@ -161,6 +167,7 @@
 	0% {
 		background: fade(orange, 6%);
 	}
+
 	100% {
 		background: fade(orange, 20%);
 	}
