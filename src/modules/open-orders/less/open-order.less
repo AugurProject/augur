@@ -1,11 +1,11 @@
 .market-open-orders {
 	.open-orders-list {
 		margin: 0 0 0 -1.5em;
-		padding: 4vmin 6vmin 0 6vmin;
+		padding: 4vmin 6vmin 0;
 
 		.open-orders-group {
 			display: inline-block;
-			margin: 0 0 1em 0;
+			margin: 0 0 1em;
 			padding: 0 1.5em;
 			vertical-align: top;
 			border-right: 1px solid @color-border;
@@ -18,15 +18,19 @@
 				min-width: 9rem;
 				text-align: left;
 			}
+
 			.type {
 				text-align: right;
 			}
+
 			.shares {
 				text-align: right;
 			}
+
 			.price {
 				text-align: right;
 			}
+
 			.cancel {
 				padding: 0.1em 0;
 				text-align: left;
@@ -41,17 +45,17 @@
 					color: @color-danger-active;
 					background: transparent;
 
-					&:before {
+					&::before {
 						content: '\f00d';
 						display: inline-block;
 						position: relative;
 						left: -0.2em;
 						font-family: 'Font Awesome';
 						font-weight: 700;
-
 					}
 
-					&:hover, &:active {
+					&:hover,
+					&:active {
 						font-weight: 900;
 					}
 
@@ -80,6 +84,7 @@
 				.outcome-name {
 					text-transform: uppercase;
 				}
+
 				&.is-disabled {
 					text-decoration: line-through;
 				}
