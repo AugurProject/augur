@@ -9,7 +9,7 @@
 
 	td {
 		vertical-align: top;
-		padding: 0.2em 0.3em 0 0.3em;
+		padding: 0.2em 0.3em 0;
 	}
 
 	.outcome-name {
@@ -31,11 +31,12 @@
 
 			&.buy {
 				border: 2px solid @color-success-hover;
-				border-rdius: 1px;
+				border-radius: 1px;
 			}
+
 			&.sell {
 				border: 2px solid @color-danger-dark;
-				border-rdius: 1px;
+				border-radius: 1px;
 			}
 		}
 	}
@@ -76,19 +77,23 @@
 	.trade-builder-bid-ask {
 		display: flex;
 		white-space: nowrap;
+
 		&.is-of-current-user {
 			.price .value {
 				text-decoration: underline;
 			}
 		}
+
 		.shares {
 			flex: 1.6;
 			text-align: right;
 		}
+
 		.price {
 			flex: 2;
 			text-align: left;
 		}
+
 		.shares-at {
 			margin: 0 0.6rem;
 		}
@@ -107,15 +112,17 @@
 				font-weight: 900;
 			}
 		}
+
 		input[type="number"] {
-			-moz-appearance: textfield;
+			appearance: textfield;
 		}
+
 		input[type=number]::-webkit-inner-spin-button,
 		input[type=number]::-webkit-outer-spin-button {
-			-webkit-appearance: none;
 			appearance: none;
 			margin: 0;
 		}
+
 		input.box {
 			display: block;
 			padding: 0.3em 0;
