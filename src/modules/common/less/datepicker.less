@@ -1,7 +1,3 @@
-/*!
- * https://github.com/arqex/react-datetime
- */
-
 .rdt {
 	position: relative;
 }
@@ -107,7 +103,7 @@
 	background-color: @color-primary-hover;
 }
 
-.rdtPicker td.rdtActive.rdtToday:before {
+.rdtPicker td.rdtActive.rdtToday::before {
 	border-bottom-color: white;
 }
 
@@ -151,11 +147,6 @@
 .rdtPrev span,
 .rdtNext span {
 	display: block;
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Chrome/Safari/Opera */
-	-khtml-user-select: none; /* Konqueror */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
 }
 
@@ -232,12 +223,6 @@ td.rdtYear:hover {
 	line-height: 40px;
 	cursor: pointer;
 	display: block;
-
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Chrome/Safari/Opera */
-	-khtml-user-select: none; /* Konqueror */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
 }
 
