@@ -1,9 +1,7 @@
 html,
 body {
 	color: @color-dark-hover;
-	background: @color-body-bg;
 	background: linear-gradient(to right, rgba(250, 250, 255, 1) 0%, @color-body-bg 50%, rgba(250, 250, 255, 1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeef', endColorstr='#eeeeef', GradientType=1);
 	font-family: 'Roboto', Arial, sans-serif;
 	font-size: 10px;
 	font-weight: 400;
@@ -29,9 +27,11 @@ a {
 	color: inherit;
 	text-decoration: none;
 	cursor: pointer;
+
 	&:visited {
 		color: inherit;
 	}
+
 	&[disabled] {
 		cursor: default;
 		opacity: 0.3;
@@ -65,6 +65,7 @@ textarea {
 input,
 textarea {
 	resize: both;
+
 	&:focus {
 		border: 1px solid @color-border-darker;
 	}
@@ -101,7 +102,8 @@ input[type="search"]::-webkit-search-results-decoration {
 	outline: 1px solid @color-border;
 	outline-offset: 1px;
 	cursor: text;
-	&:empty:before {
+
+	&:empty::before {
 		display: block;
 		content: attr(placeholder);
 		color: #dddddd;
@@ -128,7 +130,7 @@ input[type=file] {
 }
 
 .fade {
-	opacity: .25;
+	opacity: 0.25;
 }
 
 .unfade {
