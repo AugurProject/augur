@@ -1,10 +1,10 @@
-.button, .button:visited {
+.button,
+.button:visited {
 	display: inline-block;
 	height: 2.8em;
 	line-height: 2.8em;
 	margin: 0;
 	padding: 0 1em;
-
 	color: #ffffff;
 	background: @color-dark-active;
 	border: 0;
@@ -14,14 +14,15 @@
 	text-transform: uppercase;
 	outline: 0;
 	white-space: nowrap;
-	transition: background .3s ease;
+	transition: background 0.3s ease;
 
 	&:hover {
 		color: white;
 		background: @color-dark-hover;
 	}
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: white;
 		background: @color-dark-active;
 	}
@@ -31,7 +32,10 @@
 		background: @color-dark-active !important;
 		cursor: default !important;
 		opacity: 0.3 !important;
-		&:hover, &:focus, &:active {
+
+		&:hover,
+		&:focus,
+		&:active {
 			color: @color-light-active !important;
 			background: @color-dark-active !important;
 			cursor: default !important;
@@ -40,13 +44,19 @@
 	}
 }
 
-.button.buy, .button.make, .button.select, .button.next {
+.button.buy,
+.button.make,
+.button.select,
+.button.next {
 	color: white;
 	background: @color-primary-active;
+
 	&:hover {
 		background: @color-primary-hover;
 	}
-	&:focus, &:active {
+
+	&:focus,
+	&:active {
 		background: @color-primary-active;
 	}
 }
@@ -54,10 +64,13 @@
 .button.sell {
 	color: white;
 	background: @color-danger-active;
+
 	&:hover {
 		background: @color-danger-hover;
 	}
-	&:focus, &:active {
+
+	&:focus,
+	&:active {
 		background: @color-danger-active;
 	}
 }
@@ -67,7 +80,8 @@
 	font-size: 1rem;
 }
 
-.x-button, .x-button:visited {
+.x-button,
+.x-button:visited {
 	width: unset;
 	height: unset;
 	padding: 0;
@@ -78,7 +92,9 @@
 	font-family: 'Font Awesome';
 	text-align: center;
 
-	&:hover, &:focus, &:active {
+	&:hover,
+	&:focus,
+	&:active {
 		color: @color-dark-hover;
 		background: transparent;
 	}
@@ -99,10 +115,12 @@
 	transition-timing-function: ease-out;
 	outline: 0;
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: #aaaabb;
 		background: transparent;
 	}
+
 	&:hover {
 		color: #ffda00;
 		background: transparent;
@@ -118,9 +136,11 @@
 		text-shadow: 0 0 1px #ffff00;
 		opacity: 0.7;
 
-		&:focus, &:active {
+		&:focus,
+		&:active {
 			background: transparent;
 		}
+
 		&:hover {
 			opacity: 1;
 		}
@@ -128,9 +148,12 @@
 }
 
 .place-trade {
-	background: #FCB531;
+	background: #fcb531;
 	font-weight: 900;
-	&:hover, &:focus, &:active {
+
+	&:hover,
+	&:focus,
+	&:active {
 		background: #f19e04;
 	}
 }
@@ -144,7 +167,8 @@
 		background: @color-warning-hover;
 	}
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: white;
 		background: @color-warning-active;
 	}
@@ -159,7 +183,8 @@
 		background: fade(@color-plain-active, 80%);
 	}
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: white;
 		background: fade(@color-plain-active, 80%);
 	}
@@ -174,7 +199,8 @@
 		background: @color-danger-hover;
 	}
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: white;
 		background: @color-danger-active;
 	}
@@ -189,7 +215,8 @@
 		background: @color-dark-hover;
 	}
 
-	&:focus, &:active {
+	&:focus,
+	&:active {
 		color: white;
 		background: @color-dark-normal;
 	}
