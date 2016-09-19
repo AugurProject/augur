@@ -7,6 +7,8 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 	return (dispatch, getState) => {
 		dispatch(updateExistingTransaction(transactionID, { status: `submitting a request to transfer ${amount} ${currency} to ${toAddress}...` }));
 
+		const { branch } = getState();
+		const to = augur.abi.format_address(toAddress);
 		const sent = (sent) => {
 			console.log('sent');
 			console.log(sent);
@@ -27,28 +29,27 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 			console.log('transaction Confirmed!');
 			console.log(confirmedTransaction);
 		};
-
-		const { branch } = getState();
-
-		console.log(fromAddress);
-		console.log(amount);
-		console.log(toAddress);
+		console.log(branch);
+		console.log('from:', fromAddress);
+		console.log(amount, currency);
+		console.log('to', to);
 
 		switch (currency) {
 		case 'eth':
-			return augur.sendCashFrom(toAddress, amount, fromAddress, sent, success, failed, confirmed);
+			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed, confirmed);
 		case 'realEth':
 			return augur.rpc.sendEther({
-				to: toAddress,
+				to,
 				value: amount,
 				from: fromAddress,
 				onSent: sent,
 				onSuccess: success,
 				onFailed: failed
 			});
-			// return augur.rpc.sendEther(toAddress, amount, fromAddress, sent, success, failed, confirmed);
+			// return augur.rpc.sendEther(to, amount, fromAddress, sent, success, failed, confirmed);
 		case 'REP':
-			return augur.SendReputation.sendReputation(branch.id, toAddress, amount, sent, success, failed, confirmed);
+			return augur.transferReputationFrom(branch.id, fromAddress, to, amount, sent, success, failed, confirmed);
+			// return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'testing...' }));
 		default:
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'Unrecognized currency selected. Transaction failed.' }));
 		}
