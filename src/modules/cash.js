@@ -11,6 +11,25 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
+        if (to && to.constructor === Object && to.value) {
+            value = to.value;
+            if (to.from) from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            if (to.onConfirmed) onConfirmed = to.onConfirmed;
+            to = to.to;
+        }
+        return this.transact({
+            from: from,
+            to: to,
+            value: abi.fix(value, "hex"),
+            returns: "null",
+            gas: "0xcf08"
+        }, onSent, onSuccess, onConfirmed);
+    },
     
     depositEther: function (value, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Cash.depositEther);

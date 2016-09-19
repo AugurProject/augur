@@ -43618,7 +43618,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.8.7";
+    this.version = "2.8.8";
 
     this.options = {
         debug: {
@@ -44101,6 +44101,25 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
+        if (to && to.constructor === Object && to.value) {
+            value = to.value;
+            if (to.from) from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            if (to.onConfirmed) onConfirmed = to.onConfirmed;
+            to = to.to;
+        }
+        return this.transact({
+            from: from,
+            to: to,
+            value: abi.fix(value, "hex"),
+            returns: "null",
+            gas: "0xcf08"
+        }, onSent, onSuccess, onConfirmed);
+    },
     
     depositEther: function (value, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Cash.depositEther);
@@ -49479,6 +49498,8 @@ module.exports = {
             }
         }
         this.notifications = {};
+        this.rawTxs = {};
+        this.txs = {};
         this.rawTxMaxNonce = -1;
     },
 
@@ -49579,21 +49600,23 @@ module.exports = {
         );
     },
 
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
         if (to && to.constructor === Object && to.value) {
             value = to.value;
             if (to.from) from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;
+            if (to.onConfirmed) onConfirmed = to.onConfirmed;
             to = to.to;
         }
         return this.transact({
             from: from,
             to: to,
-            value: abi.fix(value, "string"),
-            returns: "null"
-        }, onSent, onSuccess, onFailed);
+            value: abi.fix(value, "hex"),
+            returns: "null",
+            gas: "0xcf08"
+        }, onSent, onSuccess, onFailed, onConfirmed);
     },
 
     sign: function (address, data, f) {
