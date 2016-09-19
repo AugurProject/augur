@@ -1,6 +1,7 @@
 {
     "extends": "stylelint-config-standard",
     "rules": {
-        "indentation": "tab"
+        "indentation": "tab",
+        "color-hex-length": "long"
     }
 }
