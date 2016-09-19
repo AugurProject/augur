@@ -54,13 +54,15 @@ import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets
 
 import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
 
+import selectMarketDataUpdater from '../../markets/selectors/market-data-updater';
+
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, marketDataTimestamps } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -94,6 +96,7 @@ export const selectMarket = (marketID) => {
 
 		orderBooks[marketID],
 		orderCancellation,
+		marketDataTimestamps[marketID],
 		store.dispatch);
 };
 
@@ -124,6 +127,7 @@ export function assembleMarket(
 		isReportConfirmationPhase,
 		orderBooks,
 		orderCancellation,
+		marketDataTimestamp,
 		dispatch) {
 
 	if (!assembledMarketsCache[marketID]) {
@@ -153,6 +157,8 @@ export function assembleMarket(
 				id: marketID
 			};
 
+			const now = new Date();
+
 			switch (market.type) {
 			case BINARY:
 				market.isBinary = true;
@@ -174,7 +180,7 @@ export function assembleMarket(
 			}
 
 			market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
-			market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+			market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';
 			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
 			market.isOpen = isOpen;
@@ -283,6 +289,10 @@ export function assembleMarket(
 
 			market.myMarketSummary = selectMyMarket(market)[0];
 
+			const marketDataAgeSecs = Math.ceil((now - marketDataTimestamp) / 1000);
+			const updateIntervalSecs = selectMarketDataUpdater().updateIntervalSecs;
+			market.lastUpdatedBefore = `${marketDataAgeSecs} seconds`;
+			market.isUpdateButtonDisabled = marketDataAgeSecs < updateIntervalSecs;
 			return market;
 		});
 	}

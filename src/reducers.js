@@ -9,6 +9,7 @@ import loginAccount from './modules/auth/reducers/login-account';
 import activePage from './modules/app/reducers/active-page';
 
 import marketsData from './modules/markets/reducers/markets-data';
+import marketDataTimestamps from './modules/markets/reducers/market-data-timestamps';
 import outcomesData from './modules/markets/reducers/outcomes-data';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
@@ -55,6 +56,7 @@ module.exports = {
 	activePage,
 
 	marketsData,
+	marketDataTimestamps,
 	outcomesData,
 	favorites,
 	pagination,
