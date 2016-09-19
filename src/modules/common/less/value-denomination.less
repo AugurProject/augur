@@ -2,14 +2,17 @@
 	.value {
 		font-weight: 900;
 	}
+
 	.denomination {
 		margin-left: 0.2em;
 		font-weight: 400;
 	}
+
 	.prefix {
 		margin-right: 0.3em;
 		font-weight: 400;
 	}
+
 	.postfix {
 		margin-left: 0.3em;
 		font-weight: 400;
@@ -17,18 +20,23 @@
 }
 
 .colorize() {
-	&.positive, .positive {
+	&.positive,
+	.positive {
 		.value {
 			color: @color-positive;
 		}
+
 		.denomination {
 			color: fade(@color-positive, 80%);
 		}
 	}
-	&.negative, .negative {
+
+	&.negative,
+	.negative {
 		.value {
 			color: @color-negative;
 		}
+
 		.denomination {
 			color: fade(@color-negative, 80%);
 		}
