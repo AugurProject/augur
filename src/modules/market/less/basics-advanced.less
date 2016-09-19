@@ -1,4 +1,5 @@
-.basics, .advanced {
+.basics,
+.advanced {
 	.description {
 		display: block;
 		line-height: 1.3em;
@@ -9,7 +10,7 @@
 	}
 
 	.properties {
-		margin: 0.5rem 0 0 0;
+		margin: 0.5rem 0 0;
 		line-height: 1em;
 		font-size: 1.2rem;
 
@@ -25,7 +26,7 @@
 	}
 
 	.tags {
-		margin: 0.5rem 0 0 0;
+		margin: 0.5rem 0 0;
 		line-height: 1em;
 
 		.tag {
@@ -34,7 +35,7 @@
 			font-size: 1rem;
 			text-transform: uppercase;
 
-			&:not(:last-child):after {
+			&:not(:last-child)::after {
 				display: inline-block;
 				content: '>';
 				margin: 0 0.5em;
@@ -43,7 +44,9 @@
 			&.link {
 				cursor: pointer;
 
-				&:hover, &:active, &:focus {
+				&:hover,
+				&:active,
+				&:focus {
 					text-decoration: underline;
 				}
 			}
@@ -60,7 +63,7 @@
 
 			.distinct {
 				display: block;
-				margin: 0.5rem 0 0 0;
+				margin: 0.5rem 0 0;
 			}
 		}
 	}
