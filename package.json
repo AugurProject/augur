@@ -17,7 +17,7 @@
     "start": "augur-ui-webserver -d './demo'",
     "watch": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development; npm run -s watch:all",
     "build": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
-    "lint": "clear; echo begin linting... && eslint --ext .jsx,.js src && echo linting complete.",
+    "lint": "clear; echo begin linting... && eslint --ext .jsx,.js src && stylelint '**/*.less' && echo linting complete.",
     "lint:watch": "npm run lint -- --watch",
     "test": "NODE_ENV=test mocha",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=development npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push --follow-tags && npm publish",
@@ -85,6 +85,8 @@
     "react-highcharts": "9.0.0",
     "rimraf": "2.5.4",
     "shared-git-hooks": "1.2.1",
+    "stylelint": "7.2.0",
+    "stylelint-config-standard": "13.0.0",
     "uglify-js": "2.7.0",
     "watchify": "3.7.0"
   },
