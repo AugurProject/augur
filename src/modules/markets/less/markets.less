@@ -29,7 +29,9 @@
 						vertical-align: middle;
 					}
 
-					&:hover, &:active, &:focus {
+					&:hover,
+					&:active,
+					&:focus {
 						opacity: 0.8;
 					}
 
@@ -39,14 +41,14 @@
 
 					&.favorites {
 						.name {
-							&:before {
+							&::before {
 								display: inline-block;
 								position: relative;
 								top: 0.3vmin;
 								margin-right: 0.5rem;
 								content: '';
-								color: #FFDA00;
-								font-family: 'Font Awesome';
+								color: #ffda00;
+								font-family: 'font awesome';
 								font-size: 1.2em;
 								transform: rotate(58deg);
 								opacity: 0.45;
@@ -60,14 +62,14 @@
 						white-space: nowrap;
 
 						.name {
-							&:before {
+							&::before {
 								display: inline-block;
 								position: relative;
 								top: 0.1em;
 								margin-right: 0.5rem;
 								content: '\f12a';
 								color: fade(@color-danger-active, 70%);
-								font-family: 'Font Awesome';
+								font-family: 'font awesome';
 								font-size: 1.2em;
 							}
 						}
@@ -102,6 +104,7 @@
 					padding: 0 4vmin;
 					font-size: 1.6rem;
 				}
+
 				.markets-header {
 					.markets-header-item {
 						font-size: 1.6rem;
@@ -124,6 +127,7 @@
 				.button.make {
 					font-size: 3.5vmin;
 				}
+
 				.markets-header {
 					.markets-header-item {
 						font-size: 3.5vmin;
