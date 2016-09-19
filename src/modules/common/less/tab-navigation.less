@@ -1,9 +1,7 @@
 .tab-navigator {
 	width: 100%;
-
 	display: flex;
 	align-items: stretch;
-
 	font-size: 2vmin;
 
 	.nav-item {
@@ -11,13 +9,13 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-
 		background: white;
 		color: black;
-
 		line-height: 2em;
+		border: 1px solid @color-border-dark;
 
-		&:hover, &:active {
+		&:hover,
+		&:active {
 			background: @color-light-hover;
 		}
 
@@ -26,7 +24,6 @@
 			color: @color-light-normal;
 		}
 
-		border: 1px solid @color-border-dark;
 		&:not(:last-of-type) {
 			border-right: none;
 		}
@@ -36,29 +33,23 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-
 			font-size: 2.5vmin;
 		}
 
 		.nav-values {
 			width: 100%;
 			flex: 2;
-
 			display: flex;
 			align-items: center;
-
 			font-size: 1.6vmin;
-
 			border-top: 1px solid @color-border;
 
 			.value-denomination {
 				flex: 1;
 				height: 100%;
-
 				display: flex;
 				justify-content: center;
 				align-items: center;
-
 				border-right: 1px solid @color-border;
 
 				&:last-of-type {
