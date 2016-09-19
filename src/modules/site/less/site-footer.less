@@ -1,10 +1,10 @@
 .site-footer {
 	display: block;
 	width: 100%;
-	margin: 1vmin 0 0 0;
+	margin: 1vmin 0 0;
 	padding: 3em 0;
 	background: rgba(250, 250, 255, 1);
-	--border-top: 2px solid @color-border;
+	border-top: 2px solid @color-border;
 	font-size: 1rem;
 	font-weight: 700;
 	text-align: center;
@@ -12,14 +12,16 @@
 
 	.link {
 		display: inline-block;
-		margin: .1rem;
+		margin: 0.1rem;
 		padding: 1.5rem;
 		color: @color-dark-normal;
 		background: rgba(250, 250, 255, 1);
 		font-size: 0.9rem;
 		white-space: nowrap;
 
-		&:hover, &:active, &:focus {
+		&:hover,
+		&:active,
+		&:focus {
 			text-decoration: underline;
 		}
 	}
