@@ -1,4 +1,5 @@
 import { augur } from '../../../services/augurjs';
+import { formatRealEther } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
@@ -10,29 +11,19 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 		const { branch } = getState();
 		const to = augur.abi.format_address(toAddress);
 		const sent = (sent) => {
-			console.log('sent');
-			console.log(sent);
 			dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount} ${currency} to ${toAddress}` }));
 		};
 		const success = (data) => {
-			console.log('success');
-			console.log(data);
-			dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ${currency} to ${toAddress} Complete.`, hash: data.hash }));
+			dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount} ${currency} to ${toAddress} Complete.`, hash: data.hash, timestamp: data.timestamp, gasFees: formatRealEther(data.gasFees) }));
 			dispatch(updateAssets());
 		};
 		const failed = (failedTransaction) => {
-			console.log('failed');
-			console.log(failedTransaction);
 			dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: failedTransaction.message }));
-		};
-		const confirmed = (confirmedTransaction) => {
-			console.log('transaction Confirmed!');
-			console.log(confirmedTransaction);
 		};
 
 		switch (currency) {
 		case 'eth':
-			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed, confirmed);
+			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed, null);
 		case 'realEth':
 			return augur.sendEther({
 				to,
@@ -43,7 +34,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 				onFailed: failed
 			});
 		case 'REP':
-			return augur.sendReputation(branch.id, to, amount, sent, success, failed, confirmed);
+			return augur.sendReputation(branch.id, to, amount, sent, success, failed, null);
 		default:
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'Unrecognized currency selected. Transaction failed.' }));
 		}

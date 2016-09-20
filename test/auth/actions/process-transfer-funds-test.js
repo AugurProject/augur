@@ -12,14 +12,37 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const store = mockStore(testState);
-	const fakeAugurJS = { sendCashFrom: () => {} };
+	const fakeAugurJS = { sendCashFrom: () => {}, sendReputation: () => {}, sendEther: () => {}, abi: { format_address: () => {} } };
 	const fakeUpdateTrans = { updateExistingTransaction: () => {} };
 	const fakeUpdateAssets = { updateAssets: () => {} };
+	const fakeFormatRealEther = { formatRealEther: () => {} };
 
 	sinon.stub(fakeAugurJS, 'sendCashFrom', (toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed) => {
 		onSent();
-		onSuccess({ hash: '0xdeadbeef', timestamp: 1 });
-		onFailed({ message: 'this is a failure message' });
+		onSuccess({ hash: '0xdeadbeef', timestamp: 1, gasFees: 10 });
+		onFailed({ message: `This is a failure message...You're a FAILURE!` });
+	});
+
+	sinon.stub(fakeAugurJS, 'sendEther', (to, value, from, onSent, onSuccess, onFailed) => {
+		if (to.to) {
+			to.onSent();
+			to.onSuccess({ hash: '0xdeadbeef', timestamp: 1, gasFees: 10 });
+			to.onFailed({ message: `This is a failure message...You're a FAILURE!` });
+		} else {
+			onSent();
+			onSuccess({ hash: '0xdeadbeef', timestamp: 1, gasFees: 10 });
+			onFailed({ message: `This is a failure message...You're a FAILURE!` });
+		}
+	});
+
+	sinon.stub(fakeAugurJS, 'sendReputation', (branchID, to, value, onSent, onSuccess, onFailed) => {
+		onSent();
+		onSuccess({ hash: '0xdeadbeef', timestamp: 1, gasFees: 10 });
+		onFailed({ message: `This is a failure message...You're a FAILURE!` });
+	});
+
+	sinon.stub(fakeAugurJS.abi, 'format_address', (string) => {
+		return string.indexOf('0x') === 0 ? `0x${string}` : string;
 	});
 
 	sinon.stub(fakeUpdateTrans, 'updateExistingTransaction', (transID, data) => {
@@ -30,12 +53,21 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		return { type: 'UPDATE_ASSETS' };
 	});
 
+	sinon.stub(fakeFormatRealEther, 'formatRealEther', (gas) => {
+		return gas;
+	});
+
 	beforeEach(() => {
 		store.clearActions();
 	});
 
 	afterEach(() => {
 		store.clearActions();
+		// reset call counts for mocked up functions to make sure they are being hit on every test.
+		fakeUpdateTrans.updateExistingTransaction.reset();
+		fakeUpdateAssets.updateAssets.reset();
+		fakeFormatRealEther.formatRealEther.reset();
+		fakeAugurJS.abi.format_address.reset();
 	});
 
 	const fakeAugur = { augur: fakeAugurJS };
@@ -43,10 +75,11 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	const action = proxyquire('../../../src/modules/auth/actions/process-transfer-funds', {
 		'../../../services/augurjs': fakeAugur,
 		'../../transactions/actions/update-existing-transaction': fakeUpdateTrans,
-		'../../auth/actions/update-assets': fakeUpdateAssets
+		'../../auth/actions/update-assets': fakeUpdateAssets,
+		'../../../utils/format-number': fakeFormatRealEther
 	});
 
-	it('should process the transfer of funds from one account to another', () => {
+	it('should process the transfer of ether (cash) from one account to another', () => {
 		store.dispatch(action.processTransferFunds('myTransactionID', 'fromTestAddress123', 5, 'eth', 'toTestAddress456'));
 		const actual = store.getActions();
 		const expected = [{
@@ -64,6 +97,8 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 			data: {
 				status: 'success',
 				hash: '0xdeadbeef',
+				gasFees: 10,
+				timestamp: 1,
 				message: 'Transfer of 5 eth to toTestAddress456 Complete.'
 			}
 		}, {
@@ -72,7 +107,7 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
 				status: 'failed',
-				message: 'this is a failure message'
+				message: `This is a failure message...You're a FAILURE!`
 			}
 		}];
 
@@ -81,7 +116,90 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		assert(fakeAugurJS.sendCashFrom.calledOnce, `augur.sendCashFrom wasn't called exactly once as expected.`);
 		assert((fakeUpdateTrans.updateExistingTransaction.callCount === 4), `updateExistingTransaction wasn't called 4 times as expected.`);
 		assert(fakeUpdateAssets.updateAssets.calledOnce, `updateAssets wasn't called once as expected.`);
+		assert(fakeFormatRealEther.formatRealEther.calledOnce, `formatRealEther wasn't called once as expected.`);
+		assert(fakeAugurJS.abi.format_address.calledOnce, `augur.abi.format_address wasn't called once as expected.`);
+	});
 
+	it('should process the transfer of real Ether from one account to another', () => {
+		store.dispatch(action.processTransferFunds('myTransactionID', 'fromTestAddress123', 5, 'realEth', 'toTestAddress456'));
+		const actual = store.getActions();
+		const expected = [{
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'submitting a request to transfer 5 realEth to toTestAddress456...'
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'processing transferring of 5 realEth to toTestAddress456'
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'success',
+				hash: '0xdeadbeef',
+				gasFees: 10,
+				timestamp: 1,
+				message: 'Transfer of 5 realEth to toTestAddress456 Complete.'
+			}
+		}, {
+			type: 'UPDATE_ASSETS'
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'failed',
+				message: `This is a failure message...You're a FAILURE!`
+			}
+		}];
+
+		assert.deepEqual(actual, expected, `Didn't dispatch the expected actions.`);
+
+		assert(fakeAugurJS.sendEther.calledOnce, `augur.sendEther wasn't called exactly once as expected.`);
+		assert((fakeUpdateTrans.updateExistingTransaction.callCount === 4), `updateExistingTransaction wasn't called 4 times as expected.`);
+		assert(fakeUpdateAssets.updateAssets.calledOnce, `updateAssets wasn't called once as expected.`);
+		assert(fakeFormatRealEther.formatRealEther.calledOnce, `formatRealEther wasn't called once as expected.`);
+		assert(fakeAugurJS.abi.format_address.calledOnce, `augur.abi.format_address wasn't called once as expected.`);
+	});
+
+	it('should process the transfer of REP from one account to another', () => {
+		store.dispatch(action.processTransferFunds('myTransactionID', 'fromTestAddress123', 5, 'REP', 'toTestAddress456'));
+		const actual = store.getActions();
+		const expected = [{
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'submitting a request to transfer 5 REP to toTestAddress456...'
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'processing transferring of 5 REP to toTestAddress456'
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'success',
+				hash: '0xdeadbeef',
+				gasFees: 10,
+				timestamp: 1,
+				message: 'Transfer of 5 REP to toTestAddress456 Complete.'
+			}
+		}, {
+			type: 'UPDATE_ASSETS'
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTIONS',
+			data: {
+				status: 'failed',
+				message: `This is a failure message...You're a FAILURE!`
+			}
+		}];
+
+		assert.deepEqual(actual, expected, `Didn't dispatch the expected actions.`);
+
+		assert(fakeAugurJS.sendReputation.calledOnce, `augur.sendReputation wasn't called exactly once as expected.`);
+		assert((fakeUpdateTrans.updateExistingTransaction.callCount === 4), `updateExistingTransaction wasn't called 4 times as expected.`);
+		assert(fakeUpdateAssets.updateAssets.calledOnce, `updateAssets wasn't called once as expected.`);
+		assert(fakeFormatRealEther.formatRealEther.calledOnce, `formatRealEther wasn't called once as expected.`);
+		assert(fakeAugurJS.abi.format_address.calledOnce, `augur.abi.format_address wasn't called once as expected.`);
 	});
 
 });
