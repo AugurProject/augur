@@ -29,16 +29,12 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 			console.log('transaction Confirmed!');
 			console.log(confirmedTransaction);
 		};
-		console.log(branch);
-		console.log('from:', fromAddress);
-		console.log(amount, currency);
-		console.log('to', to);
 
 		switch (currency) {
 		case 'eth':
 			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed, confirmed);
 		case 'realEth':
-			return augur.rpc.sendEther({
+			return augur.sendEther({
 				to,
 				value: amount,
 				from: fromAddress,
@@ -46,10 +42,8 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 				onSuccess: success,
 				onFailed: failed
 			});
-			// return augur.rpc.sendEther(to, amount, fromAddress, sent, success, failed, confirmed);
 		case 'REP':
-			return augur.transferReputationFrom(branch.id, fromAddress, to, amount, sent, success, failed, confirmed);
-			// return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'testing...' }));
+			return augur.sendReputation(branch.id, to, amount, sent, success, failed, confirmed);
 		default:
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: 'Unrecognized currency selected. Transaction failed.' }));
 		}
