@@ -7,11 +7,6 @@ body {
 	font-weight: 400;
 }
 
-::-moz-selection {
-	color: white;
-	background-color: #6f6f6f;
-}
-
 ::selection {
 	color: white;
 	background-color: #6f6f6f;
@@ -78,23 +73,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: none;
 }
 
-::-ms-clear {
-	display: none;
-}
-
-::-webkit-input-placeholder {
-	color: @color-plain-hover;
-}
-
-:-moz-placeholder {
-	color: @color-plain-hover;
-}
-
-::-moz-placeholder {
-	color: @color-plain-hover;
-}
-
-:-ms-input-placeholder {
+::placeholder {
 	color: @color-plain-hover;
 }
 
