@@ -30,6 +30,8 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
+		// Removed balances link for now, proper value is:
+		// selectBalancesLink(store.dispatch)
 		balancesLink: { href: '/', onClick: () => {} },
 		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
