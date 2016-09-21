@@ -2,10 +2,11 @@
 // app wide common styles
 // if a component is shared, those styles are better left to it's respective stylesheets
 
+//		Tags
 html,
 body {
-	color: @color-text-dark;
 	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
+	color: @color-text-dark;
 	font-size: 16px;
 	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
 	font-weight: @font-weight-normal;
@@ -17,27 +18,6 @@ body {
 	.semi-bold-weight {
 		font-weight: @font-weight-semi-bold;
 	}
-}
-
-.augur-brand {
-	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-	font-weight: @font-weight-light;
-}
-
-.fa {
-	font-family: 'Font Awesome';
-	font-weight: @font-weight-normal;
-}
-
-::selection {
-	color: white;
-	background-color: #6f6f6f;
-}
-
-*:focus {
-	outline-width: 0;
-	outline-style: dotted;
-	outline-color: @color-border;
 }
 
 a {
@@ -89,34 +69,23 @@ textarea {
 	}
 }
 
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-	display: none;
+button {
+	cursor: pointer;
 }
 
-::placeholder {
-	color: @color-plain-hover;
+
+// 		Classes
+.augur-brand {
+	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-weight: @font-weight-light;
 }
 
-[contenteditable=true] {
-	outline: 1px solid @color-border;
-	outline-offset: 1px;
-	cursor: text;
-
-	&:empty::before {
-		display: block;
-		content: attr(placeholder);
-		color: #dddddd;
-	}
+.fa {
+	font-family: 'Font Awesome';
+	font-weight: @font-weight-normal;
 }
 
-.clickable,
-button,
-input[type=button],
-input[type=submit],
-input[type=file] {
+.clickable {
 	cursor: pointer;
 }
 
@@ -138,3 +107,69 @@ input[type=file] {
 .unfade {
 	opacity: 1;
 }
+
+.component-header {
+	display: flex;
+	width: 100%;
+	padding: 1vmin 0 0;
+
+	.header-bar {
+		display: flex;
+		flex: 2;
+		width: 100%;
+		margin-left: 1vmin;
+		padding: 0 0 0 5vmin;
+		background: white;
+		font-size: 1.6rem;
+		font-weight: @font-weight-normal;
+	}
+}
+
+//		Pseudo
+::selection {
+	color: white;
+	background-color: #6f6f6f;
+}
+
+*:focus {
+	outline-width: 0;
+	outline-style: dotted;
+	outline-color: @color-border;
+}
+
+::placeholder {
+	color: @color-plain-hover;
+}
+
+//		Selectors
+[contenteditable=true] {
+	outline: 1px solid @color-border;
+	outline-offset: 1px;
+	cursor: text;
+
+	&:empty::before {
+		display: block;
+		content: attr(placeholder);
+		color: #dddddd;
+	}
+}
+
+[type=button],
+[type=submit],
+[type=file] {
+	cursor: pointer;
+}
+
+[type="search"]::-webkit-search-decoration,
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-results-button,
+[type="search"]::-webkit-search-results-decoration {
+	display: none;
+}
+
+// HISTORICAL
+// TODO -- remove
+@site-header-height: 10vmin;
+@market-section-padding: 4vmin 6vmin;
+@filters-width: 21rem;
+
