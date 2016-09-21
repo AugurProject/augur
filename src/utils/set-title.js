@@ -10,10 +10,10 @@ export default function (title, params) {
 			const m = params.m.split('_');
 
 			if (m.length === 1) {
+				// TODO -- Improvement: lookup market based on ID
 				setDocumentTitle(titles.MARKET);
 			} else {
-				let title = m.reduce((prev, word, i) => (prev.length < 50 && i + 1 < m.length ? `${prev} ${word}` : prev), '');
-				title = title.length > 50 ? `${title.substring(0, 40)}...` : `${title}?`;
+				let title = parseMarketTitle(m);
 
 				setDocumentTitle(title);
 			}
@@ -53,6 +53,11 @@ export default function (title, params) {
 			setDocumentTitle(titles.DEFAULT);
 		}
 	}
+}
+
+export function parseMarketTitle(m){
+	const title = m.reduce((prev, word, i) => (prev.length < 40 && i + 1 < m.length ? `${prev} ${word}` : prev), '');
+	return title.length > 40 ? `${title.substring(0, 40).trim()}...` : `${title.trim()}?`;
 }
 
 function setDocumentTitle(title) {
