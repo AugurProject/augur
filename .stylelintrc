@@ -4,6 +4,7 @@
         "indentation": "tab",
         "color-hex-length": "long",
         "property-no-vendor-prefix": true,
-        "value-no-vendor-prefix": true
+        "value-no-vendor-prefix": true,
+        "declaration-block-properties-order": "alphabetical"
     }
 }
