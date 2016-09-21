@@ -30,7 +30,7 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
-		balancesLink: selectBalancesLink(store.dispatch),
+		balancesLink: { href: '/', onClick: () => {} },
 		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
 }
