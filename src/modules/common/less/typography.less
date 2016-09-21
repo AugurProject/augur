@@ -1,12 +1,14 @@
 // TYPOGRAPHY
 // site-wide typographic rules + values
 
+// 	Employed Weights
 @font-weight-light: 300;
 @font-weight-normal: 400;
 @font-weight-semi-bold: 600;
 
-//  augur brand -- Core Mellow
-//  font is optimized to just include `a, u, g, r`
+//  augur brand (Core Mellow)
+//  NOTE -- This does not contain the complete character set
+//	font is optimized + just includes `a, u, g, r`
 @font-face {
 	font-family: 'Core Mellow';
 	src: url('assets/fonts/core-mellow-light.woff') format('woff');
@@ -22,7 +24,7 @@
 	font-style: normal;
 }
 
-//  primary site font -- Source Sans Pro
+//  primary site font (Source Sans Pro)
 //      Light
 @font-face {
 	font-family: 'Source Sans Pro';
@@ -70,3 +72,9 @@ body {
 		font-weight: @font-weight-semi-bold;
 	}
 }
+
+// HISTORICAL
+// TODO -- remove
+@font-weight-extra-bold: 900;
+@font-weight-bold: 700;
+@font-weight-thin: 100;
