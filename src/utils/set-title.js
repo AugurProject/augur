@@ -13,7 +13,7 @@ export default function (title, params) {
 				// TODO -- Improvement: lookup market based on ID
 				setDocumentTitle(titles.MARKET);
 			} else {
-				let title = parseMarketTitle(m);
+				const title = parseMarketTitle(m);
 
 				setDocumentTitle(title);
 			}
@@ -55,7 +55,7 @@ export default function (title, params) {
 	}
 }
 
-export function parseMarketTitle(m){
+export function parseMarketTitle(m) {
 	const title = m.reduce((prev, word, i) => (prev.length < 40 && i + 1 < m.length ? `${prev} ${word}` : prev), '');
 	return title.length > 40 ? `${title.substring(0, 40).trim()}...` : `${title.trim()}?`;
 }
