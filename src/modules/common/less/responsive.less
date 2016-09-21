@@ -1,18 +1,21 @@
 // RESPONSIVE
-// NOTES --
 // These are determined by the content being displayed NOT the device displaying the content.
 // This allows for the most optimal presentation regardless of the device.
 
-// Break Points
-// NOTES --
-// Levels:
-// 1: Smallest layout @ < 600px (Default)
-// 2: TODO
-@breakpoint: 1;
+// Maximum app width
+@max-app-width: 1800px;
 
-@media(max-width: 600px){
-	@breakpoint: 1;
-}
+// Break Points
+// 1: Smallest layout @ < 600px (Default)
+@breakpoint-1: true;
+@breakpoint-1-max-width: 600px;
+// 2: TODO
+@breakpoint-2: false;
+
+
+@media all and (max-width: @breakpoint-1-max-width){
+	@breakpoint-1: true;
+};
 
 // HISTORICAL
 // TODO -- remove

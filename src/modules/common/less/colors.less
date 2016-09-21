@@ -1,9 +1,10 @@
-//  COLORS
-//    General
+//  colors
+//		general
 
-@color-background: #ececec;
+@color-app-background: #ececec;
 
 @color-white: #ffffff;
+@color-off-white: #fafaff;
 
 @color-blue: #5195e4;
 @color-blue-light: #f5fafe;
@@ -14,31 +15,34 @@
 @color-green: #3bb477;
 @color-light: #e6f7ef;
 
-//    Specific
+//		gradients
+@color-muted: 50%;
+@color-light: 25%;
+
+//		specific
+@color-disabled: #b4b4b4;
 
 @color-border: #c8c8c8;
 
-@color-disabled: #b4b4b4;
-
-@color-divider-strong: #e5e5e5;
-@color-divider-soft: #f1f1f1;
+@color-divider-strong: lighten(@color-border, @color-muted);
+@color-divider-soft: lighten(@color-border, @color-light);
 
 @color-text-light: @color-white;
-@color-text-light-muted: #a4aaac;
+@color-text-light-muted: darken(@color-text-light, @color-muted);
+@color-text-light-light: darken(@color-text-light, @color-light);
 
 @color-text-dark: #2a373e;
-@color-text-dark-muted: #63707c;
-@color-text-dark-light: #abb1b8;
+@color-text-dark-muted: lighten(@color-text-dark, @color-muted);
+@color-text-dark-light: lighten(@color-text-dark, @color-light);
 
 @color-input-border: #dee5e7;
 @color-input-background: #fbfbfb;
 
 
-// HISTORICAL
-// TODO -- remove
+// historical
+// todo -- remove
 @color-site-background: rgba(250, 250, 255, 1);
 @color-main: rgba(240, 240, 240, 0.95);
-@color-body-bg: rgba(235, 235, 240, 1);
 
 //@color-border: #eeeeef;
 @color-border-dark: #d3d3da;
