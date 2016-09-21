@@ -1,15 +1,15 @@
 .order-book() {
-	min-width: 400px;
-	margin: 0.25rem;
 	background: white;
 	border-radius: 1px;
+	margin: 0.25rem;
+	min-width: 400px;
 
 	h5 {
-		margin-bottom: 0.5em;
-		text-align: center;
 		border-bottom: 1px solid @color-border;
 		font-size: 1.3em;
 		font-weight: 700;
+		margin-bottom: 0.5em;
+		text-align: center;
 		text-transform: uppercase;
 
 		.name-header {
@@ -18,27 +18,27 @@
 
 		.bids-header {
 			display: inline-block;
-			text-align: right;
 			font-size: 0.65em;
 			font-weight: 400;
 			padding-right: 2rem;
+			text-align: right;
 		}
 
 		.asks-header {
 			display: inline-block;
-			padding-left: 2rem;
-			text-align: left;
 			font-size: 0.65em;
 			font-weight: 400;
+			padding-left: 2rem;
+			text-align: left;
 		}
 	}
 
 	.bids {
+		border-right: 1px solid @color-border;
 		display: inline-block;
 		padding-right: 0.5em;
-		vertical-align: top;
 		text-align: right;
-		border-right: 1px solid @color-border;
+		vertical-align: top;
 
 		.bid {
 			.value-denomination.price {
@@ -48,11 +48,11 @@
 	}
 
 	.asks {
+		border-left: 1px solid @color-border;
 		display: inline-block;
 		padding-left: 0.5em;
-		vertical-align: top;
 		text-align: left;
-		border-left: 1px solid @color-border;
+		vertical-align: top;
 
 		.ask {
 			.value-denomination.price {
