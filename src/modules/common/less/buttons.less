@@ -16,14 +16,14 @@
 	transition: background 0.3s ease;
 	white-space: nowrap;
 
-	&:hover {
-		background: @color-dark-hover;
+	&:active,
+	&:focus {
+		background: @color-dark-active;
 		color: white;
 	}
 
-	&:focus,
-	&:active {
-		background: @color-dark-active;
+	&:hover {
+		background: @color-dark-hover;
 		color: white;
 	}
 
