@@ -5,7 +5,6 @@
         "color-hex-length": "long",
         "declaration-block-properties-order": "alphabetical",
         "function-url-quotes": "always",
-        "no-unknown-animations": true,
         "property-no-vendor-prefix": true,
         "value-no-vendor-prefix": true,
         "declaration-block-no-duplicate-properties": true,
