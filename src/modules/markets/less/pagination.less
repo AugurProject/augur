@@ -1,23 +1,23 @@
 .markets {
 	.page-content {
 		.pagination {
-			display: block;
-			flex: 2;
-			margin: 0.6rem 0 2em 1vmin;
-			text-align: center;
-			font-size: 2em;
-			line-height: 2em;
 			background: white;
 			border-radius: 1px;
+			display: block;
+			flex: 2;
+			font-size: 2em;
+			line-height: 2em;
+			margin: 0.6rem 0 2em 1vmin;
+			text-align: center;
 
 			.button-container {
-				display: inline-block;
-				position: absolute;
 				color: @color-dark-active;
-				font-weight: 900;
-				font-size: 1.3rem;
-				white-space: nowrap;
 				cursor: pointer;
+				display: inline-block;
+				font-size: 1.3rem;
+				font-weight: 900;
+				position: absolute;
+				white-space: nowrap;
 
 				> * {
 					vertical-align: middle;
@@ -25,15 +25,15 @@
 
 				.button.next,
 				.button.prev {
-					height: 1em;
-					margin: 0;
-					padding: 0;
-					line-height: 1em;
-					color: @color-dark-active;
 					background: transparent;
+					color: @color-dark-active;
 					font-family: 'Font Awesome';
 					font-weight: 900;
 					font-size: 3rem;
+					height: 1em;
+					line-height: 1em;
+					margin: 0;
+					padding: 0;
 				}
 
 				&.next {
