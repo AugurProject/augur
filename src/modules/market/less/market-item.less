@@ -1,20 +1,20 @@
 .market-item {
-	margin: 1vmin 0 0 1vmin;
-	padding: 1.5em 4.9vw 1.5em 2.8rem;
 	background: white;
 	border-radius: 1px;
+	margin: 1vmin 0 0 1vmin;
+	padding: 1.5em 4.9vw 1.5em 2.8rem;
 
 	.basics-container {
 		display: inline-block;
-		width: 70%;
 		padding-right: 1em;
 		vertical-align: middle;
+		width: 70%;
 
 		.basics {
 			.description {
-				width: 100%;
-				margin: 0.5rem 2.5vw 0 0;
 				color: black;
+				margin: 0.5rem 2.5vw 0 0;
+				width: 100%;
 			}
 
 			.properties {
@@ -26,45 +26,45 @@
 			margin: 2.5rem 0 1rem;
 
 			.button {
-				height: 2.4em;
-				margin: 0 1rem 0 0;
-				padding: 0 0.75em;
-				line-height: 2.3em;
 				font-size: 1rem;
 				font-weight: 700;
+				height: 2.4em;
+				line-height: 2.3em;
+				margin: 0 1rem 0 0;
+				padding: 0 0.75em;
 			}
 		}
 	}
 
 	.outcomes {
 		display: inline-block;
-		width: 30%;
 		vertical-align: middle;
+		width: 30%;
 
 		.outcome {
-			display: flex;
-			margin-top: 0.1em;
-			padding: 0.3em;
-			line-height: 1.4em;
 			border-left: 4px solid @color-border-muted;
+			display: flex;
 			font-size: 1.3rem;
 			font-weight: 700;
+			line-height: 1.4em;
+			margin-top: 0.1em;
+			padding: 0.3em;
 
 			.outcome-name {
 				display: inline-block;
-				width: 70%;
 				text-align: left;
+				width: 70%;
 			}
 
 			.outcome-price {
 				display: inline-block;
-				width: 30%;
-				margin-right: 1em;
-				text-align: right;
 				font-weight: 400;
-				white-space: nowrap;
-				text-overflow: ellipsis;
+				margin-right: 1em;
 				overflow: hidden;
+				text-align: right;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				width: 30%;
 
 				.colorize();
 			}
@@ -72,15 +72,15 @@
 	}
 
 	.favorite-button {
-		position: absolute;
-		top: 1.6rem;
-		right: 1.6rem;
 		font-size: 1.8rem;
+		position: absolute;
+		right: 1.6rem;
+		top: 1.6rem;
 
 		&.on {
-			top: 0.7rem;
-			right: 1rem;
 			font-size: 2rem;
+			right: 1rem;
+			top: 0.7rem;
 		}
 	}
 }
@@ -97,21 +97,21 @@
 		}
 
 		.outcomes {
+			bottom: unset;
+			padding: 1.5em 1em 0 0;
 			position: relative;
 			top: unset;
-			bottom: unset;
 			width: auto;
-			padding: 1.5em 1em 0 0;
 
 			.outcome {
 				display: inline-block;
-				margin-right: 1.5em;
 				font-size: 1.3em;
+				margin-right: 1.5em;
 				white-space: nowrap;
 
 				> * {
-					width: auto !important;
 					vertical-align: middle;
+					width: auto !important;
 				}
 			}
 		}
