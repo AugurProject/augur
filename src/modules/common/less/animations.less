@@ -6,14 +6,15 @@
 
 // Default Animation Values
 @timing: ease-in-out;
+@speed-slow: 0.7s;
 
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(1s @timing infinite alternate flash-slow);
+	.animation(@speed-slow @timing infinite alternate flash-slow);
 
 	.keyframes(flash-slow, {
-		0% { background: fade(@color, @amount-subtle) }
-		100% { background: fade(@color, @amount-light) }
+	0% { background: fade(@color, @amount-subtle) }
+	100% { background: fade(@color, @amount-light) }
 	});
 }
 
