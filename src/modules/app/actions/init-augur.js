@@ -3,6 +3,8 @@ import * as AugurJS from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateEnv } from '../../app/actions/update-env';
+import initTimer from '../../app/actions/init-timer';
+
 import { updateConnectionStatus } from '../../app/actions/update-connection';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
@@ -33,6 +35,8 @@ export function initAugur() {
 							const { links } = require('../../../selectors');
 							links.loginMessageLink.onClick();
 						}
+
+						dispatch(initTimer());
 					}
 				});
 			}

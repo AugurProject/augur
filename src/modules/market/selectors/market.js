@@ -54,15 +54,13 @@ import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets
 
 import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
 
-import selectMarketDataUpdater from '../../markets/selectors/market-data-updater';
-
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, marketDataTimestamps } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -96,7 +94,6 @@ export const selectMarket = (marketID) => {
 
 		orderBooks[marketID],
 		orderCancellation,
-		marketDataTimestamps[marketID],
 		store.dispatch);
 };
 
@@ -127,7 +124,6 @@ export function assembleMarket(
 		isReportConfirmationPhase,
 		orderBooks,
 		orderCancellation,
-		marketDataTimestamp,
 		dispatch) {
 
 	if (!assembledMarketsCache[marketID]) {
@@ -289,10 +285,6 @@ export function assembleMarket(
 
 			market.myMarketSummary = selectMyMarket(market)[0];
 
-			const marketDataAgeSecs = Math.ceil((now - marketDataTimestamp) / 1000);
-			const updateIntervalSecs = selectMarketDataUpdater().updateIntervalSecs;
-			market.lastUpdatedBefore = `${marketDataAgeSecs} seconds`;
-			market.isUpdateButtonDisabled = marketDataAgeSecs < updateIntervalSecs;
 			return market;
 		});
 	}

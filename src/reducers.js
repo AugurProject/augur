@@ -1,4 +1,5 @@
 import env from './modules/app/reducers/env';
+import now from './modules/app/reducers/now';
 import blockchain from './modules/app/reducers/blockchain';
 import branch from './modules/app/reducers/branch';
 import connection from './modules/app/reducers/connection';
@@ -46,6 +47,7 @@ import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees
 
 module.exports = {
 	env,
+	now,
 	blockchain,
 	branch,
 	connection,
