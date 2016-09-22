@@ -7,8 +7,8 @@ html,
 body {
 	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
 	color: @color-text-dark;
-	font-size: 16px;
 	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-size: 16px;
 	font-weight: @font-weight-normal;
 
 	.light-weight {
@@ -22,8 +22,8 @@ body {
 
 a {
 	color: inherit;
-	text-decoration: none;
 	cursor: pointer;
+	text-decoration: none;
 
 	&:visited {
 		color: inherit;
@@ -36,10 +36,10 @@ a {
 }
 
 th {
-	padding: 0 0.5em;
-	text-align: left;
 	font-size: 0.8em;
 	font-weight: 700;
+	padding: 0 0.5em;
+	text-align: left;
 	text-transform: uppercase;
 }
 
@@ -50,13 +50,13 @@ hr {
 input,
 select,
 textarea {
-	padding: 0.7rem 1rem;
-	box-sizing: border-box;
-	color: inherit;
 	border: 1px solid @color-border-darker;
 	border-radius: 1px;
+	box-sizing: border-box;
+	color: inherit;
 	font-family: inherit;
 	font-size: inherit;
+	padding: 0.7rem 1rem;
 }
 
 input,
@@ -72,7 +72,6 @@ textarea {
 button {
 	cursor: pointer;
 }
-
 
 // 		Classes
 .augur-brand {
@@ -90,10 +89,10 @@ button {
 }
 
 .link {
-	padding: 0;
-	cursor: pointer;
 	background: none;
 	border: none;
+	cursor: pointer;
+	padding: 0;
 }
 
 .displayNone {
@@ -110,31 +109,31 @@ button {
 
 .component-header {
 	display: flex;
-	width: 100%;
 	padding: 1vmin 0 0;
+	width: 100%;
 
 	.header-bar {
+		background: white;
 		display: flex;
 		flex: 2;
-		width: 100%;
-		margin-left: 1vmin;
-		padding: 0 0 0 5vmin;
-		background: white;
 		font-size: 1.6rem;
 		font-weight: @font-weight-normal;
+		margin-left: 1vmin;
+		padding: 0 0 0 5vmin;
+		width: 100%;
 	}
 }
 
 //		Pseudo
 ::selection {
-	color: white;
 	background-color: #6f6f6f;
+	color: white;
 }
 
 *:focus {
-	outline-width: 0;
-	outline-style: dotted;
 	outline-color: @color-border;
+	outline-style: dotted;
+	outline-width: 0;
 }
 
 ::placeholder {
@@ -143,14 +142,14 @@ button {
 
 //		Selectors
 [contenteditable=true] {
+	cursor: text;
 	outline: 1px solid @color-border;
 	outline-offset: 1px;
-	cursor: text;
 
 	&:empty::before {
-		display: block;
-		content: attr(placeholder);
 		color: #dddddd;
+		content: attr(placeholder);
+		display: block;
 	}
 }
 
