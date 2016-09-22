@@ -9,12 +9,12 @@
 
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(0.7s @timing infinite alternate flash-slow);
+	.animation(1s @timing infinite alternate flash-slow);
 
 	.keyframes(flash-slow, {
-	0% { background: fade(@color, @amount-subtle) }
-	100% { background: fade(@color, @amount-muted) }
-	})
+		0% { background: fade(@color, @amount-subtle) }
+		100% { background: fade(@color, @amount-light) }
+	});
 }
 
 //	Helpers

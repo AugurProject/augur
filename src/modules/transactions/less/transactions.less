@@ -8,12 +8,8 @@
 			width: 100%;
 
 			.transaction-item {
-				// TODO -- move these transforms
-				animation-direction: alternate;
-				animation-duration: 0.7s;
-				animation-iteration-count: infinite;
-				animation-name: transactions-active-bg;
-				background: fade(orange, 6%);
+				.animation-flash-slow(@color-orange);
+				background: @color-orange-light;
 				border-bottom: 1px solid @color-border;
 				display: table-row;
 				font-size: 1.3rem;
@@ -162,15 +158,5 @@
 			padding: 2rem 3rem 5rem;
 			text-align: right;
 		}
-	}
-}
-
-@keyframes transactions-active-bg {
-	0% {
-		background: fade(orange, 6%);
-	}
-
-	100% {
-		background: fade(orange, 20%);
 	}
 }
