@@ -48,6 +48,7 @@ export default class MarketPage extends Component {
 				key="basics"
 				{...p.market}
 				isUpdaterVisible
+				marketDataAge={p.marketDataAge}
 				updateData={p.marketDataUpdater.update}
 				updateIntervalSecs={p.marketDataUpdater.updateIntervalSecs}
 			/>);

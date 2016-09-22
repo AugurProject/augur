@@ -95,6 +95,7 @@ export default function (appElement, selectors) {
 	case M:
 		node = (
 			<MarketPage
+				marketDataAge={p.marketDataAge}
 				siteHeader={p.siteHeader}
 				selectedOutcome={p.selectedOutcome}
 				orderCancellation={p.orderCancellation}

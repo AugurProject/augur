@@ -16,11 +16,11 @@ const Basics = (p) => (
 
 			{p.isUpdaterVisible &&
 				<div className="updater">
-					Last updated {p.lastUpdatedBefore}
+					Last updated {p.marketDataAge.lastUpdatedBefore}
 					<button
 						className="button"
-						disabled={p.isUpdateButtonDisabled}
-						title={p.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
+						disabled={p.marketDataAge.isUpdateButtonDisabled}
+						title={p.marketDataAge.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
 						onClick={() => p.updateData(p.id)}
 					>
 						Update
