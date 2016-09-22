@@ -9,11 +9,10 @@ import { authError } from '../../auth/actions/auth-error';
 export function loginWithAirbitz(airbitzAccount) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
-		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 		// XXX use dataKey for now as the masterPrivateKey. For production, this will need to be a key
 		// created and saved in a wallet repo inside the Augur account. -paul@airbitz.co
-		var masterPrivateKey = airbitzAccount.repoInfo.dataKey;
+		const masterPrivateKey = airbitzAccount.repoInfo.dataKey;
 		augur.web.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
 			console.log(account);
 			if (!account) {
@@ -21,7 +20,7 @@ export function loginWithAirbitz(airbitzAccount) {
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address, airbitzAccount: airbitzAccount};
+			const loginAccount = { ...account, id: account.address, airbitzAccount };
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}

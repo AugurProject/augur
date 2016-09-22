@@ -1,7 +1,6 @@
 import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
-import { augur } from '../../../services/augurjs';
 import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
@@ -70,11 +69,11 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
 		return {
 			onClick: () => {
 				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
-          if (airbitzAccount) {
-            dispatch(loginWithAirbitz(airbitzAccount));
-          } else {
-            alert('error logging in: ' + result);
-          }
+					if (airbitzAccount) {
+						dispatch(loginWithAirbitz(airbitzAccount));
+					} else {
+						console.log('error logging in: ' + result);
+					}
 				});
 			}
 		};
@@ -82,11 +81,11 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
 		return {
 			onClick: () => {
 				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
-          if (airbitzAccount) {
-            dispatch(loginWithAirbitz(airbitzAccount));
-          } else {
-            alert('error registering in: ' + result);
-          }
+					if (airbitzAccount) {
+						dispatch(loginWithAirbitz(airbitzAccount));
+					} else {
+						console.log('error registering in: ' + result);
+					}
 				});
 			}
 		};

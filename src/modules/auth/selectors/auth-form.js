@@ -11,8 +11,7 @@ import store from '../../../store';
 import { register } from '../../auth/actions/register';
 import { importAccount } from '../../auth/actions/import-account';
 import { login } from '../../auth/actions/login';
-import { selectAuthLink } from '../../link/selectors/links';
-import { selectAirbitzLink } from '../../link/selectors/links';
+import { selectAuthLink, selectAirbitzLink } from '../../link/selectors/links';
 
 export default function () {
 	const { auth, loginAccount } = store.getState();
@@ -64,7 +63,7 @@ export const selectRegister = (auth, dispatch) => {
 
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
-		
+
 		airbitzLinkText: 'Sign Up With Airbitz',
 		airbitzLink: selectAirbitzLink(REGISTER, dispatch),
 

@@ -11,5 +11,5 @@ const a = makeABCUIContext({
 });
 
 export default function () {
-	return a
+	return a;
 }
