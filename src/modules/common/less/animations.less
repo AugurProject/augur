@@ -1,5 +1,6 @@
 // ANIMATIONS
 // shared animations
+// all mixins are pre-pended with `animation`
 // animations are assumed to be infinitely looped
 // appended `-<times>` denotes finite iteration
 
@@ -7,7 +8,7 @@
 @timing: ease-in-out;
 
 // 	Notifications
-.flash-slow(@color) {
+.animation-flash-slow(@color) {
 	.animation(0.7s @timing infinite alternate flash-slow);
 
 	.keyframes(flash-slow, {
