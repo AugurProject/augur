@@ -10,7 +10,11 @@ export function loginWithAirbitz(airbitzAccount) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-		augur.web.loginWithMasterKey(airbitzAccount.username, airbitzAccount.rootKey, (account) => {
+
+		// XXX use dataKey for now as the masterPrivateKey. For production, this will need to be a key
+		// created and saved in a wallet repo inside the Augur account. -paul@airbitz.co
+		var masterPrivateKey = airbitzAccount.repoInfo.dataKey;
+		augur.web.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
 			console.log(account);
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to login' }));
