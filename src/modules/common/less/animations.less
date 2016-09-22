@@ -1,0 +1,27 @@
+// ANIMATIONS
+// shared animations
+// animations are assumed to be infinitely looped
+// appended `-<times>` denotes finite iteration
+
+// Default Animation Values
+@timing: ease-in-out;
+
+// 	Notifications
+.flash-slow(@color){
+	.animation(0.7s @timing infinite alternate flash-slow);
+
+	.keyframes(flash-slow, {
+		0% { background: fade(@color, @amount-subtle) }
+		100% { background: fade(@color, @amount-muted) }
+	})
+}
+
+
+//	Helpers
+.animation(@args){
+	animation: @args;
+}
+
+.keyframes(@name; @args){
+	@keyframes @name {@args();};
+}

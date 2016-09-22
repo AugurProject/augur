@@ -71,10 +71,7 @@
 			&.transactions {
 				&.working {
 					&:not(.active) {
-						animation-direction: alternate;
-						animation-duration: 0.7s;
-						animation-iteration-count: infinite;
-						animation-name: site-header-item-bg;
+						.flash-slow(@color-orange);
 					}
 				}
 
@@ -96,15 +93,5 @@
 				font-weight: 900;
 			}
 		}
-	}
-}
-
-@keyframes site-header-item-bg {
-	0% {
-		background: fade(orange, 4%);
-	}
-
-	100% {
-		background: fade(orange, 13%);
 	}
 }
