@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, BALANCES } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, BALANCES, REGISTER, LOGIN, IMPORT } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -60,13 +60,31 @@ export const selectPreviousLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-	const href = alsoLogout ? makeLocation({ page: 'login' }).url : makeLocation({ page: authType }).url;
+	const determineLocation = () => {
+		if (alsoLogout) {
+			return makeLocation({ page: LOGIN }).url;
+		}
+
+		switch (authType) {
+		case IMPORT:
+			return makeLocation({ page: IMPORT }).url;
+		case LOGIN:
+			return makeLocation({ page: LOGIN }).url;
+		case REGISTER:
+		default:
+			return makeLocation({ page: REGISTER }).url;
+		}
+	};
+
+	const href = determineLocation();
+
 	return {
 		href,
 		onClick: () => {
 			if (!!alsoLogout) {
 				dispatch(logout());
 			}
+
 			dispatch(updateURL(href));
 		}
 	};
@@ -115,7 +133,9 @@ export const selectMarketLink = memoizerific(1)((market, dispatch) => {
 	const href = makeLocation({ page: M, m: words }).url;
 	const link = {
 		href,
-		onClick: () => dispatch(updateURL(href))
+		onClick: () => {
+			dispatch(updateURL(href));
+		}
 	};
 
 	if (market.isReported) {
