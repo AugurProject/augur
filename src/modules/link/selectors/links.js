@@ -81,7 +81,7 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
 	} else if (authType === REGISTER || authType === IMPORT) {
 		return {
 			onClick: () => {
-				require('../../../selectors').abc.openRegisterWindow((result, airbitzAccount) => {
+				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
           if (airbitzAccount) {
             dispatch(loginWithAirbitz(airbitzAccount));
           } else {
