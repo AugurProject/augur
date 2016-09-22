@@ -1,17 +1,17 @@
 .site-header {
-	position: fixed;
-	z-index: 9;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: @site-header-height;
 	background: white;
+	height: @site-header-height;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 9;
 
 	.site-nav {
-		display: flex;
-		padding: 0 2vmin;
 		border-bottom: 3px solid @color-dark-hover;
+		display: flex;
 		font-size: 2.5vmin;
+		padding: 0 2vmin;
 		.contained();
 
 		.spacer {
@@ -52,10 +52,10 @@
 			&.transactions {
 				&.working {
 					&:not(.active) {
-						animation-name: site-header-item-bg;
+						animation-direction: alternate;
 						animation-duration: 0.7s;
 						animation-iteration-count: infinite;
-						animation-direction: alternate;
+						animation-name: site-header-item-bg;
 					}
 				}
 
