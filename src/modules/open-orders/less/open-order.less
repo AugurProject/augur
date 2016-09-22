@@ -4,11 +4,11 @@
 		padding: 4vmin 6vmin 0;
 
 		.open-orders-group {
+			border-right: 1px solid @color-border;
 			display: inline-block;
 			margin: 0 0 1em;
 			padding: 0 1.5em;
 			vertical-align: top;
-			border-right: 1px solid @color-border;
 
 			td {
 				padding: 0.1em 0.5em;
@@ -32,26 +32,26 @@
 			}
 
 			.cancel {
+				font-size: 0.6em;
+				min-width: 4.6em;
 				padding: 0.1em 0;
 				text-align: left;
-				min-width: 4.6em;
-				font-size: 0.6em;
 
 				.cancel-order-action {
-					padding: 0;
+					background: transparent;
+					color: @color-danger-active;
 					height: unset;
 					line-height: unset;
+					padding: 0;
 					text-align: left;
-					color: @color-danger-active;
-					background: transparent;
 
 					&::before {
 						content: '\f00d';
 						display: inline-block;
-						position: relative;
-						left: -0.2em;
 						font-family: 'Font Awesome';
 						font-weight: 700;
+						left: -0.2em;
+						position: relative;
 					}
 
 					&:hover,
@@ -60,19 +60,19 @@
 					}
 
 					&[disabled] {
-						color: @color-muted-active !important;
 						background: transparent !important;
+						color: @color-muted-active !important;
 					}
 				}
 
 				.cancel-order-abort-confirmation {
-					padding: 0;
-					height: unset;
-					line-height: unset;
-					text-align: left;
 					background-color: transparent;
 					color: inherit;
+					height: unset;
+					line-height: unset;
 					margin-right: 1.4em;
+					padding: 0;
+					text-align: left;
 
 					&:hover {
 						font-weight: 700;
