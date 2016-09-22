@@ -5,7 +5,7 @@
 import { makeABCUIContext } from 'airbitz-core-js-ui';
 
 const a = makeABCUIContext({
-	apiKey: 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8',
+	apiKey: '296e50ecc7b939d0c97bf62ea1ca6fbd0bc04bc1',
 	accountType: 'account:repo:com.augur',
 	vendorName: 'Augur'
 });
