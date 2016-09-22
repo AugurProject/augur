@@ -3,6 +3,7 @@
 // This allows for the most optimal presentation regardless of the device.
 
 // Maximum app width
+// .contained elements will max at this width, elements without that style will flow to full window width
 @max-app-width: 1800px;
 
 // Break Points
@@ -12,10 +13,9 @@
 // 2: TODO
 @breakpoint-2: false;
 
-
-@media all and (max-width: @breakpoint-1-max-width){
+@media all and (max-width: @breakpoint-1-max-width) {
 	@breakpoint-1: true;
-};
+}
 
 // HISTORICAL
 // TODO -- remove
