@@ -7,21 +7,20 @@
 @timing: ease-in-out;
 
 // 	Notifications
-.flash-slow(@color){
+.flash-slow(@color) {
 	.animation(0.7s @timing infinite alternate flash-slow);
 
 	.keyframes(flash-slow, {
-		0% { background: fade(@color, @amount-subtle) }
-		100% { background: fade(@color, @amount-muted) }
+	0% { background: fade(@color, @amount-subtle) }
+	100% { background: fade(@color, @amount-muted) }
 	})
 }
 
-
 //	Helpers
-.animation(@args){
+.animation(@args) {
 	animation: @args;
 }
 
-.keyframes(@name; @args){
-	@keyframes @name {@args();};
+.keyframes(@name; @args) {
+	@keyframes @name { @args(); }
 }
