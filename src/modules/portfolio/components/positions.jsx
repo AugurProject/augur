@@ -6,7 +6,7 @@ import Link from '../../link/components/link';
 const PortfolioPositions = (p) => (
 	<div className="positions-content" >
 		{!!p.markets && !!p.markets.length && p.markets.map(market => (
-			<Link key={market.id} {...market.marketLink} >
+			<Link key={market.id} href={market.marketLink.href} onClick={market.marketLink.onClick} >
 				<div className="positions-container" >
 					<PositionsMarketOverview
 						description={market.description}
