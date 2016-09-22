@@ -2,42 +2,42 @@
 .advanced {
 	.description {
 		display: block;
-		line-height: 1.3em;
 		font-size: 3.5vmin;
 		font-weight: 400;
-		text-overflow: ellipsis;
+		line-height: 1.3em;
 		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.properties {
-		margin: 0.5rem 0 0;
-		line-height: 1em;
 		font-size: 1.2rem;
+		line-height: 1em;
+		margin: 0.5rem 0 0;
 
 		.property {
 			display: inline-block;
 			margin: 0.5rem 2rem 0 0;
 
 			.property-value {
-				margin-left: 0.5rem;
 				font-weight: 900;
+				margin-left: 0.5rem;
 			}
 		}
 	}
 
 	.tags {
-		margin: 0.5rem 0 0;
 		line-height: 1em;
+		margin: 0.5rem 0 0;
 
 		.tag {
 			display: inline-block;
-			padding: 0.5em 0;
 			font-size: 1rem;
+			padding: 0.5em 0;
 			text-transform: uppercase;
 
 			&:not(:last-child)::after {
-				display: inline-block;
 				content: '>';
+				display: inline-block;
 				margin: 0 0.5em;
 			}
 
