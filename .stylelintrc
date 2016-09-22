@@ -9,7 +9,6 @@
         "property-no-vendor-prefix": true,
         "value-no-vendor-prefix": true,
         "declaration-block-no-duplicate-properties": true,
-        "no-descending-specificity": true,
         "no-duplicate-selectors": true,
         "no-browser-hacks": true
     }
