@@ -13,6 +13,7 @@ export function loadPriceHistory(marketID) {
 				[marketID]: priceHistory
 			}));
 			dispatch(updateMarketPriceHistory(marketID, priceHistory));
-			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));		});
+			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
+		});
 	};
 }

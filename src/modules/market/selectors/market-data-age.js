@@ -13,7 +13,8 @@ export default function () {
 }
 
 export const getMarketDataAge = memoizerific(10)((marketID, marketDataTimestamps, now) => {
-	let lastUpdatedBefore, isUpdateButtonDisabled;
+	let lastUpdatedBefore;
+	let isUpdateButtonDisabled;
 	if (marketID == null || marketDataTimestamps == null || marketDataTimestamps[marketID] == null || now == null) {
 		lastUpdatedBefore = 'n/a';
 		isUpdateButtonDisabled = true;

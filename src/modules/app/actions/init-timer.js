@@ -17,5 +17,5 @@ export default function () {
 				now: new Date().getTime()
 			});
 		}, TICK_MILLIS);
-	}
+	};
 }
