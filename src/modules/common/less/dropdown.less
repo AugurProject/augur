@@ -1,11 +1,13 @@
 .dropdown {
+	background: @color-dark-hover;
+	color: @color-light-normal;
+	cursor: default;
 	display: inline-block;
 	position: relative;
-	color: @color-light-normal;
-	background: @color-dark-hover;
-	cursor: default;
 
-	&:hover, &:focus, &:active {
+	&:hover,
+	&:focus,
+	&:active {
 		.options {
 			display: block;
 		}
@@ -17,23 +19,25 @@
 	}
 
 	.options {
-		display: none;
-		position: absolute;
-		z-index: 1;
-		top: 100%;
-		left: 0;
-		width: 100%;
-		color: @color-light-normal;
 		background: @color-dark-hover;
 		border-radius: 1px;
+		color: @color-light-normal;
+		display: none;
+		left: 0;
+		position: absolute;
+		top: 100%;
+		width: 100%;
+		z-index: 1;
 
 		.option {
 			display: block;
 			padding: 0.5em 1.2em;
 
-			&:hover, &:focus, &:active {
-				color: white;
+			&:hover,
+			&:focus,
+			&:active {
 				background: @color-dark-active;
+				color: white;
 			}
 		}
 	}

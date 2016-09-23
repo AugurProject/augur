@@ -27,10 +27,13 @@ export default class AccountPage extends Component {
 	handleTransfer = (e) => {
 		e.preventDefault();
 		const amount = this.refs.sendAmount.value;
+		const currency = this.refs.currency.value;
 		const recipient = this.refs.recipientAddress.value;
+
 		this.refs.sendAmount.value = '';
+		this.refs.currency.value = '';
 		this.refs.recipientAddress.value = '';
-		this.props.account.transferFunds(amount, recipient);
+		this.props.account.transferFunds(amount, currency, recipient);
 	}
 
 	loginIDCopy = (e) => {
@@ -159,6 +162,7 @@ export default class AccountPage extends Component {
 									<span>Send:</span>
 									<input
 										type="number"
+										step="0.1"
 										className={classnames('auth-input')}
 										min="0.0"
 										ref="sendAmount"
@@ -166,7 +170,11 @@ export default class AccountPage extends Component {
 										placeholder="Amount to transfer"
 										title="Amount to transfer"
 									/>
-									<span>Ether (eth)</span>
+									<select ref="currency" className={classnames('currency-selector')} title="Currency Type">
+										<option value="eth">ether (eth)</option>
+										<option value="realEth">Real Ether (eth)</option>
+										<option value="REP">REP (REP)</option>
+									</select>
 									<span>To:</span>
 									<input
 										type="text"
@@ -219,8 +227,3 @@ export default class AccountPage extends Component {
 		);
 	}
 }
-// <select ref="currency" className={classnames('currency-selector')} title="Currency Type">
-// 	<option value="eth">ether (eth)</option>
-// 	<option value="realEth">Real Ether (eth)</option>
-// 	<option value="REP">REP (REP)</option>
-// </select>

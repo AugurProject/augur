@@ -3,7 +3,7 @@
 		display: flex;
 		flex-wrap: nowrap;
 		width: 100%;
-		.l-container();
+		.contained();
 
 		.big-line {
 			flex: 2;
@@ -11,30 +11,112 @@
 
 		.sign-out {
 			font-size: 0.7em;
-			&:hover, &:focus, &:active {
+
+			&:hover,
+			&:focus,
+			&:active {
 				background: @color-dark-normal;
 			}
 		}
 	}
 
 	.account-section {
-		padding: 2vmin 6vmin 4vmin 6vmin;
 		background: white;
 		border: 1px solid @color-border;
 		border-radius: 1px;
 		font-size: 1.5rem;
+		padding: 2vmin 6vmin 4vmin;
 
 		.heading {
-			margin: 2vmin 0;
 			font-size: 1.3em;
+			margin: 2vmin 0;
 		}
 
 		.link {
 			color: @color-primary-active;
 
-			&:hover, &:active, &:focus {
+			&:hover,
+			&:active,
+			&:focus {
 				color: @color-primary-hover;
 				text-decoration: underline;
+			}
+		}
+
+		.password-change-container {
+			form > * {
+				margin: 0 0.5rem 0.5rem 0;
+			}
+		}
+
+		.transfer-funds-section {
+			align-items: center;
+			display: flex;
+			flex-flow: row wrap;
+
+			span {
+				margin: 1.5vmin;
+			}
+
+			select {
+				margin: 1.5vmin;
+			}
+
+			input {
+				margin: 1.5vmin;
+			}
+
+			input:last-of-type {
+				flex-grow: 0.45;
+			}
+
+			input[type="number"] {
+				appearance: textfield;
+			}
+
+			input[type=number]::-webkit-inner-spin-button,
+			input[type=number]::-webkit-outer-spin-button {
+				appearance: none;
+				margin: 0;
+			}
+
+			.button {
+				font-size: 0.8em;
+				margin: 1.5vmin;
+			}
+			// responsive design for mobile display.
+			@media screen and (max-width: @media-mobile-width) {
+				margin-top: 3vmin;
+
+				span {
+					margin: 1.5vmin 1.5vmin 1.5vmin 0;
+					width: 12%;
+				}
+
+				span:first-of-type {
+					margin: 1.5vmin 1.5vmin 1.5vmin 0;
+					width: 100%;
+				}
+
+				select {
+					margin: 1.5vmin 0 1.5vmin 0.5vmin;
+					width: 45%;
+				}
+
+				input {
+					margin: 1.5vmin 0;
+					width: 86%;
+				}
+
+				input:first-of-type {
+					margin: 1.5vmin 0.5vmin 1.5vmin 0;
+					width: 53%;
+				}
+
+				.button {
+					font-size: 0.8em;
+					margin: 0;
+				}
 			}
 		}
 
@@ -50,12 +132,12 @@
 				}
 
 				.title {
-					width: 1%;
+					font-size: 0.8em;
 					padding-top: 0.8em;
 					text-align: left;
 					vertical-align: top;
-					font-size: 0.8em;
 					white-space: nowrap;
+					width: 1%;
 				}
 
 				.item {
@@ -73,27 +155,23 @@
 			}
 
 			.display-full-login-id {
-				width: 95%;
-				height: 5rem;
-				font-size: 0.8rem;
-				padding: 0.3rem;
-				overflow: hidden;
-				resize: none;
 				cursor: pointer;
-			}
-		}
-
-		.password-change-container {
-			form > * {
-				margin: 0 0.5rem 0.5rem 0;
+				font-size: 0.8rem;
+				height: 5rem;
+				overflow: hidden;
+				padding: 0.3rem;
+				resize: none;
+				width: 95%;
 			}
 		}
 
 		.remember {
 			margin: 1rem 0;
+
 			p:first-child {
 				font-weight: bold;
 			}
+
 			p:last-child {
 				font-style: italic;
 				font-weight: bold;
@@ -101,80 +179,21 @@
 		}
 
 		.button.download-account {
-			margin-top: 1em;
 			font-size: 0.8em;
-		}
-
-		.transfer-funds-section {
-			display: flex;
-			flex-flow: row wrap;
-			align-items: center;
-
-			span {
-				margin: 1.5vmin;
-			}
-
-			input {
-				margin: 1.5vmin;
-			}
-
-			input:last-of-type {
-				flex-grow: .45;
-			}
-
-			.button {
-				font-size: .8em;
-				margin: 1.5vmin;
-			}
-			// responsive design for mobile display.
-			@media screen and (max-width: @media-mobile-width) {
-				span:first-of-type {
-					margin: 1.5vmin 1.5vmin 1.5vmin 0;
-					width: 12%;
-				}
-
-				span {
-					margin: 1.5vmin 1.5vmin 1.5vmin 0;
-					width: 22%;
-				}
-
-				span:last-of-type {
-					margin: 1.5vmin 1.5vmin 1.5vmin 0;
-					width: 12%;
-				}
-
-				select {
-					width: 45%;
-				}
-
-				input:first-of-type {
-					margin: 1.5vmin .5vmin 1.5vmin 0;
-					width: 62%;
-				}
-
-				input {
-					margin: 1.5vmin 0;
-					width: 86%;
-				}
-
-				.button {
-					margin: 0;
-					font-size: .8em;
-				}
-			}
+			margin-top: 1em;
 		}
 	}
 
 	.password-msg {
-		margin: 0.5em 0;
-		font-size: 0.8em;
 		color: @color-success-normal;
+		font-size: 0.8em;
 		font-weight: bold;
+		margin: 0.5em 0;
 
 		.dismiss-message {
 			color: @color-dark-active;
-			font-family: 'Font Awesome';
 			cursor: pointer;
+			font-family: 'Font Awesome';
 		}
 	}
 }

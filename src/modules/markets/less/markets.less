@@ -8,7 +8,7 @@
 			display: flex;
 			flex-wrap: wrap;
 			width: 100%;
-			.l-container();
+			.contained();
 		}
 
 		.component-header {
@@ -17,19 +17,21 @@
 				text-transform: uppercase;
 
 				.markets-header-item {
+					cursor: pointer;
 					display: inline-block;
 					height: @markets-header-height;
 					line-height: @markets-header-height * 0.95;
 					margin-right: 3vw;
-					white-space: nowrap;
-					cursor: pointer;
 					opacity: 0.5;
+					white-space: nowrap;
 
 					* {
 						vertical-align: middle;
 					}
 
-					&:hover, &:active, &:focus {
+					&:hover,
+					&:active,
+					&:focus {
 						opacity: 0.8;
 					}
 
@@ -39,17 +41,17 @@
 
 					&.favorites {
 						.name {
-							&:before {
+							&::before {
+								color: #ffda00;
+								content: '';
 								display: inline-block;
+								font-family: 'font awesome';
+								font-size: 1.2em;
+								margin-right: 0.5rem;
+								opacity: 0.45;
 								position: relative;
 								top: 0.3vmin;
-								margin-right: 0.5rem;
-								content: '';
-								color: #FFDA00;
-								font-family: 'Font Awesome';
-								font-size: 1.2em;
 								transform: rotate(58deg);
-								opacity: 0.45;
 							}
 						}
 					}
@@ -60,15 +62,15 @@
 						white-space: nowrap;
 
 						.name {
-							&:before {
+							&::before {
+								color: fade(@color-danger-active, 70%);
+								content: '\f12a';
 								display: inline-block;
+								font-family: 'font awesome';
+								font-size: 1.2em;
+								margin-right: 0.5rem;
 								position: relative;
 								top: 0.1em;
-								margin-right: 0.5rem;
-								content: '\f12a';
-								color: fade(@color-danger-active, 70%);
-								font-family: 'Font Awesome';
-								font-size: 1.2em;
 							}
 						}
 					}
@@ -98,10 +100,11 @@
 		.page-content {
 			.component-header {
 				.button.make {
-					width: auto;
-					padding: 0 4vmin;
 					font-size: 1.6rem;
+					padding: 0 4vmin;
+					width: auto;
 				}
+
 				.markets-header {
 					.markets-header-item {
 						font-size: 1.6rem;
@@ -124,6 +127,7 @@
 				.button.make {
 					font-size: 3.5vmin;
 				}
+
 				.markets-header {
 					.markets-header-item {
 						font-size: 3.5vmin;
