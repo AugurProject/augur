@@ -1,3 +1,7 @@
+/*
+ * Related to current selected market. Moved to separate selector for performance reason - this selector is called every
+ * second
+ */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
 import selectMarketDataUpdater from '../../markets/selectors/market-data-updater';
@@ -8,16 +12,20 @@ export default function () {
 	return getMarketDataAge(selectedMarketID, marketDataTimestamps, now);
 }
 
-const getMarketDataAge = memoizerific(10)((marketID, marketDataTimestamps, now) => {
-	if (marketID == null || marketDataTimestamps == null) {
-		return null;
+export const getMarketDataAge = memoizerific(10)((marketID, marketDataTimestamps, now) => {
+	let lastUpdatedBefore, isUpdateButtonDisabled;
+	if (marketID == null || marketDataTimestamps == null || marketDataTimestamps[marketID] == null || now == null) {
+		lastUpdatedBefore = 'n/a';
+		isUpdateButtonDisabled = true;
+	} else {
+		const marketDataAgeMillis = Math.ceil(now - marketDataTimestamps[marketID]);
+		const updateIntervalSecs = selectMarketDataUpdater().updateIntervalSecs;
+		lastUpdatedBefore = formatTimePassed(marketDataAgeMillis);
+		isUpdateButtonDisabled = (marketDataAgeMillis / 1000) < updateIntervalSecs;
 	}
 
-	const marketDataAgeSecs = Math.ceil((now - marketDataTimestamps[marketID]) / 1000);
-	const updateIntervalSecs = selectMarketDataUpdater().updateIntervalSecs;
 	return {
-
-		lastUpdatedBefore: formatTimePassed(marketDataAgeSecs * 1000),
-		isUpdateButtonDisabled: marketDataAgeSecs < updateIntervalSecs
+		lastUpdatedBefore,
+		isUpdateButtonDisabled
 	};
 });
