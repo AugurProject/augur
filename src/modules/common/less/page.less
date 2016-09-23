@@ -1,16 +1,16 @@
 .page {
 	display: flex;
-	min-height: 100vh;
 	flex-direction: column;
+	min-height: 100vh;
 }
 
 .page-header {
+	background: @color-dark-hover;
+	color: white;
+	font-size: 3.4vmin;
+	line-height: 2.2em;
 	margin-top: @site-header-height;
 	padding: 3.5vmin 3rem 2.5vmin 2.9rem;
-	line-height: 2.2em;
-	color: white;
-	background: @color-dark-hover;
-	font-size: 3.4vmin;
 
 	.big-line {
 		font-size: 1.3em;
@@ -19,9 +19,9 @@
 }
 
 .page-content {
+	color: @color-dark-active;
 	flex: 1;
 	padding: 0;
-	color: @color-dark-active;
 }
 
 .site-header + .page-content {

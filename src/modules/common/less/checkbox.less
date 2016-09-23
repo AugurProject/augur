@@ -6,33 +6,34 @@
 	}
 
 	&.checked {
-		.checkbox-box:before {
-			position: absolute;
-			top: -0.2rem;
-			left: 0;
-			content: '\f00c';
+		.checkbox-box::before {
 			color: rgba(45, 45, 75, 1);
+			content: '\f00c';
+			font-family: 'Font Awesome';
 			font-size: 1rem;
 			font-weight: 500;
-			font-family: 'Font Awesome';
+			left: 0;
+			position: absolute;
+			top: -0.2rem;
 		}
 	}
 
 	.checkbox-box {
-		display: inline-block;
-		position: relative;
-		width: 0.8rem;
-		height: 0.8rem;
-		margin-right: 0.5rem;
 		background: #fafafa;
 		border: 1px solid @color-border-darker;
+		display: inline-block;
+		height: 0.8rem;
+		margin-right: 0.5rem;
+		position: relative;
 		vertical-align: middle;
+		width: 0.8rem;
 	}
 
-	.checkbox-label, .checkbox-label2 {
+	.checkbox-label,
+	.checkbox-label2 {
 		display: inline-block;
-		position: relative;
 		margin-left: 0.25em;
+		position: relative;
 		vertical-align: middle;
 	}
 }

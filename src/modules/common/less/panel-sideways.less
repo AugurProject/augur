@@ -1,31 +1,34 @@
 .panel-sideways {
 	background: fade(@color-plain-normal, 7%);
+
 	.title {
-		padding: 1.5rem 1rem 1rem 1rem;
-		vertical-align: middle;
-		color: black;
 		border: 1px solid @color-plain-normal;
-		border-left: 7px solid @color-plain-normal;
 		border-bottom: 0;
+		border-left: 7px solid @color-plain-normal;
+		color: black;
 		font-size: 1.4rem;
 		font-weight: 700;
+		padding: 1.5rem 1rem 1rem;
 		text-transform: uppercase;
+		vertical-align: middle;
 	}
 
 	.content {
-		padding: 0.5rem 1rem 0.8rem 1rem;
-		vertical-align: middle;
-		color: @color-dark-normal;
 		border: 1px solid @color-border;
 		border-left: 7px solid @color-plain-normal;
 		border-top: 0;
+		color: @color-dark-normal;
 		font-size: 1.1rem;
 		font-weight: 400;
+		padding: 0.5rem 1rem 0.8rem;
+		vertical-align: middle;
 	}
 
 	&.primary {
 		background: fade(@color-primary-normal, 7%);
-		.title, .content {
+
+		.title,
+		.content {
 			border-color: fade(@color-primary-normal, 20%);
 			border-left-color: @color-primary-normal;
 		}
@@ -33,7 +36,9 @@
 
 	&.info {
 		background: fade(@color-dark-normal, 7%);
-		.title, .content {
+
+		.title,
+		.content {
 			border-color: fade(@color-dark-normal, 20%);
 			border-left-color: @color-dark-normal;
 		}
@@ -41,7 +46,9 @@
 
 	&.success {
 		background: fade(@color-success-normal, 7%);
-		.title, .content {
+
+		.title,
+		.content {
 			border-color: fade(@color-success-normal, 20%);
 			border-left-color: @color-success-normal;
 		}
@@ -49,14 +56,17 @@
 
 	&.warning {
 		background: fade(@color-warning-normal, 7%);
-		.title, .content {
+
+		.title,
+		.content {
 			border-color: fade(@color-warning-normal, 20%);
 			border-left-color: @color-warning-normal;
 		}
 	}
 
 	&.danger {
-		.title, .content {
+		.title,
+		.content {
 			border-color: fade(@color-danger-normal, 20%);
 			border-left-color: @color-danger-normal;
 		}

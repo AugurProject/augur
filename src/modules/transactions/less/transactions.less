@@ -1,44 +1,49 @@
 .transactions {
 	.page-content {
-		font-size: 1.2rem;
 		background: white;
+		font-size: 1.2rem;
 
 		.transactions-container {
 			display: table;
 			width: 100%;
 
 			.transaction-item {
-				display: table-row;
-				padding: 2.4vh 0 1.3vh 0;
-				line-height: 2.5rem;
-				border-bottom: 1px solid @color-border;
-				background: fade(orange, 6%);
-				font-weight: 900;
-				font-size: 1.3rem;
-				animation-name: transactions-active-bg;
+				// TODO -- move these transforms
+				animation-direction: alternate;
 				animation-duration: 0.7s;
 				animation-iteration-count: infinite;
-				animation-direction: alternate;
+				animation-name: transactions-active-bg;
+				background: fade(orange, 6%);
+				border-bottom: 1px solid @color-border;
+				display: table-row;
+				font-size: 1.3rem;
+				font-weight: 900;
+				line-height: 2.5rem;
+				padding: 2.4vh 0 1.3vh;
 
-				&.failed, &.interrupted {
-					background: fade(@color-danger-normal, 6%);
+				&.failed,
+				&.interrupted {
 					animation-name: unset;
+					background: fade(@color-danger-normal, 6%);
+
 					.status-and-message {
 						color: @color-danger-normal;
 					}
 				}
 
 				&.pending {
-					background: fade(@color-light-normal, 50%);
 					animation-name: unset;
+					background: fade(@color-light-normal, 50%);
+
 					.status-and-message {
 						color: @color-dark-normal;
 					}
 				}
 
 				&.success {
-					background: fade(@color-success-normal, 6%);
 					animation-name: unset;
+					background: fade(@color-success-normal, 6%);
+
 					.status-and-message {
 						color: @color-success-normal;
 					}
@@ -46,7 +51,7 @@
 
 				> * {
 					display: table-cell;
-					padding: 2vh 2vw 2vh 2vw;
+					padding: 2vh 2vw;
 					vertical-align: middle;
 				}
 
@@ -56,9 +61,9 @@
 				}
 
 				.description {
+					font-weight: 400;
 					line-height: 1.5em;
 					text-align: left;
-					font-weight: 400;
 
 					> * {
 						display: inline-block;
@@ -69,7 +74,9 @@
 						text-transform: uppercase;
 					}
 
-					.action, .shares, .avg-price {
+					.action,
+					.shares,
+					.avg-price {
 						font-weight: 900;
 					}
 
@@ -78,8 +85,8 @@
 					}
 
 					.market-description {
-						line-height: 1.5em;
 						font-size: 0.8em;
+						line-height: 1.5em;
 					}
 
 					.hide-in-tx-display {
@@ -91,8 +98,8 @@
 					}
 
 					.value-timestamp {
-						font-size: 75%;
 						color: #6d6d6d;
+						font-size: 75%;
 					}
 				}
 
@@ -101,11 +108,11 @@
 				}
 
 				.status-and-message {
+					color: orange;
 					display: block;
 					line-height: 1.4rem;
-					text-align: right;
-					color: orange;
 					overflow: hidden;
+					text-align: right;
 
 					.status {
 						font-size: 0.75em;
@@ -118,7 +125,7 @@
 					.gasFees-message {
 						font-size: 0.8em;
 					}
-					
+
 					.eventBond-message {
 						font-size: 0.8em;
 					}
@@ -140,19 +147,19 @@
 					}
 
 					.freeze-message {
-						font-size: 0.85em
+						font-size: 0.85em;
 					}
 				}
 			}
 		}
 
 		.feel-free {
-			display: block;
-			padding: 2rem 3rem 5rem 3rem;
-			text-align: right;
 			color: @color-plain-active;
+			display: block;
 			font-size: 1.1rem;
 			font-style: italic;
+			padding: 2rem 3rem 5rem;
+			text-align: right;
 		}
 	}
 }
@@ -161,6 +168,7 @@
 	0% {
 		background: fade(orange, 6%);
 	}
+
 	100% {
 		background: fade(orange, 20%);
 	}

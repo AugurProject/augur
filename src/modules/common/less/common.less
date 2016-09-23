@@ -1,0 +1,174 @@
+// General
+// app wide common styles
+// if a component is shared, those styles are better left to it's respective stylesheets
+
+//		Tags
+html,
+body {
+	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
+	color: @color-text-dark;
+	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-size: 16px;
+	font-weight: @font-weight-normal;
+
+	.light-weight {
+		font-weight: @font-weight-light;
+	}
+
+	.semi-bold-weight {
+		font-weight: @font-weight-semi-bold;
+	}
+}
+
+a {
+	color: inherit;
+	cursor: pointer;
+	text-decoration: none;
+
+	&:visited {
+		color: inherit;
+	}
+
+	&[disabled] {
+		cursor: default;
+		opacity: 0.3;
+	}
+}
+
+th {
+	font-size: 0.8em;
+	font-weight: 700;
+	padding: 0 0.5em;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+hr {
+	border-color: @color-border;
+}
+
+input,
+select,
+textarea {
+	border: 1px solid @color-border-darker;
+	border-radius: 1px;
+	box-sizing: border-box;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	padding: 0.7rem 1rem;
+}
+
+input,
+textarea {
+	background: @color-input-background;
+	resize: both;
+
+	&:focus {
+		border: 1px solid @color-border-darker;
+	}
+}
+
+button {
+	cursor: pointer;
+}
+
+// 		Classes
+.augur-brand {
+	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-weight: @font-weight-light;
+}
+
+.fa {
+	font-family: 'Font Awesome';
+	font-weight: @font-weight-normal;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.link {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.displayNone {
+	display: none !important;
+}
+
+.fade {
+	opacity: 0.25;
+}
+
+.unfade {
+	opacity: 1;
+}
+
+.component-header {
+	display: flex;
+	padding: 1vmin 0 0;
+	width: 100%;
+
+	.header-bar {
+		background: white;
+		display: flex;
+		flex: 2;
+		font-size: 1.6rem;
+		font-weight: @font-weight-normal;
+		margin-left: 1vmin;
+		padding: 0 0 0 5vmin;
+		width: 100%;
+	}
+}
+
+//		Pseudo
+::selection {
+	background-color: #6f6f6f;
+	color: white;
+}
+
+*:focus {
+	outline-color: @color-border;
+	outline-style: dotted;
+	outline-width: 0;
+}
+
+::placeholder {
+	color: @color-plain-hover;
+}
+
+//		Selectors
+[contenteditable=true] {
+	cursor: text;
+	outline: 1px solid @color-border;
+	outline-offset: 1px;
+
+	&:empty::before {
+		color: #dddddd;
+		content: attr(placeholder);
+		display: block;
+	}
+}
+
+[type=button],
+[type=submit],
+[type=file] {
+	cursor: pointer;
+}
+
+[type="search"]::-webkit-search-decoration,
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-results-button,
+[type="search"]::-webkit-search-results-decoration {
+	display: none;
+}
+
+// HISTORICAL
+// TODO -- remove
+@site-header-height: 10vmin;
+@market-section-padding: 4vmin 6vmin;
+@filters-width: 21rem;
+
