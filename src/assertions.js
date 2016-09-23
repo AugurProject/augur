@@ -35,6 +35,7 @@ import portfolioTotals from '../test/assertions/portfolio-totals';
 import tradeCommitLock from '../test/assertions/trade-commit-lock';
 import reportableOutcomes from '../test/assertions/reportable-outcomes';
 import marketDataUpdater from '../test/assertions/market-data-updater';
+import marketDataAge from '../test/assertions/market-data-age';
 
 export default {
 	activePage,
@@ -73,5 +74,6 @@ export default {
 	loginAccountReports,
 	tradeCommitLock,
 	reportableOutcomes,
-	marketDataUpdater
+	marketDataUpdater,
+	marketDataAge
 };

@@ -65,7 +65,11 @@ Basics.propTypes = {
 	updateData: PropTypes.func,
 	isUpdateButtonDisabled: PropTypes.bool,
 	updateIntervalSecs: PropTypes.number,
-	isUpdaterVisible: PropTypes.bool
+	isUpdaterVisible: PropTypes.bool,
+	marketDataAge: React.PropTypes.shape({
+		lastUpdatedBefore: PropTypes.string.isRequired,
+		isUpdateButtonDisabled: PropTypes.bool.isRequired
+	}).isRequired
 };
 
 export default Basics;

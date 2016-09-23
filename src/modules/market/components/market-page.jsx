@@ -25,7 +25,12 @@ export default class MarketPage extends Component {
 			update: PropTypes.func.isRequired,
 			updateIntervalSecs: PropTypes.number.isRequired
 		}).isRequired,
+		marketDataAge: React.PropTypes.shape({
+			lastUpdatedBefore: PropTypes.string.isRequired,
+			isUpdateButtonDisabled: PropTypes.bool.isRequired
+		}).isRequired
 	};
+
 	constructor(props) {
 		super(props);
 		this.shouldComponentUpdate = shouldComponentUpdatePure;

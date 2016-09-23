@@ -468,13 +468,5 @@ export default function (market) {
 			assert.isDefined(onSubmitPlaceTrade);
 			assert.isFunction(onSubmitPlaceTrade);
 		});
-
-		it('market.lastUpdatedBefore', () => {
-			assert.isString(market.lastUpdatedBefore);
-		});
-
-		it('market.isUpdateButtonDisabled', () => {
-			assert.isBoolean(market.isUpdateButtonDisabled);
-		});
 	});
 }
