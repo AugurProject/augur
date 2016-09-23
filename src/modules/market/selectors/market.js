@@ -277,10 +277,12 @@ export function assembleMarket(
 
 			market.tradeSummary = generateTradeSummary(marketTradeOrders);
 
-			market.myPositionsSummary = generateMarketsPositionsSummary([market]);
-			if (market.myPositionsSummary) {
-				market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
-				delete market.myPositionsSummary.positionOutcomes;
+			if (!!marketAccountTrades) {
+				market.myPositionsSummary = generateMarketsPositionsSummary([market]);
+				if (market.myPositionsSummary) {
+					market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
+					delete market.myPositionsSummary.positionOutcomes;
+				}
 			}
 
 			market.myMarketSummary = selectMyMarket(market)[0];
