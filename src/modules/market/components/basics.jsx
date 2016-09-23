@@ -69,7 +69,7 @@ Basics.propTypes = {
 	marketDataAge: React.PropTypes.shape({
 		lastUpdatedBefore: PropTypes.string.isRequired,
 		isUpdateButtonDisabled: PropTypes.bool.isRequired
-	}).isRequired
+	})
 };
 
 export default Basics;

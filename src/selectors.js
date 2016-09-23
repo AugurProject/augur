@@ -10,6 +10,7 @@ import market from './selectors/market';
 import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import marketDataUpdater from './selectors/market-data-updater';
+import marketDataAge from './selectors/market-data-age';
 
 import isTransactionsWorking from './selectors/is-transactions-working';
 import transactions from './selectors/transactions';
@@ -47,6 +48,7 @@ const selectors = {
 	portfolioNavItems,
 	portfolioTotals,
 	marketDataUpdater,
+	marketDataAge,
 	loginAccountPositions,
 	loginAccountMarkets,
 	loginAccountReports,

@@ -12,13 +12,12 @@ export default {
 	 * @param marketId
 	 */
 	update: marketId => {
-		const markets = require('../selectors').markets;
-		const market = markets[marketId];
-		if (market != null) {
-			market.lastUpdatedBefore = '1 second ago';
-			market.isUpdateButtonDisabled = true;
+		const marketDataAge = require('../selectors').marketDataAge;
+		if (marketDataAge != null) {
+			marketDataAge.lastUpdatedBefore = '1 second ago';
+			marketDataAge.isUpdateButtonDisabled = true;
 			require('../selectors').update({
-				markets
+				marketDataAge
 			});
 		}
 		clearInterval(timerId);
@@ -34,13 +33,13 @@ export default {
  */
 function startTimer() {
 	return setInterval(() => {
-		const market = require('../selectors').market;
-		if (market != null) {
-			const lastUpdatedBeforeSecs = parseInt(market.lastUpdatedBefore, 10);
-			market.lastUpdatedBefore = `${(lastUpdatedBeforeSecs + 1)} seconds ago`;
-			market.isUpdateButtonDisabled = lastUpdatedBeforeSecs < UPDATE_INTERVAL_SECS;
+		const marketDataAge = require('../selectors').marketDataAge;
+		if (marketDataAge != null) {
+			const lastUpdatedBeforeSecs = parseInt(marketDataAge.lastUpdatedBefore, 10);
+			marketDataAge.lastUpdatedBefore = `${(lastUpdatedBeforeSecs + 1)} seconds ago`;
+			marketDataAge.isUpdateButtonDisabled = lastUpdatedBeforeSecs < UPDATE_INTERVAL_SECS;
 			require('../selectors').update({
-				market
+				marketDataAge
 			});
 		}
 	}, 1000);
