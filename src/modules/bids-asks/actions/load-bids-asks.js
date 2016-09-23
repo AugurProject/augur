@@ -1,4 +1,5 @@
 import { augur } from '../../../services/augurjs';
+import { updateMarketDataTimestamp } from '../../market/actions/update-market-data-timestamp';
 import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
 import { selectMarket } from '../../market/selectors/market';
 
@@ -26,19 +27,24 @@ export function loadBidsAsks(marketID, cb) {
 	};
 }
 
-function getOrderBookChunked(market, offset, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch) {
-	augur.getOrderBook({ market, offset, numTradesToLoad, scalarMinMax }, (marketOrderBook) => {
+function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch) {
+	augur.getOrderBook({ market: marketID, offset, numTradesToLoad, scalarMinMax }, (marketOrderBook) => {
 		if (marketOrderBook == null || marketOrderBook.error != null) {
-			console.error(`load-bids-asks.js: getOrderBook(${market}) error: %o`, marketOrderBook);
-			loadBidsAsksLock[market] = false;
+			console.error(`load-bids-asks.js: getOrderBook(${marketID}) error: %o`, marketOrderBook);
+			loadBidsAsksLock[marketID] = false;
 			if (callback) return callback(marketOrderBook);
 		} else {
-			if (!offset) dispatch(clearMarketOrderBook(market));
-			dispatch(updateMarketOrderBook(market, marketOrderBook));
-			if (offset + numTradesToLoad < totalTrades) {
-				return getOrderBookChunked(market, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
+			if (!offset) {
+				dispatch(clearMarketOrderBook(marketID));
 			}
-			loadBidsAsksLock[market] = false;
+
+			dispatch(updateMarketOrderBook(marketID, marketOrderBook));
+			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
+
+			if (offset + numTradesToLoad < totalTrades) {
+				return getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
+			}
+			loadBidsAsksLock[marketID] = false;
 			if (callback) callback(null, marketOrderBook);
 		}
 	});

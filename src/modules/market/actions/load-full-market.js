@@ -1,6 +1,5 @@
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { loadPriceHistory } from '../../market/actions/load-price-history';
-import { updateMarketDataTimestamp } from '../../market/actions/update-market-data-timestamp';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 
@@ -13,8 +12,6 @@ export function loadFullMarket(marketID) {
 			dispatch(loadAccountTrades(marketID, false, () => {
 				dispatch(loadPriceHistory(marketID));
 			}));
-
-			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()))
 		};
 
 		// if the basic data hasn't loaded yet, load it first
