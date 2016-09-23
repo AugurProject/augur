@@ -1,5 +1,4 @@
 import React from 'react';
-import classnames from 'classnames';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
@@ -9,10 +8,10 @@ const SiteHeader = (p) => (
 	<header className="site-header">
 		<nav className="site-nav">
 			<div className="nav-group left-navs">
-				<Link className={classnames('site-nav-link', { active: p.activePage === MARKETS })} {...p.marketsLink}>Markets</Link>
+				<Link className={p.activePage === MARKETS && 'active'} {...p.marketsLink}>Markets</Link>
 			</div>
 			<div className="nav-group branding">
-				<Link className="site-nav-link augur-brand" {...p.marketsLink}>augur</Link>
+				<Link className="augur-brand" {...p.marketsLink}>augur</Link>
 			</div>
 			<div className="nav-group right-navs">
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
