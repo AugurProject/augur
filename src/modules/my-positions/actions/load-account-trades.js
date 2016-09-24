@@ -3,6 +3,7 @@ import { augur } from '../../../services/augurjs';
 import { updateAccountPositionsData, updateAccountTradesData, updateNetEffectiveTradesData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
+import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positions-plus-asks';
 
 const loadAccountTradesLock = {};
 
@@ -17,8 +18,9 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 				positions: (callback) => {
 					augur.getAdjustedPositions(account, options, (err, positions) => {
 						if (err) return callback(err);
-						dispatch(updateAccountPositionsData(positions, marketID));
-						callback(null, positions);
+						const positionsPlusAsks = selectPositionsPlusAsks(account, positions, getState().orderBooks);
+						dispatch(updateAccountPositionsData(positionsPlusAsks, marketID));
+						callback(null, positionsPlusAsks);
 					});
 				},
 				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
