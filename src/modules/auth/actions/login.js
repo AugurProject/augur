@@ -20,36 +20,27 @@ export function login(secureLoginID, password, rememberMe) {
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
-			augur.getLatestUserTime(loginAccount.id, (err, latestUserTime) => {
-				if (err) console.error('augur.getLatestUserTime:', err);
-				console.debug('latest user timestamp:', latestUserTime);
-				augur.Sessions.login({
-					onSent: (r) => console.log('augur.Sessions.login sent:', r),
-					onSuccess: (r) => console.log('augur.Sessions.login success:', r),
-					onFailed: (e) => console.error('augur.Sessions.login failed:', e)
-				});
-				if (rememberMe && localStorageRef && localStorageRef.setItem) {
-					const persistentAccount = Object.assign({}, loginAccount);
-					if (Buffer.isBuffer(persistentAccount.privateKey)) {
-						persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-					}
-					if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-						persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-					}
-					localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+			if (rememberMe && localStorageRef && localStorageRef.setItem) {
+				const persistentAccount = Object.assign({}, loginAccount);
+				if (Buffer.isBuffer(persistentAccount.privateKey)) {
+					persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
 				}
-				dispatch(loadLoginAccountLocalStorage(loginAccount.id));
-				dispatch(updateLoginAccount(loginAccount));
-				dispatch(loadLoginAccountDependents());
+				if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+					persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+				}
+				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+			}
+			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(updateLoginAccount(loginAccount));
+			dispatch(loadLoginAccountDependents());
 
-				// need to load selectors here as they get updated above
-				const { links } = require('../../../selectors');
-				if (isCurrentLoginMessageRead(getState().loginMessage)) {
-					links.marketsLink.onClick(links.marketsLink.href);
-				} else {
-					links.loginMessageLink.onClick();
-				}
-			});
+			// need to load selectors here as they get updated above
+			const { links } = require('../../../selectors');
+			if (isCurrentLoginMessageRead(getState().loginMessage)) {
+				links.marketsLink.onClick(links.marketsLink.href);
+			} else {
+				links.loginMessageLink.onClick();
+			}
 		});
 	};
 }
