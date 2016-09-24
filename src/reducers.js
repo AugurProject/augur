@@ -1,4 +1,5 @@
 import env from './modules/app/reducers/env';
+import now from './modules/app/reducers/now';
 import blockchain from './modules/app/reducers/blockchain';
 import branch from './modules/app/reducers/branch';
 import connection from './modules/app/reducers/connection';
@@ -9,6 +10,7 @@ import loginAccount from './modules/auth/reducers/login-account';
 import activePage from './modules/app/reducers/active-page';
 
 import marketsData from './modules/markets/reducers/markets-data';
+import marketDataTimestamps from './modules/markets/reducers/market-data-timestamps';
 import outcomesData from './modules/markets/reducers/outcomes-data';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
@@ -45,6 +47,7 @@ import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees
 
 module.exports = {
 	env,
+	now,
 	blockchain,
 	branch,
 	connection,
@@ -55,6 +58,7 @@ module.exports = {
 	activePage,
 
 	marketsData,
+	marketDataTimestamps,
 	outcomesData,
 	favorites,
 	pagination,

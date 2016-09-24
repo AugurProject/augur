@@ -1,4 +1,5 @@
 import { augur } from '../../../services/augurjs';
+import { updateMarketDataTimestamp } from '../../market/actions/update-market-data-timestamp';
 import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
 import { updateMarketTradesData } from '../../portfolio/actions/update-market-trades-data';
 
@@ -8,10 +9,11 @@ export function loadPriceHistory(marketID) {
 			if (priceHistory && priceHistory.error) {
 				return console.warn('ERROR: loadPriceHistory()', priceHistory);
 			}
-			const trades = {};
-			trades[marketID] = priceHistory;
-			dispatch(updateMarketTradesData(trades));
+			dispatch(updateMarketTradesData({
+				[marketID]: priceHistory
+			}));
 			dispatch(updateMarketPriceHistory(marketID, priceHistory));
+			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
 		});
 	};
 }
