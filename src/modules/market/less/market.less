@@ -12,11 +12,11 @@
 		.market-info {
 			background: @color-dark-hover;
 			color: @color-light-normal;
-			line-height: 2em;
 			padding: @market-section-padding;
 			padding-bottom: 0;
 
 			.description {
+				clear: both;
 				color: @color-light-normal;
 				font-size: 4vmin;
 				line-height: 5vmin;
@@ -58,6 +58,12 @@
 		.report-form,
 		.trade-panel {
 			padding: @market-section-padding;
+		}
+	}
+
+	.updater {
+		.button {
+			margin-left: 6px;
 		}
 	}
 }

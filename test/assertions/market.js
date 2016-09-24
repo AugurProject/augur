@@ -468,6 +468,5 @@ export default function (market) {
 			assert.isDefined(onSubmitPlaceTrade);
 			assert.isFunction(onSubmitPlaceTrade);
 		});
-
 	});
 }
