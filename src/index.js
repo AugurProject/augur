@@ -36,11 +36,11 @@ var modules = [
     require("./modules/reportingTools"),
     require("./modules/tradingActions"),
     require("./modules/positions"),
-    require("./modules/sessions")
+    require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "2.8.10";
+    this.version = "2.9.0";
 
     this.options = {
         debug: {

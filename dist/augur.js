@@ -16591,7 +16591,7 @@ module.exports={
       "signature": "0x3253564cd022a8ec496277f26ccdaddf64e75973423eda45df329f60b2a0c6a7"
     }, 
     "registration": {
-      "contract": "Sessions", 
+      "contract": "Register", 
       "inputs": [
         {
           "indexed": true, 
@@ -20375,6 +20375,12 @@ module.exports={
         ]
       }
     }, 
+    "Register": {
+      "register": {
+        "method": "register", 
+        "returns": "int256"
+      }
+    }, 
     "Reporting": {
       "addDormantRep": {
         "inputs": [
@@ -20926,13 +20932,6 @@ module.exports={
         ]
       }
     }, 
-    "Sessions": {
-      "register": {
-        "method": "register", 
-        "returns": "number", 
-        "send": true
-      }
-    }, 
     "SlashRep": {
       "slashRep": {
         "inputs": [
@@ -21174,12 +21173,12 @@ module.exports={
         "PenalizationCatchup": "0x535f7cd3381fc48a2fc386f0d4dbf6efaa5c5bbd", 
         "PenalizeNotEnoughReports": "0x52d2d53170bfdef009a624764cd384743763b9d6", 
         "ProportionCorrect": "0x07414b523bef5d3d11cd195350fddf16ca97c40b", 
+        "Register": "0x16894e644b59b6b9c401a1752a60d9295b09ee55", 
         "Reporting": "0xea0522257c67aae3b2f9ce1bfeca20e76d063fcf", 
         "ReportingThreshold": "0x6ca0f4e17b77b9c0d449ef2861355ebe6c711b7d", 
         "RoundTwo": "0xef6abcef46c0871d3db0e602a003b99499e326db", 
         "RoundTwoPenalize": "0xc1f513a64709200e30d3db0049fbdf73a88e16f6", 
         "SendReputation": "0xc50146cac2a210fffc7d486354880b66bc5991cb", 
-        "Sessions": "0x8615d86e88b98f1b2b5fe2c8d0baaf454089c459", 
         "SlashRep": "0x26ceb833ebc12a439359da7387d99568b447c8bb", 
         "Trade": "0x3b83b10cb6ae9ecf6f3119e0c92ad229264fe437", 
         "Trades": "0x68e9b831346211ab54b2d471d25be6d5f343608d"
@@ -21212,12 +21211,12 @@ module.exports={
         "PenalizationCatchup": "0x6244830d9e7454b6c345967ed3db60f2e3de7d15", 
         "PenalizeNotEnoughReports": "0x6bc00b3939da27d8b46a593d8a5661b2cc9bc367", 
         "ProportionCorrect": "0x671dec0f24ce09b8f1444907ab675bc4e07b26f3", 
+        "Register": "0xc97dd45f17a0a2862f6a014f18f8c450eb75c827", 
         "Reporting": "0xa18d840b7517fdb6357c06825f5acabd9e19af01", 
         "ReportingThreshold": "0x9ea8f088099bc7b8d5fb5a4b01de8ad560366e48", 
         "RoundTwo": "0x8666e062d3337bf0c1ad4fbef44a3d24cfe5490d", 
         "RoundTwoPenalize": "0xbe15d0d952c21d5fb181dac9941764cce2e0c240", 
         "SendReputation": "0xc1dc9753a0f143bbdb605805cf27cac9489524b0", 
-        "Sessions": "0xda41d613542f0f3f05e54d21e6aabbb1acc265b8", 
         "SlashRep": "0xaf0b38b11949930453c9ccaaddb284e8c7b662a5", 
         "Trade": "0x1d730c812ddf968c4c06ef0f8cc129cbcf85162f", 
         "Trades": "0x1e997132f2aa4b8d52518e3935cccb59f42210f7"
@@ -42848,13 +42847,6 @@ module.exports = {
         sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
     },
 
-    // int256 codes for session logs
-    SESSION_CODES: {
-        register: "0x0000000000000000000000000000000000000000000000000000000000000001",
-        login: "0x0000000000000000000000000000000000000000000000000000000000000002",
-        logout: "0x0000000000000000000000000000000000000000000000000000000000000003"
-    },
-
     // maximum number of transactions to auto-submit in parallel
     PARALLEL_LIMIT: 5,
 
@@ -43620,11 +43612,11 @@ var modules = [
     require("./modules/reportingTools"),
     require("./modules/tradingActions"),
     require("./modules/positions"),
-    require("./modules/sessions")
+    require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "2.8.10";
+    this.version = "2.9.0";
 
     this.options = {
         debug: {
@@ -43674,7 +43666,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":264,"./accounts":233,"./augurNode":234,"./batch":235,"./constants":236,"./filters":237,"./generateOrderBook":238,"./modules/abacus":240,"./modules/buyAndSellShares":241,"./modules/cash":242,"./modules/collectFees":243,"./modules/completeSets":244,"./modules/compositeGetters":245,"./modules/connect":246,"./modules/createBranch":247,"./modules/createMarket":248,"./modules/events":249,"./modules/logs":250,"./modules/makeReports":251,"./modules/markets":252,"./modules/positions":253,"./modules/reportingTools":254,"./modules/sendReputation":255,"./modules/sessions":256,"./modules/trade":257,"./modules/trades":258,"./modules/tradingActions":259,"./modules/transact":260,"./modules/whitelist":261,"./utilities":262,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":267}],240:[function(require,module,exports){
+},{"../test/tools":264,"./accounts":233,"./augurNode":234,"./batch":235,"./constants":236,"./filters":237,"./generateOrderBook":238,"./modules/abacus":240,"./modules/buyAndSellShares":241,"./modules/cash":242,"./modules/collectFees":243,"./modules/completeSets":244,"./modules/compositeGetters":245,"./modules/connect":246,"./modules/createBranch":247,"./modules/createMarket":248,"./modules/events":249,"./modules/logs":250,"./modules/makeReports":251,"./modules/markets":252,"./modules/positions":253,"./modules/register":254,"./modules/reportingTools":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/trades":258,"./modules/tradingActions":259,"./modules/transact":260,"./modules/whitelist":261,"./utilities":262,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":267}],240:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -46286,6 +46278,83 @@ module.exports = {
 
 },{"../constants":236,"../utilities":262,"async":79,"augur-abi":1,"bignumber.js":82}],254:[function(require,module,exports){
 /**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+module.exports = {
+
+    parseLastTime: function (logs) {
+        return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
+    },
+
+    getRegisterTime: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
+                topics: [
+                    this.api.events.registration.signature,
+                    abi.format_int256(account)
+                ],
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) {
+                var logs = this.rpc.getLogs(filter);
+                if (!logs || !logs.length || (logs && logs.error)) return null;
+                return this.parseLastTime(logs);
+            }
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, null);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, self.parseLastTime(logs));
+            });
+        }
+    },
+
+    getRegisterLogs: function (account, options, callback) {
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.Sessions,
+                topics: [
+                    this.api.events.registration.signature,
+                    abi.format_int256(account)
+                ],
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, []);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, logs);
+            });
+        }
+    }
+};
+
+},{"../constants":236,"../utilities":262,"augur-abi":1,"clone":119}],255:[function(require,module,exports){
+/**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
  */
@@ -46522,7 +46591,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":262,"async":79,"augur-abi":1}],255:[function(require,module,exports){
+},{"../utilities":262,"async":79,"augur-abi":1}],256:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46584,209 +46653,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":262,"augur-abi":1,"clone":119}],256:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-module.exports = {
-
-    parseLastTime: function (logs) {
-        return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
-    },
-
-    getRegisterTime: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
-                topics: [
-                    this.api.events.session.signature,
-                    abi.format_int256(account),
-                    constants.SESSION_CODES.register
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) {
-                var logs = this.rpc.getLogs(filter);
-                if (!logs || !logs.length || (logs && logs.error)) return null;
-                return this.parseLastTime(logs);
-            }
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, null);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, self.parseLastTime(logs));
-            });
-        }
-    },
-
-    getLatestUserTime: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (!utils.is_function(callback)) {
-            var logoutTime = this.getLastLogoutTime(account, options);
-            var loginTime = this.getLastLoginTime(account, options);
-            if (logoutTime && loginTime) {
-                return new Date(Math.max(logoutTime, loginTime));
-            }
-            if (logoutTime) return logoutTime;
-            if (loginTime) return loginTime;
-            return this.getRegisterTime(account, options);
-        }
-        this.getLastLogoutTime(account, options, function (err, logoutTime) {
-            if (err) return callback(err);
-            self.getLastLoginTime(account, options, function (err, loginTime) {
-                if (err) return callback(err);
-                if (logoutTime && loginTime) {
-                    return callback(null, new Date(Math.max(logoutTime, loginTime)));
-                }
-                if (logoutTime) return callback(null, logoutTime);
-                if (loginTime) return callback(null, loginTime);
-                self.getRegisterTime(account, options, callback);
-            });
-        });
-    },
-
-    getLastLoginTime: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (!utils.is_function(callback)) {
-            var logs = this.getLoginLogs(account, options);
-            if (!logs || !logs.length) return null;
-            return this.parseLastTime(logs);
-        }
-        this.getLoginLogs(account, options, function (err, logs) {
-            if (err) return callback(err);
-            if (!logs || !logs.length) return callback(null, null);
-            callback(null, self.parseLastTime(logs));
-        });
-    },
-
-    getLastLogoutTime: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (!utils.is_function(callback)) {
-            var logs = this.getLogoutLogs(account, options);
-            if (!logs || !logs.length) return null;
-            return this.parseLastTime(logs);
-        }
-        this.getLogoutLogs(account, options, function (err, logs) {
-            if (err) return callback(err);
-            if (!logs || !logs.length) return callback(null, null);
-            callback(null, self.parseLastTime(logs));
-        });
-    },
-
-    getRegisterLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
-                topics: [
-                    this.api.events.session.signature,
-                    abi.format_int256(account),
-                    constants.SESSION_CODES.register
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, logs);
-            });
-        }
-    },
-
-    getLoginLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
-                topics: [
-                    this.api.events.session.signature,
-                    abi.format_int256(account),
-                    constants.SESSION_CODES.login
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, logs);
-            });
-        }
-    },
-
-    getLogoutLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
-                topics: [
-                    this.api.events.session.signature,
-                    abi.format_int256(account),
-                    constants.SESSION_CODES.logout
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, logs);
-            });
-        }
-    }
-};
-
-},{"../constants":236,"../utilities":262,"augur-abi":1,"clone":119}],257:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":119}],257:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -48498,7 +48365,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":236,"../src/modules/reportingTools":254,"../src/utilities":262,"./madlibs":263,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],265:[function(require,module,exports){
+},{"../src/constants":236,"../src/modules/reportingTools":255,"../src/utilities":262,"./madlibs":263,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],265:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -48894,7 +48761,8 @@ module.exports = {
     debug: {
         tx: false,
         broadcast: false,
-        nonce: false
+        nonce: false,
+        sync: true
     },
 
     // if set to true, dropped transactions are automatically resubmitted
@@ -49282,9 +49150,9 @@ module.exports = {
         } else {
             timeout = this.POST_TIMEOUT;
         }
-        // if (this.debug.broadcast) {
+        if (this.debug.sync) {
             console.warn("[ethrpc] Synchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
-        // }
+        }
         if (NODE_JS) {
             req = syncRequest("POST", rpcUrl, {json: command, timeout: timeout});
             var response = req.getBody().toString();
