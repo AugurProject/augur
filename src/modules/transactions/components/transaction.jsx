@@ -197,8 +197,8 @@ const Transaction = (p) => {
 	case CANCEL_ORDER: {
 		nodes.description = (
 			<span className="description">
-				<span className="action">Cancel {p.data.order.type} order</span>
-				<span className="at">for</span>
+				<span className="action">Cancel order</span>
+				<span className="at">to {p.data.order.type}</span>
 				<ValueDenomination className="shares" {...p.data.order.shares} />
 				<span className="of">of</span>
 				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
