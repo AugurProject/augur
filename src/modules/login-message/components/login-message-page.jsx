@@ -4,13 +4,9 @@
 
 import React, { PropTypes } from 'react';
 import Link from '../../link/components/link';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 
 const LoginMessagePage = (p) => (
 	<main className="page login-message">
-		<SiteHeader {...p.siteHeader} />
-
 		<div className="page-content">
 			<div className="l-container">
 				<h1>Welcome to Augur's beta test v2!</h1>
@@ -63,8 +59,6 @@ const LoginMessagePage = (p) => (
 				<Link className="lets-do-this-button" {...p.siteHeader.marketsLink} >Let's do this!</Link>
 			</div>
 		</div>
-
-		<SiteFooter />
 	</main>
 );
 

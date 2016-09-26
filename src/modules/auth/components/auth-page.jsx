@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 import AuthForm from '../../auth/components/auth-form';
 
 const AuthPage = (p) => (
 	<main className="page auth">
-		<SiteHeader {...p.siteHeader} />
 		<header className="page-header">
 			<div className="l-container">
 				<span className="big-line">Augur is a completely decentralized system</span> including user accounts.
@@ -19,7 +16,6 @@ const AuthPage = (p) => (
 			</div>
 		</header>
 		<AuthForm className="auth-form" {...p.authForm} />
-		<SiteFooter />
 	</main>
 );
 

@@ -27,7 +27,7 @@ export default class Link extends Component {
 		if (this.props.onClick && !this.props.disabled) {
 			this.props.onClick(this.props.href);
 		}
-	}
+	};
 
 	render() {
 		return <a {...this.props} href={this.props.href} className={`link ${this.props.className}`} onClick={this.handleClick} />;

@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
 import MarketInfo from '../../market/components/market-info';
 import TradePanel from '../../../modules/trade/components/trade-panel';
@@ -129,15 +127,11 @@ export default class MarketPage extends Component {
 
 		return (
 			<main className="page market">
-				<SiteHeader {...p.siteHeader} />
-
 				<article className="page-content">
 					<div className="l-container">
 						{nodes}
 					</div>
 				</article>
-
-				<SiteFooter />
 			</main>
 		);
 	}

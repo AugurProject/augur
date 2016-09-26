@@ -33,7 +33,7 @@ export default class MarketsPage extends Component {
 
 		return (
 			<div className="page markets">
-				<SiteHeader {...p.siteHeader} />
+				{/*<SiteHeader {...p.siteHeader} />*/}
 
 				<div className="page-content">
 					<SearchSort
@@ -46,7 +46,7 @@ export default class MarketsPage extends Component {
 					<Markets className="page-content markets-content" {...p} />
 				</div>
 
-				<SiteFooter />
+				{/*<SiteFooter />*/}
 			</div>
 		);
 	}

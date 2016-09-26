@@ -1,7 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 import Link from '../../link/components/link';
 import Input from '../../common/components/input';
 
@@ -53,7 +51,6 @@ export default class AccountPage extends Component {
 
 		return (
 			<main className="page account">
-				<SiteHeader {...p.siteHeader} />
 				<header className="page-header">
 					<span className="big-line">My Account</span>
 					<Link className="button sign-out" {...p.siteHeader.authLink}>
@@ -222,7 +219,6 @@ export default class AccountPage extends Component {
 						</div>
 					</div>
 				</section>
-				<SiteFooter />
 			</main>
 		);
 	}

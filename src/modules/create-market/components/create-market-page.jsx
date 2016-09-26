@@ -1,12 +1,8 @@
 import React, { PropTypes } from 'react';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 import CreateMarketForm from '../../create-market/components/create-market-form';
 
 const CreateMarketPage = (p) => (
 	<main className="page create-market">
-		<SiteHeader {...p.siteHeader} />
-
 		<header className="page-header">
 			<div className="l-container">
 				<span className="big-line">Be the market maker</span>.
@@ -23,8 +19,6 @@ const CreateMarketPage = (p) => (
 				/>
 			</div>
 		</div>
-
-		<SiteFooter />
 	</main>
 );
 
