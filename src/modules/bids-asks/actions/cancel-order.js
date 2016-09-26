@@ -1,6 +1,7 @@
 /*
  * Author: priecint
  */
+import { formatEther, formatRealEther, formatShares } from '../../../utils/format-number';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -8,7 +9,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
-import { augur } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
@@ -46,12 +47,16 @@ export function processCancelOrder(transactionID, orderID) {
 		}
 
 		const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, orderBooks);
-		if (order == null) {
+		if (order == null || !order.amount || !order.price) {
 			return;
 		}
 
 		dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.market.id, transaction.data.order.type));
-		dispatch(updateExistingTransaction(transactionID, { status: CANCELLING_ORDER }));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: CANCELLING_ORDER,
+			message: `canceling order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+			totalReturn: formatEther(abi.bignum(order.amount).times(abi.bignum(order.price)))
+		}));
 
 		augur.cancel({
 			trade_id: orderID,
@@ -59,7 +64,13 @@ export function processCancelOrder(transactionID, orderID) {
 			onSuccess: (res) => {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, hash: res.hash, timestamp: res.timestamp }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+					hash: res.hash,
+					timestamp: res.timestamp,
+					gasFees: formatRealEther(res.gasFees)
+				}));
 				dispatch(loadBidsAsks(transaction.data.market.id, () => {
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(transaction.data.market.id));
