@@ -43616,7 +43616,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.0";
+    this.version = "2.9.1";
 
     this.options = {
         debug: {
@@ -46306,7 +46306,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
+                address: this.contracts.Register,
                 topics: [
                     this.api.events.registration.signature,
                     abi.format_int256(account)
@@ -46336,7 +46336,7 @@ module.exports = {
             var filter = {
                 fromBlock: options.fromBlock || "0x1",
                 toBlock: options.toBlock || "latest",
-                address: this.contracts.Sessions,
+                address: this.contracts.Register,
                 topics: [
                     this.api.events.registration.signature,
                     abi.format_int256(account)
