@@ -18,14 +18,19 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
 	const { mockStore, actionCreator, state } = mocks;
 	const addCancelTransaction = actionCreator();
-	const augur = { cancel: sinon.stub() };
+	const augur = {
+		cancel: sinon.stub(),
+		rpc: { gasPrice: 1 },
+		tx: { BuyAndSellShares: { cancel: {} } },
+		getTxGasEth: sinon.stub()
+	};
 	const updateOrderStatus = actionCreator();
 	const updateExistingTransaction = actionCreator();
 	const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
 		'../../transactions/actions/add-cancel-transaction': { addCancelTransaction },
 		'../../../services/augurjs': {
 			augur,
-			abi: { bignum: sinon.stub().returns(new BigNumber("1", 10)) }
+			abi: { bignum: sinon.stub().returns(new BigNumber("1", 10)) },
 		},
 		'../../bids-asks/actions/update-order-status': { updateOrderStatus },
 		'../../transactions/actions/update-existing-transaction': { updateExistingTransaction }
@@ -87,15 +92,15 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 			assert.deepEqual(updateExistingTransaction.args[0], ['cancelTxn', {
 				message: 'canceling order to buy 10 shares for 0.4200 ETH each',
 				status: CANCELLING_ORDER,
-				totalReturn: {
-					denomination: ' ETH',
-					formatted: '1.0000',
-					formattedValue: 1,
-					full: '1.0000 ETH',
-					minimized: '1',
-					rounded: '1.0000',
-					roundedValue: 1,
-					value: 1
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0',
+					formattedValue: 0,
+					full: '0 real ETH (estimated)',
+					minimized: '0',
+					rounded: '0',
+					roundedValue: 0,
+					value: 0
 				}
 			}]);
 			assert.lengthOf(augur.cancel.args[0], 1);
