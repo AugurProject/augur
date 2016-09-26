@@ -215,7 +215,7 @@ module.exports = {
             len = parseInt(marketsArray[totalLen]);
             shift = totalLen + 1;
             rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = marketsArray[shift];
+            marketID = abi.format_int256(marketsArray[shift]);
             info = this.parseMarketInfo(rawInfo);
             if (info && info.numOutcomes) {
                 marketsInfo[marketID] = info;
@@ -247,7 +247,7 @@ module.exports = {
         for (var i = 0; i < numMarkets; ++i) {
             len = parseInt(marketsArray[totalLen]);
             shift = totalLen + 1;
-            marketID = marketsArray[shift];
+            marketID = abi.format_int256(marketsArray[shift]);
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
             marketsInfo[marketID] = {
                 sortOrder: i,
