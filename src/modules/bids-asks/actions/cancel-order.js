@@ -1,7 +1,7 @@
 /*
  * Author: priecint
  */
-import { formatEther, formatRealEther, formatShares } from '../../../utils/format-number';
+import { formatEther, formatRealEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -9,7 +9,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
-import { augur, abi } from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
@@ -55,7 +55,7 @@ export function processCancelOrder(transactionID, orderID) {
 		dispatch(updateExistingTransaction(transactionID, {
 			status: CANCELLING_ORDER,
 			message: `canceling order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
-			totalReturn: formatEther(abi.bignum(order.amount).times(abi.bignum(order.price)))
+			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.BuyAndSellShares.cancel }, augur.rpc.gasPrice))
 		}));
 
 		augur.cancel({
@@ -69,6 +69,7 @@ export function processCancelOrder(transactionID, orderID) {
 					message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
 					hash: res.hash,
 					timestamp: res.timestamp,
+					totalReturn: formatEther(res.cashRefund),
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				dispatch(loadBidsAsks(transaction.data.market.id, () => {
