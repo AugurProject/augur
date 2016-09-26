@@ -20378,7 +20378,8 @@ module.exports={
     "Register": {
       "register": {
         "method": "register", 
-        "returns": "int256"
+        "returns": "number", 
+        "send": true
       }
     }, 
     "Reporting": {
@@ -43616,7 +43617,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.1";
+    this.version = "2.9.2";
 
     this.options = {
         debug: {
