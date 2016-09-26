@@ -4,31 +4,35 @@ import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
 import classnames from 'classnames';
+import AugurLogo from '../../common/components/augur-logo';
 
-const SiteHeader = (p) => (
-	<header className="site-header">
-		<nav className="site-nav">
-			<div className="nav-group left-navs">
-				<Link className={p.activePage === MARKETS && 'active'} {...p.marketsLink}>Markets</Link>
-			</div>
-			<div className="nav-group branding">
-				<Link className="augur-brand" {...p.marketsLink}>augur</Link>
-			</div>
-			<div className="nav-group right-navs">
-				{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
+const SiteHeader = (p) => {
+	return (
+		<header className="site-header">
+			<nav className="site-nav">
+				<div className="nav-group left-navs">
+					<Link className={p.activePage === MARKETS && 'active'} {...p.marketsLink}>Markets</Link>
+				</div>
+				<div className="nav-group branding">
+					<Link className="augur-brand" {...p.marketsLink}>
+						<AugurLogo />
+					</Link>
+				</div>
+				<div className="nav-group right-navs">
+					{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 					<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 						Positions: 4 (+12.7%)
 					</Link>
-				}
-				{(!!p.loginAccount && !!p.loginAccount.id) &&
+					}
+					{(!!p.loginAccount && !!p.loginAccount.id) &&
 					<Link
 						className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 						{...p.transactionsLink}
 					>
 						{p.transactionsTotals.title}
 					</Link>
-				}
-				{!p.loginAccount.id &&
+					}
+					{!p.loginAccount.id &&
 					<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
 						Sign Up / Login
 					</Link>
@@ -50,10 +54,11 @@ const SiteHeader = (p) => (
 						/>
 					</Link>
 				}
-			</div>
-		</nav>
-	</header>
-);
+				</div>
+			</nav>
+		</header>
+	);
+};
 
 SiteHeader.propTypes = {
 	activePage: React.PropTypes.string,
