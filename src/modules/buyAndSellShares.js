@@ -12,6 +12,54 @@ var constants = require("../constants");
 
 module.exports = {
 
+    cancel: function (trade_id, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (trade_id.constructor === Object) {
+            onSent = trade_id.onSent;
+            onSuccess = trade_id.onSuccess;
+            onFailed = trade_id.onFailed;
+            onConfirmed = trade_id.onConfirmed;
+            trade_id = trade_id.trade_id;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var tx = clone(this.tx.BuyAndSellShares.cancel);
+        tx.params = trade_id;
+        if (this.options.debug.trading) {
+            console.log("cancel tx:", JSON.stringify(tx, null, 2));
+        }
+        var prepare = function (result, cb) {
+            if (!result || !result.callReturn) return cb(result);
+            self.rpc.receipt(result.hash, function (receipt) {
+                if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                if (receipt.error) return onFailed(receipt);
+                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    var logs = receipt.logs;
+                    var sig = self.api.events.log_cancel.signature;
+                    result.cashRefund = "0";
+                    var numLogs = logs.length;
+                    var logdata;
+                    for (var i = 0; i < numLogs; ++i) {
+                        if (logs[i].topics[0] === sig) {
+                            logdata = self.rpc.unmarshal(logs[i].data);
+                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                result.cashRefund = abi.unfix(logdata[5], "string");
+                                break;
+                            }
+                        }
+                    }
+                }
+                cb(result);
+            });
+        };
+        this.transact(tx,
+            onSent,
+            utils.compose(prepare, onSuccess),
+            onFailed,
+            utils.compose(prepare, onConfirmed));
+    },
+
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {

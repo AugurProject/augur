@@ -38,6 +38,7 @@ module.exports = {
      * @return {Array.<Object>}
      */
     filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+        if (!orders) return [];
         var isMarketOrder = limitPrice === null || limitPrice === undefined;
         return Object.keys(orders)
             .map(function (orderId) {

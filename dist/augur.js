@@ -16395,10 +16395,15 @@ module.exports={
           "indexed": false, 
           "name": "type", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "cashRefund", 
+          "type": "int256"
         }
       ], 
-      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x9ecf4903f3efaf1549dc51545bd945f94d51923f37ce198a3b838125a2f397d5"
+      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xf573f1f8bc82665c8e269027671f8892cb92df05d64505b4f0090198a52edfbf"
     }, 
     "log_fill_tx": {
       "contract": "Trade", 
@@ -21187,7 +21192,7 @@ module.exports={
     "2": {
         "Backstops": "0x569d4bd38aa5ff088fe3c8f9dcfec44addba62eb", 
         "Branches": "0x497e9d4d5eec6ae005e79e161e4f06a31109f3b7", 
-        "BuyAndSellShares": "0x61b9b76af602cde7a6abf0036c9cfd4b23fcc552", 
+        "BuyAndSellShares": "0x70630ee38affa41ea4ca94fe2893b3741a35cb95", 
         "Cash": "0x044ad83bf7054789aa73adb0b50a8ed40e779f05", 
         "CloseMarket": "0x521e6197c08903352d6b94de3dca2df39a2a8b6a", 
         "CloseMarketOne": "0xeebd9569b934f098995cb1d12bb378cad5041773", 
@@ -43617,7 +43622,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.2";
+    this.version = "2.9.3";
 
     this.options = {
         debug: {
@@ -44015,6 +44020,54 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+    cancel: function (trade_id, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (trade_id.constructor === Object) {
+            onSent = trade_id.onSent;
+            onSuccess = trade_id.onSuccess;
+            onFailed = trade_id.onFailed;
+            onConfirmed = trade_id.onConfirmed;
+            trade_id = trade_id.trade_id;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var tx = clone(this.tx.BuyAndSellShares.cancel);
+        tx.params = trade_id;
+        if (this.options.debug.trading) {
+            console.log("cancel tx:", JSON.stringify(tx, null, 2));
+        }
+        var prepare = function (result, cb) {
+            if (!result || !result.callReturn) return cb(result);
+            self.rpc.receipt(result.hash, function (receipt) {
+                if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                if (receipt.error) return onFailed(receipt);
+                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    var logs = receipt.logs;
+                    var sig = self.api.events.log_cancel.signature;
+                    result.cashRefund = "0";
+                    var numLogs = logs.length;
+                    var logdata;
+                    for (var i = 0; i < numLogs; ++i) {
+                        if (logs[i].topics[0] === sig) {
+                            logdata = self.rpc.unmarshal(logs[i].data);
+                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                result.cashRefund = abi.unfix(logdata[5], "string");
+                                break;
+                            }
+                        }
+                    }
+                }
+                cb(result);
+            });
+        };
+        this.transact(tx,
+            onSent,
+            utils.compose(prepare, onSuccess),
+            onFailed,
+            utils.compose(prepare, onConfirmed));
+    },
 
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
@@ -47078,6 +47131,7 @@ module.exports = {
      * @return {Array.<Object>}
      */
     filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+        if (!orders) return [];
         var isMarketOrder = limitPrice === null || limitPrice === undefined;
         return Object.keys(orders)
             .map(function (orderId) {
