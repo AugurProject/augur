@@ -17,7 +17,7 @@ const SiteHeader = (p) => (
 			<div className="nav-group right-navs">
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 					<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
-						Portfolio
+						Positions: 4 (+12.7%)
 					</Link>
 				}
 				{(!!p.loginAccount && !!p.loginAccount.id) &&

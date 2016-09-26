@@ -2,9 +2,9 @@
 // site-wide typographic rules + values
 
 // 	Employed Weights
+@font-weight-extra-light: 200;
 @font-weight-light: 300;
 @font-weight-normal: 400;
-@font-weight-semi-bold: 600;
 
 //  augur brand (Core Mellow)
 //  This does not contain the complete character set
@@ -25,6 +25,14 @@
 }
 
 //  primary site font (Source Sans Pro)
+//      Extra Light
+@font-face {
+	font-family: 'Source Sans Pro';
+	font-style: normal;
+	font-weight: @font-weight-extra-light;
+	src: url('assets/fonts/source-sans-pro-extra-light.woff') format('woff');
+}
+
 //      Light
 @font-face {
 	font-family: 'Source Sans Pro';
@@ -41,10 +49,46 @@
 	src: url('assets/fonts/source-sans-pro-regular.woff') format('woff');
 }
 
-//      Semi-Bold
-@font-face {
-	font-family: 'Source Sans Pro';
-	font-style: normal;
-	font-weight: @font-weight-semi-bold;
-	src: url('assets/fonts/source-sans-pro-semibold.woff') format('woff');
+//	Mixins
+.augur-brand {
+	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-weight: @font-weight-light;
+}
+
+.fa {
+	font-family: 'Font Awesome';
+	font-weight: @font-weight-normal;
+}
+
+.font-defaults {
+
+	.font-size-normal();
+	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
+	font-weight: @font-weight-extra-light;
+}
+
+//		Weights
+.font-weight-extra-light {
+	font-weight: @font-weight-extra-light;
+}
+
+.font-weight-light {
+	font-weight: @font-weight-light;
+}
+
+.font-weight-normal {
+	font-weight: @font-weight-normal;
+}
+
+//		Sizes
+.font-size-normal {
+	font-size: 0.62rem;
+}
+
+.font-size-medium {
+	font-size: 0.8rem;
+}
+
+.font-size-large {
+	font-size: 1rem;
 }

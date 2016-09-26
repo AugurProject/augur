@@ -1,11 +1,14 @@
 .site-header {
-	background: @color-white;
+
+	.font-weight-extra-light();
+	color: @color-text-light-muted;
+	background: @color-nav-background;
 	display: flex;
-	height: 50px;
+	flex: 1;
 	left: 0;
+	right: 0;
 	position: fixed;
 	top: 0;
-	width: 100vw;
 	z-index: @above-all-content;
 
 	.site-nav {
@@ -44,28 +47,24 @@
 		}
 
 		.link {
-			> *:not(:last-child) {
-				margin-right: 0.8em;
-			}
+			padding: 1.8em;
+
+			//.font-weight-extra-light();
+
+			//> *:not(:last-child) {
+			//	margin-right: 0.8em;
+			//}
 
 			&:hover,
 			&:active {
-				background: @color-light-hover;
+				background: @color-nav-background-active;
 			}
 
 			&.active {
-				background: @color-dark-hover;
-				color: @color-light-normal;
-			}
 
-			&:focus {
-				text-shadow: 0 0 @color-light-normal;
-			}
-
-			&.augur {
-				font-family: CoreMellow;
-				font-size: 2em;
-				font-weight: 700;
+				.font-weight-light();
+				background: @color-nav-background-active;
+				color: @color-text-light;
 			}
 
 			&.transactions {
@@ -75,22 +74,9 @@
 					}
 				}
 
-				strong {
-					margin-left: 0 !important;
-					margin-right: 1.5vw !important;
-
-					&:last-child {
-						margin-right: 0 !important;
-					}
-				}
-
 				.link-text {
 					white-space: nowrap;
 				}
-			}
-
-			strong {
-				font-weight: 900;
 			}
 		}
 	}

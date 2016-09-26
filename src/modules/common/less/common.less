@@ -5,19 +5,10 @@
 //		Tags
 html,
 body {
+
+	.font-defaults(); // NOTE -- font-size intentionally excluded from mixin so user preferences are maintained.
 	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
 	color: @color-text-dark;
-	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-	font-size: 16px;
-	font-weight: @font-weight-normal;
-
-	.light-weight {
-		font-weight: @font-weight-light;
-	}
-
-	.semi-bold-weight {
-		font-weight: @font-weight-semi-bold;
-	}
 }
 
 a {
@@ -74,16 +65,6 @@ button {
 }
 
 // 		Classes
-.augur-brand {
-	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-	font-weight: @font-weight-light;
-}
-
-.fa {
-	font-family: 'Font Awesome';
-	font-weight: @font-weight-normal;
-}
-
 .clickable {
 	cursor: pointer;
 }
