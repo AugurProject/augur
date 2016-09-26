@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, BALANCES, REGISTER, LOGIN, IMPORT } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -30,20 +30,9 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
-		// Removed balances link for now, proper value is:
-		// selectBalancesLink(store.dispatch)
-		balancesLink: { href: '/', onClick: () => {} },
 		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
 }
-
-export const selectBalancesLink = memoizerific(1)((dispatch) => {
-	const obj = {
-		href: makeLocation({ page: BALANCES }).url,
-		onClick: (href) => dispatch(updateURL(href))
-	};
-	return obj;
-});
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {

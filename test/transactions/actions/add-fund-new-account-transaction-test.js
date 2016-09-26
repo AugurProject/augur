@@ -40,7 +40,7 @@ describe(`modules/transactions/actions/add-fund-new-account-transaction.js`, () 
 
 		const expectedOutput = [
 			{
-				type: 'Fund New Account',
+				type: 'fund_account',
 				address: 'testAddress123',
 				action:  store.getActions()[0].action
 			},
