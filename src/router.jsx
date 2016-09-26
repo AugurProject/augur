@@ -24,7 +24,6 @@ import shouldComponentUpdatePure from './utils/should-component-update-pure';
 export default class Router extends Component {
 	constructor(props){
 		super(props);
-		this.state = props;
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 	}
