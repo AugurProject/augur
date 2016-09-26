@@ -118,11 +118,10 @@ const Transaction = (p) => {
 		);
 		break;
 	case CREATE_MARKET:
+		nodes.action = 'Create market';
 		nodes.description = (
 			<span className="description">
-				<span>Make</span>
-				<strong>{p.data.type}</strong>
-				<span>market</span>
+				<span className="action">{nodes.action}</span>
 				<br />
 				{marketDescription()}
 				<br />
