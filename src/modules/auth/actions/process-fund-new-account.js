@@ -24,13 +24,13 @@ export function processFundNewAccount(transactionID, address) {
 					gasFees: formatRealEther(data.gasFees)
 				}));
 				dispatch(updateAssets());
-				augur.Sessions.register({
+				augur.Register.register({
 					onSent: (r) => {
 						dispatch(updateExistingTransaction(transactionID, {
 							message: `Received free Ether and Reputation.<br />
 								Saving registration timestamp...`
 						}));
-						console.log('augur.Sessions.register sent:', r);
+						console.log('augur.Register.register sent:', r);
 					},
 					onSuccess: (r) => {
 						dispatch(updateExistingTransaction(transactionID, {
@@ -41,9 +41,9 @@ export function processFundNewAccount(transactionID, address) {
 							timestamp: r.timestamp,
 							gasFees: formatRealEther(r.gasFees)
 						}));
-						console.log('augur.Sessions.register success:', r);
+						console.log('augur.Register.register success:', r);
 					},
-					onFailed: (e) => console.error('augur.Sessions.register failed:', e)
+					onFailed: (e) => console.error('augur.Register.register failed:', e)
 				});
 			},
 			(failedTransaction) => {
