@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, BALANCES, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -11,7 +11,6 @@ import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
 import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
-import BalancesPage from './modules/balances/components/balances-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
 export default function (appElement, selectors) {
@@ -33,7 +32,6 @@ export default function (appElement, selectors) {
 		isTransactionsWorking: p.isTransactionsWorking,
 		marketsLink: p.links && p.links.marketsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
-		balancesLink: p.links && p.links.balancesLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
 		accountLink: p.links && p.links.accountLink || undefined,
 		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined,
@@ -80,14 +78,6 @@ export default function (appElement, selectors) {
 				siteHeader={p.siteHeader}
 				transactions={p.transactions}
 				transactionsTotals={p.transactionsTotals}
-			/>
-		);
-		break;
-
-	case BALANCES:
-		node = (
-			<BalancesPage
-				siteHeader={p.siteHeader}
 			/>
 		);
 		break;

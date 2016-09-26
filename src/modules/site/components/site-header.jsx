@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, TRANSACTIONS, BALANCES, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -30,11 +30,13 @@ const SiteHeader = (p) => (
 				</Link>
 			}
 
-			{(!!p.loginAccount && !!p.loginAccount.id) &&
-				<Link
-					className={classnames('site-nav-link', BALANCES, { active: p.activePage === BALANCES })}
-					{...p.balancesLink}
-				>
+			{!p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+					Sign Up / Login
+				</Link>
+			}
+			{p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
 					<ValueDenomination
 						{...p.loginAccount.rep || {}}
 						formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
@@ -45,17 +47,6 @@ const SiteHeader = (p) => (
 						formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
 						formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
 					/>
-				</Link>
-			}
-
-			{!p.loginAccount.id &&
-				<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
-					Sign Up / Login
-				</Link>
-			}
-			{p.loginAccount.id &&
-				<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
-					{p.accountLinkText}
 				</Link>
 			}
 		</nav>

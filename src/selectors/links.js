@@ -1,11 +1,10 @@
-import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, BALANCES, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from '../modules/site/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from '../modules/site/constants/pages';
 import { LOGIN } from '../modules/auth/constants/auth-types';
 
 export default {
 	authLink: { href: '?page=register', onClick: (url) => require('../selectors').update({ activePage: LOGIN, url }) },
 	marketsLink: { href: '/', onClick: (url) => require('../selectors').update({ activePage: MARKETS, url }) },
 	transactionsLink: { href: '?page=transactions', onClick: (url) => require('../selectors').update({ activePage: TRANSACTIONS, url }) },
-	balancesLink: { href: '?page=balances', onClick: (url) => require('../selectors').update({ activePage: BALANCES, url }) },
 	marketLink: { href: '?page=m', onClick: (url) => require('../selectors').update({ activePage: M, url }) },
 	previousLink: { href: '/', onClick: (url) => require('../selectors').update({ activePage: MARKETS, url }) },
 	createMarketLink: { href: '?page=create', onClick: (url) => require('../selectors').update({ activePage: MAKE, url }) },

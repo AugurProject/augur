@@ -19,10 +19,6 @@ export default function(links) {
 			assertLink(links.transactionsLink, 'transactionsLink');
 		});
 
-		it('balancesLink', () => {
-			assertLink(links.balancesLink, 'balancesLink');
-		});
-
 		it('marketLink', () => {
 			assertLink(links.marketLink, 'marketLink');
 		});
