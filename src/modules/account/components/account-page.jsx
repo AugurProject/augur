@@ -6,8 +6,7 @@ import Input from '../../common/components/input';
 export default class AccountPage extends Component {
 	static propTypes = {
 		loginMessageLink: PropTypes.object.isRequired,
-		account: PropTypes.object,
-		siteHeader: PropTypes.object
+		account: PropTypes.object
 	};
 
 	constructor(props) {
@@ -51,12 +50,13 @@ export default class AccountPage extends Component {
 
 		return (
 			<main className="page account">
-				<header className="page-header">
-					<span className="big-line">My Account</span>
-					<Link className="button sign-out" {...p.siteHeader.authLink}>
-						Sign Out
-					</Link>
-				</header>
+
+				{/*<header className="page-header">*/}
+					{/*<span className="big-line">My Account</span>*/}
+					{/*<Link className="button sign-out" {...p.siteHeader.authLink}>*/}
+						{/*Sign Out*/}
+					{/*</Link>*/}
+				{/*</header>*/}
 
 				<section className="page-content">
 					<div className="l-container">

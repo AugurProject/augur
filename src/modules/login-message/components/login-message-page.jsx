@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import React, { PropTypes } from 'react';
 import Link from '../../link/components/link';
 
@@ -56,14 +52,14 @@ const LoginMessagePage = (p) => (
 				2/
 				3/
 				<br />
-				<Link className="lets-do-this-button" {...p.siteHeader.marketsLink} >Let's do this!</Link>
+				{/*<Link className="lets-do-this-button" {...p.siteHeader.marketsLink} >Let's do this!</Link>*/}
 			</div>
 		</div>
 	</main>
 );
 
 LoginMessagePage.propTypes = {
-	siteHeader: PropTypes.object.isRequired
+	marketsLink: PropTypes.object // TODO
 };
 
 export default LoginMessagePage;

@@ -22,7 +22,6 @@ const TransactionsPage = (p) => (
 
 TransactionsPage.propTypes = {
 	className: React.PropTypes.string,
-	siteHeader: React.PropTypes.object,
 	transactions: React.PropTypes.array,
 	transactionsTotals: React.PropTypes.object
 };

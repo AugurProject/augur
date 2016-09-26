@@ -12,7 +12,6 @@ import MarketSummary from './market-summary';
 export default class MarketPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
-		siteHeader: PropTypes.object,
 		market: PropTypes.object,
 		selectedOutcome: PropTypes.object,
 		priceTimeSeries: PropTypes.array,

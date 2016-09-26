@@ -21,7 +21,6 @@ const AuthPage = (p) => (
 
 AuthPage.propTypes = {
 	className: PropTypes.string,
-	siteHeader: PropTypes.object,
 	authForm: PropTypes.object
 };
 

@@ -24,7 +24,6 @@ const CreateMarketPage = (p) => (
 
 CreateMarketPage.propTypes = {
 	className: PropTypes.string,
-	siteHeader: PropTypes.object,
 	createMarketForm: PropTypes.object
 };
 

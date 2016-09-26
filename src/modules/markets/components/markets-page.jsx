@@ -1,14 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-import SiteHeader from '../../site/components/site-header';
-import SiteFooter from '../../site/components/site-footer';
 import SearchSort from '../../../modules/common/components/search-sort';
 import Markets from '../../markets/components/markets';
 
 export default class MarketsPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
-		siteHeader: PropTypes.object,
 		createMarketLink: PropTypes.object,
 		loginAccount: PropTypes.object,
 		markets: PropTypes.array,
@@ -33,8 +30,6 @@ export default class MarketsPage extends Component {
 
 		return (
 			<div className="page markets">
-				{/*<SiteHeader {...p.siteHeader} />*/}
-
 				<div className="page-content">
 					<SearchSort
 						keywords={p.keywords}
@@ -45,8 +40,6 @@ export default class MarketsPage extends Component {
 					/>
 					<Markets className="page-content markets-content" {...p} />
 				</div>
-
-				{/*<SiteFooter />*/}
 			</div>
 		);
 	}
