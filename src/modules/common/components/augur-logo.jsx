@@ -1,5 +1,7 @@
 import React from 'react';
 
+// NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Logo
+// To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const AugurLogo = () => (
 	<svg
 		className="augur-logo"
