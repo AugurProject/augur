@@ -23,7 +23,6 @@ const SiteHeader = (p) => (
 			{(!!p.loginAccount && !!p.loginAccount.id) &&
 				<Link
 					className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
-					title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
 					{...p.transactionsLink}
 				>
 					{p.transactionsTotals.title}
@@ -36,7 +35,10 @@ const SiteHeader = (p) => (
 				</Link>
 			}
 			{p.loginAccount.id &&
-				<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
+				<Link
+					className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}
+					title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
+				>
 					<ValueDenomination
 						{...p.loginAccount.rep || {}}
 						formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
@@ -61,7 +63,6 @@ SiteHeader.propTypes = {
 	marketsLink: React.PropTypes.object,
 	myPositionsLink: React.PropTypes.object,
 	transactionsLink: React.PropTypes.object,
-	balancesLink: React.PropTypes.object,
 	authLink: React.PropTypes.object,
 	portfolioTotals: React.PropTypes.object
 };
