@@ -27,11 +27,10 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
-			dispatch(loadBidsAsks(marketID));
-			return dispatch(updateExistingTransaction(transactionID, {
+			dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
 				timestamp: res.timestamp,
-				status: SUCCESS,
+				status: 'updating order book',
 				message: `bid ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
 				freeze: {
 					verb: 'froze',
@@ -39,6 +38,9 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 					tradingFees: formatEther(tradingFeesEth)
 				},
 				gasFees: formatRealEther(res.gasFees)
+			}));
+			dispatch(loadBidsAsks(marketID, () => {
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			}));
 		});
 	};

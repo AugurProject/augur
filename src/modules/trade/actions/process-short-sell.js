@@ -48,25 +48,18 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						message: err.message
 					}));
 				}
-
-				// update user's position
-				dispatch(loadAccountTrades(marketID));
-
 				filledEth = filledEth.plus(res.filledEth);
-
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
 				const totalEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
 				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
+					status: 'updating position',
 					message: `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}`,
 					totalCost: formatEther(totalEthWithFee),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-
 				if (res.remainingShares > 0) {
 					const transactionData = getState().transactionsData[transactionID];
-
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
@@ -79,6 +72,11 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						transactionData.feePercent.value,
 						gasFeesRealEth));
 				}
+
+				// update user's position
+				dispatch(loadAccountTrades(marketID, false, () => {
+					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				}));
 			}
 		);
 	};
