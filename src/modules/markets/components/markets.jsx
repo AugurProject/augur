@@ -1,6 +1,5 @@
 import React from 'react';
 import MarketsHeader from '../../markets/components/markets-header';
-import Filters from '../../filters/components/filters';
 import MarketItem from '../../market/components/market-item';
 import Link from '../../link/components/link';
 
@@ -12,8 +11,6 @@ const Markets = (p) => (
 			</Link>
 			<MarketsHeader {...p.marketsHeader} />
 		</div>
-
-		<Filters filters={p.filters} />
 
 		<div className="markets-list">
 			{(p.markets || []).map(market =>
@@ -46,7 +43,6 @@ Markets.propTypes = {
 	className: React.PropTypes.string,
 	marketsHeader: React.PropTypes.object,
 	markets: React.PropTypes.array,
-	filters: React.PropTypes.array,
 	pagination: React.PropTypes.object,
 	sortOptions: React.PropTypes.array
 };

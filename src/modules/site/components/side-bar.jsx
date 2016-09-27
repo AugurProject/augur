@@ -4,16 +4,19 @@ import Checkbox from '../../common/components/checkbox';
 const SideBar = (p) => {
 	return (
 		<div className="side-bar">
-			<aside className="filters">
-				<h3>All Categories</h3>
-				{p.filters.map(filter =>
-					<div key={filter.title} className="filters-group">
-						{filter.options.map(option =>
-							<Checkbox key={option.value} className="filter" text={option.name} text2={`(${option.numMatched})`} isChecked={option.isSelected} onClick={option.onClick} />
-						)}
-					</div>
+			<h3>All Categories</h3>
+			<div className="filters">
+				{p.filters.length && p.filters.map(filter =>
+					<Checkbox
+						key={filter.value}
+						className="filter"
+						text={filter.name}
+						text2={`(${filter.numMatched})`}
+						isChecked={filter.isSelected}
+						onClick={filter.onClick}
+					/>
 				)}
-			</aside>
+			</div>
 		</div>
 	)
 };
