@@ -11,6 +11,7 @@ describe('modules/market/selectors/market-data-age.js', () => {
 
 	it('should meet AURC assertions', () => {
 		const store = mocks.mockStore({
+			requests: {},
 			selectedMarketID: 'testmarketID',
 			marketDataTimestamps: {
 				testmarketID: 20
@@ -29,21 +30,20 @@ describe('modules/market/selectors/market-data-age.js', () => {
 		const getMarketDataAge = require('../../../src/modules/market/selectors/market-data-age.js').getMarketDataAge;
 		const defaultValue = {
 			lastUpdatedBefore: 'n/a',
-			isUpdateButtonDisabled: true
+			isMarketDataLoading: true
 		};
 
-		assert.deepEqual(getMarketDataAge(null, {}, 10000), defaultValue);
-		assert.deepEqual(getMarketDataAge('marketID', {}, 10000), defaultValue);
-		assert.deepEqual(getMarketDataAge('marketID', null, 10000), defaultValue);
-		assert.deepEqual(getMarketDataAge('marketID', {'marketID': 1}, null), defaultValue);
+		assert.deepEqual(getMarketDataAge(null, 9000, true, 10000), defaultValue);
+		assert.deepEqual(getMarketDataAge('marketID', null, true, 10000), defaultValue);
+		assert.deepEqual(getMarketDataAge('marketID', {'marketID': 1}, true, null), defaultValue);
 	});
 
 	it('should return correct object', () => {
 		const getMarketDataAge = require('../../../src/modules/market/selectors/market-data-age.js').getMarketDataAge;
 		const expected = {
 			lastUpdatedBefore: 'less than a second ago',
-			isUpdateButtonDisabled: true
+			isMarketDataLoading: true
 		};
-		assert.deepEqual(getMarketDataAge('marketID', {'marketID': 9001}, 10000), expected);
+		assert.deepEqual(getMarketDataAge('marketID', {'marketID': 9001}, true, 10000), expected);
 	});
 });

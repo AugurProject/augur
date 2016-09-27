@@ -4,29 +4,28 @@
  */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
-import selectMarketDataUpdater from '../../markets/selectors/market-data-updater';
 import formatTimePassed from '../../../utils/format-time-passed';
+import { MARKET_DATA_LOADING } from '../../market/actions/load-full-market';
 
 export default function () {
-	const { selectedMarketID, marketDataTimestamps, now } = store.getState();
-	return getMarketDataAge(selectedMarketID, marketDataTimestamps, now);
+	const { selectedMarketID, marketDataTimestamps, requests, now } = store.getState();
+	const marketDataRequest = requests[MARKET_DATA_LOADING] != null ? requests[MARKET_DATA_LOADING][selectedMarketID] : null;
+	return getMarketDataAge(selectedMarketID, marketDataTimestamps[selectedMarketID], marketDataRequest, now);
 }
 
-export const getMarketDataAge = memoizerific(10)((marketID, marketDataTimestamps, now) => {
+export const getMarketDataAge = memoizerific(10)((marketID, marketDataTimestamp, marketDataRequest, now) => {
 	let lastUpdatedBefore;
-	let isUpdateButtonDisabled;
-	if (marketID == null || marketDataTimestamps == null || marketDataTimestamps[marketID] == null || now == null) {
+	const isMarketDataLoading = marketDataRequest === true;
+
+	if (marketID == null || marketDataTimestamp == null || now == null) {
 		lastUpdatedBefore = 'n/a';
-		isUpdateButtonDisabled = true;
 	} else {
-		const marketDataAgeMillis = Math.ceil(now - marketDataTimestamps[marketID]);
-		const updateIntervalSecs = selectMarketDataUpdater().updateIntervalSecs;
+		const marketDataAgeMillis = Math.ceil(now - marketDataTimestamp);
 		lastUpdatedBefore = formatTimePassed(marketDataAgeMillis);
-		isUpdateButtonDisabled = (marketDataAgeMillis / 1000) < updateIntervalSecs;
 	}
 
 	return {
 		lastUpdatedBefore,
-		isUpdateButtonDisabled
+		isMarketDataLoading
 	};
 });
