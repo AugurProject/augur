@@ -49,11 +49,10 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						message: err.message
 					}));
 				}
-				dispatch(loadAccountTrades(marketID)); // update user's position
 				const filledEth = abi.bignum(totalEthWithFee).minus(res.remainingEth);
 				const pricePerShare = filledEth.dividedBy(res.filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
+					status: 'updating position',
 					message: `bought ${formatShares(res.filledShares).full} for ${formatEther(pricePerShare).full} each`,
 					totalCost: formatEther(filledEth),
 					tradingFees: formatEther(res.tradingFees),
@@ -77,6 +76,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 							gasFeesRealEth));
 					}
 				}
+				dispatch(loadAccountTrades(marketID, false, () => {
+					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				}));
 			}
 		);
 	};

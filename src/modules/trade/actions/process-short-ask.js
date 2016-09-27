@@ -32,12 +32,10 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
-			dispatch(loadBidsAsks(marketID));
-			dispatch(sellCompleteSets(marketID));
-			return dispatch(updateExistingTransaction(transactionID, {
+			dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
 				timestamp: res.timestamp,
-				status: SUCCESS,
+				status: 'updating order book',
 				message: `short ask ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
 				freeze: {
 					verb: 'froze',
@@ -45,6 +43,12 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 					tradingFees: formatEther(tradingFeesEth)
 				},
 				gasFees: formatRealEther(res.gasFees)
+			}));
+			dispatch(loadBidsAsks(marketID, () => {
+				dispatch(updateExistingTransaction(transactionID, { status: 'updating position' }));
+				dispatch(loadAccountTrades(marketID, () => {
+					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				}));
 			}));
 		});
 	};

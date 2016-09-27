@@ -29,11 +29,10 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
-			dispatch(loadBidsAsks(marketID));
 			dispatch(updateExistingTransaction(transactionID, {
 				hash: res.hash,
 				timestamp: res.timestamp,
-				status: SUCCESS,
+				status: 'updating order book',
 				message: `ask ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
 				freeze: {
 					verb: 'froze',
@@ -41,6 +40,9 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 				},
 				totalReturn: formatEtherEstimate(totalEthWithoutFee),
 				gasFees: formatRealEther(res.gasFees)
+			}));
+			dispatch(loadBidsAsks(marketID, () => {
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			}));
 		});
 	};

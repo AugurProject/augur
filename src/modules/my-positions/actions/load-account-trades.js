@@ -52,9 +52,13 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 					dispatch(updateNetEffectiveTradesData(netEffectiveTrades, marketID));
 				}
 				loadAccountTradesLock[marketID] = false;
-				if (!skipSellCompleteSets) dispatch(sellCompleteSets(marketID));
+				if (!skipSellCompleteSets) {
+					return dispatch(sellCompleteSets(marketID, cb));
+				}
 				if (cb) cb();
 			});
+		} else {
+			if (cb) cb();
 		}
 	};
 }

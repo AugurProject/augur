@@ -23,6 +23,8 @@ export function loadBidsAsks(marketID, cb) {
 					getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 100), scalarMinMax, totalTrades, cb, dispatch);
 				}
 			});
+		} else {
+			if (cb) cb(null);
 		}
 	};
 }
@@ -37,10 +39,8 @@ function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, to
 			if (!offset) {
 				dispatch(clearMarketOrderBook(marketID));
 			}
-
 			dispatch(updateMarketOrderBook(marketID, marketOrderBook));
 			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
-
 			if (offset + numTradesToLoad < totalTrades) {
 				return getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
 			}

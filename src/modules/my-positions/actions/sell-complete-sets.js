@@ -8,15 +8,16 @@ import selectLoginAccountPositions from '../../../modules/my-positions/selectors
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
 
-export function sellCompleteSets(marketID) {
+export function sellCompleteSets(marketID, cb) {
 	return (dispatch, getState) => {
 		if (getState().loginAccount.id) {
-			if (marketID) return dispatch(sellCompleteSetsMarket(marketID));
+			if (marketID) return dispatch(sellCompleteSetsMarket(marketID, cb));
 			async.eachSeries(selectLoginAccountPositions().markets, (market, nextMarket) => {
 				if (market.outcomes.length !== market.numOutcomes) return nextMarket();
 				dispatch(sellCompleteSetsMarket(market.id, nextMarket));
 			}, (err) => {
 				if (err) console.error('sellCompleteSets error:', err);
+				if (cb) cb();
 			});
 		}
 	};
@@ -56,9 +57,12 @@ function sellCompleteSetsMarket(marketID, callback) {
 					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback));
 				} else {
 					dispatch(updateSellCompleteSetsLock(marketID, false));
+					console.log('done, callback', callback && callback.toString());
 					if (callback) callback(null);
 				}
 			});
+		} else {
+			if (callback) callback(null);
 		}
 	};
 }
