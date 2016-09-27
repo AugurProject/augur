@@ -1,19 +1,17 @@
 import React from 'react';
-import MarketsHeader from '../../markets/components/markets-header';
+import MarketsHeaders from '../../markets/components/markets-headers';
 import MarketItem from '../../market/components/market-item';
-import Link from '../../link/components/link';
 
 const MarketsView = (p) => {
 	console.log('p -- ', p);
 
 	return (
-		<section >
-			<div className="view-header">
-				<Link className="button make" {...p.createMarketLink} disabled={!p.loginAccount.id}>
-					Make a Market
-				</Link>
-				<MarketsHeader {...p.marketsHeader} />
-			</div>
+		<div>
+			<MarketsHeaders
+				createMarketLink={p.createMarketLink}
+				loginAccount={p.loginAccount}
+				marketsHeader={p.marketsHeader}
+			/>
 
 			<div className="markets-list">
 				{(p.markets || []).map(market =>
@@ -39,12 +37,11 @@ const MarketsView = (p) => {
 					</div>
 				}
 			</div>
-		</section>
+		</div>
 	);
 };
 
 MarketsView.propTypes = {
-	className: React.PropTypes.string,
 	marketsHeader: React.PropTypes.object,
 	markets: React.PropTypes.array,
 	pagination: React.PropTypes.object,

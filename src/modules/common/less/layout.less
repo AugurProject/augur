@@ -13,18 +13,24 @@
 	.contained();
 
 	display: flex;
+	flex: 1;
+	justify-content: center;
 
 	.side-bar {
 		flex: 1;
 	}
 
 	.view-content-container {
-		display: flex;
 		flex: 4;
-	}
-}
+		max-width: @max-content-width;
+		justify-content: center;
+		margin: 2rem 8rem 0;
 
-.l-space-between {
-	display: flex;
-	justify-content: space-between;
+		.view-header {
+			display: flex;
+			flex: 1;
+			align-items: center;
+			padding: 1.5em 0;
+		}
+	}
 }

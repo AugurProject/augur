@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 const Basics = (p) => (
 	<section className="basics">
-		<div className="l-space-between">
+		<div>
 			{!!p.tags && !!p.tags.length &&
 				<ul className="tags">
 					{p.tags.map((tag, i) => (

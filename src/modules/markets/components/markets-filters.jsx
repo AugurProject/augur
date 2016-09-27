@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
-export default class MarketsHeader extends Component {
+export default class MarketsFilters extends Component {
 	static propTypes = {
 		selectedMarketsHeader: PropTypes.string,
 		numMarkets: PropTypes.number,
