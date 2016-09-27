@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 //		Global
 import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
+import SideBar from './modules/site/components/side-bar';
 //		Views
 import MarketsPage from './modules/markets/components/markets-page';
 import MarketPage from './modules/market/components/market-page';
@@ -25,7 +26,30 @@ export default class Router extends Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			pageMarginTop: 0
+		};
+
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
+		this._handleResize = this._handleResize.bind(this);
+	}
+
+	componentDidMount() {
+		this.setState({
+			pageMarginTop: this.siteHeader.siteHeader.offsetHeight
+		});
+
+		window.addEventListener('resize', this._handleResize);
+	}
+
+	_handleResize(){
+		if(this.siteHeader.siteHeader.offsetHeight != this.state.pageMarginTop) {
+			window.requestAnimationFrame(() => {
+				this.setState({
+					pageMarginTop: this.siteHeader.siteHeader.offsetHeight
+				});
+			});
+		}
 	}
 
 	currentRoute() {
@@ -139,12 +163,20 @@ export default class Router extends Component {
 			portfolioTotals: p.portfolio && p.portfolio.totals || undefined
 		};
 
+		const pageContainerStyles = {
+			marginTop: this.state.pageMarginTop
+		};
+
 		return (
 			<div>
 				{!!p &&
 					<div>
-						<SiteHeader {...siteHeader} />
-						<div className="page-container">
+						<SiteHeader {...siteHeader} ref={ref => this.siteHeader = ref} />
+						<div
+							className="page-container"
+							style={pageContainerStyles}
+						>
+							<SideBar />
 							{this.currentRoute()}
 						</div>
 						<SiteFooter />

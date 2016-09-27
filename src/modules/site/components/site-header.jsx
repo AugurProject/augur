@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
@@ -6,42 +6,44 @@ import ValueDenomination from '../../common/components/value-denomination';
 import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
 
-const SiteHeader = (p) => {
-	console.log('p -- ', p, !!p.loginAccount, !!p.loginAccount.id);
+export default class SiteHeader extends Component {
+	constructor(props){
+		super(props);
+	}
 
-	return (
-		<header className="site-header">
-			<nav className="site-nav">
-				<div className="nav-group left-navs">
-					<Link className={classnames('site-nav-link', { active: p.activePage === MARKETS })} {...p.marketsLink}>Markets</Link>
-				</div>
-				<div className="nav-group branding">
-					<Link className="augur-brand" {...p.marketsLink}>
-						<AugurLogo />
-					</Link>
-				</div>
-				<div className="nav-group right-navs">
-					{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
-						<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
+	render() {
+		const p = this.props;
+
+		return (
+			<header className="site-header" ref={ref => this.siteHeader = ref}>
+				<nav className="site-nav">
+					<div className="nav-group left-navs">
+						<Link
+							className={classnames('site-nav-link', {active: p.activePage === MARKETS})} {...p.marketsLink}>Markets</Link>
+					</div>
+					<div className="nav-group branding">
+						<Link className="augur-brand" {...p.marketsLink}>
+							<AugurLogo />
+						</Link>
+					</div>
+					<div className="nav-group right-navs">
+						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
+						<Link
+							className={classnames('site-nav-link', MY_POSITIONS, {active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1})} {...p.myPositionsLink}>
 							Portfolio
 						</Link>
-					}
-					{(!!p.loginAccount && !!p.loginAccount.id) &&
+						}
+						{(!!p.loginAccount && !!p.loginAccount.id) &&
 						<Link
-							className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+							className={classnames('site-nav-link', TRANSACTIONS, {active: p.activePage === TRANSACTIONS}, {working: p.isTransactionsWorking})}
 							{...p.transactionsLink}
 						>
 							{p.transactionsTotals.title}
 						</Link>
-					}
-					{(!!p.loginAccount && !!p.loginAccount.id) &&
-						<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
-							Sign Up / Login
-						</Link>
-					}
-					{(!!p.loginAccount && !!p.loginAccount.id) &&
+						}
+						{(!!p.loginAccount && !!p.loginAccount.id) &&
 						<Link
-							className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}
+							className={classnames('site-nav-link', ACCOUNT, {active: p.activePage === ACCOUNT})} {...p.accountLink}
 							title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
 						>
 							<ValueDenomination
@@ -55,11 +57,18 @@ const SiteHeader = (p) => {
 								formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
 							/>
 						</Link>
-					}
-				</div>
-			</nav>
-		</header>
-	);
+						}
+						{(!!p.loginAccount && !!p.loginAccount.id) &&
+						<Link
+							className={classnames('site-nav-link', AUTH_TYPES[p.activePage], {active: !!AUTH_TYPES[p.activePage]})} {...p.authLink}>
+							Sign Up / Login
+						</Link>
+						}
+					</div>
+				</nav>
+			</header>
+		);
+	}
 };
 
 SiteHeader.propTypes = {
@@ -73,5 +82,3 @@ SiteHeader.propTypes = {
 	authLink: React.PropTypes.object,
 	portfolioTotals: React.PropTypes.object
 };
-
-export default SiteHeader;
