@@ -129,9 +129,7 @@ export default class Router extends Component {
 					marketsHeader={p.marketsHeader}
 					favoriteMarkets={p.favoriteMarkets}
 					pagination={p.pagination}
-					selectedSort={p.searchSort.selectedSort}
-					sortOptions={p.searchSort.sortOptions}
-					onChangeSort={p.searchSort.onChangeSort}
+					marketsFilterSort={p.marketsFilterSort}
 					loginAccount={p.loginAccount}
 				/>
 			);

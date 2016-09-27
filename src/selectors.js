@@ -75,13 +75,6 @@ Object.defineProperty(selectors, 'update', {
 	enumerable: false
 });
 
-selectors.searchSort = {
-	selectedSort: { prop: 'creationDate', isDesc: true },
-	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Highest Maker Fee', value: 'makerFeePercent' }]
-};
-
-selectors.marketsHeader = {};
-
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
 		module.exports.update({
@@ -94,21 +87,66 @@ selectors.selectedOutcome = {
 	selectedOutcomeID: null
 };
 
-selectors.searchSort.onChangeSort = (prop, isDesc) => {
-	let isDescending = isDesc;
-	if (isDesc !== false && isDesc !== true) {
-		isDescending = selectors.searchSort.selectedSort.isDesc;
+selectors.marketsFilterSort = {
+	selectedFilterSort: { // Defaults
+		sort: 'volume',
+		type: 'open',
+		isDesc: true
+	},
+	sorts: [
+		{
+			label: 'Volume',
+			value: 'volume'
+		},
+		{
+			label: 'Newest',
+			value: 'newest'
+		},
+		{
+			label: 'Expiry',
+			value: 'expiry'
+		},
+		{
+			label: 'Taker Fee',
+			value: 'takerFee'
+		},
+		{
+			label: 'Maker Fee',
+			value: 'makerFee'
+		}
+	],
+	types: [
+		{
+			label: 'Open',
+			value: 'open'
+		},
+		{
+			label: 'Closed',
+			value: 'closed'
+		},
+		{
+			label: 'Reporting',
+			value: 'reporting'
+		}
+	],
+	order: {
+		isDesc: true
 	}
+};
+
+selectors.marketsFilterSort.onChange = (sort, type, order) => {
 	module.exports.update({
-		searchSort: {
-			...selectors.searchSort,
-			selectedSort: {
-				prop: prop || selectors.selectedSort.prop,
-				isDesc: isDescending
+		marketsFilterSort: {
+			...selectors.marketsFilterSort,
+			selectedFilterSort: {
+				sorts: sort || selectors.marketsFilterSort.selectedFilterSort.sort,
+				types: type || selectors.marketsFilterSort.selectedFilterSort.type,
+				order: order || selectors.marketsFilterSort.selectedFilterSort.order
 			}
 		}
 	});
 };
+
 selectors.pagination = {
 	numPerPage: 10,
 	numPages: 10,
