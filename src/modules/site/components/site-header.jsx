@@ -14,8 +14,9 @@ export default class SiteHeader extends Component {
 			<header className="site-header" ref={ref => { this.siteHeader = ref; }} >
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
-						<Link
-							className={classnames('site-nav-link', {active: p.activePage === MARKETS})} {...p.marketsLink}>Markets</Link>
+						<Link className={classnames('site-nav-link', { active: p.activePage === MARKETS })} {...p.marketsLink}>
+							Markets
+						</Link>
 					</div>
 					<div className="nav-group branding">
 						<Link className="augur-brand" {...p.marketsLink}>
@@ -38,7 +39,7 @@ export default class SiteHeader extends Component {
 							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
-							<Link className={classnames('site-nav-link', ACCOUNT, {active: p.activePage === ACCOUNT})} {...p.accountLink}>
+							<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
 								<ValueDenomination
 									{...p.loginAccount.rep || {}}
 									formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
@@ -61,7 +62,7 @@ export default class SiteHeader extends Component {
 			</header>
 		);
 	}
-};
+}
 
 SiteHeader.propTypes = {
 	activePage: React.PropTypes.string,
