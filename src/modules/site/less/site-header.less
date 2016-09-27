@@ -1,13 +1,14 @@
 .site-header {
 
 	.font-weight-extra-light();
-	color: @color-text-light-muted;
+
 	background: @color-nav-background;
+	color: @color-text-light-muted;
 	display: flex;
 	flex: 1;
 	left: 0;
-	right: 0;
 	position: fixed;
+	right: 0;
 	top: 0;
 	z-index: @above-all-content;
 
@@ -30,9 +31,10 @@
 
 			&.right-navs {
 				justify-content: flex-end;
+
 				.augur-logo {
-					width: 50px;
 					height: 100px;
+					width: 50px;
 				}
 			}
 
@@ -51,6 +53,7 @@
 
 			&.branding .link {
 				padding: 0 1em;
+
 				.augur-logo {
 					height: 1.2em;
 				}
@@ -73,7 +76,9 @@
 			}
 
 			&.active {
+
 				.font-weight-light();
+
 				background: @color-nav-background-active;
 				color: @color-text-light;
 			}
@@ -81,7 +86,9 @@
 			&.transactions {
 				&.working {
 					&:not(.active) {
+
 						.animation-flash-slow(@color-orange);
+
 						color: @color-text-light;
 					}
 				}

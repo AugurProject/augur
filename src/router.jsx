@@ -22,7 +22,7 @@ import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-t
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
 
 export default class Router extends Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -34,89 +34,89 @@ export default class Router extends Component {
 		const p = this.props;
 
 		switch (p.activePage) {
-			case REGISTER:
-			case LOGIN:
-			case IMPORT:
-			case LOGOUT:
-				node = (
-					<AuthPage authForm={p.authForm} />
-				);
-				break;
+		case REGISTER:
+		case LOGIN:
+		case IMPORT:
+		case LOGOUT:
+			node = (
+				<AuthPage authForm={p.authForm} />
+			);
+			break;
 
-			case ACCOUNT:
-				node = (
-					<AccountPage
-						loginMessageLink={p.links.loginMessageLink}
-						account={p.loginAccount}
-						onChangePass={p.loginAccount.onChangePass}
-					/>
-				);
-				break;
+		case ACCOUNT:
+			node = (
+				<AccountPage
+					loginMessageLink={p.links.loginMessageLink}
+					account={p.loginAccount}
+					onChangePass={p.loginAccount.onChangePass}
+				/>
+			);
+			break;
 
-			case MAKE:
-				node = (
-					<CreateMarketPage createMarketForm={p.createMarketForm} />
-				);
-				break;
+		case MAKE:
+			node = (
+				<CreateMarketPage createMarketForm={p.createMarketForm} />
+			);
+			break;
 
-			case TRANSACTIONS:
-				node = (
-					<TransactionsPage
-						transactions={p.transactions}
-						transactionsTotals={p.transactionsTotals}
-					/>
-				);
-				break;
+		case TRANSACTIONS:
+			node = (
+				<TransactionsPage
+					transactions={p.transactions}
+					transactionsTotals={p.transactionsTotals}
+				/>
+			);
+			break;
 
-			case M:
-				node = (
-					<MarketPage
-						marketDataAge={p.marketDataAge}
-						selectedOutcome={p.selectedOutcome}
-						orderCancellation={p.orderCancellation}
-						marketDataUpdater={p.marketDataUpdater}
-						market={p.market}
-						numPendingReports={p.marketsTotals.numPendingReports}
-						isTradeCommitLocked={p.tradeCommitLock.isLocked}
+		case M:
+			node = (
+				<MarketPage
+					marketDataAge={p.marketDataAge}
+					selectedOutcome={p.selectedOutcome}
+					orderCancellation={p.orderCancellation}
+					marketDataUpdater={p.marketDataUpdater}
+					market={p.market}
+					numPendingReports={p.marketsTotals.numPendingReports}
+					isTradeCommitLocked={p.tradeCommitLock.isLocked}
 
-					/>
-				);
-				break;
+				/>
+			);
+			break;
 
-			case MY_POSITIONS:
-			case MY_MARKETS:
-			case MY_REPORTS:
-				node = (
-					<PortfolioPage
-						{...p.portfolio}
-						activePage={p.activePage}
-					/>
-				);
-				break;
+		case MY_POSITIONS:
+		case MY_MARKETS:
+		case MY_REPORTS:
+			node = (
+				<PortfolioPage
+					{...p.portfolio}
+					activePage={p.activePage}
+				/>
+			);
+			break;
 
-			case LOGIN_MESSAGE:
-				node = (
-					<LoginMessagePage />
-				);
-				break;
-			default:
-				node = (
-					<MarketsPage
-						createMarketLink={(p.links || {}).createMarketLink}
-						keywords={p.keywords && p.keywords.value}
-						onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
-						markets={p.markets}
-						marketsHeader={p.marketsHeader}
-						favoriteMarkets={p.favoriteMarkets}
-						filters={p.filters}
-						pagination={p.pagination}
-						selectedSort={p.searchSort.selectedSort}
-						sortOptions={p.searchSort.sortOptions}
-						onChangeSort={p.searchSort.onChangeSort}
-						loginAccount={p.loginAccount}
-					/>
-				);
-				break;
+		case LOGIN_MESSAGE:
+			node = (
+				<LoginMessagePage />
+			);
+			break;
+		default:
+			node = (
+				<MarketsPage
+					createMarketLink={(p.links || {}).createMarketLink}
+					keywords={p.keywords && p.keywords.value}
+					onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
+					markets={p.markets}
+					marketsHeader={p.marketsHeader}
+					favoriteMarkets={p.favoriteMarkets}
+					filters={p.filters}
+					pagination={p.pagination}
+					selectedSort={p.searchSort.selectedSort}
+					sortOptions={p.searchSort.sortOptions}
+					onChangeSort={p.searchSort.onChangeSort}
+					loginAccount={p.loginAccount}
+				/>
+			);
+			break;
 		}
 
 		return node;
@@ -151,4 +151,4 @@ export default class Router extends Component {
 			</div>
 		);
 	}
-};
+}
