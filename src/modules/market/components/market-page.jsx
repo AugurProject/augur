@@ -27,7 +27,7 @@ export default class MarketPage extends Component {
 		}).isRequired,
 		marketDataAge: React.PropTypes.shape({
 			lastUpdatedBefore: PropTypes.string.isRequired,
-			isUpdateButtonDisabled: PropTypes.bool.isRequired
+			isMarketDataLoading: PropTypes.bool.isRequired
 		}).isRequired
 	};
 

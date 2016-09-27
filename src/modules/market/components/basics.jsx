@@ -19,8 +19,8 @@ const Basics = (p) => (
 					Last updated {p.marketDataAge.lastUpdatedBefore}
 					<button
 						className="button"
-						disabled={p.marketDataAge.isUpdateButtonDisabled}
-						title={p.marketDataAge.isUpdateButtonDisabled ? `Update rate is ${p.updateIntervalSecs} seconds` : 'Update market data'}
+						disabled={p.marketDataAge.isMarketDataLoading}
+						title={p.marketDataAge.isMarketDataLoading ? 'Updating' : 'Update market data'}
 						onClick={() => p.updateData(p.id)}
 					>
 						Update
@@ -63,12 +63,12 @@ Basics.propTypes = {
 	tags: PropTypes.array,
 	lastUpdatedBefore: PropTypes.string,
 	updateData: PropTypes.func,
-	isUpdateButtonDisabled: PropTypes.bool,
+	isMarketDataLoading: PropTypes.bool,
 	updateIntervalSecs: PropTypes.number,
 	isUpdaterVisible: PropTypes.bool,
 	marketDataAge: React.PropTypes.shape({
 		lastUpdatedBefore: PropTypes.string.isRequired,
-		isUpdateButtonDisabled: PropTypes.bool.isRequired
+		isMarketDataLoading: PropTypes.bool.isRequired
 	})
 };
 
