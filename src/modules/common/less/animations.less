@@ -28,25 +28,25 @@
 .animation-slide(@direction) {
 	.animation(@speed-normal ease-in 0 1 slide);
 
-	& when (@direction = @direction-up){
+	& when (@direction = @direction-up) {
 		.keyframes(slide, {
 		100% { transform: translateY(-100%)}
 		})
 	}
 
-	& when (@direction = @direction-right){
+	& when (@direction = @direction-right) {
 		.keyframes(slide, {
 		100% { transform: translateX(100%)}
 		})
 	}
 
-	& when (@direction = @direction-down){
+	& when (@direction = @direction-down) {
 		.keyframes(slide, {
 		100% { transform: translateY(100%)}
 		})
 	}
 
-	& when (@direction = @direction-left){
+	& when (@direction = @direction-left) {
 		.keyframes(slide, {
 		100% { transform: translateX(-100%)}
 		})

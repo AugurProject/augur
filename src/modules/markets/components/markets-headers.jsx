@@ -27,6 +27,6 @@ MarketsHeaders.propTypes = {
 	loginAccount: PropTypes.object,
 	marketsHeader: PropTypes.object,
 	marketsFilterSort: PropTypes.object
-}
+};
 
 export default MarketsHeaders;

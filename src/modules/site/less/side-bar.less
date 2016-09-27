@@ -1,5 +1,4 @@
-// SIDEBAR
-
+// NOTE -- additional styles located in common/less/layout.less
 .side-bar {
 	background-color: @color-side-bar-background;
 	color: @color-text-light-muted;
@@ -11,18 +10,16 @@
 		.font-weight-light();
 		.font-size-medium();
 
+		border-bottom: 1px solid @color-text-light-light;
 		color: @color-text-light;
-
 		margin: 2rem 2rem 0;
 		padding-bottom: 1rem;
-		border-bottom: 1px solid @color-text-light-light;
 	}
 
-	.filters{
+	.filters {
 		display: flex;
 		flex: 1;
 		flex-direction: column;
-
 		padding-top: 0.5rem;
 
 		.checkbox.filter {

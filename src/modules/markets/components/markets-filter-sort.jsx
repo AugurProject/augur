@@ -16,6 +16,6 @@ MarketsFilterSort.propTypes = {
 	sorts: PropTypes.array,
 	types: PropTypes.array,
 	order: PropTypes.object
-}
+};
 
 export default MarketsFilterSort;
