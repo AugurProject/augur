@@ -6,7 +6,7 @@ import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
 import SideBar from './modules/site/components/side-bar';
 //		Views
-import MarketsPage from './modules/markets/components/markets-page';
+import MarketsView from './modules/markets/components/markets-view';
 import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
@@ -50,10 +50,8 @@ export default class Router extends Component {
 		}
 	}
 
-	currentRoute() {
+	currentRoute(p) {
 		let node;
-
-		const p = this.props;
 
 		switch (p.activePage) {
 		case REGISTER:
@@ -93,11 +91,11 @@ export default class Router extends Component {
 		case M:
 			node = (
 				<MarketPage
+					market={p.market}
 					marketDataAge={p.marketDataAge}
 					selectedOutcome={p.selectedOutcome}
 					orderCancellation={p.orderCancellation}
 					marketDataUpdater={p.marketDataUpdater}
-					market={p.market}
 					numPendingReports={p.marketsTotals.numPendingReports}
 					isTradeCommitLocked={p.tradeCommitLock.isLocked}
 
@@ -123,14 +121,13 @@ export default class Router extends Component {
 			break;
 		default:
 			node = (
-				<MarketsPage
+				<MarketsView
 					createMarketLink={(p.links || {}).createMarketLink}
 					keywords={p.keywords && p.keywords.value}
 					onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
 					markets={p.markets}
 					marketsHeader={p.marketsHeader}
 					favoriteMarkets={p.favoriteMarkets}
-					filters={p.filters}
 					pagination={p.pagination}
 					selectedSort={p.searchSort.selectedSort}
 					sortOptions={p.searchSort.sortOptions}
@@ -146,6 +143,10 @@ export default class Router extends Component {
 
 	render() {
 		const p = this.props;
+		const currentRoute = this.currentRoute(p);
+		const pageContainerStyles = {
+			marginTop: this.state.pageMarginTop
+		};
 		const siteHeader = {
 			activePage: p.activePage,
 			loginAccount: p.loginAccount,
@@ -161,22 +162,18 @@ export default class Router extends Component {
 			portfolioTotals: p.portfolio && p.portfolio.totals || undefined
 		};
 
-		const pageContainerStyles = {
-			marginTop: this.state.pageMarginTop
-		};
-
 		return (
 			<div>
 				{!!p &&
 					<div>
 						<SiteHeader {...siteHeader} ref={ref => { this.siteHeader = ref; }} />
 						<div
-							className="page-container"
+							className="view-container"
 							style={pageContainerStyles}
 						>
 							<SideBar filters={p.filters} />
-							<div className="page-content-container">
-								{this.currentRoute()}
+							<div className="view-content-container">
+								{currentRoute}
 							</div>
 						</div>
 						<SiteFooter />
