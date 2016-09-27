@@ -31,19 +31,17 @@ export default class Router extends Component {
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
-		this._handleResize = this._handleResize.bind(this);
+		this.handleResize = this.handleResize.bind(this);
 	}
 
 	componentDidMount() {
-		this.setState({
-			pageMarginTop: this.siteHeader.siteHeader.offsetHeight
-		});
+		window.addEventListener('resize', this.handleResize);
 
-		window.addEventListener('resize', this._handleResize);
+		this.handleResize();
 	}
 
-	_handleResize(){
-		if(this.siteHeader.siteHeader.offsetHeight != this.state.pageMarginTop) {
+	handleResize() {
+		if (this.siteHeader.siteHeader.offsetHeight !== this.state.pageMarginTop) {
 			window.requestAnimationFrame(() => {
 				this.setState({
 					pageMarginTop: this.siteHeader.siteHeader.offsetHeight
@@ -171,7 +169,7 @@ export default class Router extends Component {
 			<div>
 				{!!p &&
 					<div>
-						<SiteHeader {...siteHeader} ref={ref => this.siteHeader = ref} />
+						<SiteHeader {...siteHeader} ref={ref => { this.siteHeader = ref; }} />
 						<div
 							className="page-container"
 							style={pageContainerStyles}

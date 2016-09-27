@@ -7,15 +7,11 @@ import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
 
 export default class SiteHeader extends Component {
-	constructor(props){
-		super(props);
-	}
-
 	render() {
 		const p = this.props;
 
 		return (
-			<header className="site-header" ref={ref => this.siteHeader = ref}>
+			<header className="site-header" ref={ref => { this.siteHeader = ref; }} >
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
 						<Link
@@ -28,41 +24,37 @@ export default class SiteHeader extends Component {
 					</div>
 					<div className="nav-group right-navs">
 						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
-						<Link
-							className={classnames('site-nav-link', MY_POSITIONS, {active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1})} {...p.myPositionsLink}>
-							Portfolio
-						</Link>
+							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
+								Portfolio
+							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
-						<Link
-							className={classnames('site-nav-link', TRANSACTIONS, {active: p.activePage === TRANSACTIONS}, {working: p.isTransactionsWorking})}
-							{...p.transactionsLink}
-						>
-							{p.transactionsTotals.title}
-						</Link>
+							<Link
+								className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+								title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
+								{...p.transactionsLink}
+							>
+								{p.transactionsTotals.title}
+							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
-						<Link
-							className={classnames('site-nav-link', ACCOUNT, {active: p.activePage === ACCOUNT})} {...p.accountLink}
-							title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
-						>
-							<ValueDenomination
-								{...p.loginAccount.rep || {}}
-								formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
-								formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
-							/>
-							<ValueDenomination
-								{...p.loginAccount.ether || {}}
-								formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
-								formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
-							/>
-						</Link>
+							<Link className={classnames('site-nav-link', ACCOUNT, {active: p.activePage === ACCOUNT})} {...p.accountLink}>
+								<ValueDenomination
+									{...p.loginAccount.rep || {}}
+									formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
+									formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
+								/>
+								<ValueDenomination
+									{...p.loginAccount.ether || {}}
+									formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
+									formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
+								/>
+							</Link>
 						}
-						{(!!p.loginAccount && !!p.loginAccount.id) &&
-						<Link
-							className={classnames('site-nav-link', AUTH_TYPES[p.activePage], {active: !!AUTH_TYPES[p.activePage]})} {...p.authLink}>
-							Sign Up / Login
-						</Link>
+						{(!!!p.loginAccount || !!!p.loginAccount.id) &&
+							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+								Sign Up / Login
+							</Link>
 						}
 					</div>
 				</nav>

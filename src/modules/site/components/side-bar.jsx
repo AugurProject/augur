@@ -1,11 +1,9 @@
 import React from 'react';
 
-const SideBar = (p) => {
-	return (
-		<div>
-			<h1>TEST</h1>
-		</div>
-	)
-};
+const SideBar = () => (
+	<div>
+		<h1>SIDE BAR -- TODO</h1>
+	</div>
+);
 
 export default SideBar;
