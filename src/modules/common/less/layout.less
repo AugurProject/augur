@@ -5,6 +5,22 @@
 	margin-left: auto;
 	margin-right: auto;
 	max-width: @max-app-width;
+	overflow-x: hidden;
+}
+
+.page-container {
+
+	.contained();
+
+	display: flex;
+
+	.side-bar {
+		flex: 1;
+	}
+
+	.page-content-container {
+		flex: 4;
+	}
 }
 
 .l-space-between {

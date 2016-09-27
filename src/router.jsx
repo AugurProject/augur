@@ -174,8 +174,10 @@ export default class Router extends Component {
 							className="page-container"
 							style={pageContainerStyles}
 						>
-							<SideBar />
-							{this.currentRoute()}
+							<SideBar filters={p.filters} />
+							<div className="page-content-container">
+								{this.currentRoute()}
+							</div>
 						</div>
 						<SiteFooter />
 					</div>

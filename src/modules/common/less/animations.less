@@ -5,17 +5,52 @@
 // appended `-<times>` denotes finite iteration
 
 // Default Animation Values
-@timing: ease-in-out;
-@speed-slow: 0.7s;
+@speed-slow: 700ms;
+@speed-normal: 500ms;
+@speed-fast: 300ms;
+
+@direction-up: 'up';
+@direction-right: 'right';
+@direction-down: 'down';
+@direction-left: 'left';
 
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(@speed-slow @timing infinite alternate flash-slow);
+	.animation(@speed-slow ease-in-out infinite alternate flash-slow);
 
 	.keyframes(flash-slow, {
 	0% { background: fade(@color, @amount-subtle) }
 	100% { background: fade(@color, @amount-light) }
 	});
+}
+
+// 	Transitions
+.animation-slide(@direction) {
+	.animation(@speed-normal ease-in 0 1 slide);
+
+	& when (@direction = @direction-up){
+		.keyframes(slide, {
+		100% { transform: translateY(-100%)}
+		})
+	}
+
+	& when (@direction = @direction-right){
+		.keyframes(slide, {
+		100% { transform: translateX(100%)}
+		})
+	}
+
+	& when (@direction = @direction-down){
+		.keyframes(slide, {
+		100% { transform: translateY(100%)}
+		})
+	}
+
+	& when (@direction = @direction-left){
+		.keyframes(slide, {
+		100% { transform: translateX(-100%)}
+		})
+	}
 }
 
 //	Helpers
