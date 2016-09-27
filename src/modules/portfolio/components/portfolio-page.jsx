@@ -24,18 +24,16 @@ const PortfolioPage = (p) => {
 	return (
 		<main className="page portfolio">
 			<header className="page-header portfolio-header">
-				<div className="l-container">
-					{!!p.navItems && !!p.navItems.length &&
-						<TabNavigation
-							activePage={p.activePage}
-							navItems={p.navItems}
-						/>
-					}
-				</div>
+				{!!p.navItems && !!p.navItems.length &&
+					<TabNavigation
+						activePage={p.activePage}
+						navItems={p.navItems}
+					/>
+				}
 			</header>
 
 			<div className="page-content">
-				<section className="l-container portfolio-content">
+				<section className="portfolio-content">
 					{node}
 				</section>
 			</div>

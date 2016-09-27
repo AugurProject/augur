@@ -4,20 +4,16 @@ import CreateMarketForm from '../../create-market/components/create-market-form'
 const CreateMarketPage = (p) => (
 	<main className="page create-market">
 		<header className="page-header">
-			<div className="l-container">
-				<span className="big-line">Be the market maker</span>.
-				Earn fees by making markets for people to trade.
-				The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
-			</div>
+			<span className="big-line">Be the market maker</span>.
+			Earn fees by making markets for people to trade.
+			The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
 		</header>
 
 		<div className="page-content">
-			<div className="l-container">
-				<CreateMarketForm
-					className="create-market-content"
-					{...p.createMarketForm}
-				/>
-			</div>
+			<CreateMarketForm
+				className="create-market-content"
+				{...p.createMarketForm}
+			/>
 		</div>
 	</main>
 );

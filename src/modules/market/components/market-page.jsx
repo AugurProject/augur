@@ -127,9 +127,7 @@ export default class MarketPage extends Component {
 		return (
 			<main className="page market">
 				<article className="page-content">
-					<div className="l-container">
-						{nodes}
-					</div>
+					{nodes}
 				</article>
 			</main>
 		);

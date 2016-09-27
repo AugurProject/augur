@@ -4,18 +4,14 @@ import Transactions from '../../transactions/components/transactions';
 const TransactionsPage = (p) => (
 	<main className="page transactions">
 		<header className="page-header">
-			<div className="l-container">
-				<span className="big-line">{p.transactionsTotals.title}</span>
-			</div>
+			<span className="big-line">{p.transactionsTotals.title}</span>
 		</header>
 
 		<div className="page-content">
-			<div className="l-container">
-				<Transactions
-					className="transactions-content"
-					transactions={p.transactions}
-				/>
-			</div>
+			<Transactions
+				className="transactions-content"
+				transactions={p.transactions}
+			/>
 		</div>
 	</main>
 );

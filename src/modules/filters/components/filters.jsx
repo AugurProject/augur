@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-// import classnames from 'classnames';
 import Checkbox from '../../common/components/checkbox';
 
 const Filters = (p) => (

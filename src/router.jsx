@@ -144,7 +144,9 @@ export default class Router extends Component {
 				{!!p &&
 					<div>
 						<SiteHeader {...siteHeader} />
-						{this.currentRoute()}
+						<div className="page-container">
+							{this.currentRoute()}
+						</div>
 						<SiteFooter />
 					</div>
 				}
