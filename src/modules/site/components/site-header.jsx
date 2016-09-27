@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
+import ValueDenomination from '../../common/components/value-denomination';
 
 const SiteHeader = (p) => (
 	<header className="site-header">
