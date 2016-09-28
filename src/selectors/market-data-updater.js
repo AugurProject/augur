@@ -40,7 +40,7 @@ function startTimer() {
 			marketDataAge.isUpdateButtonDisabled = lastUpdatedBeforeSecs < UPDATE_INTERVAL_SECS;
 			require('../selectors').update({
 				marketDataAge
-			});
+			}, { ignore: true });
 		}
 	}, 1000);
 }
