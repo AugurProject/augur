@@ -1,5 +1,6 @@
 .site-header {
 
+	.font-size-normal();
 	.font-weight-extra-light();
 
 	background: @color-nav-background;
@@ -31,11 +32,6 @@
 
 			&.right-navs {
 				justify-content: flex-end;
-
-				.augur-logo {
-					height: 100px;
-					width: 50px;
-				}
 			}
 
 			&.left-navs,
@@ -55,18 +51,21 @@
 				padding: 0 1em;
 
 				.augur-logo {
-					height: 1.2em;
+					height: 3em;
 				}
 			}
 		}
 
-		.link {
-			padding: 1.8em;
+		.link, .header-search-icon {
+			padding: 1.2em 1.8em;
 
 			&:hover,
 			&:active {
-				background: @color-nav-background-active;
-				color: @color-text-light;
+				&:not(.augur-brand) {
+					background: @color-nav-background-active;
+					color: @color-text-light;
+					cursor: pointer;
+				}
 			}
 
 			&.active {
@@ -93,8 +92,9 @@
 			}
 		}
 
-		//.search.header-search {
-		//
-		//}
+		.header-search-icon {
+			display: flex;
+			align-items: center;
+		}
 	}
 }

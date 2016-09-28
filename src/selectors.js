@@ -26,6 +26,7 @@ import myReports from './selectors/my-reports';
 import tradeCommitLock from './selectors/trade-commit-lock';
 import positionsMarkets from './selectors/positions-markets';
 import myMarkets from './selectors/my-markets';
+import search from './selectors/search';
 
 // all selectors should go here
 const selectors = {
@@ -57,7 +58,8 @@ const selectors = {
 	// TODO -- may be an improvement available for how the tests run such that this wouldn't be necessary
 	myReports,
 	myMarkets,
-	positionsMarkets
+	positionsMarkets,
+	search
 };
 
 // add update helper fn to selectors object

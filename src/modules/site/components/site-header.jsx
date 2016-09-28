@@ -23,13 +23,16 @@ export default class SiteHeader extends Component {
 						<Link className="augur-brand" {...p.marketsLink}>
 							<AugurLogo />
 						</Link>
+						{/*<Search*/}
+							{/*keywords={p.keywords}*/}
+							{/*onChangeKeywords={p.onChangeKeywords}*/}
+						{/*/>*/}
 					</div>
 					<div className="nav-group right-navs">
-						<Search
-							className="header-search"
-							keywords={p.keywords}
-							onChangeKeywords={p.onChangeKeywords}
-						/>
+						<i
+							className="fa header-search-icon"
+							onClick={() => { p.onSearchIconClick(); }}
+						></i>
 						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 								Portfolio
@@ -81,5 +84,6 @@ SiteHeader.propTypes = {
 	authLink: PropTypes.object,
 	portfolioTotals: PropTypes.object,
 	keywords: PropTypes.string,
-	onChangeKeywords: PropTypes.func
+	onChangeKeywords: PropTypes.func,
+	onSearchIconClick: PropTypes.func
 };
