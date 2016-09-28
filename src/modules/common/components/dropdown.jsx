@@ -2,9 +2,14 @@ import React, { PropTypes } from 'react';
 
 const Dropdown = (p) => (
 	<div className="dropdown">
-		<select>
+		<select onChange={(event) => {p.onChange(event.target.value)}}>
 			{p.options.map(option => (
-				<option key={option.value}>{option.value}</option>
+				<option
+					key={option.value}
+					value={option.value}
+				>
+					{option.label}
+				</option>
 			))}
 		</select>
 		<i></i>
