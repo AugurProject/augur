@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
 import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
+import Search from '../../search-filter/components/search';
 
 export default class SiteHeader extends Component {
 	render() {
@@ -24,6 +25,11 @@ export default class SiteHeader extends Component {
 						</Link>
 					</div>
 					<div className="nav-group right-navs">
+						<Search
+							className="header-search"
+							keywords={p.keywords}
+							onChangeKeywords={p.onChangeKeywords}
+						/>
 						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 								Portfolio
@@ -65,13 +71,15 @@ export default class SiteHeader extends Component {
 }
 
 SiteHeader.propTypes = {
-	activePage: React.PropTypes.string,
-	loginAccount: React.PropTypes.object,
-	transactionsTotals: React.PropTypes.object,
-	isTransactionsWorking: React.PropTypes.bool,
-	marketsLink: React.PropTypes.object,
-	myPositionsLink: React.PropTypes.object,
-	transactionsLink: React.PropTypes.object,
-	authLink: React.PropTypes.object,
-	portfolioTotals: React.PropTypes.object
+	activePage: PropTypes.string,
+	loginAccount: PropTypes.object,
+	transactionsTotals: PropTypes.object,
+	isTransactionsWorking: PropTypes.bool,
+	marketsLink: PropTypes.object,
+	myPositionsLink: PropTypes.object,
+	transactionsLink: PropTypes.object,
+	authLink: PropTypes.object,
+	portfolioTotals: PropTypes.object,
+	keywords: PropTypes.string,
+	onChangeKeywords: PropTypes.func
 };

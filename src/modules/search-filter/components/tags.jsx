@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Checkbox from '../../common/components/checkbox';
 
 const Filters = (p) => (
-	<aside className="filters">
+	<div className="filters">
 		{p.filters.map(filter =>
 			<div key={filter.title} className="filters-group">
 				<span className="title">{filter.title}</span>
@@ -11,7 +11,7 @@ const Filters = (p) => (
 				)}
 			</div>
 		)}
-	</aside>
+	</div>
 );
 
 Filters.propTypes = {

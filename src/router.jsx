@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 
-// 	Components
-//		Global
 import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
 import SideBar from './modules/site/components/side-bar';
-//		Views
 import MarketsView from './modules/markets/components/markets-view';
 import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
@@ -15,11 +12,9 @@ import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
-//	Constants
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
-//	Utils
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
 
 export default class Router extends Component {
@@ -123,8 +118,6 @@ export default class Router extends Component {
 			node = (
 				<MarketsView
 					createMarketLink={(p.links || {}).createMarketLink}
-					keywords={p.keywords && p.keywords.value}
-					onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
 					markets={p.markets}
 					marketsHeader={p.marketsHeader}
 					favoriteMarkets={p.favoriteMarkets}
@@ -164,7 +157,12 @@ export default class Router extends Component {
 			<div>
 				{!!p &&
 					<div>
-						<SiteHeader {...siteHeader} ref={ref => { this.siteHeader = ref; }} />
+						<SiteHeader
+							{...siteHeader}
+							ref={ref => { this.siteHeader = ref; }}
+							keywords={p.keywords && p.keywords.value}
+							onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
+						/>
 						<div
 							className="view-container"
 							style={pageContainerStyles}
