@@ -1,4 +1,12 @@
 .portfolio {
+	.positions-content {
+		.positions-container {
+			&:not(:last-child) {
+				border-bottom: 1px solid @color-border;
+			}
+		}
+	}
+
 	.portfolio-header {
 		.tab-navigator {
 			margin-bottom: 0;
@@ -7,7 +15,7 @@
 
 	.portfolio-content {
 		background: white;
-		border-bottom: 3px solid @color-border;
+		border-bottom: 1px solid @color-border;
 		padding: 1.5rem 0 0;
 
 		.description {
