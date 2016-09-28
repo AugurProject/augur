@@ -125,7 +125,7 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 			);
 			if (marketData && marketData.id) {
 				dispatch(loadBidsAsks(marketData.id));
-				dispatch(loadAccountTrades(marketData.id, true, () => {
+				dispatch(loadAccountTrades(marketData.id, () => {
 					dispatch(updateSellCompleteSetsLock(marketData.id, false));
 				}));
 			}

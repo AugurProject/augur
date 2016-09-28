@@ -76,7 +76,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 							gasFeesRealEth));
 					}
 				}
-				dispatch(loadAccountTrades(marketID, false, () => {
+				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				}));
 			}

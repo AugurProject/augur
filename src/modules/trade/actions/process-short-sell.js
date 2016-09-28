@@ -74,7 +74,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				}
 
 				// update user's position
-				dispatch(loadAccountTrades(marketID, false, () => {
+				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				}));
 			}

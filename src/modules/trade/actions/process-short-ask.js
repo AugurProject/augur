@@ -3,7 +3,7 @@ import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } f
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { sellCompleteSets } from '../../my-positions/actions/sell-complete-sets';
+import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
 const noop = () => {};
 
