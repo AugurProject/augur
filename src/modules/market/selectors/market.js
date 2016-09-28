@@ -203,9 +203,9 @@ export function assembleMarket(
 			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
-			market.smallestPosition = smallestPosition ? formatShares(smallestPosition).formatted : '0';
-			market.hasCompleteSet = abi.bignum(market.smallestPosition).round(4).gt(ZERO);
-			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition));
+			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
+			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(ZERO);
+			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
 
 			market.report = {
 				...marketReport,
