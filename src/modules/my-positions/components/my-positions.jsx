@@ -36,7 +36,7 @@ const Positions = (p) => (
 							p.market.onSubmitClosePosition();
 						}}
 					>
-						Sell Complete Sets ({p.market.smallestPosition})
+						Sell Complete Sets ({p.market.smallestPosition.formatted})
 					</button>
 				</div>
 			</div>
