@@ -81,11 +81,10 @@ const Transaction = (p) => {
 		break;
 
 	case SELL_COMPLETE_SETS:
-		nodes.action = 'CLOSE POSITION';
+		nodes.action = `SELL ${p.numShares.formatted} COMPLETE SETS`;
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.numShares} postfix="of each outcome" />
 				<br />
 				{marketDescription()}
 				<br />
