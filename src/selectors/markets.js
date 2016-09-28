@@ -47,7 +47,7 @@ function makeMarkets(numMarkets = 10) {
 			isOpen: randomInt(0, 100) > 5,
 			isPendingReport: index > 0 && index % 4 === 0,
 			marketLink: {
-				text: 'Trade',
+				text: 'Trade Market',
 				className: 'trade',
 				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
 			}

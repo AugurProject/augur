@@ -4,7 +4,7 @@ import ValueDate from '../../common/components/value-date';
 import classNames from 'classnames';
 
 const Basics = (p) => (
-	<section className="basics">
+	<div className="market-basics">
 		<div>
 			{!!p.tags && !!p.tags.length &&
 				<ul className="tags">
@@ -51,7 +51,7 @@ const Basics = (p) => (
 				<ValueDenomination className="property-value" {...p.volume} formatted={p.volume.rounded} />
 			</li>
 		</ul>
-	</section>
+	</div>
 );
 
 Basics.propTypes = {

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import MarketItem from '../../market/components/market-item';
+import MarketItem from '../../market/components/market-preview';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import ValueDenomination from '../../common/components/value-denomination';
 

@@ -4,7 +4,6 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 import Basics from '../../market/components/basics';
 import Outcomes from '../../market/components/outcomes';
 import Link from '../../link/components/link';
-import OrderBookParameters from '../../../modules/market/components/order-book-parameters';
 
 export default class MarketItem extends Component {
 	static propTypes = {
@@ -30,18 +29,9 @@ export default class MarketItem extends Component {
 		const p = this.props;
 
 		return (
-			<article className="market-item">
-				<div className="basics-container">
+			<div className="market-item">
+				<div className="market-basics">
 					<Basics {...p} />
-
-					{!!p.creatingMarket && p.isCreatingOrderBook &&
-						<div className="order-book-creation" >
-							<h6 className="horizontal-divider" > Order Book Parameters </h6>
-							<div>
-								<OrderBookParameters {...p} />
-							</div>
-						</div>
-					}
 
 					{!!p.marketLink &&
 						<div className="buttons">
@@ -62,7 +52,7 @@ export default class MarketItem extends Component {
 						&#xf005;
 					</button>
 				}
-			</article>
+			</div>
 		);
 	}
 }

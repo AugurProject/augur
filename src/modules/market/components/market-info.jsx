@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueDate from '../../common/components/value-date';

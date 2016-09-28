@@ -5,7 +5,7 @@ import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
 import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
-import Search from '../../search-filter/components/search';
+// import Search from '../../search-filter/components/search';
 
 export default class SiteHeader extends Component {
 	render() {
@@ -23,10 +23,6 @@ export default class SiteHeader extends Component {
 						<Link className="augur-brand" {...p.marketsLink}>
 							<AugurLogo />
 						</Link>
-						{/*<Search*/}
-							{/*keywords={p.keywords}*/}
-							{/*onChangeKeywords={p.onChangeKeywords}*/}
-						{/*/>*/}
 					</div>
 					<div className="nav-group right-navs">
 						<i
@@ -87,3 +83,8 @@ SiteHeader.propTypes = {
 	onChangeKeywords: PropTypes.func,
 	onSearchIconClick: PropTypes.func
 };
+
+// <Search
+// 	keywords={p.keywords}
+// 	onChangeKeywords={p.onChangeKeywords}
+// />

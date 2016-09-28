@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import MarketItem from '../../market/components/market-item';
+import MarketItem from '../../market/components/market-preview';
 
 const MarketsList = (p) => (
 	<div className="markets-list">
