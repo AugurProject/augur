@@ -10,17 +10,20 @@ const OpenOrders = (p) => (
 		</div>
 
 		<div className="open-orders-list">
-			{
-				p.outcomes.map(outcome => (
-					<OpenOrdersGroup
-						key={outcome.id}
-						id={outcome.id}
-						name={outcome.name}
-						userOpenOrders={outcome.userOpenOrders}
-						orderCancellation={p.orderCancellation}
-					/>
-				))
-			}
+			<table className="open-orders-group">
+				{
+					p.outcomes.map((outcome, index) => (
+						<OpenOrdersGroup
+							key={outcome.id}
+							isFirst={index === 0}
+							id={outcome.id}
+							name={outcome.name}
+							userOpenOrders={outcome.userOpenOrders}
+							orderCancellation={p.orderCancellation}
+						/>
+					))
+				}
+			</table>
 		</div>
 	</div>
 );

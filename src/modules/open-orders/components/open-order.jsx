@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
-	<tr className={classnames('open-order', { 'is-disabled': p.status === p.cancellationStatuses.CANCELLED })}>
+	<tr className={classnames('open-order', { 'is-disabled': p.status === p.cancellationStatuses.CANCELLED, 'first': p.isFirst })}>
 		<td className="outcome-name">
 			{p.outcomeName}
 		</td>
@@ -40,7 +40,8 @@ OpenOrder.propTypes = {
 	status: React.PropTypes.string,
 	abortCancelOrderConfirmation: React.PropTypes.func.isRequired,
 	showCancelOrderConfirmation: React.PropTypes.func.isRequired,
-	cancelOrder: React.PropTypes.func.isRequired
+	cancelOrder: React.PropTypes.func.isRequired,
+	isFirst: React.PropTypes.bool.isRequired
 };
 
 function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {

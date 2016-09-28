@@ -1,17 +1,15 @@
 .market-open-orders {
 	.open-orders-list {
-		margin: 0 0 0 -1.5em;
-		padding: 4vmin 6vmin 0;
+		margin-left: 4%;
+		width: 92%;
+		font-size: 1.2rem;
 
 		.open-orders-group {
-			border-right: 1px solid @color-border;
-			display: inline-block;
-			margin: 0 0 1em;
-			padding: 0 1.5em;
-			vertical-align: top;
+			width: 100%;
 
 			td {
-				padding: 0.1em 0.5em;
+				padding: 0.5em 0;
+				box-sizing: border-box; // this should be done for *
 			}
 
 			.outcome-name {
@@ -32,10 +30,8 @@
 			}
 
 			.cancel {
-				font-size: 0.6em;
-				min-width: 4.6em;
-				padding: 0.1em 0;
-				text-align: left;
+				text-align: right;
+				width: 110px; // so there is enough space for different states
 
 				.cancel-order-action {
 					background: transparent;
@@ -81,6 +77,11 @@
 			}
 
 			.open-order {
+				border-top: 1px solid @color-border;
+
+				&.first {
+					border-top: none;
+				}
 				.outcome-name {
 					text-transform: uppercase;
 				}
