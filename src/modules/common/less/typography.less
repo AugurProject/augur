@@ -14,13 +14,10 @@
 	src: url('assets/fonts/font-awesome.woff') format('woff');
 
 	// NOTE -- Implementation is a bit non-standard
-	// To implement you include the `.fa()` mixin within the selector + copy/paste in the character in the contents of the element
+	// To implement you apply the `fa` class to the element + copy/paste the character into the contents of the element
 	// Example:
-	// 	.something {
-	//		.fa();
-	//	}
 	//
-	//	<i className="something"></i>
+	//	<i className="fa"></i>
 	//
 	// You'll need to have the font-awesome TTF installed locally in order to see the characters in the code
 	// Full list of unicode characters: http://fontawesome.io/cheatsheet/
@@ -55,6 +52,7 @@
 .fa {
 	font-family: 'Font Awesome';
 	font-weight: @font-weight-normal;
+	font-style: normal;
 }
 
 .font-defaults {
