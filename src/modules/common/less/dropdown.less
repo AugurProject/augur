@@ -1,44 +1,26 @@
 .dropdown {
-	background: @color-dark-hover;
-	color: @color-light-normal;
-	cursor: default;
-	display: inline-block;
+	display: flex;
 	position: relative;
+	background-color: @color-white;
+	border: 1px solid @color-border;
+	color: @color-text-dark;
 
-	&:hover,
-	&:focus,
-	&:active {
-		.options {
-			display: block;
-		}
+	select {
+		appearance: none;
+		background-color: transparent;
+		border: none;
 	}
 
-	.selected {
-		display: block;
-		padding: 0.5em 1.2em;
-	}
+	i {
 
-	.options {
-		background: @color-dark-hover;
-		border-radius: 1px;
-		color: @color-light-normal;
-		display: none;
-		left: 0;
+		.fa();
+		.font-size-medium();
+
 		position: absolute;
-		top: 100%;
-		width: 100%;
-		z-index: 1;
-
-		.option {
-			display: block;
-			padding: 0.5em 1.2em;
-
-			&:hover,
-			&:focus,
-			&:active {
-				background: @color-dark-active;
-				color: white;
-			}
-		}
+		top: 50%;
+		pointer: default;
+		pointer-events: none;
+		right: 0.4em;
+		transform: translateY(-50%);
 	}
 }
