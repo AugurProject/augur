@@ -1,14 +1,15 @@
 .dropdown {
-	display: flex;
-	position: relative;
 	background-color: @color-white;
 	border: 1px solid @color-border;
 	color: @color-text-dark;
+	display: flex;
+	position: relative;
 
 	select {
 		appearance: none;
 		background-color: transparent;
 		border: none;
+		padding: 1em 2.2em 1em 1em;
 	}
 
 	i {
@@ -16,11 +17,11 @@
 		.fa();
 		.font-size-medium();
 
-		position: absolute;
-		top: 50%;
-		pointer: default;
+		cursor: default;
 		pointer-events: none;
-		right: 0.4em;
+		position: absolute;
+		right: 1em;
+		top: 50%;
 		transform: translateY(-50%);
 	}
 }
