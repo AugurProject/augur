@@ -1783,8 +1783,8 @@ describe("positions", function () {
                 assert.deepEqual(output.async, output.sync);
                 assert.deepEqual(output.async, {
                     "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-                        "1": "6.3",
-                        "2": "6.3"
+                        "1": "1.2",
+                        "2": "1.2"
                     }
                 });
             }
@@ -2104,14 +2104,14 @@ describe("positions", function () {
                         "2": "0"
                     },
                     "0x8000000000000000000000000000000000000000000000000000000000000000": {
-                        "1": "2",
-                        "2": "1.8",
-                        "3": "2",
-                        "4": "2",
-                        "5": "2",
-                        "6": "2",
-                        "7": "2",
-                        "8": "2"
+                        "1": "1.2",
+                        "2": "1",
+                        "3": "1.2",
+                        "4": "1.2",
+                        "5": "1.2",
+                        "6": "1.2",
+                        "7": "1.2",
+                        "8": "1.2"
                     }
                 });
             }

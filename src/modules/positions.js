@@ -42,6 +42,7 @@ module.exports = {
      * @return {Object} Total number of complete sets keyed by market ID.
      */
     calculateCompleteSetsShareTotals: function (logs) {
+        if (!logs) return {};
         var marketID, logData, shareTotals;
         shareTotals = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -64,6 +65,7 @@ module.exports = {
      * @return {Object} Effective price keyed by market ID.
      */
     calculateCompleteSetsEffectivePrice: function (logs) {
+        if (!logs) return {};
         var marketID, logData, effectivePrice;
         effectivePrice = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -87,6 +89,7 @@ module.exports = {
      * @return {Object} Effective price keyed by market ID.
      */
     calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
+        if (!logs) return {};
         var marketID, logData, effectivePrice, outcomeID;
         effectivePrice = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -110,6 +113,7 @@ module.exports = {
      * @return Object Largest total number of shares sold keyed by market ID.
      */
     calculateShortSellShareTotals: function (logs) {
+        if (!logs) return {};
         var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
         shareTotals = {};
         sharesOutcomes = {};
@@ -171,6 +175,9 @@ module.exports = {
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
                 sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+                }
                 adjustedPositions[marketID] = this.decreasePosition(
                     onChainPosition,
                     shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
@@ -184,6 +191,9 @@ module.exports = {
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
                 sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+                }
                 adjustedPositions[marketID] = self.decreasePosition(
                     onChainPosition,
                     shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));

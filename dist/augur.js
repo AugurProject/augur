@@ -21154,7 +21154,7 @@ module.exports={
     "10101": {
         "Backstops": "0x6a592facbd32b04c429117c434fdc0b3ed4c45e9", 
         "Branches": "0xd6f111f6ff805d1fcb804ae1ae244819f4083624", 
-        "BuyAndSellShares": "0xbc561d76e72c599a695b0fd461fe912716099e6e", 
+        "BuyAndSellShares": "0x863a045d5f6e24257313f286bce9079a40858160", 
         "Cash": "0xe0c7f521a24f22eeaa4e7d6fd7b4372168957c40", 
         "CloseMarket": "0x1527eeca77ebf5ea176fef3886c67c886ce2e49d", 
         "CloseMarketOne": "0x2172719aee74883ca0a292187e43379b8d0b0a15", 
@@ -43622,7 +43622,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.3";
+    this.version = "2.9.4";
 
     this.options = {
         debug: {
@@ -45934,6 +45934,7 @@ module.exports = {
      * @return {Object} Total number of complete sets keyed by market ID.
      */
     calculateCompleteSetsShareTotals: function (logs) {
+        if (!logs) return {};
         var marketID, logData, shareTotals;
         shareTotals = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -45956,6 +45957,7 @@ module.exports = {
      * @return {Object} Effective price keyed by market ID.
      */
     calculateCompleteSetsEffectivePrice: function (logs) {
+        if (!logs) return {};
         var marketID, logData, effectivePrice;
         effectivePrice = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -45979,6 +45981,7 @@ module.exports = {
      * @return {Object} Effective price keyed by market ID.
      */
     calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
+        if (!logs) return {};
         var marketID, logData, effectivePrice, outcomeID;
         effectivePrice = {};
         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
@@ -46002,6 +46005,7 @@ module.exports = {
      * @return Object Largest total number of shares sold keyed by market ID.
      */
     calculateShortSellShareTotals: function (logs) {
+        if (!logs) return {};
         var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
         shareTotals = {};
         sharesOutcomes = {};
@@ -46063,6 +46067,9 @@ module.exports = {
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
                 sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+                }
                 adjustedPositions[marketID] = this.decreasePosition(
                     onChainPosition,
                     shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
@@ -46076,6 +46083,9 @@ module.exports = {
                 shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
                 shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
                 sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+                }
                 adjustedPositions[marketID] = self.decreasePosition(
                     onChainPosition,
                     shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
