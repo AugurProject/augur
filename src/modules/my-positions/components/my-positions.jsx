@@ -8,7 +8,7 @@ const Positions = (p) => (
 			<Link key={p.market.id} href={p.marketLink.href} onClick={p.marketLink.onClick} >
 				{(p.market.myPositionOutcomes || []).map(outcome =>
 					<Position
-						key={p.market.id + '-' + outcome.id}
+						key={`${p.market.id}-${outcome.id}`}
 						type={p.market.type}
 						{...outcome}
 						{...outcome.position}
