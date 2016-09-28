@@ -1,37 +1,30 @@
 import React, { PropTypes } from 'react';
 import DropDown from '../../common/components/dropdown';
 
-const MarketsFilterSort = (p) => {
-	function toggleIsDesc() {
-		console.log('toggleIsDesc');
-		p.onChange(null, null, !p.selectedFilterSort.isDesc);
-	}
+const MarketsFilterSort = (p) => (
+	<div className="view-header markets-view-header">
+		<DropDown
+			default={p.selectedFilterSort.type}
+			options={p.types}
+			onChange={type => { p.onChange(type, null, null); }}
 
-	return (
-		<div className="view-header markets-view-header">
+		/>
+		<div className="companion-fields">
 			<DropDown
-				default={p.selectedFilterSort.type}
-				options={p.types}
-				onChange={type => { p.onChange(type, null, null); }}
-
+				className="companion-field"
+				default={p.selectedFilterSort.sort}
+				options={p.sorts}
+				onChange={sort => { p.onChange(null, sort, null); }}
 			/>
-			<div className="companion-fields">
-				<DropDown
-					className="companion-field"
-					default={p.selectedFilterSort.sort}
-					options={p.sorts}
-					onChange={sort => { p.onChange(null, sort, null); }}
-				/>
-				<i
-					className="fa"
-					onClick={() => toggleIsDesc()}
-				>
-					{p.selectedFilterSort.isDesc ? '' : ''}
-				</i>
-			</div>
+			<i
+				className="fa"
+				onClick={() => { p.onChange(null, null, !p.selectedFilterSort.isDesc); }}
+			>
+				{p.selectedFilterSort.isDesc ? '' : ''}
+			</i>
 		</div>
-	);
-};
+	</div>
+);
 
 MarketsFilterSort.propTypes = {
 	selectedFilterSort: PropTypes.object,
