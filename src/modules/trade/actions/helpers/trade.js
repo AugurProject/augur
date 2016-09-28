@@ -20,7 +20,6 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.remainingShares.eq(ZERO));
 	}, (nextTrade) => {
 		let tradeIDs = matchingTradeIDs;
-		tradeIDs.reverse();
 		tradeIDs = tradeIDs.slice(0, 3);
 		console.debug(JSON.stringify({
 			max_value: res.remainingEth.toFixed(),

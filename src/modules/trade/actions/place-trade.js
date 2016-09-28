@@ -81,6 +81,7 @@ export function placeTrade(marketID) {
 						}
 					}
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+					console.log('outcome trade in progress:', outcomeTradeInProgress);
 					if (position && position.gt(ZERO)) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));
