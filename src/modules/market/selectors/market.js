@@ -22,6 +22,7 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
+import { ZERO } from '../../trade/constants/numbers';
 import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
@@ -33,6 +34,7 @@ import { abi } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
+import { addSellCompleteSetsTransaction } from '../../transactions/actions/add-sell-complete-sets-transaction';
 import { commitReport } from '../../reports/actions/commit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
@@ -60,7 +62,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, smallestPositions } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -94,6 +96,7 @@ export const selectMarket = (marketID) => {
 
 		orderBooks[marketID],
 		orderCancellation,
+		(smallestPositions || {})[marketID],
 		store.dispatch);
 };
 
@@ -124,6 +127,7 @@ export function assembleMarket(
 		isReportConfirmationPhase,
 		orderBooks,
 		orderCancellation,
+		smallestPosition,
 		dispatch) {
 
 	if (!assembledMarketsCache[marketID]) {
@@ -145,6 +149,7 @@ export function assembleMarket(
 			isReportConfirmationPhase,
 			orderBooks,
 			orderCancellation,
+			smallestPosition,
 			dispatch) => { // console.log('>>assembleMarket<<');
 
 			const market = {
@@ -197,6 +202,10 @@ export function assembleMarket(
 			market.marketLink = selectMarketLink(market, dispatch);
 			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
+
+			market.smallestPosition = smallestPosition ? formatShares(smallestPosition).formatted : '0';
+			market.hasCompleteSet = abi.bignum(market.smallestPosition).round(4).gt(ZERO);
+			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition));
 
 			market.report = {
 				...marketReport,

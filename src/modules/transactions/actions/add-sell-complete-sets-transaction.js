@@ -32,7 +32,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 					console.debug('sellCompleteSets sent:', r);
 					dispatch(updateExistingTransaction(transactionID, {
 						status: SUBMITTED,
-						message: `selling ${fmtNumShares.full} of each outcome for ${fmtValue.full}`
+						message: `selling ${fmtNumShares.formatted} complete sets for ${fmtValue.full}`
 					}));
 				},
 				onSuccess: (r) => {
@@ -41,11 +41,11 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 						status: SUCCESS,
 						hash: r.hash,
 						timestamp: r.timestamp,
-						message: `sold ${fmtNumShares.full} of each outcome for ${fmtValue.full}`,
+						message: `sold ${fmtNumShares.formatted} complete sets for ${fmtValue.full}`,
 						gasFees: formatRealEther(r.gasFees)
 					}));
 					dispatch(updateAssets());
-					dispatch(loadAccountTrades(marketID, true));
+					dispatch(loadAccountTrades(marketID));
 					dispatch(updateSellCompleteSetsLock(marketID, false));
 					if (callback) callback(null);
 				},
