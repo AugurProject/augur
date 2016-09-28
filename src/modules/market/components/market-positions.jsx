@@ -17,7 +17,9 @@ export default class MarketPositions extends Component {
 		const p = this.props;
 		return (
 			<section className="market-positions">
-				<PositionsSummary {...p.market.myPositionsSummary} className="market-section-header" />
+				{p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value &&
+					<PositionsSummary {...p.market.myPositionsSummary} className="market-section-header" />
+				}
 				<Positions market={p.market} />
 			</section>
 		);

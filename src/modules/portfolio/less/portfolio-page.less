@@ -1,7 +1,9 @@
 .portfolio {
 	.positions-content {
 		.positions-container {
-			border-bottom: 1px solid @color-border;
+			&:not(:last-child) {
+				border-bottom: 1px solid @color-border;
+			}
 		}
 	}
 
@@ -13,6 +15,7 @@
 
 	.portfolio-content {
 		background: white;
+		border-bottom: 1px solid @color-border;
 		padding: 1.5rem 0 0;
 
 		.description {

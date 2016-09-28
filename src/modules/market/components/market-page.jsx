@@ -97,7 +97,7 @@ export default class MarketPage extends Component {
 				}
 
 				// positions
-				if (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value) {
+				if (p.market.hasCompleteSet || (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value)) {
 					nodes.push(
 						<MarketPositions
 							key="market-positions"
