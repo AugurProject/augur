@@ -66,7 +66,7 @@ const Transaction = (p) => {
 					</span>
 				}
 				<span className="at">@</span>
-				<ValueDenomination className="noFeePrice" {...p.noFeePrice} postfix="(average)" />
+				<ValueDenomination className="noFeePrice" {...p.noFeePrice} />
 				<br className="hide-in-tx-display" />
 				<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="including trading fees:" postfix="/ share" />
 				<br />
