@@ -81,7 +81,7 @@ const Transaction = (p) => {
 		break;
 
 	case SELL_COMPLETE_SETS:
-		nodes.action = `SELL ${p.numShares.formatted} COMPLETE SETS`;
+		nodes.action = `SELL COMPLETE SETS (${p.numShares.formatted})`;
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
