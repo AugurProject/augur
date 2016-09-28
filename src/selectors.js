@@ -89,10 +89,24 @@ selectors.selectedOutcome = {
 
 selectors.marketsFilterSort = {
 	selectedFilterSort: { // Defaults
-		sort: 'volume',
 		type: 'open',
+		sort: 'volume',
 		isDesc: true
 	},
+	types: [
+		{
+			label: 'Open',
+			value: 'open'
+		},
+		{
+			label: 'Closed',
+			value: 'closed'
+		},
+		{
+			label: 'Reporting',
+			value: 'reporting'
+		}
+	],
 	sorts: [
 		{
 			label: 'Volume',
@@ -115,33 +129,19 @@ selectors.marketsFilterSort = {
 			value: 'makerFee'
 		}
 	],
-	types: [
-		{
-			label: 'Open',
-			value: 'open'
-		},
-		{
-			label: 'Closed',
-			value: 'closed'
-		},
-		{
-			label: 'Reporting',
-			value: 'reporting'
-		}
-	],
 	order: {
 		isDesc: true
 	}
 };
 
-selectors.marketsFilterSort.onChange = (sort, type, order) => {
+selectors.marketsFilterSort.onChange = (type, sort, order) => {
 	module.exports.update({
 		marketsFilterSort: {
 			...selectors.marketsFilterSort,
 			selectedFilterSort: {
-				sorts: sort || selectors.marketsFilterSort.selectedFilterSort.sort,
-				types: type || selectors.marketsFilterSort.selectedFilterSort.type,
-				order: order || selectors.marketsFilterSort.selectedFilterSort.order
+				type: type || selectors.marketsFilterSort.selectedFilterSort.type,
+				sort: sort || selectors.marketsFilterSort.selectedFilterSort.sort,
+				isDesc: order || selectors.marketsFilterSort.selectedFilterSort.isDesc
 			}
 		}
 	});

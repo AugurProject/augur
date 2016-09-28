@@ -2,7 +2,10 @@ import React, { PropTypes } from 'react';
 
 const Dropdown = (p) => (
 	<div className="dropdown">
-		<select onChange={(event) => {p.onChange(event.target.value)}}>
+		<select
+			onChange={(event) => { p.onChange(event.target.value); }}
+			defaultValue={p.default}
+		>
 			{p.options.map(option => (
 				<option
 					key={option.value}
@@ -17,8 +20,7 @@ const Dropdown = (p) => (
 );
 
 Dropdown.propTypes = {
-	className: PropTypes.string,
-	selected: PropTypes.object,
+	default: PropTypes.string,
 	options: PropTypes.array,
 	onChange: PropTypes.func
 };

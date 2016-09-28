@@ -4,9 +4,15 @@ import DropDown from '../../common/components/dropdown';
 const MarketsFilterSort = (p) => (
 	<div className="view-header">
 		<DropDown
-			selected={p.types.find(opt => opt.value === p.selectedFilterSort.types)}
+			default={p.selectedFilterSort.type}
 			options={p.types}
-			onChange={type => { const selectedTypeOption = p.types.find(opt => opt.value === type); p.onChange(null, selectedTypeOption, null); }}
+			onChange={type => { p.onChange(type, null, null); }}
+
+		/>
+		<DropDown
+			default={p.selectedFilterSort.sort}
+			options={p.sorts}
+			onChange={sort => { p.onChange(null, sort, null); }}
 		/>
 	</div>
 );

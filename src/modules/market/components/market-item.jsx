@@ -29,8 +29,6 @@ export default class MarketItem extends Component {
 	render() {
 		const p = this.props;
 
-		console.log('marketItem -- ', p);
-
 		return (
 			<article className="market-item">
 				<div className="basics-container">
