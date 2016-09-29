@@ -137,7 +137,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						}
 					});
 				}
-				dispatch(loadAccountTrades(marketID, false, () => {
+				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				}));
 			}

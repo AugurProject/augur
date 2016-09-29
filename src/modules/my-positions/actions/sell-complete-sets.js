@@ -2,8 +2,7 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { addSellCompleteSetsTransaction } from '../../transactions/actions/add-sell-complete-sets-transaction';
-import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
+import { updateSmallestPositions } from '../../my-positions/actions/update-account-trades-data';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
@@ -23,44 +22,48 @@ export function sellCompleteSets(marketID, cb) {
 	};
 }
 
+function completeSetsCheck(marketID, callback) {
+	return (dispatch, getState) => {
+		augur.getPositionInMarket(marketID, getState().loginAccount.id, (position) => {
+			if (!position || position.error) {
+				return callback(position || marketID);
+			}
+			const completeSetsBought = getState().completeSetsBought[marketID];
+			const outcomes = Object.keys(position);
+			const numPositions = outcomes.length;
+			if (completeSetsBought) {
+				const numCompleteSetsBought = completeSetsBought.length;
+				if (numCompleteSetsBought) {
+					let totalCompleteSetsBought = ZERO;
+					let i;
+					for (i = 0; i < numCompleteSetsBought; ++i) {
+						totalCompleteSetsBought = totalCompleteSetsBought.plus(completeSetsBought[i].amount);
+					}
+					for (i = 0; i < numPositions; ++i) {
+						position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
+							.minus(totalCompleteSetsBought)
+							.toFixed(), ZERO);
+					}
+				}
+			}
+			const smallestPosition = getSmallestPositionInMarket(position);
+			console.log('smallest position:', marketID, smallestPosition.toFixed());
+			callback(null, smallestPosition);
+		});
+	};
+}
+
 function sellCompleteSetsMarket(marketID, callback) {
 	return (dispatch, getState) => {
 		const { sellCompleteSetsLock, loginAccount } = getState();
 		if (loginAccount.id && !sellCompleteSetsLock[marketID]) {
-			dispatch(updateSellCompleteSetsLock(marketID, true));
-			augur.getPositionInMarket(marketID, loginAccount.id, (position) => {
-				if (!position || position.error) {
-					dispatch(updateSellCompleteSetsLock(marketID, false));
+			dispatch(completeSetsCheck(marketID, (err, smallestPosition) => {
+				if (err) {
 					return callback(null, marketID);
 				}
-				const completeSetsBought = getState().completeSetsBought[marketID];
-				const outcomes = Object.keys(position);
-				const numPositions = outcomes.length;
-				if (completeSetsBought) {
-					const numCompleteSetsBought = completeSetsBought.length;
-					if (numCompleteSetsBought) {
-						let totalCompleteSetsBought = ZERO;
-						let i;
-						for (i = 0; i < numCompleteSetsBought; ++i) {
-							totalCompleteSetsBought = totalCompleteSetsBought.plus(completeSetsBought[i].amount);
-						}
-						for (i = 0; i < numPositions; ++i) {
-							position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
-								.minus(totalCompleteSetsBought)
-								.toFixed(), ZERO);
-						}
-					}
-				}
-				const smallestPosition = getSmallestPositionInMarket(position);
-				console.log('smallest position:', marketID, smallestPosition.toFixed());
-				if (smallestPosition.gt(ZERO)) {
-					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed(), callback));
-				} else {
-					dispatch(updateSellCompleteSetsLock(marketID, false));
-					console.log('done, callback', callback && callback.toString());
-					if (callback) callback(null);
-				}
-			});
+				dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
+				if (callback) callback(null);
+			}));
 		} else {
 			if (callback) callback(null);
 		}

@@ -7,7 +7,7 @@ import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positi
 
 const loadAccountTradesLock = {};
 
-export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
+export function loadAccountTrades(marketID, cb) {
 	return (dispatch, getState) => {
 		const account = getState().loginAccount.id;
 		const options = { market: marketID };
@@ -42,7 +42,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 					loadAccountTradesLock[marketID] = false;
 					return console.error('loadAccountTrades error:', err);
 				}
-				console.log('loadAccountTrades data:', data, skipSellCompleteSets);
+				console.log('loadAccountTrades data:', data);
 				if (data.shortAskBuyCompleteSetsLogs || data.shortSellBuyCompleteSetsLogs || data.completeSetsSold) {
 					const netEffectiveTrades = augur.calculateNetEffectiveTrades({
 						shortAskBuyCompleteSets: data.shortAskBuyCompleteSetsLogs,
@@ -52,10 +52,7 @@ export function loadAccountTrades(marketID, skipSellCompleteSets, cb) {
 					dispatch(updateNetEffectiveTradesData(netEffectiveTrades, marketID));
 				}
 				loadAccountTradesLock[marketID] = false;
-				if (!skipSellCompleteSets) {
-					return dispatch(sellCompleteSets(marketID, cb));
-				}
-				if (cb) cb();
+				dispatch(sellCompleteSets(marketID, cb));
 			});
 		} else {
 			if (cb) cb();

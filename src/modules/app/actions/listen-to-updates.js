@@ -47,7 +47,6 @@ export function listenToUpdates() {
 
 			// order added to orderbook
 			log_add_tx: (msg) => {
-				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				// console.debug('log_add_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(loadBidsAsks(msg.market));

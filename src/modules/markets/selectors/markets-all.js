@@ -6,12 +6,12 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -47,6 +47,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			blockchain && blockchain.isReportConfirmationPhase,
 			orderBooks[marketID],
 			orderCancellation,
+			(smallestPositions || {})[marketID],
 			dispatch);
 
 	}).sort((a, b) => {

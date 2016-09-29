@@ -1,3 +1,4 @@
+import async from 'async';
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
 import { ZERO } from '../../trade/constants/numbers';
@@ -17,21 +18,17 @@ export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
+		console.log('market trade in progress:', marketTradeInProgress);
 		const market = selectMarket(marketID);
-
 		if (!marketTradeInProgress || !market) {
 			return;
 		}
-
-		let outcomeTradeInProgress;
-		Object.keys(marketTradeInProgress).forEach(outcomeID => {
-			outcomeTradeInProgress = marketTradeInProgress[outcomeID];
+		async.forEachOf(marketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
+			console.log('outcomeTradeInProgress', outcomeID, outcomeTradeInProgress);
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
-				return;
+				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
 			}
-
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
-
 			if (outcomeTradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 				if (tradeIDs && tradeIDs.length) {
@@ -62,6 +59,7 @@ export function placeTrade(marketID) {
 						outcomeTradeInProgress.feePercent,
 						outcomeTradeInProgress.gasFeesRealEth));
 				}
+				nextOutcome();
 			} else if (outcomeTradeInProgress.side === SELL) {
 
 				// check if user has position
@@ -70,7 +68,8 @@ export function placeTrade(marketID) {
 				const bnNumShares = abi.bignum(outcomeTradeInProgress.numShares);
 				augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
 					if (!sharesPurchased || sharesPurchased.error) {
-						return console.error('getParticipantSharesPurchased:', sharesPurchased);
+						console.error('getParticipantSharesPurchased:', sharesPurchased);
+						return nextOutcome(sharesPurchased || 'shares lookup failed');
 					}
 					let position = abi.bignum(sharesPurchased);
 					if (position && position.gt(ZERO)) {
@@ -81,6 +80,7 @@ export function placeTrade(marketID) {
 						}
 					}
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
 					if (position && position.gt(ZERO)) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));
@@ -161,12 +161,11 @@ export function placeTrade(marketID) {
 								outcomeTradeInProgress.gasFeesRealEth));
 						}
 					}
+					nextOutcome();
 				});
 			}
 		});
-
 		dispatch(clearTradeInProgress(marketID));
-
 		selectTransactionsLink(dispatch).onClick();
 	};
 }

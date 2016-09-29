@@ -16,7 +16,7 @@ export function loadFullMarket(marketID) {
 			console.info('loadBidsAsks', marketID);
 			dispatch(loadBidsAsks(marketID, () => {
 				console.info('loadAccountTrades', marketID);
-				dispatch(loadAccountTrades(marketID, false, () => {
+				dispatch(loadAccountTrades(marketID, () => {
 					console.info('loadPriceHistory', marketID);
 					dispatch(loadPriceHistory(marketID));
 					dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
