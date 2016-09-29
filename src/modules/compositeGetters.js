@@ -73,7 +73,7 @@ module.exports = {
         this.augurNode.getMarketsInfo(branchID, function (err, result) {
             if (err) {
                 console.warn("cache node getMarketsInfo failed:", err);
-
+								self.augurNode.nodes = [];
                 // fallback to loading in batches from chain
                 return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
             }
