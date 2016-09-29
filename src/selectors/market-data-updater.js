@@ -46,7 +46,7 @@ function startTimer() {
 			marketDataAge.lastUpdatedBefore = `${(lastUpdatedBeforeSecs + 1)} seconds ago`;
 			require('../selectors').update({
 				marketDataAge
-			});
+			}, { ignore: true });
 		}
 	}, 1000);
 }
