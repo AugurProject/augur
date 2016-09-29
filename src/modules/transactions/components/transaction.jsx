@@ -66,7 +66,7 @@ const Transaction = (p) => {
 					</span>
 				}
 				<span className="at">@</span>
-				<ValueDenomination className="noFeePrice" {...p.noFeePrice} postfix="(average)" />
+				<ValueDenomination className="noFeePrice" {...p.noFeePrice} />
 				<br className="hide-in-tx-display" />
 				<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="including trading fees:" postfix="/ share" />
 				<br />
@@ -81,11 +81,10 @@ const Transaction = (p) => {
 		break;
 
 	case SELL_COMPLETE_SETS:
-		nodes.action = 'CLOSE POSITION';
+		nodes.action = `SELL COMPLETE SETS (${p.numShares.formatted})`;
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.numShares} postfix="of each outcome" />
 				<br />
 				{marketDescription()}
 				<br />

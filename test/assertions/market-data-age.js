@@ -10,8 +10,8 @@ export default function (marketDataAge) {
 			assert.isString(marketDataAge.lastUpdatedBefore);
 		});
 
-		it('marketDataAge.isUpdateButtonDisabled', () => {
-			assert.isBoolean(marketDataAge.isUpdateButtonDisabled);
+		it('marketDataAge.isMarketDataLoading', () => {
+			assert.isBoolean(marketDataAge.isMarketDataLoading);
 		});
 	});
 }
