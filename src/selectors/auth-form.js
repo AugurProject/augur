@@ -4,7 +4,7 @@ import links from './links';
 const Shared = {
 	msg: null,
 	isVisiblePassword: true,
-	bottomLinkText: 'Import Account',
+	bottomLinkText: 'Import Existing Account',
 	bottomLink: { href: '/import', onClick: () => require('../selectors').update({ authForm: importAccount }) },
 	msgClass: 'success',
 	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
@@ -29,12 +29,12 @@ const signUp = {
 	submitButtonClass: 'register-button',
 	submitButtonText: 'Generate Account',
 	title: 'Sign Up',
-	isVisibleName: true,
+	isVisibleName: false,
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
 	instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
-	topLinkText: 'login',
+	topLinkText: 'Already have an account? Login here',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
 		href: '/login',
@@ -84,6 +84,8 @@ const importAccount = {
 const accountCreated = {
 	...signUp,
 	isVisibleID: true,
+	submitButtonText: 'Sign In',
+	isVisibleRememberMe: true,
 	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. Click on the Login ID input field and hit ctrl + v (cmd + v on mac) to paste your Login ID. Hit "Sign Up" to complete registration.',
 	loginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };

@@ -57,8 +57,13 @@ export default class AuthForm extends Component {
 	}
 
 	handleSubmit = (e) => {
+		// if the user is trying to create an account and the loginID hasn't been generated, then generate it.
+		if (this.props.type === 'register' && !this.props.loginID) {
+			return this.handlePasswordInput(e);
+		}
 		e.preventDefault();
 		e.stopPropagation();
+
 		const name = this.refs.accountName.value;
 		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
@@ -172,9 +177,8 @@ export default class AuthForm extends Component {
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword })}
 					type="password"
 					defaultValue={p.password}
-					placeholder={p.passwordPlaceholder || 'password'}
+					placeholder={p.passwordPlaceholder || 'password (must be at least 6 characters in length)'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword}
 					autoComplete
 					disabled={s.disableInputs}
@@ -185,10 +189,12 @@ export default class AuthForm extends Component {
 					type="password"
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword2}
 					disabled={s.disableInputs}
 				/>
+				<div className={classnames('instruction', { displayNone: !p.isVisibleRememberMe })}>
+					Select "remember me" to save your account and login automatically next time. (this will only remember your account on this device.)
+				</div>
 				<div className={classnames('bottom-container')}>
 					<Link
 						className={classnames('bottom-link', { displayNone: !p.bottomLink })}
@@ -219,7 +225,6 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
-				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length.</p>
 			</form>
 		);
 	}
