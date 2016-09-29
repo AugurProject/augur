@@ -12,36 +12,29 @@ const OpenOrdersGroup = (p) => {
 	}
 
 	return (
-		<table className="open-orders-group">
-			<tbody>
-				<tr>
-					<th className="outcome-name">Outcome</th>
-					<th className="type">Type</th>
-					<th className="shares">Shares</th>
-					<th className="price">Price</th>
-					<th className="cancel">&nbsp;</th>
-				</tr>
-				{p.userOpenOrders.map(openOrder =>
-					<OpenOrder
-						{...openOrder}
-						key={openOrder.id}
-						outcomeName={p.name}
-						status={p.orderCancellation[openOrder.id]}
-						cancellationStatuses={p.orderCancellation.cancellationStatuses}
-						cancelOrder={p.orderCancellation.cancelOrder}
-						abortCancelOrderConfirmation={p.orderCancellation.abortCancelOrderConfirmation}
-						showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
-					/>
-				)}
-			</tbody>
-		</table>
+		<tbody>
+			{p.userOpenOrders.map((openOrder, index) =>
+				<OpenOrder
+					key={openOrder.id}
+					isFirst={p.isFirst && index === 0}
+					{...openOrder}
+					outcomeName={p.name}
+					status={p.orderCancellation[openOrder.id]}
+					cancellationStatuses={p.orderCancellation.cancellationStatuses}
+					cancelOrder={p.orderCancellation.cancelOrder}
+					abortCancelOrderConfirmation={p.orderCancellation.abortCancelOrderConfirmation}
+					showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
+				/>
+			)}
+		</tbody>
 	);
 };
 
 OpenOrdersGroup.propTypes = {
 	userOpenOrders: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
 	name: React.PropTypes.string.isRequired,
-	orderCancellation: React.PropTypes.object.isRequired
+	orderCancellation: React.PropTypes.object.isRequired,
+	isFirst: React.PropTypes.bool.isRequired
 };
 
 export default OpenOrdersGroup;
