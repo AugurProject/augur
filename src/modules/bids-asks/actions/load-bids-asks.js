@@ -1,5 +1,4 @@
 import { augur } from '../../../services/augurjs';
-import { updateMarketDataTimestamp } from '../../market/actions/update-market-data-timestamp';
 import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
 import { selectMarket } from '../../market/selectors/market';
 
@@ -40,7 +39,7 @@ function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, to
 				dispatch(clearMarketOrderBook(marketID));
 			}
 			dispatch(updateMarketOrderBook(marketID, marketOrderBook));
-			dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
+
 			if (offset + numTradesToLoad < totalTrades) {
 				return getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
 			}

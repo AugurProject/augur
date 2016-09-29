@@ -17,10 +17,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
 			}));
 		}
-
-		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = ZERO;
-
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
 			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
@@ -28,9 +25,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
-
 		const { loginAccount } = getState();
-
 		shortSell(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
 			(data) => {
 				const update = { status: `${data.status} short sell...` };

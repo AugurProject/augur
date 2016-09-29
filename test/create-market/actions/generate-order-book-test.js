@@ -142,10 +142,6 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
             type: 'UPDATE_SELL_COMPLETE_SETS_LOCK',
             isLocked: true,
             marketID: marketData.id
-        }, {
-            type: 'UPDATE_MARKET_DATA_TIMESTAMP',
-            marketID: 'test-market-id',
-            timestamp: 0
         }], `Didn't correctly create order book`);
     });
 
