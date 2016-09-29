@@ -15,7 +15,14 @@ export default {
 		const marketDataAge = require('../selectors').marketDataAge;
 		if (marketDataAge != null) {
 			marketDataAge.lastUpdatedBefore = '1 second ago';
-			marketDataAge.isUpdateButtonDisabled = true;
+			marketDataAge.isMarketDataLoading = true;
+			setTimeout(() => {
+				const marketDataAge = require('../selectors').marketDataAge;
+				marketDataAge.isMarketDataLoading = false;
+				require('../selectors').update({
+					marketDataAge
+				});
+			}, 1000);
 			require('../selectors').update({
 				marketDataAge
 			});
@@ -37,7 +44,6 @@ function startTimer() {
 		if (marketDataAge != null) {
 			const lastUpdatedBeforeSecs = parseInt(marketDataAge.lastUpdatedBefore, 10);
 			marketDataAge.lastUpdatedBefore = `${(lastUpdatedBeforeSecs + 1)} seconds ago`;
-			marketDataAge.isUpdateButtonDisabled = lastUpdatedBeforeSecs < UPDATE_INTERVAL_SECS;
 			require('../selectors').update({
 				marketDataAge
 			}, { ignore: true });
