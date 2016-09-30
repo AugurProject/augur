@@ -22,7 +22,6 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { ZERO } from '../../trade/constants/numbers';
 import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
@@ -30,7 +29,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -204,7 +203,7 @@ export function assembleMarket(
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
-			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(ZERO);
+			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.limit.dividedBy(10));
 			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
 
 			market.report = {
