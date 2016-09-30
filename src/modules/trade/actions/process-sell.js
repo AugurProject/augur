@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { augur, abi, constants } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
@@ -66,15 +65,11 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
-						if (position.gt(ZERO)) {
+						if (position.gt(constants.PRECISION.limit.dividedBy(10))) {
 							let askShares;
 							let shortAskShares;
 							if (position.gt(remainingShares)) {
-								if (position.minus(remainingShares).lt(constants.PRECISION.limit)) {
-									askShares = position.toNumber();
-								} else {
-									askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-								}
+								askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN)
 								shortAskShares = 0;
 							} else {
 								askShares = position.toNumber();

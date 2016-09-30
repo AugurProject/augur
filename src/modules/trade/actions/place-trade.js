@@ -71,17 +71,10 @@ export function placeTrade(marketID) {
 						console.error('getParticipantSharesPurchased:', sharesPurchased);
 						return nextOutcome(sharesPurchased || 'shares lookup failed');
 					}
-					let position = abi.bignum(sharesPurchased);
-					if (position && position.gt(ZERO)) {
-						if (position.gt(bnNumShares) && outcomeTradeInProgress.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
-							outcomeTradeInProgress.numShares = position.toNumber();
-						} else {
-							position = position.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-						}
-					}
+					let position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
-					if (position && position.gt(ZERO)) {
+					if (position && position.gt(constants.PRECISION.limit.dividedBy(10))) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));
 							dispatch(addTradeTransaction(

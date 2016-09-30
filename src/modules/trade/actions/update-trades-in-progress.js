@@ -93,14 +93,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 						}
 					});
 				}
-				let position = abi.bignum(sharesPurchased);
-				if (position && position.gt(ZERO)) {
-					if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
-						newTradeDetails.numShares = position.toNumber();
-					} else {
-						position = position.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-					}
-				}
+				let position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 				newTradeDetails.tradeActions = augur.getTradingActions(
 					newTradeDetails.side,
 					newTradeDetails.numShares,

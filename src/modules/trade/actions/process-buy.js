@@ -1,6 +1,5 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { abi, constants } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
@@ -59,7 +58,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
-				if (sharesRemaining.gt(ZERO) && res.remainingEth.gt(ZERO)) {
+				if (sharesRemaining.gt(constants.PRECISION.limit.dividedBy(10)) && res.remainingEth.gt(constants.PRECISION.limit.dividedBy(10))) {
 					console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
 					if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 						const transactionData = getState().transactionsData[transactionID];
