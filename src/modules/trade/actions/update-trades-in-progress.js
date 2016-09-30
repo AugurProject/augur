@@ -81,7 +81,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			const bnNumShares = abi.bignum(newTradeDetails.numShares);
 			augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
 				if (!sharesPurchased || sharesPurchased.error) {
 					console.error('getParticipantSharesPurchased:', sharesPurchased);
@@ -93,7 +92,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 						}
 					});
 				}
-				let position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+				const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 				newTradeDetails.tradeActions = augur.getTradingActions(
 					newTradeDetails.side,
 					newTradeDetails.numShares,

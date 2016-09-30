@@ -69,7 +69,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							let askShares;
 							let shortAskShares;
 							if (position.gt(remainingShares)) {
-								askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN)
+								askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 								shortAskShares = 0;
 							} else {
 								askShares = position.toNumber();

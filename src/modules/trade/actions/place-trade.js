@@ -1,7 +1,6 @@
 import async from 'async';
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
-import { ZERO } from '../../trade/constants/numbers';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
@@ -65,13 +64,12 @@ export function placeTrade(marketID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-				const bnNumShares = abi.bignum(outcomeTradeInProgress.numShares);
 				augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
 					if (!sharesPurchased || sharesPurchased.error) {
 						console.error('getParticipantSharesPurchased:', sharesPurchased);
 						return nextOutcome(sharesPurchased || 'shares lookup failed');
 					}
-					let position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
 					if (position && position.gt(constants.PRECISION.limit.dividedBy(10))) {
