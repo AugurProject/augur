@@ -3,7 +3,7 @@ import MarketsFilterSort from '../../markets/components/markets-filter-sort';
 import Link from '../../link/components/link';
 
 const MarketsHeaders = (p) => (
-	<div>
+	<article className={p.className}>
 		<div className="view-header">
 			<div className="left-header">
 				<h2>Markets</h2>
@@ -18,11 +18,15 @@ const MarketsHeaders = (p) => (
 				</Link>
 			</div>
 		</div>
-		<MarketsFilterSort {...p.marketsFilterSort} />
-	</div>
+		<MarketsFilterSort
+			{...p.marketsFilterSort}
+			className="view-header"
+		/>
+	</article>
 );
 
 MarketsHeaders.propTypes = {
+	className: PropTypes.string,
 	createMarketLink: PropTypes.object,
 	loginAccount: PropTypes.object,
 	marketsHeader: PropTypes.object,

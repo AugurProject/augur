@@ -3,7 +3,7 @@ import MarketsHeaders from '../../markets/components/markets-headers';
 import MarketsList from '../../markets/components/markets-list';
 
 const MarketsView = (p) => (
-	<div>
+	<section className={p.className}>
 		<MarketsHeaders
 			createMarketLink={p.createMarketLink}
 			loginAccount={p.loginAccount}
@@ -14,10 +14,11 @@ const MarketsView = (p) => (
 			markets={p.markets}
 			pagination={p.pagination}
 		/>
-	</div>
+	</section>
 );
 
 MarketsView.propTypes = {
+	className: PropTypes.string,
 	marketsHeader: PropTypes.object,
 	markets: PropTypes.array,
 	pagination: PropTypes.object,

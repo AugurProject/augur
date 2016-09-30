@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import DropDown from '../../common/components/dropdown';
 
 const MarketsFilterSort = (p) => (
-	<div className="view-header markets-view-header">
+	<article className={`markets-view-header ${p.className}`}>
 		<DropDown
 			default={p.selectedFilterSort.type}
 			options={p.types}
@@ -23,10 +23,11 @@ const MarketsFilterSort = (p) => (
 				{p.selectedFilterSort.isDesc ? '' : ''}
 			</i>
 		</div>
-	</div>
+	</article>
 );
 
 MarketsFilterSort.propTypes = {
+	className: PropTypes.string,
 	selectedFilterSort: PropTypes.object,
 	sorts: PropTypes.array,
 	types: PropTypes.array,

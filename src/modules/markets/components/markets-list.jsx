@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
-import MarketItem from '../../market/components/market-preview';
+import MarketPreview from '../../market/components/market-preview';
 
 const MarketsList = (p) => (
-	<div className="markets-list">
+	<article className="markets-list">
 		{(p.markets || []).map(market =>
-			<MarketItem
+			<MarketPreview
 				key={market.id}
 				{...market}
 			/>
@@ -25,7 +25,7 @@ const MarketsList = (p) => (
 				}
 			</div>
 		}
-	</div>
+	</article>
 );
 
 MarketsList.propTypes = {

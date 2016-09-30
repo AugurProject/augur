@@ -8,7 +8,7 @@ import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
-import PortfolioPage from './modules/portfolio/components/portfolio-page';
+import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
@@ -102,7 +102,7 @@ export default class Router extends Component {
 		case MY_MARKETS:
 		case MY_REPORTS:
 			node = (
-				<PortfolioPage
+				<PortfolioView
 					{...p.portfolio}
 					activePage={p.activePage}
 				/>
@@ -168,9 +168,9 @@ export default class Router extends Component {
 							style={pageContainerStyles}
 						>
 							<SideBar filters={p.filters} />
-							<div className="view-content-container">
+							<main className="view-content-container">
 								{currentRoute}
-							</div>
+							</main>
 						</div>
 						<SiteFooter />
 					</div>

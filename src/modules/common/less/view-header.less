@@ -1,5 +1,10 @@
 // NOTE -- additional styles located in common/less/layout.less
 .view-header {
+	
+	.font-size-medium();
+
+	color: @color-text-dark;
+
 	.left-header {
 		display: flex;
 		flex: 1;
@@ -10,5 +15,11 @@
 		display: flex;
 		flex: 1;
 		justify-content: flex-end;
+	}
+
+	h2 {
+
+		.font-size-extra-large();
+		.font-weight-normal();
 	}
 }

@@ -1,6 +1,7 @@
 // General
 // app wide common styles
-// if a component is shared, those styles are better left to it's respective stylesheets
+// rule of thumb: 	If EVERY instance of that class/element has the same style, they go here;
+// 					otherwise, they go in their respective stylesheets
 
 //		Tags
 html,
@@ -24,12 +25,6 @@ a {
 		cursor: default;
 		opacity: 0.3;
 	}
-}
-
-h2 { // Main View Content Header
-
-	.font-size-extra-large();
-	.font-weight-normal();
 }
 
 h3 { // Content Headers
@@ -76,6 +71,14 @@ button {
 }
 
 // 		Classes
+.border-standard {
+	border: 1px solid @color-border;
+}
+
+.border-none {
+	border: none;
+}
+
 .clickable {
 	cursor: pointer;
 }

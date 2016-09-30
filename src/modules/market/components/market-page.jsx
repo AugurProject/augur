@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-import Basics from '../../market/components/basics';
+import MarketBasics from './market-basics';
 import MarketInfo from '../../market/components/market-info';
 import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import MarketOpenOrders from '../../market/components/market-open-orders';
-import Chart from '../../market/components/chart';
+import Chart from './market-chart';
 import MarketSummary from './market-summary';
 
 export default class MarketPage extends Component {
@@ -46,8 +46,8 @@ export default class MarketPage extends Component {
 			);
 		} else {
 			// market exists
-			nodes.push(<Basics
-				key="basics"
+			nodes.push(<MarketBasics
+				key="market-basics"
 				{...p.market}
 				isUpdaterVisible
 				marketDataAge={p.marketDataAge}
