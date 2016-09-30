@@ -35,8 +35,8 @@
     "build:favicon": "cp ./src/favicon.ico ./build/ && cat ./src/manifest.json | npm run -s partial:replaceBuildFolderString | npm run -s build:inline_sources > ./build/manifest.json && echo ---------FAVICON--------`date +%r`",
     "build:html": "cat ./src/index.html | npm run -s partial:replaceBuildFolderString | npm run -s build:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
     "build:inline_sources": "inline-source --compress false --root ./build -",
-    "build:airbitz": "mkdir -p build/abcui && mkdir -p azure/abcui && npm run -s build:airbitz:copy",
-    "build:airbitz:copy": "rsync -az node_modules/airbitz-core-js-ui/assets build/abcui/ && rsync -az node_modules/airbitz-core-js-ui/assets azure/abcui/",
+    "build:airbitz": "mkdir -p build/abcui && npm run -s build:airbitz:copy",
+    "build:airbitz:copy": "rsync -az node_modules/airbitz-core-js-ui/assets build/abcui/",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
     "______": "",
     "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:env & npm run -s watch:favicon & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
@@ -58,8 +58,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "airbitz-core-js-ui": "git@github.com:Airbitz/airbitz-core-js-ui.git",
-    "airbitz-core-js": "git@github.com:Airbitz/airbitz-core-js.git",
+    "airbitz-core-js-ui": "^0.0.1",
     "async": "1.5.2",
     "augur-ui-react-components": "3.2.18",
     "augur.js": "2.9.5",
