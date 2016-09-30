@@ -25,10 +25,10 @@ const PortfolioView = (p) => {
 		<section className="page portfolio">
 			<header className="page-header portfolio-header">
 				{!!p.navItems && !!p.navItems.length &&
-				<TabNavigation
-					activePage={p.activePage}
-					navItems={p.navItems}
-				/>
+					<TabNavigation
+						activePage={p.activePage}
+						navItems={p.navItems}
+					/>
 				}
 			</header>
 

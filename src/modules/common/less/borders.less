@@ -2,7 +2,7 @@
 
 //	Primary Mixin
 .borderMixin(@position: false, @size: 1px, @type: solid, @color: @color-border) {
-	& when (@position = false){
+	& when (@position = false) {
 		border: @size @type @color;
 	}
 
@@ -27,7 +27,7 @@
 }
 
 //	Muted Borders
-.border-muted(@position: false){
+.border-muted(@position: false) {
 	& when (@position = false) {
 		.borderMixin();
 	}
@@ -38,7 +38,7 @@
 }
 
 //	Light Borders
-.border-light(@position: false){
+.border-light(@position: false) {
 	& when (@position = false) {
 		.borderMixin();
 	}

@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
-import ValueDenomination from '../../common/components/value-denomination';
 import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
 // import Search from '../../search-filter/components/search';

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueDate from '../../common/components/value-date';
-import classNames from 'classnames';
+import classnames from 'classnames';
 
 const MarketBasics = (p) => (
 	<article className="market-basics">
@@ -10,7 +10,7 @@ const MarketBasics = (p) => (
 				{!!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{p.tags.map((tag, i) => (
-							<li key={i} className={classNames('tag', { link: !!tag.name })} onClick={!!tag.onClick && tag.onClick}>{!!tag.name ? tag.name : tag}</li>
+							<li key={i} className={classnames('tag', { link: !!tag.name })} onClick={!!tag.onClick && tag.onClick}>{!!tag.name ? tag.name : tag}</li>
 						))}
 					</ul>
 				}
