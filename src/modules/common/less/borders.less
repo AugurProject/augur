@@ -1,0 +1,54 @@
+// BORDERS
+
+//	Primary Mixin
+.borderMixin(@position: false, @size: 1px, @type: solid, @color: @color-border) {
+	& when (@position = false){
+		border: @size @type @color;
+	}
+
+	& when (@position) {
+		border-@{position}: @size @type @color;
+	}
+
+	& when (@position = 'none') {
+		border: none;
+	}
+}
+
+//	Standard Borders
+.border-standard(@position: false) {
+	& when (@position = false) {
+		.borderMixin();
+	}
+
+	& when (@position) {
+		.borderMixin(@position);
+	}
+}
+
+//	Muted Borders
+.border-muted(@position: false){
+	& when (@position = false) {
+		.borderMixin();
+	}
+
+	& when (@position) {
+		.borderMixin(@position, null, null, @color-border-muted);
+	}
+}
+
+//	Light Borders
+.border-light(@position: false){
+	& when (@position = false) {
+		.borderMixin();
+	}
+
+	& when (@position) {
+		.borderMixin(@position, null, null, @color-border-light);
+	}
+}
+
+//	No Borders
+.border-none {
+	.borderMixin('none');
+}
