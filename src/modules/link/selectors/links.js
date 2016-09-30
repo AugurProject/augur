@@ -16,7 +16,6 @@ import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-eve
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
 import store from '../../../store';
-import { IMPORT, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 
 export default function () {
 	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
@@ -84,31 +83,17 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 });
 
 export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
-	if (authType === LOGIN) {
-		return {
-			onClick: () => {
-				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
-					if (airbitzAccount) {
-						dispatch(loginWithAirbitz(airbitzAccount));
-					} else {
-						console.log('error logging in: ' + result);
-					}
-				});
-			}
-		};
-	} else if (authType === REGISTER || authType === IMPORT) {
-		return {
-			onClick: () => {
-				require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
-					if (airbitzAccount) {
-						dispatch(loginWithAirbitz(airbitzAccount));
-					} else {
-						console.log('error registering in: ' + result);
-					}
-				});
-			}
-		};
-	}
+	return {
+		onClick: () => {
+			require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+				if (airbitzAccount) {
+					dispatch(loginWithAirbitz(airbitzAccount));
+				} else {
+					console.log('error logging in: ' + result);
+				}
+			});
+		}
+	};
 });
 
 
