@@ -10,7 +10,7 @@ const MarketsHeaders = (p) => (
 			</div>
 			<div className="right-header">
 				<Link
-					className="button make imperative"
+					className="button imperative"
 					disabled={!p.loginAccount.id}
 					{...p.createMarketLink}
 				>

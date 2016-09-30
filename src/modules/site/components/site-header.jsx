@@ -45,16 +45,7 @@ export default class SiteHeader extends Component {
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
 							<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
-								<ValueDenomination
-									{...p.loginAccount.rep || {}}
-									formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
-									formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
-								/>
-								<ValueDenomination
-									{...p.loginAccount.ether || {}}
-									formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
-									formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
-								/>
+								Account
 							</Link>
 						}
 						{(!!!p.loginAccount || !!!p.loginAccount.id) &&
