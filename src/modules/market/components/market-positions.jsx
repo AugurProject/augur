@@ -5,8 +5,7 @@ import PositionsSummary from '../../../modules/my-positions/components/my-positi
 
 export default class MarketPositions extends Component {
 	static propTypes = {
-		positionsSummary: PropTypes.object,
-		positionOutcomes: PropTypes.array
+		market: PropTypes.object
 	};
 
 	constructor(props) {
@@ -18,8 +17,10 @@ export default class MarketPositions extends Component {
 		const p = this.props;
 		return (
 			<section className="market-positions">
-				<PositionsSummary {...p.positionsSummary} className="market-section-header" />
-				<Positions outcomes={p.positionOutcomes} />
+				{p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value &&
+					<PositionsSummary {...p.market.myPositionsSummary} className="market-section-header" />
+				}
+				<Positions market={p.market} />
 			</section>
 		);
 	}

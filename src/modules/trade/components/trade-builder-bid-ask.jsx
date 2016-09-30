@@ -10,6 +10,7 @@ const TradeBuilderBidAsk = (p) => (
 			{...p.bidAsk.shares}
 			className={classnames('shares')}
 			formatted={p.bidAsk.shares.rounded}
+			fullPrecision={p.bidAsk.shares.fullPrecision}
 			denomination={undefined}
 		/>
 

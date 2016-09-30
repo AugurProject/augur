@@ -10,3 +10,4 @@ export const COMMIT_REPORT = 'commit_report';
 export const REGISTER_ACCOUNT = 'register_account';
 export const GENERATE_ORDER_BOOK = 'generate_order_book';
 export const CANCEL_ORDER = 'cancel_order';
+export const SELL_COMPLETE_SETS = 'sell_complete_sets';

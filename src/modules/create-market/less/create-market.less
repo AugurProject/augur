@@ -1,20 +1,19 @@
 .create-market {
-
 	.create-market-content {
-		padding: 4% 5%;
 		background: white;
 		font-size: 1.4rem;
+		padding: 4% 5%;
 
 		h1 {
-			margin-bottom: 2rem;
 			font-size: 2.5rem;
 			font-weight: 700;
+			margin-bottom: 2rem;
 		}
 
 		h4 {
-			margin: 2rem 0 0.5rem 0;
 			font-size: 1.75rem;
 			font-weight: 700;
+			margin: 2rem 0 0.5rem;
 		}
 
 		label {
@@ -32,18 +31,17 @@
 		}
 
 		.error-message {
-			display: inline-block;
+			color: @color-danger-normal;
 			display: inline-block;
 			margin: 0.7rem 1rem;
-			color: @color-danger-normal;
 		}
 
 		.input-list {
-			margin: 2rem 0 1rem 0;
+			margin: 2rem 0 1rem;
 
 			.item {
-				width: 100%;
 				margin: 1rem 0;
+				width: 100%;
 
 				&.new-item {
 					opacity: 0.3;
@@ -54,26 +52,25 @@
 				}
 
 				.input {
-					width: 100%; max-width: 25rem
+					max-width: 25rem;
+					width: 100%;
 				}
 			}
 		}
 
 		.order-book-creation {
 			.horizontal-divider {
-				padding: 1rem 0;
-
+				color: @color-muted-normal;
+				font-size: 1.4rem;
 				overflow: hidden;
+				padding: 1rem 0;
 				text-align: center;
 
-				font-size: 1.4rem;
 				span {
 					font-size: 0.7rem;
-					vertical-align: middle;
 					line-height: 1.4rem;
+					vertical-align: middle;
 				}
-
-				color: @color-muted-normal;
 
 				// Horizontal Lines
 				&::before,
@@ -86,10 +83,12 @@
 					vertical-align: middle;
 					width: 50%;
 				}
+
 				&::before {
-					right: 0.5rem;
 					margin-left: -50%;
+					right: 0.5rem;
 				}
+
 				&::after {
 					left: 0.5rem;
 					margin-right: -50%;
@@ -108,7 +107,7 @@
 				}
 
 				.important-message {
-					margin: 2rem 1rem 1rem 1rem;
+					margin: 2rem 1rem 1rem;
 				}
 			}
 		}
@@ -123,15 +122,18 @@
 
 			.end-date {
 				margin-top: 2em;
+
 				.date-picker {
-					width: 100%; max-width: 40rem;
 					margin-top: 2rem;
+					max-width: 40rem;
+					width: 100%;
 				}
 			}
 
 			.scalar {
 				.scalar-num {
 					margin: 2rem 0;
+
 					label {
 						display: block;
 						margin: 1rem 0;
@@ -144,45 +146,48 @@
 			.expiry-source-option {
 				display: block;
 				margin: 1rem;
+
 				* {
-					vertical-align: middle;
 					margin-right: 0.25em;
+					vertical-align: middle;
 				}
 			}
 
 			.expiry-source-url {
 				.input {
-					width: 90%;
 					margin: 1rem 3rem 0 0;
+					width: 90%;
 				}
 			}
 
 			.details-text-input {
+				margin: 1rem 0;
 				width: 90%;
-				margin: 1rem 0px;
 			}
 
 			.resources-list {
 				.item {
-					width: 90%; max-width: unset;
+					max-width: unset;
+					width: 90%;
 				}
 			}
 		}
 
 		.step-4 {
 			.input {
-				width: 5em;
-				margin-top: 2rem;
 				font-size: 2rem;
+				margin-top: 2rem;
+				width: 5em;
+
 				input {
 					text-align: right;
 				}
 			}
 
 			.denomination {
-				margin: 1rem;
 				font-size: 1.9rem;
 				font-weight: 900;
+				margin: 1rem;
 			}
 
 			.fee {

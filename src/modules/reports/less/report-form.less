@@ -1,27 +1,29 @@
 .report-form {
-	color: @color-dark-normal;
 	background: white;
+	color: @color-dark-normal;
 	font-size: 1.4rem;
 
 	&.reported {
-		color: white;
 		background: @color-danger-normal;
+		color: white;
 	}
 
 	.num-total-reports {
-		position: absolute; display: inline-block;
-		top: 4vmin; right: 4vmin;
-		padding: 1vmin;
-		line-height: 1em;
 		border: 4px solid @color-danger-normal;
 		border-radius: 1px;
+		display: inline-block;
 		font-size: 4vmin;
+		line-height: 1em;
+		padding: 1vmin;
+		position: absolute;
+		right: 4vmin;
+		top: 4vmin;
 	}
 
 	h4 {
-		padding: 0 0 1rem 0;
 		font-size: 2rem;
 		font-weight: 700;
+		padding: 0 0 1rem;
 	}
 
 	.outcome-options {
@@ -36,8 +38,26 @@
 		}
 	}
 
+	.indeterminate {
+		margin-top: 3rem;
+
+		.indeterminate-checkbox {
+			display: inline-block;
+			margin: 1rem;
+		}
+
+		.indeterminate-message {
+			display: block;
+			font-size: 0.9em;
+			font-style: italic;
+			margin: 1rem 2.5rem;
+			max-width: 55rem;
+		}
+	}
+
 	.unethical {
 		margin-top: 3rem;
+
 		.unethical-checkbox {
 			display: inline-block;
 			margin: 1rem;
@@ -45,16 +65,16 @@
 
 		.unethical-message {
 			display: block;
-			max-width: 55rem;
-			margin: 1rem 2.5rem;
 			font-size: 0.9em;
 			font-style: italic;
+			margin: 1rem 2.5rem;
+			max-width: 55rem;
 		}
 	}
 
 	.button {
-		margin: 2em 0em;
 		font-size: 1.3rem;
 		font-weight: 700;
+		margin: 2em 0;
 	}
 }

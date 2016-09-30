@@ -5,7 +5,8 @@ export default class Link extends Component {
 		className: PropTypes.string,
 		href: PropTypes.string,
 		target: PropTypes.string,
-		onClick: PropTypes.func
+		onClick: PropTypes.func,
+		disabled: PropTypes.bool
 	};
 
 	constructor(props) {
@@ -23,7 +24,7 @@ export default class Link extends Component {
 			return;
 		}
 		e.preventDefault();
-		if (this.props.onClick) {
+		if (this.props.onClick && !this.props.disabled) {
 			this.props.onClick(this.props.href);
 		}
 	}

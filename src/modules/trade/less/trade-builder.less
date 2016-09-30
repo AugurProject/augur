@@ -1,119 +1,138 @@
 .trade-builder {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 0.6rem;
+	border-collapse: separate;
+	border-spacing: 0 0.6rem;
+	width: 100%;
 
-    th {
-        border-bottom: solid 1px @color-dark-active;
-    }
+	th {
+		border-bottom: solid 1px @color-dark-active;
+	}
 
-    td {
-        vertical-align: top;
-        padding: 0.2em 0.3em 0 0.3em;
-    }
+	td {
+		padding: 0.2em 0.3em 0;
+		vertical-align: top;
+	}
 
-    .outcome-name {
-        text-align: left;
-    }
+	.outcome-name {
+		text-align: left;
+	}
 
-    .last-price {
-        text-align: right;
-    }
+	.last-price {
+		text-align: right;
+	}
 
-    .buy-sell-toggler {
-        width: 3em;
-        padding-top: 0; padding-bottom: 0;
+	.buy-sell-toggler {
+		padding-bottom: 0;
+		padding-top: 0;
+		width: 3em;
 
-        .toggler {
-            padding: 0.2em 0.6em;
-            text-align: center;
+		.toggler {
+			padding: 0.2em 0.6em;
+			text-align: center;
 
-        	&.buy {
-        		border: 2px solid @color-success-hover;
-        		border-rdius: 1px;
-        	}
-    		&.sell {
-        		border: 2px solid  @color-danger-dark;
-        		border-rdius: 1px;
-    		}
-        }
-    }
+			&.buy {
+				border: 2px solid @color-success-hover;
+				border-radius: 1px;
+			}
 
-    .num-shares {
-        max-width: 4em;
-        padding: 0 0.5em;
-        text-align: center;
-    }
+			&.sell {
+				border: 2px solid @color-danger-dark;
+				border-radius: 1px;
+			}
+		}
+	}
 
-    .limit-price {
-        max-width: 4em;
-        padding-top: 0; padding-bottom: 0;
-        text-align: center;
-    }
+	.num-shares {
+		max-width: 4em;
+		padding: 0 0.5em;
+		text-align: center;
+	}
 
-    .bid {
-        width: 12em;
-        text-align: center;
-    }
+	.limit-price {
+		max-width: 4em;
+		padding-bottom: 0;
+		padding-top: 0;
+		text-align: center;
+	}
 
-    .ask {
-        width: 12em;
-        text-align: center;
-    }
+	.bid {
+		text-align: center;
+		width: 12em;
+	}
 
-    .fee-to-pay {
-        width: 6em;
-        text-align: right;
-    }
+	.ask {
+		text-align: center;
+		width: 12em;
+	}
 
-    .total-cost {
-        width: 7.55em;
-        text-align: right;
-    }
+	.fee-to-pay {
+		text-align: right;
+		width: 6em;
+	}
 
+	.total-cost {
+		text-align: right;
+		width: 7.55em;
+	}
 
-    .trade-builder-bid-ask {
-        display: flex;
-        &.is-of-current-user {
-            .price .value {
-                text-decoration: underline;
-            }
-        }
-        .shares {
-            flex: 1.6;
-            text-align: right;
-        }
-        .price {
-            flex: 2;
-            text-align: left;
-        }
-        .shares-at {
-            margin: 0 0.6rem;
-        }
-    }
+	.trade-builder-bid-ask {
+		display: flex;
+		white-space: nowrap;
 
-    .trade-builder-body {
-        .outcome-name {
-            text-transform: uppercase;
-        }
+		&.is-of-current-user {
+			.price .value {
+				text-decoration: underline;
+			}
+		}
 
-        .total-cost {
-            font-weight: 700;
-            .colorize();
+		.shares {
+			flex: 1.6;
+			text-align: right;
+		}
 
-            .value {
-                font-weight: 900;
-            }
-        }
+		.price {
+			flex: 2;
+			text-align: left;
+		}
 
-        input.box {
-            display: block;
-            padding: 0.3em 0;
-            background: fade(@color-dark-active, 30%);
-            border-top: 0; border-left: 0; border-right: 0;
-            font-weight: 700;
-            text-align: center;
-            color: @color-warning-normal;
-        }
-    }
+		.shares-at {
+			margin: 0 0.6rem;
+		}
+	}
+
+	.trade-builder-body {
+		.outcome-name {
+			text-transform: uppercase;
+		}
+
+		.total-cost {
+			font-weight: 700;
+			.colorize();
+
+			.value {
+				font-weight: 900;
+			}
+		}
+
+		input[type="number"] {
+			appearance: textfield;
+		}
+
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-outer-spin-button {
+			appearance: none;
+			margin: 0;
+		}
+
+		input.box {
+			background: fade(@color-dark-active, 30%);
+			border-left: 0;
+			border-right: 0;
+			border-top: 0;
+			color: @color-warning-normal;
+			display: block;
+			font-weight: 700;
+			padding: 0.3em 0;
+			text-align: center;
+		}
+	}
 }

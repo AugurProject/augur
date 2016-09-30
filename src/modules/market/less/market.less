@@ -1,25 +1,25 @@
 .market {
 	.page-content {
-		margin-top: @site-header-height;
 		color: @color-dark-normal;
 		font-size: 1.7vmin;
+		margin-top: @site-header-height;
 
-		.l-container {
+		.contained {
 			background: white;
 		}
 
 		.basics,
 		.market-info {
+			background: @color-dark-hover;
+			color: @color-light-normal;
 			padding: @market-section-padding;
 			padding-bottom: 0;
-			line-height: 2em;
-			color: @color-light-normal;
-			background: @color-dark-hover;
 
 			.description {
-				line-height: 5vmin;
+				clear: both;
 				color: @color-light-normal;
 				font-size: 4vmin;
+				line-height: 5vmin;
 			}
 
 			.properties {
@@ -28,8 +28,8 @@
 		}
 
 		.market-info {
-			line-height: 1em;
 			font-size: 1.2rem;
+			line-height: 1em;
 			padding-top: 0;
 
 			.property {
@@ -37,27 +37,33 @@
 				margin: 0.5rem 2rem 0 0;
 
 				.property-value {
-					margin-left: 0.5rem;
 					font-weight: 900;
+					margin-left: 0.5rem;
 				}
 			}
 		}
 
 		.market-section-header {
-			margin-bottom: 2vmin;
-			padding: 4vmin 6vmin 2vmin 6vmin;
 			border-bottom: 1px solid @color-border;
 			font-size: 1.6em;
+			margin-bottom: 2vmin;
+			padding: 4vmin 6vmin 2vmin;
 			text-transform: uppercase;
 
 			> * {
 				margin-right: 0.6em;
 			}
-
 		}
 
-		.report-form, .trade-panel {
+		.report-form,
+		.trade-panel {
 			padding: @market-section-padding;
+		}
+	}
+
+	.updater {
+		.button {
+			margin-left: 6px;
 		}
 	}
 }

@@ -16,9 +16,9 @@ export default function(authForm) {
 	if (authForm.title !== undefined) {
 		assert.isDefined(authForm.title, `authForm.title isn't defined`);
 		assert.isString(authForm.title, `authForm.title isn't a string`);
-		// for some reason augur doesn't pass classname currently...
-		// assert.isDefined(authForm.className, `authForm.className isn't defined`);
-		// assert.isString(authForm.className, `authForm.className isn't a string`);
+
+		assert.isDefined(authForm.type, `authForm.type isn't defined`);
+		assert.isString(authForm.type, `authForm.type isn't a string`);
 
 		assert.isDefined(authForm.isVisibleName, `authForm.isVisibleName isn't defined`);
 		assert.isBoolean(authForm.isVisibleName, `authForm.isVisibleName isn't a boolean`);
@@ -34,6 +34,9 @@ export default function(authForm) {
 
 		assert.isDefined(authForm.isVisibleRememberMe, `authForm.isVisibleRememberMe isn't defined`);
 		assert.isBoolean(authForm.isVisibleRememberMe, `authForm.isVisibleRememberMe isn't a boolean`);
+
+		assert.isDefined(authForm.instruction, `authForm.instruction isn't defined`);
+		assert.isString(authForm.instruction, `authForm.instruction isn't a string`);
 
 		assert.isDefined(authForm.msgClass, `authForm.msgClass isn't defined`);
 		assert.isString(authForm.msgClass, `authForm.msgClass isn't a string`);

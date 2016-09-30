@@ -1,71 +1,91 @@
 .trade-summary {
-    padding-top: 0; padding-bottom: 0;
-    line-height: 1.5em;
-    white-space: nowrap;
+	line-height: 1.5em;
+	padding-bottom: 0;
+	padding-top: 0;
+	white-space: nowrap;
 
-    h5 {
-        display: block;
-        margin-bottom: 1.4em;
-        padding: 0 0.5em;
-        border-bottom: 1px solid fade(@color-dark-active, 50%);
-        font-size: 0.8em;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
+	h5 {
+		border-bottom: 1px solid fade(@color-dark-active, 50%);
+		display: block;
+		font-size: 0.8em;
+		font-weight: 700;
+		margin-bottom: 1.4em;
+		padding: 0 0.5em;
+		text-transform: uppercase;
+	}
 
-    .order {
-        display: flex;
-        padding: 0 0.5em;
+	.order {
+		display: flex;
+		padding: 0 0.5em;
 
-        &.total {
-            padding: 0.8em 0 0 0;
-            .value-changes {
-                .value-change {
-                    padding: 0.9em 0;
-                    border-top: 1px solid fade(@color-dark-active, 50%);
-                    font-size: 1.15em;
-                }
-            }
-        }
+		&.total {
+			padding: 0.8em 0 0;
 
-        .description {
+			.value-changes {
+				.value-change {
+					border-top: 1px solid fade(@color-dark-active, 50%);
+					font-size: 1.15em;
+					padding: 0.9em 0;
+				}
+			}
+		}
+
+		.description {
 			display: inline-block;
 			flex: 2;
-			width: 50%;
-			margin: auto;
-			line-height: 1.5em;
-			text-align: left;
 			font-weight: 400;
+			line-height: 1.5em;
+			margin: auto;
+			text-align: left;
+			width: 70%;
 
-            > * {
-            	display: inline-block;
-            	margin-right: 0.4em;
-            }
+			> * {
+				display: inline-block;
+				margin-right: 0.4em;
+			}
 
-            .action, .shares, .avg-price {
-            	font-weight: 700;
-            }
+			.action,
+			.shares,
+			.avg-price {
+				font-weight: 700;
+			}
 
-            .outcome-name {
-                font-weight: 700;
-            	text-transform: uppercase;
-            }
+			.outcome-name {
+				font-weight: 700;
+				text-transform: uppercase;
+			}
 
 			.market-description {
-            	display: none;
-            }
-        }
-        .value-changes {
-            display: inline-block;
-            width: 50%;
-            text-align: right;
+				display: none;
+			}
 
-            .value-change {
-                display: inline-block;
-                font-weight: 700;
-                font-size: 85%;
-                white-space: nowrap;
-            }
-        }
-    }
+			.hide-in-trade-summary-display {
+				display: none;
+			}
+
+			.avgPrice {
+				display: inline-block;
+				font-size: 85%;
+				font-weight: 700;
+				white-space: nowrap;
+			}
+		}
+
+		.value-changes {
+			display: inline-block;
+			text-align: right;
+			width: 30%;
+
+			.value-change {
+				display: inline-block;
+				font-size: 85%;
+				font-weight: 700;
+				white-space: nowrap;
+			}
+		}
+
+		.status-and-message {
+			display: none;
+		}
+	}
 }

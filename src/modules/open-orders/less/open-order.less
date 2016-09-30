@@ -1,73 +1,74 @@
 .market-open-orders {
 	.open-orders-list {
-		margin: 0 0 0 -1.5em;
-		padding: 4vmin 6vmin 0 6vmin;
+		font-size: 1.2rem;
+		margin-left: 4%;
+		width: 92%;
 
 		.open-orders-group {
-			display: inline-block;
-			margin: 0 0 1em 0;
-			padding: 0 1.5em;
-			vertical-align: top;
-			border-right: 1px solid @color-border;
+			width: 100%;
 
 			td {
-				padding: 0.1em 0.5em;
+				box-sizing: border-box; // this should be done for *
+				padding: 0.5em 0;
 			}
 
 			.outcome-name {
 				min-width: 9rem;
 				text-align: left;
 			}
+
 			.type {
 				text-align: right;
 			}
+
 			.shares {
 				text-align: right;
 			}
+
 			.price {
 				text-align: right;
 			}
+
 			.cancel {
-				padding: 0.1em 0;
-				text-align: left;
-				min-width: 4.6em;
-				font-size: 0.6em;
+				text-align: right;
+				width: 110px; // so there is enough space for different states
 
 				.cancel-order-action {
-					padding: 0;
+					background: transparent;
+					color: @color-danger-active;
 					height: unset;
 					line-height: unset;
+					padding: 0;
 					text-align: left;
-					color: @color-danger-active;
-					background: transparent;
 
-					&:before {
+					&::before {
 						content: '\f00d';
-						display: inline-block; position: relative;
-						left: -0.2em;
-						font-family: FontAwesome;
+						display: inline-block;
+						font-family: 'Font Awesome';
 						font-weight: 700;
-
+						left: -0.2em;
+						position: relative;
 					}
 
-					&:hover, &:active {
+					&:hover,
+					&:active {
 						font-weight: 900;
 					}
 
 					&[disabled] {
-						color: @color-muted-active !important;
 						background: transparent !important;
+						color: @color-muted-active !important;
 					}
 				}
 
 				.cancel-order-abort-confirmation {
-					padding: 0;
-					height: unset;
-					line-height: unset;
-					text-align: left;
 					background-color: transparent;
 					color: inherit;
+					height: unset;
+					line-height: unset;
 					margin-right: 1.4em;
+					padding: 0;
+					text-align: left;
 
 					&:hover {
 						font-weight: 700;
@@ -76,9 +77,16 @@
 			}
 
 			.open-order {
+				border-top: 1px solid @color-border;
+
+				&.first {
+					border-top: none;
+				}
+
 				.outcome-name {
 					text-transform: uppercase;
 				}
+
 				&.is-disabled {
 					text-decoration: line-through;
 				}

@@ -20,49 +20,70 @@
 	}
 
 	.auth-form {
-		display: block; position: relative;
-		width: 100%; max-width: 90vmin;
-		margin: 5vmin auto 0 auto;
-		padding: 9vmin 5vmin;
+		display: block;
 		font-size: 3vmin;
+		margin: 5vmin auto 0;
+		max-width: 90vmin;
+		padding: 9vmin 5vmin;
+		position: relative;
 		text-align: left;
+		width: 100%;
 
 		.title {
-			margin: 1vmin 0 2vmin 0;
 			font-size: 140%;
+			margin: 1vmin 0 2vmin;
+		}
+
+		.instruction {
+			font-size: 0.8em;
+			margin: 0.5em 0;
 		}
 
 		.msg {
-			display: inline-block; position: relative;
-			margin: 0; padding: 0 0 0 1.6vmin;
 			color: @color-danger-dark;
+			display: inline-block;
 			font-size: 80%;
 			font-weight: 700;
+			margin: 0;
+			padding: 0 0 0 1.6vmin;
+			position: relative;
+
 			&.success {
 				color: @color-success-normal;
 			}
 		}
 
+		.loginID-generated {
+			font-size: 0.45em;
+			height: 10em;
+			margin: 0.5em 0;
+			overflow: hidden;
+			resize: none;
+			width: 100%;
+			word-break: break-all;
+			word-wrap: break-word;
+		}
+
 		.account-info-container {
-			display: flex;
-			flex-flow: row wrap;
-			padding: 1.6vmin;
-			margin: 1.6vmin 0;
 			background: white;
 			border: 1px solid @color-border-dark;
 			border-radius: 1px;
+			display: flex;
+			flex-flow: row wrap;
+			margin: 1.6vmin 0;
+			padding: 1.6vmin;
 
 			label {
-				margin: 0 1vmin 0 0;
 				font-weight: bold;
+				margin: 0 1vmin 0 0;
 			}
 
 			div {
-				margin: 1vmin 0;
+				display: inline;
 				word-break: break-all;
 				word-wrap: break-word;
-				display: inline;
 			}
+
 			.link {
 				align-self: center;
 				margin: 0 0 0 1vmin;
@@ -70,47 +91,54 @@
 		}
 
 		.auth-input {
-			display: block; position: relative;
-			width: 100%;
+			display: block;
 			margin: 3vmin 0;
-			padding: 3vmin 3vmin;
+			padding: 3vmin;
+			position: relative;
+			width: 100%;
 		}
 
-				.secure-login-id-input {
-					display: block; position: relative;
-					width: 100%;
+		.login-id-input {
+			display: block;
+			position: relative;
+			width: 100%;
 
-					.box {
-						padding: 3vmin;
-					}
-				}
+			.box {
+				padding: 3vmin;
+			}
+		}
 
 		.top-link {
-			display: inline-block; position: absolute;
-			right: 2vmin; bottom: 0.5vmin;
+			bottom: 0.5vmin;
 			color: fade(@color-dark-normal, 50%);
+			display: inline-block;
 			font-size: 60%;
+			position: absolute;
+			right: 2vmin;
 		}
+
 		.bottom-container {
-			display: flex;
 			align-content: space-between;
+			display: flex;
 			flex-flow: row-reverse nowrap;
+
 			.bottom-link {
 				color: fade(@color-dark-normal, 50%);
 				font-size: 80%;
 				margin-right: 1.5vmin;
 			}
+
 			.checkbox {
 				flex: 1 auto;
 			}
 		}
 
-
 		.submit-button {
-			display: inline; position: relative;
-			margin-top: 2vmin;
+			display: inline;
 			font-size: 80%;
 			letter-spacing: 0.5px;
+			margin-top: 2vmin;
+			position: relative;
 		}
 
 		.airbitz-button-bottom {
@@ -120,9 +148,11 @@
 		}
 
 		.x-button {
-			display: block; position: absolute;
-			top: 0; right: 5vmin;
+			display: block;
 			opacity: 1;
+			position: absolute;
+			right: 5vmin;
+			top: 0;
 		}
 	}
 }

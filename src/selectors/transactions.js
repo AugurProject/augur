@@ -34,6 +34,16 @@ export default [
 				minimized: '0.36',
 				denomination: ' ETH',
 				full: '0.36 ETH'
+			},
+			noFeePrice: {
+				value: 0.31,
+				formattedValue: 0.31,
+				formatted: '0.31',
+				roundedValue: 0.3,
+				rounded: '0.3',
+				minimized: '0.31',
+				denomination: ' ETH',
+				full: '0.31 ETH'
 			}
 		},
 		status: 'processing buy...',
@@ -72,6 +82,16 @@ export default [
 				minimized: '0.68',
 				denomination: ' ETH',
 				full: '0.68 ETH'
+			},
+			noFeePrice: {
+				value: 0.31,
+				formattedValue: 0.31,
+				formatted: '0.31',
+				roundedValue: 0.3,
+				rounded: '0.3',
+				minimized: '0.31',
+				denomination: ' ETH',
+				full: '0.31 ETH'
 			}
 		},
 		status: 'failed',
@@ -106,6 +126,16 @@ export default [
 				minimized: '0.01',
 				denomination: ' ETH',
 				full: '0.01 ETH'
+			},
+			noFeePrice: {
+				value: 0.31,
+				formattedValue: 0.31,
+				formatted: '0.31',
+				roundedValue: 0.3,
+				rounded: '0.3',
+				minimized: '0.31',
+				denomination: ' ETH',
+				full: '0.31 ETH'
 			}
 		},
 		status: 'interrupted',

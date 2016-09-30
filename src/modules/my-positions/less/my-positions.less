@@ -1,9 +1,17 @@
+.positions-market-overview,
 .positions-list {
 	display: table;
-	width: 92%;
-	margin: 1vmin 0 0 4%;
-	line-height: 1.9rem;
 	font-size: 1.2rem;
+	line-height: 1.9rem;
+	margin: 1vmin 0 0 4%;
+	width: 92%;
+
+	.complete-sets {
+		.close-position-button {
+			float: left;
+			margin-top: 10px;
+		}
+	}
 
 	.position {
 		display: table-row;
@@ -20,11 +28,13 @@
 
 			.position-pair {
 				display: inline-block;
-				min-width: 7.8em;
 				line-height: 1.1em;
+				min-width: 7.8em;
 				white-space: nowrap;
 
-				&.per-share-gain, &.net-change {
+				&.realized-net,
+				&.unrealized-net,
+				&.total-net {
 					.colorize();
 				}
 
@@ -57,6 +67,14 @@
 				min-width: 4.5em;
 				text-transform: uppercase;
 			}
+		}
+	}
+}
+
+.positions-market-overview {
+	.position {
+		.description {
+			padding-left: 0;
 		}
 	}
 }

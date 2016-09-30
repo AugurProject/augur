@@ -1,86 +1,90 @@
 .site-header {
-    position: fixed; z-index: 9;
-    top: 0; left: 0;
-    width: 100%; height: @site-header-height;
-    background: white;
+	background: white;
+	height: @site-header-height;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 9;
 
-    .site-nav {
-        display: flex;
-        padding: 0 2vmin;
-        border-bottom: 3px solid @color-dark-hover;
-        font-size: 2.5vmin;
-        .l-container();
+	.site-nav {
+		border-bottom: 3px solid @color-dark-hover;
+		display: flex;
+		font-size: 2.5vmin;
+		padding: 0 2vmin;
+		.contained();
 
-        .spacer {
-            width:100%;
-        }
+		.spacer {
+			width: 100%;
+		}
 
-        .site-nav-link {
-            display: block;
-            height: @site-header-height;
-            line-height: @site-header-height;
-            padding: 0 2vw;
-            white-space: nowrap;
+		.site-nav-link {
+			display: block;
+			height: @site-header-height;
+			line-height: @site-header-height;
+			padding: 0 2vw;
+			white-space: nowrap;
 
-        	> *:not(:last-child) {
-        	    margin-right: 0.8em;
-        	}
+			> *:not(:last-child) {
+				margin-right: 0.8em;
+			}
 
-            &:hover, &:active {
-                background: @color-light-hover;
-            }
+			&:hover,
+			&:active {
+				background: @color-light-hover;
+			}
 
-            &.active {
-                background: @color-dark-hover;
-                color: @color-light-normal;
-            }
+			&.active {
+				background: @color-dark-hover;
+				color: @color-light-normal;
+			}
 
-            &:focus {
-                text-shadow: 0 0 @color-light-normal;
-            }
+			&:focus {
+				text-shadow: 0 0 @color-light-normal;
+			}
 
-            &.augur {
-            	font-family: CoreMellow;
-                font-size: 2em;
-                font-weight: 700;
-            }
+			&.augur {
+				font-family: CoreMellow;
+				font-size: 2em;
+				font-weight: 700;
+			}
 
-            &.positions {
-            }
+			&.transactions {
+				&.working {
+					&:not(.active) {
+						animation-direction: alternate;
+						animation-duration: 0.7s;
+						animation-iteration-count: infinite;
+						animation-name: site-header-item-bg;
+					}
+				}
 
-            &.transactions {
-            	&.working {
-	                &:not(.active) {
-	                	animation-name: site-header-item-bg;
-	                    animation-duration: 0.7s;
-	                    animation-iteration-count: infinite;
-	                    animation-direction: alternate;
-	                }
-            	}
-                strong {
-                    margin-left: 0 !important;
-                    margin-right: 1.5vw !important;
-                    &:last-child {
-                        margin-right: 0 !important;
-                    }
-                }
+				strong {
+					margin-left: 0 !important;
+					margin-right: 1.5vw !important;
 
-                .link-text {
-                	white-space: nowrap;
-                }
-            }
+					&:last-child {
+						margin-right: 0 !important;
+					}
+				}
 
-            strong {
-                font-weight: 900;
-            }
-        }
-    }
+				.link-text {
+					white-space: nowrap;
+				}
+			}
+
+			strong {
+				font-weight: 900;
+			}
+		}
+	}
 }
 
 @keyframes site-header-item-bg {
 	0% {
 		background: fade(orange, 4%);
 	}
+
 	100% {
 		background: fade(orange, 13%);
 	}

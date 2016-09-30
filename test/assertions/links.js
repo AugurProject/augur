@@ -8,27 +8,31 @@ export default function(links) {
 		assert.isObject(links, `links isn't an object`);
 
 		it('authLink', () => {
-			assertLink(links.authLink, 'links');
+			assertLink(links.authLink, 'authLink');
 		});
 
 		it('marketsLink', () => {
-			assertLink(links.marketsLink, 'links');
+			assertLink(links.marketsLink, 'marketsLink');
 		});
 
 		it('transactionsLink', () => {
-			assertLink(links.transactionsLink, 'links');
+			assertLink(links.transactionsLink, 'transactionsLink');
 		});
 
 		it('marketLink', () => {
-			assertLink(links.marketLink, 'links');
+			assertLink(links.marketLink, 'marketLink');
 		});
 
 		it('previousLink', () => {
-			assertLink(links.previousLink, 'links');
+			assertLink(links.previousLink, 'previousLink');
 		});
 
 		it('createMarketLink', () => {
-			assertLink(links.createMarketLink, 'links');
+			assertLink(links.createMarketLink, 'createMarketLink');
+		});
+
+		it('loginMessageLink', () => {
+			assertLink(links.loginMessageLink, 'loginMessageLink');
 		});
 	});
 };

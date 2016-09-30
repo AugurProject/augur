@@ -20,8 +20,17 @@ export default class MarketPage extends Component {
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
 		orderCancellation: PropTypes.object.isRequired,
-		isTradeCommitLocked: PropTypes.bool
+		isTradeCommitLocked: PropTypes.bool,
+		marketDataUpdater: React.PropTypes.shape({
+			update: PropTypes.func.isRequired,
+			updateIntervalSecs: PropTypes.number.isRequired
+		}).isRequired,
+		marketDataAge: React.PropTypes.shape({
+			lastUpdatedBefore: PropTypes.string.isRequired,
+			isMarketDataLoading: PropTypes.bool.isRequired
+		}).isRequired
 	};
+
 	constructor(props) {
 		super(props);
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -40,7 +49,14 @@ export default class MarketPage extends Component {
 			);
 		} else {
 			// market exists
-			nodes.push(<Basics key="basics" {...p.market} />);
+			nodes.push(<Basics
+				key="basics"
+				{...p.market}
+				isUpdaterVisible
+				marketDataAge={p.marketDataAge}
+				updateData={p.marketDataUpdater.update}
+				updateIntervalSecs={p.marketDataUpdater.updateIntervalSecs}
+			/>);
 			nodes.push(<MarketInfo key="market-info" {...p.market} />);
 
 			// report form
@@ -81,13 +97,12 @@ export default class MarketPage extends Component {
 				}
 
 				// positions
-				if (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value) {
+				if (p.market.hasCompleteSet || (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value)) {
 					nodes.push(
 						<MarketPositions
 							key="market-positions"
 							className="market-positions"
-							positionsSummary={p.market.myPositionsSummary}
-							positionOutcomes={p.market.myPositionOutcomes}
+							market={p.market}
 						/>
 					);
 				}

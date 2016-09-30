@@ -1,6 +1,8 @@
 import { makeNumber } from '../utils/make-number';
+import { randomNum } from '../utils/random-number';
 import { makeDate } from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
+import selectReportableOutcomes from '../selectors/reportable-outcomes';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 
@@ -27,7 +29,7 @@ function makeMarkets(numMarkets = 10) {
 
 	function makeMarket(index) {
 		const id = index.toString();
-		const d = new Date('2017/12/12/');
+		const d = new Date('2017/12/12');
 		const m = {
 			id,
 			author: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
@@ -58,8 +60,8 @@ function makeMarkets(numMarkets = 10) {
 		m.outcomes = makeOutcomes(index);
 
 		// reportable outcomes
-		m.reportableOutcomes = m.outcomes.slice();
-		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
+		m.reportableOutcomes = selectReportableOutcomes(m.type, m.outcomes);
+		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate', userOpenOrders: [] });
 
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
@@ -100,40 +102,34 @@ function makeMarkets(numMarkets = 10) {
 			numPositions: makeNumber(2, 'Positions', true),
 			qtyShares: makeNumber(16898, 'shares'),
 			purchasePrice: makeNumber(0.5, ' ETH'),
-			totalCost: makeNumber(5, ' ETH'),
-			shareChange: makeNumber(1, 'shares'),
-			netChange: makeNumber(1, ' ETH'),
-			totalValue: makeNumber(985, ' ETH'),
-			gainPercent: makeNumber(14, '%')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 
 		// position-outcomes
 		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, ' ETH'),
-			gainPercent: makeNumber(14, '%'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
-			shareChange: makeNumber(0.107, ' ETH'),
-			totalCost: makeNumber(12555, ' ETH'),
-			netChange: makeNumber(3344, ' ETH')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 		const randomPositionOutcome2 = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome2.position = {
 			qtyShares: makeNumber(16898, 'shares'),
-			totalValue: makeNumber(14877, ' ETH'),
-			gainPercent: makeNumber(14, '%'),
 			purchasePrice: makeNumber(0.77, ' ETH'),
-			shareChange: makeNumber(0.107, ' ETH'),
-			totalCost: makeNumber(12555, ' ETH'),
-			netChange: makeNumber(3344, ' ETH')
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 		m.myPositionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
+		// console.log('OUTCOMES -- ', m.outcomes);
+
 		m.userOpenOrdersSummary = {
-			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
-				openOrdersCount + outcome.userOpenOrders.length
-			), 0), 'Open Orders')
+			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (openOrdersCount + outcome && outcome.userOpenOrders && outcome.userOpenOrders.length), 0), 'Open Orders')
 		};
 
 		// market summary
@@ -143,7 +139,10 @@ function makeMarkets(numMarkets = 10) {
 			volume: makeNumber(Math.floor(Math.random() * 100), null, true),
 			numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
 			averageTradeSize: makeNumber(Math.random() * 100, ' ETH', true),
-			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
+			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true),
+			realizedNet: makeNumber(randomNum(900), ' ETH'),
+			unrealizedNet: makeNumber(randomNum(100), ' ETH'),
+			totalNet: makeNumber(randomNum(), ' ETH')
 		};
 
 		// report
@@ -280,6 +279,7 @@ function makeMarkets(numMarkets = 10) {
 							}
 							if (typeof limitPrice !== 'undefined') {
 								outcome.trade.limitPrice = limitPrice;
+								outcome.trade.maxNumShares = makeNumber(Math.round(10 / limitPrice) * 1000);
 							}
 							if (typeof side !== 'undefined') {
 								outcome.trade.side = side;

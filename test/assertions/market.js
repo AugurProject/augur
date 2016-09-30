@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 import assertFormattedDate from './common/formatted-date';
 import assertMarketLink from './common/market-link';
+import assertReportableOutcomes from '../../test/assertions/reportable-outcomes';
 
 export default function (market) {
 
@@ -165,6 +166,11 @@ export default function (market) {
 					assert.isNumber(trade.numShares);
 				});
 
+				it(`market.outcomes[${i}].trade.maxNumShares`, () => {
+					assert.isDefined(trade.maxNumShares);
+					assert.isNumber(trade.maxNumShares);
+				});
+
 				it(`market.outcomes[${i}].trade.limitPrice`, () => {
 					assert.isDefined(trade.limitPrice);
 					assert.isNumber(trade.limitPrice);
@@ -261,9 +267,7 @@ export default function (market) {
 		});
 
 		it('market.reportableOutcomes', () => {
-			// NOTE -- shallow check here due to deep check further down of the same selector method
-			assert.isDefined(market.reportableOutcomes);
-			assert.isArray(market.reportableOutcomes);
+			assertReportableOutcomes(market.reportableOutcomes);
 		});
 
 		const indeterminateItem = market.reportableOutcomes[market.reportableOutcomes.length - 1];
@@ -397,29 +401,19 @@ export default function (market) {
 			assertFormattedNumber(myPositionsSummary.purchasePrice, 'myPositionsSummary.purchasePrice');
 		});
 
-		it('market.myPositionsSummary.totalValue', () => {
-			assert.isDefined(myPositionsSummary.totalValue);
-			assertFormattedNumber(myPositionsSummary.totalValue, 'myPositionsSummary.totalValue');
+		it('market.myPositionsSummary.realizedNet', () => {
+			assert.isDefined(myPositionsSummary.realizedNet);
+			assertFormattedNumber(myPositionsSummary.realizedNet, 'myPositionsSummary.realizedNet');
 		});
 
-		it('market.myPositionsSummary.totalCost', () => {
-			assert.isDefined(myPositionsSummary.totalCost);
-			assertFormattedNumber(myPositionsSummary.totalCost, 'myPositionsSummary.totalCost');
+		it('market.myPositionsSummary.unrealizedNet', () => {
+			assert.isDefined(myPositionsSummary.unrealizedNet);
+			assertFormattedNumber(myPositionsSummary.unrealizedNet, 'myPositionsSummary.unrealizedNet');
 		});
 
-		it('market.myPositionsSummary.shareChange', () => {
-			assert.isDefined(myPositionsSummary.shareChange);
-			assertFormattedNumber(myPositionsSummary.shareChange, 'myPositionsSummary.shareChange');
-		});
-
-		it('market.myPositionsSummary.gainPercent', () => {
-			assert.isDefined(myPositionsSummary.gainPercent);
-			assertFormattedNumber(myPositionsSummary.gainPercent, 'myPositionsSummary.gainPercent');
-		});
-
-		it('market.myPositionsSummary.netChange', () => {
-			assert.isDefined(myPositionsSummary.netChange);
-			assertFormattedNumber(myPositionsSummary.netChange, 'myPositionsSummary.netChange');
+		it('market.myPositionsSummary.totalNet', () => {
+			assert.isDefined(myPositionsSummary.totalNet);
+			assertFormattedNumber(myPositionsSummary.totalNet, 'myPositionsSummary.totalNet');
 		});
 
 		const myMarketSummary = market.myMarketSummary;
@@ -474,6 +468,5 @@ export default function (market) {
 			assert.isDefined(onSubmitPlaceTrade);
 			assert.isFunction(onSubmitPlaceTrade);
 		});
-
 	});
 }

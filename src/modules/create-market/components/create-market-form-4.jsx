@@ -15,7 +15,6 @@ const CreateMarketForm4 = (p) => (
 			<Input
 				type="text"
 				value={p.takerFee}
-				isClearable={false}
 				onChange={(value) => p.onValuesUpdated({ takerFee: value })}
 			/>
 			<span className="denomination">%</span>
@@ -31,7 +30,6 @@ const CreateMarketForm4 = (p) => (
 			<Input
 				type="text"
 				value={p.makerFee}
-				isClearable={false}
 				onChange={(value) => p.onValuesUpdated({ makerFee: value })}
 			/>
 			<span className="denomination">%</span>
@@ -39,7 +37,7 @@ const CreateMarketForm4 = (p) => (
 				<span className="error-message">{p.errors.makerFee}</span>
 			}
 		</div>
-		<div className="initial-order-book">
+		<div className="initial-order-book displayNone">
 			<h4>Set the initial order book</h4>
 			<p>
 				Allows you to place an initial set of orders in this market's order book, which will allow traders to begin buying and selling immediately.
@@ -66,7 +64,6 @@ const CreateMarketForm4 = (p) => (
 					<Input
 						type="text"
 						value={p.initialLiquidity}
-						isClearable={false}
 						onChange={(value) => p.onValuesUpdated({ initialLiquidity: value })}
 					/>
 					<span className="denomination">ETH</span>
@@ -84,7 +81,6 @@ const CreateMarketForm4 = (p) => (
 							<Input
 								type="text"
 								value={p.initialFairPrices.values[i].value}
-								isClearable={false}
 								onChange={
 									(onChangeValue) => {
 										const prices = p.initialFairPrices.values;
@@ -118,7 +114,6 @@ const CreateMarketForm4 = (p) => (
 					<Input
 						type="text"
 						value={p.bestStartingQuantity}
-						isClearable={false}
 						onChange={(value) => p.onValuesUpdated({ bestStartingQuantity: value })}
 					/>
 					<span className="denomination">Shares</span>
@@ -136,7 +131,6 @@ const CreateMarketForm4 = (p) => (
 					<Input
 						type="text"
 						value={p.startingQuantity}
-						isClearable={false}
 						onChange={(value) => p.onValuesUpdated({ startingQuantity: value })}
 					/>
 					<span className="denomination">Shares</span>
@@ -154,7 +148,6 @@ const CreateMarketForm4 = (p) => (
 					<Input
 						type="text"
 						value={p.priceWidth}
-						isClearable={false}
 						onChange={(value) => p.onValuesUpdated({ priceWidth: value })}
 					/>
 					<span className="denomination">ETH</span>

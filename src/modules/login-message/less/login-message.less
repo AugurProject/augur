@@ -1,0 +1,130 @@
+.page.login-message {
+	.page-content {
+		font-size: 1.4em;
+
+		h1 {
+			margin: 14px 0 8px;
+		}
+
+		h2 {
+			margin: 10px 0 6px;
+		}
+
+		ol {
+			padding-left: 40px;
+		}
+
+		.contained {
+			padding: 2em;
+		}
+
+		.link {
+			color: @color-primary-active;
+
+			&:hover,
+			&:active,
+			&:focus {
+				color: @color-primary-hover;
+				text-decoration: underline;
+			}
+		}
+
+		.lets-do-this-button {
+			background-color: #43505c;
+			border: 0;
+			border-radius: 1px;
+			color: #ffffff;
+			display: inline-block;
+			font-size: 2vmin;
+			height: 2.8em;
+			line-height: 2.8em;
+			margin-top: 1em;
+			padding: 0 1em;
+			text-align: center;
+			text-transform: uppercase;
+			white-space: nowrap;
+		}
+
+		.lets-do-this-button:hover {
+			background-color: @color-dark-hover;
+			color: #ffffff;
+			text-decoration: none;
+		}
+	}
+}
+
+.site-header {
+	background: white;
+	height: @site-header-height;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 9;
+
+	.site-nav {
+		border-bottom: 3px solid @color-dark-hover;
+		display: flex;
+		font-size: 2.5vmin;
+		padding: 0 2vmin;
+		.contained();
+
+		.spacer {
+			width: 100%;
+		}
+
+		.site-nav-link {
+			display: block;
+			height: @site-header-height;
+			line-height: @site-header-height;
+			padding: 0 2vw;
+			white-space: nowrap;
+
+			> *:not(:last-child) {
+				margin-right: 0.8em;
+			}
+
+			&:hover,
+			&:active {
+				background: @color-light-hover;
+			}
+
+			&.active {
+				background: @color-dark-hover;
+				color: @color-light-normal;
+			}
+
+			&:focus {
+				text-shadow: 0 0 @color-light-normal;
+			}
+
+			&.transactions {
+				&.working {
+					&:not(.active) {
+						animation-direction: alternate;
+						animation-duration: 0.7s;
+						animation-iteration-count: infinite;
+						animation-name: site-header-item-bg;
+					}
+				}
+
+				strong {
+					margin-left: 0 !important;
+					margin-right: 1.5vw !important;
+
+					&:last-child {
+						margin-right: 0 !important;
+					}
+				}
+
+				.link-text {
+					white-space: nowrap;
+				}
+			}
+
+			strong {
+				font-weight: 900;
+			}
+		}
+	}
+}

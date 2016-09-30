@@ -1,19 +1,21 @@
 .page-content {
 	.filters {
-		position: relative; z-index: 2;
-		width: @filters-width; height: 100%;
-		margin: 1vmin 0 0 0;
-		padding: 0 0 3rem 0;
-		color: @color-dark-normal;
 		background: white;
 		border-radius: 1px;
+		color: @color-dark-normal;
 		font-size: 1.4rem;
+		height: 100%;
+		margin: 1vmin 0 0;
+		padding: 0 0 3rem;
+		position: relative;
+		width: @filters-width;
+		z-index: 2;
 
 		.title {
 			display: block;
-			margin: 2.5rem 1rem 1rem 4rem;
 			font-size: 1.5rem;
 			font-weight: 700;
+			margin: 2.5rem 1rem 1rem 4rem;
 		}
 
 		.filter {
@@ -22,9 +24,9 @@
 			white-space: nowrap;
 
 			.checkbox-label2 {
-				vertical-align: baseline;
 				color: fade(@color-dark-active, 80%);
 				font-size: 0.8em;
+				vertical-align: baseline;
 			}
 		}
 	}
@@ -34,14 +36,14 @@
 	.page-content {
 		.filters {
 			flex: 2;
+			margin: 1vmin 0 0;
+			padding: 0 1em 1em;
 			width: 100%;
-			margin: 1vmin 0 0 0;
-			padding: 0 1em 1em 1em;
 
 			.filters-group {
 				display: inline-block;
-				min-width: 31%;
 				margin-left: 2rem;
+				min-width: 31%;
 				vertical-align: top;
 
 				.title {
@@ -50,10 +52,10 @@
 
 				.filter {
 					display: inline-block;
-					width: 10em;
-					margin: 0.25em 0em 0.25em 0.5em;
 					font-size: 0.9em;
+					margin: 0.25em 0 0.25em 0.5em;
 					overflow: hidden;
+					width: 10em;
 				}
 			}
 		}

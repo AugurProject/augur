@@ -1,29 +1,32 @@
 .search-sort {
-	display: flex;
-	width: 100%;
-	padding: 2.5vmin 3rem 2.5vmin 2.7rem;
 	background: @color-dark-hover;
+	display: flex;
+	padding: 2.5vmin 3rem 2.5vmin 2.7rem;
+	width: 100%;
 
 	.search-sort-content {
 		display: flex;
 		width: 100%;
-		.l-container();
+		.contained();
 
 		.search-bar {
-			flex: 2;
 			display: inline-block;
-			width: 70%;
-			margin: 0 .5% 0 0;
+			flex: 2;
 			font-size: 3vmin;
+			margin: 0 0.5% 0 0;
 			vertical-align: top;
+			width: 70%;
 
-			&:before {
-				display: block; position: absolute; z-index: 1;
-				content: '\f002';
-				top: 0.65em; left: 0.7em;
-				font-size: inherit;
-				font-family: 'FontAwesome';
+			&::before {
 				color: @color-border-darker;
+				content: '\f002';
+				display: block;
+				font-family: 'Font Awesome';
+				font-size: inherit;
+				left: 0.7em;
+				position: absolute;
+				top: 0.65em;
+				z-index: 1;
 			}
 
 			.box {
@@ -32,23 +35,25 @@
 		}
 
 		.sort-container {
-			display: inline-block;
-			padding: 0.5em 0 0 0;
 			color: @color-light-normal;
+			display: inline-block;
 			font-size: 2vmin;
+			padding: 0.5em 0 0;
 
 			.title {
-				display: block; position: absolute;
-				top: 0; left: 1.3rem;
+				display: block;
 				font-size: 0.6em;
+				left: 1.3rem;
+				position: absolute;
 				text-transform: uppercase;
+				top: 0;
 			}
 
 			.sort {
-				width: 28vmin;
-				margin-top: 0.1em;
 				font-size: 1.55em;
+				margin-top: 0.1em;
 				white-space: nowrap;
+				width: 28vmin;
 
 				.option {
 					white-space: nowrap;
@@ -56,13 +61,13 @@
 			}
 
 			.sort-direction-button {
-				display: inline-block;
-				padding: 0;
-				color: @color-light-normal;
 				background: transparent;
 				border: 0;
-				font-family: FontAwesome;
+				color: @color-light-normal;
+				display: inline-block;
+				font-family: 'Font Awesome';
 				font-size: 1.1em;
+				padding: 0;
 			}
 		}
 	}

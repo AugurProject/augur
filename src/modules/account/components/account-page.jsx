@@ -7,6 +7,7 @@ import Input from '../../common/components/input';
 
 export default class AccountPage extends Component {
 	static propTypes = {
+		loginMessageLink: PropTypes.object.isRequired,
 		account: PropTypes.object,
 		siteHeader: PropTypes.object
 	};
@@ -14,6 +15,7 @@ export default class AccountPage extends Component {
 	constructor(props) {
 		super(props);
 		this.handleTransfer = this.handleTransfer.bind(this);
+		this.loginIDCopy = this.loginIDCopy.bind(this);
 		this.state = {
 			name: this.props.account.name,
 			editName: false,
@@ -25,10 +27,24 @@ export default class AccountPage extends Component {
 	handleTransfer = (e) => {
 		e.preventDefault();
 		const amount = this.refs.sendAmount.value;
+		const currency = this.refs.currency.value;
 		const recipient = this.refs.recipientAddress.value;
+
 		this.refs.sendAmount.value = '';
+		this.refs.currency.value = '';
 		this.refs.recipientAddress.value = '';
-		this.props.account.transferFunds(amount, recipient);
+		this.props.account.transferFunds(amount, currency, recipient);
+	}
+
+	loginIDCopy = (e) => {
+		const loginIDDisplay = this.refs.loginIDDisplay;
+
+		try {
+			loginIDDisplay.select();
+			document.execCommand('copy');
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
@@ -58,7 +74,6 @@ export default class AccountPage extends Component {
 												<Input
 													type="text"
 													value={p.account.name}
-													isClearable={false}
 													onChange={(value) => this.setState({ name: value })}
 												/>
 											}
@@ -103,21 +118,21 @@ export default class AccountPage extends Component {
 										<th className="title">Account Address:</th>
 										<td className="item">
 											<span>
-												{p.account.id}
+												{p.account.id && p.account.id.indexOf('0x') === 0 && p.account.id.replace('0x', '')}
 											</span>
 										</td>
 									</tr>
 
 									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
-										<th className="title">Secure Login ID:</th>
+										<th className="title">Login ID:</th>
 										<td className="item">
 											{!s.showFullID &&
 												<span>
-													{p.account.prettySecureLoginID}
+													{p.account.prettyLoginID}
 												</span>
 											}
 											{s.showFullID &&
-												<textarea className="full-secure-login-id" value={p.account.secureLoginID} readOnly />
+												<textarea ref="loginIDDisplay" className="display-full-login-id" title="Click here to copy your Login ID." value={p.account.loginID} readOnly onClick={this.loginIDCopy} />
 											}
 											<button
 												className="link"
@@ -129,6 +144,9 @@ export default class AccountPage extends Component {
 											>
 												{s.showFullID ? '(hide id)' : '(show full id)'}
 											</button>
+											{s.showFullID &&
+												<button className="button" title="Click here to copy your Login ID." onClick={this.loginIDCopy}>Copy Login ID</button>
+											}
 										</td>
 									</tr>
                   { p.onAirbitzManageAccount &&
@@ -153,6 +171,7 @@ export default class AccountPage extends Component {
 									<span>Send:</span>
 									<input
 										type="number"
+										step="0.1"
 										className={classnames('auth-input')}
 										min="0.0"
 										ref="sendAmount"
@@ -160,7 +179,11 @@ export default class AccountPage extends Component {
 										placeholder="Amount to transfer"
 										title="Amount to transfer"
 									/>
-									<span>Ether (eth)</span>
+									<select ref="currency" className={classnames('currency-selector')} title="Currency Type">
+										<option value="eth">ether (eth)</option>
+										<option value="realEth">Real Ether (eth)</option>
+										<option value="REP">REP (REP)</option>
+									</select>
 									<span>To:</span>
 									<input
 										type="text"
@@ -196,6 +219,16 @@ export default class AccountPage extends Component {
 								</a>
 							</div>
 						</div>
+						<div className={classnames('account-section')}>
+							<div className="account-info-item">
+								<h2 className="heading">Important Information</h2>
+								<p>
+									Read <Link {...p.loginMessageLink}>
+										important information
+									</Link> about Augur
+								</p>
+							</div>
+						</div>
 					</div>
 				</section>
 				<SiteFooter />
@@ -203,8 +236,3 @@ export default class AccountPage extends Component {
 		);
 	}
 }
-// <select ref="currency" className={classnames('currency-selector')} title="Currency Type">
-// 	<option value="eth">ether (eth)</option>
-// 	<option value="realEth">Real Ether (eth)</option>
-// 	<option value="REP">REP (REP)</option>
-// </select>

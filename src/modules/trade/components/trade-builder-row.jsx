@@ -21,26 +21,22 @@ const TradeBuilderRow = (p) => {
 				</span>}
 				<ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
 			</td>
-			{p.trade.side === 'sell' &&
-				<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
-					{!p.showFullOrderBook && !!p.topBid && !!p.topBid.price &&
-						<ValueDenomination {...p.topBid.price} />
-					}
-					{!!p.showFullOrderBook && !!bids && bids.map((bid, i) => (
-						<TradeBuilderBidAsk key={i} bidAsk={bid} />
-					))}
-				</td>
-			}
-			{p.trade.side === 'buy' &&
-				<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'sell') })}>
-					{!p.showFullOrderBook && !!p.topAsk && !!p.topAsk.price &&
-						<ValueDenomination {...p.topAsk.price} />
-					}
-					{!!p.showFullOrderBook && !!asks && asks.map((ask, i) => (
-						<TradeBuilderBidAsk key={i} bidAsk={ask} />
-					))}
-				</td>
-			}
+			<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
+				{!p.showFullOrderBook && !!p.topBid && !!p.topBid.price &&
+					<ValueDenomination {...p.topBid.price} />
+				}
+				{!!p.showFullOrderBook && !!bids && bids.map((bid, i) => (
+					<TradeBuilderBidAsk key={i} bidAsk={bid} />
+				))}
+			</td>
+			<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'sell') })}>
+				{!p.showFullOrderBook && !!p.topAsk && !!p.topAsk.price &&
+					<ValueDenomination {...p.topAsk.price} />
+				}
+				{!!p.showFullOrderBook && !!asks && asks.map((ask, i) => (
+					<TradeBuilderBidAsk key={i} bidAsk={ask} />
+				))}
+			</td>
 			<td className={classnames('buy-sell-toggler', { fade: p.isFaded && !p.trade.numShares })}>
 				{!!p.trade && p.trade.side &&
 					<Toggler
@@ -53,8 +49,11 @@ const TradeBuilderRow = (p) => {
 			</td>
 			<td className={classnames('num-shares', { fade: p.isFaded && !p.trade.numShares })}>
 				<Input
-					type="text"
+					type="number"
+					step="0.1"
 					value={p.trade.numShares}
+					title={p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
+					min="0" max={p.trade.maxNumShares} step="any"
 					onChange={(value) => p.trade.updateTradeOrder(value, undefined, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}
@@ -62,8 +61,10 @@ const TradeBuilderRow = (p) => {
 			</td>
 			<td className={classnames('limit-price', { fade: p.isFaded && !p.trade.numShares })}>
 				<Input
-					type="text"
+					type="number"
+					step="0.1"
 					value={p.trade.limitPrice}
+					step="any"
 					onChange={(value) => p.trade.updateTradeOrder(undefined, value, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}

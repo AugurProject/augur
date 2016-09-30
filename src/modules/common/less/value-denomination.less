@@ -2,29 +2,41 @@
 	.value {
 		font-weight: 900;
 	}
+
 	.denomination {
+		font-weight: 400;
 		margin-left: 0.2em;
-		font-weight: 400;
 	}
+
 	.prefix {
-		margin-right: 0.3em;
 		font-weight: 400;
+		margin-right: 0.3em;
+	}
+
+	.postfix {
+		font-weight: 400;
+		margin-left: 0.3em;
 	}
 }
 
 .colorize() {
-	&.positive, .positive {
+	&.positive,
+	.positive {
 		.value {
 			color: @color-positive;
 		}
+
 		.denomination {
 			color: fade(@color-positive, 80%);
 		}
 	}
-	&.negative, .negative {
+
+	&.negative,
+	.negative {
 		.value {
 			color: @color-negative;
 		}
+
 		.denomination {
 			color: fade(@color-negative, 80%);
 		}
@@ -33,6 +45,10 @@
 
 .value-date {
 	font-weight: 900;
+}
+
+.value-timestamp {
+	font-weight: 400;
 }
 
 .colorize {

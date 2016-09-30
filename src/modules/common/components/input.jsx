@@ -65,7 +65,7 @@ export default class Input extends Component {
 		const s = this.state;
 
 		return (
-			<div className={classnames('input', { clearable: p.isClearable }, this.props.className)}>
+			<div className={classnames('input', this.props.className)}>
 				{!p.isMultiline &&
 					<input
 						{...p}
