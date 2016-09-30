@@ -42,11 +42,11 @@ const testState = {
 		address: '0xtest123',
 		id: '0xtest123',
 		name: 'testTesterson',
-		secureLoginID: 'testSecureID',
+		loginID: 'testSecureID',
 		localNode: false,
 		prettyAddress: '0xte...t123',
 		linkText: 'testTesterson',
-		prettySecureLoginID: 'test...reID',
+		prettyLoginID: 'test...reID',
 		ether: 0,
 		realEther: 0,
 		rep: 0,
@@ -367,7 +367,10 @@ const testState = {
 			id: '0xMARKET4',
 			author: '0xtest456'
 		}
-	]
+	],
+	loginMessage: {
+		version: 1
+	}
 };
 
 export default testState;

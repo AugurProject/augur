@@ -13,7 +13,7 @@ import {
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
-import { abi } from '../../../../services/augurjs';
+import { abi, constants } from '../../../../services/augurjs';
 import { ONE, TWO } from '../../../trade/constants/numbers';
 import validateTakerFee from '../../validators/validate-taker-fee';
 import validateMakerFee from '../../validators/validate-maker-fee';
@@ -49,15 +49,20 @@ export const select = (formState) => {
 export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
 		const halfPriceWidth = abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO);
-		const defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
+		const numOutcomes = formState.type === CATEGORICAL ?
+			abi.bignum(formState.categoricalOutcomes.length) : TWO;
+		// Sets the initialFairPrices to midpoint of min/max
+		const defaultValue = formState.type === SCALAR ?
 					(abi.bignum(formState.scalarBigNum).plus(halfPriceWidth))
 						.plus(abi.bignum(formState.scalarSmallNum).minus(halfPriceWidth))
 						.dividedBy(TWO)
+						.round(constants.PRECISION.decimals)
 						.toNumber() :
 					halfPriceWidth.neg()
 						.plus(ONE)
 						.plus(halfPriceWidth)
-						.dividedBy(TWO)
+						.dividedBy(numOutcomes)
+						.round(constants.PRECISION.decimals)
 						.toNumber();
 
 		const values = [];

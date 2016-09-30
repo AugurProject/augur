@@ -15,7 +15,7 @@ export const EXPIRY_SOURCE_GENERIC = '';
 export const EXPIRY_SOURCE_SPECIFIC = 'specific';
 
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
-export const INITIAL_LIQUIDITY_MIN = 50;
+export const INITIAL_LIQUIDITY_MIN = 250;
 
 export const TAKER_FEE_DEFAULT = 2;
 export const TAKER_FEE_MIN = 1;
@@ -25,10 +25,10 @@ export const MAKER_FEE_DEFAULT = 1;
 export const MAKER_FEE_MIN = 0;
 
 // Advanced Market Creation Defaults
-export const STARTING_QUANTITY_DEFAULT = 10;
+export const STARTING_QUANTITY_DEFAULT = 100;
 export const STARTING_QUANTITY_MIN = 0.1;
 
-export const BEST_STARTING_QUANTITY_DEFAULT = 20;
+export const BEST_STARTING_QUANTITY_DEFAULT = 100;
 export const BEST_STARTING_QUANTITY_MIN = 0.1;
 
 export const PRICE_WIDTH_DEFAULT = 0.1;

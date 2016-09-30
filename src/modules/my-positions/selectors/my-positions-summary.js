@@ -1,109 +1,62 @@
 import memoizerific from 'memoizerific';
-import { abi } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { formatEther, formatPercent, formatShares, formatNumber } from '../../../utils/format-number';
+import { formatEther, formatShares, formatNumber } from '../../../utils/format-number';
 import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
 
 export default function () {
 	const myPositions = selectMyPositions();
-
 	return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice, sharesPurchased) => {
-	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
+export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, netEffectiveTrades, outcomeAccountTrades, lastPrice) => {
+	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition && !netEffectiveTrades) {
 		return null;
 	}
-	const bnLastPrice = abi.bignum(lastPrice);
-	let numShares = ZERO;
-	let qtyShares = ZERO;
-	let totalValue = ZERO;
-	let totalCost = ZERO;
-	let totalSellShares = ZERO;
-	outcomeAccountTrades.forEach(outcomeAccountTrade => {
-		if (!outcomeAccountTrade) {
-			return;
-		}
-
-		// buy or sell
-		if (outcomeAccountTrade.type === 1) {
-			numShares = abi.bignum(outcomeAccountTrade.shares);
-			qtyShares = qtyShares.plus(numShares);
-			totalValue = totalValue.plus(bnLastPrice.times(numShares));
-			totalCost = totalCost.plus(abi.bignum(outcomeAccountTrade.price).times(numShares));
-		} else {
-			totalSellShares = totalSellShares.plus(abi.bignum(outcomeAccountTrade.shares));
-		}
-	});
-
-	// remove sells
-	const avgPerShareValue = calculateAvgPrice(qtyShares, totalValue);
-	const avgPerShareCost = calculateAvgPrice(qtyShares, totalCost);
-
-	totalValue = totalValue.minus(totalSellShares.times(avgPerShareValue));
-	totalCost = totalCost.minus(totalSellShares.times(avgPerShareCost));
-
-	return generatePositionsSummary(1, abi.bignum(qtyShares).minus(totalSellShares).toFixed(), totalValue.toFixed(), totalCost.toFixed());
+	const { position, realized, unrealized, weightedPrice } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition, netEffectiveTrades);
+	return generatePositionsSummary(1, position, weightedPrice, realized, unrealized);
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 	if (!markets || !markets.length) {
 		return null;
 	}
-
 	let qtyShares = ZERO;
-	let totalValue = ZERO;
-	let totalCost = ZERO;
+	let totalRealizedNet = ZERO;
+	let totalUnrealizedNet = ZERO;
 	const positionOutcomes = [];
-
 	markets.forEach(market => {
 		market.outcomes.forEach(outcome => {
 			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
 				return;
 			}
 			qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
-			totalValue = totalValue.plus(abi.bignum(outcome.position.totalValue.value));
-			totalCost = totalCost.plus(abi.bignum(outcome.position.totalCost.value));
+			totalRealizedNet = totalRealizedNet.plus(abi.bignum(outcome.position.realizedNet.value));
+			totalUnrealizedNet = totalUnrealizedNet.plus(abi.bignum(outcome.position.unrealizedNet.value));
 			positionOutcomes.push(outcome);
 		});
 	});
-
-	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares.toFixed(), totalValue.toFixed(), totalCost.toFixed());
-
+	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, 0, totalRealizedNet, totalUnrealizedNet);
 	return {
 		...positionsSummary,
 		positionOutcomes
 	};
 });
 
-export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, totalValue, totalCost) => {
-	const bnQtyShares = abi.bignum(qtyShares);
-	const bnTotalCost = abi.bignum(totalCost);
-	const bnTotalValue = abi.bignum(totalValue);
-	const purchasePrice = calculateAvgPrice(bnQtyShares, bnTotalCost);
-	const valuePrice = calculateAvgPrice(bnQtyShares, bnTotalValue);
-	const shareChange = valuePrice.minus(purchasePrice);
-	let gainPercent = 0;
-	if (!bnTotalCost.eq(ZERO)) {
-		gainPercent = bnTotalValue.minus(bnTotalCost).dividedBy(bnTotalCost).times(100);
-	}
-	const netChange = bnTotalValue.minus(bnTotalCost);
-
+export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
+	const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
 	return {
-		numPositions: formatNumber(numPositions, { decimals: 0, decimalsRounded: 0, denomination: 'positions', positiveSign: false, zeroStyled: false }),
-		qtyShares: formatShares(bnQtyShares),
-		purchasePrice: formatEther(purchasePrice),
-		totalValue: formatEther(totalValue),
-		totalCost: formatEther(totalCost),
-		shareChange: formatEther(shareChange),
-		gainPercent: formatPercent(gainPercent),
-		netChange: formatEther(netChange)
+		numPositions: formatNumber(numPositions, {
+			decimals: 0,
+			decimalsRounded: 0,
+			denomination: 'positions',
+			positiveSign: false,
+			zeroStyled: false
+		}),
+		qtyShares: formatShares(qtyShares),
+		purchasePrice: formatEther(meanTradePrice),
+		realizedNet: formatEther(realizedNet),
+		unrealizedNet: formatEther(unrealizedNet),
+		totalNet: formatEther(totalNet)
 	};
 });
-
-function calculateAvgPrice(qtyShares, totalCost) {
-	if (!qtyShares || !totalCost || !abi.number(qtyShares) || !abi.number(totalCost)) {
-		return ZERO;
-	}
-	return totalCost.dividedBy(qtyShares);
-}

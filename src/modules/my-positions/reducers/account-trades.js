@@ -6,6 +6,14 @@ export default function (accountTrades = null, action) {
 	switch (action.type) {
 	case UPDATE_ACCOUNT_TRADES_DATA:
 		if (action.data) {
+			if (action.marketID) {
+				return {
+					...accountTrades,
+					[action.marketID]: {
+						...action.data[action.marketID]
+					}
+				};
+			}
 			return {
 				...accountTrades,
 				...action.data

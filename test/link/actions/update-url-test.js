@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
+import * as setTitle from '../../../src/utils/set-title';
 
 describe(`modules/link/actions/update-url.js`, () => {
 	let { state, store } = mockStore.default;
@@ -13,6 +14,8 @@ describe(`modules/link/actions/update-url.js`, () => {
 		type: 'UPDATE_URL',
 		value: 'loadFullMarket has been called, this is a stub.'
 	});
+
+	sinon.spy(setTitle, 'default');
 
 	action = proxyquire('../../../src/modules/link/actions/update-url', {
 		'../../market/actions/load-full-market': mockFullMarket
@@ -31,10 +34,35 @@ describe(`modules/link/actions/update-url.js`, () => {
 			pushState: (a, b, c) => window.history.state.push(c)
 		};
 		global.window.scrollTo = (x, y) => true;
+
+		global.document = {};
+		setTitle.default.reset();
 	});
 
 	afterEach(() => {
 		global.window = {};
+	});
+
+	after(() => {
+		setTitle.default.restore();
+	});
+
+	it(`should call 'setTitle' if no title is passed in`, () => {
+		store.dispatch(action.updateURL(URL));
+
+		assert(setTitle.default.calledOnce, `'setTitle' was not called once as expected`);
+	});
+
+	it(`should call 'setTitle' if a title is passed in`, () => {
+		store.dispatch(action.updateURL(URL, 'test'));
+
+		assert(setTitle.default.calledOnce, `'setTitle' was not called once as expected`);
+	});
+
+	it(`should not call 'setTitle' if a title is passed in as 'false'`, () => {
+		store.dispatch(action.updateURL(URL, false));
+
+		assert(setTitle.default.notCalled, `'setTitle' was unexpectedly called`);
 	});
 
 	it(`should dispatch a UPDATE_URL action type with a parsed URL`, () => {
@@ -42,11 +70,10 @@ describe(`modules/link/actions/update-url.js`, () => {
 		out = [{
 			type: 'UPDATE_URL',
 			parsedURL: {
-				pathArray: ['/test'],
 				searchParams: {
 					search: 'example'
 				},
-				url: '/test?search=example'
+				url: '/?search=example'
 			}
 		}, {
 			type: 'UPDATE_URL',

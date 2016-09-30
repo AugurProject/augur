@@ -16,8 +16,8 @@ const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) =>
 		return null;
 	}
 
-	const openOrdersCount = outcomes.reduce((openOrdersCount, outcome) => (
-		openOrdersCount + outcome.userOpenOrders.length
+	const openOrdersCount = (outcomes || []).reduce((openOrdersCount, outcome) => (
+		openOrdersCount + (outcome.userOpenOrders ? outcome.userOpenOrders.length : 0)
 	), 0);
 
 	return {

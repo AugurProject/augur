@@ -1,6 +1,7 @@
 /*
  * Author: priecint
  */
+import { formatEther, formatRealEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -46,23 +47,31 @@ export function processCancelOrder(transactionID, orderID) {
 		}
 
 		const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, orderBooks);
-		if (order == null) {
+		if (order == null || !order.amount || !order.price) {
 			return;
 		}
 
 		dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.market.id, transaction.data.order.type));
-		dispatch(updateExistingTransaction(transactionID, { status: CANCELLING_ORDER }));
+		dispatch(updateExistingTransaction(transactionID, {
+			status: CANCELLING_ORDER,
+			message: `canceling order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.BuyAndSellShares.cancel }, augur.rpc.gasPrice))
+		}));
 
 		augur.cancel({
 			trade_id: orderID,
-			onSent: (res) => {
-				console.log('augur.cancel sent: %o', res);
-				dispatch(updateExistingTransaction(transactionID, { hash: res.txHash }));
-			},
+			onSent: (res) => console.log('augur.cancel sent: %o', res),
 			onSuccess: (res) => {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+					hash: res.hash,
+					timestamp: res.timestamp,
+					totalReturn: formatEther(res.cashRefund),
+					gasFees: formatRealEther(res.gasFees)
+				}));
 				dispatch(loadBidsAsks(transaction.data.market.id, () => {
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(transaction.data.market.id));

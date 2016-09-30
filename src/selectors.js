@@ -9,6 +9,8 @@ import authForm from './modules/auth/selectors/auth-form';
 import marketsHeader from './modules/markets/selectors/markets-header';
 import marketsTotals from './modules/markets/selectors/markets-totals';
 import pagination from './modules/markets/selectors/pagination';
+import marketDataUpdater from './modules/markets/selectors/market-data-updater';
+import marketDataAge from './modules/market/selectors/market-data-age';
 
 import markets from './modules/markets/selectors/markets';
 import allMarkets from './modules/markets/selectors/markets-all';
@@ -62,6 +64,8 @@ const selectors = {
 
 	market,
 	selectedOutcome,
+	marketDataUpdater,
+	marketDataAge,
 
 	filters,
 	searchSort,

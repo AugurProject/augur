@@ -14,8 +14,7 @@ export default function () {
 		store.dispatch);
 }
 
-export const selectMarketsHeader = memoizerific(1)(
-(selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {
+export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {
 	const obj = {
 		selectedMarketsHeader,
 		numMarkets: numFiltered,

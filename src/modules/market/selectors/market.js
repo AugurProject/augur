@@ -29,9 +29,11 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { abi, constants } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
+import { addSellCompleteSetsTransaction } from '../../transactions/actions/add-sell-complete-sets-transaction';
 import { commitReport } from '../../reports/actions/commit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
@@ -51,13 +53,15 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 
 import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
 
+import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
+
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, smallestPositions } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -77,6 +81,8 @@ export const selectMarket = (marketID) => {
 		outcomesData[marketID],
 
 		marketReport,
+		(accountPositions || {})[marketID],
+		(netEffectiveTrades || {})[marketID],
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
@@ -89,6 +95,7 @@ export const selectMarket = (marketID) => {
 
 		orderBooks[marketID],
 		orderCancellation,
+		(smallestPositions || {})[marketID],
 		store.dispatch);
 };
 
@@ -109,6 +116,8 @@ export function assembleMarket(
 		isFavorite,
 		marketOutcomesData,
 		marketReport,
+		marketAccountPositions,
+		marketNetEffectiveTrades,
 		marketAccountTrades,
 		marketTradeInProgress,
 		endDateYear,
@@ -117,6 +126,7 @@ export function assembleMarket(
 		isReportConfirmationPhase,
 		orderBooks,
 		orderCancellation,
+		smallestPosition,
 		dispatch) {
 
 	if (!assembledMarketsCache[marketID]) {
@@ -128,6 +138,8 @@ export function assembleMarket(
 			isFavorite,
 			marketOutcomesData,
 			marketReport,
+			marketAccountPositions,
+			marketNetEffectiveTrades,
 			marketAccountTrades,
 			marketTradeInProgress,
 			endDateYear,
@@ -136,6 +148,7 @@ export function assembleMarket(
 			isReportConfirmationPhase,
 			orderBooks,
 			orderCancellation,
+			smallestPosition,
 			dispatch) => { // console.log('>>assembleMarket<<');
 
 			const market = {
@@ -143,6 +156,8 @@ export function assembleMarket(
 				description: marketData.description || '',
 				id: marketID
 			};
+
+			const now = new Date();
 
 			switch (market.type) {
 			case BINARY:
@@ -165,7 +180,7 @@ export function assembleMarket(
 			}
 
 			market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
-			market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+			market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';
 			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
 			market.isOpen = isOpen;
@@ -186,6 +201,10 @@ export function assembleMarket(
 			market.marketLink = selectMarketLink(market, dispatch);
 			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
+
+			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
+			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.limit.dividedBy(10));
+			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
 
 			market.report = {
 				...marketReport,
@@ -209,24 +228,36 @@ export function assembleMarket(
 
 				if (market.type === 'scalar') {
 					// note: not actually a percent
-					outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
-						decimals: 2,
-						decimalsRounded: 1,
-						denomination: '',
-						positiveSign: false,
-						zeroStyled: true
-					});
+					if (outcome.lastPrice.value) {
+						outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
+							decimals: 2,
+							decimalsRounded: 1,
+							denomination: '',
+							positiveSign: false,
+							zeroStyled: true
+						});
+					} else {
+						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(abi.bignum(2));
+
+						outcome.lastPricePercent = formatNumber(midPoint, {
+							decimals: 2,
+							decimalsRounded: 1,
+							denomination: '',
+							positiveSign: false,
+							zeroStyled: true
+						});
+					}
 				} else {
 					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
 				}
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, outcomeData.sharesPurchased);
+				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], marketNetEffectiveTrades, (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
-				outcome.topBid = selectTopBid(orderBook);
-				outcome.topAsk = selectTopAsk(orderBook);
+				outcome.topBid = selectTopBid(orderBook, false);
+				outcome.topAsk = selectTopAsk(orderBook, false);
 
 				marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 
@@ -247,17 +278,19 @@ export function assembleMarket(
 
 			market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
-			market.reportableOutcomes = market.outcomes.slice();
+			market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
 			market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
 			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
 			market.tradeSummary = generateTradeSummary(marketTradeOrders);
 
-			market.myPositionsSummary = generateMarketsPositionsSummary([market]);
-			if (market.myPositionsSummary) {
-				market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
-				delete market.myPositionsSummary.positionOutcomes;
+			if (!!marketAccountTrades) {
+				market.myPositionsSummary = generateMarketsPositionsSummary([market]);
+				if (market.myPositionsSummary) {
+					market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
+					delete market.myPositionsSummary.positionOutcomes;
+				}
 			}
 
 			market.myMarketSummary = selectMyMarket(market)[0];

@@ -13,7 +13,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 // Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, marketsData, outcomesData, loginAccount, orderBooks, orderCancellation } = getState();
+		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
 
@@ -57,8 +57,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.toNumber() :
 			0.5;
 		const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice :
-			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || defaultPrice;
+			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
+			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
 		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
@@ -81,59 +81,73 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
-			let position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased);
-			const bnNumShares = abi.bignum(newTradeDetails.numShares);
-			if (position && position.gt(ZERO)) {
-				if (position.gt(bnNumShares) && newTradeDetails.side === 'sell' && position.minus(bnNumShares).lt(constants.PRECISION.limit)) {
-					newTradeDetails.numShares = position.toNumber();
-				} else {
-					position = position.round(2, BigNumber.ROUND_DOWN);
+			augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+				if (!sharesPurchased || sharesPurchased.error) {
+					console.error('getParticipantSharesPurchased:', sharesPurchased);
+					return dispatch({
+						type: UPDATE_TRADE_IN_PROGRESS, data: {
+							marketID,
+							outcomeID,
+							details: newTradeDetails
+						}
+					});
 				}
-				console.log('position:', position.toFixed());
-			}
-			newTradeDetails.tradeActions = augur.getTradingActions(
-				newTradeDetails.side,
-				newTradeDetails.numShares,
-				newTradeDetails.limitPrice,
-				market && market.takerFee || 0,
-				market && market.makerFee || 0,
-				loginAccount.id,
-				position && position.toNumber(),
-				outcomeID,
-				market.cumulativeScale,
-				orderBooks && orderBooks[marketID] || {});
-			if (newTradeDetails.tradeActions) {
-				const numTradeActions = newTradeDetails.tradeActions.length;
-				if (numTradeActions) {
-					let totalCost = ZERO;
-					let tradingFeesEth = ZERO;
-					let gasFeesRealEth = ZERO;
-					for (let i = 0; i < numTradeActions; ++i) {
-						totalCost = totalCost.plus(abi.bignum(newTradeDetails.tradeActions[i].costEth));
-						tradingFeesEth = tradingFeesEth.plus(abi.bignum(newTradeDetails.tradeActions[i].feeEth));
-						gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(newTradeDetails.tradeActions[i].gasEth));
-					}
-					newTradeDetails.totalCost = totalCost.toFixed();
-					newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
-					newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
-					newTradeDetails.totalFee = tradingFeesEth.toFixed();
-					if (newTradeDetails.side === 'sell') {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth)).times(100).toFixed();
-					} else {
-						newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth)).times(100).toFixed();
+				const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+				newTradeDetails.tradeActions = augur.getTradingActions(
+					newTradeDetails.side,
+					newTradeDetails.numShares,
+					newTradeDetails.limitPrice,
+					market && market.takerFee || 0,
+					market && market.makerFee || 0,
+					loginAccount.id,
+					position && position.toNumber(),
+					outcomeID,
+					market.cumulativeScale,
+					orderBooks && orderBooks[marketID] || {});
+				if (newTradeDetails.tradeActions) {
+					const numTradeActions = newTradeDetails.tradeActions.length;
+					if (numTradeActions) {
+						let totalCost = ZERO;
+						let tradingFeesEth = ZERO;
+						let gasFeesRealEth = ZERO;
+						for (let i = 0; i < numTradeActions; ++i) {
+							totalCost = totalCost.plus(abi.bignum(newTradeDetails.tradeActions[i].costEth));
+							tradingFeesEth = tradingFeesEth.plus(abi.bignum(newTradeDetails.tradeActions[i].feeEth));
+							gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(newTradeDetails.tradeActions[i].gasEth));
+						}
+						newTradeDetails.totalCost = totalCost.toFixed();
+						newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
+						newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
+						newTradeDetails.totalFee = tradingFeesEth.toFixed();
+						if (newTradeDetails.side === 'sell') {
+							newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
+								.times(100).abs()
+								.toFixed();
+						} else {
+							newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
+								.times(100)
+								.toFixed();
+						}
 					}
 				}
-			}
-			console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
+				console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
+				dispatch({
+					type: UPDATE_TRADE_IN_PROGRESS, data: {
+						marketID,
+						outcomeID,
+						details: newTradeDetails
+					}
+				});
+			});
+		} else {
+			dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: newTradeDetails
+				}
+			});
 		}
-
-		dispatch({
-			type: UPDATE_TRADE_IN_PROGRESS, data: {
-				marketID,
-				outcomeID,
-				details: newTradeDetails
-			}
-		});
 	};
 }
 

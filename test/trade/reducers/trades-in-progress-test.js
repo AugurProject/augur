@@ -37,7 +37,7 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
 		const testAction = {
 			type: UPDATE_URL,
 			parsedURL: {
-				pathArray: ['/register']
+				searchParams: { page: 'register' }
 			}
 		};
 

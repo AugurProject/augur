@@ -23,7 +23,6 @@ export default function () {
 	if (marketIDsMissingInfo.length) {
 		store.dispatch(loadMarketsInfo(marketIDsMissingInfo));
 	}
-
 	return markets;
 }
 

@@ -20,6 +20,9 @@ ex.connect = function connect(env, cb) {
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
 	augur.rpc.retryDroppedTxs = env.retryDroppedTxs;
 	augur.options.debug.trading = true;
+	augur.options.debug.nonce = true;
+	augur.rpc.debug.broadcast = false;
+	augur.rpc.debug.tx = true;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
@@ -71,7 +74,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		if (unlocked && !unlocked.error) {
 			augur.web.logout();
 			console.log('using unlocked account:', augur.from);
-			return cb(null, { id: augur.from });
+			return cb(null, { address: augur.from, id: augur.from });
 		}
 
 		// otherwise, no account available

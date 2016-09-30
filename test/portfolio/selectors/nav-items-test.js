@@ -53,7 +53,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
 	const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
 		{
 			numPositions: formatNumber(10, { denomination: 'positions' }),
-			netChange: formatEther(2)
+			totalNet: formatEther(2)
 		}
 	));
 	const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
@@ -89,9 +89,9 @@ describe('modules/portfolio/selectors/nav-items', () => {
 				page: 'test'
 			},
 			page: MY_POSITIONS,
-			leadingTitle: 'Total Positions',
+			leadingTitle: 'Total Number of Positions',
 			leadingValue: formatNumber(10, { denomination: 'positions' }),
-			trailingTitle: 'Total Gain/Loss',
+			trailingTitle: 'Total Profit/Loss',
 			trailingValue: formatEther(2)
 		},
 		{

@@ -12,13 +12,22 @@ describe(`modules/auth/actions/process-fund-new-account.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const store = mockStore(testState);
-	const fakeAugurJS = { fundNewAccount: () => {} };
+	const fakeAugurJS = {
+		fundNewAccount: () => {},
+		Register: { register: () => {} }
+	};
 	const fakeUpdateTrans = { updateExistingTransaction: () => {} };
 	const fakeUpdateAssets = { updateAssets: () => {} };
 
+	sinon.stub(fakeAugurJS.Register, 'register', (o) => {
+		o.onSent();
+		o.onSuccess({ hash: '0xbeef' });
+		o.onFailed({ message: 'this is a failure message' });
+	});
+
 	sinon.stub(fakeAugurJS, 'fundNewAccount', (env, address, branch, onSent, onSuccess, onFailed) => {
-		onSent({ txHash: '0xdeadbeef' });
-		onSuccess();
+		onSent();
+		onSuccess({ hash: '0xdeadbeef' });
 		onFailed({ message: 'this is a failure message' });
 	});
 

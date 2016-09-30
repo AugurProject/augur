@@ -1,38 +1,17 @@
 /**
- * @param {Array} pathArray
  * @param {Object} searchParams
- * @return {{pathArray: Array, searchParams: Object, url: String}}
+ * @return {{searchParams: Object, url: String}}
  */
-export function makeLocation(pathArray = [], searchParams = {}) {
-	const search = searchParams && Object.keys(searchParams).map(key =>
-		`${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`
-		).join('&') || '';
-	let pathname = pathArray.join('');
-	let url;
-
-	if (!pathname.length) {
-		pathname = '/';
-	}
-
+export function makeLocation(searchParams = {}) {
+	const search = searchParams && Object.keys(searchParams).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`).join('&') || '';
+	let url = '/';
 	if (search.length) {
-		url = `${pathname}?${search}`;
-	} else {
-		url = pathname;
+		url = `${url}?${search}`;
 	}
-
 	return {
-		pathArray,
 		searchParams,
 		url
 	};
-}
-
-function parsePath(pathString) {
-	if (!pathString || pathString === '/') {
-		return ['/'];
-	}
-	return pathString.split('/').filter(pathItem =>
-		pathItem && pathItem.indexOf('.') <= -1).map(pathItem => `/${pathItem}`);
 }
 
 function parseSearch(searchString) {
@@ -54,18 +33,15 @@ function parseSearch(searchString) {
 
 /**
  * @param {String} url
- * @return {{pathArray: Array, searchParams: Object, url: String}}
+ * @return {{searchParams: Object, url: String}}
  */
 export function parseURL(url) {
 	const splitURL = url.split('?');
 	const parsed = {};
 
-	if (splitURL.length >= 1) {
-		parsed.pathArray = parsePath(splitURL[0]);
-	}
 	if (splitURL.length >= 2) {
 		parsed.searchParams = parseSearch(splitURL[1]);
 	}
 
-	return makeLocation(parsed.pathArray, parsed.searchParams);
+	return makeLocation(parsed.searchParams);
 }

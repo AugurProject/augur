@@ -1,7 +1,7 @@
+import async from 'async';
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
-import { ZERO } from '../../trade/constants/numbers';
-import { abi } from '../../../services/augurjs';
+import { augur, abi, constants } from '../../../services/augurjs';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
@@ -17,21 +17,17 @@ export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
+		console.log('market trade in progress:', marketTradeInProgress);
 		const market = selectMarket(marketID);
-
 		if (!marketTradeInProgress || !market) {
 			return;
 		}
-
-		let outcomeTradeInProgress;
-		Object.keys(marketTradeInProgress).forEach(outcomeID => {
-			outcomeTradeInProgress = marketTradeInProgress[outcomeID];
+		async.forEachOf(marketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
+			console.log('outcomeTradeInProgress', outcomeID, outcomeTradeInProgress);
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
-				return;
+				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
 			}
-
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
-
 			if (outcomeTradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 				if (tradeIDs && tradeIDs.length) {
@@ -62,58 +58,93 @@ export function placeTrade(marketID) {
 						outcomeTradeInProgress.feePercent,
 						outcomeTradeInProgress.gasFeesRealEth));
 				}
+				nextOutcome();
 			} else if (outcomeTradeInProgress.side === SELL) {
-				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-				const position = abi.bignum(outcomesData[marketID][outcomeID].sharesPurchased).round(2, BigNumber.ROUND_DOWN);
-				if (position && position.gt(ZERO)) {
-					if (tradeIDs && tradeIDs.length) {
-						dispatch(updateTradeCommitLock(true));
-						dispatch(addTradeTransaction(
-							SELL,
-							marketID,
-							outcomeID,
-							market.type,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost,
-							outcomeTradeInProgress.tradingFeesEth,
-							outcomeTradeInProgress.feePercent,
-							outcomeTradeInProgress.gasFeesRealEth));
-					} else {
-						let askShares;
-						let shortAskShares;
-						const numShares = abi.bignum(outcomeTradeInProgress.numShares);
-						if (position.gt(numShares)) {
-							askShares = outcomeTradeInProgress.numShares;
-							shortAskShares = 0;
+				augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+					if (!sharesPurchased || sharesPurchased.error) {
+						console.error('getParticipantSharesPurchased:', sharesPurchased);
+						return nextOutcome(sharesPurchased || 'shares lookup failed');
+					}
+					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
+					if (position && position.gt(constants.PRECISION.limit.dividedBy(10))) {
+						if (tradeIDs && tradeIDs.length) {
+							dispatch(updateTradeCommitLock(true));
+							dispatch(addTradeTransaction(
+								SELL,
+								marketID,
+								outcomeID,
+								market.type,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost,
+								outcomeTradeInProgress.tradingFeesEth,
+								outcomeTradeInProgress.feePercent,
+								outcomeTradeInProgress.gasFeesRealEth));
 						} else {
-							askShares = position.toNumber();
-							shortAskShares = numShares.minus(position).toNumber();
+							let askShares;
+							let shortAskShares;
+							const numShares = abi.bignum(outcomeTradeInProgress.numShares);
+							if (position.gt(numShares)) {
+								askShares = outcomeTradeInProgress.numShares;
+								shortAskShares = 0;
+							} else {
+								askShares = position.toNumber();
+								shortAskShares = numShares.minus(position).toNumber();
+							}
+							dispatch(addAskTransaction(
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								askShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost,
+								outcomeTradeInProgress.tradingFeesEth,
+								outcomeTradeInProgress.feePercent,
+								outcomeTradeInProgress.gasFeesRealEth));
+							if (shortAskShares > 0) {
+								dispatch(addShortAskTransaction(
+									marketID,
+									outcomeID,
+									market.description,
+									outcomesData[marketID][outcomeID].name,
+									shortAskShares,
+									outcomeTradeInProgress.limitPrice,
+									totalCost,
+									outcomeTradeInProgress.tradingFeesEth,
+									outcomeTradeInProgress.feePercent,
+									outcomeTradeInProgress.gasFeesRealEth));
+							}
 						}
-						dispatch(addAskTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							askShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost,
-							outcomeTradeInProgress.tradingFeesEth,
-							outcomeTradeInProgress.feePercent,
-							outcomeTradeInProgress.gasFeesRealEth));
-						if (shortAskShares > 0) {
+					} else {
+						if (tradeIDs && tradeIDs.length) {
+							dispatch(updateTradeCommitLock(true));
+							dispatch(addShortSellTransaction(
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost,
+								outcomeTradeInProgress.tradingFeesEth,
+								outcomeTradeInProgress.feePercent,
+								outcomeTradeInProgress.gasFeesRealEth));
+						} else {
 							dispatch(addShortAskTransaction(
 								marketID,
 								outcomeID,
 								market.description,
 								outcomesData[marketID][outcomeID].name,
-								shortAskShares,
+								outcomeTradeInProgress.numShares,
 								outcomeTradeInProgress.limitPrice,
 								totalCost,
 								outcomeTradeInProgress.tradingFeesEth,
@@ -121,39 +152,11 @@ export function placeTrade(marketID) {
 								outcomeTradeInProgress.gasFeesRealEth));
 						}
 					}
-				} else {
-					if (tradeIDs && tradeIDs.length) {
-						dispatch(updateTradeCommitLock(true));
-						dispatch(addShortSellTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost,
-							outcomeTradeInProgress.tradingFeesEth,
-							outcomeTradeInProgress.feePercent,
-							outcomeTradeInProgress.gasFeesRealEth));
-					} else {
-						dispatch(addShortAskTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost,
-							outcomeTradeInProgress.tradingFeesEth,
-							outcomeTradeInProgress.feePercent,
-							outcomeTradeInProgress.gasFeesRealEth));
-					}
-				}
+					nextOutcome();
+				});
 			}
 		});
-
 		dispatch(clearTradeInProgress(marketID));
-
 		selectTransactionsLink(dispatch).onClick();
 	};
 }

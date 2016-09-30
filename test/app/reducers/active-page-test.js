@@ -1,9 +1,5 @@
-import {
-	assert
-} from 'chai';
-import {
-	UPDATE_URL
-} from '../../../src/modules/link/actions/update-url';
+import { assert } from 'chai';
+import { UPDATE_URL } from '../../../src/modules/link/actions/update-url';
 import reducer from '../../../src/modules/app/reducers/active-page';
 import testState from '../../testState';
 
@@ -15,7 +11,7 @@ describe(`modules/app/reducers/active-page.js`, () => {
 		action = {
 			type: UPDATE_URL,
 			parsedURL: {
-				pathArray: ['/login']
+				searchParams: { page: 'login' }
 			}
 		};
 		const expectedOutput = 'login';

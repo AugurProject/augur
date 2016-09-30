@@ -1,5 +1,5 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -16,21 +16,33 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'placing ask...',
-			message: `asking ${numShares} shares for ${limitPrice} ETH each<br />
-				freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-				expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(gasFeesRealEth).full} in estimated gas fees)</small>`
+			message: `asking ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			freeze: {
+				verb: 'freezing',
+				tradingFees: formatEther(tradingFeesEth)
+			},
+			totalReturn: formatEtherEstimate(totalEthWithoutFee),
+			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 
 		ask(transactionID, marketID, outcomeID, limitPrice, numShares, dispatch, (err, res) => {
 			if (err) {
 				return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 			}
-			dispatch(loadBidsAsks(marketID));
-			return dispatch(updateExistingTransaction(transactionID, {
-				status: SUCCESS,
-				message: `ask ${formatShares(numShares).full} for ${formatEther(totalEthWithFee).full}<br />
-					freezing ${formatEther(tradingFeesEth).full} in potential trading fees<br />
-					expected return: ${formatEther(totalEthWithoutFee).full} <small>(-${formatRealEther(res.gasFees).full} in gas fees)</small>`
+			dispatch(updateExistingTransaction(transactionID, {
+				hash: res.hash,
+				timestamp: res.timestamp,
+				status: 'updating order book',
+				message: `ask ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+				freeze: {
+					verb: 'froze',
+					tradingFees: formatEther(tradingFeesEth)
+				},
+				totalReturn: formatEtherEstimate(totalEthWithoutFee),
+				gasFees: formatRealEther(res.gasFees)
+			}));
+			dispatch(loadBidsAsks(marketID, () => {
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			}));
 		});
 	};
@@ -42,11 +54,7 @@ function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, dispat
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
-
-		onSent: data => {
-			dispatch(updateExistingTransaction(transactionID, { hash: data.txHash }));
-			console.log('ask onSent', data);
-		},
+		onSent: data => console.log('ask onSent', data),
 		onFailed: cb,
 		onSuccess: data => cb(null, data)
 	});

@@ -10,8 +10,9 @@ import reducers from './reducers';
 const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
 const consoleLog = store => next => action => {
-	if (typeof action !== 'function') {
-		// console.log(action);
+	const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
+	if (typeof action !== 'function' && !isIgnoreFlag) {
+		console.log(action);
 	}
 	return next(action);
 };
@@ -30,7 +31,8 @@ const localStorageMiddleware = store => next => action => {
 			favorites: state.favorites,
 			transactionsData: state.transactionsData,
 			accountTrades: state.accountTrades,
-			reports: state.reports
+			reports: state.reports,
+			loginMessageVersionRead: state.loginMessage.userVersionRead
 		}));
 	}
 };

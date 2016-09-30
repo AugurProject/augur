@@ -7,7 +7,6 @@ import AugurJS from './services/augurjs';
 
 import { initAugur } from './modules/app/actions/init-augur';
 import { updateURL } from './modules/link/actions/update-url';
-// import * as selectors from './selectors';
 
 import store from './store';
 const appElement = document.getElementById('app');

@@ -105,7 +105,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
 					type: BINARY,
@@ -122,7 +122,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					raw: [ 0.5, 0.5 ],
 					formatted: [
 						{
-							denomination: "ETH | Yes",
+							denomination: 'ETH | Yes',
 							formatted: '0.5',
 							formattedValue: 0.5,
 							full: '0.5ETH | Yes',
@@ -189,13 +189,13 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				bestStartingQuantityFormatted: {
 					denomination: 'Shares',
-					formatted: '20',
-					formattedValue: 20,
-					full: '20Shares',
-					minimized: '20',
-					rounded: '20',
-					roundedValue: 20,
-					value: 20
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				priceWidthFormatted: {
 					denomination: 'ETH',
@@ -210,13 +210,13 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
 				startingQuantityFormatted: {
 					denomination: 'Shares',
-					formatted: '10',
-					formattedValue: 10,
-					full: '10Shares',
-					minimized: '10',
-					rounded: '10',
-					roundedValue: 10,
-					value: 10
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				isFavorite: false,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
@@ -229,6 +229,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					rounded: '500',
 					roundedValue: 500,
 					value: 500
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isCreatingOrderBook: true
 			};
@@ -259,16 +289,16 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
 					{
 						id: 1,
-						name: "No"
+						name: 'No'
 					},
 					{
 						id: 2,
-						name: "Yes"
+						name: 'Yes'
 					}
 				],
 				takerFeePercent: {
@@ -302,6 +332,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false
 			};
@@ -365,7 +425,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -391,32 +451,32 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					raw: [ 0.5, 0.5, 0.5 ],
 					formatted: [
 						{
-							denomination: "ETH | test1",
-							formatted: "0.5",
+							denomination: 'ETH | test1',
+							formatted: '0.5',
 							formattedValue: 0.5,
-							full: "0.5ETH | test1",
-							minimized: "0.5",
-							rounded: "0",
+							full: '0.5ETH | test1',
+							minimized: '0.5',
+							rounded: '0',
 							roundedValue: 0,
 							value: 0.5
 						},
 						{
-							denomination: "ETH | test2",
-							formatted: "0.5",
+							denomination: 'ETH | test2',
+							formatted: '0.5',
 							formattedValue: 0.5,
-							full: "0.5ETH | test2",
-							minimized: "0.5",
-							rounded: "0",
+							full: '0.5ETH | test2',
+							minimized: '0.5',
+							rounded: '0',
 							roundedValue: 0,
 							value: 0.5
 						},
 						{
-							denomination: "ETH | test3",
-							formatted: "0.5",
+							denomination: 'ETH | test3',
+							formatted: '0.5',
 							formattedValue: 0.5,
-							full: "0.5ETH | test3",
-							minimized: "0.5",
-							rounded: "0",
+							full: '0.5ETH | test3',
+							minimized: '0.5',
+							rounded: '0',
 							roundedValue: 0,
 							value: 0.5
 						}
@@ -425,15 +485,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				outcomes: [
 					{
 						id: 0,
-						name: "test1"
+						name: 'test1'
 					},
 					{
 						id: 1,
-						name: "test2"
+						name: 'test2'
 					},
 					{
 						id: 2,
-						name: "test3"
+						name: 'test3'
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
@@ -471,47 +531,77 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				bestStartingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "20",
-					formattedValue: 20,
-					full: "20Shares",
-					minimized: "20",
-					rounded: "20",
-					roundedValue: 20,
-					value: 20
+					denomination: 'Shares',
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				priceWidthFormatted: {
-					denomination: "ETH",
-					formatted: "0.1",
+					denomination: 'ETH',
+					formatted: '0.1',
 					formattedValue: 0.1,
-					full: "0.1ETH",
-					minimized: "0.1",
-					rounded: "0",
+					full: '0.1ETH',
+					minimized: '0.1',
+					rounded: '0',
 					roundedValue: 0,
 					value: 0.1
 				},
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
 				startingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "10",
-					formattedValue: 10,
-					full: "10Shares",
-					minimized: "10",
-					rounded: "10",
-					roundedValue: 10,
-					value: 10
+					denomination: 'Shares',
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				isFavorite: false,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialLiquidityFormatted: {
-					denomination: "ETH",
-					formatted: "500",
+					denomination: 'ETH',
+					formatted: '500',
 					formattedValue: 500,
-					full: "500ETH",
-					minimized: "500",
-					rounded: "500",
+					full: '500ETH',
+					minimized: '500',
+					rounded: '500',
 					roundedValue: 500,
 					value: 500
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isCreatingOrderBook: true
 			};
@@ -552,7 +642,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -562,15 +652,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				outcomes: [
 					{
 						id: 0,
-						name: "test1"
+						name: 'test1'
 					},
 					{
 						id: 1,
-						name: "test2"
+						name: 'test2'
 					},
 					{
 						id: 2,
-						name: "test3"
+						name: 'test3'
 					}
 				],
 				takerFeePercent: {
@@ -604,6 +694,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false
 			};
@@ -659,7 +779,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
 					type: SCALAR,
@@ -676,22 +796,22 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					raw: [ 55, 55 ],
 					formatted: [
 						{
-							denomination: "ETH | ⇧",
-							formatted: "55",
+							denomination: 'ETH | ⇧',
+							formatted: '55',
 							formattedValue: 55,
-							full: "55ETH | ⇧",
-							minimized: "55",
-							rounded: "55",
+							full: '55ETH | ⇧',
+							minimized: '55',
+							rounded: '55',
 							roundedValue: 55,
 							value: 55
 						},
 						{
-							denomination: "ETH | ⇩",
-							formatted: "55",
+							denomination: 'ETH | ⇩',
+							formatted: '55',
 							formattedValue: 55,
-							full: "55ETH | ⇩",
-							minimized: "55",
-							rounded: "55",
+							full: '55ETH | ⇩',
+							minimized: '55',
+							rounded: '55',
 							roundedValue: 55,
 							value: 55
 						}
@@ -742,49 +862,79 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				bestStartingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "20",
-					formattedValue: 20,
-					full: "20Shares",
-					minimized: "20",
-					rounded: "20",
-					roundedValue: 20,
-					value: 20
+					denomination: 'Shares',
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				priceWidthFormatted: {
-					denomination: "ETH",
-					formatted: "0.1",
+					denomination: 'ETH',
+					formatted: '0.1',
 					formattedValue: 0.1,
-					full: "0.1ETH",
-					minimized: "0.1",
-					rounded: "0",
+					full: '0.1ETH',
+					minimized: '0.1',
+					rounded: '0',
 					roundedValue: 0,
 					value: 0.1
 				},
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
 				startingQuantityFormatted: {
-					denomination: "Shares",
-					formatted: "10",
-					formattedValue: 10,
-					full: "10Shares",
-					minimized: "10",
-					rounded: "10",
-					roundedValue: 10,
-					value: 10
+					denomination: 'Shares',
+					formatted: '100',
+					formattedValue: 100,
+					full: '100Shares',
+					minimized: '100',
+					rounded: '100',
+					roundedValue: 100,
+					value: 100
 				},
 				isFavorite: false,
 				scalarSmallNum: 10,
 				scalarBigNum: 100,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialLiquidityFormatted: {
-					denomination: "ETH",
-					formatted: "500",
+					denomination: 'ETH',
+					formatted: '500',
 					formattedValue: 500,
-					full: "500ETH",
-					minimized: "500",
-					rounded: "500",
+					full: '500ETH',
+					minimized: '500',
+					rounded: '500',
 					roundedValue: 500,
 					value: 500
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isCreatingOrderBook: true
 			};
@@ -818,7 +968,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
 					{
@@ -861,6 +1011,36 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					minimized: '-',
 					denomination: '',
 					full: '-'
+				},
+				eventBond: {
+					denomination: ' ETH',
+					formatted: '0.000',
+					formattedValue: 0,
+					full: '0.000 ETH',
+					minimized: '0',
+					rounded: '0.0000',
+					roundedValue: 0,
+					value: 0
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
+				},
+				marketCreationFee: {
+					denomination: ' real ETH',
+					formatted: '0.0340',
+					formattedValue: 0.034,
+					full: '0.0340 real ETH',
+					minimized: '0.034',
+					rounded: '0.0340',
+					roundedValue: 0.034,
+					value: 0.034
 				},
 				isFavorite: false,
 				scalarSmallNum: 10,

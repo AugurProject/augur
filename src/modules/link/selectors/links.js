@@ -3,8 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
-import { PAGES_PATHS } from '../../link/constants/paths';
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -12,14 +11,15 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
 
-import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-acccount-markets';
+import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-account-markets';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
+import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
 import store from '../../../store';
 import { IMPORT, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 
 export default function () {
-	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();
+	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
 	const { market } = require('../../../selectors');
 	return {
 		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
@@ -32,12 +32,13 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
+		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
 }
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {
-		href: PAGES_PATHS[ACCOUNT],
+		href: makeLocation({ page: ACCOUNT }).url,
 		onClick: (href) => dispatch(updateURL(href))
 	};
 	return obj;
@@ -45,20 +46,38 @@ export const selectAccountLink = memoizerific(1)((dispatch) => {
 
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {
-		href: PAGES_PATHS[MARKETS],
+		href: makeLocation({ page: MARKETS }).url,
 		onClick: (href) => dispatch(updateURL(href))
 	};
 	return obj;
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-	const href = PAGES_PATHS[authType];
+	const determineLocation = () => {
+		if (alsoLogout) {
+			return makeLocation({ page: LOGIN }).url;
+		}
+
+		switch (authType) {
+		case IMPORT:
+			return makeLocation({ page: IMPORT }).url;
+		case LOGIN:
+			return makeLocation({ page: LOGIN }).url;
+		case REGISTER:
+		default:
+			return makeLocation({ page: REGISTER }).url;
+		}
+	};
+
+	const href = determineLocation();
+
 	return {
 		href,
 		onClick: () => {
 			if (!!alsoLogout) {
 				dispatch(logout());
 			}
+
 			dispatch(updateURL(href));
 		}
 	};
@@ -123,7 +142,7 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 		params[TAGS_PARAM_NAME] = tagsParams;
 	}
 
-	const href = makeLocation([PAGES_PATHS[MARKETS]], params).url;
+	const href = makeLocation(params).url;
 
 	return {
 		href,
@@ -132,11 +151,13 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 });
 
 export const selectMarketLink = memoizerific(1)((market, dispatch) => {
-	const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_');
-	const href = `${PAGES_PATHS[M]}/${words}_${market.id}`;
+	const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id;
+	const href = makeLocation({ page: M, m: words }).url;
 	const link = {
 		href,
-		onClick: () => dispatch(updateURL(href))
+		onClick: () => {
+			dispatch(updateURL(href));
+		}
 	};
 
 	if (market.isReported) {
@@ -160,7 +181,7 @@ export const selectMarketLink = memoizerific(1)((market, dispatch) => {
 });
 
 export const selectTransactionsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[TRANSACTIONS];
+	const href = makeLocation({ page: TRANSACTIONS }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -168,7 +189,7 @@ export const selectTransactionsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MAKE];
+	const href = makeLocation({ page: MAKE }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -176,7 +197,7 @@ export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_POSITIONS];
+	const href = makeLocation({ page: MY_POSITIONS }).url;
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
@@ -184,7 +205,7 @@ export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_MARKETS];
+	const href = makeLocation({ page: MY_MARKETS }).url;
 	return {
 		href,
 		onClick: () => {
@@ -195,12 +216,26 @@ export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectMyReportsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[MY_REPORTS];
+	const href = makeLocation({ page: MY_REPORTS }).url;
 	return {
 		href,
 		onClick: () => {
 			dispatch(loadEventsWithSubmittedReport());
 			dispatch(updateURL(href));
+		}
+	};
+});
+
+export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessageVersion, dispatch) => {
+	const href = makeLocation({ page: LOGIN_MESSAGE }).url;
+	return {
+		href,
+		onClick: () => {
+			dispatch(updateURL(href));
+
+			if (userID != null) {
+				dispatch(updateUserLoginMessageVersionRead(currentLoginMessageVersion));
+			}
 		}
 	};
 });

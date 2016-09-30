@@ -15,11 +15,11 @@ describe(`modules/markets/reducers/selected-market-id.js`, () => {
 		action = {
 			type: UPDATE_URL,
 			parsedURL: {
-				pathArray: ['/m', '_test']
+				searchParams: { page: 'm', m: '_test' }
 			}
 		};
 		test = reducer(state.selectedMarketID, action);
-		out = 'test';
-		assert.equal(test, out, `Didn't get the substring of pathArray[1]`);
+		out = '0x000000000000000000000000000000000000000000000000000000000000test';
+		assert.equal(test, out, `Didn't get the markt id`);
 	});
 });

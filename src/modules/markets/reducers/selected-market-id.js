@@ -1,12 +1,11 @@
 import { UPDATE_URL } from '../../link/actions/update-url';
-import { M } from '../../app/constants/pages';
-import { PATHS_PAGES } from '../../link/constants/paths';
+import { abi } from '../../../services/augurjs';
 
 export default function (selectedMarketID = null, action) {
 	switch (action.type) {
 	case UPDATE_URL:
-		if ([M].indexOf(PATHS_PAGES[action.parsedURL.pathArray[0]]) >= 0 && action.parsedURL.pathArray[1]) {
-			return action.parsedURL.pathArray[1].substring(1).split('_').pop();
+		if (action.parsedURL.searchParams.m) {
+			return abi.format_int256(action.parsedURL.searchParams.m.split('_').pop());
 		}
 		return null;
 

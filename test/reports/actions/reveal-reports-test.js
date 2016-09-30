@@ -11,7 +11,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out, clock;
+	let store, action, out;
 	const reports = {
 		[testState.branch.id]: {
 			test1: {
@@ -54,23 +54,21 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	});
 	store = mockStore(state);
 
-	let mockAugurJS = { augur: { submitReport: () => {} } };
-	sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
-		o.onSuccess({ callReturn: 1 });
+	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
+	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) => {
+		callback(null);
 	});
 
 	action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
-		'../../../services/augurjs': mockAugurJS
+		'../../transactions/actions/add-reveal-report-transaction': mockAddRevealReportTransaction
 	});
 
 	beforeEach(() => {
 		store.clearActions();
-		clock = sinon.useFakeTimers();
 	});
 
 	afterEach(() => {
 		store.clearActions();
-		clock.restore();
 	});
 
 	it('should reveal reports', () => {
@@ -84,13 +82,9 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			type: 'UPDATE_REPORTS',
 			reports: { [testState.branch.id]: { test3: { ...reports[testState.branch.id].test3, isRevealed: true } } }
 		}];
-
 		store.dispatch(action.revealReports());
-
-		clock.tick(6000);
-
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAugurJS.augur.submitReport.calledThrice, `Didn't call submitReport 3 times as expected`);
+		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledThrice, `Didn't call submitReport 3 times as expected`);
 	});
 
 });

@@ -13,8 +13,8 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 	const fakeProcessTransferFunds = { processTransferFunds: () => {} };
 	const fakeAddTransactions = { addTransaction: () => {} };
 
-	sinon.stub(fakeProcessTransferFunds, 'processTransferFunds', (transID, fromAddress, amount, toAddress) => {
-		return { type: 'PROCESS_TRANSFER_FUNDS', transID, fromAddress, amount, toAddress };
+	sinon.stub(fakeProcessTransferFunds, 'processTransferFunds', (transID, fromAddress, amount, currency, toAddress) => {
+		return { type: 'PROCESS_TRANSFER_FUNDS', transID, fromAddress, amount, currency, toAddress };
 	});
 
 	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => {
@@ -35,13 +35,14 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 	});
 
 	it('should add a transfer funds transaction', () => {
-		store.dispatch(action.addTransferFunds(5, 'testAddress123'));
+		store.dispatch(action.addTransferFunds(5, 'eth', 'testAddress123'));
 		store.getActions()[0].action('testTransactionID');
 		const expectedOutput = [
 			{
 				type: 'transfer_funds',
 				fromAddress: '0xtest123',
 				amount: 5,
+				currency: 'eth',
 				toAddress: 'testAddress123',
 				action:  store.getActions()[0].action
 			},
@@ -50,6 +51,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 				transID: 'testTransactionID',
 				fromAddress: '0xtest123',
 				amount: 5,
+				currency: 'eth',
 				toAddress: 'testAddress123'
 			}
 		];

@@ -5,6 +5,8 @@ import * as mockStore from '../../mockStore';
 import { formatNumber, formatShares, formatEther } from '../../../src/utils/format-number';
 import { formatDate } from '../../../src/utils/format-date';
 
+import { abi } from '../../../src/services/augurjs';
+
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
@@ -12,7 +14,12 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
 	let actual, expected;
-	const { store } = mockStore.default;
+	const { store, state } = mockStore.default;
+	state.marketCreatorFees = {
+		'0xMARKET1': abi.bignum('10'),
+		'0xMARKET2': abi.bignum('11')
+	};
+
 	const { loginAccount, allMarkets } = store.getState();
 
 	const mockedLinks = {
@@ -27,12 +34,6 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 		}
 	));
 
-	let stubbedAugurJS = {
-		augur: { getMarketCreatorFeesCollected: () => {} },
-		abi: { bignum: (n) => { return n; } }
-	};
-	sinon.stub(stubbedAugurJS.augur, 'getMarketCreatorFeesCollected', () => 10);
-
 	let stubbedSelectors = {
 		loginAccount,
 		allMarkets
@@ -40,7 +41,6 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
 	let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
 		'../../link/selectors/links': mockedLinks,
-		'../../../services/augurjs': stubbedAugurJS,
 		'../../../selectors': stubbedSelectors,
 		'../../../store': store
 	});
@@ -59,7 +59,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 			description: 'test-market-1',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
-			fees: formatEther(stubbedAugurJS.augur.getMarketCreatorFeesCollected()),
+			fees: formatEther(abi.bignum('10')),
 			numberOfTrades: formatNumber(8),
 			averageTradeSize: formatNumber(15),
 			openVolume: formatNumber(80)
@@ -75,7 +75,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 			description: 'test-market-2',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
-			fees: formatEther(stubbedAugurJS.augur.getMarketCreatorFeesCollected()),
+			fees: formatEther(abi.bignum('11')),
 			numberOfTrades: formatNumber(8),
 			averageTradeSize: formatNumber(15),
 			openVolume: formatNumber(80)
@@ -88,7 +88,6 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
 	it('should deliver the expected shape to augur-ui-react-components', () => {
 		let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-			'../../../services/augurjs': stubbedAugurJS,
 			'../../../selectors': stubbedSelectors,
 			'../../../store': store
 		});
