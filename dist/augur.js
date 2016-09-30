@@ -43622,7 +43622,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.4";
+    this.version = "2.9.5";
 
     this.options = {
         debug: {
@@ -43980,6 +43980,7 @@ module.exports = {
             market: trade[2],
             amount: amount,
             price: price,
+            fullPrecisionPrice: abi.unfix(trade[4], "string"),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
@@ -46161,31 +46162,6 @@ module.exports = {
     },
 
     /**
-     * Calculates the weighted average trade price from a list of trades.
-     *
-     * @param {Array} trades Trades to be averaged {type, shares, price, maker}.
-     * @return {string} Weighted average trade price.
-     */
-    calculateMeanTradePrice: function (trades) {
-        var totalShares, totalValue, shares, numTrades, meanTradePrice;
-        totalShares = constants.ZERO;
-        totalValue = constants.ZERO;
-        meanTradePrice = constants.ZERO;
-        if (trades) {
-            numTrades = trades.length;
-            if (numTrades) {
-                for (var i = 0; i < numTrades; ++i) {
-                    shares = abi.bignum(trades[i].shares).abs();
-                    totalShares = totalShares.plus(shares);
-                    totalValue = totalValue.plus(abi.bignum(trades[i].price).times(shares));
-                }
-                meanTradePrice = totalValue.dividedBy(totalShares);
-            }
-        }
-        return meanTradePrice.toFixed();
-    },
-
-    /**
      * Calculates aggregate trade from buy/sell complete sets.
      *
      * @param {Array} logs Event logs from eth_getLogs request.
@@ -46330,12 +46306,17 @@ module.exports = {
             }
         }
         position = (adjustedPosition) ? abi.bignum(adjustedPosition) : position;
+        if (position.lt(constants.PRECISION.limit.dividedBy(10))) {
+            position = constants.ZERO;
+            weightedPrice = constants.ZERO;
+        }
 
         // unrealized P/L: shares held * (last trade price - price on buy in)
         return {
             position: position.toFixed(),
             realized: realized.toFixed(),
-            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed()
+            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed(),
+            weightedPrice: weightedPrice.toFixed()
         };
     }
 };
@@ -47366,7 +47347,7 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.price, fees.tradingFee, fees.makerProportionOfFee, range);
+                    tradingCost = abacus.calculateTradingCost(orderSharesFilled, ask.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                     totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                     etherToTrade = etherToTrade.plus(tradingCost.cost);
                     remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -47398,9 +47379,9 @@ module.exports = {
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
                         bidAmount = new BigNumber(bid.amount, 10);
-                        bnPrice = new BigNumber(bid.price, 10);
+                        bnPrice = new BigNumber(bid.fullPrecisionPrice, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, fees.makerProportionOfFee, range);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToSell = etherToSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -47445,7 +47426,7 @@ module.exports = {
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.price, fees.tradingFee, fees.makerProportionOfFee, range);
+                        tradingCost = abacus.calculateTradingCost(orderSharesFilled, bid.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);

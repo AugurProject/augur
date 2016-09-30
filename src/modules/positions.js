@@ -269,31 +269,6 @@ module.exports = {
     },
 
     /**
-     * Calculates the weighted average trade price from a list of trades.
-     *
-     * @param {Array} trades Trades to be averaged {type, shares, price, maker}.
-     * @return {string} Weighted average trade price.
-     */
-    calculateMeanTradePrice: function (trades) {
-        var totalShares, totalValue, shares, numTrades, meanTradePrice;
-        totalShares = constants.ZERO;
-        totalValue = constants.ZERO;
-        meanTradePrice = constants.ZERO;
-        if (trades) {
-            numTrades = trades.length;
-            if (numTrades) {
-                for (var i = 0; i < numTrades; ++i) {
-                    shares = abi.bignum(trades[i].shares).abs();
-                    totalShares = totalShares.plus(shares);
-                    totalValue = totalValue.plus(abi.bignum(trades[i].price).times(shares));
-                }
-                meanTradePrice = totalValue.dividedBy(totalShares);
-            }
-        }
-        return meanTradePrice.toFixed();
-    },
-
-    /**
      * Calculates aggregate trade from buy/sell complete sets.
      *
      * @param {Array} logs Event logs from eth_getLogs request.
@@ -438,12 +413,17 @@ module.exports = {
             }
         }
         position = (adjustedPosition) ? abi.bignum(adjustedPosition) : position;
+        if (position.lt(constants.PRECISION.limit.dividedBy(10))) {
+            position = constants.ZERO;
+            weightedPrice = constants.ZERO;
+        }
 
         // unrealized P/L: shares held * (last trade price - price on buy in)
         return {
             position: position.toFixed(),
             realized: realized.toFixed(),
-            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed()
+            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed(),
+            weightedPrice: weightedPrice.toFixed()
         };
     }
 };

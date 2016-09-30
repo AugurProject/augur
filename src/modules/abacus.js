@@ -304,6 +304,7 @@ module.exports = {
             market: trade[2],
             amount: amount,
             price: price,
+            fullPrecisionPrice: abi.unfix(trade[4], "string"),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
