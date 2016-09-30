@@ -7,7 +7,7 @@ const loadBidsAsksLock = {};
 export function loadBidsAsks(marketID, cb) {
 	return (dispatch, getState) => {
 		if (!loadBidsAsksLock[marketID]) {
-			loadBidsAsksLock[marketID] = true;
+			// loadBidsAsksLock[marketID] = true;
 			const market = selectMarket(marketID);
 			var scalarMinMax = {};
 			if (market.type === 'scalar') {
@@ -16,7 +16,7 @@ export function loadBidsAsks(marketID, cb) {
 			}
 			augur.get_total_trades(marketID, (totalTrades) => {
 				if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
-					loadBidsAsksLock[marketID] = false;
+					// loadBidsAsksLock[marketID] = false;
 					if (cb) cb(totalTrades);
 				} else {
 					getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 100), scalarMinMax, totalTrades, cb, dispatch);
@@ -32,7 +32,7 @@ function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, to
 	augur.getOrderBook({ market: marketID, offset, numTradesToLoad, scalarMinMax }, (marketOrderBook) => {
 		if (marketOrderBook == null || marketOrderBook.error != null) {
 			console.error(`load-bids-asks.js: getOrderBook(${marketID}) error: %o`, marketOrderBook);
-			loadBidsAsksLock[marketID] = false;
+			// loadBidsAsksLock[marketID] = false;
 			if (callback) return callback(marketOrderBook);
 		} else {
 			if (!offset) {
@@ -43,7 +43,7 @@ function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, to
 			if (offset + numTradesToLoad < totalTrades) {
 				return getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, callback, dispatch);
 			}
-			loadBidsAsksLock[marketID] = false;
+			// loadBidsAsksLock[marketID] = false;
 			if (callback) callback(null, marketOrderBook);
 		}
 	});

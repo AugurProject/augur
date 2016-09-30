@@ -36,9 +36,9 @@ export function listenToUpdates() {
 				}
 			},
 
-			// short ask filled
+			// short sell filled
 			log_short_fill_tx: (msg) => {
-				// console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
+				console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(refreshMarket(msg.market));

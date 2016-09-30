@@ -12,7 +12,7 @@ export function loadAccountTrades(marketID, cb) {
 		const account = getState().loginAccount.id;
 		const options = { market: marketID };
 		if (account && !loadAccountTradesLock[marketID]) {
-			loadAccountTradesLock[marketID] = true;
+			// loadAccountTradesLock[marketID] = true;
 			if (!marketID) dispatch(clearAccountTrades());
 			async.parallel({
 				positions: (callback) => {
@@ -39,7 +39,7 @@ export function loadAccountTrades(marketID, cb) {
 				})
 			}, (err, data) => {
 				if (err) {
-					loadAccountTradesLock[marketID] = false;
+					// loadAccountTradesLock[marketID] = false;
 					return console.error('loadAccountTrades error:', err);
 				}
 				console.log('loadAccountTrades data:', data);
@@ -51,7 +51,7 @@ export function loadAccountTrades(marketID, cb) {
 					});
 					dispatch(updateNetEffectiveTradesData(netEffectiveTrades, marketID));
 				}
-				loadAccountTradesLock[marketID] = false;
+				// loadAccountTradesLock[marketID] = false;
 				dispatch(sellCompleteSets(marketID, cb));
 			});
 		} else {
