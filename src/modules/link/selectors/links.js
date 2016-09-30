@@ -82,19 +82,17 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	};
 });
 
-export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => {
-	return {
-		onClick: () => {
-			require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
-				if (airbitzAccount) {
-					dispatch(loginWithAirbitz(airbitzAccount));
-				} else {
-					console.log('error logging in: ' + result);
-				}
-			});
-		}
-	};
-});
+export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
+	onClick: () => {
+		require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+			if (airbitzAccount) {
+				dispatch(loginWithAirbitz(airbitzAccount));
+			} else {
+				console.log('error registering in: ' + result);
+			}
+		});
+	}
+}));
 
 
 export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, selectedSort, selectedTags, selectedPageNum, dispatch) => {
