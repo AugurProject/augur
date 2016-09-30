@@ -4,7 +4,10 @@ import ValueDenomination from '../../common/components/value-denomination';
 const MarketOutcomes = (p) => (
 	<div className="market-outcomes">
 		{p.outcomes.map((outcome, i) => (
-			<div key={outcome.id} className="outcome">
+			<div
+				key={outcome.id}
+				className="outcome"
+			>
 				{!!outcome.lastPricePercent &&
 					<ValueDenomination
 						className="outcome-price"
