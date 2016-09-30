@@ -19,10 +19,6 @@ var constants = require("./constants");
 var utils = require("./utilities");
 
 request = request.defaults({timeout: 120000});
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
@@ -87,35 +83,14 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
+            var self = this;
             cb = cb || utils.pass;
 
-            // now set vars based on what is currently in place
-            var keystore = this.account.keystore;
-            var privateKey = this.account.privateKey;
-
-            // preparing to redo the secureLoginID to use the new name
-            var unsecureLoginIDObject = {
-                name: newName,
-                keystore: keystore
-            };
-            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
-
-            // web.account object is set to use new values
-            this.account = {
-                name: newName,
-                secureLoginID: secureLoginID,
-                privateKey: privateKey,
-                address: keystore.address,
-                keystore: keystore
-            };
+            // web.account object is set to use new name
+            self.account.name = newName;
 
             // send back the new updated loginAccount object.
-            return cb({
-                name: newName,
-                secureLoginID: secureLoginID,
-                keystore: keystore,
-                address: keystore.address
-            });
+            return cb(clone(self.account));
         },
 
         register: function (name, password, cb) {
@@ -128,7 +103,7 @@ module.exports = function () {
                 if (plain.error) return cb(plain);
 
                 // derive secret key from password
-                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
                     if (derivedKey.error) return cb(derivedKey);
                     if (!Buffer.isBuffer(derivedKey)) {
                         derivedKey = new Buffer(derivedKey, "hex");
@@ -142,6 +117,18 @@ module.exports = function () {
                     // encrypt private key using derived key and IV, then
                     // store encrypted key & IV, indexed by handle
                     var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+                    var kdfparams = {
+                        dklen: keys.constants[constants.KDF].dklen,
+                        salt: plain.salt.toString("hex")
+                    };
+                    if (constants.KDF === "scrypt") {
+                        kdfparams.n = keys.constants.scrypt.n;
+                        kdfparams.r = keys.constants.scrypt.r;
+                        kdfparams.p = keys.constants.scrypt.p;
+                    } else {
+                        kdfparams.c = keys.constants.pbkdf2.c;
+                        kdfparams.prf = keys.constants.pbkdf2.prf;
+                    }
                     var keystore = {
                         address: address,
                         crypto: {
@@ -149,36 +136,26 @@ module.exports = function () {
                             ciphertext: encryptedPrivateKey,
                             cipherparams: {iv: plain.iv.toString("hex")},
                             kdf: constants.KDF,
-                            kdfparams: {
-                                c: keys.constants[constants.KDF].c,
-                                dklen: keys.constants[constants.KDF].dklen,
-                                prf: keys.constants[constants.KDF].prf,
-                                salt: plain.salt.toString("hex")
-                            },
+                            kdfparams: kdfparams,
                             mac: keys.getMAC(derivedKey, encryptedPrivateKey)
                         },
                         version: 3,
                         id: uuid.v4()
                     };
-                    var unsecureLoginIDObject = {name: name, keystore: keystore};
-                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                    var unencryptedLoginID = { keystore: keystore };
+                    var loginID = augur.base58Encrypt(unencryptedLoginID);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: plain.privateKey,
                         address: address,
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
 
-                    return cb({
-                        name: name,
-                        secureLoginID: secureLoginID,
-                        keystore: keystore,
-                        address: address
-                    });
+                    return cb(clone(self.account));
                 }); // deriveKey
             }); // create
         },
@@ -192,19 +169,16 @@ module.exports = function () {
 
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
-                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
-                    var unsecureLoginIDObject = {
-                        name: name,
-                        keystore: keystore
-                    };
-                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                keys.deriveKey(password, keystore.crypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
+                    var unencryptedLoginID = { keystore: keystore };
+                    var loginID = augur.base58Encrypt(unencryptedLoginID);
 
                     // while logged in, web.account object is set
                     self.account = {
                         name: name,
-                        secureLoginID: secureLoginID,
+                        loginID: loginID,
                         privateKey: privateKey,
-                        address: keystore.address,
+                        address: abi.format_address(keystore.address),
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
@@ -226,29 +200,28 @@ module.exports = function () {
             }
             self.account = {
                 name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
+                loginID: localAccount.loginID,
                 privateKey: privateKey,
-                address: localAccount.keystore.address,
+                address: abi.format_address(localAccount.keystore.address),
                 keystore: localAccount.keystore,
                 derivedKey: derivedKey
             };
             return cb(clone(this.account));
         },
 
-        login: function (secureLoginID, password, cb) {
+        login: function (loginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginIDObject;
+            var unencryptedLoginID;
             try {
-                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
+                unencryptedLoginID = augur.base58Decrypt(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
-            var keystore = unencryptedLoginIDObject.keystore;
-            var name = unencryptedLoginIDObject.name;
+            var keystore = unencryptedLoginID.keystore;
             var options = {
                 kdf: keystore.crypto.kdf,
                 kdfparams: keystore.crypto.kdfparams,
@@ -279,10 +252,10 @@ module.exports = function () {
 
                     // while logged in, web.account object is set
                     self.account = {
-                        name: name,
-                        secureLoginID: secureLoginID,
+                        name: "",
+                        loginID: loginID,
                         privateKey: privateKey,
-                        address: keystore.address,
+                        address: abi.format_address(keystore.address),
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
@@ -367,10 +340,23 @@ module.exports = function () {
             mutex.lock(function () {
                 for (var rawTxHash in augur.rpc.rawTxs) {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-                    if (augur.rpc.rawTxs[rawTxHash].nonce === packaged.nonce) {
-                        ++packaged.nonce;
+                    if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
+                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
+                        packaged.nonce = augur.rpc.rawTxMaxNonce + 1;
+                        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                            console.debug("[augur.js] duplicate nonce, incremented:",
+                                packaged.nonce, augur.rpc.rawTxMaxNonce);
+                        }
                         break;
                     }
+                }
+                if (packaged.nonce <= augur.rpc.rawTxMaxNonce) {
+                    packaged.nonce = ++augur.rpc.rawTxMaxNonce;
+                } else {
+                    augur.rpc.rawTxMaxNonce = packaged.nonce;
+                }
+                if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
@@ -399,9 +385,10 @@ module.exports = function () {
                             err.packaged = packaged;
                             return cb(err);
                         } else if (res.message.indexOf("Nonce too low") > -1) {
-                            if (augur.rpc.debug.broadcast) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
+                            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
                             }
+                            ++augur.rpc.rawTxMaxNonce;
                             delete packaged.nonce;
                             return self.getTxNonce(packaged, cb);
                         }
@@ -423,6 +410,9 @@ module.exports = function () {
             var self = this;
             if (packaged.nonce) return this.submitTx(packaged, cb);
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
+                if (augur.rpc.debug.nonce) {
+                    console.debug('[augur.js] txCount:', parseInt(txCount, 16));
+                }
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount, 16);
                 }

@@ -11,11 +11,6 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 module.exports = {
 
     // load each batch of marketdata sequentially and recursively until complete
@@ -127,7 +122,7 @@ module.exports = {
         var numOutcomes = positionInMarket.length;
         var position = {};
         for (var i = 0; i < numOutcomes; ++i) {
-            position[i + 1] = abi.unfix(positionInMarket[i], "string");
+            position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
         }
         return position;
     },
@@ -171,13 +166,16 @@ module.exports = {
             callback = scalarMinMax;
             scalarMinMax = null;
         }
+        var offset, numTradesToLoad;
         if (market && market.market) {
-            scalarMinMax = market.scalarMinMax;
+            offset = market.offset;
+            numTradesToLoad = market.numTradesToLoad;
+            scalarMinMax = scalarMinMax || market.scalarMinMax;
             callback = callback || market.callback;
             market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = market;
+        tx.params = [market, offset || 0, numTradesToLoad || 0];
         return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
     },
 
@@ -217,7 +215,7 @@ module.exports = {
             len = parseInt(marketsArray[totalLen]);
             shift = totalLen + 1;
             rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = marketsArray[shift];
+            marketID = abi.format_int256(marketsArray[shift]);
             info = this.parseMarketInfo(rawInfo);
             if (info && info.numOutcomes) {
                 marketsInfo[marketID] = info;
@@ -249,7 +247,7 @@ module.exports = {
         for (var i = 0; i < numMarkets; ++i) {
             len = parseInt(marketsArray[totalLen]);
             shift = totalLen + 1;
-            marketID = marketsArray[shift];
+            marketID = abi.format_int256(marketsArray[shift]);
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
             marketsInfo[marketID] = {
                 sortOrder: i,

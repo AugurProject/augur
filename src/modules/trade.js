@@ -42,12 +42,21 @@ module.exports = {
         var count = {buy: 0, sell: 0};
         self.rpc.blockNumber(function (blockNumber) {
             self.rpc.getBlock(blockNumber, false, function (block) {
+                var checked_trade_ids = trade_ids.slice();
                 async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
                     self.get_trade(trade_id, function (trade) {
                         if (!trade || !trade.id) {
-                            return next(self.errors.TRADE_NOT_FOUND);
+                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+                            if (!checked_trade_ids.length) {
+                                return callback(self.errors.TRADE_NOT_FOUND);
+                            }
+                            console.warn('[augur.js] checkGasLimit:', self.errors.TRADE_NOT_FOUND);
                         } else if (trade.owner === sender) {
-                            return next({error: "-5", message: self.errors.trade["-5"]});
+                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+                            if (!checked_trade_ids.length) {
+                                return callback({error: "-5", message: self.errors.trade["-5"]});
+                            }
+                            console.warn('[augur.js] checkGasLimit:', self.errors.trade["-5"]);
                         }
                         ++count[trade.type];
                         gas += constants.TRADE_GAS[Number(!!i)][trade.type];
@@ -56,10 +65,10 @@ module.exports = {
                 }, function (e) {
                     if (e) return callback(e);
                     if (gas <= parseInt(block.gasLimit, 16)) {
-                        return callback(null, trade_ids);
+                        return callback(null, checked_trade_ids);
                     } else if (!count.buy || !count.sell) {
                         var type = (count.buy) ? "buy" : "sell";
-                        return callback(null, trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+                        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
                     }
                     callback(self.errors.GAS_LIMIT_EXCEEDED);
                 });
@@ -97,19 +106,23 @@ module.exports = {
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
         this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
+            if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
             if (err) return onTradeFailed(err);
             var bn_max_value = abi.bignum(max_value);
             if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
                 return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
             }
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+            if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
             onTradeHash(tradeHash);
             self.commitTrade({
                 hash: tradeHash,
                 onSent: onCommitSent,
                 onSuccess: function (res) {
+                    if (self.options.debug.trading) console.log('commitTrade:', res);
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
+                        if (self.options.debug.trading) console.log('fastforward::', blockNumber);
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
@@ -121,7 +134,7 @@ module.exports = {
                                 console.log("trade response:", JSON.stringify(result, null, 2));
                             }
                             var err;
-                            var txHash = result.txHash;
+                            var txHash = result.hash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
                                 result.callReturn[0] = parseInt(result.callReturn[0], 16);
                                 if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
@@ -163,13 +176,14 @@ module.exports = {
                                         }
                                     }
                                     cb({
-                                        txHash: txHash,
+                                        hash: txHash,
                                         unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
                                         cashFromTrade: abi.string(cashFromTrade),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {
@@ -240,7 +254,7 @@ module.exports = {
                                 console.log("short_sell response:", JSON.stringify(result, null, 2));
                             }
                             var err;
-                            var txHash = result.txHash;
+                            var txHash = result.hash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
                                 result.callReturn[0] = parseInt(result.callReturn[0], 16);
                                 if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
@@ -258,27 +272,28 @@ module.exports = {
                                     var cashFromTrade, tradingFees, logs, sig, logdata;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
                                         logs = receipt.logs;
-                                        sig = self.api.events.log_fill_tx.signature;
+                                        sig = self.api.events.log_short_fill_tx.signature;
                                         cashFromTrade = constants.ZERO;
                                         tradingFees = constants.ZERO;
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
-                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[0]).times(abi.unfix(logdata[1])));
+                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }
                                         }
                                     }
                                     cb({
-                                        txHash: txHash,
+                                        hash: txHash,
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                         matchedShares: abi.unfix(result.callReturn[2], "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
                                         price: abi.unfix(result.callReturn[3], "string"),
                                         tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees
+                                        gasFees: result.gasFees,
+                                        timestamp: result.timestamp
                                     });
                                 });
                             } else {

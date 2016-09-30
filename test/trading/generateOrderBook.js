@@ -4,6 +4,7 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
 var madlibs = require("madlibs");
 var tools = require("../tools");
 var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -59,7 +60,6 @@ describe("calculatePriceDepth", function () {
     });
 });
 
-
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("generateOrderBook", function () {
@@ -108,7 +108,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             priceWidth: t.priceWidth,
                             onSimulate: function (sim) {},
                             onBuyCompleteSets: function (res) {
-                                assert.strictEqual(res.callReturn, "1");
+                                assert.isArray(res.callReturn);
                             },
                             onSetupOutcome: function (res) {
                                 assert.strictEqual(res.market, r.callReturn);
@@ -122,8 +122,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             },
                             onSuccess: function (res) {
                                 // console.log("onSuccess", res);
-                                assert.isArray(res.buy);
-                                assert.isArray(res.sell);
+                                assert.isObject(res.buy);
+                                assert.isObject(res.sell);
                                 done();
                             },
                             onFailed: done
@@ -161,7 +161,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             priceWidth: t.priceWidth,
                             onSimulate: function (simulation) {},
                             onBuyCompleteSets: function (res) {
-                                assert.strictEqual(res.callReturn, "1");
+                                assert.isArray(res.callReturn);
                             },
                             onSetupOutcome: function (res) {
                                 assert.strictEqual(res.market, r.callReturn);
@@ -222,7 +222,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             priceWidth: t.priceWidth,
                             onSimulate: function (simulation) {},
                             onBuyCompleteSets: function (res) {
-                                assert.strictEqual(res.callReturn, "1");
+                                assert.isArray(res.callReturn);
                             },
                             onSetupOutcome: function (res) {
                                 assert.strictEqual(res.market, r.callReturn);

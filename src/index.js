@@ -7,6 +7,13 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
+var BigNumber = require("bignumber.js");
+
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
 var modules = [
     require("./modules/connect"),
     require("./modules/transact"),
@@ -27,11 +34,13 @@ var modules = [
     require("./modules/logs"),
     require("./modules/abacus"),
     require("./modules/reportingTools"),
-    require("./modules/tradingActions")
+    require("./modules/tradingActions"),
+    require("./modules/positions"),
+    require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "2.5.4";
+    this.version = "2.9.5";
 
     this.options = {
         debug: {

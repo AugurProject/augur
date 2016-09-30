@@ -24,52 +24,69 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, cb, i, onSent, onSuccess, onFailed, onConfirmed;
+            var tx, params, numInputs, cb, i, onSent, onSuccess, onFailed, onConfirmed;
             tx = clone(self.api.functions[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
                 return self.transact(tx);
             }
             params = Array.prototype.slice.call(arguments);
+            numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
             if (!tx.send) {
-                if (params[0] !== undefined && params[0] !== null &&
-                    params[0].constructor === Object) {
+                if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
                     cb = params[0].callback;
-                    if (tx.inputs && tx.inputs.length) {
-                        tx.params = new Array(tx.inputs.length);
-                        for (i = 0; i < tx.inputs.length; ++i) {
+                    if (numInputs) {
+                        tx.params = new Array(numInputs);
+                        for (i = 0; i < numInputs; ++i) {
                             tx.params[i] = params[0][tx.inputs[i]];
                         }
                     }
                 } else {
-                    if (utils.is_function(params[params.length - 1])) {
-                        cb = params.pop();
+                    if (numInputs) {
+                        tx.params = new Array(numInputs);
+                        for (i = 0; i < numInputs; ++i) {
+                            tx.params[i] = params[i];
+                        }
                     }
-                    tx.params = params;
+                    if (params.length > numInputs && utils.is_function(params[numInputs])) {
+                        cb = params[numInputs];
+                    }
                 }
+                if (!utils.is_function(cb)) return self.fire(tx);
                 return self.fire(tx, cb);
             }
-            if (params[0] !== undefined && params[0] !== null &&
-                params[0].constructor === Object) {
+            if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
                 onSent = params[0].onSent;
                 onSuccess = params[0].onSuccess;
                 onFailed = params[0].onFailed;
                 onConfirmed = params[0].onConfirmed;
-                if (tx.inputs && tx.inputs.length) {
-                    tx.params = new Array(tx.inputs.length);
+                if (numInputs) {
+                    tx.params = new Array(numInputs);
                     for (i = 0; i < tx.inputs.length; ++i) {
                         tx.params[i] = params[0][tx.inputs[i]];
                     }
                 }
                 return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
             }
-            cb = [];
-            while (utils.is_function(params[params.length - 1])) {
-                cb.push(params.pop());
+            if (numInputs) {
+                tx.params = new Array(numInputs);
+                for (i = 0; i < tx.inputs.length; ++i) {
+                    tx.params[i] = params[i];
+                }
             }
-            tx.params = params;
-            cb.reverse();
-            return self.transact.apply(self, [tx].concat(cb));
+            if (params.length > numInputs && utils.is_function(params[numInputs])) {
+                onSent = params[numInputs];
+            }
+            if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+                onSuccess = params[numInputs + 1];
+            }
+            if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+                onFailed = params[numInputs + 2];
+            }
+            if (params.length > numInputs && utils.is_function(params[numInputs + 3])) {
+                onConfirmed = params[numInputs + 3];
+            }
+            return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
         };
     },
     bindContractAPI: function (methods) {

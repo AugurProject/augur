@@ -6,13 +6,8 @@
 
 var BigNumber = require("bignumber.js");
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(2, 10);
+var decimals = new BigNumber(4, 10);
 var multiple = ten.toPower(decimals);
 var ONE = ten.toPower(18);
 
@@ -28,14 +23,27 @@ module.exports = {
     },
     MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
 
+    // default branch info: "root branch", 1010101
     DEFAULT_BRANCH_ID: "0xf69b5",
-    DEFAULT_BRANCH_PERIOD_LENGTH: 172800,
+    DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
 
     BID: 1,
     ASK: 2,
 
     // milliseconds to wait between getMarketsInfo batches
     PAUSE_BETWEEN_MARKET_BATCHES: 50,
+
+    // milliseconds to wait before the rpc.getLogs method times out
+    GET_LOGS_TIMEOUT: 480000,
+
+    // int256 type codes for log filters
+    LOG_TYPE_CODES: {
+        buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
+        sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
+    },
+
+    // maximum number of transactions to auto-submit in parallel
+    PARALLEL_LIMIT: 5,
 
     // fixed-point indeterminate: 1.5 * 10^18
     INDETERMINATE: "0x14d1120d7b160000",
@@ -56,9 +64,10 @@ module.exports = {
     SECONDS_PER_BLOCK: 12,
 
     // keythereum crypto parameters
-    KDF: "pbkdf2",
-    SCRYPT: "scrypt",
-    ROUNDS: 65536,
+    // KDF: "pbkdf2",
+    KDF: "scrypt",
+    ROUNDS: 4096,
+    // ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
 

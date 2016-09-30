@@ -23,11 +23,6 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 module.exports = function (p, cb) {
     var self = this;
     var liquidity = abi.bignum(p.liquidity);
@@ -141,10 +136,10 @@ module.exports = function (p, cb) {
                 for (var i = 0; i < numOutcomes; ++i) {
                     outcomes[i] = i + 1;
                 }
-                async.forEachOf(outcomes, function (outcome, index, nextOutcome) {
-                    async.parallel([
+                async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
+                    async.parallelLimit([
                         function (callback) {
-                            async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
+                            async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
                                     buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
@@ -166,7 +161,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            buyPrice: buyPrice
+                                            buyPrice: buyPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextBuyPrice();
                                     },
@@ -181,7 +179,7 @@ module.exports = function (p, cb) {
                             });
                         },
                         function (callback) {
-                            async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
+                            async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
                                     sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
@@ -203,7 +201,10 @@ module.exports = function (p, cb) {
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            sellPrice: sellPrice
+                                            sellPrice: sellPrice,
+                                            timestamp: res.timestamp,
+                                            hash: res.hash,
+                                            gasUsed: res.gasUsed
                                         });
                                         nextSellPrice();
                                     },
@@ -217,7 +218,7 @@ module.exports = function (p, cb) {
                                 callback(err);
                             });
                         }
-                    ], function (err) {
+                    ], constants.PARALLEL_LIMIT, function (err) {
                         // if (err) console.error("buy/sell:", err);
                         onSetupOutcome({market: p.market, outcome: outcome});
                         nextOutcome(err);
