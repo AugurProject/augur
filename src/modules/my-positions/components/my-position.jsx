@@ -13,7 +13,7 @@ const Position = (p) => (
 		</div>
 		<div className="position-group">
 			<div className="position-pair purchase-price">
-				<span className="title">avg. trade price</span>
+				<span className="title">average price of open position</span>
 				<ValueDenomination {...p.purchasePrice} />
 			</div>
 			<div className="position-pair last-price">
