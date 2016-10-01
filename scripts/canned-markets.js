@@ -65,7 +65,7 @@ var cannedMarkets = [{
     resolution: "https://www.augur.net"
 }, {
     description: "Who will win the University of Georgia vs. University of Florida football game in 2016?~|>Georgia|Florida|Vanderbilt",
-    expDate: parseInt(new Date("12/1/2016").getTime() / 1000, 10),
+    expDate: parseInt(new Date("10/30/2016").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
     numOutcomes: 3,
