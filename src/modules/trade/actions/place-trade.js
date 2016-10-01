@@ -17,13 +17,11 @@ export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
-		console.log('market trade in progress:', marketTradeInProgress);
 		const market = selectMarket(marketID);
 		if (!marketTradeInProgress || !market) {
 			return;
 		}
 		async.forEachOf(marketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
-			console.log('outcomeTradeInProgress', outcomeID, outcomeTradeInProgress);
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
 				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
 			}
@@ -71,8 +69,7 @@ export function placeTrade(marketID) {
 					}
 					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
-					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
-					if (position && position.gt(constants.PRECISION.limit.dividedBy(10))) {
+					if (position && position.gt(constants.PRECISION.zero)) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));
 							dispatch(addTradeTransaction(

@@ -253,7 +253,7 @@ export function assembleMarket(
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], marketNetEffectiveTrades, (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
+				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
 				outcome.topBid = selectTopBid(orderBook, false);

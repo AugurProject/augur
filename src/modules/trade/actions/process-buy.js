@@ -58,7 +58,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
-				if (sharesRemaining.gt(constants.PRECISION.limit.dividedBy(10)) && res.remainingEth.gt(constants.PRECISION.limit.dividedBy(10))) {
+				if (sharesRemaining.gt(constants.PRECISION.zero) && res.remainingEth.gt(constants.PRECISION.zero)) {
 					console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
 					if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 						const transactionData = getState().transactionsData[transactionID];

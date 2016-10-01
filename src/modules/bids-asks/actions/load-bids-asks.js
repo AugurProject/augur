@@ -6,7 +6,7 @@ const loadBidsAsksLock = {};
 
 export function loadBidsAsks(marketID, cb) {
 	return (dispatch, getState) => {
-		if (!loadBidsAsksLock[marketID]) {
+		// if (!loadBidsAsksLock[marketID]) {
 			// loadBidsAsksLock[marketID] = true;
 			const market = selectMarket(marketID);
 			var scalarMinMax = {};
@@ -22,9 +22,9 @@ export function loadBidsAsks(marketID, cb) {
 					getOrderBookChunked(marketID, 0, Math.min(parseInt(totalTrades, 10), 100), scalarMinMax, totalTrades, cb, dispatch);
 				}
 			});
-		} else {
-			if (cb) cb(null);
-		}
+		// } else {
+		// 	if (cb) cb(null);
+		// }
 	};
 }
 
