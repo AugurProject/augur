@@ -52,7 +52,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					}));
 				}
 				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
-				const pricePerShare = filledShares.dividedBy(res.filledEth);
+				const pricePerShare = res.filledEth.dividedBy(filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'updating position',
 					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
@@ -65,7 +65,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
-						if (position.gt(constants.PRECISION.limit.dividedBy(10))) {
+						if (position.gt(constants.PRECISION.zero)) {
 							let askShares;
 							let shortAskShares;
 							if (position.gt(remainingShares)) {
