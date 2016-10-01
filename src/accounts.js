@@ -319,13 +319,7 @@ module.exports = function () {
                     keystore: keystore,
                     derivedKey: derivedKey
                 };
-
-                return cb({
-                    name: name,
-                    secureLoginID: secureLoginID,
-                    keystore: keystore,
-                    address: address
-                });
+                return cb(clone(self.account));
             }); // deriveKey
         },
 
