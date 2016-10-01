@@ -24,9 +24,13 @@ export function loginWithAirbitz(airbitzAccount) {
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
-			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
+			try {
+				dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+				dispatch(updateLoginAccount(loginAccount));
+				dispatch(loadLoginAccountDependents());
+			} catch (e) {
+
+			}
 			if (links && links.marketsLink)	{
 				links.marketsLink.onClick(links.marketsLink.href);
 			}
