@@ -203,7 +203,7 @@ export function assembleMarket(
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
-			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.limit.dividedBy(10));
+			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
 			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
 
 			market.report = {
