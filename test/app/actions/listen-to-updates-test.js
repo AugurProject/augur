@@ -95,9 +95,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		}, {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
-			type: 'UPDATE_MARKET_ORDER_BOOK'
-		}, {
-			type: 'UPDATE_ACCOUNT_TRADES_DATA'
+			type: 'LOAD_BASIC_MARKET',
+			marketID: ['testMarketID']
 		}, {
 			type: 'LOAD_BASIC_MARKET',
 			marketID: ['testID1']
@@ -110,7 +109,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() once as expected`);
 		assert(mockUpdateAssets.updateAssets.calledOnce, `Didn't call updateAssets() once as expected`);
 		assert(mockOutcomePrice.updateOutcomePrice.calledOnce, `Didn't call updateOutcomePrice() once as expected`);
-		assert(mockLoadMarketsInfo.loadMarketsInfo.calledTwice, `Didn't call loadMarketsInfo() twice as expected`);
+		assert(mockLoadMarketsInfo.loadMarketsInfo.calledThrice, `Didn't call loadMarketsInfo() three times as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
 });
