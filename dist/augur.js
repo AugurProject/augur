@@ -43623,7 +43623,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.6";
+    this.version = "2.9.7";
 
     this.options = {
         debug: {
@@ -44406,6 +44406,9 @@ module.exports = {
         this.augurNode.getMarketsInfo(branchID, function (err, result) {
             if (err) {
                 console.warn("cache node getMarketsInfo failed:", err);
+
+                // Abandon the use of cache nodes since there was a connection issue.
+                self.augurNode.nodes = [];
 
                 // fallback to loading in batches from chain
                 return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
