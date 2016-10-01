@@ -30,10 +30,12 @@ export default class Link extends Component {
 	}
 
 	render() {
+		let buttonLink;
 		if (this.props.href) {
-			return <a {...this.props} href={this.props.href} className={`link ${this.props.className}`} onClick={this.handleClick} />;
+			buttonLink = <a {...this.props} href={this.props.href} className={`link ${this.props.className}`} onClick={this.handleClick} />;
 		} else {
-			return <a {...this.props} className={`link ${this.props.className}`} onClick={this.handleClick} />;
+			buttonLink = <a {...this.props} className={`link ${this.props.className}`} onClick={this.handleClick} />;
 		}
+		return buttonLink;
 	}
 }

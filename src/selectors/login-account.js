@@ -12,7 +12,7 @@ const loginAccount = {
 	realEther: makeNumber(2.5, ' ETH'),
 	name: 'MrTestTesterson',
 	onAirbitzManageAccount: () => {
-		console.log('Airbitz Manage Account')
+		console.log('Airbitz Manage Account');
 	}
 };
 

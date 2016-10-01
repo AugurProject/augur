@@ -14,7 +14,7 @@ const loginParts = {
 	submitButtonClass: 'login-button',
 	submitButtonText: 'Login',
 	airbitzLinkText: 'Login With Airbitz',
-	airbitzLink: { onClick: () => { console.log('Airbitz Login') } },
+	airbitzLink: { onClick: () => { console.log('Airbitz Login'); } },
 	title: 'Login',
 	type: 'login',
 	isVisibleName: false,
@@ -31,7 +31,7 @@ const signUp = {
 	submitButtonClass: 'register-button',
 	submitButtonText: 'Generate Account',
 	airbitzLinkText: 'Register With Airbitz',
-	airbitzLink: { onClick: () => { console.log('Airbitz Register') } },
+	airbitzLink: { onClick: () => { console.log('Airbitz Register'); } },
 	title: 'Sign Up',
 	isVisibleName: true,
 	isVisibleID: false,
@@ -72,7 +72,7 @@ const importAccount = {
 	submitButtonClass: 'login-button',
 	submitButtonText: 'Import Account',
 	airbitzLinkText: 'Register With Airbitz',
-	airbitzLink: { onClick: () => { console.log('Airbitz Register') } },
+	airbitzLink: { onClick: () => { console.log('Airbitz Register'); } },
 	bottomLink: {
 		href: '/register',
 		onClick: () => {

@@ -33,8 +33,6 @@ const AuthPage = (p) => (
 	</main>
 );
 
-
-
 AuthPage.propTypes = {
 	className: PropTypes.string,
 	siteHeader: PropTypes.object,
