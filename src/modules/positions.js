@@ -318,15 +318,16 @@ module.exports = {
      * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
      * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
      * @param {BigNumber|string=} adjustedPosition Position adjusted for short sells (optional).
-     * @param {Object=} netEffectiveTrades Net effective trades for this market (optional).
      * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
      */
-    calculateProfitLoss: function (trades, lastTradePrice, adjustedPosition, netEffectiveTrades) {
-        var shares, price, position, weightedPrice, realized, numTrades;
+    calculateProfitLoss: function (accountTrades, lastTradePrice, adjustedPosition) {
+        var shares, price, position, weightedPrice, realized, numTrades, trades;
         position = constants.ZERO;
         weightedPrice = constants.ZERO;
         realized = constants.ZERO;
-        if (trades) {
+        if (accountTrades) {
+            trades = accountTrades.slice();
+            trades.reverse();
             numTrades = trades.length;
             if (numTrades) {
                 for (var i = 0; i < numTrades; ++i) {
@@ -343,17 +344,31 @@ module.exports = {
                         if (trades[i].type === 2) {
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
-                            } else {
+                            } else if (position.gt(constants.ZERO)) {
                                 weightedPrice = position.dividedBy(shares.plus(position))
                                     .times(weightedPrice)
                                     .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            } else {
+                                if (!trades[i].isShortSell) {
+                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                                }
                             }
                             position = position.plus(shares);
 
                         // Buy orders: update weighted price sum and total shares bought.
                         // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
                         } else {
-                            realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                            if (position.eq(constants.ZERO)) {
+                                weightedPrice = price;
+                            } else if (position.gt(constants.ZERO)) {
+                                if (!trades[i].isShortSell) {
+                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                                }
+                            } else {
+                                weightedPrice = position.dividedBy(shares.plus(position))
+                                    .times(weightedPrice)
+                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            }
                             position = position.minus(shares);
                         }
 
@@ -367,62 +382,63 @@ module.exports = {
                         if (trades[i].type === 1) {
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
-                            } else {
+                            } else if (position.gt(constants.ZERO)) {
                                 weightedPrice = position.dividedBy(shares.plus(position))
                                     .times(weightedPrice)
                                     .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            } else {
+                                realized = realized.plus(shares.times(price.minus(weightedPrice)));
                             }
                             position = position.plus(shares);
 
                         // Sell order: update realized P/L and total shares bought.
                         // realized P/L = shares sold * (price on cash out - price on buy in)
                         } else {
-                            realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                            position = position.minus(shares);
-                        }
-                    }
-                }
-
-                // Include contribution of short sells / complete sets.
-                if (netEffectiveTrades) {
-                    var completeSetsTypes = Object.keys(netEffectiveTrades);
-                    var numCompleteSetsTypes = completeSetsTypes.length;
-                    var completeSetsType, netEffectiveTrade;
-                    for (var j = 0; j < numCompleteSetsTypes; ++j) {
-                        completeSetsType = completeSetsTypes[j];
-                        netEffectiveTrade = netEffectiveTrades[completeSetsType];
-                        if (netEffectiveTrade) {
-                            shares = netEffectiveTrade.shares;
-                            price = netEffectiveTrade.price;
-                            if (netEffectiveTrade.type === 1) {
-                                if (position.eq(constants.ZERO)) {
-                                    weightedPrice = price;
+                            if (position.eq(constants.ZERO)) {
+                                realized = realized.plus(shares.neg().times(price.minus(weightedPrice)));
+                                weightedPrice = price;
+                            } else if (position.gt(constants.ZERO)) {
+                                if (!trades[i].isShortSell) {
+                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
                                 } else {
+                                    weightedPrice = position.dividedBy(position.minus(shares))
+                                        .times(weightedPrice)
+                                        .plus(shares.dividedBy(position.minus(shares)).times(price));
+                                }
+                            } else {
+                                if (!trades[i].isShortSell) {
                                     weightedPrice = position.dividedBy(shares.plus(position))
                                         .times(weightedPrice)
                                         .plus(shares.dividedBy(shares.plus(position)).times(price));
+                                } else {
+                                    realized = realized.plus(shares.neg().times(price.minus(weightedPrice)));
                                 }
-                                position = position.plus(shares);
-                            } else {
-                                realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                                position = position.minus(shares);
                             }
+                            position = position.minus(shares);
                         }
                     }
                 }
             }
         }
         position = (adjustedPosition) ? abi.bignum(adjustedPosition) : position;
-        if (position.lt(constants.PRECISION.limit.dividedBy(10))) {
+        if (position.abs().lt(constants.PRECISION.zero)) {
             position = constants.ZERO;
             weightedPrice = constants.ZERO;
         }
+        var bnLastTradePrice = abi.bignum(lastTradePrice);
 
         // unrealized P/L: shares held * (last trade price - price on buy in)
+        var unrealized;
+        if (bnLastTradePrice.eq(constants.ZERO)) {
+            unrealized = constants.ZERO;
+        } else {
+            unrealized = position.times(abi.bignum(bnLastTradePrice).minus(weightedPrice));
+        }
+
         return {
             position: position.toFixed(),
             realized: realized.toFixed(),
-            unrealized: position.times(abi.bignum(lastTradePrice).minus(weightedPrice)).toFixed(),
+            unrealized: unrealized.toFixed(),
             weightedPrice: weightedPrice.toFixed()
         };
     }
