@@ -64,6 +64,17 @@ var cannedMarkets = [{
     extraInfo: "https://www.augur.net",
     resolution: "https://www.augur.net"
 }, {
+    description: "Who will win the University of Georgia vs. University of Florida football game in 2016?~|>Georgia|Florida|Vanderbilt",
+    expDate: parseInt(new Date("12/1/2016").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 3,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["college football", "football", "Jacksonville"],
+    extraInfo: "",
+    resolution: ""
+}, {
     description: "Will Tony Sakich win the 2016 annual Augur breakdancing competition?",
     expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
     minValue: 1,
@@ -130,8 +141,8 @@ var cannedMarkets = [{
     tags: ["politics", "US elections", "presidential debates"],
     resolution: ""
 }, {
-    description: "Which city will have the highest median single-family home price for September 2016?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
-    expDate: parseInt(new Date("10-2-2016").getTime() / 1000, 10),
+    description: "Which city will have the highest median single-family home price for September 2017?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
+    expDate: parseInt(new Date("10-2-2017").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
     numOutcomes: 8,
@@ -235,7 +246,7 @@ augur.connect({
                     initialFairPrices[1] = midpoint;
                 } else {
                     for (var i = 0; i < market.numOutcomes; ++i) {
-                        initialFairPrices[i] = "0.5";
+                        initialFairPrices[i] = (1 / market.numOutcomes).toString();
                     }
                 }
                 var orderBookParams = {
