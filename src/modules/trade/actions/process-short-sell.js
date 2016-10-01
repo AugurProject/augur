@@ -45,11 +45,12 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				}
 				filledEth = filledEth.plus(res.filledEth);
 				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const totalEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
+				const actualEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'updating position',
-					message: `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}`,
-					totalCost: formatEther(totalEthWithFee),
+					message: `short sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					totalCost: formatEther(actualEthWithFee),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
@@ -62,7 +63,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						transactionData.data.outcomeName,
 						res.remainingShares,
 						limitPrice,
-						totalEthWithFee,
+						actualEthWithFee,
 						tradingFeesEth,
 						transactionData.feePercent.value,
 						gasFeesRealEth));
