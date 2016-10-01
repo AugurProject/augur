@@ -23,7 +23,10 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 		},
 		numShares: formatShares(numShares),
 		noFeePrice: formatEther(limitPrice),
-		avgPrice: formatEther(abi.bignum(totalCost).minus(bnNumShares).dividedBy(bnNumShares).abs()),
+		avgPrice: formatEther(abi.bignum(totalCost)
+			.minus(bnNumShares)
+			.dividedBy(bnNumShares)
+			.abs()),
 		tradingFees: formatEther(tradingFeesEth),
 		feePercent: formatPercent(feePercent),
 		gasFees: formatRealEther(gasFeesRealEth)

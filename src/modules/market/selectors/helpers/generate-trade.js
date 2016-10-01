@@ -83,22 +83,21 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 				tradeAction.feeEth,
 				tradeAction.feePercent,
 				tradeAction.gasEth,
-				store.dispatch)
-		} else {
-			return makeTradeTransaction(
-				TRANSACTIONS_TYPES[tradeAction.action],
-				market.id,
-				outcome.id,
-				market.type,
-				market.description,
-				outcome.name,
-				tradeAction.shares,
-				tradeAction.noFeePrice,
-				abi.bignum(tradeAction.costEth).abs().toNumber(),
-				tradeAction.feeEth,
-				tradeAction.feePercent,
-				tradeAction.gasEth,
-				store.dispatch)
+				store.dispatch);
 		}
+		return makeTradeTransaction(
+			TRANSACTIONS_TYPES[tradeAction.action],
+			market.id,
+			outcome.id,
+			market.type,
+			market.description,
+			outcome.name,
+			tradeAction.shares,
+			tradeAction.noFeePrice,
+			abi.bignum(tradeAction.costEth).abs().toNumber(),
+			tradeAction.feeEth,
+			tradeAction.feePercent,
+			tradeAction.gasEth,
+			store.dispatch);
 	});
 });
