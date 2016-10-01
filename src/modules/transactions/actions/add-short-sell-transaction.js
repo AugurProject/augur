@@ -12,6 +12,7 @@ export const addShortSellTransaction = (marketID, outcomeID, marketDescription, 
 
 export const makeShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
 	console.log('short sell transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
+	const bnNumShares = abi.bignum(numShares);
 	const transaction = {
 		type: SHORT_SELL,
 		data: {
@@ -22,7 +23,7 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketDescription,
 		},
 		numShares: formatShares(numShares),
 		noFeePrice: formatEther(limitPrice),
-		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		avgPrice: formatEther(abi.bignum(totalCost).minus(bnNumShares).dividedBy(bnNumShares).abs()),
 		tradingFees: formatEther(tradingFeesEth),
 		feePercent: formatPercent(feePercent),
 		gasFees: formatRealEther(gasFeesRealEth)

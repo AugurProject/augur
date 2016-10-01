@@ -8,6 +8,7 @@ import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
 
 import { updateTradesInProgress } from '../../../trade/actions/update-trades-in-progress';
 import { makeTradeTransaction } from '../../../transactions/actions/add-trade-transaction';
+import { makeShortSellTransaction } from '../../../transactions/actions/add-short-sell-transaction';
 
 import store from '../../../../store';
 
@@ -69,20 +70,35 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 		return [];
 	}
 
-	return tradeActions.map(tradeAction => (
-		makeTradeTransaction(
-			TRANSACTIONS_TYPES[tradeAction.action],
-			market.id,
-			outcome.id,
-			market.type,
-			market.description,
-			outcome.name,
-			tradeAction.shares,
-			tradeAction.noFeePrice,
-			abi.bignum(tradeAction.costEth).abs().toNumber(),
-			tradeAction.feeEth,
-			tradeAction.feePercent,
-			tradeAction.gasEth,
-			store.dispatch)
-	));
+	return tradeActions.map(tradeAction => {
+		if (tradeAction.action === 'SHORT_SELL') {
+			return makeShortSellTransaction(
+				market.id,
+				outcome.id,
+				market.description,
+				outcome.name,
+				tradeAction.shares,
+				tradeAction.noFeePrice,
+				abi.bignum(tradeAction.costEth).abs().toNumber(),
+				tradeAction.feeEth,
+				tradeAction.feePercent,
+				tradeAction.gasEth,
+				store.dispatch)
+		} else {
+			return makeTradeTransaction(
+				TRANSACTIONS_TYPES[tradeAction.action],
+				market.id,
+				outcome.id,
+				market.type,
+				market.description,
+				outcome.name,
+				tradeAction.shares,
+				tradeAction.noFeePrice,
+				abi.bignum(tradeAction.costEth).abs().toNumber(),
+				tradeAction.feeEth,
+				tradeAction.feePercent,
+				tradeAction.gasEth,
+				store.dispatch)
+		}
+	});
 });
