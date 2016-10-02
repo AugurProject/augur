@@ -14,8 +14,8 @@ export default function () {
 
 const getUpdate = memoizerific(1)((dispatch) =>
 	(marketId) => {
-        dispatch(loadMarketsInfo([marketId], () => {
-            dispatch(loadFullMarket(marketId));
-        }));
+		dispatch(loadMarketsInfo([marketId], () => {
+			dispatch(loadFullMarket(marketId));
+		}));
 	}
 );
