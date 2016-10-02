@@ -1,6 +1,7 @@
 import memoizerific from 'memoizerific';
 import store from '../../../store';
 import { loadFullMarket } from '../../market/actions/load-full-market';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 const UPDATE_INTERVAL_SECS = 15;
 
@@ -13,6 +14,8 @@ export default function () {
 
 const getUpdate = memoizerific(1)((dispatch) =>
 	(marketId) => {
-		dispatch(loadFullMarket(marketId));
+        dispatch(loadMarketsInfo([marketId], () => {
+            dispatch(loadFullMarket(marketId));
+        }));
 	}
 );
