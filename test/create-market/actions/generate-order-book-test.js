@@ -187,12 +187,11 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 transactionID: 'trans123',
                 status: {
                     status: SUCCESS,
-                    gasFees: '0.000 real ETH',
                     gasFees: {
                         denomination: ' real ETH',
-                        formatted: '0.000',
+                        formatted: '0',
                         formattedValue: 0,
-                        full: '0.000 real ETH',
+                        full: '0 real ETH',
                         minimized: '0',
                         rounded: '0.0000',
                         roundedValue: 0,
