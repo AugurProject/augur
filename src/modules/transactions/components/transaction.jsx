@@ -239,7 +239,7 @@ const Transaction = (p) => {
 			</span>
 
 			{p.status && p.hash ?
-				<Link href={`https://testnet.etherscan.io/tx/transaction/${p.hash}`} target="_blank">
+				<Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />
