@@ -43623,7 +43623,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.7";
+    this.version = "2.9.8";
 
     this.options = {
         debug: {
@@ -46217,9 +46217,10 @@ module.exports = {
      * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
      * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
      * @param {BigNumber|string=} adjustedPosition Position adjusted for short sells (optional).
+     * @param {Object=} netEffectiveTrades Net effective trades for this market (optional).
      * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
      */
-    calculateProfitLoss: function (accountTrades, lastTradePrice, adjustedPosition) {
+    calculateProfitLoss: function (accountTrades, lastTradePrice, adjustedPosition, netEffectiveTrades) {
         var shares, price, position, weightedPrice, realized, numTrades, trades;
         position = constants.ZERO;
         weightedPrice = constants.ZERO;
@@ -46279,6 +46280,7 @@ module.exports = {
                         // Buy orders: update weighted price sum and total shares bought.
                         // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
                         if (trades[i].type === 1) {
+                            // console.log('buy:', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
                             } else if (position.gt(constants.ZERO)) {
@@ -46286,31 +46288,31 @@ module.exports = {
                                     .times(weightedPrice)
                                     .plus(shares.dividedBy(shares.plus(position)).times(price));
                             } else {
-                                realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                                realized = realized.minus(shares.times(price.minus(weightedPrice)));
                             }
                             position = position.plus(shares);
 
                         // Sell order: update realized P/L and total shares bought.
                         // realized P/L = shares sold * (price on cash out - price on buy in)
                         } else {
+                            // console.log('sell:', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed(), trades[i].isShortSell);
                             if (position.eq(constants.ZERO)) {
-                                realized = realized.plus(shares.neg().times(price.minus(weightedPrice)));
                                 weightedPrice = price;
                             } else if (position.gt(constants.ZERO)) {
                                 if (!trades[i].isShortSell) {
                                     realized = realized.plus(shares.times(price.minus(weightedPrice)));
                                 } else {
-                                    weightedPrice = position.dividedBy(position.minus(shares))
+                                    weightedPrice = position.dividedBy(shares.minus(position))
                                         .times(weightedPrice)
-                                        .plus(shares.dividedBy(position.minus(shares)).times(price));
+                                        .plus(shares.dividedBy(shares.minus(position)).times(price));
                                 }
                             } else {
                                 if (!trades[i].isShortSell) {
-                                    weightedPrice = position.dividedBy(shares.plus(position))
+                                    weightedPrice = position.dividedBy(shares.minus(position))
                                         .times(weightedPrice)
-                                        .plus(shares.dividedBy(shares.plus(position)).times(price));
+                                        .plus(shares.dividedBy(shares.minus(position)).times(price));
                                 } else {
-                                    realized = realized.plus(shares.neg().times(price.minus(weightedPrice)));
+                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
                                 }
                             }
                             position = position.minus(shares);
@@ -46324,9 +46326,9 @@ module.exports = {
             position = constants.ZERO;
             weightedPrice = constants.ZERO;
         }
-        var bnLastTradePrice = abi.bignum(lastTradePrice);
 
         // unrealized P/L: shares held * (last trade price - price on buy in)
+        var bnLastTradePrice = abi.bignum(lastTradePrice);
         var unrealized;
         if (bnLastTradePrice.eq(constants.ZERO)) {
             unrealized = constants.ZERO;
