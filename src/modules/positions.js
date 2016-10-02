@@ -343,34 +343,30 @@ module.exports = {
                         // Sell order: update realized P/L and total shares bought.
                         // realized P/L = shares sold * (price on cash out - price on buy in)
                         if (trades[i].type === 2) {
+                            console.log('sell (maker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
-                            } else if (position.gt(constants.ZERO)) {
-                                weightedPrice = position.dividedBy(shares.plus(position))
-                                    .times(weightedPrice)
-                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
-                            } else {
-                                if (!trades[i].isShortSell) {
-                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                                }
-                            }
-                            position = position.plus(shares);
-
-                        // Buy orders: update weighted price sum and total shares bought.
-                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-                        } else {
-                            if (position.eq(constants.ZERO)) {
-                                weightedPrice = price;
-                            } else if (position.gt(constants.ZERO)) {
-                                if (!trades[i].isShortSell) {
-                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                                }
                             } else {
                                 weightedPrice = position.dividedBy(shares.plus(position))
                                     .times(weightedPrice)
                                     .plus(shares.dividedBy(shares.plus(position)).times(price));
                             }
                             position = position.minus(shares);
+
+                        // Buy orders: update weighted price sum and total shares bought.
+                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+                        } else {
+                            console.log('buy (maker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
+                            if (position.eq(constants.ZERO)) {
+                                weightedPrice = price;
+                            } else if (position.gt(constants.ZERO)) {
+                                weightedPrice = position.dividedBy(shares.plus(position))
+                                    .times(weightedPrice)
+                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
+                            } else {
+                                realized = realized.minus(shares.times(price.minus(weightedPrice)));
+                            }
+                            position = position.plus(shares);
                         }
 
                     // Trades where user is the taker:
@@ -381,7 +377,7 @@ module.exports = {
                         // Buy orders: update weighted price sum and total shares bought.
                         // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
                         if (trades[i].type === 1) {
-                            // console.log('buy:', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
+                            console.log('buy (taker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
                             } else if (position.gt(constants.ZERO)) {
@@ -396,24 +392,16 @@ module.exports = {
                         // Sell order: update realized P/L and total shares bought.
                         // realized P/L = shares sold * (price on cash out - price on buy in)
                         } else {
-                            // console.log('sell:', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed(), trades[i].isShortSell);
+                            console.log('sell (taker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed(), trades[i].isShortSell);
                             if (position.eq(constants.ZERO)) {
                                 weightedPrice = price;
-                            } else if (position.gt(constants.ZERO)) {
-                                if (!trades[i].isShortSell) {
-                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                                } else {
-                                    weightedPrice = position.dividedBy(shares.minus(position))
-                                        .times(weightedPrice)
-                                        .plus(shares.dividedBy(shares.minus(position)).times(price));
-                                }
                             } else {
                                 if (!trades[i].isShortSell) {
-                                    weightedPrice = position.dividedBy(shares.minus(position))
-                                        .times(weightedPrice)
-                                        .plus(shares.dividedBy(shares.minus(position)).times(price));
-                                } else {
                                     realized = realized.plus(shares.times(price.minus(weightedPrice)));
+                                } else {
+                                    weightedPrice = position.dividedBy(shares.plus(position))
+                                        .times(weightedPrice)
+                                        .plus(shares.dividedBy(shares.plus(position)).times(price));
                                 }
                             }
                             position = position.minus(shares);
