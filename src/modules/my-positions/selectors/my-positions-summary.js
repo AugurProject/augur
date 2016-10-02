@@ -27,7 +27,7 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 	const positionOutcomes = [];
 	markets.forEach(market => {
 		market.outcomes.forEach(outcome => {
-			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
+			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || !outcome.position.qtyShares || !outcome.position.qtyShares.value) {
 				return;
 			}
 			qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
