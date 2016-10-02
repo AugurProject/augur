@@ -1,5 +1,5 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
@@ -44,7 +44,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 					}));
 				}
 				filledEth = filledEth.plus(res.filledEth);
-				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
+				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
 				const actualEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
 				const pricePerShare = filledEth.dividedBy(filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
@@ -54,14 +54,14 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-				if (res.remainingShares > 0) {
+				if (res.remainingShares.gt(constants.PRECISION.zero)) {
 					const transactionData = getState().transactionsData[transactionID];
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
-						res.remainingShares,
+						res.remainingShares.toFixed(),
 						limitPrice,
 						actualEthWithFee,
 						tradingFeesEth,

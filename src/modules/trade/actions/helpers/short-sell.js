@@ -1,5 +1,5 @@
 import async from 'async';
-import { augur, abi } from '../../../../services/augurjs';
+import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 import { SUCCESS } from '../../../transactions/constants/statuses';
 
@@ -38,9 +38,9 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 			},
 			onTradeSuccess: (data) => {
 				if (data.unmatchedShares) {
-					res.remainingShares = abi.number(data.unmatchedShares);
+					res.remainingShares = abi.bignum(data.unmatchedShares);
 				} else {
-					res.remainingShares = 0;
+					res.remainingShares = ZERO;
 				}
 				if (data.matchedShares) {
 					res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
@@ -57,7 +57,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 					tradingFees: res.tradingFees,
 					gasFees: res.gasFees
 				});
-				if (res.remainingShares > 0) return nextMatchingID();
+				if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
 			onTradeFailed: (err) => nextMatchingID

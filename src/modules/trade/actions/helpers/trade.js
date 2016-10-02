@@ -1,5 +1,5 @@
 import async from 'async';
-import { augur, abi } from '../../../../services/augurjs';
+import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
@@ -17,15 +17,10 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 	let matchingTradeIDs;
 	async.until(() => {
 		matchingTradeIDs = getTradeIDs();
-		return !matchingTradeIDs.length || (res.remainingEth.eq(ZERO) && res.remainingShares.eq(ZERO));
+		return !matchingTradeIDs.length || (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero));
 	}, (nextTrade) => {
 		let tradeIDs = matchingTradeIDs;
 		tradeIDs = tradeIDs.slice(0, 3);
-		console.debug(JSON.stringify({
-			max_value: res.remainingEth.toFixed(),
-			max_amount: res.remainingShares.toFixed(),
-			trade_ids: tradeIDs
-		}), null, 2);
 		augur.trade({
 			max_value: res.remainingEth.toFixed(),
 			max_amount: res.remainingShares.toFixed(),

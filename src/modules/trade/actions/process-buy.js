@@ -67,7 +67,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 							transactionData.data.outcomeID,
 							transactionData.data.marketDescription,
 							transactionData.data.outcomeName,
-							sharesRemaining.toNumber(),
+							sharesRemaining.toFixed(),
 							limitPrice,
 							res.remainingEth,
 							tradingFeesEth,
