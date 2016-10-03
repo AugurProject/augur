@@ -1,27 +1,33 @@
 import React, { PropTypes } from 'react';
 import DropDown from '../../common/components/dropdown';
+import MarketsSearch from '../../markets/components/markets-search';
 
 const MarketsFilterSort = (p) => (
 	<article className={`markets-view-header ${p.className}`}>
-		<DropDown
-			default={p.selectedFilterSort.type}
-			options={p.types}
-			onChange={type => { p.onChange(type, null, null); }}
-
-		/>
-		<div className="companion-fields">
+		<div className="view-header-group-1">
 			<DropDown
-				className="companion-field"
-				default={p.selectedFilterSort.sort}
-				options={p.sorts}
-				onChange={sort => { p.onChange(null, sort, null); }}
+				default={p.selectedFilterSort.type}
+				options={p.types}
+				onChange={type => { p.onChange(type, null, null); }}
+
 			/>
-			<i
-				className="fa"
-				onClick={() => { p.onChange(null, null, !p.selectedFilterSort.isDesc); }}
-			>
-				{p.selectedFilterSort.isDesc ? '' : ''}
-			</i>
+			<div className="companion-fields">
+				<DropDown
+					className="companion-field"
+					default={p.selectedFilterSort.sort}
+					options={p.sorts}
+					onChange={sort => { p.onChange(null, sort, null); }}
+				/>
+				<i
+					className="fa"
+					onClick={() => { p.onChange(null, null, !p.selectedFilterSort.isDesc); }}
+				>
+					{p.selectedFilterSort.isDesc ? '' : ''}
+				</i>
+			</div>
+		</div>
+		<div className="view-header-group-2">
+			<MarketsSearch />
 		</div>
 	</article>
 );

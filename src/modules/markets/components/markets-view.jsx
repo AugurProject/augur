@@ -19,10 +19,10 @@ const MarketsView = (p) => (
 
 MarketsView.propTypes = {
 	className: PropTypes.string,
+	marketsFilterSort: PropTypes.object,
 	marketsHeader: PropTypes.object,
 	markets: PropTypes.array,
-	pagination: PropTypes.object,
-	marketSortOptions: PropTypes.object
+	pagination: PropTypes.object
 };
 
 export default MarketsView;

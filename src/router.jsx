@@ -48,7 +48,7 @@ export default class Router extends Component {
 	currentRoute(p) {
 		let node;
 
-		switch (p.activePage) {
+		switch (p.activeView) {
 		case REGISTER:
 		case LOGIN:
 		case IMPORT:
@@ -104,7 +104,7 @@ export default class Router extends Component {
 			node = (
 				<PortfolioView
 					{...p.portfolio}
-					activePage={p.activePage}
+					activeView={p.activeView}
 				/>
 			);
 			break;
@@ -139,7 +139,7 @@ export default class Router extends Component {
 			marginTop: this.state.pageMarginTop
 		};
 		const siteHeader = {
-			activePage: p.activePage,
+			activeView: p.activeView,
 			loginAccount: p.loginAccount,
 			positionsSummary: p.positionsSummary,
 			transactionsTotals: p.transactionsTotals,

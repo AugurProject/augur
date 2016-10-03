@@ -1,4 +1,4 @@
-import activePage from './selectors/active-page';
+import activeView from './selectors/active-view';
 import authForm from './selectors/auth-form';
 import orderCancellation from './selectors/order-cancellation';
 import createMarketForm from './selectors/create-market-form';
@@ -33,7 +33,7 @@ import selectedOutcome from './selectors/selected-outcome';
 
 // all selectors should go here
 const selectors = {
-	activePage,
+	activeView,
 	authForm,
 	orderCancellation,
 	createMarketForm,
@@ -64,7 +64,8 @@ const selectors = {
 	positionsMarkets,
 	search,
 	marketsFilterSort,
-	pagination
+	pagination,
+	selectedOutcome
 };
 
 // add update helper fn to selectors object

@@ -14,7 +14,7 @@ export default class SiteHeader extends Component {
 			<header className="site-header" ref={ref => { this.siteHeader = ref; }} >
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
-						<Link className={classnames('site-nav-link', { active: p.activePage === MARKETS })} {...p.marketsLink}>
+						<Link className={classnames('site-nav-link', { active: p.activeView === MARKETS })} {...p.marketsLink}>
 							Markets
 						</Link>
 					</div>
@@ -24,18 +24,14 @@ export default class SiteHeader extends Component {
 						</Link>
 					</div>
 					<div className="nav-group right-navs">
-						<i
-							className="fa header-search-icon"
-							onClick={() => { p.onSearchIconClick(); }}
-						></i>
 						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
-							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
+							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })} {...p.myPositionsLink}>
 								Portfolio
 							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
 							<Link
-								className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+								className={classnames('site-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 								title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
 								{...p.transactionsLink}
 							>
@@ -43,12 +39,12 @@ export default class SiteHeader extends Component {
 							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
-							<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
+							<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })} {...p.accountLink}>
 								Account
 							</Link>
 						}
 						{(!!!p.loginAccount || !!!p.loginAccount.id) &&
-							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
 								Sign Up / Login
 							</Link>
 						}
@@ -60,7 +56,7 @@ export default class SiteHeader extends Component {
 }
 
 SiteHeader.propTypes = {
-	activePage: PropTypes.string,
+	activeView: PropTypes.string,
 	loginAccount: PropTypes.object,
 	transactionsTotals: PropTypes.object,
 	isTransactionsWorking: PropTypes.bool,
@@ -70,8 +66,7 @@ SiteHeader.propTypes = {
 	authLink: PropTypes.object,
 	portfolioTotals: PropTypes.object,
 	keywords: PropTypes.string,
-	onChangeKeywords: PropTypes.func,
-	onSearchIconClick: PropTypes.func
+	onChangeKeywords: PropTypes.func
 };
 
 // <Search

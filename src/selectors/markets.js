@@ -49,7 +49,7 @@ function makeMarkets(numMarkets = 10) {
 			marketLink: {
 				text: 'Trade Market',
 				className: 'trade',
-				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
+				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/m/${id}` })
 			}
 		};
 

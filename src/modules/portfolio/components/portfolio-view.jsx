@@ -8,7 +8,7 @@ import Reports from '../../../modules/portfolio/components/reports';
 const PortfolioView = (p) => {
 	let node;
 
-	switch (p.activePage) {
+	switch (p.activeView) {
 	default:
 	case MY_POSITIONS:
 		node = <Positions {...p.positions} />;
@@ -26,7 +26,7 @@ const PortfolioView = (p) => {
 			<header className="page-header portfolio-header">
 				{!!p.navItems && !!p.navItems.length &&
 					<TabNavigation
-						activePage={p.activePage}
+						activeView={p.activeView}
 						navItems={p.navItems}
 					/>
 				}

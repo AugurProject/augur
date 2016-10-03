@@ -5,10 +5,10 @@ import Link from '../../link/components/link';
 const MarketsHeaders = (p) => (
 	<article className={p.className}>
 		<div className="view-header">
-			<div className="left-header">
+			<div className="view-header-group-1">
 				<h2>Markets</h2>
 			</div>
-			<div className="right-header">
+			<div className="view-header-group-2">
 				<Link
 					className="button imperative"
 					disabled={!p.loginAccount.id}
@@ -19,8 +19,8 @@ const MarketsHeaders = (p) => (
 			</div>
 		</div>
 		<MarketsFilterSort
-			{...p.marketsFilterSort}
 			className="view-header"
+			{...p.marketsFilterSort}
 		/>
 	</article>
 );

@@ -1,4 +1,4 @@
-import activePage from '../test/assertions/active-page';
+import activeView from '../test/assertions/active-view';
 import authForm from '../test/assertions/auth-form';
 import createMarketForm from '../test/assertions/create-market-form';
 import favoriteMarkets from '../test/assertions/favorite-markets';
@@ -38,7 +38,7 @@ import marketDataUpdater from '../test/assertions/market-data-updater';
 import marketDataAge from '../test/assertions/market-data-age';
 
 export default {
-	activePage,
+	activeView,
 	authForm,
 	createMarketForm,
 	favoriteMarkets,

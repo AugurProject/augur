@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Input from './input';
+import Input from '../../common/components/input';
 
 const Search = (p) => (
 	<Input

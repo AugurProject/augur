@@ -11,7 +11,7 @@ const TabNavigation = (p) => (
 			return (
 				<Link
 					key={`${i}`}
-					className={classnames('nav-item', { active: navItem.page.indexOf(p.activePage) > -1 })}
+					className={classnames('nav-item', { active: navItem.page.indexOf(p.activeView) > -1 })}
 					href={navItem.link.href}
 					onClick={navItem.link.onClick}
 				>
@@ -42,7 +42,7 @@ const TabNavigation = (p) => (
 );
 
 TabNavigation.propTypes = {
-	activePage: React.PropTypes.string,
+	activeView: React.PropTypes.string,
 	navItems: React.PropTypes.array
 };
 

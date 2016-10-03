@@ -7,7 +7,7 @@ const Shared = {
 	bottomLinkText: 'Import Account',
 	bottomLink: { href: '/import', onClick: () => require('../selectors').update({ authForm: importAccount }) },
 	msgClass: 'success',
-	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
+	closeLink: { href: '/', onClick: () => require('../selectors').update({ activeView: 'markets' }) }
 };
 
 const loginParts = {
@@ -77,7 +77,7 @@ const importAccount = {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
-		require('../selectors').update({ activePage: 'account' });
+		require('../selectors').update({ activeView: 'account' });
 	}
 };
 
