@@ -1,19 +1,21 @@
 import React, { PropTypes } from 'react';
 import Input from '../../common/components/input';
 
-const Search = (p) => (
-	<Input
-		className="search-input"
-		placeholder="Search Markets + Categories"
-		value={p.keywords}
-		onChange={p.onChangeKeywords}
-	/>
+const MarketsSearch = (p) => (
+	<article className={`search-input ${p.className}`} >
+		<i></i>
+		<Input
+			placeholder="Search Markets"
+			value={p.keywords}
+			onChange={p.onChangeKeywords}
+		/>
+	</article>
 );
 
-Search.propTypes = {
+MarketsSearch.propTypes = {
 	className: PropTypes.string,
 	keywords: PropTypes.string,
 	onChangeKeywords: PropTypes.func
 };
 
-export default Search;
+export default MarketsSearch;
