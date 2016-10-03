@@ -27,6 +27,9 @@ import tradeCommitLock from './selectors/trade-commit-lock';
 import positionsMarkets from './selectors/positions-markets';
 import myMarkets from './selectors/my-markets';
 import search from './selectors/search';
+import marketsFilterSort from './selectors/markets-filter-sort';
+import pagination from './selectors/pagination';
+import selectedOutcome from './selectors/selected-outcome';
 
 // all selectors should go here
 const selectors = {
@@ -59,7 +62,9 @@ const selectors = {
 	myReports,
 	myMarkets,
 	positionsMarkets,
-	search
+	search,
+	marketsFilterSort,
+	pagination
 };
 
 // add update helper fn to selectors object
@@ -76,104 +81,5 @@ Object.defineProperty(selectors, 'update', {
 	},
 	enumerable: false
 });
-
-selectors.selectedOutcome = {
-	updateSelectedOutcome: (selectedOutcomeID) => {
-		module.exports.update({
-			selectedOutcome: {
-				...selectors.selectedOutcome,
-				selectedOutcomeID
-			}
-		});
-	},
-	selectedOutcomeID: null
-};
-
-selectors.marketsFilterSort = {
-	selectedFilterSort: { // Initial Defaults
-		type: 'open',
-		sort: 'volume',
-		isDesc: true
-	},
-	types: [
-		{
-			label: 'Open',
-			value: 'open',
-			default: true
-		},
-		{
-			label: 'Closed',
-			value: 'closed'
-		},
-		{
-			label: 'Reporting',
-			value: 'reporting'
-		}
-	],
-	sorts: [
-		{
-			label: 'Volume',
-			value: 'volume',
-			default: true
-		},
-		{
-			label: 'Newest',
-			value: 'newest'
-		},
-		{
-			label: 'Expiry',
-			value: 'expiry'
-		},
-		{
-			label: 'Taker Fee',
-			value: 'takerFee'
-		},
-		{
-			label: 'Maker Fee',
-			value: 'makerFee'
-		}
-	],
-	order: {
-		isDesc: true // This is the default
-	}
-};
-
-selectors.marketsFilterSort.onChange = (type, sort, order) => {
-	const isDesc = order == null ? selectors.marketsFilterSort.selectedFilterSort.isDesc : order;
-
-	module.exports.update({
-		marketsFilterSort: {
-			...selectors.marketsFilterSort,
-			selectedFilterSort: {
-				type: type || selectors.marketsFilterSort.selectedFilterSort.type,
-				sort: sort || selectors.marketsFilterSort.selectedFilterSort.sort,
-				isDesc
-			}
-		}
-	});
-};
-
-selectors.pagination = {
-	numPerPage: 10,
-	numPages: 10,
-	selectedPageNum: 1,
-	nextPageNum: 2,
-	startItemNum: 1,
-	endItemNum: 10,
-	numUnpaginated: 89,
-	nextItemNum: 11,
-	onUpdateSelectedPageNum: (selectedPageNum) => module.exports.update({
-		pagination: {
-			...selectors.pagination,
-			selectedPageNum,
-			nextPageNum: selectedPageNum + 1,
-			previousPageNum: selectedPageNum - 1,
-			startItemNum: ((selectedPageNum - 1) * 10) + 1,
-			endItemNum: selectedPageNum * 10,
-			nextItemNum: selectedPageNum * 10 + 1,
-			previousItemNum: ((selectedPageNum - 2) * 10) + 1
-		}
-	})
-};
 
 module.exports = selectors;
