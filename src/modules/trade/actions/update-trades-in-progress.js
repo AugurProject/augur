@@ -61,11 +61,13 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
-		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = numShares === "0" ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
+
 		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
 
 		// if shares exist, but no limit price, use top order
 		let cleanLimitPrice = Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
+
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
 		}
@@ -77,7 +79,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			totalFee: 0,
 			totalCost: 0
 		};
-
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
