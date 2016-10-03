@@ -1,6 +1,6 @@
 import { makeNumber } from '../utils/make-number';
 import { makeDate } from '../utils/make-date';
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 export default [
 	{

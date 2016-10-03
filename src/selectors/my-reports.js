@@ -1,6 +1,6 @@
 import { makeDate } from '../utils/make-date';
 import { makeNumber } from '../utils/make-number';
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 const randomBool = () => Math.random() > 0.5;
 const randomSign = () => (Math.random() > 0.5 ? 1 : -1);

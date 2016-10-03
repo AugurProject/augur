@@ -6,7 +6,7 @@ import selectReportableOutcomes from '../selectors/reportable-outcomes';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 module.exports = makeMarkets();
 

@@ -12,7 +12,7 @@ import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
@@ -167,7 +167,9 @@ export default class Router extends Component {
 							className="view-container"
 							style={pageContainerStyles}
 						>
-							<SideBar filters={p.filters} />
+							{p.activeView === MARKETS &&
+								<SideBar filters={p.filters} />
+							}
 							<main className="view-content-container">
 								{currentRoute}
 							</main>

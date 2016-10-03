@@ -1,4 +1,4 @@
-import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from '../modules/site/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from '../modules/site/constants/views';
 import { LOGIN } from '../modules/auth/constants/auth-types';
 
 export default {
