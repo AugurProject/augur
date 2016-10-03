@@ -26,7 +26,6 @@ import myReports from './selectors/my-reports';
 import tradeCommitLock from './selectors/trade-commit-lock';
 import positionsMarkets from './selectors/positions-markets';
 import myMarkets from './selectors/my-markets';
-import search from './selectors/search';
 import marketsFilterSort from './selectors/markets-filter-sort';
 import pagination from './selectors/pagination';
 import selectedOutcome from './selectors/selected-outcome';
@@ -62,7 +61,6 @@ const selectors = {
 	myReports,
 	myMarkets,
 	positionsMarkets,
-	search,
 	marketsFilterSort,
 	pagination,
 	selectedOutcome

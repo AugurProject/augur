@@ -124,6 +124,7 @@ export default class Router extends Component {
 					pagination={p.pagination}
 					marketsFilterSort={p.marketsFilterSort}
 					loginAccount={p.loginAccount}
+					keywords={p.keywords}
 				/>
 			);
 			break;
@@ -160,8 +161,6 @@ export default class Router extends Component {
 						<SiteHeader
 							{...siteHeader}
 							ref={ref => { this.siteHeader = ref; }}
-							keywords={p.keywords && p.keywords.value}
-							onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
 						/>
 						<div
 							className="view-container"

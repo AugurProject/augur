@@ -3,7 +3,7 @@ import Checkbox from '../../common/components/checkbox';
 
 const SideBar = (p) => (
 	<div className="side-bar">
-		<h3>All Categories</h3>
+		<h3>All Tags</h3>
 		<div className="filters">
 			{p.filters.length && p.filters.map(filter =>
 				<Checkbox

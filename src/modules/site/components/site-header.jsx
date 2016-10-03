@@ -5,7 +5,7 @@ import Link from '../../link/components/link';
 import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
 
-export default class SiteHeader extends Component { // Component so that we can access the parent component's `ref`
+export default class SiteHeader extends Component { //
 	render() {
 		const p = this.props;
 
@@ -63,7 +63,5 @@ SiteHeader.propTypes = {
 	myPositionsLink: PropTypes.object,
 	transactionsLink: PropTypes.object,
 	authLink: PropTypes.object,
-	portfolioTotals: PropTypes.object,
-	keywords: PropTypes.string,
-	onChangeKeywords: PropTypes.func
+	portfolioTotals: PropTypes.object
 };

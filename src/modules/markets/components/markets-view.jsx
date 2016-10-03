@@ -9,6 +9,7 @@ const MarketsView = (p) => (
 			loginAccount={p.loginAccount}
 			marketsHeader={p.marketsHeader}
 			marketsFilterSort={p.marketsFilterSort}
+			keywords={p.keywords}
 		/>
 		<MarketsList
 			markets={p.markets}
@@ -22,7 +23,8 @@ MarketsView.propTypes = {
 	marketsFilterSort: PropTypes.object,
 	marketsHeader: PropTypes.object,
 	markets: PropTypes.array,
-	pagination: PropTypes.object
+	pagination: PropTypes.object,
+	keywords: PropTypes.object
 };
 
 export default MarketsView;

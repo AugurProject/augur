@@ -6,16 +6,16 @@ const MarketsSearch = (p) => (
 		<i></i>
 		<Input
 			placeholder="Search Markets"
-			value={p.keywords}
-			onChange={p.onChangeKeywords}
+			isClearable={true}
+			value={p.keywords && p.keywords.value}
+			onChange={p.keywords && p.keywords.onChangeKeywords}
 		/>
 	</article>
 );
 
 MarketsSearch.propTypes = {
 	className: PropTypes.string,
-	keywords: PropTypes.string,
-	onChangeKeywords: PropTypes.func
+	keywords: PropTypes.object
 };
 
 export default MarketsSearch;
