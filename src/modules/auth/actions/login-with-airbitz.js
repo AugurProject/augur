@@ -29,7 +29,7 @@ export function loginWithAirbitz(airbitzAccount) {
 				dispatch(updateLoginAccount(loginAccount));
 				dispatch(loadLoginAccountDependents());
 			} catch (e) {
-
+				console.log('Error setting account login data');
 			}
 			if (links && links.marketsLink)	{
 				links.marketsLink.onClick(links.marketsLink.href);
