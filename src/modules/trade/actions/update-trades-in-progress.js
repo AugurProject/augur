@@ -59,9 +59,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
-
 		// clean num shares
-		const cleanNumShares = numShares === "0" ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = numShares === '0' ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
 
 		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
 
