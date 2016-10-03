@@ -351,7 +351,7 @@ module.exports = {
                                     .times(weightedPrice)
                                     .plus(shares.dividedBy(shares.plus(position)).times(price));
                             }
-                            position = position.minus(shares);
+                            position = position.plus(shares);
 
                         // Buy orders: update weighted price sum and total shares bought.
                         // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
@@ -366,7 +366,7 @@ module.exports = {
                             } else {
                                 realized = realized.minus(shares.times(price.minus(weightedPrice)));
                             }
-                            position = position.plus(shares);
+                            position = position.minus(shares);
                         }
 
                     // Trades where user is the taker:
