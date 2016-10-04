@@ -47,6 +47,7 @@ export default {
 	},
 	onChange: (type, sort, order) => {
 		const selectors = require('../selectors');
+
 		const isDesc = order == null ? selectors.marketsFilterSort.selectedFilterSort.isDesc : order;
 
 		selectors.update({

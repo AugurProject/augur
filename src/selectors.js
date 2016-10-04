@@ -73,7 +73,7 @@ Object.defineProperty(selectors, 'update', {
 			console.log('*** update', newState);
 		}
 
-		Object.keys(newState).forEach(key => {
+		Object.keys(newState).forEach((key) => {
 			selectors[key] = newState[key];
 		});
 		selectors.render();

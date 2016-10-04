@@ -30,6 +30,7 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		signOut: loginAccount.signOut
 	}
 	});
+
 	loginAccount.editName(name);
 };
 
@@ -51,6 +52,7 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		signOut: loginAccount.signOut
 	}
 	});
+
 	loginAccount.editName(name);
 };
 

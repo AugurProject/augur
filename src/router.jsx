@@ -45,7 +45,9 @@ export default class Router extends Component {
 		}
 	}
 
-	currentRoute(p) {
+	currentRoute() {
+		const p = this.p;
+
 		let node;
 
 		switch (p.activeView) {
@@ -141,13 +143,13 @@ export default class Router extends Component {
 			positionsSummary: p.positionsSummary,
 			transactionsTotals: p.transactionsTotals,
 			isTransactionsWorking: p.isTransactionsWorking,
-			marketsLink: p.links && p.links.marketsLink || undefined,
-			transactionsLink: p.links && p.links.transactionsLink || undefined,
-			authLink: p.links && p.links.authLink || undefined,
-			accountLink: p.links && p.links.accountLink || undefined,
-			accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined,
-			myPositionsLink: p.links && p.links.myPositionsLink || undefined,
-			portfolioTotals: p.portfolio && p.portfolio.totals || undefined
+			marketsLink: (p.links && p.links.marketsLink) || undefined,
+			transactionsLink: (p.links && p.links.transactionsLink) || undefined,
+			authLink: (p.links && p.links.authLink) || undefined,
+			accountLink: (p.links && p.links.accountLink) || undefined,
+			accountLinkText: (p.loginAccount && p.loginAccount.linkText) || undefined,
+			myPositionsLink: (p.links && p.links.myPositionsLink) || undefined,
+			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
 		};
 
 		return (
@@ -156,7 +158,7 @@ export default class Router extends Component {
 					<div>
 						<SiteHeader
 							{...siteHeader}
-							ref={ref => { this.siteHeader = ref; }}
+							ref={(ref) => { this.siteHeader = ref; }}
 						/>
 						<div
 							className="view-container"

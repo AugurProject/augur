@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 export default {
 	cancellationStatuses: {
 		CANCELLATION_CONFIRMATION: 'CANCELLATION_CONFIRMATION',
@@ -9,13 +5,13 @@ export default {
 		CANCELLED: 'CANCELLED',
 		CANCELLATION_FAILED: 'CANCELLATION_FAILED'
 	},
-	cancelOrder: orderID => {
+	cancelOrder: (orderID) => {
 		require('../selectors').orderCancellation[orderID] = require('../selectors').orderCancellation.cancellationStatuses.CANCELLING;
 		require('../selectors').update({});
 
 		setTimeout(() => {
 			require('../selectors').markets.forEach((market) => {
-				market.outcomes.forEach(outcome => {
+				market.outcomes.forEach((outcome) => {
 					const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderID);
 					if (order != null) {
 						if (order.type === 'buy') {
@@ -25,6 +21,7 @@ export default {
 						} else {
 							// cancellation failure => display cancel action again
 							require('../selectors').orderCancellation[orderID] = require('../selectors').orderCancellation.cancellationStatuses.CANCELLATION_FAILED;
+
 							setTimeout(() => {
 								delete require('../selectors').orderCancellation[orderID];
 								require('../selectors').update({});
@@ -36,14 +33,14 @@ export default {
 			});
 		}, 2000);
 	},
-	showCancelOrderConfirmation: orderID => {
+	showCancelOrderConfirmation: (orderID) => {
 		// prevent accidental cancellation from double click
 		setTimeout(() => {
 			require('../selectors').orderCancellation[orderID] = require('../selectors').orderCancellation.cancellationStatuses.CANCELLATION_CONFIRMATION;
 			require('../selectors').update({});
 		}, 300);
 	},
-	abortCancelOrderConfirmation: orderID => {
+	abortCancelOrderConfirmation: (orderID) => {
 		delete require('../selectors').orderCancellation[orderID];
 		require('../selectors').update({});
 	}

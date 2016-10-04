@@ -34,6 +34,7 @@
 		"react/jsx-indent": [2, "tab"],
 		"react/jsx-indent-props": [2, "tab"],
 		"no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
-		"no-useless-rename": 2
+		"no-useless-rename": 2,
+		"quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true}]
 	}
 }

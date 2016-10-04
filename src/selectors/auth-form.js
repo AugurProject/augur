@@ -74,8 +74,14 @@ const importAccount = {
 		}
 	},
 	onSubmit: (name, password, password2, secureLoginID, rememberMe, importAccount) => {
-		require('../selectors').update({ authForm: { ...signUp, clearName: true,
-		clearPassword: true } });
+		require('../selectors').update({
+			authForm: {
+				...signUp,
+				clearName: true,
+				clearPassword: true
+			}
+		});
+
 		loginAccount.signIn();
 		require('../selectors').update({ activeView: 'account' });
 	}
@@ -105,6 +111,7 @@ function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, im
 				...signUp,
 			}
 		});
+
 		links.marketsLink.onClick('/');
 	} else {
 		cb(require('../selectors').loginAccount);
