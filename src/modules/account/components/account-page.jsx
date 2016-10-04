@@ -13,33 +13,41 @@ export default class AccountPage extends Component {
 
 	constructor(props) {
 		super(props);
-		this.handleTransfer = this.handleTransfer.bind(this);
-		this.loginIDCopy = this.loginIDCopy.bind(this);
+
 		this.state = {
 			name: this.props.account.name,
 			editName: false,
 			showFullID: false,
-			msg: ''
+			msg: '',
+			sendAmount: null,
+			currency: null,
+			recipientAddress: null,
+
 		};
+
+		this.handleTransfer = this.handleTransfer.bind(this);
+		this.loginIDCopy = this.loginIDCopy.bind(this);
 	}
 
 	handleTransfer = (e) => {
 		e.preventDefault();
-		const amount = this.refs.sendAmount.value;
-		const currency = this.refs.currency.value;
-		const recipient = this.refs.recipientAddress.value;
 
-		this.refs.sendAmount.value = '';
-		this.refs.currency.value = '';
-		this.refs.recipientAddress.value = '';
+		const amount = this.state.sendAmount;
+		const currency = this.state.currency;
+		const recipient = this.state.recipientAddress;
+
 		this.props.account.transferFunds(amount, currency, recipient);
+
+		this.setState({
+			sendAmount: null,
+			currency: null,
+			recipientAddress: null
+		});
 	};
 
 	loginIDCopy = (e) => {
-		const loginIDDisplay = this.refs.loginIDDisplay;
-
 		try {
-			loginIDDisplay.select();
+			e.target.select(); // TODO -- verify this in UI
 			document.execCommand('copy');
 		} catch (err) {
 			console.log(err);
@@ -122,7 +130,13 @@ export default class AccountPage extends Component {
 											</span>
 										}
 										{s.showFullID &&
-											<textarea ref="loginIDDisplay" className="display-full-login-id" title="Click here to copy your Login ID." value={p.account.loginID} readOnly onClick={this.loginIDCopy} />
+											<textarea
+												className="display-full-login-id"
+												title="Click here to copy your Login ID."
+												value={p.account.loginID}
+												readOnly
+												onClick={this.loginIDCopy}
+											/>
 										}
 										<button
 											className="link"
@@ -155,12 +169,17 @@ export default class AccountPage extends Component {
 									step="0.1"
 									className={classnames('auth-input')}
 									min="0.0"
-									ref="sendAmount"
 									name="sendAmount"
 									placeholder="Amount to transfer"
 									title="Amount to transfer"
+									value={this.state.sendAmount}
+									onChange={sendAmount => this.setState({ sendAmount })}
 								/>
-								<select ref="currency" className={classnames('currency-selector')} title="Currency Type">
+								<select
+									className="currency-selector"
+									title="Currency Type"
+									onChange={currency => this.setState({ currency })}
+								>
 									<option value="eth">ether (eth)</option>
 									<option value="realEth">Real Ether (eth)</option>
 									<option value="REP">REP (REP)</option>
@@ -169,10 +188,11 @@ export default class AccountPage extends Component {
 								<input
 									type="text"
 									className={classnames('auth-input')}
-									ref="recipientAddress"
 									name="recipientAddress"
 									placeholder="Recipient Address"
 									title="Recipient Address"
+									value={this.state.recipientAddress}
+									onChange={recipientAddress => this.setState({ recipientAddress })}
 								/>
 								<button
 									className="button make"
