@@ -2,7 +2,7 @@ import activeView from './selectors/active-view';
 import authForm from './selectors/auth-form';
 import orderCancellation from './selectors/order-cancellation';
 import createMarketForm from './selectors/create-market-form';
-import filters from './selectors/filters';
+import tags from './selectors/tags';
 import keywords from './selectors/keywords';
 import links from './selectors/links';
 import loginAccount from './selectors/login-account';
@@ -36,7 +36,7 @@ const selectors = {
 	authForm,
 	orderCancellation,
 	createMarketForm,
-	filters,
+	tags,
 	keywords,
 	links,
 	loginAccount,

@@ -2,7 +2,7 @@ import activeView from '../test/assertions/active-view';
 import authForm from '../test/assertions/auth-form';
 import createMarketForm from '../test/assertions/create-market-form';
 import favoriteMarkets from '../test/assertions/favorite-markets';
-import filters from '../test/assertions/filters';
+import tags from '../test/assertions/tags';
 import isTransactionsWorking from '../test/assertions/is-transactions-working';
 import keywords from '../test/assertions/keywords';
 import links from '../test/assertions/links';
@@ -36,13 +36,14 @@ import tradeCommitLock from '../test/assertions/trade-commit-lock';
 import reportableOutcomes from '../test/assertions/reportable-outcomes';
 import marketDataUpdater from '../test/assertions/market-data-updater';
 import marketDataAge from '../test/assertions/market-data-age';
+import marketsFilterSort from '../test/assertions/markets-filter-sort';
 
 export default {
 	activeView,
 	authForm,
 	createMarketForm,
 	favoriteMarkets,
-	filters,
+	tags,
 	isTransactionsWorking,
 	keywords,
 	links,
@@ -75,5 +76,6 @@ export default {
 	tradeCommitLock,
 	reportableOutcomes,
 	marketDataUpdater,
-	marketDataAge
+	marketDataAge,
+	marketsFilterSort
 };
