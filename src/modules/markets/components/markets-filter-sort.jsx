@@ -18,16 +18,18 @@ const MarketsFilterSort = (p) => (
 					options={p.sorts}
 					onChange={sort => { p.onChange(null, sort, null); }}
 				/>
-				<i
-					className="fa"
+				<button
+					className="unstyled"
 					onClick={() => { p.onChange(null, null, !p.selectedFilterSort.isDesc); }}
 				>
-					{p.selectedFilterSort.isDesc ? '' : ''}
-				</i>
+					<i>
+						{p.selectedFilterSort.isDesc ? '' : ''}
+					</i>
+				</button>
 			</div>
 		</div>
 		<div className="view-header-group-2">
-			<MarketsSearch />
+			<MarketsSearch keywords={p.keywords} />
 		</div>
 	</article>
 );
@@ -37,7 +39,9 @@ MarketsFilterSort.propTypes = {
 	selectedFilterSort: PropTypes.object,
 	sorts: PropTypes.array,
 	types: PropTypes.array,
-	order: PropTypes.object
+	order: PropTypes.object,
+	onChange: PropTypes.func,
+	keywords: PropTypes.object
 };
 
 export default MarketsFilterSort;

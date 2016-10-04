@@ -12,6 +12,11 @@ button,
 	padding: 1em 1.5em;
 
 	// Types
+	&.unstyled {
+		background-color: transparent;
+		color: inherit;
+	}
+
 	&.imperative {
 		background-color: @color-red;
 		color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up
