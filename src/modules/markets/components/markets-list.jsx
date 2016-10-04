@@ -1,8 +1,8 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import MarketPreview from '../../market/components/market-preview';
 import MarketsPagination from '../../markets/components/markets-pagination';
 
-const MarketsList = (p) => (
+const MarketsList = p => (
 	<article className="markets-list">
 		{(p.markets || []).map(market =>
 			<MarketPreview
@@ -17,9 +17,10 @@ const MarketsList = (p) => (
 	</article>
 );
 
-MarketsList.propTypes = {
-	markets: PropTypes.array,
-	pagination: PropTypes.object
-};
+// TODO -- Prop Validations
+// MarketsList.propTypes = {
+// 	markets: PropTypes.array,
+// 	pagination: PropTypes.object
+// };
 
 export default MarketsList;

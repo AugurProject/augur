@@ -3,7 +3,7 @@ import Positions from '../../../modules/my-positions/components/my-positions';
 import PositionsMarketOverview from '../../my-positions/components/my-positions-market-overview';
 import Link from '../../link/components/link';
 
-const PortfolioPositions = (p) => (
+const PortfolioPositions = p => (
 	<div className="positions-content" >
 		{!!p.markets && !!p.markets.length && p.markets.map(market => (
 			<div key={market.id} className="positions-container" >
@@ -25,8 +25,9 @@ const PortfolioPositions = (p) => (
 	</div>
 );
 
-PortfolioPositions.propTypes = {
-	markets: React.PropTypes.array.isRequired
-};
+// TODO -- Prop Validations
+// PortfolioPositions.propTypes = {
+// 	markets: React.PropTypes.array.isRequired
+// };
 
 export default PortfolioPositions;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Transaction from '../../transactions/components/transaction';
 
-const TradeSummary = (p) => (
+const TradeSummary = p => (
 	<div className="trade-summary">
 		<h5>Trade Summary</h5>
 
@@ -16,8 +16,9 @@ const TradeSummary = (p) => (
 	</div>
 );
 
-TradeSummary.propTypes = {
-	tradeSummary: React.PropTypes.object
-};
+//	TODO -- Prop Validation
+// TradeSummary.propTypes = {
+// 	tradeSummary: React.PropTypes.object
+// };
 
 export default TradeSummary;

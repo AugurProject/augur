@@ -4,7 +4,7 @@ import MarketBasics from './market-basics';
 import MarketOutcomes from './market-outcomes';
 import Link from '../../link/components/link';
 
-const MarketPreview = (p) => (
+const MarketPreview = p => (
 	<article className={`market-preview ${p.className}`}>
 		<div className="market-preview-group-1">
 			<MarketBasics {...p} />

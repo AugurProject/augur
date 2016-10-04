@@ -20,8 +20,8 @@ const Transactions = p => (
 	</section>
 );
 
-Transactions.propTypes = {
-	className: React.PropTypes.string,
-	transactions: React.PropTypes.array
-};
+// TODO -- prop validations
+// Transactions.propTypes = {
+// 	transactions: React.PropTypes.array
+// };
 export default Transactions;

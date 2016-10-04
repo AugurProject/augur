@@ -1,7 +1,7 @@
 import React from 'react';
 import Checkbox from '../../common/components/checkbox';
 
-const SideBar = (p) => (
+const SideBar = p => (
 	<div className="side-bar">
 		<h3>All Tags</h3>
 		<div className="filters">
@@ -19,8 +19,10 @@ const SideBar = (p) => (
 	</div>
 );
 
-SideBar.propTypes = {
-	filters: React.PropTypes.array
-};
+
+// TODO -- Prop Validations
+// SideBar.propTypes = {
+// 	filters: React.PropTypes.array
+// };
 
 export default SideBar;

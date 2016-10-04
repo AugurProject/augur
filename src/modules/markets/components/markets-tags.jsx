@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import Checkbox from '../../common/components/checkbox';
 
-const Filters = (p) => (
+const Filters = p => (
 	<div className="filters">
 		{p.filters.map(filter =>
 			<div key={filter.title} className="filters-group">
@@ -14,8 +14,9 @@ const Filters = (p) => (
 	</div>
 );
 
-Filters.propTypes = {
-	filters: PropTypes.array
-};
+// TOOD -- Prop Validations
+// Filters.propTypes = {
+// 	filters: PropTypes.array
+// };
 
 export default Filters;

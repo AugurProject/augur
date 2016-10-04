@@ -1,6 +1,4 @@
-/*
- * Starts timer and restarts it on demand
- */
+// Starts timer and restarts it on demand
 
 const UPDATE_INTERVAL_SECS = 15;
 

@@ -1,8 +1,4 @@
-/*
- * Provides collapsible wrapper (default is div)
- *
- * Author: priecint
- */
+// Provides collapsible wrapper (default is div)
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 

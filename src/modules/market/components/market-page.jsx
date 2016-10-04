@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import MarketBasics from './market-basics';
 import MarketInfo from '../../market/components/market-info';
@@ -10,23 +10,24 @@ import Chart from './market-chart';
 import MarketSummary from './market-summary';
 
 export default class MarketPage extends Component {
-	static propTypes = {
-		className: PropTypes.string,
-		market: PropTypes.object,
-		selectedOutcome: PropTypes.object,
-		priceTimeSeries: PropTypes.array,
-		numPendingReports: PropTypes.number,
-		orderCancellation: PropTypes.object.isRequired,
-		isTradeCommitLocked: PropTypes.bool,
-		marketDataUpdater: React.PropTypes.shape({
-			update: PropTypes.func.isRequired,
-			updateIntervalSecs: PropTypes.number.isRequired
-		}).isRequired,
-		marketDataAge: React.PropTypes.shape({
-			lastUpdatedBefore: PropTypes.string.isRequired,
-			isMarketDataLoading: PropTypes.bool.isRequired
-		}).isRequired
-	};
+	// TODO -- Prop Validations
+	// static propTypes = {
+	// 	className: PropTypes.string,
+	// 	market: PropTypes.object,
+	// 	selectedOutcome: PropTypes.object,
+	// 	priceTimeSeries: PropTypes.array,
+	// 	numPendingReports: PropTypes.number,
+	// 	orderCancellation: PropTypes.object.isRequired,
+	// 	isTradeCommitLocked: PropTypes.bool,
+	// 	marketDataUpdater: React.PropTypes.shape({
+	// 		update: PropTypes.func.isRequired,
+	// 		updateIntervalSecs: PropTypes.number.isRequired
+	// 	}).isRequired,
+	// 	marketDataAge: React.PropTypes.shape({
+	// 		lastUpdatedBefore: PropTypes.string.isRequired,
+	// 		isMarketDataLoading: PropTypes.bool.isRequired
+	// 	}).isRequired
+	// };
 
 	constructor(props) {
 		super(props);
@@ -105,7 +106,7 @@ export default class MarketPage extends Component {
 				}
 
 				// my markets
-				if (!!p.market.myMarketSummary) {
+				if (p.market.myMarketSummary) {
 					nodes.push(
 						<MarketSummary
 							key="market-summary"

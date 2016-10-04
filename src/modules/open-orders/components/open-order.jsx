@@ -1,13 +1,9 @@
-/*
- * Author: priecint
- */
-
 import React from 'react';
 import classnames from 'classnames';
 
 import ValueDenomination from '../../common/components/value-denomination';
 
-const OpenOrder = (p) => (
+const OpenOrder = p => (
 	<tr className={classnames('open-order', { 'is-disabled': p.status === p.cancellationStatuses.CANCELLED, first: p.isFirst })}>
 		<td className="outcome-name">
 			{p.outcomeName}

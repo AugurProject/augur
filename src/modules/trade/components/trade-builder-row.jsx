@@ -53,8 +53,9 @@ const TradeBuilderRow = (p) => {
 					step="0.1"
 					value={p.trade.numShares}
 					title={p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
-					min="0" max={p.trade.maxNumShares} step="any"
-					onChange={(value) => p.trade.updateTradeOrder(value, undefined, p.trade.side)}
+					min="0"
+					max={p.trade.maxNumShares}
+					onChange={value => p.trade.updateTradeOrder(value, undefined, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}
 				/>
@@ -64,8 +65,7 @@ const TradeBuilderRow = (p) => {
 					type="number"
 					step="0.1"
 					value={p.trade.limitPrice}
-					step="any"
-					onChange={(value) => p.trade.updateTradeOrder(undefined, value, p.trade.side)}
+					onChange={value => p.trade.updateTradeOrder(undefined, value, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}
 				/>
@@ -80,16 +80,18 @@ const TradeBuilderRow = (p) => {
 	);
 };
 
-TradeBuilderRow.propTypes = {
-	name: React.PropTypes.string,
-	lastPrice: React.PropTypes.object,
-	id: React.PropTypes.string,
-	trade: React.PropTypes.object,
-	orderBook: React.PropTypes.object,
-	isFaded: React.PropTypes.bool,
-	showFullOrderBook: React.PropTypes.bool,
-	updateSelectedOutcome: React.PropTypes.func,
-	marketType: React.PropTypes.string
-};
+
+// TODO -- Prop Validations
+// TradeBuilderRow.propTypes = {
+// 	name: React.PropTypes.string,
+// 	lastPrice: React.PropTypes.object,
+// 	id: React.PropTypes.string,
+// 	trade: React.PropTypes.object,
+// 	orderBook: React.PropTypes.object,
+// 	isFaded: React.PropTypes.bool,
+// 	showFullOrderBook: React.PropTypes.bool,
+// 	updateSelectedOutcome: React.PropTypes.func,
+// 	marketType: React.PropTypes.string
+// };
 
 export default TradeBuilderRow;

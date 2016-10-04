@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Input from '../../common/components/input';
 
-const MarketsSearch = (p) => (
+const MarketsSearch = p => (
 	<article className={`search-input ${p.className}`} >
 		<i></i>
 		<Input

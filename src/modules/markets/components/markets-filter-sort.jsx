@@ -1,14 +1,14 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import DropDown from '../../common/components/dropdown';
 import MarketsSearch from '../../markets/components/markets-search';
 
-const MarketsFilterSort = (p) => (
+const MarketsFilterSort = p => (
 	<article className={`markets-view-header ${p.className}`}>
 		<div className="view-header-group-1">
 			<DropDown
 				default={p.selectedFilterSort.type}
 				options={p.types}
-				onChange={type => { p.onChange(type, null, null); }}
+				onChange={(type) => { p.onChange(type, null, null); }}
 
 			/>
 			<div className="companion-fields">
@@ -16,7 +16,7 @@ const MarketsFilterSort = (p) => (
 					className="companion-field"
 					default={p.selectedFilterSort.sort}
 					options={p.sorts}
-					onChange={sort => { p.onChange(null, sort, null); }}
+					onChange={(sort) => { p.onChange(null, sort, null); }}
 				/>
 				<button
 					className="unstyled"
@@ -34,14 +34,16 @@ const MarketsFilterSort = (p) => (
 	</article>
 );
 
-MarketsFilterSort.propTypes = {
-	className: PropTypes.string,
-	selectedFilterSort: PropTypes.object,
-	sorts: PropTypes.array,
-	types: PropTypes.array,
-	order: PropTypes.object,
-	onChange: PropTypes.func,
-	keywords: PropTypes.object
-};
+
+// TODO -- Prop Validations
+// MarketsFilterSort.propTypes = {
+// 	className: PropTypes.string,
+// 	selectedFilterSort: PropTypes.object,
+// 	sorts: PropTypes.array,
+// 	types: PropTypes.array,
+// 	order: PropTypes.object,
+// 	onChange: PropTypes.func,
+// 	keywords: PropTypes.object
+// };
 
 export default MarketsFilterSort;

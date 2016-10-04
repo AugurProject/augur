@@ -2,7 +2,7 @@ import React from 'react';
 import Report from '../../../modules/my-reports/components/my-report';
 import Link from '../../link/components/link';
 
-const PortfolioReports = (p) => (
+const PortfolioReports = p => (
 	<div>
 		{!!p.reports && !!p.reports.length && p.reports.map(market => (
 			<Link key={market.id} {...market.marketLink} >
@@ -37,8 +37,9 @@ const PortfolioReports = (p) => (
 	</div>
 );
 
-PortfolioReports.propTypes = {
-	reports: React.PropTypes.array.isRequired
-};
+// TODO -- Prop Validations
+// PortfolioReports.propTypes = {
+// 	reports: React.PropTypes.array.isRequired
+// };
 
 export default PortfolioReports;

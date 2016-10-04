@@ -2,7 +2,7 @@ import React from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import { SCALAR } from '../../markets/constants/market-types';
 
-const Position = (p) => (
+const Position = p => (
 	<div className="position">
 		<div className="position-group main-group">
 			{p.type === SCALAR ?

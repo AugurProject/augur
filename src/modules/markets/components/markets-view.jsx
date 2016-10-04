@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import MarketsHeaders from '../../markets/components/markets-headers';
 import MarketsList from '../../markets/components/markets-list';
 
-const MarketsView = (p) => (
+const MarketsView = p => (
 	<section className={p.className}>
 		<MarketsHeaders
 			createMarketLink={p.createMarketLink}

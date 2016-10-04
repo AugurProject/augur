@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import MarketsFilterSort from '../../markets/components/markets-filter-sort';
 import Link from '../../link/components/link';
 
-const MarketsHeaders = (p) => (
+const MarketsHeaders = p => (
 	<article className={p.className}>
 		<div className="view-header">
 			<div className="view-header-group-1">

@@ -1,16 +1,17 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import classnames from 'classnames';
+
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/views';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
-import classnames from 'classnames';
 import AugurLogo from '../../common/components/augur-logo';
 
-export default class SiteHeader extends Component { //
+export default class SiteHeader extends Component {
 	render() {
 		const p = this.props;
 
 		return (
-			<header className="site-header" ref={ref => { this.siteHeader = ref; }} >
+			<header className="site-header" ref={(ref) => { this.siteHeader = ref; }} >
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
 						<Link className={classnames('site-nav-link', { active: p.activeView === MARKETS })} {...p.marketsLink}>
@@ -42,7 +43,7 @@ export default class SiteHeader extends Component { //
 								Account
 							</Link>
 						}
-						{(!!!p.loginAccount || !!!p.loginAccount.id) &&
+						{(!p.loginAccount || !p.loginAccount.id) &&
 							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
 								Sign Up / Login
 							</Link>
@@ -54,14 +55,16 @@ export default class SiteHeader extends Component { //
 	}
 }
 
-SiteHeader.propTypes = {
-	activeView: PropTypes.string,
-	loginAccount: PropTypes.object,
-	transactionsTotals: PropTypes.object,
-	isTransactionsWorking: PropTypes.bool,
-	marketsLink: PropTypes.object,
-	myPositionsLink: PropTypes.object,
-	transactionsLink: PropTypes.object,
-	authLink: PropTypes.object,
-	portfolioTotals: PropTypes.object
-};
+
+// TODO -- Prop Validations
+// SiteHeader.propTypes = {
+// 	activeView: PropTypes.string,
+// 	loginAccount: PropTypes.object,
+// 	transactionsTotals: PropTypes.object,
+// 	isTransactionsWorking: PropTypes.bool,
+// 	marketsLink: PropTypes.object,
+// 	myPositionsLink: PropTypes.object,
+// 	transactionsLink: PropTypes.object,
+// 	authLink: PropTypes.object,
+// 	portfolioTotals: PropTypes.object
+// };

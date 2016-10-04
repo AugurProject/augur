@@ -1,7 +1,7 @@
 import React from 'react';
 import Transactions from '../../transactions/components/transactions';
 
-const TransactionsPage = (p) => (
+const TransactionsPage = p => (
 	<main className="page transactions">
 		<header className="page-header">
 			<span className="big-line">{p.transactionsTotals.title}</span>
