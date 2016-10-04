@@ -6,7 +6,7 @@ const MarketsSearch = (p) => (
 		<i></i>
 		<Input
 			placeholder="Search Markets"
-			isClearable={true}
+			isClearable
 			value={p.keywords && p.keywords.value}
 			onChange={p.keywords && p.keywords.onChangeKeywords}
 		/>

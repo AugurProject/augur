@@ -1,7 +1,9 @@
 export default {
 	selectedOutcomeID: null,
-	updateSelectedOutcome: (selectedOutcomeID) => {
-		module.exports.update({
+	updateSelectedOutcome: selectedOutcomeID => {
+		const selectors = require('../selectors');
+
+		selectors.update({
 			selectedOutcome: {
 				...selectors.selectedOutcome,
 				selectedOutcomeID
