@@ -1,6 +1,6 @@
 export default {
 	selectedOutcomeID: null,
-	updateSelectedOutcome: selectedOutcomeID => {
+	updateSelectedOutcome: (selectedOutcomeID) => {
 		const selectors = require('../selectors');
 
 		selectors.update({

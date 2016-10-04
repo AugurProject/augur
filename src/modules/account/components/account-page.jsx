@@ -214,12 +214,3 @@ export default class AccountPage extends Component {
 		);
 	}
 }
-
-/*
-<header className="page-header">
-	<span className="big-line">My Account</span>
-	<Link className="button sign-out" {...p.siteHeader.authLink}>
-		Sign Out
-	</Link>
-</header>
-*/

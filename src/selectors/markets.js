@@ -1,6 +1,6 @@
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 import { randomNum } from '../utils/random-number';
-import { makeDate } from '../utils/make-date';
+import makeDate from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 import selectReportableOutcomes from '../selectors/reportable-outcomes';
 

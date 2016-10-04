@@ -33,6 +33,7 @@
 		"no-underscore-dangle": [2, { "allow": ["_id"] }],
 		"react/jsx-indent": [2, "tab"],
 		"react/jsx-indent-props": [2, "tab"],
-		"arrow-parens": [2, "as-needed", { "requireForBlockBody": true }]
+		"no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+		"no-useless-rename": 2
 	}
 }

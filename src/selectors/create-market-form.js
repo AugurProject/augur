@@ -1,6 +1,5 @@
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
-
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 
 function createMarketForm() {
 	const CONSTANTS = {

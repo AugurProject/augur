@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
 export default class Input extends Component {
@@ -17,7 +16,7 @@ export default class Input extends Component {
 	constructor(props) {
 		super(props);
 
-		this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 750;
+		this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 500;
 		this.state = {
 			value: this.props.value || '',
 			timeoutID: ''
@@ -33,17 +32,17 @@ export default class Input extends Component {
 		this.handleClear = this.handleClear.bind(this);
 	}
 
-	handleOnChange = (e) => {		
+	handleOnChange = (e) => {
 		const newValue = e.target.value;
 		if (this.finalDebounceMS) {
 			clearTimeout(this.state.timeoutID);
 			if (newValue !== this.props.value) {
-				this.setState({timeoutID: setTimeout(() => this.props.onChange(newValue), this.finalDebounceMS)});
+				this.setState({ timeoutID: setTimeout(() => this.props.onChange(newValue), this.finalDebounceMS) });
 			}
 		} else if (newValue !== this.props.value) {
 			this.props.onChange(newValue);
 		}
-		this.setState({value: newValue});
+		this.setState({ value: newValue });
 	};
 
 	handleOnBlur = () => {
@@ -57,7 +56,7 @@ export default class Input extends Component {
 	};
 
 	handleClear = () => {
-		this.setState({value: ''});
+		this.setState({ value: '' });
 		this.props.onChange('');
 	};
 
@@ -66,7 +65,7 @@ export default class Input extends Component {
 		const s = this.state;
 
 		return (
-			<div className={`input ${p.className}`} >
+			<div className={`input ${p.className}`}>
 				{!p.isMultiline &&
 					<input
 						{...p}

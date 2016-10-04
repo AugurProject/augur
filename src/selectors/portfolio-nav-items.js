@@ -2,7 +2,7 @@ import links from '../selectors/links';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/views';
 
-import { makeNumber } from '../../src/utils/make-number';
+import makeNumber from '../../src/utils/make-number';
 import { randomNum } from '../utils/random-number';
 
 export default [

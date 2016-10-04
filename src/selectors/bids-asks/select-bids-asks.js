@@ -1,6 +1,6 @@
-import { makeNumber } from '../../utils/make-number';
+import makeNumber from '../../utils/make-number';
 
-export default function selectOrderBook() {
+function selectOrderBook() {
 	return {
 		bids: [
 			{
@@ -50,3 +50,5 @@ export default function selectOrderBook() {
 		]
 	};
 }
+
+export default selectOrderBook;

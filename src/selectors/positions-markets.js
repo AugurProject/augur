@@ -1,4 +1,4 @@
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 import { randomNum } from '../../src/utils/random-number';
 import { M } from '../modules/site/constants/views';
 

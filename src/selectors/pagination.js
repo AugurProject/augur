@@ -7,7 +7,7 @@ export default {
 	endItemNum: 10,
 	numUnpaginated: 89,
 	nextItemNum: 11,
-	onUpdateSelectedPageNum: selectedPageNum => {
+	onUpdateSelectedPageNum: (selectedPageNum) => {
 		const selectors = require('../selectors');
 
 		selectors.update({
@@ -18,7 +18,7 @@ export default {
 				previousPageNum: selectedPageNum - 1,
 				startItemNum: ((selectedPageNum - 1) * 10) + 1,
 				endItemNum: selectedPageNum * 10,
-				nextItemNum: selectedPageNum * 10 + 1,
+				nextItemNum: (selectedPageNum * 10) + 1,
 				previousItemNum: ((selectedPageNum - 2) * 10) + 1
 			}
 		});

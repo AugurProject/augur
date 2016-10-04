@@ -1,5 +1,5 @@
-import { makeDate } from '../utils/make-date';
-import { makeNumber } from '../utils/make-number';
+import makeDate from '../utils/make-date';
+import makeNumber from '../utils/make-number';
 import { M } from '../modules/site/constants/views';
 
 const randomBool = () => Math.random() > 0.5;
