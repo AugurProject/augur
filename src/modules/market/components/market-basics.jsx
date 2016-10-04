@@ -1,16 +1,17 @@
-import React, { PropTypes } from 'react';
-import ValueDenomination from '../../common/components/value-denomination';
-import ValueDate from '../../common/components/value-date';
+import React from 'react';
 import classnames from 'classnames';
 
-const MarketBasics = (p) => (
+import ValueDenomination from '../../common/components/value-denomination';
+import ValueDate from '../../common/components/value-date';
+
+const MarketBasics = p => (
 	<article className="market-basics">
 		<div className="market-basics-header">
 			<div className="market-basics-header-group-1">
 				{!!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{p.tags.map((tag, i) => (
-							<li key={i} className={classnames('tag', { link: !!tag.name })} onClick={!!tag.onClick && tag.onClick}>{!!tag.name ? tag.name : tag}</li>
+							<li key={i} className={classnames('tag', { link: !!tag.name })} ><button className="button-unstyled" onClick={tag.onClick && tag.onClick}>{tag.name ? tag.name : tag}</button></li>
 						))}
 					</ul>
 				}
@@ -66,22 +67,23 @@ const MarketBasics = (p) => (
 	</article>
 );
 
-MarketBasics.propTypes = {
-	description: PropTypes.string,
-	endDate: PropTypes.object,
-	makerFeePercent: PropTypes.object,
-	takerFeePercent: PropTypes.object,
-	volume: PropTypes.object,
-	tags: PropTypes.array,
-	lastUpdatedBefore: PropTypes.string,
-	updateData: PropTypes.func,
-	isMarketDataLoading: PropTypes.bool,
-	updateIntervalSecs: PropTypes.number,
-	isUpdaterVisible: PropTypes.bool,
-	marketDataAge: React.PropTypes.shape({
-		lastUpdatedBefore: PropTypes.string.isRequired,
-		isMarketDataLoading: PropTypes.bool.isRequired
-	})
-};
+// TODO -- Prop Validations
+// MarketBasics.propTypes = {
+// 	description: PropTypes.string,
+// 	endDate: PropTypes.object,
+// 	makerFeePercent: PropTypes.object,
+// 	takerFeePercent: PropTypes.object,
+// 	volume: PropTypes.object,
+// 	tags: PropTypes.array,
+// 	lastUpdatedBefore: PropTypes.string,
+// 	updateData: PropTypes.func,
+// 	isMarketDataLoading: PropTypes.bool,
+// 	updateIntervalSecs: PropTypes.number,
+// 	isUpdaterVisible: PropTypes.bool,
+// 	marketDataAge: React.PropTypes.shape({
+// 		lastUpdatedBefore: PropTypes.string.isRequired,
+// 		isMarketDataLoading: PropTypes.bool.isRequired
+// 	})
+// };
 
 export default MarketBasics;

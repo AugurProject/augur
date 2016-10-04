@@ -4,10 +4,11 @@ import Link from '../../link/components/link';
 import Input from '../../common/components/input';
 
 export default class AccountPage extends Component {
+	// TODO -- Prop Validations
 	static propTypes = {
-		loginMessageLink: PropTypes.object.isRequired,
+		// loginMessageLink: PropTypes.object.isRequired,
 		account: PropTypes.object,
-		siteHeader: PropTypes.object
+		// siteHeader: PropTypes.object
 	};
 
 	constructor(props) {
@@ -32,7 +33,7 @@ export default class AccountPage extends Component {
 		this.refs.currency.value = '';
 		this.refs.recipientAddress.value = '';
 		this.props.account.transferFunds(amount, currency, recipient);
-	}
+	};
 
 	loginIDCopy = (e) => {
 		const loginIDDisplay = this.refs.loginIDDisplay;
@@ -43,7 +44,7 @@ export default class AccountPage extends Component {
 		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
 
 	render() {
 		const p = this.props;
@@ -63,7 +64,7 @@ export default class AccountPage extends Component {
 											<Input
 												type="text"
 												value={p.account.name}
-												onChange={(value) => this.setState({ name: value })}
+												onChange={name => this.setState({ name })}
 											/>
 										}
 										{!s.editName &&

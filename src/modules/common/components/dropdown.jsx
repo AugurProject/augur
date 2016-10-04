@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
-const Dropdown = (p) => (
+const Dropdown = p => (
 	<div className="dropdown">
 		<select
 			onChange={(event) => { p.onChange(event.target.value); }}
@@ -19,10 +19,11 @@ const Dropdown = (p) => (
 	</div>
 );
 
-Dropdown.propTypes = {
-	default: PropTypes.string,
-	options: PropTypes.array,
-	onChange: PropTypes.func
-};
+// TODO -- Prop Validations
+// Dropdown.propTypes = {
+// 	default: PropTypes.string,
+// 	options: PropTypes.array,
+// 	onChange: PropTypes.func
+// };
 
 export default Dropdown;

@@ -1,9 +1,9 @@
 // NOTE -- This is no longer used, but leaving for reference until functionality is re-employed
 
-import React, { PropTypes } from 'react';
+import React from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const OrderBookParameters = (p) => (
+const OrderBookParameters = p => (
 	<section className="advanced">
 		<ul className="properties">
 			<li className="property">
@@ -38,12 +38,13 @@ const OrderBookParameters = (p) => (
 	</section>
 );
 
-OrderBookParameters.propTypes = {
-	initialFairPrices: PropTypes.object.isRequired,
-	initialLiquidityFormatted: PropTypes.object.isRequired,
-	bestStartingQuantityFormatted: PropTypes.object.isRequired,
-	startingQuantityFormatted: PropTypes.object.isRequired,
-	priceWidthFormatted: PropTypes.object.isRequired
-};
+// TODO -- Prop Validations
+// OrderBookParameters.propTypes = {
+// 	initialFairPrices: PropTypes.object.isRequired,
+// 	initialLiquidityFormatted: PropTypes.object.isRequired,
+// 	bestStartingQuantityFormatted: PropTypes.object.isRequired,
+// 	startingQuantityFormatted: PropTypes.object.isRequired,
+// 	priceWidthFormatted: PropTypes.object.isRequired
+// };
 
 export default OrderBookParameters;

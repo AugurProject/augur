@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 
 export default class Link extends Component {
+
+	// TODO -- Prop Validations
 	static propTypes = {
-		className: PropTypes.string,
+		// className: PropTypes.string,
 		href: PropTypes.string,
 		target: PropTypes.string,
 		onClick: PropTypes.func,
@@ -23,13 +25,26 @@ export default class Link extends Component {
 		if (!e.button === 0 || e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
 			return;
 		}
+
 		e.preventDefault();
+
 		if (this.props.onClick && !this.props.disabled) {
 			this.props.onClick(this.props.href);
 		}
 	};
 
 	render() {
-		return <a {...this.props} href={this.props.href} className={`link ${this.props.className}`} onClick={this.handleClick} />;
+		const p = this.props;
+
+		return (
+			<a
+				href={p.href}
+				className={`link ${p.className}`}
+				onClick={this.handleClick}
+				{...p}
+			>
+				{ p.children }
+			</a>
+		);
 	}
 }

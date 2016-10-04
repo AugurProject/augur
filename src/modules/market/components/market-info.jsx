@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueDate from '../../common/components/value-date';
 
-const MarketInfo = (p) => (
+const MarketInfo = p => (
 	<div className="market-info">
 		<ul className="properties">
 			{p.outstandingShares != null &&

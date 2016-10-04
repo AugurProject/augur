@@ -2,11 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
 export default class Input extends Component {
+	// TODO -- Prop Validations
 	static propTypes = {
-		type: PropTypes.string,
-		className: PropTypes.string,
+		// type: PropTypes.string,
+		// className: PropTypes.string,
 		value: PropTypes.any,
-		isMultiline: PropTypes.bool,
+		// isMultiline: PropTypes.bool,
 		isClearable: PropTypes.bool,
 		debounceMS: PropTypes.number,
 		onChange: PropTypes.func,

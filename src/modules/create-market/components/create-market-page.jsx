@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import CreateMarketForm from '../../create-market/components/create-market-form';
 
-const CreateMarketPage = (p) => (
+const CreateMarketPage = p => (
 	<main className="page create-market">
 		<header className="page-header">
 			<span className="big-line">Be the market maker</span>.

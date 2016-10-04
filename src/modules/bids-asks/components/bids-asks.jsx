@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import OrderBook from './order-book';
 
-const BidsAsks = (p) => (
+const BidsAsks = p => (
 	<div className="bids-asks">
 		{
 			p.market.outcomes.map(outcome =>
@@ -18,8 +18,9 @@ const BidsAsks = (p) => (
 	</div>
 );
 
-BidsAsks.propTypes = {
-	market: PropTypes.object
-};
+// TODO -- Prop Validations
+// BidsAsks.propTypes = {
+// 	market: PropTypes.object
+// };
 
 export default BidsAsks;

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const ValueTimestamp = (p) => (
+const ValueTimestamp = p => (
 	<span className={classnames('value-timestamp', p.className)}>
 		{p.full}
 	</span>

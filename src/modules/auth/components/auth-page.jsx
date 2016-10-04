@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AuthForm from '../../auth/components/auth-form';
 
-const AuthPage = (p) => (
+const AuthPage = p => (
 	<main className="page auth">
 		<header className="page-header">
 			<span className="big-line">Augur is a completely decentralized system</span> including user accounts.

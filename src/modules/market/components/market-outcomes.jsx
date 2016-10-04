@@ -1,7 +1,7 @@
 import React from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const MarketOutcomes = (p) => (
+const MarketOutcomes = p => (
 	<div className="market-outcomes">
 		{p.outcomes.map((outcome, i) => (
 			<div
@@ -22,8 +22,9 @@ const MarketOutcomes = (p) => (
 	</div>
 );
 
-MarketOutcomes.propTypes = {
-	outcomes: React.PropTypes.array
-};
+// TODO -- Prop Validations
+// MarketOutcomes.propTypes = {
+// 	outcomes: React.PropTypes.array
+// };
 
 export default MarketOutcomes;

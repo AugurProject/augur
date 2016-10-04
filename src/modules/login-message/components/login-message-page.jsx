@@ -1,22 +1,28 @@
 import React, { PropTypes } from 'react';
 // import Link from '../../link/components/link'; // TODO -- will re-include once selector is fixed
 
-const LoginMessagePage = (p) => (
+const LoginMessagePage = p => (
 	<main className="page login-message">
 		<div className="page-content">
-			<h1>Welcome to Augur's beta test v2!</h1>
-			<p>This is a beta test in advance of Augur's live release. There are bugs. There are features being
+			<h1>{`Welcome to Augur's beta test v2!`}</h1>
+			<p>{`This is a beta test in advance of Augur's live release. There are bugs. There are features being
 				added, improved, and re-designed. There are a few hundred enhancements scheduled to be added in the next few
 				months. Your thoughtful feedback now is essential. Please use the feedback button at the bottom right of
-				every page to submit your feedback, or feel free to send an email to <a className="link" href="mailto:hugs@augur.net?subject=Beta Testing feedback">hugs@augur.net</a>.
-				From your submissions, the development team will coordinate fixes and new features. Changes and fixes will be
-				displayed when you log in again.
+				every page to submit your feedback, or feel free to send an email to `}
+				<a
+					className="link"
+					href="mailto:hugs@augur.net?subject=Beta Testing feedback"
+				>
+					{'hugs@augur.net'}
+				</a>
+				{`. From your submissions, the development team will coordinate fixes and new features. Changes and fixes will be
+				displayed when you log in again.`}
 			</p>
 			<h2>Important Information:</h2>
 			<ol>
 				<li>
 					Because Augur is a <b>completely decentralized</b> system, if you lose your login credentials it
-					is impossible to recover them. Please <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/" target="_blank">take
+					is impossible to recover them. Please <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/" target="_blank" rel="noopener noreferrer">take
 					appropriate measures</a> to protect the safety of your password, and create a way to
 					recover your credentials if you forget them.
 				</li>
@@ -26,19 +32,26 @@ const LoginMessagePage = (p) => (
 					it is merely an on-contract IOU (a token) for testnet Ether.
 				</li>
 				<li>
-					Reputation (REP) is a unique and important part of the Augur trading platform. If you own REP tokens, you must visit
+					{`Reputation (REP) is a unique and important part of the Augur trading platform. If you own REP tokens, you must visit
 					the site periodically to fulfill your reporting obligations. During beta testing, each new account will
 					receive 47 testnet REP (they have no value except for testing). Each reporting cycle will last 2 days. Every
 					two-day cycle will consist of a commit phase, a reveal phase, and a challenge phase. Because the test
 					cycle is dramatically compressed (the main net cycle will be 60 days long) it is recommended that
 					users visit the site at least every 2 days to maintain your REP and simulate “real money” trading,
-					resolution, and reporting conditions. Learn <a className="link" href="https://www.youtube.com/watch?v=sCms-snzHk4" target="_blank">how Augur's Reputation tokens
-					work</a>.
+					resolution, and reporting conditions. Learn `}
+					<a
+						className="link"
+						href="https://www.youtube.com/watch?v=sCms-snzHk4"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{`how Augur's Reputation tokens work`}
+					</a>.
 				</li>
 				<li>
-					The site is only as fast as Ethereum blocks are mined. However, it is important to know that all orders
+					{`The site is only as fast as Ethereum blocks are mined. However, it is important to know that all orders
 					are placed into order books according to best price, and in the order in which they are received. This
-					preserves price/time priority in Augur's markets.
+					preserves price/time priority in Augur's markets.`}
 				</li>
 			</ol>
 			<h2>Status:</h2>
