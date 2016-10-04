@@ -1,6 +1,6 @@
 .market-preview {
 
-	.border-standard();
+	.border(true);
 
 	background-color: @color-white;
 	display: flex;
@@ -20,7 +20,9 @@
 	}
 
 	.market-preview-group-2 {
-		border-left: 1px solid @color-border-muted;
+
+		.border(true, @border-left);
+
 		display: flex;
 		flex: 1;
 		padding-left: 2em;

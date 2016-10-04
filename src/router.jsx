@@ -53,9 +53,7 @@ export default class Router extends Component {
 		case LOGIN:
 		case IMPORT:
 		case LOGOUT:
-			node = (
-				<AuthPage authForm={p.authForm} />
-			);
+			node = <AuthPage authForm={p.authForm} />;
 			break;
 
 		case ACCOUNT:
@@ -110,20 +108,18 @@ export default class Router extends Component {
 			break;
 
 		case LOGIN_MESSAGE:
-			node = (
-				<LoginMessagePage />
-			);
+			node = <LoginMessagePage />;
 			break;
 		default:
 			node = (
 				<MarketsView
+					loginAccount={p.loginAccount}
 					createMarketLink={(p.links || {}).createMarketLink}
 					markets={p.markets}
 					marketsHeader={p.marketsHeader}
 					favoriteMarkets={p.favoriteMarkets}
 					pagination={p.pagination}
 					marketsFilterSort={p.marketsFilterSort}
-					loginAccount={p.loginAccount}
 					keywords={p.keywords}
 				/>
 			);
