@@ -24,6 +24,7 @@
 		"max-len": 0,
 		"no-shadow": 0,
 		"padded-blocks": 0,
+		"forbid-prop-types": 0, // NOTE -- TODO: Temporarily disabled...all props need to be specific + valid
 		// Errors
 		"eqeqeq": [2, "allow-null"],
 		"indent": [2, "tab"],
