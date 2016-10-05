@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
-import { SCALAR, BINARY } from '../../markets/constants/market-types';
+import { SCALAR } from '../../markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
 import { selectMarket } from '../../market/selectors/market';
@@ -32,7 +32,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			});
-		} else if (limitPrice === '' && typeof numShares === 'undefined') {
+		} else if (limitPrice === '' || (parseFloat(limitPrice) === 0 && market.type !== SCALAR) && typeof numShares === 'undefined') {
 			return dispatch({
 				type: UPDATE_TRADE_IN_PROGRESS, data: {
 					marketID,
@@ -59,16 +59,21 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 		// clean num shares
-		const cleanNumShares = parseInt(numShares, 10) === 0 ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = parseFloat(numShares) === 0 ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
 
 		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = parseInt(limitPrice, 10) === 0 ? 0 : Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = parseFloat(limitPrice) === 0 ? 0 : Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
 		}
+		// console.log(market.minValue, market.maxValue);
+		// console.log(parseFloat(limitPrice) - market.minValue, market.maxValue - parseFloat(limitPrice));
+		// if (market.type === SCALAR && limitPrice !== undefined) {
+		// 	cleanLimitPrice = cleanSide === BUY ? parseFloat(limitPrice) - market.minValue : market.maxValue - parseFloat(limitPrice);
+		// }
 
 		const newTradeDetails = {
 			side: cleanSide,
@@ -78,9 +83,11 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			totalCost: 0
 		};
 
-		if (newTradeDetails.limitPrice === undefined && parseInt(limitPrice, 10) === 0 && market.type === BINARY) {
-			newTradeDetails.limitPrice = 0;
-		}
+		// if (newTradeDetails.limitPrice === undefined && parseFloat(limitPrice) === 0 && market.type === SCALAR) {
+		// 	newTradeDetails.limitPrice = 0;
+		// }
+
+		// console.log(augur.getParticipantSharesPurchased.toString());
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
