@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
-import { SCALAR } from '../../markets/constants/market-types';
+import { SCALAR, BINARY } from '../../markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
 import { selectMarket } from '../../market/selectors/market';
@@ -61,12 +61,12 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 		// clean num shares
-		const cleanNumShares = numShares === '0' ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = parseInt(numShares, 10) === 0 ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
 
 		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = limitPrice === '0' ? 0 : Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = parseInt(limitPrice, 10) === 0 ? 0 : Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
@@ -81,6 +81,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			totalCost: 0
 		};
 		console.log('newTradeDetails:', newTradeDetails);
+		if (newTradeDetails.limitPrice === undefined && limitPrice === '0' && market.type === BINARY)
+			newTradeDetails.limitPrice = 0;
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
