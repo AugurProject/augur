@@ -16,8 +16,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
-		console.log('IN:', outcomeID, side, numShares, limitPrice, maxCost);
-		console.log(market.type);
 		// if nothing changed, exit
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
@@ -71,7 +69,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
 		}
-		console.log('cleans:', cleanNumShares, cleanLimitPrice);
 
 		const newTradeDetails = {
 			side: cleanSide,
@@ -80,9 +77,10 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			totalFee: 0,
 			totalCost: 0
 		};
-		console.log('newTradeDetails:', newTradeDetails);
-		if (newTradeDetails.limitPrice === undefined && limitPrice === '0' && market.type === BINARY)
+
+		if (newTradeDetails.limitPrice === undefined && parseInt(limitPrice, 10) === 0 && market.type === BINARY) {
 			newTradeDetails.limitPrice = 0;
+		}
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
