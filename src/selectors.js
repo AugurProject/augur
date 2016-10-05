@@ -11,7 +11,6 @@ import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import marketDataUpdater from './selectors/market-data-updater';
 import marketDataAge from './selectors/market-data-age';
-
 import isTransactionsWorking from './selectors/is-transactions-working';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
@@ -26,7 +25,7 @@ import myReports from './selectors/my-reports';
 import tradeCommitLock from './selectors/trade-commit-lock';
 import positionsMarkets from './selectors/positions-markets';
 import myMarkets from './selectors/my-markets';
-import marketsFilterSort from './selectors/markets-filter-sort';
+import filterSort from './selectors/filter-sort';
 import pagination from './selectors/pagination';
 import selectedOutcome from './selectors/selected-outcome';
 
@@ -61,7 +60,7 @@ const selectors = {
 	myReports,
 	myMarkets,
 	positionsMarkets,
-	marketsFilterSort,
+	filterSort,
 	pagination,
 	selectedOutcome
 };

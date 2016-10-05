@@ -46,7 +46,7 @@ export default class Router extends Component {
 	}
 
 	currentRoute() {
-		const p = this.p;
+		const p = this.props;
 
 		let node;
 
@@ -121,7 +121,7 @@ export default class Router extends Component {
 					marketsHeader={p.marketsHeader}
 					favoriteMarkets={p.favoriteMarkets}
 					pagination={p.pagination}
-					marketsFilterSort={p.marketsFilterSort}
+					filterSort={p.filterSort}
 					keywords={p.keywords}
 				/>
 			);

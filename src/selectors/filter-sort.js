@@ -48,14 +48,14 @@ export default {
 	onChange: (type, sort, order) => {
 		const selectors = require('../selectors');
 
-		const isDesc = order == null ? selectors.marketsFilterSort.selectedFilterSort.isDesc : order;
+		const isDesc = order == null ? selectors.filterSort.selectedFilterSort.isDesc : order;
 
 		selectors.update({
-			marketsFilterSort: {
-				...selectors.marketsFilterSort,
-				selectedFilterSort: {
-					type: type || selectors.marketsFilterSort.selectedFilterSort.type,
-					sort: sort || selectors.marketsFilterSort.selectedFilterSort.sort,
+			filterSort: {
+				...selectors.filterSort,
+				filterSort: {
+					type: type || selectors.filterSort.selectedFilterSort.type,
+					sort: sort || selectors.filterSort.selectedFilterSort.sort,
 					isDesc
 				}
 			}

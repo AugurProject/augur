@@ -8,7 +8,7 @@ const MarketsView = p => (
 			createMarketLink={p.createMarketLink}
 			loginAccount={p.loginAccount}
 			marketsHeader={p.marketsHeader}
-			marketsFilterSort={p.marketsFilterSort}
+			filterSort={p.filterSort}
 			keywords={p.keywords}
 		/>
 		<MarketsList
@@ -20,7 +20,7 @@ const MarketsView = p => (
 
 MarketsView.propTypes = {
 	className: PropTypes.string,
-	marketsFilterSort: PropTypes.object,
+	filterSort: PropTypes.object,
 	marketsHeader: PropTypes.object,
 	markets: PropTypes.array,
 	pagination: PropTypes.object,

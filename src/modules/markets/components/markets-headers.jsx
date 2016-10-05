@@ -21,7 +21,7 @@ const MarketsHeaders = p => (
 		<MarketsFilterSort
 			className="view-header"
 			keywords={p.keywords}
-			{...p.marketsFilterSort}
+			{...p.filterSort}
 		/>
 	</article>
 );
@@ -31,7 +31,7 @@ MarketsHeaders.propTypes = {
 	createMarketLink: PropTypes.object,
 	loginAccount: PropTypes.object,
 	marketsHeader: PropTypes.object,
-	marketsFilterSort: PropTypes.object,
+	filterSort: PropTypes.object,
 	keywords: PropTypes.object
 };
 
