@@ -269,8 +269,7 @@ module.exports = {
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker,
-                            isShortSell: true
+                            maker: maker
                         });
                     } else {
                         outcome = parseInt(parsed[4]);
@@ -281,8 +280,7 @@ module.exports = {
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker,
-                            isShortSell: false
+                            maker: maker
                         });
                     }
                 }

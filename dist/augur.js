@@ -43623,7 +43623,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.10";
+    this.version = "2.9.11";
 
     this.options = {
         debug: {
@@ -45473,8 +45473,7 @@ module.exports = {
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker,
-                            isShortSell: true
+                            maker: maker
                         });
                     } else {
                         outcome = parseInt(parsed[4]);
@@ -45485,8 +45484,7 @@ module.exports = {
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker,
-                            isShortSell: false
+                            maker: maker
                         });
                     }
                 }
@@ -46261,6 +46259,120 @@ module.exports = {
         return netEffectiveTrades;
     },
 
+    updateRealizedPL: function (meanOpenPrice, realized, shares, price) {
+        return realized.plus(shares.times(price.minus(meanOpenPrice)));
+    },
+
+    updateMeanOpenPrice: function (position, meanOpenPrice, shares, price) {
+        return position.dividedBy(shares.plus(position))
+            .times(meanOpenPrice)
+            .plus(shares.dividedBy(shares.plus(position)).times(price));
+    },
+
+    // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+    // realized P/L = shares sold * (price on cash out - price on buy in)
+    longerPositionPL: function (PL, shares, price) {
+        var updatedPL = {
+            position: PL.position.plus(shares),
+            meanOpenPrice: PL.meanOpenPrice,
+            realized: PL.realized
+        };
+
+        // If position >= 0, user is increasing a long position:
+        //  - update weighted price of open positions
+        if (PL.position.eq(constants.ZERO)) {
+            updatedPL.meanOpenPrice = price;
+        } else if (PL.position.gt(constants.ZERO)) {
+            updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
+
+        // If position < 0, user is decreasing a short position:
+        //  - update realized P/L (assumes complete sets will be sold)
+        } else {
+            updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares.neg(), price);
+        }
+
+        return updatedPL;
+    },
+
+    shorterPositionPL: function (PL, shares, price) {
+        var updatedPL = {
+            position: PL.position.minus(shares),
+            meanOpenPrice: PL.meanOpenPrice,
+            realized: PL.realized
+        };
+
+        // If position < 0, user is increasing a short position:
+        //  - treat as a "negative buy" for P/L
+        //  - update weighted price of open positions
+        if (PL.position.eq(constants.ZERO)) {
+            updatedPL.meanOpenPrice = price;
+        } else if (PL.position.lt(constants.ZERO)) {
+            updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
+
+        // If position > 0, user is decreasing a long position (i.e., ordinary sale):
+        //  - update realized P/L
+        } else {
+            updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+        }
+
+        return updatedPL;
+    },
+
+    // Trades where user is the maker:
+    //  - buy orders (matched user's ask): user loses shares, gets cash
+    //  - sell orders (matched user's bid): user loses cash, gets shares
+    calculateMakerPL: function (PL, type, price, shares) {
+
+        // Sell: matched user's bid order
+        if (type === 2) {
+            console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+            return this.longerPositionPL(PL, shares, price);
+        }
+
+        // Buy: matched user's ask order
+        console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+        return this.shorterPositionPL(PL, shares, price);
+    },
+
+    // Trades where user is the taker:
+    //  - buy orders: user loses cash, gets shares
+    //  - sell orders: user loses shares, gets cash
+    calculateTakerPL: function (PL, type, price, shares) {
+
+        // Buy order
+        if (type === 1) {
+            console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+            return this.longerPositionPL(PL, shares, price);
+        }
+
+        // Sell order
+        console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+        return this.shorterPositionPL(PL, shares, price);
+    },
+
+    calculateTradePL: function (PL, trade) {
+        if (trade.maker) {
+            return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
+        }
+        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
+    },
+
+    calculateTradesPL: function (PL, trades) {
+        var numTrades = trades.length;
+        if (numTrades) {
+            for (var i = 0; i < numTrades; ++i) {
+                PL = this.calculateTradePL(PL, trades[i]);
+            }
+        }
+        return PL;
+    },
+
+    // unrealized P/L: shares held * (last trade price - price on buy in)
+    calculateUnrealizedPL: function (position, meanOpenPrice, lastTradePrice) {
+        if (lastTradePrice.eq(constants.ZERO)) return constants.ZERO;
+        return position.times(abi.bignum(lastTradePrice).minus(meanOpenPrice));
+    },
+
     /**
      * Calculates realized and unrealized profit/loss for trades in a single outcome.
      *
@@ -46268,120 +46380,30 @@ module.exports = {
      *
      * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
      * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
-     * @param {BigNumber|string=} adjustedPosition Position adjusted for short sells (optional).
-     * @param {Object=} netEffectiveTrades Net effective trades for this market (optional).
      * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
      */
-    calculateProfitLoss: function (accountTrades, lastTradePrice, adjustedPosition, netEffectiveTrades) {
-        var shares, price, position, weightedPrice, realized, numTrades, trades;
-        position = constants.ZERO;
-        weightedPrice = constants.ZERO;
-        realized = constants.ZERO;
-        if (accountTrades) {
-            trades = accountTrades.slice();
-            trades.reverse();
-            numTrades = trades.length;
-            if (numTrades) {
-                for (var i = 0; i < numTrades; ++i) {
-                    shares = abi.bignum(trades[i].shares);
-                    price = abi.bignum(trades[i].price);
-
-                    // Trades where user is the maker:
-                    //  - buy orders (matched user's ask): user loses shares, gets cash
-                    //  - sell orders (matched user's bid): user loses cash, gets shares
-                    if (trades[i].maker) {
-
-                        // Sell order: update realized P/L and total shares bought.
-                        // realized P/L = shares sold * (price on cash out - price on buy in)
-                        if (trades[i].type === 2) {
-                            console.log('sell (maker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
-                            if (position.eq(constants.ZERO)) {
-                                weightedPrice = price;
-                            } else {
-                                weightedPrice = position.dividedBy(shares.plus(position))
-                                    .times(weightedPrice)
-                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
-                            }
-                            position = position.plus(shares);
-
-                        // Buy orders: update weighted price sum and total shares bought.
-                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-                        } else {
-                            console.log('buy (maker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
-                            if (position.eq(constants.ZERO)) {
-                                weightedPrice = price;
-                            } else if (position.gt(constants.ZERO)) {
-                                weightedPrice = position.dividedBy(shares.plus(position))
-                                    .times(weightedPrice)
-                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
-                            } else {
-                                realized = realized.minus(shares.times(price.minus(weightedPrice)));
-                            }
-                            position = position.minus(shares);
-                        }
-
-                    // Trades where user is the taker:
-                    //  - buy orders: user loses cash, gets shares
-                    //  - sell orders: user loses shares, gets cash
-                    } else {
-
-                        // Buy orders: update weighted price sum and total shares bought.
-                        // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-                        if (trades[i].type === 1) {
-                            console.log('buy (taker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed());
-                            if (position.eq(constants.ZERO)) {
-                                weightedPrice = price;
-                            } else if (position.gt(constants.ZERO)) {
-                                weightedPrice = position.dividedBy(shares.plus(position))
-                                    .times(weightedPrice)
-                                    .plus(shares.dividedBy(shares.plus(position)).times(price));
-                            } else {
-                                realized = realized.minus(shares.times(price.minus(weightedPrice)));
-                            }
-                            position = position.plus(shares);
-
-                        // Sell order: update realized P/L and total shares bought.
-                        // realized P/L = shares sold * (price on cash out - price on buy in)
-                        } else {
-                            console.log('sell (taker):', position.toFixed(), weightedPrice.toFixed(), price.toFixed(), shares.toFixed(), trades[i].isShortSell);
-                            if (position.eq(constants.ZERO)) {
-                                weightedPrice = price;
-                            } else {
-                                if (!trades[i].isShortSell) {
-                                    realized = realized.plus(shares.times(price.minus(weightedPrice)));
-                                } else {
-                                    weightedPrice = position.dividedBy(shares.plus(position))
-                                        .times(weightedPrice)
-                                        .plus(shares.dividedBy(shares.plus(position)).times(price));
-                                }
-                            }
-                            position = position.minus(shares);
-                        }
-                    }
-                }
+    calculateProfitLoss: function (trades, lastTradePrice) {
+        var PL = {
+            position: constants.ZERO,
+            meanOpenPrice: constants.ZERO,
+            realized: constants.ZERO,
+            unrealized: constants.ZERO
+        };
+        if (trades) {
+            PL = this.calculateTradesPL(PL, trades);
+            if (PL.position.abs().lt(constants.PRECISION.zero)) {
+                PL.position = constants.ZERO;
+                PL.meanOpenPrice = constants.ZERO;
+                PL.unrealized = constants.ZERO;
+            } else {
+                PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, abi.bignum(lastTradePrice));
             }
         }
-        position = (adjustedPosition) ? abi.bignum(adjustedPosition) : position;
-        if (position.abs().lt(constants.PRECISION.zero)) {
-            position = constants.ZERO;
-            weightedPrice = constants.ZERO;
-        }
-
-        // unrealized P/L: shares held * (last trade price - price on buy in)
-        var bnLastTradePrice = abi.bignum(lastTradePrice);
-        var unrealized;
-        if (bnLastTradePrice.eq(constants.ZERO)) {
-            unrealized = constants.ZERO;
-        } else {
-            unrealized = position.times(abi.bignum(bnLastTradePrice).minus(weightedPrice));
-        }
-
-        return {
-            position: position.toFixed(),
-            realized: realized.toFixed(),
-            unrealized: unrealized.toFixed(),
-            weightedPrice: weightedPrice.toFixed()
-        };
+        PL.position = PL.position.toFixed();
+        PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
+        PL.realized = PL.realized.toFixed();
+        PL.unrealized = PL.unrealized.toFixed();
+        return PL;
     }
 };
 
