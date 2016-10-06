@@ -200,9 +200,12 @@ const testState = {
 	},
 	selectedMarketID: 'testMarketID',
 	selectedMarketsHeader: 'testMarketHeader',
-	selectedSort: {
-		isDesc: true,
-		prop: 'volume'
+	filterSort: {
+		selectedFilterSort: {
+			type: 'open',
+			sort: 'volume',
+			isDesc: true
+		}
 	},
 	selectedTags: {
 		testtag: {

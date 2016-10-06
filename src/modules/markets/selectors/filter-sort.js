@@ -68,5 +68,5 @@ const selectOnChange = memoizerific(2)((type, sort, order) => {
 		}
 	}, {});
 
-	store.disatch(updateSelectedFilterSort(changes));
+	store.dispatch(updateSelectedFilterSort(changes));
 });

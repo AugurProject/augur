@@ -27,7 +27,7 @@ describe(`modules/markets/selectors/filters.js`, () => {
 		filteredMarkets: markets
 	};
 
-	selector = proxyquire('../../../src/modules/markets/selectors/filters.js', {
+	selector = proxyquire('../../../src/modules/markets/selectors/filter-sort.js', {
 		'../../../store': store,
 		'../../markets/actions/toggle-tag': mockTag,
 		'../../../selectors': mockSelector
@@ -45,6 +45,8 @@ describe(`modules/markets/selectors/filters.js`, () => {
 
 	it(`should adjust and return filters props`, () => {
 		test = selector.default();
+
+		console.log('test -- ', test);
 
 		out = [
 			{
