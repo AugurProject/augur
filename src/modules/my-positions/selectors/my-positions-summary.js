@@ -13,8 +13,10 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
 	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
 		return null;
 	}
-	const { position, realized, unrealized, weightedPrice } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition);
-	return generatePositionsSummary(1, position, weightedPrice, realized, unrealized);
+	const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
+	trades.reverse();
+	const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition);
+	return generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized);
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
