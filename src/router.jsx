@@ -26,7 +26,9 @@ export default class Router extends Component {
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
+
 		this.handleResize = this.handleResize.bind(this);
+		this.currentRoute = this.currentRoute.bind(this);
 	}
 
 	componentDidMount() {
@@ -133,10 +135,12 @@ export default class Router extends Component {
 
 	render() {
 		const p = this.props;
-		const currentRoute = this.currentRoute(p);
+		const currentRoute = this.currentRoute();
+
 		const pageContainerStyles = {
 			marginTop: this.state.pageMarginTop
 		};
+
 		const siteHeader = {
 			activeView: p.activeView,
 			loginAccount: p.loginAccount,
@@ -157,15 +161,15 @@ export default class Router extends Component {
 				{!!p &&
 					<div>
 						<SiteHeader
-							{...siteHeader}
 							ref={(ref) => { this.siteHeader = ref; }}
+							{...siteHeader}
 						/>
 						<div
 							className="view-container"
 							style={pageContainerStyles}
 						>
 							{p.activeView === MARKETS &&
-								<SideBar filters={p.filters} />
+								<SideBar tags={p.tags} />
 							}
 							<main className="view-content-container">
 								{currentRoute}

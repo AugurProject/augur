@@ -11,21 +11,33 @@ export default class SiteHeader extends Component {
 		const p = this.props;
 
 		return (
-			<header className="site-header" ref={(ref) => { this.siteHeader = ref; }} >
+			<header
+				className="site-header"
+				ref={(ref) => { this.siteHeader = ref; }}
+			>
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
-						<Link className={classnames('site-nav-link', { active: p.activeView === MARKETS })} {...p.marketsLink}>
+						<Link
+							className={classnames('site-nav-link', { active: p.activeView === MARKETS })}
+							{...p.marketsLink}
+						>
 							Markets
 						</Link>
 					</div>
 					<div className="nav-group branding">
-						<Link className="augur-brand" {...p.marketsLink}>
+						<Link
+							className="augur-brand"
+							{...p.marketsLink}
+						>
 							<AugurLogo />
 						</Link>
 					</div>
 					<div className="nav-group right-navs">
 						{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
-							<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })} {...p.myPositionsLink}>
+							<Link
+								className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
+								{...p.myPositionsLink}
+							>
 								Portfolio
 							</Link>
 						}
@@ -39,12 +51,18 @@ export default class SiteHeader extends Component {
 							</Link>
 						}
 						{(!!p.loginAccount && !!p.loginAccount.id) &&
-							<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })} {...p.accountLink}>
+							<Link
+								className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+								{...p.accountLink}
+							>
 								Account
 							</Link>
 						}
 						{(!p.loginAccount || !p.loginAccount.id) &&
-							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
+							<Link
+								className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
+								{...p.authLink}
+							>
 								Sign Up / Login
 							</Link>
 						}

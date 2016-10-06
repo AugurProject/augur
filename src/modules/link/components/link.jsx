@@ -34,12 +34,12 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const p = this.props;
+		const { className, ...p } = this.props;
 
 		return (
 			<a
 				href={p.href}
-				className={`link ${p.className}`}
+				className={`link ${className}`}
 				onClick={this.handleClick}
 				{...p}
 			>

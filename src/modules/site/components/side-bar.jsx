@@ -5,14 +5,14 @@ const SideBar = p => (
 	<div className="side-bar">
 		<h3>All Tags</h3>
 		<div className="filters">
-			{p.filters.length && p.filters.map(filter =>
+			{p.tags.length && p.tags.map(tag =>
 				<Checkbox
-					key={filter.value}
+					key={tag.value}
 					className="filter"
-					text={filter.name}
-					text2={`(${filter.numMatched})`}
-					isChecked={filter.isSelected}
-					onClick={filter.onClick}
+					text={tag.name}
+					text2={`(${tag.numMatched})`}
+					isChecked={tag.isSelected}
+					onClick={tag.onClick}
 				/>
 			)}
 		</div>
