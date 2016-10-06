@@ -8,6 +8,7 @@ button,
 	background-color: @color-blue;
 	color: @color-text-light;
 	cursor: default;
+	display: flex;
 	justify-content: center;
 	padding: 1em 1.5em;
 
@@ -15,6 +16,8 @@ button,
 	&.unstyled {
 		background-color: transparent;
 		color: inherit;
+		padding: 0;
+		justify-content: flex-start;
 	}
 
 	&.imperative {

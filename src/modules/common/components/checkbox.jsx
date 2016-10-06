@@ -2,17 +2,21 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
 const Checkbox = p => (
-	<span className={classnames('checkbox', p.className, { checked: p.isChecked })} title={p.title}>
-		<button className="checkbox-box" onClick={p.onClick} />
-		<button className="checkbox-label" tabIndex={p.tabIndex} onClick={p.onClick}>
+	<button
+		className={classnames('checkbox unstyled', p.className, { checked: p.isChecked })}
+		title={p.title}
+		onClick={p.onClick}
+	>
+		<span className="checkbox-box" />
+		<span className="checkbox-label" tabIndex={p.tabIndex} >
 			{p.text}
-		</button>
+		</span>
 		{p.text2 != null &&
-			<button className="checkbox-label2" onClick={p.onClick}>
+			<span className="checkbox-label2" >
 				{p.text2}
-			</button>
+			</span>
 		}
-	</span>
+	</button>
 );
 
 Checkbox.propTypes = {

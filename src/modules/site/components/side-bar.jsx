@@ -4,11 +4,11 @@ import Checkbox from '../../common/components/checkbox';
 const SideBar = p => (
 	<div className="side-bar">
 		<h3>All Tags</h3>
-		<div className="filters">
+		<div className="tags">
 			{p.tags.length && p.tags.map(tag =>
 				<Checkbox
 					key={tag.value}
-					className="filter"
+					className="tag"
 					text={tag.name}
 					text2={`(${tag.numMatched})`}
 					isChecked={tag.isSelected}
