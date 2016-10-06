@@ -57,15 +57,16 @@ const selectOrderOptions = {
 };
 
 const selectOnChange = memoizerific(2)((type, sort, order) => {
-	const { filterSort } = store.getState();
+	const { selectedFilterSort } = store.getState();
 
-	const isDesc = order !== null && order !== filterSort.selectedFilterSort.isDesc ? order : null;
+	const isDesc = order !== null && order !== selectedFilterSort.isDesc ? order : null;
 
 	const selections = { type, sort, isDesc };
 	const changes = Object.keys(selections).reduce((prev, item) => {
-		if (selections.item !== null) {
-			return { ...prev, [item]: selections.item };
+		if (selections[item] !== null) {
+			return { ...prev, [item]: selections[item] };
 		}
+		return { ...prev };
 	}, {});
 
 	store.dispatch(updateSelectedFilterSort(changes));

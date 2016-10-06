@@ -27,74 +27,37 @@ describe(`modules/markets/selectors/filter-sort.js`, () => {
 	});
 
 	before(() => {
+		actual = selector.default();
+	});
+
+	beforeEach(() => {
 		store.clearActions();
+		mockSort.updateSelectedFilterSort.reset();
 	});
 
 	after(() => {
 		store.clearActions();
 	});
 
-	it(`should return the expected object`, () => {
-		actual = selector.default();
+	it('should pass the correct object to the action', () => {
+		actual.onChange('closed', null, false);
+		expected = { type: 'closed', isDesc: false };
+		assert.deepEqual(store.getActions()[0].value, expected, `Didn't pass expected object to action`);
 
-		console.log('actual -- ', actual);
+		store.clearActions();
 
-		expected = {
-			types: [
-				{
-					label: 'Open',
-					value: 'open'
-				},
-				{
-					label: 'Closed',
-					value: 'closed'
-				},
-				{
-					label: 'Reporting',
-					value: 'reporting'
-				}
-			],
-			sort: [
-				{
-					label: 'Volume',
-					value: 'volume'
-				},
-				{
-					label: 'Newest',
-					value: 'newest'
-				},
-				{
-					label: 'Expiry',
-					value: 'expiry'
-				},
-				{
-					label: 'Taker Fee',
-					value: 'takerFee'
-				},
-				{
-					label: 'Maker Fee',
-					value: 'makerFee'
-				}
-			],
-			order: {
-				isDesc: true
-			},
-			selectedFilterSort: {
-				type: 'open',
-				sort: 'volume',
-				isDesc: true
-			}
-		}
-
-		// assertions.searchSort(actual);
-		// actual.onChangeSort('endDate', false);
-
-		// assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action object when onChangeSort was called from output selector object`);
+		actual.onChange(null, 'expiry', null);
+		expected = { sort: 'expiry' };
+		assert.deepEqual(store.getActions()[0].value, expected, `Didn't pass expected object to action`);
 	});
 
-	it('should call the correct action', () => {
-		actual.onChange('closed', false);
+	it(`should call 'updateSelectedFilterSort' once`, () => {
+		actual.onChange('closed', null, null);
 
-		assert(mockSort.updateSelectedFilterSort.calledOnce, `updateSelectedFilterSort wasn't called once as expected`);
+		assert(mockSort.updateSelectedFilterSort.calledOnce, `'updateSelectedFilterSort' was not called once`);
+	});
+
+	it('should deliver the correct shape to augur-ui-react-components', () => {
+		assertions.filterSort(actual);
 	});
 });
