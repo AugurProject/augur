@@ -4,7 +4,7 @@ export default class Link extends Component {
 
 	// TODO -- Prop Validations
 	static propTypes = {
-		// className: PropTypes.string,
+		className: PropTypes.string,
 		href: PropTypes.string,
 		target: PropTypes.string,
 		onClick: PropTypes.func,
@@ -22,19 +22,18 @@ export default class Link extends Component {
 			return;
 		}
 		// if not a left click or is a special click, let the browser handle it
-		if (!e.button === 0 || e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
+		if (e.button !== 0 || e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
 			return;
 		}
 
 		e.preventDefault();
-
 		if (this.props.onClick && !this.props.disabled) {
 			this.props.onClick(this.props.href);
 		}
 	};
 
 	render() {
-		const { className, ...p } = this.props;
+		const { className, onClick, ...p } = this.props; // Stripping off props we'd like to explicitly handle
 
 		return (
 			<a
