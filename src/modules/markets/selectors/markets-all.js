@@ -6,12 +6,12 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions, store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, orderBooks, orderCancellation, smallestPositions, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -51,13 +51,13 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			dispatch);
 
 	}).sort((a, b) => {
-		const aVal = cleanSortVal(a[selectedSort.prop]);
-		const bVal = cleanSortVal(b[selectedSort.prop]);
+		const aVal = cleanSortVal(a[selectedFilterSort.prop]);
+		const bVal = cleanSortVal(b[selectedFilterSort.prop]);
 
 		if (bVal < aVal) {
-			return selectedSort.isDesc ? -1 : 1;
+			return selectedFilterSort.isDesc ? -1 : 1;
 		} else if (bVal > aVal) {
-			return selectedSort.isDesc ? 1 : -1;
+			return selectedFilterSort.isDesc ? 1 : -1;
 		}
 		return a.id < b.id ? -1 : 1;
 	});

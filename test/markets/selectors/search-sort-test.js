@@ -22,7 +22,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		}
 	});
 
-	selector = proxyquire('../../../src/modules/markets/selectors/search-sort.js', {
+	selector = proxyquire('../../../src/modules/markets/selectors/filter-sort.js', {
 		'../../../store': store,
 		'../../markets/actions/update-selected-sort': mockSort
 	});

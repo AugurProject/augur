@@ -8,7 +8,7 @@ import url from './modules/link/reducers/url';
 
 import auth from './modules/auth/reducers/auth';
 import loginAccount from './modules/auth/reducers/login-account';
-import activePage from './modules/app/reducers/active-page';
+import activeView from './modules/app/reducers/active-view';
 
 import marketsData from './modules/markets/reducers/markets-data';
 import marketDataTimestamps from './modules/markets/reducers/market-data-timestamps';
@@ -39,7 +39,7 @@ import createMarketInProgress from './modules/create-market/reducers/create-mark
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
 import selectedTags from './modules/markets/reducers/selected-tags';
-import selectedSort from './modules/markets/reducers/selected-sort';
+import selectedFilterSort from './modules/markets/reducers/selected-filter-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
@@ -58,7 +58,7 @@ module.exports = {
 
 	auth,
 	loginAccount,
-	activePage,
+	activeView,
 
 	marketsData,
 	marketDataTimestamps,
@@ -75,7 +75,7 @@ module.exports = {
 	keywords,
 	selectedFilters,
 	selectedTags,
-	selectedSort,
+	selectedFilterSort,
 	priceHistory,
 	selectedOutcomeID,
 	loginMessage,

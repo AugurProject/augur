@@ -1,19 +1,19 @@
 import memoizerific from 'memoizerific';
 
-import { POSITIONS } from '../../app/constants/pages';
+import { POSITIONS } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import store from '../../../store';
 
 export default function () {
-	const { activePage, selectedMarketsHeader } = store.getState();
+	const { activeView, selectedMarketsHeader } = store.getState();
 	const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
 
 	return selectUnpaginatedMarkets(
 		allMarkets,
 		filteredMarkets,
 		favoriteMarkets,
-		activePage,
+		activeView,
 		selectedMarketsHeader
 	);
 }
@@ -26,8 +26,8 @@ export const selectPositions = memoizerific(1)((markets) =>
 	markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
 );
 
-export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader) => {
-	if (activePage === POSITIONS) {
+export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
+	if (activeView === POSITIONS) {
 		return selectPositions(allMarkets);
 	}
 
