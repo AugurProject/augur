@@ -21,7 +21,7 @@ export default function (fS) {
 	assert.isDefined(fS.types, `'filterSort.types' is not defined`);
 	assert.isArray(fS.types, `'filterSort.types' is not an array`);
 
-	mFS.types.forEach((type, i) => {
+	fS.types.forEach((type, i) => {
 		assert.isDefined(type.label, `'filterSort.types[${i}].label' is not defined`);
 		assert.isString(type.label, `'filterSort.types[${i}].label' is not a string`);
 
@@ -29,7 +29,7 @@ export default function (fS) {
 		assert.isString(type.value, `'filterSort.types[${i}].value' is not a string`);
 	});
 
-	mFS.sorts.forEach((type, i) => {
+	fS.sorts.forEach((type, i) => {
 		assert.isDefined(type.label, `'filterSort.sorts[${i}].label' is not defined`);
 		assert.isString(type.label, `'filterSort.sorts[${i}].label' is not a string`);
 
