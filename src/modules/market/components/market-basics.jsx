@@ -19,10 +19,10 @@ const MarketBasics = p => (
 			<div className="market-basics-header-group-2">
 				{p.onClickToggleFavorite &&
 					<button
-						className={classnames('button', 'favorite-button', { on: p.isFavorite })}
+						className={classnames('button unstyled favorite-button', { on: p.isFavorite })}
 						onClick={p.onClickToggleFavorite}
 					>
-						&#xf005;
+						{p.isFavorite ? <i></i> : <i></i>}
 					</button>
 				}
 

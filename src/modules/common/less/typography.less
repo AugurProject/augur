@@ -15,12 +15,22 @@
 
 	// NOTE -- Implementation is a bit non-standard
 	// To implement you apply the `fa` class to the element + copy/paste the character into the contents of the element
+	// the `i` tag already has the `fa` class applied globally
 	// Example:
 	//
-	//	<i className="fa"></i>
+	//		<i></i>
 	//
-	// You'll need to have the font-awesome TTF installed locally in order to see the characters in the code
-	// Full list of unicode characters: http://fontawesome.io/cheatsheet/
+	// You'll need to have the font-awesome TTF installed locally in order to see the characters locally in your IDE/editor
+	// Depending on the IDE/Editor you use, you'll also have to include Font Awesome explicitely
+	// Example:
+	// IntelliJ Idea (and all inheriting IDEs) suppor the fonts out of the box so long as they're installed on the host system
+	// Atom requires you to edit the stylesheets for inclusion of the font-family,
+	// Example:
+	// 		atom-text-editor {
+	//  		font-family: '<primary editor font>', 'FontAwesome';
+	// 		}
+	//
+	// Helpful: full list of unicode characters: http://fontawesome.io/cheatsheet/
 }
 
 //  primary site font (Source Sans Pro)

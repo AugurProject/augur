@@ -9,13 +9,15 @@ const MarketsHeaders = p => (
 				<h2>Markets</h2>
 			</div>
 			<div className="view-header-group-2">
-				<Link
-					className="button imperative"
-					disabled={!p.loginAccount.id}
-					{...p.createMarketLink}
-				>
-					+ Create New Market
-				</Link>
+				{p.loginAccount && p.loginAccount.id &&
+					<Link
+						className="button imperative"
+						disabled={!p.loginAccount.id}
+						{...p.createMarketLink}
+					>
+						+ Create New Market
+					</Link>
+				}
 			</div>
 		</div>
 		<MarketsFilterSort
