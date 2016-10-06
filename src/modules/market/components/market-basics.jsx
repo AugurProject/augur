@@ -11,7 +11,7 @@ const MarketBasics = p => (
 				{!!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{p.tags.map((tag, i) => (
-							<li key={i} className={classnames('tag', { link: !!tag.name })} ><button className="button-unstyled" onClick={tag.onClick && tag.onClick}>{tag.name ? tag.name : tag}</button></li>
+							<li key={i} className={classnames('tag', { link: !!tag.name })} ><button className="unstyled" onClick={tag.onClick && tag.onClick}>{tag.name ? tag.name : tag}</button></li>
 						))}
 					</ul>
 				}
