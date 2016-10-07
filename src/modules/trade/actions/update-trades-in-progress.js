@@ -20,7 +20,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
 		}
-		console.log('IN:', market.type, side, numShares, limitPrice, maxCost);
 		// If either field is cleared, reset outcomeTradeInProgress while preserving the companion field's value
 		if (numShares === '' && typeof limitPrice === 'undefined') {
 			return dispatch({
@@ -58,40 +57,33 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
-		// clean num shares
-		const cleanNumShares = parseFloat(numShares) === 0 ? 0 : Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
 
-		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
+		// clean num shares
+		const cleanNumShares = numShares ? abi.bignum(numShares).toFixed() === 0 ? 0 : abi.bignum(numShares).abs().toFixed() || outcomeTradeInProgress.numShares || 0 : outcomeTradeInProgress.numShares || 0;
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = parseFloat(limitPrice) === 0 ? 0 : Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = limitPrice ? abi.bignum(limitPrice).toFixed() === 0 ? 0 : abi.bignum(limitPrice).toFixed() || outcomeTradeInProgress.limitPrice : outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
 		}
-		// console.log(market.minValue, market.maxValue);
-		// console.log(parseFloat(limitPrice) - market.minValue, market.maxValue - parseFloat(limitPrice));
-		// if (market.type === SCALAR && limitPrice !== undefined) {
-		// 	cleanLimitPrice = cleanSide === BUY ? parseFloat(limitPrice) - market.minValue : market.maxValue - parseFloat(limitPrice);
-		// }
+		// if this isn't a scalar market, limitPrice must be positive.
+		if (market.type !== SCALAR && limitPrice) {
+			cleanLimitPrice = abi.bignum(limitPrice).abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
+		}
 
 		const newTradeDetails = {
 			side: cleanSide,
-			numShares: cleanNumShares || undefined,
-			limitPrice: cleanLimitPrice || undefined,
+			numShares: cleanNumShares === "0" ? undefined : cleanNumShares,
+			limitPrice: cleanLimitPrice,
 			totalFee: 0,
 			totalCost: 0
 		};
 
-		// if (newTradeDetails.limitPrice === undefined && parseFloat(limitPrice) === 0 && market.type === SCALAR) {
-		// 	newTradeDetails.limitPrice = 0;
-		// }
-		console.log('newTradeDetails1:', {...newTradeDetails});
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			const market = selectMarket(marketID);
 			augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
-				console.log('out of augur.getParticipantSharesPurchased:', sharesPurchased);
 				if (!sharesPurchased || sharesPurchased.error) {
 					console.error('getParticipantSharesPurchased:', sharesPurchased);
 					return dispatch({
@@ -103,7 +95,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					});
 				}
 				const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-				console.log('position:', {...position});
 				newTradeDetails.tradeActions = augur.getTradingActions(
 					newTradeDetails.side,
 					newTradeDetails.numShares,
@@ -115,7 +106,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					outcomeID,
 					market.cumulativeScale,
 					orderBooks && orderBooks[marketID] || {});
-				console.log('newTradeDetails2:', {...newTradeDetails});
 				if (newTradeDetails.tradeActions) {
 					const numTradeActions = newTradeDetails.tradeActions.length;
 					if (numTradeActions) {
@@ -131,7 +121,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 						newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
 						newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
 						newTradeDetails.totalFee = tradingFeesEth.toFixed();
-						console.log('newTradeDetails3:', {...newTradeDetails});
 						if (newTradeDetails.side === 'sell') {
 							newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
 								.times(100).abs()
@@ -153,7 +142,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				});
 			});
 		} else {
-			console.log('in the major else', newTradeDetails);
 			dispatch({
 				type: UPDATE_TRADE_IN_PROGRESS, data: {
 					marketID,
