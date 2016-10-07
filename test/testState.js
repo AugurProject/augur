@@ -195,9 +195,6 @@ const testState = {
 			}
 		}
 	},
-	selectedFilters: {
-		isOpen: true
-	},
 	selectedMarketID: 'testMarketID',
 	selectedMarketsHeader: 'testMarketHeader',
 	selectedFilterSort: {

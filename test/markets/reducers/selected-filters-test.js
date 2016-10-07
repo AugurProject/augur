@@ -1,3 +1,6 @@
+// AFAIK, this was never fully implemented
+// Leaving here for reference until the updated `filter-sort` actions hit parity w/ what was handled here
+
 // import {
 // 	assert
 // } from 'chai';

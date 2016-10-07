@@ -37,7 +37,6 @@ import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-
 import smallestPositions from './modules/my-positions/reducers/smallest-positions';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
-import selectedFilters from './modules/markets/reducers/selected-filters';
 import selectedTags from './modules/markets/reducers/selected-tags';
 import selectedFilterSort from './modules/markets/reducers/selected-filter-sort';
 import priceHistory from './modules/markets/reducers/price-history';
@@ -73,7 +72,6 @@ module.exports = {
 	selectedMarketID,
 	selectedMarketsHeader,
 	keywords,
-	selectedFilters,
 	selectedTags,
 	selectedFilterSort,
 	priceHistory,
