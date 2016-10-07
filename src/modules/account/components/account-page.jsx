@@ -61,6 +61,7 @@ export default class AccountPage extends Component {
 		return (
 			<main className="page account">
 				<section className="page-content">
+					<Link onClick={p.account.signOut}>Sign Out (Temporarily Here)</Link>
 					<div className="account-section">
 						<h2 className="heading">Credentials</h2>
 						<table className="account-info">
