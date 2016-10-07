@@ -59,10 +59,10 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		// clean num shares
-		const cleanNumShares = numShares ? abi.bignum(numShares).toFixed() === 0 ? 0 : abi.bignum(numShares).abs().toFixed() || outcomeTradeInProgress.numShares || 0 : outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = numShares && abi.bignum(numShares).toFixed() === 0 ? 0 : numShares && abi.bignum(numShares).abs().toFixed() || outcomeTradeInProgress.numShares || 0;
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = limitPrice ? abi.bignum(limitPrice).toFixed() === 0 ? 0 : abi.bignum(limitPrice).toFixed() || outcomeTradeInProgress.limitPrice : outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = limitPrice && abi.bignum(limitPrice).toFixed() === 0 ? 0 : limitPrice && abi.bignum(limitPrice).toFixed() || outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
@@ -74,7 +74,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		const newTradeDetails = {
 			side: cleanSide,
-			numShares: cleanNumShares === "0" ? undefined : cleanNumShares,
+			numShares: cleanNumShares === '0' ? undefined : cleanNumShares,
 			limitPrice: cleanLimitPrice,
 			totalFee: 0,
 			totalCost: 0
