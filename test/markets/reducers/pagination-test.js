@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { UPDATE_SELECTED_PAGE_NUM } from '../../../src/modules/markets/actions/update-selected-page-num';
-import { UPDATE_SELECTED_FILTER_SORT } from '../../../src/modules/markets/actions/update-selected-sort';
+import { UPDATE_SELECTED_FILTER_SORT } from '../../../src/modules/markets/actions/update-selected-filter-sort';
 import { UPDATE_KEYWORDS } from '../../../src/modules/markets/actions/update-keywords';
 import { UPDATED_SELECTED_MARKETS_HEADER } from '../../../src/modules/markets/actions/update-selected-markets-header';
 import reducer from '../../../src/modules/markets/reducers/pagination';

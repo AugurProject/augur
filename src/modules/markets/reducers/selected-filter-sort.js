@@ -50,7 +50,6 @@ export default function (selectedFilterSort = INITIAL_STATE, action) {
 		return selectedFilterSort;
 	}
 	default:
-		console.log('should be going here -- ', selectedFilterSort);
 		return selectedFilterSort;
 	}
 }

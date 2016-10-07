@@ -6,7 +6,7 @@ import { formatNumber, formatShares, formatEther } from '../src/utils/format-num
 import { formatDate } from '../src/utils/format-date';
 
 const testState = {
-	activePage: 'markets',
+	activeView: 'markets',
 	accountTrades: {
 		testMarketID: {
 			testoutcomeID: [

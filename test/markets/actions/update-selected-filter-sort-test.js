@@ -2,12 +2,8 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
-// import * as action from '../../../src/modules/markets/actions/update-selected-sort';
 
-describe('modules/markets/actions/update-selected-sort', () => {
+describe('modules/markets/actions/update-selected-filter-sort', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
 	let { state, store } = mockStore.default;
@@ -54,7 +50,7 @@ describe('modules/markets/actions/update-selected-sort', () => {
 		out = [
 			{
 				type: 'UPDATE_SELECTED_FILTER_SORT',
-				selectedFilterSortChanges: {
+				selectedFilterSort: {
 					sort: 'expiry'
 				}
 			},
