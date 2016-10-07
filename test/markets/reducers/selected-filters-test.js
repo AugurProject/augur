@@ -1,5 +1,5 @@
 // AFAIK, this was never fully implemented
-// Leaving here for reference until the updated `filter-sort` actions hit parity w/ what was handled here
+// Leaving here for reference until the updated `filter-sort` and related actions / reducers hit parity w/ what was going to be handled here
 
 // import {
 // 	assert

@@ -1,7 +1,7 @@
 import { UPDATE_URL } from '../../link/actions/update-url';
+import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
 import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from '../../link/constants/param-names';
 import { UPDATE_SELECTED_FILTER_SORT } from '../../markets/actions/update-selected-filter-sort';
-import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
 import store from '../../../store'
 
 const INITIAL_STATE = {
@@ -16,10 +16,9 @@ export default function (selectedFilterSort = INITIAL_STATE, action) {
 	case UPDATE_SELECTED_FILTER_SORT:
 		return {
 			...selectedFilterSort,
-			...action
+			...action.selectedFilterSort
 		};
-
-	case UPDATE_URL:
+	case UPDATE_URL: {
 		const { filterSort } = store.getState();
 		params = action.parsedURL.searchParams;
 
@@ -49,7 +48,9 @@ export default function (selectedFilterSort = INITIAL_STATE, action) {
 		}
 
 		return selectedFilterSort;
+	}
 	default:
+		console.log('should be going here -- ', selectedFilterSort);
 		return selectedFilterSort;
 	}
 }
