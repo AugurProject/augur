@@ -4,7 +4,7 @@ export default class Link extends Component {
 
 	// TODO -- Prop Validations
 	static propTypes = {
-		className: PropTypes.string,
+		// className: PropTypes.string,
 		href: PropTypes.string,
 		target: PropTypes.string,
 		onClick: PropTypes.func,
@@ -33,14 +33,14 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const { className, onClick, ...p } = this.props; // Stripping off props we'd like to explicitly handle
+		const p = this.props;
 
 		return (
 			<a
-				href={p.href}
-				className={`link ${className}`}
-				onClick={this.handleClick}
 				{...p}
+				href={p.href}
+				className={`link ${p.className}`}
+				onClick={this.handleClick}
 			>
 				{ p.children }
 			</a>
