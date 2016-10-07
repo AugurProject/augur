@@ -313,6 +313,12 @@ module.exports = {
         return price.plus(minValue).toFixed();
     },
 
+    adjustScalarSellPrice: function (maxValue, price) {
+        if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return maxValue.minus(price).toFixed();
+    },
+
     parseTradeInfo: function (trade) {
         var type, round, roundingMode;
         if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;

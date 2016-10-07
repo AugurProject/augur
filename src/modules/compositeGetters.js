@@ -147,15 +147,24 @@ module.exports = {
 
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
-        var minValue, order;
+        var minValue, maxValue, order;
         var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
-        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
+        if (isScalar) {
+            minValue = new BigNumber(scalarMinMax.minValue, 10);
+            maxValue = new BigNumber(scalarMinMax.maxValue, 10);
+        }
         var numOrders = orderArray.length / 8;
         var orderBook = {buy: {}, sell: {}};
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (order) {
-                if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
+                if (isScalar) {
+                    if (order.type === 'buy') {
+                        order.price = this.expandScalarPrice(minValue, order.price);
+                    } else {
+                        order.price = this.adjustScalarSellPrice(maxValue, order.price);
+                    }
+                }
                 orderBook[order.type][order.id] = order;
             }
         }

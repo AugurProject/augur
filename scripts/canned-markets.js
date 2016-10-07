@@ -10,6 +10,8 @@ var chalk = require("chalk");
 var augur = require("../src");
 var DEBUG = false;
 
+augur.options.debug.trading = true;
+
 var closingBell = new Date();
 closingBell.setHours(20, 0, 0, 0);
 
