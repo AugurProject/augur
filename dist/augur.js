@@ -43633,7 +43633,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.12";
+    this.version = "2.9.13";
 
     this.options = {
         debug: {
