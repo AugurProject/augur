@@ -1,4 +1,4 @@
-import * as pages from '../modules/app/constants/pages';
+import * as views from '../modules/app/constants/views';
 import * as titles from '../modules/app/constants/page-titles';
 
 export default function (title, params) {
@@ -6,7 +6,7 @@ export default function (title, params) {
 		setDocumentTitle(title);
 	} else {
 		switch (params.page) {
-		case pages.M: {
+		case views.M: {
 			const m = params.m.split('_');
 
 			if (m.length === 1) {
@@ -19,34 +19,34 @@ export default function (title, params) {
 			}
 			break;
 		}
-		case pages.REGISTER:
+		case views.REGISTER:
 			setDocumentTitle(titles.REGISTER);
 			break;
-		case pages.LOGIN:
+		case views.LOGIN:
 			setDocumentTitle(titles.LOGIN);
 			break;
-		case pages.IMPORT:
+		case views.IMPORT:
 			setDocumentTitle(titles.IMPORT);
 			break;
-		case pages.MAKE:
+		case views.MAKE:
 			setDocumentTitle(titles.CREATE);
 			break;
-		case pages.MY_POSITIONS:
+		case views.MY_POSITIONS:
 			setDocumentTitle(titles.POSITIONS);
 			break;
-		case pages.MY_MARKETS:
+		case views.MY_MARKETS:
 			setDocumentTitle(titles.MARKETS);
 			break;
-		case pages.MY_REPORTS:
+		case views.MY_REPORTS:
 			setDocumentTitle(titles.REPORTS);
 			break;
-		case pages.TRANSACTIONS:
+		case views.TRANSACTIONS:
 			setDocumentTitle(titles.TRANSACTIONS);
 			break;
-		case pages.ACCOUNT:
+		case views.ACCOUNT:
 			setDocumentTitle(titles.ACCOUNT);
 			break;
-		case pages.LOGIN_MESSAGE:
+		case views.LOGIN_MESSAGE:
 			setDocumentTitle(titles.WELCOME);
 			break;
 		default:
