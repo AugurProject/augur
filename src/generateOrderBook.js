@@ -180,11 +180,6 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                // if (marketInfo.type === "scalar") {
-                                //     sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
-                                // } else {
-                                //     sellPrice = sellPrice.toFixed();
-                                // }
                                 self.sell({
                                     amount: amount.toFixed(),
                                     price: sellPrice,

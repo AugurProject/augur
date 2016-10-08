@@ -82,9 +82,7 @@ module.exports = {
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
         if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-            console.log('raw price:', price);
             price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-            console.log('adjusted price:', price);
         }
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
@@ -112,10 +110,8 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        if (scalarMinMax && scalarMinMax.maxValue !== undefined) {
-            console.log('raw price:', price);
-            price = this.adjustScalarSellPrice(scalarMinMax.maxValue, price);
-            console.log('adjusted price:', price);
+        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
         }
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
@@ -143,10 +139,8 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        if (scalarMinMax && scalarMinMax.maxValue !== undefined) {
-            console.log('raw price:', price);
-            price = this.adjustScalarSellPrice(scalarMinMax.maxValue, price);
-            console.log('adjusted price:', price);
+        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
         }
         var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
