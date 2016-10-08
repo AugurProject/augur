@@ -1,0 +1,35 @@
+// NOTE -- additional styles located in common/less/layout.less
+.side-bar {
+	background-color: @color-side-bar-background;
+	color: @color-text-light-muted;
+	display: flex;
+	flex-direction: column;
+
+	h3 {
+
+		.font-weight-light();
+		.font-size-medium();
+
+		border-bottom: 1px solid @color-text-light-light;
+		color: @color-text-light;
+		margin: 2rem 2rem 0;
+		padding-bottom: 1rem;
+	}
+
+	.tags {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding-top: 0.5rem;
+
+		.checkbox.tag {
+			padding: 1em 2rem;
+			text-align: left;
+
+			&:hover {
+				background-color: @color-nav-background-active;
+				color: @color-text-light;
+			}
+		}
+	}
+}

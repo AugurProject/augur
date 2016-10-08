@@ -1,5 +1,5 @@
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 export default [
 	{
@@ -9,7 +9,7 @@ export default [
 			marketLink: {
 				text: 'Which Jess coordinations clap Dwight Mission cube?',
 				className: 'transaction-text-link',
-				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
+				onClick: () => require('../selectors').update({ activeView: M, market: require('../selectors').markets[0], url: '/m/0' })
 			},
 			outcomeID: '7',
 			marketType: CATEGORICAL,
@@ -57,7 +57,7 @@ export default [
 			marketLink: {
 				text: 'Which Jess coordinations clap Dwight Mission cube?',
 				className: 'transaction-text-link',
-				onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
+				onClick: () => require('../selectors').update({ activeView: M, market: require('../selectors').markets[1], url: '/m/1' })
 			},
 			outcomeID: '1',
 			marketType: BINARY,

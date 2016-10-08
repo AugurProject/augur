@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 
-const TradeBuilderBidAsk = (p) => (
+const TradeBuilderBidAsk = p => (
 	<div className={classnames('trade-builder-bid-ask', { 'is-of-current-user': p.bidAsk.isOfCurrentUser }, p.className)} title={classnames({ 'You have an open order at this price': p.bidAsk.isOfCurrentUser })}>
 
 		<ValueDenomination

@@ -1,12 +1,12 @@
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 import { randomNum } from '../utils/random-number';
-import { makeDate } from '../utils/make-date';
+import makeDate from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 import selectReportableOutcomes from '../selectors/reportable-outcomes';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 module.exports = makeMarkets();
 
@@ -47,9 +47,9 @@ function makeMarkets(numMarkets = 10) {
 			isOpen: randomInt(0, 100) > 5,
 			isPendingReport: index > 0 && index % 4 === 0,
 			marketLink: {
-				text: 'Trade',
+				text: 'Trade Market',
 				className: 'trade',
-				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
+				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/m/${id}` })
 			}
 		};
 
@@ -78,20 +78,20 @@ function makeMarkets(numMarkets = 10) {
 			{
 				name: 'outcome 1',
 				data: [
-					[nowMillis - 50 * dayMillis, 0.3],
-					[nowMillis - 40 * dayMillis, 0.1],
-					[nowMillis - 30 * dayMillis, 0.65],
-					[nowMillis - 20 * dayMillis, 0.93]
+					[nowMillis - (50 * dayMillis), 0.3],
+					[nowMillis - (40 * dayMillis), 0.1],
+					[nowMillis - (30 * dayMillis), 0.65],
+					[nowMillis - (20 * dayMillis), 0.93]
 				],
 				color: '#f00'
 			},
 			{
 				name: 'outcome 2',
 				data: [
-					[nowMillis - 55 * dayMillis, 0.8],
-					[nowMillis - 45 * dayMillis, 0.7],
-					[nowMillis - 35 * dayMillis, 0.6],
-					[nowMillis - 25 * dayMillis, 0.4]
+					[nowMillis - (55 * dayMillis), 0.8],
+					[nowMillis - (45 * dayMillis), 0.7],
+					[nowMillis - (35 * dayMillis), 0.6],
+					[nowMillis - (25 * dayMillis), 0.4]
 				],
 				color: '#0f0'
 			}
@@ -238,7 +238,7 @@ function makeMarkets(numMarkets = 10) {
 
 			for (let i = 0; i < numOutcomes; i++) {
 				outcome = makeOutcome(i, percentLeft, orderBook);
-				percentLeft = percentLeft - outcome.lastPricePercent.value;
+				percentLeft -= outcome.lastPricePercent.value;
 				outcomes.push(outcome);
 			}
 
@@ -271,7 +271,7 @@ function makeMarkets(numMarkets = 10) {
 						updateTradeOrder: (shares, limitPrice, side) => {
 							console.log('update trade order:', shares, limitPrice, side);
 							const outcome = {
-								...m.outcomes.find((outcome) => outcome.id === outcomeID)
+								...m.outcomes.find(outcome => outcome.id === outcomeID)
 							};
 
 							if (typeof shares !== 'undefined') {
@@ -289,11 +289,11 @@ function makeMarkets(numMarkets = 10) {
 
 							const finalLimitPrice = outcome.trade.limitPrice || 1;
 							const totEth = outcome.trade.numShares * finalLimitPrice * negater;
-							outcome.trade.totalFee = makeNumber(Math.round(m.takerFeePercent.value / 100 * finalLimitPrice * outcome.trade.numShares * 100) / 100, ' ETH');
+							outcome.trade.totalFee = makeNumber(Math.round((m.takerFeePercent.value / 100) * finalLimitPrice * outcome.trade.numShares * 100) / 100, ' ETH');
 							const feeFortotalEth = -1 * outcome.trade.totalFee.value;
 							outcome.trade.totalCost = makeNumber(Math.round((totEth + feeFortotalEth) * 100) / 100, ' ETH');
 
-							m.outcomes = m.outcomes.map(currentOutcome => {
+							m.outcomes = m.outcomes.map((currentOutcome) => {
 								if (currentOutcome.id === outcomeID) {
 									return outcome;
 								}
@@ -326,7 +326,7 @@ function makeMarkets(numMarkets = 10) {
 							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
 
 							require('../selectors').update({
-								markets: markets.map(currentMarket => {
+								markets: markets.map((currentMarket) => {
 									if (currentMarket.id === m.id) {
 										return m;
 									}
@@ -372,5 +372,5 @@ function makeMarkets(numMarkets = 10) {
 
 
 function randomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+	return Math.floor((Math.random() * ((max - min) + 1))) + min;
 }

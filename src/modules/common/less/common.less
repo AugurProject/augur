@@ -1,23 +1,15 @@
 // General
 // app wide common styles
-// if a component is shared, those styles are better left to it's respective stylesheets
+// rule of thumb: 	If EVERY instance of that class/element has the same style, they go here;
+// 					otherwise, they go in their respective stylesheets
 
 //		Tags
 html,
 body {
+
+	.font-defaults(); // NOTE -- font-size denominated in `rem` so user preferences are maintained.
 	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
 	color: @color-text-dark;
-	font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-	font-size: 16px;
-	font-weight: @font-weight-normal;
-
-	.light-weight {
-		font-weight: @font-weight-light;
-	}
-
-	.semi-bold-weight {
-		font-weight: @font-weight-semi-bold;
-	}
 }
 
 a {
@@ -33,6 +25,21 @@ a {
 		cursor: default;
 		opacity: 0.3;
 	}
+}
+
+strong {
+
+	.font-weight-normal();
+}
+
+i {
+
+	.fa();
+}
+
+h3 { // Content Headers
+	.font-size-medium();
+	.font-weight-light();
 }
 
 th {
@@ -74,16 +81,6 @@ button {
 }
 
 // 		Classes
-.augur-brand {
-	font-family: 'Core Mellow', 'Helvetica Neue', Arial, 'Open Sans', sans-serif;
-	font-weight: @font-weight-light;
-}
-
-.fa {
-	font-family: 'Font Awesome';
-	font-weight: @font-weight-normal;
-}
-
 .clickable {
 	cursor: pointer;
 }
@@ -165,10 +162,4 @@ button {
 [type="search"]::-webkit-search-results-decoration {
 	display: none;
 }
-
-// HISTORICAL
-// TODO -- remove
-@site-header-height: 10vmin;
-@market-section-padding: 4vmin 6vmin;
-@filters-width: 21rem;
 

@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import Input from '../../common/components/input';
 
-const CreateMarketForm2Scalar = (p) => (
+const CreateMarketForm2Scalar = p => (
 	<div className="scalar">
 		<h4>What are the minimum and maximum values allowed when answering?</h4>
 		<p>
@@ -10,13 +10,18 @@ const CreateMarketForm2Scalar = (p) => (
 		</p>
 
 		<div className="scalar-num min">
-			<label>Minimum</label>
+			<label
+				htmlFor="minimum-answer"
+			>
+				Minimum
+			</label>
 			<Input
 				type="text"
+				name="minimum-answer"
 				value={p.scalarSmallNum}
 				placeholder="Minimum answer"
 				maxLength={6}
-				onChange={(value) => p.onValuesUpdated({ scalarSmallNum: value })}
+				onChange={value => p.onValuesUpdated({ scalarSmallNum: value })}
 			/>
 
 			{p.errors.scalarSmallNum &&
@@ -25,13 +30,18 @@ const CreateMarketForm2Scalar = (p) => (
 		</div>
 
 		<div className="scalar-num min">
-			<label>Maximum</label>
+			<label
+				htmlFor="maximum-answer"
+			>
+				Maximum
+			</label>
 			<Input
 				type="text"
+				name="maximum-answer"
 				value={p.scalarBigNum}
 				placeholder="Maximum answer"
 				maxLength={6}
-				onChange={(value) => p.onValuesUpdated({ scalarBigNum: value })}
+				onChange={value => p.onValuesUpdated({ scalarBigNum: value })}
 			/>
 
 			{p.errors.scalarBigNum &&
@@ -41,10 +51,11 @@ const CreateMarketForm2Scalar = (p) => (
 	</div>
 );
 
-CreateMarketForm2Scalar.propTypes = {
-	scalarSmallNum: PropTypes.string,
-	scalarBigNum: PropTypes.string,
-	onValuesUpdated: PropTypes.func
-};
+// TOOD -- Prop Validations
+// CreateMarketForm2Scalar.propTypes = {
+// 	scalarSmallNum: PropTypes.string,
+// 	scalarBigNum: PropTypes.string,
+// 	onValuesUpdated: PropTypes.func
+// };
 
 export default CreateMarketForm2Scalar;

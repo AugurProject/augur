@@ -1,6 +1,6 @@
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 import { randomNum } from '../../src/utils/random-number';
-import { M } from '../modules/site/constants/pages';
+import { M } from '../modules/site/constants/views';
 
 export default [
 	{
@@ -8,7 +8,7 @@ export default [
 		marketLink: {
 			text: 'Market',
 			className: 'portfolio-row-link',
-			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[0], url: '/m/0' })
+			onClick: () => require('../selectors').update({ activeView: M, market: require('../selectors').markets[0], url: '/m/0' })
 		},
 		description: 'will there be a referendum on may 1?',
 		myPositionsSummary: {
@@ -50,7 +50,7 @@ export default [
 		marketLink: {
 			text: 'Market',
 			className: 'portfolio-row-link',
-			onClick: () => require('../selectors').update({ activePage: M, market: require('../selectors').markets[1], url: '/m/1' })
+			onClick: () => require('../selectors').update({ activeView: M, market: require('../selectors').markets[1], url: '/m/1' })
 		},
 		description: 'Yoooooooooooooo, sup guy?',
 		myPositionsSummary: {

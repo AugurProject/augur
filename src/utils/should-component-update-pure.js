@@ -6,7 +6,7 @@ export function shouldComponentUpdateLog(nextProps, nextState) {
 	return isShallowUnEqual(nextProps, this.props, true) || isShallowUnEqual(nextState, this.state, true);
 }
 
-export function isShallowUnEqual(obj1, obj2, log) {
+function isShallowUnEqual(obj1, obj2, log) {
 	if (obj1 === obj2) {
 		return false;
 	}

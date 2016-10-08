@@ -1,4 +1,4 @@
-export function emptyNumber(denomination) {
+function emptyNumber(denomination) {
 	return {
 		value: 0,
 		formattedValue: 0,
@@ -10,3 +10,5 @@ export function emptyNumber(denomination) {
 		denomination: denomination || ''
 	};
 }
+
+export default emptyNumber;

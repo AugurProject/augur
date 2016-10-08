@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const ValueDate = (p) => (
+const ValueDate = p => (
 	<span className={classnames('value-date', p.className)}>
 		{p.formatted}
 	</span>
