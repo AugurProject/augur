@@ -42,7 +42,7 @@ export default class Link extends Component {
 				className={`link ${p.className}`}
 				onClick={this.handleClick}
 			>
-				{ p.children }
+				{p.children}
 			</a>
 		);
 	}
