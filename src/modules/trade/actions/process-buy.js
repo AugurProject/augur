@@ -16,15 +16,17 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
 			}));
 		}
+		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `buying ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			message: `buying ${formatShares(numShares).full} for ${formatEther(avgPrice).full}/share`,
 			totalCost: formatEtherEstimate(totalEthWithFee),
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
 		trade(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+			dispatch,
 			(res) => {
 				const update = { status: `${res.status} buy` };
 				if (res.hash) update.hash = res.hash;
@@ -34,7 +36,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				if (res.remainingEth && res.filledShares) {
 					const filledEth = abi.bignum(totalEthWithFee).minus(res.remainingEth);
 					const pricePerShare = filledEth.dividedBy(res.filledShares);
-					update.message = `bought ${formatShares(res.filledShares).formatted} of ${formatShares(numShares).full} for ${formatEther(pricePerShare).full} each`;
+					update.message = `bought ${formatShares(res.filledShares).formatted} of ${formatShares(numShares).full} for ${formatEther(pricePerShare).full}/share`;
 					update.totalCost = formatEther(filledEth);
 				}
 				dispatch(updateExistingTransaction(transactionID, update));
@@ -52,7 +54,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				const pricePerShare = filledEth.dividedBy(res.filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'updating position',
-					message: `bought ${formatShares(res.filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					message: `bought ${formatShares(res.filledShares).full} for ${formatEther(pricePerShare).full}/share`,
 					totalCost: formatEther(filledEth),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)

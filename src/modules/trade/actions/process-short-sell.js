@@ -18,9 +18,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			}));
 		}
 		let filledEth = ZERO;
+		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			message: `short selling ${formatShares(numShares).full} for ${formatEther(avgPrice).full}/share`,
 			totalCost: formatEtherEstimate(totalEthWithFee),
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
