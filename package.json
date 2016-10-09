@@ -63,7 +63,8 @@
     "memoizerific": "1.8.4",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1"
+    "secure-random": "1.1.1",
+    "rimraf": "2.5.4"
   },
   "devDependencies": {
     "augur-ui-webserver": "1.1.0",
