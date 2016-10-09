@@ -64,10 +64,10 @@
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
     "secure-random": "1.1.1",
-    "rimraf": "2.5.4"
+    "rimraf": "2.5.4",
+	"augur-ui-webserver": "1.1.0"
   },
   "devDependencies": {
-    "augur-ui-webserver": "1.1.0",
     "babel-eslint": "6.1.2",
     "babel-plugin-transform-remove-console": "6.8.0",
     "babel-preset-es2015": "6.9.0",
