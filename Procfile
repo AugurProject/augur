@@ -1,1 +1,1 @@
-web: npm run build:dev && npm start
+web: npm heroku
