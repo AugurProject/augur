@@ -11,6 +11,7 @@ import AccountPage from './modules/account/components/account-page';
 import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
+import CoreStats from './modules/common/components/core-stats';
 
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
@@ -63,48 +64,52 @@ export default class Router extends Component {
 		}
 	}
 
-	currentRoute() {
-		const p = this.props;
-
-		let node;
+	currentRoute(routeProps) {
+		const p = {
+			...this.props,
+			...routeProps
+		};
 
 		switch (p.activeView) {
 		case REGISTER:
 		case LOGIN:
 		case IMPORT:
 		case LOGOUT:
-			node = <AuthPage authForm={p.authForm} />;
-			break;
-
+			return (
+				<AuthPage
+					className={p.className}
+					authForm={p.authForm}
+				/>
+			);
 		case ACCOUNT:
-			node = (
+			return (
 				<AccountPage
+					className={p.className}
 					loginMessageLink={p.links.loginMessageLink}
 					account={p.loginAccount}
 					onChangePass={p.loginAccount.onChangePass}
 					authLink={(p.links && p.links.authLink) || null}
 				/>
 			);
-			break;
-
 		case MAKE:
-			node = (
-				<CreateMarketPage createMarketForm={p.createMarketForm} />
+			return (
+				<CreateMarketPage
+					className={p.className}
+					createMarketForm={p.createMarketForm}
+				/>
 			);
-			break;
-
 		case TRANSACTIONS:
-			node = (
+			return (
 				<TransactionsPage
+					className={p.className}
 					transactions={p.transactions}
 					transactionsTotals={p.transactionsTotals}
 				/>
 			);
-			break;
-
 		case M:
-			node = (
+			return (
 				<MarketPage
+					className={p.className}
 					market={p.market}
 					marketDataAge={p.marketDataAge}
 					selectedOutcome={p.selectedOutcome}
@@ -114,29 +119,28 @@ export default class Router extends Component {
 					isTradeCommitLocked={p.tradeCommitLock.isLocked}
 				/>
 			);
-			break;
-
 		case MY_POSITIONS:
 		case MY_MARKETS:
 		case MY_REPORTS:
-			node = (
+			return (
 				<PortfolioView
 					{...p.portfolio}
+					className={p.className}
 					activeView={p.activeView}
 				/>
 			);
-			break;
-
 		case LOGIN_MESSAGE:
-			node = (
+			return (
 				<LoginMessagePage
+					className={p.className}
 					marketsLink={(p.links && p.links.marketsLink) || null}
-				/>);
-			break;
+				/>
+			);
 		default:
-			node = (
+			return (
 				<MarketsView
 					name={MARKETS}
+					className={p.className}
 					loginAccount={p.loginAccount}
 					createMarketLink={(p.links || {}).createMarketLink}
 					markets={p.markets}
@@ -147,17 +151,16 @@ export default class Router extends Component {
 					keywords={p.keywords}
 				/>
 			);
-			break;
 		}
-
-		return node;
 	}
 
 	render() {
 		const p = this.props;
 		const s = this.state;
 
-		const currentRoute = this.currentRoute();
+		const CurrentRoute = this.currentRoute;
+
+		console.log('current-route -- ', CurrentRoute);
 
 		const pageContainerStyles = {
 			marginTop: this.state.pageMarginTop
@@ -197,7 +200,8 @@ export default class Router extends Component {
 								<SideBar tags={p.tags} />
 							}
 							<main className="view-content-container">
-								{currentRoute}
+								<CoreStats coreStats={p.coreStats} />
+								<CurrentRoute className="view-content" />
 							</main>
 						</div>
 						<SiteFooter />
