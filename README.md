@@ -38,7 +38,8 @@ Develop
 npm run watch
 
 // run local web server
-node app.js
+npm start
+
 ```
 
 Visit [http://localhost:8080](http://localhost:8080)

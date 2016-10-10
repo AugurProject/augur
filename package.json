@@ -57,8 +57,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-ui-react-components": "^3.3.0",
-    "augur-ui-webserver": "1.1.0",
+    "augur-ui-react-components": "3.3.1",
     "augur.js": "2.9.13",
     "bignumber.js": "2.3.0",
     "express": "^4.14.0",
@@ -67,8 +66,11 @@
     "prerender-node": "^2.4.0",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
+    "secure-random": "1.1.1",
+    "express": "^4.14.0",
+    "helmet": "^2.3.0",
+    "prerender-node": "^2.4.0",
     "rimraf": "2.5.4",
-    "secure-random": "1.1.1"
   },
   "devDependencies": {
     "babel-eslint": "6.1.2",
