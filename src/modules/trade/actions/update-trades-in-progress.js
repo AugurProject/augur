@@ -58,18 +58,20 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
+		const bignumShares = abi.bignum(numShares);
+		const bignumLimit = abi.bignum(limitPrice);
 		// clean num shares
-		const cleanNumShares = numShares && abi.bignum(numShares).toFixed() === 0 ? 0 : numShares && abi.bignum(numShares).abs().toFixed() || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = numShares && bignumShares.toFixed() === 0 ? 0 : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || 0;
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = limitPrice && abi.bignum(limitPrice).toFixed() === 0 ? 0 : limitPrice && abi.bignum(limitPrice).toFixed() || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === 0 ? 0 : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
 		}
 		// if this isn't a scalar market, limitPrice must be positive.
 		if (market.type !== SCALAR && limitPrice) {
-			cleanLimitPrice = abi.bignum(limitPrice).abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
+			cleanLimitPrice = bignumLimit.abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
 		}
 
 		const newTradeDetails = {
