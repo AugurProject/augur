@@ -212,12 +212,12 @@ export default class AuthForm extends Component {
 				/>
 				<Link
 					type="button"
-					className="button x-button"
+					className="button x-button unstyled"
 					title="Back to Markets Page"
 					href={p.closeLink.href}
 					onClick={p.closeLink.onClick}
 				>
-					&#xf057;
+					<i></i>
 				</Link>
 				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length.</p>
 			</form>
