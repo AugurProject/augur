@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-// import Link from '../../link/components/link'; // TODO -- will re-include once selector is fixed
+import Link from '../../link/components/link';
 
 const LoginMessagePage = p => (
 	<main className="page login-message">
@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
 			2/
 			3/
 			<br />
+			{p.marketsLink &&
+				<Link className="lets-do-this-button" {...p.marketsLink} >Let's do this!</Link>
+			}
 		</div>
 	</main>
 );
@@ -73,7 +76,3 @@ LoginMessagePage.propTypes = {
 };
 
 export default LoginMessagePage;
-
-/*
-<Link className="lets-do-this-button" {...p.siteHeader.marketsLink} >Let's do this!</Link>
-*/

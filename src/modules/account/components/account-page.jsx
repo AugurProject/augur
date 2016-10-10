@@ -62,7 +62,9 @@ export default class AccountPage extends Component {
 		return (
 			<main className="page account">
 				<section className="page-content">
-					<Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
+					{p.authLink &&
+						<Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
+					}
 					<div className="account-section">
 						<h2 className="heading">Credentials</h2>
 						<table className="account-info">

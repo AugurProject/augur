@@ -113,7 +113,10 @@ export default class Router extends Component {
 			break;
 
 		case LOGIN_MESSAGE:
-			node = <LoginMessagePage />;
+			node = (
+				<LoginMessagePage
+					marketsLink={(p.links && p.links.marketsLink) || null}
+				/>);
 			break;
 		default:
 			node = (
