@@ -237,8 +237,7 @@ export function assembleMarket(
 							zeroStyled: true
 						});
 					} else {
-						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(abi.bignum(2));
-
+						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2);
 						outcome.lastPricePercent = formatNumber(midPoint, {
 							decimals: 2,
 							decimalsRounded: 1,

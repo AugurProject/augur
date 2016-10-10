@@ -51,9 +51,9 @@ describe(`store.js`, () => {
 		assert.isObject(state.loginAccount, 'loginAccount is not an object');
 		assert.deepEqual(state.loginAccount, {}, 'loginAccount is not an empty object');
 
-		assert.isOk(state.activePage, 'activePage is not defined');
-		assert.isString(state.activePage, 'activePage is not a string');
-		assert.deepEqual(state.activePage, 'markets', 'activePage is not "markets"');
+		assert.isOk(state.activeView, 'activeView is not defined');
+		assert.isString(state.activeView, 'activeView is not a string');
+		assert.deepEqual(state.activeView, 'markets', 'activeView is not "markets"');
 
 		assert.isOk(state.marketsData, 'marketsData is not defined');
 		assert.isObject(state.marketsData, 'marketsData is not an object');
@@ -73,14 +73,12 @@ describe(`store.js`, () => {
 		assert.isString(state.keywords, 'keywords is not a string');
 		assert.deepEqual(state.keywords, '', 'keywords is not ""');
 
-		assert.isOk(state.selectedFilters, 'selectedFilters is not defined');
-		assert.isObject(state.selectedFilters, 'selectedFilters is not an object');
-		assert.isOk(state.selectedFilters.isOpen, 'selectedFilters.isOpen is not true');
-
-		assert.isOk(state.selectedSort, 'selectedSort is not defined');
-		assert.isObject(state.selectedSort, 'selectedSort is not an Object');
-		assert.isOk(state.selectedSort.isDesc, 'selectedSort.isDesc is not true');
-		assert.deepPropertyVal(state, 'selectedSort.prop', 'volume', 'selectedSort.prop equals volume');
+		assert.isOk(state.selectedFilterSort, 'selectedSort is not defined');
+		assert.isObject(state.selectedFilterSort, 'selectedSort is not an Object');
+		assert.isOk(state.selectedFilterSort.isDesc, 'selectedSort.isDesc is not true');
+		assert.deepPropertyVal(state, 'selectedFilterSort.type', 'open', `selectedFilterSort.type doesn't equal 'open'`);
+		assert.deepPropertyVal(state, 'selectedFilterSort.sort', 'volume', `sectectedFilterSort.sort doesn't equal 'volume'`)
+		assert.deepPropertyVal(state, 'selectedFilterSort.isDesc', true, `selectedFilterSort.isDesc doesn't equal 'true'`)
 
 		assert.isOk(state.tradesInProgress, 'tradesInProgress is not defined');
 		assert.isObject(state.tradesInProgress, 'tradesInProgress is not an object');
