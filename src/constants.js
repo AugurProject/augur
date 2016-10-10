@@ -19,6 +19,7 @@ module.exports = {
     PRECISION: {
         decimals: decimals.toNumber(),
         limit: ten.dividedBy(multiple),
+        zero: new BigNumber(1, 10).dividedBy(multiple),
         multiple: multiple
     },
     MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),

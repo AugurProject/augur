@@ -46,13 +46,16 @@ module.exports = function (p, cb) {
         if (marketInfo.numOutcomes !== numOutcomes) {
             return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
         }
+        var scalarMinMax;
         if (marketInfo.type === "scalar") {
             minValue = abi.bignum(marketInfo.events[0].minValue);
             maxValue = abi.bignum(marketInfo.events[0].maxValue);
+            scalarMinMax = {minValue: minValue, maxValue: maxValue};
         } else {
             minValue = new BigNumber(0);
             maxValue = new BigNumber(1);
         }
+
         var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
         if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
             return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
@@ -141,16 +144,12 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                if (marketInfo.type === "scalar") {
-                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
-                                } else {
-                                    buyPrice = buyPrice.toFixed();
-                                }
                                 self.buy({
                                     amount: amount.toFixed(),
                                     price: buyPrice,
                                     market: p.market,
                                     outcome: outcome,
+                                    scalarMinMax: scalarMinMax,
                                     onSent: function (res) {
                                         // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
                                     },
@@ -181,16 +180,12 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                if (marketInfo.type === "scalar") {
-                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
-                                } else {
-                                    sellPrice = sellPrice.toFixed();
-                                }
                                 self.sell({
                                     amount: amount.toFixed(),
                                     price: sellPrice,
                                     market: p.market,
                                     outcome: outcome,
+                                    scalarMinMax: scalarMinMax,
                                     onSent: function (res) {
                                         // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
                                     },

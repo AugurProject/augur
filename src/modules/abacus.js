@@ -20,6 +20,7 @@ BigNumber.config({
 
 var ONE = new BigNumber("1", 10);
 var ONE_POINT_FIVE = new BigNumber("1.5", 10);
+var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
 
 module.exports = {
 
@@ -29,8 +30,37 @@ module.exports = {
      * @param range BigNumber
      * @returns BigNumber
      */
+    calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
+        return tradingFee.times(4).times(price).times(
+            constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())
+        ).dividedBy(range.times(constants.ONE)).floor();
+    },
+
+    /**
+     * @param tradingfee BigNumber
+     * @param price BigNumber
+     * @param range BigNumber
+     * @returns BigNumber
+     */
     calculateAdjustedTradingFee: function (tradingFee, price, range) {
         return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
+    },
+
+    // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
+    // @returns {BigNumbers}
+    calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
+        var fxpAmount = abi.fix(amount);
+        var fxpPrice = abi.fix(price);
+        var percentFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
+        var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+        var fee = takerFee.times(percentFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
+        var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
+        return {
+            fee: abi.unfix(fee),
+            percentFee: abi.unfix(takerFee),
+            cost: abi.unfix(noFeeCost.plus(fee)),
+            cash: abi.unfix(noFeeCost.minus(fee))
+        };
     },
 
     // Calculates adjusted total trade cost at a specified price
@@ -81,11 +111,31 @@ module.exports = {
         ]);
     },
 
+    calculateFxpTradingFees: function (makerFee, takerFee) {
+        var fxpMakerFee = abi.fix(makerFee);
+        var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
+        var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
+        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
+
     calculateTradingFees: function (makerFee, takerFee) {
         var bnMakerFee = abi.bignum(makerFee);
         var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
+
+    calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+        var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
+        fxpTradingFee = abi.bignum(tradingFee);
+        fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+        makerFee = fxpTradingFee.times(fxpMakerProportionOfFee).dividedBy(constants.ONE).floor();
+        takerFee = ONE_POINT_FIVE.times(fxpTradingFee).dividedBy(constants.ONE).floor().minus(makerFee);
+        return {
+            trading: fxpTradingFee,
+            maker: makerFee,
+            taker: takerFee
+        };
     },
 
     // expects fixed-point inputs if !isUnfixed
@@ -263,6 +313,12 @@ module.exports = {
         return price.plus(minValue).toFixed();
     },
 
+    adjustScalarSellPrice: function (maxValue, price) {
+        if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return maxValue.minus(price).toFixed();
+    },
+
     parseTradeInfo: function (trade) {
         var type, round, roundingMode;
         if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
@@ -284,7 +340,8 @@ module.exports = {
         }
 
         var amount = abi.unfix(trade[3]);
-        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
+        // if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
+        if (amount.lt(constants.PRECISION.zero)) return null;
         if (amount.lt(constants.PRECISION.limit)) {
             amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
         } else {
@@ -292,6 +349,7 @@ module.exports = {
         }
 
         var price = abi.unfix(trade[4]);
+        if (price.lt(constants.PRECISION.zero)) return null;
         if (price.lt(constants.PRECISION.limit)) {
             price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
         } else {

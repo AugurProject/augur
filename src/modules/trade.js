@@ -122,7 +122,7 @@ module.exports = {
                     if (self.options.debug.trading) console.log('commitTrade:', res);
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
-                        if (self.options.debug.trading) console.log('fastforward::', blockNumber);
+                        if (self.options.debug.trading) console.log('fastforward:', blockNumber);
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
@@ -169,7 +169,7 @@ module.exports = {
                                                     // sell (matched buy order)
                                                     // cash received = price per share * shares sold
                                                     } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[2])));
                                                     }
                                                 }
                                             }
@@ -279,7 +279,7 @@ module.exports = {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[0]).times(abi.unfix(logdata[1])));
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[1])));
                                                     tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }

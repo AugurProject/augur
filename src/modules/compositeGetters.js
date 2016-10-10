@@ -74,6 +74,9 @@ module.exports = {
             if (err) {
                 console.warn("cache node getMarketsInfo failed:", err);
 
+                // Abandon the use of cache nodes since there was a connection issue.
+                self.augurNode.nodes = [];
+
                 // fallback to loading in batches from chain
                 return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
             }
@@ -152,7 +155,9 @@ module.exports = {
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (order) {
-                if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
+                if (isScalar) {
+                    order.price = this.expandScalarPrice(minValue, order.price);
+                }
                 orderBook[order.type][order.id] = order;
             }
         }

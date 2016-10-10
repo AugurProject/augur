@@ -13,6 +13,9 @@ var constants = require("../constants");
 module.exports = {
 
     cancel: function (trade_id, onSent, onSuccess, onFailed, onConfirmed) {
+        if (this.options.debug.trading) {
+            console.log("cancel:", JSON.stringify(trade_id, null, 2));
+        }
         var self = this;
         if (trade_id.constructor === Object) {
             onSent = trade_id.onSent;
@@ -60,12 +63,15 @@ module.exports = {
             utils.compose(prepare, onConfirmed));
     },
 
-    buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+        if (this.options.debug.trading) {
+            console.log("buy:", JSON.stringify(amount, null, 2));
+        }
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
@@ -75,20 +81,26 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
+        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+        }
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        if (self.options.debug.trading) {
+        if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
-    sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+        if (this.options.debug.trading) {
+            console.log("sell:", JSON.stringify(amount, null, 2));
+        }
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
@@ -98,20 +110,26 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
+        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+        }
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        if (self.options.debug.trading) {
+        if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
-    shortAsk: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
+    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+        if (this.options.debug.trading) {
+            console.log("shortAsk:", JSON.stringify(amount, null, 2));
+        }
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
@@ -121,9 +139,12 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
+        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+        }
         var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        if (self.options.debug.trading) {
+        if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
