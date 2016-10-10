@@ -5,6 +5,7 @@ import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } 
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import AugurLogo from '../../common/components/augur-logo';
+import ValueDenomination from '../../common/components/value-denomination';
 
 export default class SiteHeader extends Component {
 	render() {
@@ -50,19 +51,26 @@ export default class SiteHeader extends Component {
 								{p.transactionsTotals.title}
 							</Link>
 						}
-						{(!!p.loginAccount && !!p.loginAccount.id) &&
+						{p.loginAccount.id &&
 							<Link
 								className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+								title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
 								{...p.accountLink}
 							>
-								Account
+								<ValueDenomination
+									{...p.loginAccount.rep || {}}
+									formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
+									formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
+								/>
+								<ValueDenomination
+									{...p.loginAccount.ether || {}}
+									formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
+									formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
+								/>
 							</Link>
 						}
-						{(!p.loginAccount || !p.loginAccount.id) &&
-							<Link
-								className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
-								{...p.authLink}
-							>
+						{!p.loginAccount.id &&
+							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
 								Sign Up / Login
 							</Link>
 						}
