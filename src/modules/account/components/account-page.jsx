@@ -9,7 +9,7 @@ export default class AccountPage extends Component {
 		// loginMessageLink: PropTypes.object.isRequired,
 		account: PropTypes.object,
 		// siteHeader: PropTypes.object
-		authLink: PropTypes.object
+		// authLink: PropTypes.object
 	};
 
 	constructor(props) {
