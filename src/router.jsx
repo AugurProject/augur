@@ -12,7 +12,7 @@ import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
@@ -22,7 +22,8 @@ export default class Router extends Component {
 		super(props);
 
 		this.state = {
-			pageMarginTop: 0
+			pageMarginTop: 0,
+			displaySideBar: false
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -49,6 +50,7 @@ export default class Router extends Component {
 
 	currentRoute() {
 		const p = this.props;
+		this.setState({ displaySideBar: false });
 
 		let node;
 
@@ -117,7 +119,9 @@ export default class Router extends Component {
 					marketsLink={(p.links && p.links.marketsLink) || null}
 				/>);
 			break;
-		default:
+		default: {
+			this.setState({ displaySideBar: true });
+
 			node = (
 				<MarketsView
 					loginAccount={p.loginAccount}
@@ -132,12 +136,15 @@ export default class Router extends Component {
 			);
 			break;
 		}
+		}
 
 		return node;
 	}
 
 	render() {
 		const p = this.props;
+		const s = this.state;
+
 		const currentRoute = this.currentRoute();
 
 		const pageContainerStyles = {
@@ -174,7 +181,7 @@ export default class Router extends Component {
 							className="view-container"
 							style={pageContainerStyles}
 						>
-							{p.activeView === MARKETS &&
+							{s.displaySideBar &&
 								<SideBar tags={p.tags} />
 							}
 							<main className="view-content-container">
