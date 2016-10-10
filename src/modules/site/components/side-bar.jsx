@@ -5,7 +5,7 @@ const SideBar = p => (
 	<div className="side-bar">
 		<h3>All Tags</h3>
 		<div className="tags">
-			{p.tags.length && p.tags.map(tag =>
+			{!!p.tags.length && p.tags.map(tag =>
 				<Checkbox
 					key={tag.value}
 					className="tag"

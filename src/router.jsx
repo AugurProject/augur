@@ -12,7 +12,7 @@ import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
@@ -23,19 +23,24 @@ export default class Router extends Component {
 
 		this.state = {
 			pageMarginTop: 0,
-			displaySideBar: false
+			isSideBarVisible: false
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
 		this.handleResize = this.handleResize.bind(this);
 		this.currentRoute = this.currentRoute.bind(this);
+		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
 	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.handleResize);
 
 		this.handleResize();
+	}
+
+	componentDidUpdate() {
+		this.shouldDisplaySideBar();
 	}
 
 	handleResize() {
@@ -48,9 +53,18 @@ export default class Router extends Component {
 		}
 	}
 
+	shouldDisplaySideBar() {
+		const currentRoute = this.currentRoute();
+
+		if (currentRoute.props.name === MARKETS) {
+			this.setState({ isSideBarVisible: true });
+		} else {
+			this.setState({ isSideBarVisible: false });
+		}
+	}
+
 	currentRoute() {
 		const p = this.props;
-		this.setState({ displaySideBar: false });
 
 		let node;
 
@@ -119,11 +133,10 @@ export default class Router extends Component {
 					marketsLink={(p.links && p.links.marketsLink) || null}
 				/>);
 			break;
-		default: {
-			this.setState({ displaySideBar: true });
-
+		default:
 			node = (
 				<MarketsView
+					name={MARKETS}
 					loginAccount={p.loginAccount}
 					createMarketLink={(p.links || {}).createMarketLink}
 					markets={p.markets}
@@ -135,7 +148,6 @@ export default class Router extends Component {
 				/>
 			);
 			break;
-		}
 		}
 
 		return node;
@@ -181,7 +193,7 @@ export default class Router extends Component {
 							className="view-container"
 							style={pageContainerStyles}
 						>
-							{s.displaySideBar &&
+							{s.isSideBarVisible &&
 								<SideBar tags={p.tags} />
 							}
 							<main className="view-content-container">
