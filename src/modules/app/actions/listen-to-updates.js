@@ -8,11 +8,14 @@ import { loadAccountTrades } from '../../my-positions/actions/load-account-trade
 
 export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
+		console.log('refreshMarket', marketID);
 		if (getState().marketsData[marketID]) {
-			dispatch(loadBidsAsks(marketID));
-			if (getState().loginAccount.id) {
-				dispatch(loadAccountTrades(marketID));
-			}
+			dispatch(loadMarketsInfo([marketID], () => {
+				dispatch(loadBidsAsks(marketID));
+				if (getState().loginAccount.id) {
+					dispatch(loadAccountTrades(marketID));
+				}
+			}));
 		}
 	};
 }
@@ -38,7 +41,7 @@ export function listenToUpdates() {
 
 			// short sell filled
 			log_short_fill_tx: (msg) => {
-				console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
+				// console.debug('log_short_fill_tx:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(refreshMarket(msg.market));
@@ -56,7 +59,6 @@ export function listenToUpdates() {
 			// order removed from orderbook
 			log_cancel: (msg) => {
 				// console.debug('log_cancel:', JSON.stringify(msg, null, 2));
-				// exclude own? if (msg.sender !== getState().loginAccount.id)
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(loadBidsAsks(msg.market));
 				}

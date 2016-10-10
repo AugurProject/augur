@@ -203,7 +203,7 @@ export function assembleMarket(
 			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
-			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.limit.dividedBy(10));
+			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
 			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
 
 			market.report = {
@@ -237,8 +237,7 @@ export function assembleMarket(
 							zeroStyled: true
 						});
 					} else {
-						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(abi.bignum(2));
-
+						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2);
 						outcome.lastPricePercent = formatNumber(midPoint, {
 							decimals: 2,
 							decimalsRounded: 1,
@@ -253,7 +252,7 @@ export function assembleMarket(
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], marketNetEffectiveTrades, (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
+				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
 				outcome.orderBook = orderBook;
 				outcome.topBid = selectTopBid(orderBook, false);

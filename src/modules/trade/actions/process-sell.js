@@ -20,15 +20,17 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
 			}));
 		}
+		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `selling ${formatShares(numShares).full} for ${formatEtherEstimate(limitPrice).full} each`,
+			message: `selling ${formatShares(numShares).full} for ${formatEtherEstimate(avgPrice).full}/share`,
 			totalReturn: formatEtherEstimate(totalEthWithFee),
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
 		trade(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+			dispatch,
 			(res) => {
 				const update = { status: `${res.status} sell` };
 				if (res.hash) update.hash = res.hash;
@@ -38,7 +40,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				if (res.filledEth && res.remainingShares) {
 					const filledShares = abi.bignum(numShares).minus(res.remainingShares);
 					const pricePerShare = filledShares.dividedBy(res.filledEth);
-					update.message = `sold ${formatShares(filledShares).formatted} of ${formatShares(numShares).full} for ${formatEther(pricePerShare).full} each`;
+					update.message = `sold ${formatShares(filledShares).formatted} of ${formatShares(numShares).full} for ${formatEther(pricePerShare).full}/share`;
 					update.totalReturn = formatEther(res.filledEth);
 				}
 				dispatch(updateExistingTransaction(transactionID, update));
@@ -52,29 +54,37 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					}));
 				}
 				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
-				const pricePerShare = filledShares.dividedBy(res.filledEth);
+				const pricePerShare = res.filledEth.dividedBy(filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'updating position',
-					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full}/share`,
 					totalReturn: formatEther(res.filledEth),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-				if (res.remainingShares > 0) {
+				if (res.remainingShares.gt(constants.PRECISION.zero)) {
+					console.debug('-- SELL COMPLETE, SHARES REMAINING --');
 					augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+						console.log('sharesPurchased:', sharesPurchased);
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
-						if (position.gt(constants.PRECISION.limit.dividedBy(10))) {
+						console.log('position:', position.toFixed());
+						console.log('transactionData:', transactionData);
+						console.log('remainingShares:', remainingShares.toFixed());
+						if (position.gt(constants.PRECISION.zero)) {
+							console.log('position > 0, creating ask...');
 							let askShares;
 							let shortAskShares;
 							if (position.gt(remainingShares)) {
 								askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 								shortAskShares = 0;
 							} else {
-								askShares = position.toNumber();
-								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toNumber();
+								askShares = position.toFixed();
+								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
 							}
+							console.log('askShares:', askShares);
+							console.log('shortAskShares:', shortAskShares);
 							dispatch(addAskTransaction(
 								transactionData.data.marketID,
 								transactionData.data.outcomeID,
@@ -86,7 +96,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								tradingFeesEth,
 								transactionData.feePercent.value,
 								gasFeesRealEth));
-							if (shortAskShares > 0) {
+							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
 								dispatch(addShortAskTransaction(
 									transactionData.data.marketID,
 									transactionData.data.outcomeID,
@@ -100,9 +110,14 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									gasFeesRealEth));
 							}
 						} else {
-							dispatch(loadBidsAsks(marketID, (updatedOrderBook) => {
+							console.log('no position, creating short sell...');
+							dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
+								if (err) console.error('loadBidsAsks:', err);
+								console.log('bids/asks loaded:', updatedOrderBook);
 								const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.id);
+								console.log('trade IDs:', tradeIDs);
 								if (tradeIDs && tradeIDs.length) {
+									console.log('short selling...');
 									dispatch(updateTradeCommitLock(true));
 									dispatch(addShortSellTransaction(
 										transactionData.data.marketID,
@@ -116,6 +131,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										transactionData.feePercent.value,
 										gasFeesRealEth));
 								} else {
+									console.log('short asking...');
 									dispatch(addShortAskTransaction(
 										transactionData.data.marketID,
 										transactionData.data.outcomeID,

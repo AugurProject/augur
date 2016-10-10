@@ -1,5 +1,5 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
-import { abi } from '../../../services/augurjs';
+import { abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
@@ -18,9 +18,10 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			}));
 		}
 		let filledEth = ZERO;
+		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
-			message: `short selling ${formatShares(numShares).full} for ${formatEther(limitPrice).full} each`,
+			message: `short selling ${formatShares(numShares).full} for ${formatEther(avgPrice).full}/share`,
 			totalCost: formatEtherEstimate(totalEthWithFee),
 			tradingFees: formatEtherEstimate(tradingFeesEth),
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
@@ -44,25 +45,26 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 					}));
 				}
 				filledEth = filledEth.plus(res.filledEth);
-				const filledShares = abi.bignum(numShares).minus(abi.bignum(res.remainingShares));
-				const totalEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
+				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
+				const actualEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
+				const pricePerShare = filledEth.dividedBy(filledShares);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: 'updating position',
-					message: `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full}`,
-					totalCost: formatEther(totalEthWithFee),
+					message: `short sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
+					totalCost: formatEther(actualEthWithFee),
 					tradingFees: formatEther(res.tradingFees),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-				if (res.remainingShares > 0) {
+				if (res.remainingShares.gt(constants.PRECISION.zero)) {
 					const transactionData = getState().transactionsData[transactionID];
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
-						res.remainingShares,
+						res.remainingShares.toFixed(),
 						limitPrice,
-						totalEthWithFee,
+						actualEthWithFee,
 						tradingFeesEth,
 						transactionData.feePercent.value,
 						gasFeesRealEth));

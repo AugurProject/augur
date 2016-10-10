@@ -9,12 +9,14 @@ export default function () {
 	return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, netEffectiveTrades, outcomeAccountTrades, lastPrice) => {
-	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition && !netEffectiveTrades) {
+export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice) => {
+	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
 		return null;
 	}
-	const { position, realized, unrealized, weightedPrice } = augur.calculateProfitLoss(outcomeAccountTrades, lastPrice, adjustedPosition, netEffectiveTrades);
-	return generatePositionsSummary(1, position, weightedPrice, realized, unrealized);
+	const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
+	trades.reverse();
+	const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
+	return generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized);
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
@@ -27,7 +29,7 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 	const positionOutcomes = [];
 	markets.forEach(market => {
 		market.outcomes.forEach(outcome => {
-			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
+			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || !outcome.position.qtyShares || !outcome.position.qtyShares.value) {
 				return;
 			}
 			qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));

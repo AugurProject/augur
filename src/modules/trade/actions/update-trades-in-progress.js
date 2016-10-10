@@ -100,7 +100,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					market && market.takerFee || 0,
 					market && market.makerFee || 0,
 					loginAccount.id,
-					position && position.toNumber(),
+					position && position.toFixed(),
 					outcomeID,
 					market.cumulativeScale,
 					orderBooks && orderBooks[marketID] || {});

@@ -6,10 +6,10 @@ export default function () {
 	const { selectedTags } = store.getState();
 	const { filteredMarkets } = require('../../../selectors');
 
-	return selectFilters(filteredMarkets, selectedTags, store.dispatch);
+	return selectTags(filteredMarkets, selectedTags, store.dispatch);
 }
 
-export const selectFilters = memoizerific(1)((markets, selectedTags, dispatch) => {
+export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
 	const tagCounts = {};
 
 	// count matches for each filter and tag
@@ -27,31 +27,20 @@ export const selectFilters = memoizerific(1)((markets, selectedTags, dispatch) =
 		}
 	});
 
-	const filters = [];
-
-	const tagOptions =
-		Object.keys(tagCounts)
-			.filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
-			.sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
-			.slice(0, 50)
-			.map(tag => {
-				const obj = {
-					name: tag,
-					value: tag,
-					numMatched: tagCounts[tag],
-					isSelected: !!selectedTags[tag],
-					onClick: () => dispatch(toggleTag(tag))
-				};
-				return obj;
-			});
-
-	if (tagOptions.length) {
-		filters.push({
-			title: 'Tags',
-			className: 'tags',
-			options: tagOptions
+	const tags = Object.keys(tagCounts)
+		.filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
+		.sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
+		.slice(0, 50)
+		.map(tag => {
+			const obj = {
+				name: tag,
+				value: tag,
+				numMatched: tagCounts[tag],
+				isSelected: !!selectedTags[tag],
+				onClick: () => dispatch(toggleTag(tag))
+			};
+			return obj;
 		});
-	}
 
-	return filters;
+	return tags;
 });

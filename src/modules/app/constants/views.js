@@ -7,7 +7,8 @@ export const TRANSACTIONS = 'transactions';
 export const M = 'm';
 export const ACCOUNT = 'account';
 export const LOGIN_MESSAGE = 'login-message';
-export const DEFAULT_PAGE = MARKETS;
 export const REGISTER = 'register';
 export const LOGIN = 'login';
 export const IMPORT = 'import';
+
+export const DEFAULT_VIEW = MARKETS;

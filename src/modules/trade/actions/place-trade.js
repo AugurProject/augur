@@ -17,17 +17,16 @@ export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
-		console.log('market trade in progress:', marketTradeInProgress);
 		const market = selectMarket(marketID);
 		if (!marketTradeInProgress || !market) {
 			return;
 		}
 		async.forEachOf(marketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
-			console.log('outcomeTradeInProgress', outcomeID, outcomeTradeInProgress);
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
 				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
 			}
-			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
+			console.log('outcomeTradeInProgress:', outcomeTradeInProgress);
+			const totalCost = abi.bignum(outcomeTradeInProgress.totalCost).abs().toFixed();
 			if (outcomeTradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 				if (tradeIDs && tradeIDs.length) {
@@ -71,8 +70,7 @@ export function placeTrade(marketID) {
 					}
 					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
-					console.log('outcome trade in progress:', outcomeID, outcomeTradeInProgress);
-					if (position && position.gt(constants.PRECISION.limit.dividedBy(10))) {
+					if (position && position.gt(constants.PRECISION.zero)) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));
 							dispatch(addTradeTransaction(
@@ -94,10 +92,10 @@ export function placeTrade(marketID) {
 							const numShares = abi.bignum(outcomeTradeInProgress.numShares);
 							if (position.gt(numShares)) {
 								askShares = outcomeTradeInProgress.numShares;
-								shortAskShares = 0;
+								shortAskShares = '0';
 							} else {
-								askShares = position.toNumber();
-								shortAskShares = numShares.minus(position).toNumber();
+								askShares = position.toFixed();
+								shortAskShares = numShares.minus(position).toFixed();
 							}
 							dispatch(addAskTransaction(
 								marketID,
@@ -110,7 +108,7 @@ export function placeTrade(marketID) {
 								outcomeTradeInProgress.tradingFeesEth,
 								outcomeTradeInProgress.feePercent,
 								outcomeTradeInProgress.gasFeesRealEth));
-							if (shortAskShares > 0) {
+							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
 								dispatch(addShortAskTransaction(
 									marketID,
 									outcomeID,

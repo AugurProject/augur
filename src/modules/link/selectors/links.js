@@ -3,10 +3,10 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/views';
 
-import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
-import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
+import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME } from '../../link/constants/param-names';
+import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
 
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
@@ -18,12 +18,12 @@ import updateUserLoginMessageVersionRead from '../../login-message/actions/updat
 import store from '../../../store';
 
 export default function () {
-	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
+	const { keywords, selectedFilterSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
 	const { market } = require('../../../selectors');
 	return {
 		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
-		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort, selectedTags, pagination.selectedPageNum, store.dispatch),
+		marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
 		previousLink: selectPreviousLink(store.dispatch),
@@ -82,6 +82,7 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	};
 });
 
+
 export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	onClick: () => {
 		require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
@@ -94,8 +95,7 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	}
 }));
 
-
-export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, selectedSort, selectedTags, selectedPageNum, dispatch) => {
+export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, dispatch) => {
 	const params = {};
 
 	// search
@@ -103,20 +103,20 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 		params[SEARCH_PARAM_NAME] = keywords;
 	}
 
-	// sort
-	if (selectedSort.prop !== DEFAULT_SORT_PROP || selectedSort.isDesc !== DEFAULT_IS_SORT_DESC) {
-		params[SORT_PARAM_NAME] = `${selectedSort.prop}|${selectedSort.isDesc}`;
+	// filter + sort
+	if (selectedFilterSort.type !== FILTER_SORT_TYPE) {
+		params[FILTER_SORT_TYPE_PARAM_NAME] = `${selectedFilterSort.type}`;
+	}
+	if (selectedFilterSort.sort !== FILTER_SORT_SORT) {
+		params[FILTER_SORT_SORT_PARAM_NAME] = `${selectedFilterSort.sort}`;
+	}
+	if (selectedFilterSort.isDesc !== FILTER_SORT_ISDESC) {
+		params[FILTER_SORT_ISDESC_PARAM_NAME] = `${selectedFilterSort.isDesc}`;
 	}
 
 	// pagination
 	if (selectedPageNum > 1) {
 		params[PAGE_PARAM_NAME] = selectedPageNum;
-	}
-
-	// status and type filters
-	const filtersParams = Object.keys(selectedFilters).filter(filter => !!selectedFilters[filter]).join(',');
-	if (filtersParams.length) {
-		params[FILTERS_PARAM_NAME] = filtersParams;
 	}
 
 	// tags

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { UPDATE_URL } from '../../../src/modules/link/actions/update-url';
-import reducer from '../../../src/modules/app/reducers/active-page';
+import reducer from '../../../src/modules/app/reducers/active-view';
 import testState from '../../testState';
 
 describe(`modules/app/reducers/active-page.js`, () => {

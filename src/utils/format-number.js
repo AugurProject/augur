@@ -237,7 +237,9 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 		o.minimized = '0';
 	} else {
 		o.value = value.toNumber();
-		if (value.abs().lt(constants.PRECISION.limit)) {
+		if (value.abs().lt(constants.PRECISION.zero)) {
+			o.formattedValue = '0';
+		} else if (value.abs().lt(constants.PRECISION.limit)) {
 			if (!decimals) {
 				o.formattedValue = '0';
 			} else {
