@@ -1,9 +1,8 @@
 import React from 'react';
-import classnames from 'classnames';
 import Transaction from './transaction';
 
-const Transactions = (p) => (
-	<section className={classnames(p.className)}>
+const Transactions = p => (
+	<section className={p.className}>
 		<div className="transactions-container">
 			{(p.transactions || []).map((transaction, i) =>
 				<Transaction
@@ -15,14 +14,14 @@ const Transactions = (p) => (
 		</div>
 		{!!p.transactions.length &&
 			<span className="feel-free">
-				continue trading while transactions are running, just don't close the browser before they're done!
+				{"continue trading while transactions are running, just don't close the browser before they're done!"}
 			</span>
 		}
 	</section>
 );
 
-Transactions.propTypes = {
-	className: React.PropTypes.string,
-	transactions: React.PropTypes.array
-};
+// TODO -- prop validations
+// Transactions.propTypes = {
+// 	transactions: React.PropTypes.array
+// };
 export default Transactions;

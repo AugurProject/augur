@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import ReportForm from '../../reports/components/report-form';
 
-const ReportPanel = (p) => (
+const ReportPanel = p => (
 	<section className={classnames('report-panel', p.className)}>
 		<span className="num-total-reports">{p.numPendingReports}</span>
 		<ReportForm

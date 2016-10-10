@@ -7,7 +7,7 @@ const Shared = {
 	bottomLinkText: 'Import Existing Account',
 	bottomLink: { href: '/import', onClick: () => require('../selectors').update({ authForm: importAccount }) },
 	msgClass: 'success',
-	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
+	closeLink: { href: '/', onClick: () => require('../selectors').update({ activeView: 'markets' }) }
 };
 
 const loginParts = {
@@ -74,15 +74,22 @@ const importAccount = {
 		}
 	},
 	onSubmit: (name, password, password2, secureLoginID, rememberMe, importAccount) => {
-		require('../selectors').update({ authForm: { ...signUp, clearName: true,
-		clearPassword: true } });
+		require('../selectors').update({
+			authForm: {
+				...signUp,
+				clearName: true,
+				clearPassword: true
+			}
+		});
+
 		loginAccount.signIn();
-		require('../selectors').update({ activePage: 'account' });
+		require('../selectors').update({ activeView: 'account' });
 	}
 };
 
 const accountCreated = {
 	...signUp,
+	isVisibleName: false,
 	isVisibleID: true,
 	submitButtonText: 'Sign In',
 	isVisibleRememberMe: true,
@@ -107,9 +114,10 @@ function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, im
 				...signUp,
 			}
 		});
+
 		links.marketsLink.onClick('/');
 	} else {
-		cb(require('../selectors').loginAccount);
+		cb(loginAccount);
 	}
 	return false;
 }

@@ -1,8 +1,8 @@
-import activePage from './selectors/active-page';
+import activeView from './selectors/active-view';
 import authForm from './selectors/auth-form';
 import orderCancellation from './selectors/order-cancellation';
 import createMarketForm from './selectors/create-market-form';
-import filters from './selectors/filters';
+import tags from './selectors/tags';
 import keywords from './selectors/keywords';
 import links from './selectors/links';
 import loginAccount from './selectors/login-account';
@@ -11,7 +11,6 @@ import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import marketDataUpdater from './selectors/market-data-updater';
 import marketDataAge from './selectors/market-data-age';
-
 import isTransactionsWorking from './selectors/is-transactions-working';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
@@ -26,14 +25,17 @@ import myReports from './selectors/my-reports';
 import tradeCommitLock from './selectors/trade-commit-lock';
 import positionsMarkets from './selectors/positions-markets';
 import myMarkets from './selectors/my-markets';
+import filterSort from './selectors/filter-sort';
+import pagination from './selectors/pagination';
+import selectedOutcome from './selectors/selected-outcome';
 
 // all selectors should go here
 const selectors = {
-	activePage,
+	activeView,
 	authForm,
 	orderCancellation,
 	createMarketForm,
-	filters,
+	tags,
 	keywords,
 	links,
 	loginAccount,
@@ -57,7 +59,10 @@ const selectors = {
 	// TODO -- may be an improvement available for how the tests run such that this wouldn't be necessary
 	myReports,
 	myMarkets,
-	positionsMarkets
+	positionsMarkets,
+	filterSort,
+	pagination,
+	selectedOutcome
 };
 
 // add update helper fn to selectors object
@@ -67,69 +72,12 @@ Object.defineProperty(selectors, 'update', {
 			console.log('*** update', newState);
 		}
 
-		Object.keys(newState).forEach(key => {
+		Object.keys(newState).forEach((key) => {
 			selectors[key] = newState[key];
 		});
 		selectors.render();
 	},
 	enumerable: false
 });
-
-selectors.searchSort = {
-	selectedSort: { prop: 'creationDate', isDesc: true },
-	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Highest Maker Fee', value: 'makerFeePercent' }]
-};
-
-selectors.marketsHeader = {};
-
-selectors.selectedOutcome = {
-	updateSelectedOutcome: (selectedOutcomeID) => {
-		module.exports.update({
-			selectedOutcome: {
-				...selectors.selectedOutcome,
-				selectedOutcomeID
-			}
-		});
-	},
-	selectedOutcomeID: null
-};
-
-selectors.searchSort.onChangeSort = (prop, isDesc) => {
-	let isDescending = isDesc;
-	if (isDesc !== false && isDesc !== true) {
-		isDescending = selectors.searchSort.selectedSort.isDesc;
-	}
-	module.exports.update({
-		searchSort: {
-			...selectors.searchSort,
-			selectedSort: {
-				prop: prop || selectors.selectedSort.prop,
-				isDesc: isDescending
-			}
-		}
-	});
-};
-selectors.pagination = {
-	numPerPage: 10,
-	numPages: 10,
-	selectedPageNum: 1,
-	nextPageNum: 2,
-	startItemNum: 1,
-	endItemNum: 10,
-	numUnpaginated: 89,
-	nextItemNum: 11,
-	onUpdateSelectedPageNum: (selectedPageNum) => module.exports.update({
-		pagination: {
-			...selectors.pagination,
-			selectedPageNum,
-			nextPageNum: selectedPageNum + 1,
-			previousPageNum: selectedPageNum - 1,
-			startItemNum: ((selectedPageNum - 1) * 10) + 1,
-			endItemNum: selectedPageNum * 10,
-			nextItemNum: selectedPageNum * 10 + 1,
-			previousItemNum: ((selectedPageNum - 2) * 10) + 1
-		}
-	})
-};
 
 module.exports = selectors;

@@ -1,9 +1,9 @@
-import React, { PropTypes } from 'react';
-import MarketItem from '../../market/components/market-item';
+import React from 'react';
+import MarketItem from '../../market/components/market-preview';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const CreateMarketForm5 = (p) => (
+const CreateMarketForm5 = p => (
 	<div className="step-5">
 		<h1>Review and submit your new market</h1>
 		<MarketItem {...p} />
@@ -21,11 +21,12 @@ const CreateMarketForm5 = (p) => (
 	</div>
 );
 
-CreateMarketForm5.propTypes = {
-	marketCreationFee: PropTypes.object,
-	gasCost: PropTypes.object,
-	eventBond: PropTypes.object,
-	onSubmit: PropTypes.func
-};
+// TOOD -- Prop Validations
+// CreateMarketForm5.propTypes = {
+// 	marketCreationFee: PropTypes.object,
+// 	gasCost: PropTypes.object,
+// 	eventBond: PropTypes.object,
+// 	onSubmit: PropTypes.func
+// };
 
 export default CreateMarketForm5;

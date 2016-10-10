@@ -167,7 +167,7 @@ export default class AuthForm extends Component {
 					placeholder="Login ID"
 					autoFocus="autofocus"
 					autoComplete
-					onChange={(loginID) => this.setState({ loginID })}
+					onChange={loginID => this.setState({ loginID })}
 					required={p.isVisibleID}
 				/>
 				<input

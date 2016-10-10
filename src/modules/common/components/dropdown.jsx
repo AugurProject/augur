@@ -1,24 +1,29 @@
-import React, { PropTypes } from 'react';
-import classnames from 'classnames';
+import React from 'react';
 
-const Dropdown = (p) => (
-	<span className={classnames('dropdown', p.className)}>
-		{!!p.selected &&
-			<span className={classnames('selected', p.selected.value)}>{p.selected.label}</span>
-		}
-		<ul className="options">
-			{p.options.filter(option => !p.selected || option.value !== p.selected.value).map(option => (
-				<li key={option.value} className={classnames('option', option.value)} onClick={() => p.onChange(option.value)}>{option.label}</li>
+const Dropdown = p => (
+	<div className="dropdown">
+		<select
+			onChange={(event) => { p.onChange(event.target.value); }}
+			defaultValue={p.default}
+		>
+			{p.options.map(option => (
+				<option
+					key={option.value}
+					value={option.value}
+				>
+					{option.label}
+				</option>
 			))}
-		</ul>
-	</span>
+		</select>
+		<i className="fa"></i>
+	</div>
 );
 
-Dropdown.propTypes = {
-	className: PropTypes.string,
-	selected: PropTypes.object,
-	options: PropTypes.array,
-	onChange: PropTypes.func
-};
+// TODO -- Prop Validations
+// Dropdown.propTypes = {
+// 	default: PropTypes.string,
+// 	options: PropTypes.array,
+// 	onChange: PropTypes.func
+// };
 
 export default Dropdown;

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-const CreateMarketFormButtons = (p) => (
+const CreateMarketFormButtons = p => (
 	<div className="buttons">
 		<button
 			className="button prev"

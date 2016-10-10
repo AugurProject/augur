@@ -1,14 +1,14 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import ValueDate from '../../../modules/common/components/value-date';
 
-const Report = (p) => (
+const Report = p => (
 	<div className="portfolio-row">
 		<div className="portfolio-group portfolio-main-group">
 			<div className="portfolio-pair">
 				<span className="report-main-group-title">outcome: </span>
 				<span className="report-main-group-title-outcome">
-					{!!p.outcome ?
+					{p.outcome ?
 						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span> :
 						'-'
 					}
@@ -58,13 +58,14 @@ const Report = (p) => (
 	</div>
 );
 
-Report.propTypes = {
-	outcome: PropTypes.string,
-	reported: PropTypes.string,
-	isReportEqual: PropTypes.bool.isRequired,
-	feesEarned: PropTypes.object.isRequired,
-	repEarned: PropTypes.object.isRequired,
-	endDate: PropTypes.object.isRequired
-};
+// TODO -- Prop Validations
+// Report.propTypes = {
+// 	outcome: PropTypes.string,
+// 	reported: PropTypes.string,
+// 	isReportEqual: PropTypes.bool.isRequired,
+// 	feesEarned: PropTypes.object.isRequired,
+// 	repEarned: PropTypes.object.isRequired,
+// 	endDate: PropTypes.object.isRequired
+// };
 
 export default Report;

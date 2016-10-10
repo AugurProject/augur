@@ -1,6 +1,6 @@
 import React from 'react';
-import Link from '../../link/components/link';
 import classnames from 'classnames';
+import Link from '../../link/components/link';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import { SCALAR } from '../../markets/constants/market-types';
@@ -13,7 +13,9 @@ const Transaction = (p) => {
 	const nodes = {};
 
 	const marketDescription = () => {
-		const description = () => <span className="market-description" title={p.data.description || p.data.marketDescription}>{p.data.description ? p.data.description.substring(0, 100) + (p.data.description.length > 100 && '...' || '') : p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}</span>;
+		const description = () => <span className="market-description" title={p.data.description || p.data.marketDescription}>
+			{p.data.description ? p.data.description.substring(0, 100) + ((p.data.description.length > 100 && '...') || '') : p.data.marketDescription.substring(0, 100) + ((p.data.marketDescription.length > 100 && '...') || '')}
+		</span>;
 
 		if ((p.data.description || p.data.marketDescription) && p.data.marketLink) {
 			return (
@@ -62,7 +64,7 @@ const Transaction = (p) => {
 				<ValueDenomination className="shares" {...p.numShares} />
 				{p.data.marketType !== SCALAR &&
 					<span>
-						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + (p.data.outcomeName.toString().length > 35 && '...' || '')}</span>
+						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
 					</span>
 				}
 				<span className="at">@</span>
@@ -163,7 +165,7 @@ const Transaction = (p) => {
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
-					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</strong>
+					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</strong>
 					{!!p.data.isUnethical &&
 						<strong className="unethical"> and Unethical</strong>
 					}
@@ -199,7 +201,7 @@ const Transaction = (p) => {
 				<span className="at">to {p.data.order.type}</span>
 				<ValueDenomination className="shares" {...p.data.order.shares} />
 				<span className="of">of</span>
-				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
+				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
 				<br />
 				{marketDescription()}
 				<br />
@@ -239,7 +241,7 @@ const Transaction = (p) => {
 			</span>
 
 			{p.status && p.hash ?
-				<Link href={`https://morden.ether.camp/transaction/${p.hash}`} target="_blank">
+				<Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
 					<div className="status-and-message">
 						<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
 						<br />

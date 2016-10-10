@@ -2,7 +2,7 @@ import React from 'react';
 import Position from './my-position';
 import Link from '../../link/components/link';
 
-const Positions = (p) => (
+const Positions = p => (
 	<section className="positions-list">
 		{p.marketLink &&
 			<Link key={p.market.id} href={p.marketLink.href} onClick={p.marketLink.onClick} >
@@ -44,9 +44,11 @@ const Positions = (p) => (
 	</section>
 );
 
-Positions.propTypes = {
-	className: React.PropTypes.string,
-	market: React.PropTypes.object,
-	marketLink: React.PropTypes.object
-};
+// TODO -- Prop Validations
+// Positions.propTypes = {
+// 	className: React.PropTypes.string,
+// 	market: React.PropTypes.object,
+// 	marketLink: React.PropTypes.object
+// };
+
 export default Positions;

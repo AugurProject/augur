@@ -1,10 +1,10 @@
 import App from './app';
-import * as PAGES from './modules/site/constants/pages';
+import * as VIEWS from './modules/site/constants/views';
 import * as AUTH_TYPES from './modules/auth/constants/auth-types';
 import * as TRANSACTION_TYPES from './modules/transactions/constants/types';
 
 const constants = {
-	PAGES,
+	VIEWS,
 	AUTH_TYPES,
 	TRANSACTION_TYPES
 };

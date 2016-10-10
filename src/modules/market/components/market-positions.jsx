@@ -1,12 +1,13 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import Positions from '../../../modules/my-positions/components/my-positions';
 import PositionsSummary from '../../../modules/my-positions/components/my-positions-summary';
 
 export default class MarketPositions extends Component {
-	static propTypes = {
-		market: PropTypes.object
-	};
+	// TODO -- Prop Validations
+	// static propTypes = {
+	// 	market: PropTypes.object
+	// };
 
 	constructor(props) {
 		super(props);

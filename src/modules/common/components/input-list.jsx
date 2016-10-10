@@ -3,13 +3,14 @@ import classnames from 'classnames';
 import Input from '../../common/components/input';
 
 export default class InputList extends Component {
+	// TODO -- Prop Validations
 	static propTypes = {
-		className: PropTypes.string,
+		// className: PropTypes.string,
 		list: PropTypes.array,
-		errors: PropTypes.array,
+		// errors: PropTypes.array,
 		listMinElements: PropTypes.number,
-		listMaxElements: PropTypes.number,
-		itemMaxLength: PropTypes.number,
+		// listMaxElements: PropTypes.number,
+		// itemMaxLength: PropTypes.number,
 		onChange: PropTypes.func
 	};
 
@@ -35,7 +36,7 @@ export default class InputList extends Component {
 			clearTimeout(this.state.timeoutID);
 		}
 		this.setState({ timeoutID: setTimeout(() => this.props.onChange(newList), 750), list: newList });
-	}
+	};
 
 	fillMinElements = (list = [], minElements) => {
 		let len;
@@ -49,7 +50,7 @@ export default class InputList extends Component {
 			}
 		}
 		return newList;
-	}
+	};
 
 	render() {
 		const p = this.props;
@@ -63,19 +64,19 @@ export default class InputList extends Component {
 
 		return (
 			<div className={classnames('input-list', p.className)}>
-			{list.map((item, i) =>
-				(<div key={i} className={classnames('item', { 'new-item': i === list.length - 1 && (!item || !item.length) })}>
-					<Input
-						type="text"
-						maxLength={p.itemMaxLength}
-						value={item}
-						onChange={(newValue) => this.handleChange(i, newValue)}
-					/>
-					{p.errors && p.errors[i] && p.errors[i].length &&
-						<span className="error-message">{p.errors[i]}</span>
-					}
-				</div>)
-			)}
+				{list.map((item, i) => (
+					<div key={i} className={classnames('item', { 'new-item': i === list.length - 1 && (!item || !item.length) })}>
+						<Input
+							type="text"
+							maxLength={p.itemMaxLength}
+							value={item}
+							onChange={newValue => this.handleChange(i, newValue)}
+						/>
+						{p.errors && p.errors[i] && p.errors[i].length &&
+							<span className="error-message">{p.errors[i]}</span>
+						}
+					</div>
+				))}
 			</div>
 		);
 	}

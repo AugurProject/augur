@@ -2,8 +2,8 @@ import React from 'react';
 import TradeBuilder from '../../../modules/trade/components/trade-builder';
 import TradeSummary from '../../../modules/trade/components/trade-summary';
 
-const TradePanel = (p) => (
-	<div className="trade-panel" onClick={() => p.selectedOutcome.updateSelectedOutcome(null)}>
+const TradePanel = p => (
+	<div className="trade-panel">
 		<TradeBuilder
 			outcomes={p.outcomes}
 			marketType={p.marketType}
@@ -19,7 +19,7 @@ const TradePanel = (p) => (
 			<button
 				className="button place-trade"
 				disabled={!(!!p.tradeSummary && !!p.tradeSummary.tradeOrders && !!p.tradeSummary.tradeOrders.length) || p.isTradeCommitLocked}
-				onClick={event => {
+				onClick={(event) => {
 					event.stopPropagation();
 					p.onSubmitPlaceTrade();
 				}}
@@ -30,14 +30,16 @@ const TradePanel = (p) => (
 	</div>
 );
 
-TradePanel.propTypes = {
-	isTradeCommitLocked: React.PropTypes.bool,
-	outcomes: React.PropTypes.array,
-	marketType: React.PropTypes.string,
-	selectedOutcome: React.PropTypes.object,
-	tradeSummary: React.PropTypes.object,
-	userOpenOrdersSummary: React.PropTypes.object,
-	onSubmitPlaceTrade: React.PropTypes.func
-};
+
+// TODO -- Prop Validations
+// TradePanel.propTypes = {
+// 	isTradeCommitLocked: React.PropTypes.bool,
+// 	outcomes: React.PropTypes.array,
+// 	marketType: React.PropTypes.string,
+// 	selectedOutcome: React.PropTypes.object,
+// 	tradeSummary: React.PropTypes.object,
+// 	userOpenOrdersSummary: React.PropTypes.object,
+// 	onSubmitPlaceTrade: React.PropTypes.func
+// };
 
 export default TradePanel;

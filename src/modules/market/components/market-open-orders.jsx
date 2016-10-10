@@ -3,7 +3,7 @@ import React from 'react';
 import OpenOrdersGroup from '../../open-orders/components/open-orders-group';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const OpenOrders = (p) => (
+const OpenOrders = p => (
 	<div className="market-open-orders">
 		<div className="market-section-header">
 			<ValueDenomination {...p.userOpenOrdersSummary.openOrdersCount} />
@@ -28,10 +28,11 @@ const OpenOrders = (p) => (
 	</div>
 );
 
-OpenOrders.propTypes = {
-	userOpenOrdersSummary: React.PropTypes.object,
-	outcomes: React.PropTypes.array,
-	orderCancellation: React.PropTypes.object.isRequired
-};
+// TODO -- Prop Validations
+// OpenOrders.propTypes = {
+// 	userOpenOrdersSummary: React.PropTypes.object,
+// 	outcomes: React.PropTypes.array,
+// 	orderCancellation: React.PropTypes.object.isRequired
+// };
 
 export default OpenOrders;

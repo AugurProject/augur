@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
@@ -32,7 +32,7 @@ const CreateMarketForm2 = (p) => {
 					value={p.description}
 					placeholder={p.descriptionPlaceholder}
 					maxLength={p.descriptionMaxLength}
-					onChange={(value) => p.onValuesUpdated({ description: value })}
+					onChange={value => p.onValuesUpdated({ description: value })}
 				/>
 				{p.errors.description &&
 					<span className="error-message">{p.errors.description}</span>
@@ -59,17 +59,18 @@ const CreateMarketForm2 = (p) => {
 	);
 };
 
-CreateMarketForm2.propTypes = {
-	type: PropTypes.string,
-	description: PropTypes.string,
-	endDate: PropTypes.object,
-	descriptionPlaceholder: PropTypes.string,
-	descriptionMaxLength: PropTypes.number,
-	minEndDate: PropTypes.object,
-	isValid: PropTypes.bool,
-	errors: PropTypes.object,
-	onValuesUpdated: PropTypes.func
-};
+// TODO -- Prop Validations
+// CreateMarketForm2.propTypes = {
+// 	type: PropTypes.string,
+// 	description: PropTypes.string,
+// 	endDate: PropTypes.object,
+// 	descriptionPlaceholder: PropTypes.string,
+// 	descriptionMaxLength: PropTypes.number,
+// 	minEndDate: PropTypes.object,
+// 	isValid: PropTypes.bool,
+// 	errors: PropTypes.object,
+// 	onValuesUpdated: PropTypes.func
+// };
 
 export default CreateMarketForm2;
 // 	expanded={true}
