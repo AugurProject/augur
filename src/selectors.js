@@ -28,6 +28,7 @@ import myMarkets from './selectors/my-markets';
 import filterSort from './selectors/filter-sort';
 import pagination from './selectors/pagination';
 import selectedOutcome from './selectors/selected-outcome';
+import marketsHeader from './selectors/markets-header';
 
 // all selectors should go here
 const selectors = {
@@ -62,7 +63,8 @@ const selectors = {
 	positionsMarkets,
 	filterSort,
 	pagination,
-	selectedOutcome
+	selectedOutcome,
+	marketsHeader
 };
 
 // add update helper fn to selectors object
