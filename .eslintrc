@@ -24,6 +24,8 @@
 		"max-len": 0,
 		"no-shadow": 0,
 		"padded-blocks": 0,
+		"react/no-string-refs": 0, // NOTE -- Temporarily disabled -- utilization of string refs should be refactored to utilize state
+		"react/no-unused-prop-types": 0, // NOTE -- Temporarily disabled -- all passed props should be specific, utilized, and verified
 		"react/forbid-prop-types": 0, // NOTE -- TODO: Temporarily disabled...all props need to be specific + valid + will remove the necessity for separate 'shape' tests once merged into Augur
 		// Errors
 		"eqeqeq": [2, "allow-null"],
