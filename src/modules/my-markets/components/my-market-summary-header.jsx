@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const MyMarketsSummary = (p) => (
+const MyMarketsSummary = p => (
 	<div className={p.className}>
 		<span>My Markets</span>
 		{!!p.fees &&

@@ -1,235 +1,260 @@
-.button,
-.button:visited {
-	background: @color-dark-active;
-	border: 0;
-	border-radius: 1px;
-	color: #ffffff;
-	display: inline-block;
-	font-family: 'Roboto', Arial, sans-serif;
-	font-size: 0.85rem;
-	height: 2.8em;
-	line-height: 2.8em;
-	margin: 0;
-	outline: 0;
-	padding: 0 1em;
-	text-transform: uppercase;
-	transition: background 0.3s ease;
-	white-space: nowrap;
+button,
+.button {
 
-	&:active,
-	&:focus {
-		background: @color-dark-active;
-		color: white;
-	}
+	.border();
+	.font-size-normal();
+	.font-weight-normal();
 
-	&:hover {
-		background: @color-dark-hover;
-		color: white;
-	}
+	background-color: @color-blue;
+	color: @color-text-light;
+	cursor: default;
+	padding: 1em 1.5em;
 
-	&[disabled] {
-		background: @color-dark-active !important;
-		color: @color-light-active !important;
-		cursor: default !important;
-		opacity: 0.3 !important;
-
-		&:hover,
-		&:focus,
-		&:active {
-			background: @color-dark-active !important;
-			color: @color-light-active !important;
-			cursor: default !important;
-			opacity: 0.3 !important;
-		}
-	}
-}
-
-.button.buy,
-.button.make,
-.button.select,
-.button.next {
-	background: @color-primary-active;
-	color: white;
-
-	&:hover {
-		background: @color-primary-hover;
-	}
-
-	&:focus,
-	&:active {
-		background: @color-primary-active;
-	}
-}
-
-.button.sell {
-	background: @color-danger-active;
-	color: white;
-
-	&:hover {
-		background: @color-danger-hover;
-	}
-
-	&:focus,
-	&:active {
-		background: @color-danger-active;
-	}
-}
-
-.chart-button {
-	font-family: 'Font Awesome';
-	font-size: 1rem;
-}
-
-.x-button,
-.x-button:visited {
-	background: transparent;
-	color: @color-dark-active;
-	font-family: 'Font Awesome';
-	font-size: 2.7rem;
-	height: unset;
-	line-height: unset;
-	padding: 0;
-	text-align: center;
-	width: unset;
-
-	&:hover,
-	&:focus,
-	&:active {
-		background: transparent;
-		color: @color-dark-hover;
-	}
-}
-
-.favorite-button {
-	background: transparent;
-	border: 0;
-	color: #bbbbcc;
-	font-family: 'Font Awesome';
-	font-size: 1.5rem;
-	height: 1em;
-	line-height: unset;
-	outline: 0;
-	text-shadow: none;
-	transform: rotate(0deg);
-	transition: 0.25s;
-	transition-timing-function: ease-out;
-	width: 1em;
-
-	&:focus,
-	&:active {
-		background: transparent;
-		color: #aaaabb;
-	}
-
-	&:hover {
-		background: transparent;
-		color: #ffda00;
-		opacity: 0.8;
-		text-shadow: 0 0 1px #dddd00;
-	}
-
-	&.on {
-		background: transparent;
-		color: #ffda00;
-		font-size: 1.2em;
-		opacity: 0.7;
-		text-shadow: 0 0 1px #ffff00;
-		transform: rotate(58deg);
-
-		&:focus,
-		&:active {
-			background: transparent;
-		}
-
-		&:hover {
-			opacity: 1;
-		}
-	}
-}
-
-.place-trade {
-	background: #fcb531;
-	font-weight: 900;
-
-	&:hover,
-	&:focus,
-	&:active {
-		background: #f19e04;
-	}
-}
-
-.button.trade {
-	background: @color-warning-normal;
-	color: white;
-
-	&:hover {
-		background: @color-warning-hover;
-		color: white;
-	}
-
-	&:focus,
-	&:active {
-		background: @color-warning-active;
-		color: white;
-	}
-}
-
-.button.view {
-	background: @color-plain-active;
-	color: white;
-
-	&:hover {
-		background: fade(@color-plain-active, 80%);
-		color: white;
-	}
-
-	&:focus,
-	&:active {
-		background: fade(@color-plain-active, 80%);
-		color: white;
-	}
-}
-
-.button.report {
-	background: @color-danger-normal;
-	color: white;
-
-	&:hover {
-		background: @color-danger-hover;
-		color: white;
-	}
-
-	&:focus,
-	&:active {
-		background: @color-danger-active;
-		color: white;
-	}
-}
-
-.button.prev {
-	background: @color-dark-active;
-	color: white;
-
-	&:hover {
-		background: @color-dark-hover;
-		color: white;
-	}
-
-	&:focus,
-	&:active {
-		background: @color-dark-normal;
-		color: white;
-	}
-}
-
-.component-header {
-	.button.make {
-		border-radius: 1px;
-		font-size: 1.6rem;
-		height: @markets-header-height;
-		line-height: @markets-header-height;
+	// Types
+	&.unstyled {
+		background-color: transparent;
+		color: inherit;
 		padding: 0;
-		text-align: center;
-		width: @filters-width;
+	}
+
+	&.imperative {
+		background-color: @color-red;
+		color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up
 	}
 }
+
+// OLD -- ref only, to be removed
+//.button,
+//.button:visited {
+//
+//	.font-weight-light();
+//
+//	align-items: center;
+//	background-color: @color-blue;
+//	border: 0;
+//	display: flex;
+//	justify-content: center;
+//	padding: 1em 1.5em;
+//	transition: background 0.3s ease;
+//	white-space: nowrap;
+//
+//	&.imperative {
+//		background-color: @color-red;
+//	}
+//
+//	&:active,
+//	&:focus {
+//		background: @color-dark-active;
+//		color: white;
+//	}
+//
+//	&:hover {
+//		background: @color-dark-hover;
+//		color: white;
+//	}
+//
+//	&[disabled] {
+//		background: @color-dark-active !important;
+//		color: @color-light-active !important;
+//		cursor: default !important;
+//		opacity: 0.3 !important;
+//
+//		&:hover,
+//		&:focus,
+//		&:active {
+//			background: @color-dark-active !important;
+//			color: @color-light-active !important;
+//			cursor: default !important;
+//			opacity: 0.3 !important;
+//		}
+//	}
+//}
+//
+//.button.buy,
+//.button.make,
+//.button.select,
+//.button.next {
+//	background: @color-primary-active;
+//	color: white;
+//
+//	&:hover {
+//		background: @color-primary-hover;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: @color-primary-active;
+//	}
+//}
+//
+//.button.sell {
+//	background: @color-danger-active;
+//	color: white;
+//
+//	&:hover {
+//		background: @color-danger-hover;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: @color-danger-active;
+//	}
+//}
+//
+//.chart-button {
+//	font-family: 'Font Awesome';
+//	font-size: 1rem;
+//}
+//
+//.x-button,
+//.x-button:visited {
+//	background: transparent;
+//	color: @color-dark-active;
+//	font-family: 'Font Awesome';
+//	font-size: 2.7rem;
+//	height: unset;
+//	line-height: unset;
+//	padding: 0;
+//	text-align: center;
+//	width: unset;
+//
+//	&:hover,
+//	&:focus,
+//	&:active {
+//		background: transparent;
+//		color: @color-dark-hover;
+//	}
+//}
+//
+//.favorite-button {
+//	background: transparent;
+//	border: 0;
+//	color: #bbbbcc;
+//	font-family: 'Font Awesome';
+//	font-size: 1.5rem;
+//	height: 1em;
+//	line-height: unset;
+//	outline: 0;
+//	text-shadow: none;
+//	transform: rotate(0deg);
+//	transition: 0.25s;
+//	transition-timing-function: ease-out;
+//	width: 1em;
+//
+//	&:focus,
+//	&:active {
+//		background: transparent;
+//		color: #aaaabb;
+//	}
+//
+//	&:hover {
+//		background: transparent;
+//		color: #ffda00;
+//		opacity: 0.8;
+//		text-shadow: 0 0 1px #dddd00;
+//	}
+//
+//	&.on {
+//		background: transparent;
+//		color: #ffda00;
+//		font-size: 1.2em;
+//		opacity: 0.7;
+//		text-shadow: 0 0 1px #ffff00;
+//		transform: rotate(58deg);
+//
+//		&:focus,
+//		&:active {
+//			background: transparent;
+//		}
+//
+//		&:hover {
+//			opacity: 1;
+//		}
+//	}
+//}
+//
+//.place-trade {
+//	background: #fcb531;
+//	font-weight: 900;
+//
+//	&:hover,
+//	&:focus,
+//	&:active {
+//		background: #f19e04;
+//	}
+//}
+//
+//.button.trade {
+//	background: @color-warning-normal;
+//	color: white;
+//
+//	&:hover {
+//		background: @color-warning-hover;
+//		color: white;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: @color-warning-active;
+//		color: white;
+//	}
+//}
+//
+//.button.view {
+//	background: @color-plain-active;
+//	color: white;
+//
+//	&:hover {
+//		background: fade(@color-plain-active, 80%);
+//		color: white;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: fade(@color-plain-active, 80%);
+//		color: white;
+//	}
+//}
+//
+//.button.report {
+//	background: @color-danger-normal;
+//	color: white;
+//
+//	&:hover {
+//		background: @color-danger-hover;
+//		color: white;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: @color-danger-active;
+//		color: white;
+//	}
+//}
+//
+//.button.prev {
+//	background: @color-dark-active;
+//	color: white;
+//
+//	&:hover {
+//		background: @color-dark-hover;
+//		color: white;
+//	}
+//
+//	&:focus,
+//	&:active {
+//		background: @color-dark-normal;
+//		color: white;
+//	}
+//}
+//
+//.component-header {
+//	.button.make {
+//		border-radius: 1px;
+//		font-size: 1.6rem;
+//		//height: @markets-header-height;
+//		//line-height: @markets-header-height;
+//		padding: 0;
+//		text-align: center;
+//	}
+//}

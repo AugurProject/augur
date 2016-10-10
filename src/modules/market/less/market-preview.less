@@ -1,0 +1,38 @@
+.market-preview {
+
+	.border(true);
+
+	background-color: @color-white;
+	display: flex;
+	flex: 1;
+	margin: 2em 0;
+	padding: 2em;
+
+	.market-preview-group-1 {
+		display: flex;
+		flex: 4;
+		flex-direction: column;
+		padding-right: 2em;
+
+		.market-link {
+			display: flex;
+
+			.button.trade {
+				cursor: pointer;
+			}
+		}
+	}
+
+	.market-preview-group-2 {
+
+		.border(true, @border-left);
+
+		display: flex;
+		flex: 1;
+		padding-left: 2em;
+
+		.outcome .outcome-price {
+			color: @color-blue;
+		}
+	}
+}

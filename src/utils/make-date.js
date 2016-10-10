@@ -1,4 +1,4 @@
-export function makeDate(d) {
+function makeDate(d) {
 	const months = [
 		'Jan', 'Feb', 'Mar',
 		'Apr', 'May', 'Jun',
@@ -12,3 +12,5 @@ export function makeDate(d) {
 		full: d.toISOString()
 	};
 }
+
+export default makeDate;

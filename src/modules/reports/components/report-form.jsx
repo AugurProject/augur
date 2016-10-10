@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import Checkbox from '../../common/components/checkbox';
 import { SCALAR } from '../../markets/constants/market-types';
 
-export default class ReportForm extends React.Component {
+export default class ReportForm extends Component {
+	// TODO -- Prop Validations
 	static propTypes = {
 		type: React.PropTypes.string,
 		minValue: React.PropTypes.string,
 		maxValue: React.PropTypes.string,
-		reportableOutcomes: React.PropTypes.array,
+		// reportableOutcomes: React.PropTypes.array,
 		reportedOutcomeID: React.PropTypes.any,
 		isIndeterminate: React.PropTypes.bool,
 		isUnethical: React.PropTypes.bool,
@@ -37,7 +38,7 @@ export default class ReportForm extends React.Component {
 		}
 	}
 
-	handleOutcomeChange = (e) => this.setState({ reportedOutcomeID: e.target.value });
+	handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
 	handleSubmit() {
 		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
@@ -52,7 +53,10 @@ export default class ReportForm extends React.Component {
 		if (p.type === SCALAR) {
 			outcomeOptions = (
 				<div>
-					<label key="scalar-outcome">
+					<label
+						key="scalar-outcome"
+						htmlFor="outcome-scalar-input"
+					>
 						<input
 							type="text"
 							className="outcome-scalar-input"
@@ -68,7 +72,11 @@ export default class ReportForm extends React.Component {
 		} else {
 			outcomeOptions = (
 				(p.reportableOutcomes || []).map(outcome => (
-					<label key={outcome.id} className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}>
+					<label
+						key={outcome.id}
+						className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}
+						htmlFor="outcome-option-radio"
+					>
 						<input
 							type="radio"
 							className="outcome-option-radio"
@@ -98,7 +106,7 @@ export default class ReportForm extends React.Component {
 						className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
 						text="Yes, this question is indeterminate"
 						isChecked={!!s.isIndeterminate}
-						onClick={!s.isReported && (() => this.setState({ isIndeterminate: !s.isIndeterminate })) || null}
+						onClick={(!s.isReported && (() => this.setState({ isIndeterminate: !s.isIndeterminate }))) || null}
 					/>
 
 					<span className="indeterminate-message">
@@ -113,7 +121,7 @@ export default class ReportForm extends React.Component {
 						className={classnames('unethical-checkbox', { disabled: s.isReported })}
 						text="Yes, this question is unethical"
 						isChecked={!!s.isUnethical}
-						onClick={!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical })) || null}
+						onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || null}
 					/>
 
 					<span className="unethical-message">
@@ -125,7 +133,7 @@ export default class ReportForm extends React.Component {
 					<button
 						className="button report"
 						disabled={!s.reportedOutcomeID}
-						onClick={!!s.reportedOutcomeID && !s.isReported && this.handleSubmit || null}
+						onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || null}
 					>
 						Submit Report
 					</button>

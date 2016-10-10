@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import assertLoginAccount from './login-account';
-import assertActivePage from './active-page';
+import assertActivePage from './active-view';
 import assertPositionsSummary from './positions-summary';
 import assertTransactionsTotals from './transactions-totals';
 import assertIsTransactionsWorking from './is-transactions-working';

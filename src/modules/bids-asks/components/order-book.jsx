@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const OrderBook = (p) => (
+const OrderBook = p => (
 	<div className="order-book">
 		<div className="bids">
 			{p.bids.map((bid, i) => {
@@ -44,10 +44,11 @@ const OrderBook = (p) => (
 	</div>
 );
 
-OrderBook.propTypes = {
-	outcome: PropTypes.object,
-	bids: PropTypes.array,
-	asks: PropTypes.array
-};
+// TODO -- Prop Validations
+// OrderBook.propTypes = {
+// 	outcome: PropTypes.object,
+// 	bids: PropTypes.array,
+// 	asks: PropTypes.array
+// };
 
 export default OrderBook;

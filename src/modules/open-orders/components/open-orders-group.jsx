@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import React from 'react';
 
 import OpenOrder from '../../open-orders/components/open-order';
@@ -30,11 +26,12 @@ const OpenOrdersGroup = (p) => {
 	);
 };
 
-OpenOrdersGroup.propTypes = {
-	userOpenOrders: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-	name: React.PropTypes.string.isRequired,
-	orderCancellation: React.PropTypes.object.isRequired,
-	isFirst: React.PropTypes.bool.isRequired
-};
+// TODO -- Prop Validations
+// OpenOrdersGroup.propTypes = {
+// 	userOpenOrders: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+// 	name: React.PropTypes.string.isRequired,
+// 	orderCancellation: React.PropTypes.object.isRequired,
+// 	isFirst: React.PropTypes.bool.isRequired
+// };
 
 export default OpenOrdersGroup;

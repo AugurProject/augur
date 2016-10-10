@@ -2,7 +2,7 @@ import React from 'react';
 import Market from '../../../modules/my-markets/components/my-market';
 import Link from '../../link/components/link';
 
-const PortfolioMarkets = (p) => (
+const PortfolioMarkets = p => (
 	<div>
 		{!!p.markets && !!p.markets.length && p.markets.map(market => (
 			<Link key={market.id} {...market.marketLink} >
@@ -19,8 +19,9 @@ const PortfolioMarkets = (p) => (
 	</div>
 );
 
-PortfolioMarkets.propTypes = {
-	markets: React.PropTypes.array.isRequired
-};
+// TODO -- Prop Validations
+// PortfolioMarkets.propTypes = {
+// 	markets: React.PropTypes.array.isRequired
+// };
 
 export default PortfolioMarkets;

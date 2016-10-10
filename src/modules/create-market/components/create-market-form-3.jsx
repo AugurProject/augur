@@ -1,10 +1,10 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import InputList from '../../common/components/input-list';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
-const CreateMarketForm4 = (p) => (
+const CreateMarketForm4 = p => (
 	<div className="step-3">
 		<h1>Additional market information</h1>
 		<div className="expiry">
@@ -32,7 +32,7 @@ const CreateMarketForm4 = (p) => (
 					type="text"
 					value={p.expirySourceUrl}
 					placeholder="http://www.boxofficemojo.com"
-					onChange={(value) => p.onValuesUpdated({ expirySourceUrl: value })}
+					onChange={value => p.onValuesUpdated({ expirySourceUrl: value })}
 				/>
 			</div>
 			{(p.errors.expirySource || p.errors.expirySourceUrl) &&
@@ -51,7 +51,7 @@ const CreateMarketForm4 = (p) => (
 				errors={p.errors && p.errors.tags}
 				listMaxElements={p.tagsMaxNum}
 				itemMaxLength={p.tagMaxLength}
-				onChange={(newTags) => p.onValuesUpdated({ tags: newTags })}
+				onChange={newTags => p.onValuesUpdated({ tags: newTags })}
 			/>
 		</div>
 
@@ -63,7 +63,7 @@ const CreateMarketForm4 = (p) => (
 				value={p.detailsText}
 				maxLength={500}
 				placeholder="Optional: enter a more detailed description of your market."
-				onChange={(value) => p.onValuesUpdated({ detailsText: value })}
+				onChange={value => p.onValuesUpdated({ detailsText: value })}
 			/>
 		</div>
 
@@ -75,18 +75,19 @@ const CreateMarketForm4 = (p) => (
 	</div>
 );
 
-CreateMarketForm4.propTypes = {
-	expirySource: PropTypes.string,
-	expirySourceUrl: PropTypes.string,
-	expirySourceTypes: PropTypes.object,
-	tags: PropTypes.array,
-	tagsMaxNum: PropTypes.number,
-	tagMaxLength: PropTypes.number,
-	description: PropTypes.string,
-	detailsText: PropTypes.string,
-	isValid: PropTypes.bool,
-	errors: PropTypes.object,
-	onValuesUpdated: PropTypes.func
-};
+// TODO -- Prop Validations
+// CreateMarketForm4.propTypes = {
+// 	expirySource: PropTypes.string,
+// 	expirySourceUrl: PropTypes.string,
+// 	expirySourceTypes: PropTypes.object,
+// 	tags: PropTypes.array,
+// 	tagsMaxNum: PropTypes.number,
+// 	tagMaxLength: PropTypes.number,
+// 	description: PropTypes.string,
+// 	detailsText: PropTypes.string,
+// 	isValid: PropTypes.bool,
+// 	errors: PropTypes.object,
+// 	onValuesUpdated: PropTypes.func
+// };
 
 export default CreateMarketForm4;

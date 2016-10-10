@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
 export default class Input extends Component {
+	// TODO -- Prop Validations
 	static propTypes = {
-		type: PropTypes.string,
-		className: PropTypes.string,
+		// type: PropTypes.string,
+		// className: PropTypes.string,
 		value: PropTypes.any,
-		isMultiline: PropTypes.bool,
+		// isMultiline: PropTypes.bool,
 		isClearable: PropTypes.bool,
 		debounceMS: PropTypes.number,
 		onChange: PropTypes.func,
@@ -16,7 +16,8 @@ export default class Input extends Component {
 
 	constructor(props) {
 		super(props);
-		this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 750;
+
+		this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 500;
 		this.state = {
 			value: this.props.value || '',
 			timeoutID: ''
@@ -43,7 +44,7 @@ export default class Input extends Component {
 			this.props.onChange(newValue);
 		}
 		this.setState({ value: newValue });
-	}
+	};
 
 	handleOnBlur = () => {
 		if (this.finalDebounceMS) {
@@ -53,19 +54,19 @@ export default class Input extends Component {
 			}
 		}
 		this.props.onBlur && this.props.onBlur();
-	}
+	};
 
 	handleClear = () => {
 		this.setState({ value: '' });
 		this.props.onChange('');
-	}
+	};
 
 	render() {
-		const p = this.props;
+		const { isClearable, ...p } = this.props;
 		const s = this.state;
 
 		return (
-			<div className={classnames('input', this.props.className)}>
+			<div className={`input ${p.className}`}>
 				{!p.isMultiline &&
 					<input
 						{...p}
@@ -86,9 +87,9 @@ export default class Input extends Component {
 					/>
 				}
 
-				{!p.isMultiline && p.isClearable &&
+				{isClearable && !p.isMultiline && !!s.value &&
 					<button type="button" className="clear" onClick={this.handleClear}>
-						&#xf00d;
+						<i></i>
 					</button>
 				}
 			</div>

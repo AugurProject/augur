@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const ValueDenomination = (p) => (
+const ValueDenomination = p => (
 	<span
 		className={classnames('value-denomination', p.className, { positive: p.formattedValue > 0, negative: p.formattedValue < 0 })}
-		title={p.title && p.title || ''}
+		title={(p.title && p.title) || ''}
 	>
 		{p.prefix &&
 			<span className="prefix">{p.prefix}</span>

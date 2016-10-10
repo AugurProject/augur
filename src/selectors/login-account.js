@@ -1,4 +1,4 @@
-import { makeNumber } from '../utils/make-number';
+import makeNumber from '../utils/make-number';
 
 const loginAccount = {
 	address: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa',
@@ -33,6 +33,7 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		signOut: loginAccount.signOut
 	}
 	});
+
 	loginAccount.editName(name);
 };
 
@@ -54,6 +55,7 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		signOut: loginAccount.signOut
 	}
 	});
+
 	loginAccount.editName(name);
 };
 

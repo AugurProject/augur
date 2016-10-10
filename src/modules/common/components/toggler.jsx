@@ -1,8 +1,8 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
-const Toggler = (p) => (
-	<div
+const Toggler = p => (
+	<button
 		className={classnames('clickable', 'toggler', p.className)}
 		onClick={(e) => {
 			e.persist();
@@ -10,7 +10,7 @@ const Toggler = (p) => (
 		}}
 	>
 		{p.selected.label}
-	</div>
+	</button>
 );
 
 const findNextOption = (selected, options) => {
@@ -22,11 +22,12 @@ const findNextOption = (selected, options) => {
 	return options[nextSelectedInex];
 };
 
-Toggler.propTypes = {
-	className: PropTypes.string,
-	selected: PropTypes.object,
-	options: PropTypes.array,
-	onClick: PropTypes.func
-};
+// TODO -- Prop Validations
+// Toggler.propTypes = {
+// 	className: PropTypes.string,
+// 	selected: PropTypes.object,
+// 	options: PropTypes.array,
+// 	onClick: PropTypes.func
+// };
 
 export default Toggler;

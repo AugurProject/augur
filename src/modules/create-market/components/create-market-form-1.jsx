@@ -1,7 +1,7 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 
-const CreateMarketForm1 = (p) => (
+const CreateMarketForm1 = p => (
 	<div className="step-1">
 		<h1>Select the type of market you want to create</h1>
 		<hr />
@@ -43,8 +43,9 @@ const CreateMarketForm1 = (p) => (
 	</div>
 );
 
-CreateMarketForm1.propTypes = {
-	onValuesUpdated: PropTypes.func
-};
+// TODO -- Prop Validations
+// CreateMarketForm1.propTypes = {
+// 	onValuesUpdated: PropTypes.func
+// };
 
 export default CreateMarketForm1;

@@ -1,4 +1,4 @@
-export function makeNumber(num, denomination, omitSign, noRandom) {
+function makeNumber(num, denomination, omitSign, noRandom) {
 	let	rndNum = num;
 	if (!noRandom || Math.round(num) !== num) {
 		rndNum = Math.round(num * 10000) / 10000;
@@ -48,3 +48,5 @@ function addBigUnitPostfix(value) {
 	}
 	return postfixed;
 }
+
+export default makeNumber;
