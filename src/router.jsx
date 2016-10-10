@@ -160,8 +160,6 @@ export default class Router extends Component {
 
 		const CurrentRoute = this.currentRoute;
 
-		console.log('current-route -- ', CurrentRoute);
-
 		const pageContainerStyles = {
 			marginTop: this.state.pageMarginTop
 		};
