@@ -65,7 +65,7 @@ const LoginMessagePage = p => (
 			3/
 			<br />
 			{p.marketsLink &&
-				<Link className="lets-do-this-button" {...p.marketsLink} >Let's do this!</Link>
+				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
 			}
 		</div>
 	</main>
