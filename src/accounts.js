@@ -272,6 +272,7 @@ module.exports = function () {
 
 
         loginWithMasterKey: function (name, privateKey, cb) {
+            var self = this;
             // derive secret key from password
             var salt = new Buffer("6169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex");
             var iv = new Buffer("ef40723ec10d95c4356c8d157ce4308e", "hex");
