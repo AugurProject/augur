@@ -70,7 +70,7 @@ export default class SiteHeader extends Component {
 							</Link>
 						}
 						{!p.loginAccount.id &&
-							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
 								Sign Up / Login
 							</Link>
 						}
