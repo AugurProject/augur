@@ -64,6 +64,7 @@
     "express": "^4.14.0",
     "helmet": "^2.3.0",
     "memoizerific": "1.8.4",
+    "prerender-node": "^2.4.0",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
     "rimraf": "2.5.4",

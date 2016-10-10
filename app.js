@@ -6,6 +6,7 @@ var app = express();
 app.use(helmet());
 // static handlers
 app.use(express.static('build'));
+app.use(require('prerender-node').set('prerenderToken', 'qlgsFH0dlZwvmInxpJor'));
 
 // redirect production site to secure version
 app.get('*', function(req,res,next) {
