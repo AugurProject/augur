@@ -96,7 +96,6 @@ export default class Router extends Component {
 					marketDataUpdater={p.marketDataUpdater}
 					numPendingReports={p.marketsTotals.numPendingReports}
 					isTradeCommitLocked={p.tradeCommitLock.isLocked}
-
 				/>
 			);
 			break;
@@ -151,7 +150,10 @@ export default class Router extends Component {
 			positionsSummary: p.positionsSummary,
 			transactionsTotals: p.transactionsTotals,
 			isTransactionsWorking: p.isTransactionsWorking,
+			marketsInfo: p.marketsHeader,
 			marketsLink: (p.links && p.links.marketsLink) || undefined,
+			favoritesLink: (p.links && p.links.favoritesLink) || undefined,
+			pendingReportsLink: (p.links && p.links.pendingReportsLink) || undefined,
 			transactionsLink: (p.links && p.links.transactionsLink) || undefined,
 			authLink: (p.links && p.links.authLink) || undefined,
 			accountLink: (p.links && p.links.accountLink) || undefined,

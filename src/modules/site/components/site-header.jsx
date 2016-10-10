@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/views';
+import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import AugurLogo from '../../common/components/augur-logo';
@@ -19,11 +20,27 @@ export default class SiteHeader extends Component {
 				<nav className="site-nav">
 					<div className="nav-group left-navs">
 						<Link
-							className={classnames('site-nav-link', { active: p.activeView === MARKETS })}
+							className={classnames('site-nav-link', { active: (p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader == null) })}
 							{...p.marketsLink}
 						>
 							Markets
 						</Link>
+						{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numFavorites &&
+							<Link
+								className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+								{...p.favoritesLink}
+							>
+								{!!p.marketsInfo.numFavorites && p.marketsInfo.numFavorites} Favorites
+							</Link>
+						}
+						{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numPendingReports &&
+							<Link
+								className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+								{...p.pendingReportsLink}
+							>
+								{!!p.marketsInfo.numPendingReports && p.marketsInfo.numPendingReports} Pending Reports
+							</Link>
+						}
 					</div>
 					<div className="nav-group branding">
 						<Link
@@ -42,7 +59,7 @@ export default class SiteHeader extends Component {
 								Portfolio
 							</Link>
 						}
-						{(!!p.loginAccount && !!p.loginAccount.id) &&
+						{!!p.loginAccount && !!p.loginAccount.id &&
 							<Link
 								className={classnames('site-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 								title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
@@ -51,7 +68,7 @@ export default class SiteHeader extends Component {
 								{p.transactionsTotals.title}
 							</Link>
 						}
-						{p.loginAccount.id &&
+						{!!p.loginAccount && !!p.loginAccount.id &&
 							<Link
 								className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
 								title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
@@ -69,7 +86,7 @@ export default class SiteHeader extends Component {
 								/>
 							</Link>
 						}
-						{!p.loginAccount.id &&
+						{(!p.loginAccount || !p.loginAccount.id) &&
 							<Link className={classnames('site-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
 								Sign Up / Login
 							</Link>
@@ -80,7 +97,6 @@ export default class SiteHeader extends Component {
 		);
 	}
 }
-
 
 // TODO -- Prop Validations
 // SiteHeader.propTypes = {
