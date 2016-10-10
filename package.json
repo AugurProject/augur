@@ -14,7 +14,7 @@
   "scripts": {
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "watch:noUp": "clear; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
-    "start": "augur-ui-webserver -d './build'",
+    "start": "node app.js",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "build:dev": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=development npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
@@ -58,14 +58,16 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-ui-react-components": "^3.3.0",
+    "augur-ui-webserver": "1.1.0",
     "augur.js": "2.9.13",
     "bignumber.js": "2.3.0",
+    "express": "^4.14.0",
+    "helmet": "^2.3.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1",
     "rimraf": "2.5.4",
-	"augur-ui-webserver": "1.1.0"
+    "secure-random": "1.1.1"
   },
   "devDependencies": {
     "babel-eslint": "6.1.2",
