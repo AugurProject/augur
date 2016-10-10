@@ -50,7 +50,8 @@ function makeMarkets(numMarkets = 10) {
 				text: 'Trade Market',
 				className: 'trade',
 				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/m/${id}` })
-			}
+			},
+			onClickToggleFavorite: () => {}
 		};
 
 		// tags
