@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import classnames from 'classnames';
 import AuthForm from '../../auth/components/auth-form';
 import Link from '../../link/components/link';
-import classnames from 'classnames';
 
 const AuthPage = p => (
 	<main className="page auth">
@@ -19,7 +19,7 @@ const AuthPage = p => (
 				className={classnames('airbitz-button')}
 				onClick={p.authForm.airbitzLink.onClick}
 			>
-			{p.authForm.airbitzLinkText}
+				{p.authForm.airbitzLinkText}
 			</Link>
 			&nbsp;to create an encrypted and backed up account using a simple username and password.
 		</header>
