@@ -185,23 +185,27 @@ export default class Router extends Component {
 		return (
 			<div>
 				{!!p &&
-					<div>
+					<div id="site-container">
 						<SiteHeader
-							ref={(ref) => { this.siteHeader = ref; }}
 							{...siteHeader}
+							ref={(ref) => { this.siteHeader = ref; }}
 						/>
-						<div
+						<main
 							className="view-container"
 							style={pageContainerStyles}
 						>
-							{s.isSideBarVisible &&
-								<SideBar tags={p.tags} />
-							}
-							<main className="view-content-container">
-								<CoreStats coreStats={p.coreStats} />
-								<CurrentRoute className="view-content" />
-							</main>
-						</div>
+							<div className="view-content-container">
+								<div className="view-content view-content-group-1">
+									{s.isSideBarVisible &&
+										<SideBar tags={p.tags} />
+									}
+								</div>
+								<div className="view-content view-content-group-2">
+									<CoreStats coreStats={p.coreStats} />
+									<CurrentRoute className="view" />
+								</div>
+							</div>
+						</main>
 						<SiteFooter />
 					</div>
 				}
