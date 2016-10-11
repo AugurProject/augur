@@ -33,7 +33,7 @@ const signUp = {
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
-	instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
+	instruction: 'Please enter your password (at least 6 characters), then enter it again to confirm your password. When you are satisfied with your password, click the "Generate Account" button. You will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
 	topLinkText: 'Already have an account? Login here',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
@@ -48,7 +48,7 @@ const signUp = {
 						require('../selectors').update({ authForm: { ...signUp, clearName: true, clearPassword: true } });
 					}
 				},
-				onSubmit: (secureLoginID, password) => {
+				onSubmit: (LoginID, password) => {
 					require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 				}
 			}
@@ -73,7 +73,7 @@ const importAccount = {
 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 		}
 	},
-	onSubmit: (name, password, password2, secureLoginID, rememberMe, importAccount) => {
+	onSubmit: (name, password, password2, LoginID, rememberMe, importAccount) => {
 		require('../selectors').update({
 			authForm: {
 				...signUp,
