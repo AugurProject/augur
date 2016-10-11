@@ -93,7 +93,7 @@ const accountCreated = {
 	isVisibleID: true,
 	submitButtonText: 'Sign In',
 	isVisibleRememberMe: true,
-	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. It is critical to save this Login ID somewhere safe as it will allow you to login to your Augur Account from any device however it cannot be recovered if lost or forgotten. Click "Sign Up" to complete registration.',
+	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. It is critical to save this Login ID somewhere safe as it will allow you to login to your Augur Account from any device however it cannot be recovered if lost or forgotten. Paste your Login ID (crtl + v on windows, cmd + v on mac) into the Login ID field and click "Sign Up" to complete registration.',
 	loginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };
 

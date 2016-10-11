@@ -211,7 +211,7 @@ export default class AccountPage extends Component {
 						<div className="account-info-item">
 							<h2 className="heading">Download Account Key File</h2>
 							<p>
-							Download your account key file. You should always save a backup of your account data somewhere safe! Remember, Augur never stores any of your account information and because of this Augur cannot restore or recover lost accounts. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
+								Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
 							</p>
 							<a
 								className="button download-account"
