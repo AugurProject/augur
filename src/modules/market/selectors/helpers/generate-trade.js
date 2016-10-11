@@ -1,6 +1,9 @@
 import memoizerific from 'memoizerific';
-import { formatEther, formatRealEther } from '../../../../utils/format-number';
+
+import { formatEther, formatShares, formatRealEther } from '../../../../utils/format-number';
 import { abi } from '../../../../services/augurjs';
+
+import { calculateMaxPossibleShares } from '../../../market/selectors/helpers/calculate-max-possible-shares';
 
 import { BUY, SELL } from '../../../trade/constants/types';
 import { ZERO } from '../../../trade/constants/numbers';
@@ -12,18 +15,20 @@ import { makeShortSellTransaction } from '../../../transactions/actions/add-shor
 
 import store from '../../../../store';
 
-export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
+export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress, loginAccount) => {
 	const side = outcomeTradeInProgress && outcomeTradeInProgress.side || BUY;
 	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || null;
 	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || null;
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
 	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
+	const maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, limitPrice, totalFee, totalCost, gasFeesRealEth));
 
 	return {
 		side,
 		numShares,
 		limitPrice,
+		maxNumShares,
 
 		totalFee: formatEther(totalFee, { blankZero: true }),
 		gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),

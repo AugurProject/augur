@@ -6,12 +6,12 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -48,6 +48,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			orderBooks[marketID],
 			orderCancellation,
 			(smallestPositions || {})[marketID],
+			loginAccount,
 			dispatch);
 
 	}).sort((a, b) => {
