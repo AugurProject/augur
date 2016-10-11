@@ -23,35 +23,21 @@ export default class Router extends Component {
 		super(props);
 
 		this.state = {
-			pageMarginTop: 0,
 			isSideBarVisible: false
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-		this.handleResize = this.handleResize.bind(this);
 		this.currentRoute = this.currentRoute.bind(this);
 		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
 	}
 
 	componentDidMount() {
-		window.addEventListener('resize', this.handleResize);
-
-		// this.handleResize();
+		this.shouldDisplaySideBar();
 	}
 
 	componentDidUpdate() {
 		this.shouldDisplaySideBar();
-	}
-
-	handleResize() {
-		if (this.siteHeader.siteHeader.offsetHeight !== this.state.pageMarginTop) {
-			window.requestAnimationFrame(() => {
-				this.setState({
-					pageMarginTop: this.siteHeader.siteHeader.offsetHeight
-				});
-			});
-		}
 	}
 
 	shouldDisplaySideBar() {
@@ -160,10 +146,6 @@ export default class Router extends Component {
 
 		const CurrentRoute = this.currentRoute;
 
-		// const pageContainerStyles = {
-		// 	marginTop: this.state.pageMarginTop
-		// };
-
 		const siteHeader = {
 			activeView: p.activeView,
 			loginAccount: p.loginAccount,
@@ -192,11 +174,11 @@ export default class Router extends Component {
 						/>
 						<div className="view-container" >
 							<main className="view-content-container">
-								<div className="view-content view-content-group-1">
-									{s.isSideBarVisible &&
+								{s.isSideBarVisible &&
+									<div className="view-content view-content-group-1">
 										<SideBar tags={p.tags} />
-									}
-								</div>
+									</div>
+								}
 								<div className="view-content view-content-group-2">
 									<CoreStats coreStats={p.coreStats} />
 									<CurrentRoute className="view" />

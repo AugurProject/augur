@@ -33,7 +33,7 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const p = this.props;
+		const { text, ...p } = this.props;
 
 		return (
 			<a
