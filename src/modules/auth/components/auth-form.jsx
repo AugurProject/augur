@@ -48,7 +48,8 @@ export default class AuthForm extends Component {
 			loginID: undefined,
 			rememberMe: this.props.rememberMe,
 			disableInputs: false,
-			loginAccount: {}
+			loginAccount: {},
+			submitDisabled: props.type === 'register'
 		};
 	}
 
@@ -57,10 +58,6 @@ export default class AuthForm extends Component {
 	}
 
 	handleSubmit = (e) => {
-		// if the user is trying to create an account and the loginID hasn't been generated, then generate it.
-		if (this.props.type === 'register' && !this.props.loginID) {
-			return this.handlePasswordInput(e);
-		}
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -94,9 +91,9 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 
-		if (password !== '' && password2 !== '') {
+		if (password !== '' && password2 !== '' && password.length === password2.length) {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined, (loginAccount) => {
-				this.setState({ loginID: loginAccount.loginID, disableInputs: true, loginAccount });
+				this.setState({ loginID: loginAccount.loginID, disableInputs: true, loginAccount, submitDisabled: false });
 			}), 300);
 		}
 	}
@@ -182,6 +179,7 @@ export default class AuthForm extends Component {
 					required={p.isVisiblePassword}
 					autoComplete
 					disabled={s.disableInputs}
+					onChange={this.handlePasswordInput}
 				/>
 				<input
 					ref="password2"
@@ -191,9 +189,10 @@ export default class AuthForm extends Component {
 					maxLength="256"
 					required={p.isVisiblePassword2}
 					disabled={s.disableInputs}
+					onChange={this.handlePasswordInput}
 				/>
 				<div className={classnames('instruction', { displayNone: !p.isVisibleRememberMe })}>
-					Select "remember me" to save your account and login automatically next time. (this will only remember your account on this device.)
+					Select &ldquo;remember me&rdquo; to save your account and login automatically next time. (this will only remember your account on this device.)
 				</div>
 				<div className={classnames('bottom-container')}>
 					<Link
@@ -215,6 +214,7 @@ export default class AuthForm extends Component {
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
 					type="submit"
 					value={p.submitButtonText}
+					disabled={s.submitDisabled}
 				/>
 				<Link
 					type="button"
