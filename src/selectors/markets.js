@@ -47,9 +47,10 @@ function makeMarkets(numMarkets = 10) {
 			isOpen: randomInt(0, 100) > 5,
 			isPendingReport: index > 0 && index % 4 === 0,
 			marketLink: {
-				text: 'Trade Market',
+				href: `/?m=${id}`,
+				text: 'Trade',
 				className: 'trade',
-				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/m/${id}` })
+				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/?m=${id}` })
 			},
 			onClickToggleFavorite: () => {}
 		};
