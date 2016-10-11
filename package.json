@@ -15,7 +15,7 @@
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "watch:noUp": "clear; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "node app.js",
-    "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
+    "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all; mv ./build/index-2.0.0.html ./build/index.html",
     "build:dev": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=development npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
     "test:watch": "clear; npm test -- --watch",
