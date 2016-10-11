@@ -18,25 +18,25 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 	};
 	let matchingTradeIDs;
 	let bnSharesPurchased = bnNumShares;
-	let bnBalance = bnTotalEth;
+	let bnCashBalance = bnTotalEth;
 	async.until(() => {
 		matchingTradeIDs = getTradeIDs();
 		console.log('matchingTradeIDs:', matchingTradeIDs);
 		console.log('remainingEth:', res.remainingEth.toFixed());
 		console.log('remainingShares:', res.remainingShares.toFixed());
 		console.log('sharesPurchased:', bnSharesPurchased.toFixed());
-		console.log('balance:', bnBalance.toFixed());
+		console.log('balance:', bnCashBalance.toFixed());
 		return !matchingTradeIDs.length ||
 			(res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
 			(bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
-			(bnTotalEth.gt(constants.ZERO) && bnBalance.lte(constants.PRECISION.zero));
+			(bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
 	}, (nextTrade) => {
 		let tradeIDs = matchingTradeIDs;
 		tradeIDs = tradeIDs.slice(0, 3);
 		augur.getParticipantSharesPurchased(marketID, takerAddress, outcomeID, (sharesPurchased) => {
 			bnSharesPurchased = abi.bignum(sharesPurchased);
-			augur.rpc.balance(takerAddress, (balance) => {
-				bnBalance = abi.bignum(balance).dividedBy(constants.ETHER);
+			augur.getCashBalance(takerAddress, (cashBalance) => {
+				bnCashBalance = abi.bignum(cashBalance);
 				let isRemainder;
 				let maxAmount;
 				if (res.remainingShares.gt(bnSharesPurchased)) {
@@ -46,8 +46,17 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					maxAmount = res.remainingShares;
 					isRemainder = false;
 				}
+				console.log(JSON.stringify({
+					max_value: BigNumber.min(res.remainingEth, bnCashBalance).toFixed(),
+					max_amount: maxAmount.toFixed(),
+					isRemainder,
+					res_remainingShares: res.remainingShares.toFixed(),
+					sharesPurchased: bnSharesPurchased.toFixed(),
+					res_remainingEth: res.remainingEth.toFixed(),
+					balance: bnCashBalance.toFixed()
+				}, null, 2));
 				augur.trade({
-					max_value: BigNumber.min(res.remainingEth, bnBalance).toFixed(),
+					max_value: BigNumber.min(res.remainingEth, bnCashBalance).toFixed(),
 					max_amount: maxAmount.toFixed(),
 					trade_ids: tradeIDs,
 					sender: takerAddress,
@@ -94,8 +103,8 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 						dispatch(loadBidsAsks(marketID, () => {
 							augur.getParticipantSharesPurchased(marketID, takerAddress, outcomeID, (sharesPurchased) => {
 								bnSharesPurchased = abi.bignum(sharesPurchased);
-								augur.rpc.balance(takerAddress, (balance) => {
-									bnBalance = abi.bignum(balance).dividedBy(constants.ETHER);
+								augur.getCashBalance(takerAddress, (cashBalance) => {
+									bnCashBalance = abi.bignum(cashBalance);
 									nextTrade();
 								});
 							});
