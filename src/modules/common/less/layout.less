@@ -12,50 +12,55 @@
 #site-container {
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
-}
+	height: 100vh;
 
-.view-container {
-	display: flex;
-	flex: 1;
-	justify-content: center;
+	.site-header {
+		flex: 0 0 auto;
+	}
 
-	.view-content-container {
+	.view-container {
+		position: relative;
+		flex: 1 1 auto;
+		overflow-y: auto;
+		justify-content: center;
 
-		.contained();
+		.view-content-container {
 
-		display: flex;
-		flex: 1;
-		flex-direction: row;
+			.contained();
 
-		.view-content {
 			display: flex;
+			flex: 1;
+			flex-direction: row;
 
-			&.view-content-group-1 {
-				flex: 1;
-
-				.side-bar {
-					flex: 1;
-				}
-			}
-
-			&.view-content-group-2 {
+			.view-content {
 				display: flex;
-				flex: 4;
-				flex-direction: column;
 
-				.view {
-					display: flex;
+				&.view-content-group-1 {
 					flex: 1;
-					flex-direction: column;
-					margin: 2rem 6rem 0;
-					max-width: @max-content-width;
 
-					.view-header {
-						align-items: center;
+					.side-bar {
+						flex: 1;
+					}
+				}
+
+				&.view-content-group-2 {
+					display: flex;
+					flex: 4;
+					flex-direction: column;
+
+					.view {
 						display: flex;
 						flex: 1;
-						padding: 1.5em 0;
+						flex-direction: column;
+						margin: 2rem 6rem 0;
+						max-width: @max-content-width;
+
+						.view-header {
+							align-items: center;
+							display: flex;
+							flex: 1;
+							padding: 1.5em 0;
+						}
 					}
 				}
 			}

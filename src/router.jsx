@@ -37,7 +37,7 @@ export default class Router extends Component {
 	componentDidMount() {
 		window.addEventListener('resize', this.handleResize);
 
-		this.handleResize();
+		// this.handleResize();
 	}
 
 	componentDidUpdate() {
@@ -160,9 +160,9 @@ export default class Router extends Component {
 
 		const CurrentRoute = this.currentRoute;
 
-		const pageContainerStyles = {
-			marginTop: this.state.pageMarginTop
-		};
+		// const pageContainerStyles = {
+		// 	marginTop: this.state.pageMarginTop
+		// };
 
 		const siteHeader = {
 			activeView: p.activeView,
@@ -190,11 +190,8 @@ export default class Router extends Component {
 							{...siteHeader}
 							ref={(ref) => { this.siteHeader = ref; }}
 						/>
-						<main
-							className="view-container"
-							style={pageContainerStyles}
-						>
-							<div className="view-content-container">
+						<div className="view-container" >
+							<main className="view-content-container">
 								<div className="view-content view-content-group-1">
 									{s.isSideBarVisible &&
 										<SideBar tags={p.tags} />
@@ -204,9 +201,9 @@ export default class Router extends Component {
 									<CoreStats coreStats={p.coreStats} />
 									<CurrentRoute className="view" />
 								</div>
-							</div>
-						</main>
-						<SiteFooter />
+							</main>
+							<SiteFooter />
+						</div>
 					</div>
 				}
 			</div>
