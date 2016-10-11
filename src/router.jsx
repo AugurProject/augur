@@ -180,7 +180,6 @@ export default class Router extends Component {
 									</div>
 								}
 								<div className="view-content view-content-group-2">
-									<CoreStats coreStats={p.coreStats} />
 									<CurrentRoute className="view" />
 								</div>
 							</main>
@@ -192,3 +191,5 @@ export default class Router extends Component {
 		);
 	}
 }
+
+// <CoreStats coreStats={p.coreStats} />  Removed temporarily
