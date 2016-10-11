@@ -12,7 +12,7 @@ const windowRef = typeof window === 'undefined' ? {} : window;
 const consoleLog = store => next => action => {
 	const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
 	if (typeof action !== 'function' && !isIgnoreFlag) {
-		console.log(action);
+		// console.log(action);
 	}
 	return next(action);
 };
