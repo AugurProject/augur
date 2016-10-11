@@ -4,9 +4,10 @@ var PROD_HOST = 'app.augur.net';
 
 var app = express();
 app.use(helmet());
+app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));
+
 // static handlers
 app.use(express.static('build'));
-app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));
 
 // redirect production site to secure version
 app.get('*', function(req,res,next) {
