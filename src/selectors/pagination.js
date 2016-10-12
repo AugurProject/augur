@@ -25,6 +25,6 @@ export default {
 			}
 		});
 	},
-	prevPageLink: { href: '/?page=1', onClick: url => require('../selectors').update({ activeView: MARKETS, url }) },
+	previousPageLink: { href: '/?page=1', onClick: url => require('../selectors').update({ activeView: MARKETS, url }) },
 	nextPageLink: { href: '/?page=2', onClick: url => require('../selectors').update({ activeView: MARKETS, url }) },
 };

@@ -30,4 +30,10 @@ export default function (pagination) {
 
 	assert.isDefined(pagination.onUpdateSelectedPageNum, `pagination.onUpdateSelectedPageNum isn't defined`);
 	assert.isFunction(pagination.onUpdateSelectedPageNum, `pagination.onUpdateSelectedPageNum isn't a Function`);
+
+	assert.isDefined(pagination.previousPageLink, `pagination.previousPageLink isn't defined`);
+	assert.isObject(pagination.previousPageLink, `pagination.previousPageLink isn't an object`);
+
+	assert.isDefined(pagination.nextPageLink, `pagination.nextPageLink isn't defined`);
+	assert.isObject(pagination.nextPageLink, `pagination.nextPageLink isn't an object`);
 }
