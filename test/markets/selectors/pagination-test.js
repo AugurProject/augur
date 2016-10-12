@@ -6,7 +6,6 @@ import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
 import assertions from 'augur-ui-react-components/lib/assertions';
 
-let pagination;
 describe(`modules/markets/selectors/pagination.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	let selector, expected, actual;
@@ -34,26 +33,32 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
-	pagination = selector.default;
-
-	beforeEach(() => {
+	before(() => {
 		store.clearActions();
 	});
 
-	afterEach(() => {
+	after(() => {
 		store.clearActions();
 	});
 
 	it(`should change the selected page number`, () => {
 		actual = selector.default();
+
 		expected = [{
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			pageNum: 4
 		}];
-		assertions.pagination(actual);
+
 		actual.onUpdateSelectedPageNum(4);
+
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
 	});
-});
 
-export default pagination;
+	it('should deliver the correct shape to AURC', () => {
+		state.pagination.selectedPageNum = 2;
+		
+		actual = selector.default();
+
+		assertions.pagination(actual);
+	});
+});
