@@ -4,7 +4,7 @@ import assertions from 'augur-ui-react-components/lib/assertions';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/pages';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/views';
 
 import { formatNumber, formatEther, formatRep } from '../../../src/utils/format-number';
 

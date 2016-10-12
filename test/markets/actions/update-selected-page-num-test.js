@@ -54,13 +54,13 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 			selectedPageNum: 2
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
+			href: '/?search=test%20testtag&tags=testtag%2Ctag'
 		}, {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 5
 		}, {
 			type: 'UPDATE_URL',
-			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
+			href: '/?search=test%20testtag&tags=testtag%2Ctag'
 		}];
 		store.dispatch(action.updateSelectedPageNum(2));
 		store.dispatch(action.updateSelectedPageNum(5));

@@ -2,12 +2,8 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
-// import * as action from '../../../src/modules/markets/actions/update-selected-sort';
 
-describe('modules/markets/actions/update-selected-sort', () => {
+describe('modules/markets/actions/update-selected-filter-sort', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
 	let { state, store } = mockStore.default;
@@ -18,7 +14,7 @@ describe('modules/markets/actions/update-selected-sort', () => {
 		return { type: 'UPDATE_URL', href };
 	});
 
-	action = proxyquire('../../../src/modules/markets/actions/update-selected-sort', {
+	action = proxyquire('../../../src/modules/markets/actions/update-selected-filter-sort', {
 		'../../link/actions/update-url': mockUpdateURL,
 		'../../../selectors': proxyquire('../../../src/selectors', {
 			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
@@ -32,8 +28,7 @@ describe('modules/markets/actions/update-selected-sort', () => {
 		// Mock the Window object
 		global.window = {};
 		global.window.location = {
-			pathname: '/',
-			search: '?isOpen=true'
+			pathname: '/'
 		};
 		global.window.history = {
 			pushState: (a, b, c) => true
@@ -46,16 +41,24 @@ describe('modules/markets/actions/update-selected-sort', () => {
 		global.window = {};
 	});
 
-	it(`should return an UPDATE_SELECTED_SORT action object`, () => {
-		const selectedSort = 'puppies';
-		store.dispatch(action.updateSelectedSort(selectedSort));
-		out = [{
-			type: 'UPDATE_SELECTED_SORT',
-			selectedSort: 'puppies'
-		}, {
-			type: 'UPDATE_URL',
-			href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag'
-		}];
+	it(`should return an UPDATE_SELECTED_FILTER_SORT action object`, () => {
+		const filterSortChange = { sort: 'expiry' };
+		store.dispatch(action.updateSelectedFilterSort(filterSortChange));
+
+		console.log('test -- ', store.getActions());
+
+		out = [
+			{
+				type: 'UPDATE_SELECTED_FILTER_SORT',
+				selectedFilterSort: {
+					sort: 'expiry'
+				}
+			},
+			{
+				type: 'UPDATE_URL',
+				href: '/?search=test%20testtag&tags=testtag%2Ctag'
+			}
+		];
 
 		assert.deepEqual(store.getActions(), out, `Didn't return the correct action object`);
 	});

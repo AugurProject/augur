@@ -29,9 +29,6 @@ export function loadAccountTrades(marketID, cb) {
 					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
 				}),
-				// shortAskBuyCompleteSetsLogs: (callback) => augur.getShortAskBuyCompleteSetsLogs(account, options, callback),
-				// shortSellBuyCompleteSetsLogs: (callback) => augur.getTakerShortSellLogs(account, options, callback),
-				// completeSetsSold: (callback) => augur.getSellCompleteSetsLogs(account, options, callback),
 				completeSetsBought: (callback) => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
 					if (err) return callback(err);
 					const completeSetsBought = augur.parseCompleteSetsLogs(logs);
@@ -44,14 +41,6 @@ export function loadAccountTrades(marketID, cb) {
 					return console.error('loadAccountTrades error:', err);
 				}
 				console.log('loadAccountTrades data:', data);
-				// if (data.shortAskBuyCompleteSetsLogs || data.shortSellBuyCompleteSetsLogs || data.completeSetsSold) {
-				// 	const netEffectiveTrades = augur.calculateNetEffectiveTrades({
-				// 		shortAskBuyCompleteSets: data.shortAskBuyCompleteSetsLogs,
-				// 		shortSellBuyCompleteSets: data.shortSellBuyCompleteSetsLogs,
-				// 		sellCompleteSets: data.completeSetsSold
-				// 	});
-				// 	dispatch(updateNetEffectiveTradesData(netEffectiveTrades, marketID));
-				// }
 				// loadAccountTradesLock[marketID] = false;
 				dispatch(sellCompleteSets(marketID, cb));
 			});

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="fragment" content="!">
 
 	<title>Decentralized Prediction Markets | Augur</title>
 	<meta name="description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
@@ -34,24 +35,30 @@
 	<link rel="stylesheet" type="text/css" href="/${build_folder}/splash.css" inline>
 	<link rel="stylesheet" type="text/css" href="/${build_folder}/styles.css">
 
-	<script src="/${build_folder}/build.js" defer></script>
+	<script src="/${build_folder}/build.js" async></script>
 
 	<script src="//www.google-analytics.com/analytics.js" defer></script>
 
 	<script>document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch-enabled' : ' touch-disabled');</script>
+	<script>
+		// Redirect /blog/ links to augur.strikingly.com/blog
+		if (window.location.pathname.match(/\/blog\//)) {
+			window.location = "http://augur.strikingly.com" + window.location.pathname;
+		}
+	</script>
 </head>
 <body>
 	<div id="app"><div id="splash"><span id="splash-text"></span></div></div>
 	<script type="text/javascript">
-	    window.doorbellOptions = {
-	        appKey: 'oUA3fjlc5PyMSUDPZ0UieGm1Plbse3U9gX2TToTMmyzoyNBCjzIND5qHWcxTBa6S'
-	    };
-	    (function(w, d, t) {
-	        var hasLoaded = false;
-	        function l() { if (hasLoaded) { return; } hasLoaded = true; window.doorbellOptions.windowLoaded = true; var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/4290?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g); }
-	        if (w.attachEvent) { w.attachEvent('onload', l); } else if (w.addEventListener) { w.addEventListener('load', l, false); } else { l(); }
-	        if (d.readyState == 'complete') { l(); }
-	    }(window, document, 'script'));
+		window.doorbellOptions = {
+			appKey: 'oUA3fjlc5PyMSUDPZ0UieGm1Plbse3U9gX2TToTMmyzoyNBCjzIND5qHWcxTBa6S'
+		};
+		(function(w, d, t) {
+			var hasLoaded = false;
+			function l() { if (hasLoaded) { return; } hasLoaded = true; window.doorbellOptions.windowLoaded = true; var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/4290?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g); }
+			if (w.attachEvent) { w.attachEvent('onload', l); } else if (w.addEventListener) { w.addEventListener('load', l, false); } else { l(); }
+			if (d.readyState == 'complete') { l(); }
+		}(window, document, 'script'));
 	</script>
 </body>
 </html>

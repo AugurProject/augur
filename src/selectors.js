@@ -1,4 +1,4 @@
-import activePage from './modules/app/selectors/active-page';
+import activeView from './modules/app/selectors/active-view';
 import loginAccount from './modules/auth/selectors/login-account';
 import links from './modules/link/selectors/links';
 import url from './modules/link/selectors/url';
@@ -22,8 +22,8 @@ import orderCancellation from './modules/bids-asks/selectors/order-cancellation'
 import market from './modules/market/selectors/market';
 import selectedOutcome from './modules/outcome/selectors/selected-outcome';
 
-import filters from './modules/markets/selectors/filters';
-import searchSort from './modules/markets/selectors/search-sort';
+import tags from './modules/markets/selectors/tags';
+import filterSort from './modules/markets/selectors/filter-sort';
 import keywords from './modules/markets/selectors/keywords';
 
 import portfolio from './modules/portfolio/selectors/portfolio';
@@ -40,7 +40,7 @@ import tradeCommitLock from './modules/trade/selectors/trade-commit-lock';
 import createMarketForm from './modules/create-market/selectors/create-market-form';
 
 const selectors = {
-	activePage,
+	activeView,
 	loginAccount,
 	links,
 	url,
@@ -65,8 +65,8 @@ const selectors = {
 	marketDataUpdater,
 	marketDataAge,
 
-	filters,
-	searchSort,
+	tags,
+	filterSort,
 	keywords,
 
 	portfolio,

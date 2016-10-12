@@ -2,7 +2,7 @@ import { assert } from 'chai';
 
 import * as setTitle from '../../src/utils/set-title';
 
-import * as pages from '../../src/modules/app/constants/pages';
+import * as pages from '../../src/modules/app/constants/views';
 import * as titles from '../../src/modules/app/constants/page-titles';
 
 describe('utils/set-title.js', () => {
