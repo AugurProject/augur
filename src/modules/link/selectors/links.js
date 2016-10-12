@@ -35,6 +35,8 @@ export default function () {
 		myReportsLink: selectMyReportsLink(store.dispatch),
 		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
 	};
+
+	// NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
 }
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
