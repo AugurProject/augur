@@ -7,7 +7,7 @@ const MarketsPagination = p => (
 			{!!p.pagination && !!p.pagination.previousPageNum &&
 				<Link
 					{...p.pagination.previousPageLink}
-					className="button-container prev"
+					className="button"
 				>
 					<i></i>
 				</Link>
@@ -22,7 +22,7 @@ const MarketsPagination = p => (
 			{!!p.pagination && !!p.pagination.nextPageNum &&
 				<Link
 					{...p.pagination.nextPageLink}
-					className="button-container next"
+					className="button"
 				>
 					<i></i>
 				</Link>
