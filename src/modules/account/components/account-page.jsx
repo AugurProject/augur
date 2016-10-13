@@ -23,7 +23,6 @@ export default class AccountPage extends Component {
 			sendAmount: '',
 			currency: 'eth',
 			recipientAddress: '',
-
 		};
 
 		this.handleTransfer = this.handleTransfer.bind(this);
@@ -210,17 +209,17 @@ export default class AccountPage extends Component {
 					</div>
 					<div className={classnames('account-section', { displayNone: p.account.localNode })}>
 						<div className="account-info-item">
-							<h2 className="heading">Download Account</h2>
+							<h2 className="heading">Download Account Key File</h2>
 							<p>
-								Download your account data. You should always save a backup of your account data somewhere safe! (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
+								Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
 							</p>
 							<a
 								className="button download-account"
 								href={p.account.downloadAccountDataString}
 								download={p.account.downloadAccountFileName}
-								title="Click here to Download your Account."
+								title="Click here to Download your Account Key File."
 							>
-								Download Account
+							Download Account Key File
 							</a>
 						</div>
 					</div>

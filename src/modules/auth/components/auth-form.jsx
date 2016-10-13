@@ -48,7 +48,8 @@ export default class AuthForm extends Component {
 			loginID: undefined,
 			rememberMe: this.props.rememberMe,
 			disableInputs: false,
-			loginAccount: {}
+			loginAccount: {},
+			submitDisabled: props.type === 'register'
 		};
 	}
 
@@ -59,6 +60,7 @@ export default class AuthForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
+
 		const name = this.refs.accountName.value;
 		const loginID = this.refs.loginID.value;
 		const password = this.refs.password.value;
@@ -89,9 +91,9 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 
-		if (password !== '' && password2 !== '') {
+		if (password !== '' && password2 !== '' && password.length === password2.length) {
 			setTimeout(() => this.props.onSubmit(name, password, password2, loginID, rememberMe, undefined, undefined, (loginAccount) => {
-				this.setState({ loginID: loginAccount.loginID, disableInputs: true, loginAccount });
+				this.setState({ loginID: loginAccount.loginID, disableInputs: true, loginAccount, submitDisabled: false });
 			}), 300);
 		}
 	}
@@ -172,12 +174,12 @@ export default class AuthForm extends Component {
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword })}
 					type="password"
 					defaultValue={p.password}
-					placeholder={p.passwordPlaceholder || 'password'}
+					placeholder={p.passwordPlaceholder || 'password (must be at least 6 characters in length)'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword}
 					autoComplete
 					disabled={s.disableInputs}
+					onChange={this.handlePasswordInput}
 				/>
 				<input
 					ref="password2"
@@ -185,10 +187,13 @@ export default class AuthForm extends Component {
 					type="password"
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
-					onChange={this.handlePasswordInput}
 					required={p.isVisiblePassword2}
 					disabled={s.disableInputs}
+					onChange={this.handlePasswordInput}
 				/>
+				<div className={classnames('instruction', { displayNone: !p.isVisibleRememberMe })}>
+					Select &ldquo;remember me&rdquo; to save your account and login automatically next time. (this will only remember your account on this device.)
+				</div>
 				<div className={classnames('bottom-container')}>
 					<Link
 						className={classnames('bottom-link', { displayNone: !p.bottomLink })}
@@ -209,6 +214,7 @@ export default class AuthForm extends Component {
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
 					type="submit"
 					value={p.submitButtonText}
+					disabled={s.submitDisabled}
 				/>
 				<Link
 					type="button"
@@ -219,7 +225,6 @@ export default class AuthForm extends Component {
 				>
 					&#xf057;
 				</Link>
-				<p className={classnames('instruction')}>Passwords must be at least 6 characters in length.</p>
 			</form>
 		);
 	}

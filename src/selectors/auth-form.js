@@ -4,7 +4,7 @@ import links from './links';
 const Shared = {
 	msg: null,
 	isVisiblePassword: true,
-	bottomLinkText: 'Import Account',
+	bottomLinkText: 'Import Existing Account',
 	bottomLink: { href: '/import', onClick: () => require('../selectors').update({ authForm: importAccount }) },
 	msgClass: 'success',
 	closeLink: { href: '/', onClick: () => require('../selectors').update({ activeView: 'markets' }) }
@@ -27,14 +27,14 @@ const signUp = {
 	...Shared,
 	type: 'register',
 	submitButtonClass: 'register-button',
-	submitButtonText: 'Generate Account',
+	submitButtonText: 'Sign Up',
 	title: 'Sign Up',
-	isVisibleName: true,
+	isVisibleName: false,
 	isVisibleID: false,
 	isVisiblePassword2: true,
 	isVisibleRememberMe: false,
-	instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
-	topLinkText: 'login',
+	instruction: 'Please enter your password (at least 6 characters), then enter it again to confirm your password. Once your passwords match, your account will automatically begin being generated. Once generated, you will see a Login ID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
+	topLinkText: 'Already have an account? Login here',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
 		href: '/login',
@@ -48,7 +48,7 @@ const signUp = {
 						require('../selectors').update({ authForm: { ...signUp, clearName: true, clearPassword: true } });
 					}
 				},
-				onSubmit: (secureLoginID, password) => {
+				onSubmit: (loginID, password) => {
 					require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 				}
 			}
@@ -73,7 +73,7 @@ const importAccount = {
 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 		}
 	},
-	onSubmit: (name, password, password2, secureLoginID, rememberMe, importAccount) => {
+	onSubmit: (name, password, password2, loginID, rememberMe, importAccount) => {
 		require('../selectors').update({
 			authForm: {
 				...signUp,
@@ -91,13 +91,14 @@ const accountCreated = {
 	...signUp,
 	isVisibleName: false,
 	isVisibleID: true,
-	submitButtonText: 'Sign Up',
-	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Hit "Sign Up" to complete registration.',
+	submitButtonText: 'Sign In',
+	isVisibleRememberMe: true,
+	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. It is critical to save this Login ID somewhere safe as it will allow you to login to your Augur Account from any device however it cannot be recovered if lost or forgotten. Paste your Login ID (crtl + v on windows, cmd + v on mac) into the Login ID field and click "Sign Up" to complete registration.',
 	loginID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };
 
 
-function SignUpOnSubmit(name, password, password2, secureLoginID, rememberMe, importedAccount, account, cb) {
+function SignUpOnSubmit(name, password, password2, loginID, rememberMe, importedAccount, account, cb) {
 	if (password !== password2) {
 		return false;
 	}
