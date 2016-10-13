@@ -20,9 +20,9 @@ export default class AccountPage extends Component {
 			editName: false,
 			showFullID: false,
 			msg: '',
-			sendAmount: null,
-			currency: null,
-			recipientAddress: null,
+			sendAmount: '',
+			currency: 'eth',
+			recipientAddress: '',
 
 		};
 
@@ -40,15 +40,15 @@ export default class AccountPage extends Component {
 		this.props.account.transferFunds(amount, currency, recipient);
 
 		this.setState({
-			sendAmount: null,
-			currency: null,
-			recipientAddress: null
+			sendAmount: '',
+			currency: 'eth',
+			recipientAddress: ''
 		});
 	};
 
 	loginIDCopy = (e) => {
 		try {
-			e.target.select(); // TODO -- verify this in UI
+			this.refs.fullLoginID.select(); // TODO -- verify this in UI
 			document.execCommand('copy');
 		} catch (err) {
 			console.log(err);
@@ -135,6 +135,7 @@ export default class AccountPage extends Component {
 										}
 										{s.showFullID &&
 											<textarea
+												ref="fullLoginID"
 												className="display-full-login-id"
 												title="Click here to copy your Login ID."
 												value={p.account.loginID}
@@ -146,8 +147,7 @@ export default class AccountPage extends Component {
 											className="link"
 											title={s.showFullID ? 'Hide full id' : 'Show full id'}
 											onClick={() => {
-												const showHide = !s.showFullID;
-												this.setState({ showFullID: showHide });
+												this.setState({ showFullID: !s.showFullID });
 											}}
 										>
 											{s.showFullID ? '(hide id)' : '(show full id)'}
@@ -177,12 +177,12 @@ export default class AccountPage extends Component {
 									placeholder="Amount to transfer"
 									title="Amount to transfer"
 									value={this.state.sendAmount}
-									onChange={sendAmount => this.setState({ sendAmount })}
+									onChange={sendAmount => this.setState({ sendAmount: sendAmount.target.value })}
 								/>
 								<select
 									className="currency-selector"
 									title="Currency Type"
-									onChange={currency => this.setState({ currency })}
+									onChange={currency => this.setState({ currency: currency.target.value })}
 								>
 									<option value="eth">ether (eth)</option>
 									<option value="realEth">Real Ether (eth)</option>
@@ -196,7 +196,7 @@ export default class AccountPage extends Component {
 									placeholder="Recipient Address"
 									title="Recipient Address"
 									value={this.state.recipientAddress}
-									onChange={recipientAddress => this.setState({ recipientAddress })}
+									onChange={recipientAddress => this.setState({ recipientAddress: recipientAddress.target.value })}
 								/>
 								<button
 									className="button make"
