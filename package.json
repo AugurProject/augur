@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-ui-react-components": "3.3.1",
+    "augur-ui-react-components": "3.3.3",
     "augur.js": "2.9.13",
     "bignumber.js": "2.3.0",
     "express": "^4.14.0",
