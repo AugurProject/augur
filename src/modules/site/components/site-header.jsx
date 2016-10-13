@@ -13,7 +13,7 @@ const SiteHeader = p => (
 		<nav className="site-nav">
 			<div className="nav-group left-navs">
 				<Link
-					className={classnames('site-nav-link', { active: (p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader == null) })}
+					className={classnames('site-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
 					{...p.marketsLink}
 				>
 					Markets
