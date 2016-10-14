@@ -8,8 +8,10 @@ html,
 body {
 
 	.font-defaults(); // NOTE -- font-size denominated in `rem` so user preferences are maintained.
+
 	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
 	color: @color-text-dark;
+	overflow: hidden;
 }
 
 a {
@@ -162,4 +164,3 @@ button {
 [type="search"]::-webkit-search-results-decoration {
 	display: none;
 }
-

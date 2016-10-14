@@ -1,12 +1,20 @@
 // TYPOGRAPHY
 // site-wide typographic rules + values
 
-// 	Employed Weights
+// 	VARS
+// NOTE -- These shouldn't ever be directly applied -- use the mixins (at the bottom)
+// 		Employed Weights
 @font-weight-extra-light: 200;
 @font-weight-light: 300;
 @font-weight-normal: 400;
+// 		Employed Sizes
+@font-size-normal: 0.8rem;
+@font-size-medium: 0.9rem;
+@font-size-large: 1.6rem;
+@font-size-extra-large: 2rem;
 
-//  icon set -- Font Awesome
+//	TYPEFACES
+// 		Font Awesome
 @font-face {
 	font-family: 'Font Awesome';
 	font-style: normal;
@@ -33,24 +41,22 @@
 	// Helpful: full list of unicode characters: http://fontawesome.io/cheatsheet/
 }
 
-//  primary site font (Source Sans Pro)
-//      Extra Light
+//		Source Sans Pro
+//      	Extra Light
 @font-face {
 	font-family: 'Source Sans Pro';
 	font-style: normal;
 	font-weight: @font-weight-extra-light;
 	src: url('assets/fonts/source-sans-pro-extra-light.woff') format('woff');
 }
-
-//      Light
+//      	Light
 @font-face {
 	font-family: 'Source Sans Pro';
 	font-style: normal;
 	font-weight: @font-weight-light;
 	src: url('assets/fonts/source-sans-pro-light.woff') format('woff');
 }
-
-//      Regular
+//      	Regular
 @font-face {
 	font-family: 'Source Sans Pro';
 	font-style: normal;
@@ -58,7 +64,7 @@
 	src: url('assets/fonts/source-sans-pro-regular.woff') format('woff');
 }
 
-//	Mixins
+//	MIXINS
 .fa {
 	font-family: 'Font Awesome';
 	font-style: normal; // Since most instances of use are within the `i` tag
@@ -88,17 +94,17 @@
 
 //		Sizes
 .font-size-normal {
-	font-size: 0.8rem;
+	font-size: @font-size-normal;
 }
 
 .font-size-medium {
-	font-size: 0.9rem;
+	font-size: @font-size-medium;
 }
 
 .font-size-large {
-	font-size: 1.6rem;
+	font-size: @font-size-large;
 }
 
 .font-size-extra-large {
-	font-size: 2rem;
+	font-size: @font-size-extra-large;
 }
