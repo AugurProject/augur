@@ -11,7 +11,13 @@ const MarketPreview = p => (
 
 			{!!p.marketLink &&
 				<div className="market-link">
-					<Link onClick={p.marketLink.onClick} className={classnames('button', p.marketLink.className)}>{p.marketLink.text}</Link>
+					<Link
+						{...p.marketLink}
+						onClick={p.marketLink.onClick}
+						className={classnames('button', p.marketLink.className)}
+					>
+						{p.marketLink.text}
+					</Link>
 				</div>
 			}
 		</div>
