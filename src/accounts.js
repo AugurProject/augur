@@ -26,7 +26,6 @@ keys.constants.scrypt.n = constants.ROUNDS;
 module.exports = function () {
 
     var augur = this;
-
     return {
 
         // The account object is set when logged in

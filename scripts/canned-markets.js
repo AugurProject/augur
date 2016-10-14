@@ -171,16 +171,16 @@ var cannedMarkets = [{
     makerFee: "0.01",
     resolution: "",
     tags: ["climate change", "Antartica", "warming"]
-}, {
-    description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
-    expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
-    minValue: 0,
-    maxValue: 1000000,
-    numOutcomes: 2,
-    takerFee: "0.02",
-    makerFee: "0.01",
-    resolution: "science!",
-    tags: ["climate", "extinction", "marine biology"]
+// }, {
+//     description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
+//     expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
+//     minValue: 0,
+//     maxValue: 1000000,
+//     numOutcomes: 2,
+//     takerFee: "0.02",
+//     makerFee: "0.01",
+//     resolution: "science!",
+//     tags: ["climate", "extinction", "marine biology"]
 }, {
     description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
     expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
