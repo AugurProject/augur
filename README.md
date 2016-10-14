@@ -5,7 +5,7 @@ Augur
 
 Augur is a decentralized prediction market platform built on Ethereum.
 This is the reference client.
-It runs locally in your browser and communicates directly with the ethereum network, without going through intermediete servers.
+It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
 
 There are several ways to run it:
 
