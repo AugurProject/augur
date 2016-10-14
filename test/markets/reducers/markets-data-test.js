@@ -5,7 +5,7 @@ import { UPDATE_MARKETS_DATA } from '../../../src/modules/markets/actions/update
 describe(`modules/markets/reducers/markets-data.js`, () => {
 	it(`should update Markets Data`, () => {
 		const marketsData = {
-			'0x014be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
+			'0x4be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
 				id: 2,
 				outcomeID: 'someoutcome',
 				details: {
@@ -14,14 +14,14 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			}
 		};
 		const marketsData2 = {
-			'0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
+			'0x131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
 				id: 1,
 				outcomeID: 'an outcomeID',
 				details: {
 					test: 'example'
 				}
 			},
-			'0x014be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
+			'0x4be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
 				id: 2,
 				outcomeID: 'someoutcome',
 				details: {
@@ -30,7 +30,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			}
 		};
 		const curMarketsData1 = {
-			'0x131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
+			'0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
 				id: 1,
 				outcomeID: 'an outcomeID',
 				isLoadedMarketInfo: false,
@@ -40,7 +40,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			}
 		};
 		const curMarketsData2 = {
-			'0x131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
+			'0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
 				id: 1,
 				outcomeID: 'an outcomeID',
 				isLoadedMarketInfo: false,
@@ -48,7 +48,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 					test: 'example'
 				}
 			},
-			'0x14be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
+			'0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
 				id: 2,
 				outcomeID: 'a different outcome',
 				details: {
@@ -57,7 +57,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			}
 		};
 		const expectedOutput = {
-			'0x131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
+			'0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
 				id: 1,
 				outcomeID: 'an outcomeID',
 				isLoadedMarketInfo: false,
@@ -65,7 +65,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 					test: 'example'
 				}
 			},
-			'0x14be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
+			'0x04be50f6303babc4e5400a6ebfaa77a8a76f620dd9f6394466e552842f585801': {
 				id: 2,
 				outcomeID: 'someoutcome',
 				isLoadedMarketInfo: false,
