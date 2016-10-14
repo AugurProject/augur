@@ -21,8 +21,10 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
 	// it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
 	return Object.keys(newMarketsData).reduce((p, marketID) => {
+		const normalizedMarketID = normalizeMarketID(marketID);
+
 		const marketData = {
-			...existingMarketsData[marketID],
+			...existingMarketsData[normalizedMarketID],
 			...newMarketsData[marketID]
 		};
 
@@ -47,7 +49,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		marketData.isLoadedMarketInfo = !!marketData.type;
 
 		// save market (without outcomes)
-		p[marketID] = marketData;
+		p[normalizedMarketID] = marketData;
 
 		return p;
 	}, {});
@@ -66,5 +68,11 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		marketData.reportedOutcome = event.outcome;
 		marketData.isEthical = event.isEthical;
 		delete marketData.events;
+	}
+
+	function normalizeMarketID(marketID) {
+		const normalizedID = /^(0x)(0*)(.*)/.exec(marketID);
+
+		return `${normalizedID[1]}${normalizedID[3]}`;
 	}
 }
