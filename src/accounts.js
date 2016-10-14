@@ -42,14 +42,13 @@ module.exports = function () {
                 return onFailed(registeredAddress);
             }
             var url = constants.FAUCET + abi.format_address(registeredAddress);
+            console.debug("fundNewAccountFromFaucet:", url);
             request(url, function (err, response, body) {
                 if (err) return onFailed(err);
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
                 }
-                if (augur.rpc.debug.broadcast) {
-                    console.debug("Sent ether to:", registeredAddress);
-                }
+                console.debug("Sent ether to:", registeredAddress);
                 augur.fundNewAccount({
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
