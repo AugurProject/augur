@@ -20,7 +20,7 @@ const SiteHeader = p => (
 				</Link>
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numFavorites &&
 					<Link
-						className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+						className={classnames('site-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
 						{...p.favoritesLink}
 					>
 						{!!p.marketsInfo.numFavorites && p.marketsInfo.numFavorites} Favorites
@@ -28,7 +28,7 @@ const SiteHeader = p => (
 				}
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numPendingReports &&
 					<Link
-						className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+						className={classnames('site-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
 						{...p.pendingReportsLink}
 					>
 						{!!p.marketsInfo.numPendingReports && p.marketsInfo.numPendingReports} Pending Reports
