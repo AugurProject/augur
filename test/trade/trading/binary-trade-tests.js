@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 import { augur } from '../../../src/services/augurjs';
-import { BINARY, BUY, tradeShapeAssertion } from './constants';
+import { BINARY, BUY, SELL, tradeShapeAssertion } from './constants';
 
 
 describe(`Binary Trading Tests`, () => {
@@ -125,5 +125,122 @@ describe(`Binary Trading Tests`, () => {
 			gasFeesRealEth: '0.01450404',
 			feePercent: '0.199203187250996016'
 		}, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
+	});
+
+	it('should pass shape tests for Selling 10 shares of YES at the default limitPrice', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', SELL, '10.0', undefined, undefined));
+		// console.log('============================================================');
+		// console.log(store.getActions()[0].data.details);
+		// console.log('============================================================');
+		tradeShapeAssertion(store.getActions()[0].data.details);
+	});
+
+	it('should pass calculation tests for selling 10 shares of YES at the default limitPrice', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', SELL, '10.0', undefined, undefined));
+		// console.log('============================================================');
+		// console.log(store.getActions()[0].data.details);
+		// console.log('============================================================');
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: SELL,
+			numShares: 10,
+			limitPrice: 0.5,
+			totalFee: '0.01',
+			totalCost: '-10.01',
+			tradeActions: [
+				{
+					action: 'SHORT_ASK',
+					shares: '10',
+					gasEth: '0.02791268',
+					feeEth: '0.01',
+					feePercent: '0.2',
+					costEth: '-10.01',
+					avgPrice: '-1.001',
+					noFeePrice: '0.5'
+				}
+			],
+			tradingFeesEth: '0.01',
+			gasFeesRealEth: '0.02791268',
+			feePercent: '0.099800399201596806'
+		}, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
+	});
+
+	it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '0', undefined, undefined));
+		// console.log('============================================================');
+		// console.log(store.getActions()[0].data.details);
+		// console.log('============================================================');
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: BUY,
+			numShares: undefined,
+			limitPrice: undefined,
+			totalFee: 0,
+			totalCost: 0
+		}, `Didn't clear the tradeDetails object`);
+	});
+
+	it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0.5', undefined));
+		// console.log('============================================================');
+		// console.log(store.getActions()[0].data.details);
+		// console.log('============================================================');
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: BUY,
+			numShares: undefined,
+			limitPrice: 0.5,
+			totalFee: 0,
+			totalCost: 0
+		}, `Didn't return the correct tradeDetails object based on input`);
+	});
+
+	it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradeinProgress is defined for an outcome.', () => {
+		// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
+		store.getState().tradesInProgress = {
+			'0x000000000000000000000000000000000binary1': {
+				'2': {
+					side: BUY,
+					numShares: 10,
+					limitPrice: 0.5,
+					totalFee: '0.01',
+					totalCost: '5.01',
+					tradeActions: [{
+						action: 'BID',
+						shares: '10',
+						gasEth: '0.01450404',
+						feeEth: '0.01',
+						feePercent: '0.2',
+						costEth: '5.01',
+						avgPrice: '0.501',
+						noFeePrice: '0.5'
+					}],
+					tradingFeesEth: '0.01',
+					gasFeesRealEth: '0.01450404',
+					feePercent: '0.199203187250996016'
+				}
+			}
+		};
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0.15', undefined));
+		// console.log('============================================================');
+		// console.log(store.getActions()[0].data.details);
+		// console.log('============================================================');
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: BUY,
+			numShares: 10,
+			limitPrice: 0.15,
+			totalFee: '0.00153',
+			totalCost: '1.50153',
+			tradeActions: [{
+				action: 'BID',
+				shares: '10',
+				gasEth: '0.01450404',
+				feeEth: '0.00153',
+				feePercent: '0.102',
+				costEth: '1.50153',
+				avgPrice: '0.150153',
+				noFeePrice: '0.15'
+			}],
+			tradingFeesEth: '0.00153',
+			gasFeesRealEth: '0.01450404',
+			feePercent: '0.101792343619017205'
+		}, `Didn't update the tradeDetails object to the new calcs given new limit`);
 	});
 });
