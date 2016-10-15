@@ -14,7 +14,6 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
 		return null;
 	}
 	const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
-	trades.reverse();
 	const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
 	return generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized);
 });
