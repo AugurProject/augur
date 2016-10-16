@@ -36,7 +36,7 @@ describe("Unit tests", function () {
             price: "0.4",
             range: 1,
             expected: "0.0192"
-        })
+        });
         test({
             tradingFee: "0.02",
             price: "0.5",

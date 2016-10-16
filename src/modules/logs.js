@@ -247,6 +247,10 @@ module.exports = {
         });
     },
 
+    sortByBlockNumber: function (a, b) {
+        return a.blockNumber - b.blockNumber;
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
         function parseLogs(logs, trades, maker, isShortSell, callback) {
@@ -330,6 +334,18 @@ module.exports = {
                                         if (!trades || Object.keys(trades).length === 0) {
                                             return cb(null);
                                         }
+                                        var marketIDs = Object.keys(trades);
+                                        var numMarkets = marketIDs.length;
+                                        var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
+                                        for (var i = 0; i < numMarkets; ++i) {
+                                            marketTrades = trades[marketIDs[i]];
+                                            outcomeIDs = Object.keys(marketTrades);
+                                            numOutcomes = outcomeIDs.length;
+                                            for (var j = 0; j < numOutcomes; ++j) {
+                                                outcomeTrades = marketTrades[outcomeIDs[j]];
+                                                outcomeTrades = outcomeTrades.sort(self.sortByBlockNumber);
+                                            }
+                                        }
                                         cb(trades);
                                     });
                                 });
@@ -387,6 +403,18 @@ module.exports = {
             parseMarketTrades(logs, function (trades) {
                 if (!trades || Object.keys(trades).length === 0) {
                     return cb(null);
+                }
+                var marketIDs = Object.keys(trades);
+                var numMarkets = marketIDs.length;
+                var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
+                for (var i = 0; i < numMarkets; ++i) {
+                    marketTrades = trades[marketIDs[i]];
+                    outcomeIDs = Object.keys(marketTrades);
+                    numOutcomes = outcomeIDs.length;
+                    for (var j = 0; j < numOutcomes; ++j) {
+                        outcomeTrades = marketTrades[outcomeIDs[j]];
+                        outcomeTrades = outcomeTrades.sort(self.sortByBlockNumber);
+                    }
                 }
                 cb(trades);
             });

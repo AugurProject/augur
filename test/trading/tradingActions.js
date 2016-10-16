@@ -6,6 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var abi = require("augur-abi");
 var augur = require("../../src");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
@@ -41,12 +42,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BID",
-                    "shares": "5",
-                    "gasEth": "0.01450404",
-                    "feeEth": "0.0288",
-                    "costEth": "3",
-                    "avgPrice": "0.6"
+                    action: "BID",
+                    shares: "5",
+                    gasEth: "0.01450404",
+                    feeEth: "0.0288",
+                    costEth: "3.0288",
+                    avgPrice: "0.60576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -91,14 +94,16 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "5",
                         price: "0.7", // price too high
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
                         id: "order2",
-                        owner: "abcd1234", // user's ask
+                        owner: abi.format_address("abcd1234"), // user's ask
                         type: "sell",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -106,6 +111,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "differentOutcome" // different outcome
                     }
                 }
@@ -115,12 +121,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BID",
-                    "shares": "5",
-                    "gasEth": "0.01450404",
-                    "feeEth": "0.0288",
-                    "costEth": "3",
-                    "avgPrice": "0.6"
+                    action: "BID",
+                    shares: "5",
+                    gasEth: "0.01450404",
+                    feeEth: "0.0288",
+                    costEth: "3.0288",
+                    avgPrice: "0.60576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -144,6 +152,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -153,12 +162,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "3",
-                    "avgPrice": "0.6"
+                    action: "BUY",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0576",
+                    costEth: "3.0576",
+                    avgPrice: "0.61152",
+                    feePercent: "1.8838304552590266",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -182,6 +193,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "0.0001",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -190,12 +202,14 @@ describe("getTradingActions", function () {
             assertions: function (actions) {
                 assert.isArray(actions);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "0.0001",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0128",
-                    "costEth": "0.000081",
-                    "avgPrice": "0.8"
+                    action: "BUY",
+                    shares: "0.0001",
+                    gasEth: "0.01574842",
+                    feeEth: "0.000001024",
+                    costEth: "0.000081024",
+                    avgPrice: "0.81024",
+                    feePercent: "1.263823064770932",
+                    noFeePrice: "0.8"
                 }];
                 assert.lengthOf(actions, expected.length);
                 assert.deepEqual(actions, expected);
@@ -220,6 +234,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -229,19 +244,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "BUY",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.22304",
+                    avgPrice: "0.61152",
+                    feePercent: "1.8838304552590266",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "BID",
-                    "shares": "3",
-                    "gasEth": "0.01450404",
-                    "feeEth": "0.01728",
-                    "costEth": "1.8",
-                    "avgPrice": "0.6"
+                    action: "BID",
+                    shares: "3",
+                    gasEth: "0.01450404",
+                    feeEth: "0.01728",
+                    costEth: "1.81728",
+                    avgPrice: "0.60576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -265,6 +284,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "5",
                         price: "0.4",
+                        fullPrecisionPrice: "0.4",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -274,12 +294,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "2",
-                    "avgPrice": "0.4"
+                    action: "BUY",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0384",
+                    costEth: "2.0384",
+                    avgPrice: "0.40768",
+                    feePercent: "1.8838304552590266",
+                    noFeePrice: "0.4"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -303,6 +325,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.4",
+                        fullPrecisionPrice: "0.4",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -312,19 +335,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "0.8",
-                    "avgPrice": "0.4"
+                    action: "BUY",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.01536",
+                    costEth: "0.81536",
+                    avgPrice: "0.40768",
+                    feePercent: "1.8838304552590266",
+                    noFeePrice: "0.4"
                 }, {
-                    "action": "BID",
-                    "shares": "3",
-                    "gasEth": "0.01450404",
-                    "feeEth": "0.01728",
-                    "costEth": "1.8",
-                    "avgPrice": "0.6"
+                    action: "BID",
+                    shares: "3",
+                    gasEth: "0.01450404",
+                    feeEth: "0.01728",
+                    costEth: "1.81728",
+                    avgPrice: "0.60576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -348,6 +375,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "1",
                         price: "0.4",
+                        fullPrecisionPrice: "0.4",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -355,6 +383,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.3",
+                        fullPrecisionPrice: "0.3",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -362,6 +391,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.2",
+                        fullPrecisionPrice: "0.2",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -371,12 +401,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0488",
-                    "costEth": "1.4",
-                    "avgPrice": "0.28"
+                    action: "BUY",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02288",
+                    costEth: "1.42288",
+                    avgPrice: "0.284576",
+                    feePercent: "1.6080062970875969",
+                    noFeePrice: "0.28"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -400,6 +432,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "1",
                         price: "0.4",
+                        fullPrecisionPrice: "0.4",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -407,6 +440,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.3",
+                        fullPrecisionPrice: "0.3",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -416,19 +450,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "3",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.036",
-                    "costEth": "1",
-                    "avgPrice": "0.33333333333333333333"
+                    action: "BUY",
+                    shares: "3",
+                    gasEth: "0.01574842",
+                    feeEth: "0.01776",
+                    costEth: "1.01776",
+                    avgPrice: "0.339253333333333333",
+                    feePercent: "1.7450086464392391",
+                    noFeePrice: "0.333333333333333333"
                 }, {
-                    "action": "BID",
-                    "shares": "2",
-                    "gasEth": "0.01450404",
-                    "feeEth": "0.01152",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "BID",
+                    shares: "2",
+                    gasEth: "0.01450404",
+                    feeEth: "0.01152",
+                    costEth: "1.21152",
+                    avgPrice: "0.60576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -452,6 +490,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "1",
                         price: "0.4",
+                        fullPrecisionPrice: "0.4",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -459,6 +498,7 @@ describe("getTradingActions", function () {
                         type: "sell",
                         amount: "2",
                         price: "0.3",
+                        fullPrecisionPrice: "0.3",
                         outcome: "outcomeasdf123"
                     }
                 }
@@ -468,12 +508,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "BUY",
-                    "shares": "3",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.036",
-                    "costEth": "1",
-                    "avgPrice": "0.33333333333333333333"
+                    action: "BUY",
+                    shares: "3",
+                    gasEth: "0.01574842",
+                    feeEth: "0.01776",
+                    costEth: "1.01776",
+                    noFeePrice: "0.333333333333333333",
+                    feePercent: "1.7450086464392391",
+                    avgPrice: "0.339253333333333333"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -500,12 +542,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SHORT_ASK",
-                    "shares": "5",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.0288",
-                    "costEth": "-2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "5",
+                    gasEth: "0.02791268",
+                    feeEth: "0.0288",
+                    costEth: "-5.0288",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -528,6 +572,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -538,12 +583,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "5",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0192",
-                    "costEth": "-2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_SELL",
+                    shares: "5",
+                    gasEth: "0.02119592",
+                    feeEth: "0.0576",
+                    costEth: "-2.0576",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -566,6 +613,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -576,19 +624,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.17696",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "ASK",
-                    "shares": "3",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01728",
-                    "costEth": "1.8",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "3",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01728",
+                    costEth: "1.78272",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -611,6 +663,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -621,31 +674,36 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 3);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.17696",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "ASK",
-                    "shares": "2",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01152",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "2",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01152",
+                    costEth: "1.18848",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "1",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.00576",
-                    "costEth": "-0.4",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "1",
+                    gasEth: "0.02791268",
+                    feeEth: "0.00576",
+                    costEth: "-1.00576",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
         });
-
 
         runTestCase({
             description: "bid with less amount and same price, no position",
@@ -664,6 +722,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -674,19 +733,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "2",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0192",
-                    "costEth": "-0.8",
-                    "avgPrice": "0.6"
+                    action: "SHORT_SELL",
+                    shares: "2",
+                    gasEth: "0.02119592",
+                    feeEth: "0.02304",
+                    costEth: "-0.82304",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "3",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01728",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "3",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01728",
+                    costEth: "-3.01728",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -709,6 +772,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -719,12 +783,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "5",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0168",
-                    "costEth": "-1.5",
-                    "avgPrice": "0.7"
+                    action: "SHORT_SELL",
+                    shares: "5",
+                    gasEth: "0.02119592",
+                    feeEth: "0.0588",
+                    costEth: "-1.5588",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -747,6 +813,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -757,19 +824,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "2",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0168",
-                    "costEth": "-0.6",
-                    "avgPrice": "0.7"
+                    action: "SHORT_SELL",
+                    shares: "2",
+                    gasEth: "0.02119592",
+                    feeEth: "0.02352",
+                    costEth: "-0.62352",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "3",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01728",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "3",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01728",
+                    costEth: "-3.01728",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -792,6 +863,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -799,6 +871,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -809,19 +882,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "3",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0296",
-                    "costEth": "-0.7",
-                    "avgPrice": "0.76666666666666666667"
+                    action: "SHORT_SELL",
+                    shares: "3",
+                    gasEth: "0.02119592",
+                    feeEth: "0.03224",
+                    costEth: "-0.73224",
+                    avgPrice: "0.75592",
+                    feePercent: "1.4216671958231911",
+                    noFeePrice: "0.766666666666666666"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "2",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01152",
-                    "costEth": "-0.8",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "2",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01152",
+                    costEth: "-2.01152",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -844,6 +921,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -851,6 +929,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -858,6 +937,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -868,12 +948,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SHORT_SELL",
-                    "shares": "5",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0368",
-                    "costEth": "-0.9",
-                    "avgPrice": "0.82"
+                    action: "SHORT_SELL",
+                    shares: "5",
+                    gasEth: "0.02119592",
+                    feeEth: "0.0452",
+                    costEth: "-0.9452",
+                    avgPrice: "0.81096",
+                    feePercent: "1.1147282233402387",
+                    noFeePrice: "0.82"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -896,6 +978,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -903,6 +986,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -910,6 +994,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -941,19 +1026,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "ASK",
-                    "shares": "2",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01152",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "2",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01152",
+                    costEth: "1.18848",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "3",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01728",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "3",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01728",
+                    costEth: "-3.01728",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -976,6 +1065,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -986,19 +1076,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.17696",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "SHORT_SELL",
-                    "shares": "3",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0192",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_SELL",
+                    shares: "3",
+                    gasEth: "0.02119592",
+                    feeEth: "0.03456",
+                    costEth: "-1.23456",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1021,6 +1115,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1031,19 +1126,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.17696",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "3",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01728",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "3",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01728",
+                    costEth: "-3.01728",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1066,6 +1165,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1076,19 +1176,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0168",
-                    "costEth": "1.4",
-                    "avgPrice": "0.7"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02352",
+                    costEth: "1.37648",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }, {
-                    "action": "SHORT_SELL",
-                    "shares": "3",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0168",
-                    "costEth": "-0.9",
-                    "avgPrice": "0.7"
+                    action: "SHORT_SELL",
+                    shares: "3",
+                    gasEth: "0.02119592",
+                    feeEth: "0.03528",
+                    costEth: "-0.93528",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1111,6 +1215,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1121,19 +1226,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0168",
-                    "costEth": "1.4",
-                    "avgPrice": "0.7"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02352",
+                    costEth: "1.37648",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "3",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01728",
-                    "costEth": "-1.2",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "3",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01728",
+                    costEth: "-3.01728",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1156,6 +1265,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1163,6 +1273,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1173,26 +1284,32 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 3);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0128",
-                    "costEth": "1.6",
-                    "avgPrice": "0.8"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02048",
+                    costEth: "1.57952",
+                    avgPrice: "0.78976",
+                    feePercent: "1.2965964343598055",
+                    noFeePrice: "0.8"
                 }, {
-                    "action": "SHORT_SELL",
-                    "shares": "1",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0168",
-                    "costEth": "-0.3",
-                    "avgPrice": "0.7"
+                    action: "SHORT_SELL",
+                    shares: "1",
+                    gasEth: "0.02119592",
+                    feeEth: "0.01176",
+                    costEth: "-0.31176",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }, {
-                    "action": "SHORT_ASK",
-                    "shares": "2",
-                    "gasEth": "0.02791268",
-                    "feeEth": "0.01152",
-                    "costEth": "-0.8",
-                    "avgPrice": "0.6"
+                    action: "SHORT_ASK",
+                    shares: "2",
+                    gasEth: "0.02791268",
+                    feeEth: "0.01152",
+                    costEth: "-2.01152",
+                    avgPrice: "1.00576",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1215,6 +1332,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1222,6 +1340,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -1229,6 +1348,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1239,19 +1359,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0072",
-                    "costEth": "1.8",
-                    "avgPrice": "0.9"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.01296",
+                    costEth: "1.78704",
+                    avgPrice: "0.89352",
+                    feePercent: "0.72522159548751",
+                    noFeePrice: "0.9"
                 }, {
-                    "action": "SHORT_SELL",
-                    "shares": "3",
-                    "gasEth": "0.02119592",
-                    "feeEth": "0.0296",
-                    "costEth": "-0.7",
-                    "avgPrice": "0.76666666666666666667"
+                    action: "SHORT_SELL",
+                    shares: "3",
+                    gasEth: "0.02119592",
+                    feeEth: "0.03224",
+                    costEth: "-0.73224",
+                    avgPrice: "0.75592",
+                    feePercent: "1.4216671958231911",
+                    noFeePrice: "0.766666666666666666"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1274,6 +1398,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1281,6 +1406,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -1288,6 +1414,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1298,12 +1425,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0072",
-                    "costEth": "1.8",
-                    "avgPrice": "0.9"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.01296",
+                    costEth: "1.78704",
+                    avgPrice: "0.89352",
+                    feePercent: "0.72522159548751",
+                    noFeePrice: "0.9"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1328,12 +1457,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "ASK",
-                    "shares": "5",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.0288",
-                    "costEth": "3",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "5",
+                    gasEth: "0.01393518",
+                    feeEth: "0.0288",
+                    costEth: "2.9712",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1356,6 +1487,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1366,12 +1498,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "3",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0576",
+                    costEth: "2.9424",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1394,6 +1528,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.6",
+                        fullPrecisionPrice: "0.6",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1404,19 +1539,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0192",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02304",
+                    costEth: "1.17696",
+                    avgPrice: "0.58848",
+                    feePercent: "1.9575856443719412",
+                    noFeePrice: "0.6"
                 }, {
-                    "action": "ASK",
-                    "shares": "3",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01728",
-                    "costEth": "1.8",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "3",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01728",
+                    costEth: "1.78272",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1439,6 +1578,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "5",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1449,12 +1589,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0168",
-                    "costEth": "3.5",
-                    "avgPrice": "0.7"
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0588",
+                    costEth: "3.4412",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1477,6 +1619,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1487,19 +1630,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "2",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0168",
-                    "costEth": "1.4",
-                    "avgPrice": "0.7"
+                    action: "SELL",
+                    shares: "2",
+                    gasEth: "0.01574842",
+                    feeEth: "0.02352",
+                    costEth: "1.37648",
+                    avgPrice: "0.68824",
+                    feePercent: "1.7087062652563059",
+                    noFeePrice: "0.7"
                 }, {
-                    "action": "ASK",
-                    "shares": "3",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01728",
-                    "costEth": "1.8",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "3",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01728",
+                    costEth: "1.78272",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1522,6 +1669,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1529,6 +1677,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1539,19 +1688,23 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 2);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "3",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0296",
-                    "costEth": "2.3",
-                    "avgPrice": "0.76666666666666666667"
+                    action: "SELL",
+                    shares: "3",
+                    gasEth: "0.01574842",
+                    feeEth: "0.03224",
+                    costEth: "2.26776",
+                    avgPrice: "0.75592",
+                    feePercent: "1.4216671958231911",
+                    noFeePrice: "0.766666666666666666"
                 }, {
-                    "action": "ASK",
-                    "shares": "2",
-                    "gasEth": "0.01393518",
-                    "feeEth": "0.01152",
-                    "costEth": "1.2",
-                    "avgPrice": "0.6"
+                    action: "ASK",
+                    shares: "2",
+                    gasEth: "0.01393518",
+                    feeEth: "0.01152",
+                    costEth: "1.18848",
+                    avgPrice: "0.59424",
+                    feePercent: "0.96",
+                    noFeePrice: "0.6"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1574,6 +1727,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1581,6 +1735,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -1588,6 +1743,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1598,12 +1754,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0368",
-                    "costEth": "4.1",
-                    "avgPrice": "0.82"
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0452",
+                    costEth: "4.0548",
+                    avgPrice: "0.81096",
+                    feePercent: "1.1147282233402387",
+                    noFeePrice: "0.82"
                 }];
                 assert.deepEqual(actions, expected);
             }
@@ -1626,6 +1784,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "1",
                         price: "0.7",
+                        fullPrecisionPrice: "0.7",
                         outcome: "outcomeasdf123"
                     },
                     "order2": {
@@ -1633,6 +1792,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.8",
+                        fullPrecisionPrice: "0.8",
                         outcome: "outcomeasdf123"
                     },
                     "order3": {
@@ -1640,6 +1800,7 @@ describe("getTradingActions", function () {
                         type: "buy",
                         amount: "2",
                         price: "0.9",
+                        fullPrecisionPrice: "0.9",
                         outcome: "outcomeasdf123"
                     }
                 },
@@ -1650,12 +1811,14 @@ describe("getTradingActions", function () {
                 assert.isArray(actions);
                 assert.lengthOf(actions, 1);
                 var expected = [{
-                    "action": "SELL",
-                    "shares": "5",
-                    "gasEth": "0.01574842",
-                    "feeEth": "0.0368",
-                    "costEth": "4.1",
-                    "avgPrice": "0.82"
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.0452",
+                    costEth: "4.0548",
+                    avgPrice: "0.81096",
+                    feePercent: "1.1147282233402387",
+                    noFeePrice: "0.82"
                 }];
                 assert.deepEqual(actions, expected);
             }

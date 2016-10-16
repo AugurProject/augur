@@ -331,9 +331,9 @@ module.exports = {
 
         // If position >= 0, user is increasing a long position:
         //  - update weighted price of open positions
-        if (PL.position.eq(constants.ZERO)) {
+        if (PL.position.abs().lte(constants.PRECISION.zero)) {
             updatedPL.meanOpenPrice = price;
-        } else if (PL.position.gt(constants.ZERO)) {
+        } else if (PL.position.gt(constants.PRECISION.zero)) {
             updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
 
         // If position < 0, user is decreasing a short position:
@@ -355,9 +355,9 @@ module.exports = {
         // If position < 0, user is increasing a short position:
         //  - treat as a "negative buy" for P/L
         //  - update weighted price of open positions
-        if (PL.position.eq(constants.ZERO)) {
+        if (PL.position.abs().lte(constants.PRECISION.zero)) {
             updatedPL.meanOpenPrice = price;
-        } else if (PL.position.lt(constants.ZERO)) {
+        } else if (PL.position.lt(constants.PRECISION.zero)) {
             updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
 
         // If position > 0, user is decreasing a long position (i.e., ordinary sale):
