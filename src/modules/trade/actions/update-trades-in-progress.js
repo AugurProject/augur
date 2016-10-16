@@ -107,7 +107,11 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					position && position.toFixed(),
 					outcomeID,
 					market.cumulativeScale,
-					orderBooks && orderBooks[marketID] || {});
+					orderBooks && orderBooks[marketID] || {},
+					(market.type === SCALAR) ? {
+						minValue: market.minValue,
+						maxValue: market.maxValue
+					} : null);
 				if (newTradeDetails.tradeActions) {
 					const numTradeActions = newTradeDetails.tradeActions.length;
 					if (numTradeActions) {
