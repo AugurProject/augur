@@ -25,6 +25,7 @@ var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
 module.exports = {
 
     /**
+     * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
@@ -37,6 +38,7 @@ module.exports = {
     },
 
     /**
+     * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
