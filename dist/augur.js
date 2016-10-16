@@ -40368,7 +40368,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.9.16";
+    this.version = "2.10.0";
 
     this.options = {
         debug: {
@@ -40447,6 +40447,7 @@ var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
 module.exports = {
 
     /**
+     * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
@@ -40459,6 +40460,7 @@ module.exports = {
     },
 
     /**
+     * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
@@ -44003,8 +44005,7 @@ module.exports = {
      *
      * @param {Array} orders Bids or asks
      * @param {String} traderOrderType What trader want to do (buy or sell)
-     * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
-     *     it's null order is considered to be market order
+     * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
      * @param {String} outcomeId
      * @param {String} userAddress
      * @return {Array.<Object>}
@@ -44138,7 +44139,6 @@ module.exports = {
      */
     getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
         var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
-        var costEth = shortSellEth.minus(shares);
         var fxpShortSellEth = abi.fix(shortSellEth);
         var fxpTakerFeeEth = abi.fix(takerFeeEth);
         var fxpShares = abi.fix(shares);
@@ -44148,7 +44148,7 @@ module.exports = {
             gasEth: shortSellGasEth.toFixed(),
             feeEth: takerFeeEth.toFixed(),
             feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
-            costEth: costEth.toFixed(),
+            costEth: shortSellEth.toFixed(),
             avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
             noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
         };
@@ -44175,8 +44175,8 @@ module.exports = {
             feeEth: abi.unfix(feeEth, "string"),
             feePercent: abi.unfix(makerFee).times(100).toFixed(),
             costEth: abi.unfix(costEth, "string"),
-            avgPrice: abi.unfix(costEth.dividedBy(shares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(limitPrice, "string")
+            avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
+            noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
         };
     },
 
@@ -44193,11 +44193,12 @@ module.exports = {
      * @param {String|BigNumber} userPositionShares
      * @param {String} outcomeId
      * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
+     * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
      * @return {Array}
      */
-    getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook) {
-        var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, bnPrice, totalTakerFeeEth;
-        if (type.constructor === Object && type.type) {
+    getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
+        var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
+        if (type.constructor === Object) {
             orderShares = type.orderShares;
             orderLimitPrice = type.orderLimitPrice;
             takerFee = type.takerFee;
@@ -44207,12 +44208,15 @@ module.exports = {
             outcomeId = type.outcomeId;
             marketOrderBook = type.marketOrderBook;
             range = type.range;
+            scalarMinMax = type.scalarMinMax;
             type = type.type;
         }
 
         userAddress = abi.format_address(userAddress);
         orderShares = new BigNumber(orderShares, 10);
-        orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
+        orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
+            null :
+            new BigNumber(orderLimitPrice, 10);
         var bnTakerFee = new BigNumber(takerFee, 10);
         var bnMakerFee = new BigNumber(makerFee, 10);
         var bnRange = new BigNumber(range, 10);
@@ -44220,12 +44224,21 @@ module.exports = {
         isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
         fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
         if (!isMarketOrder) {
-            adjustedFees = abacus.calculateFxpMakerTakerFees(abacus.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(orderLimitPrice), abi.fix(bnRange)), fees.makerProportionOfFee, false, true);
+            adjustedFees = abacus.calculateFxpMakerTakerFees(
+                abacus.calculateFxpAdjustedTradingFee(
+                    fees.tradingFee,
+                    abi.fix(orderLimitPrice),
+                    abi.fix(bnRange)
+                ),
+                fees.makerProportionOfFee,
+                false,
+                true
+            );
         }
 
         var augur = this;
         var gasPrice = augur.rpc.gasPrice;
-        var tradingCost;
+        var tradingCost, fullPrecisionPrice;
         if (type === "buy") {
             var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
             var areSuitableOrders = matchingSortedAsks.length > 0;
@@ -44244,7 +44257,10 @@ module.exports = {
                 for (i = 0; i < length; i++) {
                     ask = matchingSortedAsks[i];
                     orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, ask.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+                    fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
+                        abacus.shrinkScalarPrice(scalarMinMax.minValue, ask.fullPrecisionPrice) :
+                        ask.fullPrecisionPrice;
+                    tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                     totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                     etherToTrade = etherToTrade.plus(tradingCost.cost);
                     remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -44276,9 +44292,11 @@ module.exports = {
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
                         bidAmount = new BigNumber(bid.amount, 10);
-                        bnPrice = new BigNumber(bid.fullPrecisionPrice, 10);
                         orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, bid.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+                        fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
+                            abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
+                            bid.fullPrecisionPrice;
+                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToSell = etherToSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
@@ -44309,7 +44327,7 @@ module.exports = {
 
                 if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
                     // recursion
-                    sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}));
+                    sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax));
                 }
             } else {
                 if (isMarketOrder) {
@@ -44323,7 +44341,10 @@ module.exports = {
                     for (i = 0, length = matchingSortedBids.length; i < length; i++) {
                         bid = matchingSortedBids[i];
                         orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, bid.fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+                        fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
+                            abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
+                            bid.fullPrecisionPrice;
+                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cash);
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);

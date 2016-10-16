@@ -12,6 +12,26 @@ var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 
 describe("getTradingActions", function () {
+
+    function runTestCase(testCase) {
+        it(testCase.description, function () {
+            var actions = augur.getTradingActions({
+                type: testCase.type,
+                orderShares: testCase.orderShares,
+                orderLimitPrice: testCase.orderLimitPrice,
+                takerFee: testCase.takerFee,
+                makerFee: testCase.makerFee,
+                userAddress: testCase.userAddress,
+                userPositionShares: testCase.userPositionShares,
+                outcomeId: testCase.outcomeId,
+                range: testCase.range,
+                marketOrderBook: testCase.marketOrderBook,
+                scalarMinMax: testCase.scalarMinMax
+            });
+            testCase.assertions(actions);
+        });
+    }
+
     var txOriginal;
     before("getTradingActions", function () {
         txOriginal = augur.tx;
@@ -587,7 +607,7 @@ describe("getTradingActions", function () {
                     shares: "5",
                     gasEth: "0.02119592",
                     feeEth: "0.0576",
-                    costEth: "-2.0576",
+                    costEth: "2.9424",
                     avgPrice: "0.58848",
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
@@ -737,7 +757,7 @@ describe("getTradingActions", function () {
                     shares: "2",
                     gasEth: "0.02119592",
                     feeEth: "0.02304",
-                    costEth: "-0.82304",
+                    costEth: "1.17696",
                     avgPrice: "0.58848",
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
@@ -787,7 +807,7 @@ describe("getTradingActions", function () {
                     shares: "5",
                     gasEth: "0.02119592",
                     feeEth: "0.0588",
-                    costEth: "-1.5588",
+                    costEth: "3.4412",
                     avgPrice: "0.68824",
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
@@ -828,7 +848,7 @@ describe("getTradingActions", function () {
                     shares: "2",
                     gasEth: "0.02119592",
                     feeEth: "0.02352",
-                    costEth: "-0.62352",
+                    costEth: "1.37648",
                     avgPrice: "0.68824",
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
@@ -886,7 +906,7 @@ describe("getTradingActions", function () {
                     shares: "3",
                     gasEth: "0.02119592",
                     feeEth: "0.03224",
-                    costEth: "-0.73224",
+                    costEth: "2.26776",
                     avgPrice: "0.75592",
                     feePercent: "1.4216671958231911",
                     noFeePrice: "0.766666666666666666"
@@ -952,7 +972,7 @@ describe("getTradingActions", function () {
                     shares: "5",
                     gasEth: "0.02119592",
                     feeEth: "0.0452",
-                    costEth: "-0.9452",
+                    costEth: "4.0548",
                     avgPrice: "0.81096",
                     feePercent: "1.1147282233402387",
                     noFeePrice: "0.82"
@@ -1089,7 +1109,7 @@ describe("getTradingActions", function () {
                     shares: "3",
                     gasEth: "0.02119592",
                     feeEth: "0.03456",
-                    costEth: "-1.23456",
+                    costEth: "1.76544",
                     avgPrice: "0.58848",
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
@@ -1189,7 +1209,7 @@ describe("getTradingActions", function () {
                     shares: "3",
                     gasEth: "0.02119592",
                     feeEth: "0.03528",
-                    costEth: "-0.93528",
+                    costEth: "2.06472",
                     avgPrice: "0.68824",
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
@@ -1297,7 +1317,7 @@ describe("getTradingActions", function () {
                     shares: "1",
                     gasEth: "0.02119592",
                     feeEth: "0.01176",
-                    costEth: "-0.31176",
+                    costEth: "0.68824",
                     avgPrice: "0.68824",
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
@@ -1372,7 +1392,7 @@ describe("getTradingActions", function () {
                     shares: "3",
                     gasEth: "0.02119592",
                     feeEth: "0.03224",
-                    costEth: "-0.73224",
+                    costEth: "2.26776",
                     avgPrice: "0.75592",
                     feePercent: "1.4216671958231911",
                     noFeePrice: "0.766666666666666666"
@@ -1823,23 +1843,233 @@ describe("getTradingActions", function () {
                 assert.deepEqual(actions, expected);
             }
         });
-    });
 
-    function runTestCase(testCase) {
-        it(testCase.description, function () {
-            var actions = augur.getTradingActions({
-                type: testCase.type,
-                orderShares: testCase.orderShares,
-                orderLimitPrice: testCase.orderLimitPrice,
-                takerFee: testCase.takerFee,
-                makerFee: testCase.makerFee,
-                userAddress: testCase.userAddress,
-                userPositionShares: testCase.userPositionShares,
-                outcomeId: testCase.outcomeId,
-                range: testCase.range,
-                marketOrderBook: testCase.marketOrderBook
-            });
-            testCase.assertions(actions);
+        runTestCase({
+            description: "bid with same shares and prices, no position, scalar event",
+            type: "sell",
+            orderShares: "5",
+            orderLimitPrice: "17",
+            takerFee: "0.02",
+            makerFee: "0.01",
+            userPositionShares: "0",
+            outcomeId: "2",
+            range: "5",
+            marketOrderBook: {
+                buy: {
+                    "0x1": {
+                        id: "0x1",
+                        type: "buy",
+                        amount: "5",
+                        price: "17",
+                        fullPrecisionPrice: "17",
+                        outcome: "2"
+                    }
+                },
+                sell: {}
+            },
+            scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
+            userAddress: "abcd1234",
+            assertions: function (actions) {
+                assert.isArray(actions);
+                var expected = [{
+                    action: "SHORT_SELL",
+                    shares: "5",
+                    gasEth: "0.02119592",
+                    feeEth: "0.288",
+                    feePercent: "1.9575856443719412",
+                    costEth: "14.712",
+                    avgPrice: "2.9424",
+                    noFeePrice: "3"
+                }];
+                assert.lengthOf(actions, expected.length);
+                assert.deepEqual(actions, expected);
+            }
         });
-    }
+
+        runTestCase({
+            description: "bid with same shares and prices, equal size position, scalar event",
+            type: "sell",
+            orderShares: "5",
+            orderLimitPrice: "17",
+            takerFee: "0.02",
+            makerFee: "0.01",
+            userPositionShares: "5",
+            outcomeId: "2",
+            range: "5",
+            marketOrderBook: {
+                buy: {
+                    "0x1": {
+                        id: "0x1",
+                        type: "buy",
+                        amount: "5",
+                        price: "17",
+                        fullPrecisionPrice: "17",
+                        outcome: "2"
+                    }
+                },
+                sell: {}
+            },
+            scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
+            userAddress: "abcd1234",
+            assertions: function (actions) {
+                assert.isArray(actions);
+                var expected = [{
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.192",
+                    feePercent: "1.9575856443719412",
+                    costEth: "9.808",
+                    avgPrice: "1.9616",
+                    noFeePrice: "2"
+                }];
+                assert.lengthOf(actions, expected.length);
+                assert.deepEqual(actions, expected);
+            }
+        });
+
+        runTestCase({
+            description: "bid with same shares and prices, smaller position, scalar event",
+            type: "sell",
+            orderShares: "5",
+            orderLimitPrice: "17",
+            takerFee: "0.02",
+            makerFee: "0.01",
+            userPositionShares: "3",
+            outcomeId: "2",
+            range: "5",
+            marketOrderBook: {
+                buy: {
+                    "0x1": {
+                        id: "0x1",
+                        type: "buy",
+                        amount: "5",
+                        price: "17",
+                        fullPrecisionPrice: "17",
+                        outcome: "2"
+                    }
+                },
+                sell: {}
+            },
+            scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
+            userAddress: "abcd1234",
+            assertions: function (actions) {
+                assert.isArray(actions);
+                var expected = [{
+                    action: "SELL",
+                    shares: "3",
+                    gasEth: "0.01574842",
+                    feeEth: "0.1152",
+                    feePercent: "1.9575856443719412",
+                    costEth: "5.8848",
+                    avgPrice: "1.9616",
+                    noFeePrice: "2"
+                }, {
+                    action: "SHORT_SELL",
+                    shares: "2",
+                    gasEth: "0.02119592",
+                    feeEth: "0.1152",
+                    feePercent: "1.9575856443719412",
+                    costEth: "5.8848",
+                    avgPrice: "2.9424",
+                    noFeePrice: "3"
+                }];
+                assert.lengthOf(actions, expected.length);
+                assert.deepEqual(actions, expected);
+            }
+        });
+
+        runTestCase({
+            description: "bid with same shares and prices, smaller position, scalar event",
+            type: "sell",
+            orderShares: "5",
+            orderLimitPrice: "17",
+            takerFee: "0.02",
+            makerFee: "0.01",
+            userPositionShares: "3",
+            outcomeId: "2",
+            range: "5",
+            marketOrderBook: {
+                buy: {
+                    "0x1": {
+                        id: "0x1",
+                        type: "buy",
+                        amount: "5",
+                        price: "17",
+                        fullPrecisionPrice: "17",
+                        outcome: "2"
+                    }
+                },
+                sell: {}
+            },
+            scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
+            userAddress: "abcd1234",
+            assertions: function (actions) {
+                assert.isArray(actions);
+                var expected = [{
+                    action: "SELL",
+                    shares: "3",
+                    gasEth: "0.01574842",
+                    feeEth: "0.1152",
+                    feePercent: "1.9575856443719412",
+                    costEth: "5.8848",
+                    avgPrice: "1.9616",
+                    noFeePrice: "2"
+                }, {
+                    action: "SHORT_SELL",
+                    shares: "2",
+                    gasEth: "0.02119592",
+                    feeEth: "0.1152",
+                    feePercent: "1.9575856443719412",
+                    costEth: "5.8848",
+                    avgPrice: "2.9424",
+                    noFeePrice: "3"
+                }];
+                assert.lengthOf(actions, expected.length);
+                assert.deepEqual(actions, expected);
+            }
+        });
+
+        runTestCase({
+            description: "bid with same shares and prices, larger position, scalar event",
+            type: "sell",
+            orderShares: "5",
+            orderLimitPrice: "17",
+            takerFee: "0.02",
+            makerFee: "0.01",
+            userPositionShares: "10",
+            outcomeId: "2",
+            range: "5",
+            marketOrderBook: {
+                buy: {
+                    "0x1": {
+                        id: "0x1",
+                        type: "buy",
+                        amount: "5",
+                        price: "17",
+                        fullPrecisionPrice: "17",
+                        outcome: "2"
+                    }
+                },
+                sell: {}
+            },
+            scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
+            userAddress: "abcd1234",
+            assertions: function (actions) {
+                assert.isArray(actions);
+                var expected = [{
+                    action: "SELL",
+                    shares: "5",
+                    gasEth: "0.01574842",
+                    feeEth: "0.192",
+                    feePercent: "1.9575856443719412",
+                    costEth: "9.808",
+                    avgPrice: "1.9616",
+                    noFeePrice: "2"
+                }];
+                assert.lengthOf(actions, expected.length);
+                assert.deepEqual(actions, expected);
+            }
+        });
+    });
 });
