@@ -3,9 +3,13 @@ import classnames from 'classnames';
 import AuthForm from '../../auth/components/auth-form';
 import Link from '../../link/components/link';
 
-var AuthPage = React.createClass({
-	render () {
-		var p = this.props;
+class AuthPage extends React.Component {
+	componentDidMount() {
+		this.props.authForm.airbitzOnLoad.onLoad();
+	}
+
+	render() {
+		const p = this.props;
 		return (
 			<main className="page auth">
 				<header className="page-header">
@@ -28,12 +32,9 @@ var AuthPage = React.createClass({
 				</header>
 				<AuthForm className="auth-form" {...p.authForm} />
 			</main>
-		)
-	},
-	componentDidMount () {
-		this.props.authForm.airbitzOnLoad.onLoad();
+		);
 	}
-});
+}
 
 AuthPage.propTypes = {
 	className: PropTypes.string,
