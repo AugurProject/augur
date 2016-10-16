@@ -157,6 +157,7 @@ module.exports = {
             if (order) {
                 if (isScalar) {
                     order.price = this.expandScalarPrice(minValue, order.price);
+                    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
                 }
                 orderBook[order.type][order.id] = order;
             }

@@ -40368,7 +40368,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.0";
+    this.version = "2.10.1";
 
     this.options = {
         debug: {
@@ -41316,6 +41316,7 @@ module.exports = {
             if (order) {
                 if (isScalar) {
                     order.price = this.expandScalarPrice(minValue, order.price);
+                    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
                 }
                 orderBook[order.type][order.id] = order;
             }
