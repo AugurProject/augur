@@ -31,8 +31,7 @@ module.exports = {
      *
      * @param {Array} orders Bids or asks
      * @param {String} traderOrderType What trader want to do (buy or sell)
-     * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
-     *     it's null order is considered to be market order
+     * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
      * @param {String} outcomeId
      * @param {String} userAddress
      * @return {Array.<Object>}
@@ -203,8 +202,8 @@ module.exports = {
             feeEth: abi.unfix(feeEth, "string"),
             feePercent: abi.unfix(makerFee).times(100).toFixed(),
             costEth: abi.unfix(costEth, "string"),
-            avgPrice: abi.unfix(costEth.dividedBy(shares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(limitPrice, "string")
+            avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
+            noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
         };
     },
 
@@ -223,9 +222,9 @@ module.exports = {
      * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
      * @return {Array}
      */
-    getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook) {
+    getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, isScalar, isShortSell, maxValue) {
         var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, bnPrice, totalTakerFeeEth;
-        if (type.constructor === Object && type.type) {
+        if (type.constructor === Object) {
             orderShares = type.orderShares;
             orderLimitPrice = type.orderLimitPrice;
             takerFee = type.takerFee;
@@ -235,6 +234,9 @@ module.exports = {
             outcomeId = type.outcomeId;
             marketOrderBook = type.marketOrderBook;
             range = type.range;
+            isScalar = type.isScalar;
+            isShortSell = type.isShortSell;
+            maxValue = type.maxValue;
             type = type.type;
         }
 
@@ -249,6 +251,13 @@ module.exports = {
         fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
         if (!isMarketOrder) {
             adjustedFees = abacus.calculateFxpMakerTakerFees(abacus.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(orderLimitPrice), abi.fix(bnRange)), fees.makerProportionOfFee, false, true);
+        }
+        if (isScalar) {
+            if (isShortSell) {
+                console.log('scalar short sell adjustment:', orderLimitPrice.toString());
+                orderLimitPrice = abacus.adjustScalarSellPrice(maxValue, orderLimitPrice);
+                console.log('after:', orderLimitPrice.toString());
+            }
         }
 
         var augur = this;
