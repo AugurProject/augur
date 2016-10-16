@@ -22,7 +22,8 @@ module.exports = {
         zero: new BigNumber(1, 10).dividedBy(multiple),
         multiple: multiple
     },
-    MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+    // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+    MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
     // default branch info: "root branch", 1010101
     DEFAULT_BRANCH_ID: "0xf69b5",

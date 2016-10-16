@@ -342,8 +342,7 @@ module.exports = {
         }
 
         var amount = abi.unfix(trade[3]);
-        // if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
-        if (amount.lt(constants.PRECISION.zero)) return null;
+        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
         if (amount.lt(constants.PRECISION.limit)) {
             amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
         } else {

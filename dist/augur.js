@@ -39583,7 +39583,8 @@ module.exports = {
         zero: new BigNumber(1, 10).dividedBy(multiple),
         multiple: multiple
     },
-    MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+    // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+    MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
     // default branch info: "root branch", 1010101
     DEFAULT_BRANCH_ID: "0xf69b5",
@@ -40368,7 +40369,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.1";
+    this.version = "2.10.2";
 
     this.options = {
         debug: {
@@ -40764,8 +40765,7 @@ module.exports = {
         }
 
         var amount = abi.unfix(trade[3]);
-        // if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
-        if (amount.lt(constants.PRECISION.zero)) return null;
+        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
         if (amount.lt(constants.PRECISION.limit)) {
             amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
         } else {
