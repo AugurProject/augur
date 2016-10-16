@@ -14,7 +14,7 @@ import store from '../../../store';
 import { register } from '../../auth/actions/register';
 import { importAccount } from '../../auth/actions/import-account';
 import { login } from '../../auth/actions/login';
-import { selectAuthLink, selectAirbitzLink } from '../../link/selectors/links';
+import { selectAuthLink, selectAirbitzLink, selectAirbitzOnLoad } from '../../link/selectors/links';
 
 export default function () {
 	const { auth, loginAccount } = store.getState();
@@ -85,6 +85,7 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 
 		airbitzLinkText: 'Sign Up With Airbitz',
 		airbitzLink: selectAirbitzLink(REGISTER, dispatch),
+		airbitzOnLoad: selectAirbitzOnLoad(dispatch),
 		onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) => dispatch(register(name, password, password2, loginID, rememberMe, account, cb))
 	};
 };
@@ -118,6 +119,7 @@ export const selectLogin = (auth, dispatch) => {
 
 		airbitzLinkText: 'Login With Airbitz',
 		airbitzLink: selectAirbitzLink(LOGIN, dispatch),
+		airbitzOnLoad: selectAirbitzOnLoad(dispatch),
 
 		onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) =>	dispatch(login(loginID, password, rememberMe))
 	};
@@ -152,6 +154,8 @@ export const selectImportAccount = (auth, dispatch) => {
 
 		airbitzLinkText: 'Sign Up With Airbitz',
 		airbitzLink: selectAirbitzLink(REGISTER, dispatch),
+		airbitzOnLoad: selectAirbitzOnLoad(dispatch),
+
 		onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) => dispatch(importAccount(name, password, rememberMe, keystore, cb))
 	};
 };

@@ -97,6 +97,22 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	}
 }));
 
+export const selectAirbitzOnLoad = memoizerific(1)((authType, dispatch) => ({
+	onLoad: () => {
+		var abcContext = require('../../../selectors').abc.abcContext;
+		var usernames = abcContext.listUsernames();
+		if (usernames.length > 0) {
+			require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+				if (airbitzAccount) {
+					dispatch(loginWithAirbitz(airbitzAccount));
+				} else {
+					console.log('error registering in: ' + result);
+				}
+			});
+		}
+	}
+}));
+
 export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, dispatch) => {
 	const params = {};
 
