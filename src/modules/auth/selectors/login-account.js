@@ -2,13 +2,14 @@ import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
 import { addTransferFunds } from '../../transactions/actions/add-transfer-funds-transaction';
+import memoizerific from 'memoizerific';
 
 export default function () {
 	const { loginAccount } = store.getState();
 	return setupLoginAccount(loginAccount, store.dispatch);
 }
 
-export const setupLoginAccount = (loginAccount, dispatch) => {
+export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 	// temporary fix until we don't have accounts with secureLoginID
 	if (loginAccount.secureLoginID && !loginAccount.loginID) {
 		loginAccount.loginID = loginAccount.secureLoginID;
@@ -48,4 +49,4 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
 		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
 	};
-};
+});
