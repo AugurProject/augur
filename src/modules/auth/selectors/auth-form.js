@@ -53,7 +53,7 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 	let errMsg = selectErrMsg(auth.err);
 	let newAccountMessage = undefined;
 	if (loginAccount.loginID) {
-		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. Click on the Login ID input field and hit ctrl + v (cmd + v on mac) to paste your Login ID. Hit "Sign Up" to complete registration.';
+		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. It is critical to save this Login ID somewhere safe as it will allow you to login to your Augur Account from any device however it cannot be recovered if lost or forgotten. Click "Sign Up" to complete registration.';
 		errMsg = null;
 	}
 	const isVisibleID = typeof newAccountMessage === 'string';
@@ -68,9 +68,9 @@ export const selectRegister = (auth, loginAccount, dispatch) => {
 		isVisibleRememberMe: isVisibleID,
 		isVisibleFileInput: false,
 
-		instruction: 'Please enter your password, then enter it again to generate an account. When your account is successfully generated, you will see a loginID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
+		instruction: 'Please enter your password (at least 6 characters), then enter it again to confirm your password. Once your passwords match, your account will automatically begin being generated. Once generated, you will see a Login ID appear on this page. Copy and paste it into the Login ID input that appears and click the "Sign Up" button to begin.',
 
-		topLinkText: 'Login',
+		topLinkText: 'Already have an account? Login here',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
 
 		bottomLinkText: 'Import Account',
