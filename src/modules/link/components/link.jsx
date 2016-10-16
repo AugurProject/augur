@@ -33,7 +33,15 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const p = this.props;
+		const p = Object.keys(this.props).reduce((prev, key) => { // Strips on invalid attrs for `a` tag
+			if (key !== 'text') {
+				return {
+					...prev,
+					[key]: this.props[key]
+				};
+			}
+			return prev;
+		}, {});
 
 		return (
 			<a

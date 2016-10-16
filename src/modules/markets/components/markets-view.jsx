@@ -12,6 +12,7 @@ const MarketsView = p => (
 			keywords={p.keywords}
 		/>
 		<MarketsList
+			loginAccount={p.loginAccount}
 			markets={p.markets}
 			pagination={p.pagination}
 		/>

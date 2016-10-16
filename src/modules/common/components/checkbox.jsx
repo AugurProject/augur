@@ -4,6 +4,7 @@ import classnames from 'classnames';
 const Checkbox = p => (
 	<button
 		className={classnames('checkbox unstyled', p.className, { checked: p.isChecked })}
+		type="button"
 		title={p.title}
 		onClick={p.onClick}
 	>

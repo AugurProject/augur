@@ -37,6 +37,7 @@ import reportableOutcomes from '../test/assertions/reportable-outcomes';
 import marketDataUpdater from '../test/assertions/market-data-updater';
 import marketDataAge from '../test/assertions/market-data-age';
 import filterSort from '../test/assertions/filter-sort';
+import coreStats from '../test/assertions/core-stats';
 
 export default {
 	activeView,
@@ -77,5 +78,6 @@ export default {
 	reportableOutcomes,
 	marketDataUpdater,
 	marketDataAge,
-	filterSort
+	filterSort,
+	coreStats
 };

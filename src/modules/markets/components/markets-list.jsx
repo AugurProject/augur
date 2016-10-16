@@ -7,6 +7,7 @@ const MarketsList = p => (
 		{(p.markets || []).map(market =>
 			<MarketPreview
 				key={market.id}
+				loginAccount={p.loginAccount}
 				{...market}
 			/>
 		)}
