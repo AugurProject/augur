@@ -6,6 +6,7 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
+var async = require("async");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
 var keys = require("keythereum");
@@ -48,9 +49,10 @@ module.exports = function () {
                     return onFailed(response.statusCode);
                 }
                 console.debug("Sent ether to:", registeredAddress);
-                augur.rpc.balance(registeredAddress, function (balance) {
-                    console.debug("Balance:", balance);
-                    if (parseInt(balance, 16)) {
+                augur.rpc.balance(registeredAddress, function (ethBalance) {
+                    console.debug("Balance:", ethBalance);
+                    var balance = parseInt(ethBalance, 16);
+                    if (balance > 0) {
                         augur.fundNewAccount({
                             branch: branch || constants.DEFAULT_BRANCH_ID,
                             onSent: onSent,
@@ -59,8 +61,19 @@ module.exports = function () {
                             onConfirmed: onConfirmed
                         });
                     } else {
-                        augur.rpc.fastforward(1, function (blockNumber) {
-                            console.debug("Got block:", blockNumber);
+                        async.until(function () {
+                            return balance > 0;
+                        }, function (callback) {
+                            augur.rpc.fastforward(1, function (nextBlock) {
+                                console.log("Block:", nextBlock);
+                                augur.rpc.balance(registeredAddress, function (ethBalance) {
+                                    console.debug("Balance:", ethBalance);
+                                    balance = parseInt(ethBalance, 16);
+                                    callback(null, balance);
+                                });
+                            });
+                        }, function (e, balance) {
+                            if (e) console.error(e);
                             augur.fundNewAccount({
                                 branch: branch || constants.DEFAULT_BRANCH_ID,
                                 onSent: onSent,

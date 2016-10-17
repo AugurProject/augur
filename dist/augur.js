@@ -42316,6 +42316,7 @@ exports.createContext = Script.createContext = function (context) {
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
+var async = require("async");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
 var keys = require("keythereum");
@@ -42358,9 +42359,10 @@ module.exports = function () {
                     return onFailed(response.statusCode);
                 }
                 console.debug("Sent ether to:", registeredAddress);
-                augur.rpc.balance(registeredAddress, function (balance) {
-                    console.debug("Balance:", balance);
-                    if (parseInt(balance, 16)) {
+                augur.rpc.balance(registeredAddress, function (ethBalance) {
+                    console.debug("Balance:", ethBalance);
+                    var balance = parseInt(ethBalance, 16);
+                    if (balance > 0) {
                         augur.fundNewAccount({
                             branch: branch || constants.DEFAULT_BRANCH_ID,
                             onSent: onSent,
@@ -42369,8 +42371,19 @@ module.exports = function () {
                             onConfirmed: onConfirmed
                         });
                     } else {
-                        augur.rpc.fastforward(1, function (blockNumber) {
-                            console.debug("Got block:", blockNumber);
+                        async.until(function () {
+                            return balance > 0;
+                        }, function (callback) {
+                            augur.rpc.fastforward(1, function (nextBlock) {
+                                console.log("Block:", nextBlock);
+                                augur.rpc.balance(registeredAddress, function (ethBalance) {
+                                    console.debug("Balance:", ethBalance);
+                                    balance = parseInt(ethBalance, 16);
+                                    callback(null, balance);
+                                });
+                            });
+                        }, function (e, balance) {
+                            if (e) console.error(e);
                             augur.fundNewAccount({
                                 branch: branch || constants.DEFAULT_BRANCH_ID,
                                 onSent: onSent,
@@ -42727,7 +42740,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":236,"./utilities":262,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":273,"locks":175,"node-uuid":184,"request":87}],234:[function(require,module,exports){
+},{"./constants":236,"./utilities":262,"_process":192,"async":79,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":273,"locks":175,"node-uuid":184,"request":87}],234:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -43671,7 +43684,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.6";
+    this.version = "2.10.7";
 
     this.options = {
         debug: {
