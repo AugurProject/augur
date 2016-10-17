@@ -16,7 +16,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
-		console.log('tradesInProgress IN:', side, numShares, limitPrice, maxCost);
 		// if nothing changed, exit
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
@@ -54,7 +53,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				.plus(abi.bignum(market.minValue))
 				.dividedBy(TWO)
 				.toNumber() :
-			0.5;
+			'0.5';
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
@@ -62,10 +61,10 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const bignumShares = abi.bignum(numShares);
 		const bignumLimit = abi.bignum(limitPrice);
 		// clean num shares
-		const cleanNumShares = numShares && bignumShares.toFixed() === 0 ? 0 : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || 0;
+		const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || '0';
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === 0 ? 0 : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === '0' ? '0' : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;

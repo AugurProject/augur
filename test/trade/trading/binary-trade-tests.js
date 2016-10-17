@@ -142,7 +142,7 @@ describe(`Binary Trading Tests`, () => {
 					feeEth: '0.01',
 					feePercent: '0.2',
 					costEth: '-10.01',
-					avgPrice: '-1.001',
+					avgPrice: '1.001',
 					noFeePrice: '0.5'
 				}
 			],
@@ -230,6 +230,31 @@ describe(`Binary Trading Tests`, () => {
 
 	it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '25', undefined, undefined));
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: 'buy',
+			numShares: '25',
+			limitPrice: '0.5',
+			totalFee: '0.025',
+			totalCost: '12.525',
+			tradeActions: [ {
+				action: 'BID',
+				shares: '25',
+				gasEth: '0.01450404',
+				feeEth: '0.025',
+				feePercent: '0.2',
+				costEth: '12.525',
+				avgPrice: '0.501',
+				noFeePrice: '0.5'
+			} ],
+			tradingFeesEth: '0.025',
+			gasFeesRealEth: '0.01450404',
+			feePercent: '0.199203187250996016'
+ 		},`Didn't produce the expected tradeDetails object`);
+	});
+
+	it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '-25', undefined, undefined));
+		console.log(store.getActions()[0].data.details);
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: 'buy',
 			numShares: '25',
