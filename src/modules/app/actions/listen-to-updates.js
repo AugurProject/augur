@@ -58,7 +58,7 @@ export function listenToUpdates() {
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
-				// console.debug('log_cancel:', JSON.stringify(msg, null, 2));
+				console.debug('log_cancel:', JSON.stringify(msg, null, 2));
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(loadBidsAsks(msg.market));
 				}
@@ -66,6 +66,7 @@ export function listenToUpdates() {
 
 			// new market: msg = { marketID }
 			marketCreated: (msg) => {
+				console.debug('marketCreated:', JSON.stringify(msg, null, 2));
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
 				}
@@ -73,7 +74,7 @@ export function listenToUpdates() {
 
 			// market trading fee updated (decrease only)
 			tradingFeeUpdated: (msg) => {
-				if (msg) console.log('tradingFeeUpdated:', msg);
+				console.debug('tradingFeeUpdated:', msg);
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
 				}

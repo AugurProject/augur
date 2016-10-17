@@ -21,7 +21,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
 		}
-
 		// If either field is cleared, reset outcomeTradeInProgress while preserving the companion field's value
 		if (numShares === '' && typeof limitPrice === 'undefined') {
 			return dispatch({
@@ -33,7 +32,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					}
 				}
 			});
-		} else if (limitPrice === '' && typeof numShares === 'undefined') {
+		} else if (limitPrice === '' || (parseFloat(limitPrice) === 0 && market.type !== SCALAR) && typeof numShares === 'undefined') {
 			return dispatch({
 				type: UPDATE_TRADE_IN_PROGRESS, data: {
 					marketID,
@@ -60,20 +59,26 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
 			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
+		const bignumShares = abi.bignum(numShares);
+		const bignumLimit = abi.bignum(limitPrice);
 		// clean num shares
-		const cleanNumShares = Math.abs(parseFloat(numShares)) || outcomeTradeInProgress.numShares || 0;
-		// const cleanMaxCost = Math.abs(parseFloat(maxCost));
+		const cleanNumShares = numShares && bignumShares.toFixed() === 0 ? 0 : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || 0;
 
 		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
+		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === 0 ? 0 : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
+
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
 			cleanLimitPrice = topOrderPrice;
+		}
+		// if this isn't a scalar market, limitPrice must be positive.
+		if (market.type !== SCALAR && limitPrice) {
+			cleanLimitPrice = bignumLimit.abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
 		}
 
 		const newTradeDetails = {
 			side: cleanSide,
-			numShares: cleanNumShares || undefined,
-			limitPrice: cleanLimitPrice || undefined,
+			numShares: cleanNumShares === '0' ? undefined : cleanNumShares,
+			limitPrice: cleanLimitPrice,
 			totalFee: 0,
 			totalCost: 0
 		};
@@ -103,7 +108,11 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					position && position.toFixed(),
 					outcomeID,
 					market.cumulativeScale,
-					orderBooks && orderBooks[marketID] || {});
+					orderBooks && orderBooks[marketID] || {},
+					(market.type === SCALAR) ? {
+						minValue: market.minValue,
+						maxValue: market.maxValue
+					} : null);
 				if (newTradeDetails.tradeActions) {
 					const numTradeActions = newTradeDetails.tradeActions.length;
 					if (numTradeActions) {

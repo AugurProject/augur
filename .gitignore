@@ -8,7 +8,6 @@ core
 node_modules/
 overflow/
 coverage/
-build
 target
 scratch
 
