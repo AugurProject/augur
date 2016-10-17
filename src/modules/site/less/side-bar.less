@@ -1,9 +1,16 @@
 // NOTE -- additional styles located in common/less/layout.less
 .side-bar {
+
+	.transition(@speed-very-fast);
+
 	background-color: @color-side-bar-background;
 	color: @color-text-light-muted;
-	display: flex;
-	flex-direction: column;
+
+	&.collapsed {
+		transform: translateX(-100%);
+		opacity: 0;
+		flex: 0.00001;
+	}
 
 	h3 {
 

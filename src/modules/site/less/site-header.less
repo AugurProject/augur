@@ -55,12 +55,13 @@
 		}
 
 		.link,
-		.header-search-icon {
+		.header-search-icon,
+		button {
 			padding: 1.5em 1.8em;
 
 			&:hover,
 			&:active {
-				&:not(.augur-brand) {
+				&:not(.augur-brand):not(button) {
 					background: @color-nav-background-active;
 					color: @color-text-light;
 					cursor: pointer;
@@ -89,6 +90,11 @@
 					white-space: nowrap;
 				}
 			}
+		}
+
+		button {
+			padding: 1em;
+			.font-size-large();
 		}
 
 		.header-search-icon {

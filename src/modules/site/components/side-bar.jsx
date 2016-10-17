@@ -2,7 +2,7 @@ import React from 'react';
 import Checkbox from '../../common/components/checkbox';
 
 const SideBar = p => (
-	<div className="side-bar">
+	<article className={`${p.className}`}>
 		<h3>All Tags</h3>
 		<div className="tags">
 			{!!p.tags.length && p.tags.map(tag =>
@@ -16,7 +16,7 @@ const SideBar = p => (
 				/>
 			)}
 		</div>
-	</div>
+	</article>
 );
 
 

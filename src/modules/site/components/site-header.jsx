@@ -12,6 +12,14 @@ const SiteHeader = p => (
 	<header className="site-header"	>
 		<nav className="site-nav">
 			<div className="nav-group left-navs">
+				{ p.isSideBarAllowed &&
+					<button
+						className="unstyled"
+						onClick={p.toggleSideBar}
+					>
+						{p.isSideBarCollapsed ? <i></i> : <i></i>}
+					</button>
+				}
 				<Link
 					className={classnames('site-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
 					{...p.marketsLink}

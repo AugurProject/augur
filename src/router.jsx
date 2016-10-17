@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 
 import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
@@ -23,7 +24,8 @@ export default class Router extends Component {
 		super(props);
 
 		this.state = {
-			isSideBarVisible: false,
+			isSideBarAllowed: false,
+			isSideBarCollapsed: false,
 			doScrollTop: false
 		};
 
@@ -43,16 +45,6 @@ export default class Router extends Component {
 		this.handleScrollTop();
 	}
 
-	shouldDisplaySideBar() {
-		const currentRoute = this.currentRoute();
-
-		if (currentRoute.props.name === MARKETS) {
-			this.setState({ isSideBarVisible: true });
-		} else {
-			this.setState({ isSideBarVisible: false });
-		}
-	}
-
 	handleScrollTop() {
 		const url = this.props.url;
 
@@ -65,6 +57,20 @@ export default class Router extends Component {
 			window.document.getElementById('view_container').scrollTop = 0;
 			this.setState({ doScrollTop: false });
 		}
+	}
+
+	shouldDisplaySideBar() {
+		const currentRoute = this.currentRoute();
+
+		if (currentRoute.props.name === MARKETS) {
+			this.setState({ isSideBarAllowed: true });
+		} else {
+			this.setState({ isSideBarAllowed: false });
+		}
+	}
+
+	toggleSideBar() {
+		this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
 	}
 
 	currentRoute(routeProps) {
@@ -164,6 +170,9 @@ export default class Router extends Component {
 		const CurrentRoute = this.currentRoute;
 
 		const siteHeader = {
+			isSideBarAllowed: s.isSideBarAllowed,
+			isSideBarCollapsed: s.isSideBarCollapsed,
+			toggleSideBar: () => { this.toggleSideBar(); },
 			activeView: p.activeView,
 			loginAccount: p.loginAccount,
 			positionsSummary: p.positionsSummary,
@@ -189,16 +198,15 @@ export default class Router extends Component {
 						<div id="view_container" >
 							<main id="view_content_container">
 								<div className="view-content-row">
-									{s.isSideBarVisible &&
-										<div className="view-content view-content-group-1">
-											<SideBar tags={p.tags} />
-										</div>
+									{s.isSideBarAllowed &&
+										<SideBar
+											className={classnames('side-bar', { collapsed: s.isSideBarCollapsed })}
+											tags={p.tags}
+										/>
 									}
-									<div className="view-content view-content-group-2">
-										<CurrentRoute className="view" />
-									</div>
+									<CurrentRoute className="view" />
 								</div>
-								<div id="footer_push"></div>
+								<div id="footer_push" />
 								<SiteFooter />
 							</main>
 						</div>
