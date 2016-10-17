@@ -167,7 +167,8 @@ module.exports = function () {
 
             // preparing to redo the secureLoginID to use the new name
             keys.recover(password, keystore, function (privateKey) {
-                keys.deriveKey(password, keystore.crypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
+                var keystoreCrypto = keystore.crypto || keystore.Crypto;
+                keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
                     var unencryptedLoginID = { keystore: keystore };
                     var loginID = augur.base58Encrypt(unencryptedLoginID);
 
@@ -220,19 +221,20 @@ module.exports = function () {
                 return cb(errors.BAD_CREDENTIALS);
             }
             var keystore = unencryptedLoginID.keystore;
+            var keystoreCrypto = keystore.crypto || keystore.Crypto;
             var options = {
-                kdf: keystore.crypto.kdf,
-                kdfparams: keystore.crypto.kdfparams,
-                cipher: keystore.crypto.kdf
+                kdf: keystoreCrypto.kdf,
+                kdfparams: keystoreCrypto.kdfparams,
+                cipher: keystoreCrypto.kdf
             };
 
             // derive secret key from password
-            keys.deriveKey(password, keystore.crypto.kdfparams.salt, options, function (derivedKey) {
+            keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
                 if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
                 // verify that message authentication codes match
-                var storedKey = keystore.crypto.ciphertext;
-                if (keys.getMAC(derivedKey, storedKey) !== keystore.crypto.mac.toString("hex")) {
+                var storedKey = keystoreCrypto.ciphertext;
+                if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
                     return cb(errors.BAD_CREDENTIALS);
                 }
 
@@ -245,7 +247,7 @@ module.exports = function () {
                     var privateKey = new Buffer(keys.decrypt(
                         storedKey,
                         derivedKey.slice(0, 16),
-                        keystore.crypto.cipherparams.iv
+                        keystoreCrypto.cipherparams.iv
                     ), "hex");
 
                     // while logged in, web.account object is set
