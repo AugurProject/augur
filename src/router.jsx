@@ -23,12 +23,14 @@ export default class Router extends Component {
 		super(props);
 
 		this.state = {
-			isSideBarVisible: false
+			isSideBarVisible: false,
+			doScrollTop: false
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
 		this.currentRoute = this.currentRoute.bind(this);
+		this.handleScrollTop = this.handleScrollTop.bind(this);
 		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
 	}
 
@@ -38,6 +40,7 @@ export default class Router extends Component {
 
 	componentDidUpdate() {
 		this.shouldDisplaySideBar();
+		this.handleScrollTop();
 	}
 
 	shouldDisplaySideBar() {
@@ -47,6 +50,20 @@ export default class Router extends Component {
 			this.setState({ isSideBarVisible: true });
 		} else {
 			this.setState({ isSideBarVisible: false });
+		}
+	}
+
+	handleScrollTop() {
+		const url = this.props.url;
+
+		if (url !== window.location.pathname + window.location.search) {
+			window.history.pushState(null, null, url);
+			this.setState({ doScrollTop: true });
+		}
+
+		if (this.state.doScrollTop) {
+			window.document.getElementById('view_container').scrollTop = 0;
+			this.setState({ doScrollTop: false });
 		}
 	}
 
@@ -167,13 +184,13 @@ export default class Router extends Component {
 		return (
 			<div>
 				{!!p &&
-					<div id="site-container">
+					<div id="site_container">
 						<SiteHeader
 							{...siteHeader}
 							ref={(ref) => { this.siteHeader = ref; }}
 						/>
-						<div className="view-container" >
-							<main className="view-content-container">
+					<div id="view_container" >
+							<main id="view_content_container">
 								{s.isSideBarVisible &&
 									<div className="view-content view-content-group-1">
 										<SideBar tags={p.tags} />
