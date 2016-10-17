@@ -18,7 +18,7 @@ var errors = require("augur-contracts").errors;
 var constants = require("./constants");
 var utils = require("./utilities");
 
-request = request.defaults({timeout: 120000});
+request = request.defaults({timeout: 240000});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
@@ -48,12 +48,28 @@ module.exports = function () {
                     return onFailed(response.statusCode);
                 }
                 console.debug("Sent ether to:", registeredAddress);
-                augur.fundNewAccount({
-                    branch: branch || constants.DEFAULT_BRANCH_ID,
-                    onSent: onSent,
-                    onSuccess: onSuccess,
-                    onFailed: onFailed,
-                    onConfirmed: onConfirmed
+                augur.rpc.balance(registeredAddress, function (balance) {
+                    console.debug("Balance:", balance);
+                    if (parseInt(balance, 16)) {
+                        augur.fundNewAccount({
+                            branch: branch || constants.DEFAULT_BRANCH_ID,
+                            onSent: onSent,
+                            onSuccess: onSuccess,
+                            onFailed: onFailed,
+                            onConfirmed: onConfirmed
+                        });
+                    } else {
+                        augur.rpc.fastforward(1, function (blockNumber) {
+                            console.debug("Got block:", blockNumber);
+                            augur.fundNewAccount({
+                                branch: branch || constants.DEFAULT_BRANCH_ID,
+                                onSent: onSent,
+                                onSuccess: onSuccess,
+                                onFailed: onFailed,
+                                onConfirmed: onConfirmed
+                            });
+                        });
+                    }
                 });
             });
         },
