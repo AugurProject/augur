@@ -8,6 +8,8 @@ augur.connect({http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546"});
 
 augur.filters.listen({marketCreated: function (msg) { console.log("marketCreated filter:", msg); }});
 
+augur.filters.listen({block: function (msg) { console.log("block filter:", msg); }});
+
 augur.filters.listen({
     block: function (msg) {
         console.log("block filter:", msg);
