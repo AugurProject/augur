@@ -13,6 +13,7 @@ var augur = require(augurpath);
 var utils = require("../../src/utilities");
 var tools = require("../tools");
 var DEBUG = false;
+augur.rpc.debug.tx = DEBUG;
 
 describe("CreateMarket.createSingleEventMarket", function () {
 
@@ -21,17 +22,12 @@ describe("CreateMarket.createSingleEventMarket", function () {
     before(function (done) {
         this.timeout(tools.TIMEOUT);
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
-        augur.setCash(augur.from, "100000000", function (r) {
-            assert.strictEqual(r.callReturn, "1");
-        }, function (r) {
-            assert.strictEqual(r.callReturn, "1");
-            done();
-        }, done);
+        done();
     });
 
     var test = function (t) {
         it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-            this.timeout(tools.TIMEOUT*10);
+            this.timeout(tools.TIMEOUT);
             augur.createSingleEventMarket({
                 branchId: t.branch,
                 description: t.description,
@@ -78,43 +74,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
                     assert.notProperty(info, "error");
                     assert.isArray(info.events);
                     assert.strictEqual(info.events.length, 1);
-                },
-                onConfirmed: function (r) {
-                    if (DEBUG) console.log("confirmed:", r);
-
-                    // generate new order book
-                    var IFP = new Array(t.numOutcomes);
-                    for (var i = 0; i < t.numOutcomes; ++i) {
-                        IFP[i] = "0.5";
-                    }
-                    augur.generateOrderBook({
-                        market: r.callReturn,
-                        liquidity: 50000,
-                        startingQuantity: 5000,
-                        bestStartingQuantity: 10000,
-                        initialFairPrices: IFP,
-                        priceWidth: "0.1"
-                    }, {
-                        onSimulate: function (res) {
-                            if (DEBUG) console.log("simulation:", res);
-                        },
-                        onBuyCompleteSets: function (res) {
-                            if (DEBUG) console.log("buyCompleteSets:", res);
-                        },
-                        onSetupOutcome: function (res) {
-                            if (DEBUG) console.log("setupOutcome:", res);
-                        },
-                        onSetupOrder: function (res) {
-                            if (DEBUG) console.log("setupOrder:", res);
-                        },
-                        onSuccess: function (res) {
-                            if (DEBUG) console.log("order book setup complete:", Object.keys(res.buy).length + Object.keys(res.sell).length, "orders created");
-                            done();
-                        },
-                        onFailed: function (err) {
-                            done(new Error(tools.pp(err)));
-                        }
-                    });
+                    done();
                 },
                 onFailed: function (err) {
                     done(new Error(tools.pp(err)));
