@@ -185,10 +185,7 @@ export default class Router extends Component {
 			<div>
 				{!!p &&
 					<div id="site_container">
-						<SiteHeader
-							{...siteHeader}
-							ref={(ref) => { this.siteHeader = ref; }}
-						/>
+						<SiteHeader {...siteHeader} />
 						<div id="view_container" >
 							<main id="view_content_container">
 								<div className="view-content-row">
