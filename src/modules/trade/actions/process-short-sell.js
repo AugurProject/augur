@@ -60,6 +60,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
+						transactionData.data.marketType,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
 						res.remainingShares.toFixed(),

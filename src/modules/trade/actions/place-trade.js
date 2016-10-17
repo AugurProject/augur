@@ -48,6 +48,7 @@ export function placeTrade(marketID) {
 					dispatch(addBidTransaction(
 						marketID,
 						outcomeID,
+						market.type,
 						market.description,
 						outcomesData[marketID][outcomeID].name,
 						outcomeTradeInProgress.numShares,
@@ -100,6 +101,7 @@ export function placeTrade(marketID) {
 							dispatch(addAskTransaction(
 								marketID,
 								outcomeID,
+								market.type,
 								market.description,
 								outcomesData[marketID][outcomeID].name,
 								askShares,
@@ -112,6 +114,7 @@ export function placeTrade(marketID) {
 								dispatch(addShortAskTransaction(
 									marketID,
 									outcomeID,
+									market.type,
 									market.description,
 									outcomesData[marketID][outcomeID].name,
 									shortAskShares,
@@ -128,6 +131,7 @@ export function placeTrade(marketID) {
 							dispatch(addShortSellTransaction(
 								marketID,
 								outcomeID,
+								market.type,
 								market.description,
 								outcomesData[marketID][outcomeID].name,
 								outcomeTradeInProgress.numShares,
@@ -140,6 +144,7 @@ export function placeTrade(marketID) {
 							dispatch(addShortAskTransaction(
 								marketID,
 								outcomeID,
+								market.type,
 								market.description,
 								outcomesData[marketID][outcomeID].name,
 								outcomeTradeInProgress.numShares,

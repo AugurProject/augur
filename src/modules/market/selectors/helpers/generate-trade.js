@@ -78,6 +78,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			return makeShortSellTransaction(
 				market.id,
 				outcome.id,
+				market.type,
 				market.description,
 				outcome.name,
 				tradeAction.shares,
