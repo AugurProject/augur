@@ -7,9 +7,9 @@ export const tradeShapeAssertion = (tradeDetails) => {
 	assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`);
 	assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`);
 	assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`);
-	assert.isNumber(tradeDetails.numShares, `tradeDetails.numShares isn't a number`);
+	assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a number`);
 	assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`);
-	assert.isNumber(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a number`);
+	assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a number`);
 	assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`);
 	assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
 	assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);

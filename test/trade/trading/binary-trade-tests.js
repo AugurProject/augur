@@ -99,8 +99,8 @@ describe(`Binary Trading Tests`, () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '10.0', undefined, undefined));
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
-			numShares: 10,
-			limitPrice: 0.5,
+			numShares: '10',
+			limitPrice: '0.5',
 			totalFee: '0.01',
 			totalCost: '5.01',
 			tradeActions: [
@@ -130,8 +130,8 @@ describe(`Binary Trading Tests`, () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', SELL, '10.0', undefined, undefined));
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: SELL,
-			numShares: 10,
-			limitPrice: 0.5,
+			numShares: '10',
+			limitPrice: '0.5',
 			totalFee: '0.01',
 			totalCost: '-10.01',
 			tradeActions: [
@@ -157,7 +157,7 @@ describe(`Binary Trading Tests`, () => {
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: undefined,
-			limitPrice: undefined,
+			limitPrice: '0.5',
 			totalFee: 0,
 			totalCost: 0
 		}, `Didn't clear the tradeDetails object`);
@@ -168,7 +168,7 @@ describe(`Binary Trading Tests`, () => {
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: undefined,
-			limitPrice: 0.5,
+			limitPrice: '0.5',
 			totalFee: 0,
 			totalCost: 0
 		}, `Didn't return the correct tradeDetails object based on input`);
@@ -180,8 +180,8 @@ describe(`Binary Trading Tests`, () => {
 			'0x000000000000000000000000000000000binary1': {
 				'2': {
 					side: BUY,
-					numShares: 10,
-					limitPrice: 0.5,
+					numShares: '10',
+					limitPrice: '0.5',
 					totalFee: '0.01',
 					totalCost: '5.01',
 					tradeActions: [{
@@ -203,8 +203,8 @@ describe(`Binary Trading Tests`, () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0.15', undefined));
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
-			numShares: 10,
-			limitPrice: 0.15,
+			numShares: '10',
+			limitPrice: '0.15',
 			totalFee: '0.00153',
 			totalCost: '1.50153',
 			tradeActions: [{
@@ -224,8 +224,31 @@ describe(`Binary Trading Tests`, () => {
 	});
 
 	it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
-		console.log(store.getState().tradesInProgress);
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0', undefined));
-		console.log(store.getActions()[0].data.details);
+		assert.deepEqual(store.getActions()[0].data.details, { numShares: '10' },`Didn't produce the expected tradeDetails object`);
+	});
+
+	it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '25', undefined, undefined));
+		assert.deepEqual(store.getActions()[0].data.details, {
+			side: 'buy',
+			numShares: '25',
+			limitPrice: '0.5',
+			totalFee: '0.025',
+			totalCost: '12.525',
+			tradeActions: [ {
+				action: 'BID',
+				shares: '25',
+				gasEth: '0.01450404',
+				feeEth: '0.025',
+				feePercent: '0.2',
+				costEth: '12.525',
+				avgPrice: '0.501',
+				noFeePrice: '0.5'
+			} ],
+			tradingFeesEth: '0.025',
+			gasFeesRealEth: '0.01450404',
+			feePercent: '0.199203187250996016'
+ 		},`Didn't produce the expected tradeDetails object`);
 	});
 });
