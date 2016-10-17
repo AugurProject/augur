@@ -16,7 +16,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
-
+		console.log('tradesInProgress IN:', side, numShares, limitPrice, maxCost);
 		// if nothing changed, exit
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;

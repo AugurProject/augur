@@ -92,17 +92,11 @@ describe(`Binary Trading Tests`, () => {
 
 	it('should pass shape tests for buying 10 shares of YES at the default limitPrice', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '10.0', undefined, undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		tradeShapeAssertion(store.getActions()[0].data.details);
 	});
 
 	it('should pass calculation tests for buying 10 shares of YES at the default limitPrice', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '10.0', undefined, undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: 10,
@@ -129,17 +123,11 @@ describe(`Binary Trading Tests`, () => {
 
 	it('should pass shape tests for Selling 10 shares of YES at the default limitPrice', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', SELL, '10.0', undefined, undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		tradeShapeAssertion(store.getActions()[0].data.details);
 	});
 
 	it('should pass calculation tests for selling 10 shares of YES at the default limitPrice', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', SELL, '10.0', undefined, undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: SELL,
 			numShares: 10,
@@ -166,9 +154,6 @@ describe(`Binary Trading Tests`, () => {
 
 	it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, '0', undefined, undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: undefined,
@@ -180,9 +165,6 @@ describe(`Binary Trading Tests`, () => {
 
 	it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0.5', undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: undefined,
@@ -192,7 +174,7 @@ describe(`Binary Trading Tests`, () => {
 		}, `Didn't return the correct tradeDetails object based on input`);
 	});
 
-	it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradeinProgress is defined for an outcome.', () => {
+	it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 		// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
 		store.getState().tradesInProgress = {
 			'0x000000000000000000000000000000000binary1': {
@@ -219,9 +201,6 @@ describe(`Binary Trading Tests`, () => {
 			}
 		};
 		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0.15', undefined));
-		// console.log('============================================================');
-		// console.log(store.getActions()[0].data.details);
-		// console.log('============================================================');
 		assert.deepEqual(store.getActions()[0].data.details, {
 			side: BUY,
 			numShares: 10,
@@ -242,5 +221,11 @@ describe(`Binary Trading Tests`, () => {
 			gasFeesRealEth: '0.01450404',
 			feePercent: '0.101792343619017205'
 		}, `Didn't update the tradeDetails object to the new calcs given new limit`);
+	});
+
+	it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
+		console.log(store.getState().tradesInProgress);
+		store.dispatch(action.updateTradesInProgress('0x000000000000000000000000000000000binary1', '2', BUY, undefined, '0', undefined));
+		console.log(store.getActions()[0].data.details);
 	});
 });
