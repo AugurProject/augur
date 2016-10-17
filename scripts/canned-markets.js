@@ -152,16 +152,6 @@ var cannedMarkets = [{
     makerFee: "0.005",
     tags: ["housing", "economy", "bubble"]
 }, {
-    description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2017?",
-    expDate: parseInt(new Date("7-2-2017").getTime() / 1000, 10),
-    minValue: -10,
-    maxValue: 120,
-    numOutcomes: 2,
-    takerFee: "0.02",
-    makerFee: "0.01",
-    resolution: "http://forecast.weather.gov",
-    tags: ["temperature", "San Francisco", "weather"]
-}, {
     description: "Will the Larsen B ice shelf collapse by November 1, 2017?",
     expDate: parseInt(new Date("11-2-2017").getTime() / 1000, 10),
     minValue: 1,

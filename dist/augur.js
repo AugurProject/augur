@@ -43655,7 +43655,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.4";
+    this.version = "2.10.5";
 
     this.options = {
         debug: {
@@ -50285,6 +50285,7 @@ module.exports = {
                     tx.tx.blockHash = onChainTx.blockHash;
                     tx.status = "mined";
                     tx.confirmations = self.block.number - tx.tx.blockNumber;
+                    self.updateMinedTx(tx);
                 }
             }
         });
