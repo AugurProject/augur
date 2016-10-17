@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import Link from '../../link/components/link';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
-import { SCALAR } from '../../markets/constants/market-types';
+import { SCALAR, CATEGORICAL } from '../../markets/constants/market-types';
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueTimestamp from '../../common/components/value-timestamp';
 
@@ -62,7 +62,7 @@ const Transaction = (p) => {
 			<span className="description">
 				<span className="action">{nodes.action}</span>
 				<ValueDenomination className="shares" {...p.numShares} />
-				{p.data.marketType !== SCALAR &&
+				{p.data.marketType === CATEGORICAL &&
 					<span>
 						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
 					</span>
