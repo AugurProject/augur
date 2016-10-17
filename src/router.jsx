@@ -46,10 +46,10 @@ export default class Router extends Component {
 	}
 
 	handleScrollTop() {
-		const url = this.props.url;
+		const p = this.props;
 
-		if (url !== window.location.pathname + window.location.search) {
-			window.history.pushState(null, null, url);
+		if (p.url !== window.location.pathname + window.location.search) {
+			window.history.pushState(null, null, p.url);
 			this.setState({ doScrollTop: true });
 		}
 
