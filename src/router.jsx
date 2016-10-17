@@ -189,18 +189,21 @@ export default class Router extends Component {
 							{...siteHeader}
 							ref={(ref) => { this.siteHeader = ref; }}
 						/>
-					<div id="view_container" >
+						<div id="view_container" >
 							<main id="view_content_container">
-								{s.isSideBarVisible &&
-									<div className="view-content view-content-group-1">
-										<SideBar tags={p.tags} />
+								<div className="view-content-row">
+									{s.isSideBarVisible &&
+										<div className="view-content view-content-group-1">
+											<SideBar tags={p.tags} />
+										</div>
+									}
+									<div className="view-content view-content-group-2">
+										<CurrentRoute className="view" />
 									</div>
-								}
-								<div className="view-content view-content-group-2">
-									<CurrentRoute className="view" />
 								</div>
+								<div id="footer_push"></div>
+								<SiteFooter />
 							</main>
-							<SiteFooter />
 						</div>
 					</div>
 				}

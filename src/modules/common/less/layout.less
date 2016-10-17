@@ -3,8 +3,7 @@
 // These classes may also have presentational styling housed in separate stylesheets
 
 .contained {
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0 auto;
 	max-width: @max-app-width;
 	overflow-x: hidden;
 }
@@ -15,55 +14,69 @@
 	height: 100vh;
 
 	.site-header {
-		flex: 0 0 auto;
+		flex: none;
 	}
 
 	#view_container {
-		flex: 1 1 auto;
+		display: flex;
+		flex-direction: column;
+		flex: auto;
 		justify-content: center;
 		overflow-y: auto;
 		position: relative;
 
 		#view_content_container {
-
-			.contained();
-
 			display: flex;
-			flex: 1;
-			flex-direction: row;
+			flex: auto;
+			flex-direction: column;
 
-			.view-content {
+			#footer_push {
+				flex: auto;
+			}
+
+			.view-content-row {
 				display: flex;
+				flex: 1 0 auto;
+				width: 100vw;
 
-				&.view-content-group-1 {
-					flex: 1;
+				.contained();
 
-					.side-bar {
-						flex: 1;
-					}
-				}
-
-				&.view-content-group-2 {
+				.view-content {
 					display: flex;
-					flex: 4;
-					flex-direction: column;
 
-					.view {
-						display: flex;
+					&.view-content-group-1 {
 						flex: 1;
-						flex-direction: column;
-						margin: 2rem 6rem 0;
-						max-width: @max-content-width;
 
-						.view-header {
-							align-items: center;
-							display: flex;
+						.side-bar {
 							flex: 1;
-							padding: 1.5em 0;
+						}
+					}
+
+					&.view-content-group-2 {
+						flex-direction: column;
+						flex: 4;
+
+						.view {
+							display: flex;
+							flex: auto;
+							flex-direction: column;
+							margin: 2rem 6rem 0;
+							max-width: @max-content-width;
+
+							.view-header {
+								align-items: center;
+								display: flex;
+								flex: 1;
+								padding: 1.5em 0;
+							}
 						}
 					}
 				}
 			}
+		}
+
+		footer {
+			flex: none;
 		}
 	}
 }
