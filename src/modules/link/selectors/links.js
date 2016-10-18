@@ -97,7 +97,7 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	}
 }));
 
-export const selectAirbitzOnLoad = memoizerific(1)((authType, dispatch) => ({
+export const selectAirbitzOnLoad = memoizerific(1)((dispatch) => ({
 	onLoad: () => {
 		const abcContext = require('../../../selectors').abc.abcContext;
 		const usernames = abcContext.listUsernames();
