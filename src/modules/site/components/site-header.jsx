@@ -75,16 +75,7 @@ const SiteHeader = p => (
 						title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
 						{...p.accountLink}
 					>
-						<ValueDenomination
-							{...p.loginAccount.rep || {}}
-							formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
-							formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
-						/>
-						<ValueDenomination
-							{...p.loginAccount.ether || {}}
-							formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
-							formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
-						/>
+						Account
 					</Link>
 				}
 				{(!p.loginAccount || !p.loginAccount.id) &&

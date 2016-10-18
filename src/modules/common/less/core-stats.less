@@ -1,8 +1,42 @@
 .core-stats {
-	background-color: red;
 
-	.core-stats-content {
+	.border(true, @border-right);
+	.border(true, @border-bottom);
+	.border(true, @border-left);
+
+	display: flex;
+	flex: 1;
+	justify-content: space-around;
+
+	padding: 0 1em;
+
+	box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.2);
+
+	margin-bottom: 1em;
+
+	background-color: @color-white;
+
+	.core-stats-group {
 		display: flex;
 		flex: 1;
+		justify-content: center;
+
+		margin: 0 1em;
+
+		&:first-child {
+			justify-content: flex-start;
+		}
+
+		&:last-child {
+			justify-content: flex-end;
+		}
+
+		.core-stat {
+			padding: 1em;
+
+			.core-stat-label {
+				margin-right: 0.4em;
+			}
+		}
 	}
 }
