@@ -36,19 +36,19 @@ const selectSortOptions = [
 	},
 	{
 		label: 'Newest',
-		value: 'newest'
+		value: 'creationTime'
 	},
 	{
-		label: 'Expiry',
-		value: 'expiry'
+		label: 'Expiration',
+		value: 'endDate'
 	},
 	{
 		label: 'Taker Fee',
-		value: 'takerFee'
+		value: 'takerFeePercent'
 	},
 	{
 		label: 'Maker Fee',
-		value: 'makerFee'
+		value: 'makerFeePercent'
 	}
 ];
 
