@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
 import { updateSelectedFilterSort } from '../../markets/actions/update-selected-filter-sort';
+import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTED } from '../../markets/constants/filter-sort';
 import store from '../../../store';
 
 export default function () {
@@ -21,15 +22,15 @@ export default function () {
 const selectTypeOptions = [
 	{
 		label: 'Open',
-		value: 'open'
+		value: FILTER_TYPE_OPEN
 	},
 	{
 		label: 'Closed',
-		value: 'closed'
+		value: FILTER_TYPE_CLOSED
 	},
 	{
-		label: 'Reporting',
-		value: 'reporting'
+		label: 'Reported',
+		value: FILTER_TYPE_REPORTED
 	}
 ];
 
