@@ -6,7 +6,6 @@ import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-head
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import AugurLogo from '../../common/components/augur-logo';
-import ValueDenomination from '../../common/components/value-denomination';
 
 const SiteHeader = p => (
 	<header className="site-header"	>
