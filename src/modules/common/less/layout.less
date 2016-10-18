@@ -42,26 +42,36 @@
 				flex: 1 0 auto;
 				width: 100vw;
 
-				.side-bar {
-					flex: 1;
-
-					&.collapsed {
-						display: none;
-					}
-				}
-
-				.view {
-					display: flex;
-					flex: 4;
-					flex-direction: column;
-					margin: 2rem 6rem 0;
-					max-width: @max-content-width;
-
-					.view-header {
-						align-items: center;
+				.view-content{
+					&.view-content-group-1 {
 						display: flex;
 						flex: 1;
-						padding: 1.5em 0;
+
+						.side-bar {
+							flex: 1;
+						}
+
+						&.collapsed {
+							display: none;
+						}
+					}
+
+					&.view-content-group-2 {
+						flex: 4;
+
+						.view {
+							display: flex;
+							flex-direction: column;
+							margin: 2rem 6rem 0;
+							max-width: @max-content-width;
+
+							.view-header {
+								align-items: center;
+								display: flex;
+								flex: 1;
+								padding: 1.5em 0;
+							}
+						}
 					}
 				}
 			}

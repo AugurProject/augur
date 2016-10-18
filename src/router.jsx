@@ -12,7 +12,7 @@ import AccountPage from './modules/account/components/account-page';
 import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
-// import CoreStats from './modules/common/components/core-stats';
+import CoreStats from './modules/common/components/core-stats';
 
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
@@ -198,13 +198,18 @@ export default class Router extends Component {
 						<div id="view_container" >
 							<main id="view_content_container">
 								<div className="view-content-row">
-									{s.isSideBarAllowed &&
-										<SideBar
-											className={classnames('side-bar', { collapsed: s.isSideBarCollapsed })}
-											tags={p.tags}
-										/>
+									{s.isSideBarAllowed && p.tags &&
+										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
+											<SideBar
+												className="side-bar"
+												tags={p.tags}
+											/>
+										</div>
 									}
-									<CurrentRoute className="view" />
+									<div className="view-content view-content-group-2">
+										<CoreStats coreStats={p.coreStats} />
+										<CurrentRoute className="view" />
+									</div>
 								</div>
 								<div id="footer_push" />
 								<SiteFooter />
@@ -216,5 +221,3 @@ export default class Router extends Component {
 		);
 	}
 }
-
-// <CoreStats coreStats={p.coreStats} />  Removed temporarily
