@@ -21259,7 +21259,7 @@ module.exports={
         "RoundTwoPenalize": "0xa28f1ac43508abeca105e06de4092aa1c4cc89a0", 
         "SendReputation": "0x1c1f3fbb48bace70ed7d3e60f330f6db8f749966", 
         "SlashRep": "0xbcafbd1583bb79849ddafedbfa9b91da650ac4f9", 
-        "Trade": "0xc553303f504f8ee1d7b4abc92a01f78236c43d8a", 
+        "Trade": "0x4b9f5c03e5edca6e3e41e6fbb6325fc71d9f83ae", 
         "Trades": "0x9474fc1727afae6769e170e1bd10ebb71291caf9"
     }
 }
@@ -43326,6 +43326,11 @@ module.exports = function () {
                 }
             }, function (err) {
                 if (err) console.error(err);
+                augur.rpc.customSubscriptionCallback = cb;
+                augur.rpc.resetCustomSubscription = function () {
+                    console.log("re-listening:", augur.rpc.customSubscriptionCallback);
+                    self.listen(augur.rpc.customSubscriptionCallback);
+                }.bind(self);
                 if (utils.is_function(setup_complete)) setup_complete(self.filter);
             });
         },
@@ -43345,6 +43350,7 @@ module.exports = function () {
 
         ignore: function (uninstall, cb, complete) {
             var label, self = this;
+            augur.rpc.resetCustomSubscription = null;
 
             function cleared(uninst, callback, complete) {
                 callback(uninst);
@@ -43684,7 +43690,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.7";
+    this.version = "2.10.8";
 
     this.options = {
         debug: {
@@ -46983,7 +46989,7 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("trade:", JSON.stringify(max_value, null, 2));
@@ -46996,12 +47002,10 @@ module.exports = {
             onCommitSent = max_value.onCommitSent;
             onCommitSuccess = max_value.onCommitSuccess;
             onCommitFailed = max_value.onCommitFailed;
-            onCommitConfirmed = max_value.onCommitConfirmed;
             onNextBlock = max_value.onNextBlock;
             onTradeSent = max_value.onTradeSent;
             onTradeSuccess = max_value.onTradeSuccess;
             onTradeFailed = max_value.onTradeFailed;
-            onTradeConfirmed = max_value.onTradeConfirmed;
             max_value = max_value.max_value;
         }
         onTradeHash = onTradeHash || utils.noop;
@@ -47103,16 +47107,15 @@ module.exports = {
                                 onTradeFailed({error: err, message: self.errors[err], tx: tx});
                             }
                         };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
                     });
                 },
-                onFailed: onCommitFailed,
-                onConfirmed: onCommitConfirmed
+                onFailed: onCommitFailed
             });
         });
     },
 
-    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
@@ -47124,12 +47127,10 @@ module.exports = {
             onCommitSent = buyer_trade_id.onCommitSent;
             onCommitSuccess = buyer_trade_id.onCommitSuccess;
             onCommitFailed = buyer_trade_id.onCommitFailed;
-            onCommitConfirmed = buyer_trade_id.onCommitConfirmed;
             onNextBlock = buyer_trade_id.onNextBlock;
             onTradeSent = buyer_trade_id.onTradeSent;
             onTradeSuccess = buyer_trade_id.onTradeSuccess;
             onTradeFailed = buyer_trade_id.onTradeFailed;
-            onTradeConfirmed = buyer_trade_id.onTradeConfirmed;
             buyer_trade_id = buyer_trade_id.buyer_trade_id;
         }
         onTradeHash = onTradeHash || utils.noop;
@@ -47213,11 +47214,10 @@ module.exports = {
                                 onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                             }
                         };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
                     });
                 },
-                onFailed: onCommitFailed,
-                onConfirmed: onCommitConfirmed
+                onFailed: onCommitFailed
             });
         });
     }
@@ -47661,8 +47661,11 @@ module.exports = {
                             abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
                             bid.fullPrecisionPrice;
                         tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+                        console.log('tradingCost:', JSON.stringify(tradingCost, null, 2));
+                        console.log('tradingCost.cash:', abi.unfix(tradingCost.cash, "string"));
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cash);
+                        console.log('etherToShortSell:', abi.unfix(etherToShortSell, "string"));
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.lte(constants.PRECISION.zero)) {
                             break;
@@ -49167,7 +49170,7 @@ module.exports = {
     parse: function (origResponse, returns, callback) {
         var results, len, err;
         var response = clone(origResponse);
-        if ((response && response.error) || this.debug.broadcast) {
+        if ((this.debug.tx && (response && response.error)) || this.debug.broadcast) {
             console.debug("[ethrpc] response:", response);
         }
         if (response && typeof response === "string") {
@@ -49266,8 +49269,7 @@ module.exports = {
                 msg.params.subscription && msg.params.result &&
                 this.subscriptions[msg.params.subscription]) {
                 return this.subscriptions[msg.params.subscription](msg.params.result);
-            }
-            if (this.debug.broadcast) {
+            } else {
                 console.warn("[" + type + "] Unknown message received:", msg.data || msg);
             }
         }
@@ -49314,7 +49316,7 @@ module.exports = {
         });
         this.socket.connect({path: this.ipcpath}, function () {
             self.rpcStatus.ipc = 1;
-            callback(true);
+            self.resetNewBlockSubscription(callback);
         });
     },
 
@@ -49359,8 +49361,41 @@ module.exports = {
         this.websocket.onopen = function () {
             self.rpcStatus.ws = 1;
             calledCallback = true;
-            callback(true);
+            self.resetNewBlockSubscription(callback);
+            if (isFunction(self.resetCustomSubscription)) {
+                console.log("resetCustomSubscription:", self.resetCustomSubscription.toString());
+                self.resetCustomSubscription();
+            }
         };
+    },
+
+    resetCustomSubscription: null,
+
+    resetNewBlockSubscription: function (callback) {
+        var self = this;
+        if (this.blockFilter.id !== null) {
+            this.unregisterSubscriptionCallback(this.blockFilter.id);
+            this.unsubscribe(this.blockFilter.id, function () {
+                self.blockFilter.id = null;
+                self.subscribeNewHeads(function (filterID) {
+                    console.log("new subscription:", filterID);
+                    if (filterID && !filterID.error) {
+                        self.blockFilter.id = filterID;
+                        self.registerSubscriptionCallback(filterID, self.onNewBlock.bind(self));
+                    }
+                    callback(true);
+                });
+            });
+        } else {
+            this.subscribeNewHeads(function (filterID) {
+                console.log("subscribed:", filterID);
+                if (filterID && !filterID.error) {
+                    self.blockFilter.id = filterID;
+                    self.registerSubscriptionCallback(filterID, self.onNewBlock.bind(self));
+                }
+                callback(true);
+            });
+        }
     },
 
     send: function (type, command, returns, callback) {
@@ -50360,9 +50395,12 @@ module.exports = {
                                 });
                             } else {
                                 var e = self.errorCodes(tx.payload.method, tx.payload.returns, log.returnValue);
+                                if (self.debug.tx) console.debug("errorCodes:", e);
                                 if (e && e.error) {
                                     e.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
-                                    if (isFunction(tx.onFailed)) tx.onFailed(e);
+                                    if (isFunction(tx.onFailed)) {
+                                        tx.onFailed(e);
+                                    }
                                 } else {
                                     onChainTx.callReturn = self.applyReturns(tx.payload.returns, log.returnValue);
                                     onChainTx.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
@@ -50391,6 +50429,7 @@ module.exports = {
 
     onNewBlock: function (block) {
         if (block) {
+            if (this.debug.tx) console.debug("new block:", block);
 
             // newHeads push notification
             if (block.number) {
@@ -50485,20 +50524,13 @@ module.exports = {
 
             self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
                 if (err) return onFailed(err);
-                if (self.blockFilter.id === null) {
-                    ((!self.wsUrl && !self.ipcpath) ?
-                        self.newBlockFilter.bind(self) :
-                        self.subscribeNewHeads.bind(self))(function (filterID) {
+                if (self.blockFilter.id === null && !self.wsUrl && !self.ipcpath) {
+                    self.newBlockFilter(function (filterID) {
                         if (filterID && !filterID.error) {
                             self.blockFilter.id = filterID;
-                            var filterCallback = self.onNewBlock.bind(self);
-                            if (self.wsUrl || self.ipcpath) {
-                                self.registerSubscriptionCallback(filterID, filterCallback);
-                            } else {
-                                self.blockFilter.heartbeat = setInterval(function () {
-                                    self.getFilterChanges(filterID, filterCallback);
-                                }, self.TX_POLL_INTERVAL);
-                            }
+                            self.blockFilter.heartbeat = setInterval(function () {
+                                self.getFilterChanges(filterID, self.onNewBlock.bind(self));
+                            }, self.TX_POLL_INTERVAL);
                         }
                     });
                 }

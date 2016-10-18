@@ -371,8 +371,11 @@ module.exports = {
                             abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
                             bid.fullPrecisionPrice;
                         tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+                        console.log('tradingCost:', JSON.stringify(tradingCost, null, 2));
+                        console.log('tradingCost.cash:', abi.unfix(tradingCost.cash, "string"));
                         totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
                         etherToShortSell = etherToShortSell.plus(tradingCost.cash);
+                        console.log('etherToShortSell:', abi.unfix(etherToShortSell, "string"));
                         remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
                         if (remainingOrderShares.lte(constants.PRECISION.zero)) {
                             break;

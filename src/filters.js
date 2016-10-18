@@ -367,6 +367,11 @@ module.exports = function () {
                 }
             }, function (err) {
                 if (err) console.error(err);
+                augur.rpc.customSubscriptionCallback = cb;
+                augur.rpc.resetCustomSubscription = function () {
+                    console.log("re-listening:", augur.rpc.customSubscriptionCallback);
+                    self.listen(augur.rpc.customSubscriptionCallback);
+                }.bind(self);
                 if (utils.is_function(setup_complete)) setup_complete(self.filter);
             });
         },
@@ -386,6 +391,7 @@ module.exports = function () {
 
         ignore: function (uninstall, cb, complete) {
             var label, self = this;
+            augur.rpc.resetCustomSubscription = null;
 
             function cleared(uninst, callback, complete) {
                 callback(uninst);

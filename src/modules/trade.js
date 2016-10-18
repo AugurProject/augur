@@ -76,7 +76,7 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("trade:", JSON.stringify(max_value, null, 2));
@@ -89,12 +89,10 @@ module.exports = {
             onCommitSent = max_value.onCommitSent;
             onCommitSuccess = max_value.onCommitSuccess;
             onCommitFailed = max_value.onCommitFailed;
-            onCommitConfirmed = max_value.onCommitConfirmed;
             onNextBlock = max_value.onNextBlock;
             onTradeSent = max_value.onTradeSent;
             onTradeSuccess = max_value.onTradeSuccess;
             onTradeFailed = max_value.onTradeFailed;
-            onTradeConfirmed = max_value.onTradeConfirmed;
             max_value = max_value.max_value;
         }
         onTradeHash = onTradeHash || utils.noop;
@@ -196,16 +194,15 @@ module.exports = {
                                 onTradeFailed({error: err, message: self.errors[err], tx: tx});
                             }
                         };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
                     });
                 },
-                onFailed: onCommitFailed,
-                onConfirmed: onCommitConfirmed
+                onFailed: onCommitFailed
             });
         });
     },
 
-    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
@@ -217,12 +214,10 @@ module.exports = {
             onCommitSent = buyer_trade_id.onCommitSent;
             onCommitSuccess = buyer_trade_id.onCommitSuccess;
             onCommitFailed = buyer_trade_id.onCommitFailed;
-            onCommitConfirmed = buyer_trade_id.onCommitConfirmed;
             onNextBlock = buyer_trade_id.onNextBlock;
             onTradeSent = buyer_trade_id.onTradeSent;
             onTradeSuccess = buyer_trade_id.onTradeSuccess;
             onTradeFailed = buyer_trade_id.onTradeFailed;
-            onTradeConfirmed = buyer_trade_id.onTradeConfirmed;
             buyer_trade_id = buyer_trade_id.buyer_trade_id;
         }
         onTradeHash = onTradeHash || utils.noop;
@@ -306,11 +301,10 @@ module.exports = {
                                 onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                             }
                         };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
                     });
                 },
-                onFailed: onCommitFailed,
-                onConfirmed: onCommitConfirmed
+                onFailed: onCommitFailed
             });
         });
     }
