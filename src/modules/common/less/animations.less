@@ -28,6 +28,8 @@
 }
 
 // Transitions
+// Don't pass `all`.  Can potentially cause performance issues.
+// Instead, pass a comma separated list of property/timing/easing to watch for changes with a `;` at the end
 .transition(...) {
 	transition: @arguments;
 }
