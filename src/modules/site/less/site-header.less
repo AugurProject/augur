@@ -57,9 +57,10 @@
 		.link,
 		.header-search-icon,
 		button {
-			padding: 1.5em 1.8em;
 
-			.transition(@speed-very-fast; background-color);
+			.transition(background-color @speed-very-fast, color @speed-very-fast;);
+
+			padding: 1.5em 1.8em;
 
 			&:hover,
 			&:active {
