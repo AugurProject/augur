@@ -35,6 +35,7 @@ To help ensure this, the following conventions have been employed:
 * All styles should be contextual and housed within their relevant files (1-to-1 component to stylesheet)
 * If an identical style is to be applied to multiple elements, that declaration block should probably be abstracted to a mixin.
   * This can be seen in the way (not exhaustive) typography (`common/less/typography.less`) and borders (`common/less/borders.less`) are employed.
+* Mixin inclusions should always come first within a declaration block.
 * Every component should have the **minimum** amount of styling required (helps maintain contextualization).
    * This allows for stylesheets of parent components that employ a component to apply any additional 'chrome' required.
    * This is also the reason why both the `section` and `article` components consume the `className` prop.
