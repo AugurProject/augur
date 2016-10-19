@@ -14,7 +14,7 @@ const CoreStats = p => (
 						className="core-stat"
 					>
 						<span className="core-stat-label">{p.coreStats[i][stat].label}:</span>
-						{p.coreStats[i][stat].value.value ?
+						{p.coreStats[i][stat].value && p.coreStats[i][stat].value.value ?
 							<ValueDenomination {...p.coreStats[i][stat].value} /> :
 							<span className="core-stat-value">—</span>
 						}
