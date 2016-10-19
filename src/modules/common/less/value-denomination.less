@@ -1,4 +1,10 @@
 .value-denomination {
+
+	&.colorize {
+
+		.colorize();
+	}
+
 	.value {
 
 		.font-weight-normal();
@@ -23,30 +29,6 @@
 		.font-weight-light();
 
 		margin-left: 0.3em;
-	}
-}
-
-.colorize {
-	&.positive,
-	.positive {
-		.value {
-			color: @color-positive;
-		}
-
-		.denomination {
-			color: fade(@color-positive, 80%);
-		}
-	}
-
-	&.negative,
-	.negative {
-		.value {
-			color: @color-negative;
-		}
-
-		.denomination {
-			color: fade(@color-negative, 80%);
-		}
 	}
 }
 

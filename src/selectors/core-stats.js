@@ -30,17 +30,20 @@ export default [
 		totalPL: {
 			label: 'Total P/L',
 			tile: 'Profit/Loss -- net of all trades',
-			value: makeNumber(0)
+			value: makeNumber(0),
+			colorize: true
 		},
 		totalPLMonth: {
 			label: '30 Day P/L',
 			tile: 'Profit/Loss -- net of all trades over the last 30 days',
-			value: makeNumber(randomNum(10), 'ETH')
+			value: makeNumber(randomNum(10), 'ETH'),
+			colorize: true
 		},
 		totalPLDay: {
 			label: '1 Day P/L',
 			tile: 'Profit/Loss -- net of all trades over the last day',
-			value: makeNumber(randomNum(10), 'ETH')
+			value: makeNumber(randomNum(10), 'ETH'),
+			colorize: true
 		}
 	}
 ];
