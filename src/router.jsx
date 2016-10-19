@@ -229,6 +229,9 @@ export default class Router extends Component {
 			myPositionsLink: (p.links && p.links.myPositionsLink) || undefined,
 			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
 		};
+		const sideBarProps = {
+			tags: p.tags
+		};
 
 		return (
 			<main>
@@ -242,7 +245,7 @@ export default class Router extends Component {
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
 											<SideBar
 												className="side-bar"
-												tags={p.tags}
+												{...sideBarProps}
 											/>
 										</div>
 									}
@@ -251,7 +254,6 @@ export default class Router extends Component {
 										<CurrentRoute className="view" />
 									</div>
 								</div>
-								<div id="footer_push" />
 								<SiteFooter />
 							</div>
 						</div>
