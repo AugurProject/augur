@@ -4,20 +4,21 @@ import { abi } from '../../../services/augurjs';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processShortSell } from '../../trade/actions/process-short-sell';
 
-export const addShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
+export const addShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
+		dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
 	}
 );
 
-export const makeShortSellTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
-	console.log('short sell transaction:', marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
+export const makeShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
+	console.log('short sell transaction:', marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const bnNumShares = abi.bignum(numShares);
 	const transaction = {
 		type: SHORT_SELL,
 		data: {
 			marketID,
 			outcomeID,
+			marketType,
 			marketDescription,
 			outcomeName
 		},

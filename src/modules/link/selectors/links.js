@@ -3,6 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
 import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/views';
+import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME } from '../../link/constants/param-names';
 import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
@@ -22,7 +23,9 @@ export default function () {
 	return {
 		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
-		marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, store.dispatch),
+		marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, store.dispatch),
+		favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, store.dispatch),
+		pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
 		previousLink: selectPreviousLink(store.dispatch),
@@ -81,7 +84,7 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	};
 });
 
-export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, dispatch) => {
+export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, dispatch) => {
 	const params = {};
 
 	// search
@@ -115,7 +118,22 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
 
 	return {
 		href,
-		onClick: () => dispatch(updateURL(href))
+		onClick: () => {
+			const { marketsHeader } = require('../../../selectors');
+
+			switch (subSet) {
+			case (FAVORITES):
+				dispatch(marketsHeader.onClickFavorites);
+				break;
+			case (PENDING_REPORTS):
+				dispatch(marketsHeader.onClickPendingReports);
+				break;
+			default:
+				dispatch(marketsHeader.onClickAllMarkets);
+			}
+
+			dispatch(updateURL(href));
+		}
 	};
 });
 
