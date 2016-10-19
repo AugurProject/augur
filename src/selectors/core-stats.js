@@ -14,23 +14,23 @@ export default [
 			value: makeNumber(Math.abs(randomNum(100)), 'REP')
 		}
 	},
-	{
-		totalRiskedEth: {
-			label: 'Risked ETH',
-			title: 'Risked Ether -- Ether tied up in positions',
-			value: makeNumber(Math.abs(randomNum(1000)), 'ETH')
-		},
-		totalAvailableEth: {
-			label: 'Available ETH',
-			title: 'Available Ether -- Ether not tied up in positions',
-			value: makeNumber(Math.abs(randomNum(1000)), 'ETH')
-		}
-	},
+	// {
+	// 	totalRiskedEth: {
+	// 		label: 'Risked ETH',
+	// 		title: 'Risked Ether -- Ether tied up in positions',
+	// 		value: makeNumber(Math.abs(randomNum(1000)), 'ETH')
+	// 	},
+	// 	totalAvailableEth: {
+	// 		label: 'Available ETH',
+	// 		title: 'Available Ether -- Ether not tied up in positions',
+	// 		value: makeNumber(Math.abs(randomNum(1000)), 'ETH')
+	// 	}
+	// },
 	{
 		totalPL: {
 			label: 'Total P/L',
 			tile: 'Profit/Loss -- net of all trades',
-			value: makeNumber(randomNum(10), 'ETH')
+			value: makeNumber(0)
 		},
 		totalPLMonth: {
 			label: '30 Day P/L',
