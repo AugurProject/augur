@@ -5,7 +5,7 @@ import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
 import SideBar from './modules/site/components/side-bar';
 import MarketsView from './modules/markets/components/markets-view';
-import MarketPage from './modules/market/components/market-page';
+import MarketView from './modules/market/components/market-view';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
@@ -62,7 +62,7 @@ export default class Router extends Component {
 	shouldDisplaySideBar() {
 		const currentRoute = this.currentRoute();
 
-		if (currentRoute.props.name === MARKETS) {
+		if (currentRoute.props.showSideBar) {
 			this.setState({ isSideBarAllowed: true });
 		} else {
 			this.setState({ isSideBarAllowed: false });
@@ -117,7 +117,7 @@ export default class Router extends Component {
 			);
 		case M:
 			return (
-				<MarketPage
+				<MarketView
 					className={p.className}
 					market={p.market}
 					marketDataAge={p.marketDataAge}
@@ -148,7 +148,6 @@ export default class Router extends Component {
 		default:
 			return (
 				<MarketsView
-					name={MARKETS}
 					className={p.className}
 					loginAccount={p.loginAccount}
 					createMarketLink={(p.links || {}).createMarketLink}
@@ -158,6 +157,7 @@ export default class Router extends Component {
 					pagination={p.pagination}
 					filterSort={p.filterSort}
 					keywords={p.keywords}
+					showSideBar
 				/>
 			);
 		}

@@ -126,11 +126,9 @@ export default class MarketPage extends Component {
 		}
 
 		return (
-			<main className="page market">
-				<article className="page-content">
-					{nodes}
-				</article>
-			</main>
+			<section className={`market ${p.className || ''}`}>
+				{nodes}
+			</section>
 		);
 	}
 }
