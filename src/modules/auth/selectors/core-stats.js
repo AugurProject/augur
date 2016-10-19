@@ -12,7 +12,7 @@ export default function () {
 
 export function selectCoreStats() {
 	const { accountTrades, blockchain } = store.getState();
-	const { loginAccount, loginAccountPositions, userOpenOrders } = require('../../../selectors');
+	const { loginAccount, loginAccountPositions } = require('../../../selectors');
 
 	// Group 1
 	const totalEth = loginAccount.ether;
