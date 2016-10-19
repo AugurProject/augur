@@ -88,6 +88,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 							dispatch(addAskTransaction(
 								transactionData.data.marketID,
 								transactionData.data.outcomeID,
+								transactionData.data.marketType,
 								transactionData.data.marketDescription,
 								transactionData.data.outcomeName,
 								askShares,
@@ -100,6 +101,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								dispatch(addShortAskTransaction(
 									transactionData.data.marketID,
 									transactionData.data.outcomeID,
+									transactionData.data.marketType,
 									transactionData.data.marketDescription,
 									transactionData.data.outcomeName,
 									shortAskShares,
@@ -122,6 +124,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									dispatch(addShortSellTransaction(
 										transactionData.data.marketID,
 										transactionData.data.outcomeID,
+										transactionData.data.marketType,
 										transactionData.data.marketDescription,
 										transactionData.data.outcomeName,
 										res.remainingShares,
@@ -135,6 +138,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									dispatch(addShortAskTransaction(
 										transactionData.data.marketID,
 										transactionData.data.outcomeID,
+										transactionData.data.marketType,
 										transactionData.data.marketDescription,
 										transactionData.data.outcomeName,
 										res.remainingShares,

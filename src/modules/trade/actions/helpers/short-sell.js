@@ -5,7 +5,7 @@ import { SUCCESS } from '../../../transactions/constants/statuses';
 
 export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
-		remainingShares: numShares,
+		remainingShares: abi.bignum(numShares),
 		filledShares: ZERO,
 		filledEth: ZERO,
 		tradingFees: ZERO,
@@ -30,7 +30,10 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 					gasFees: res.gasFees
 				});
 			},
-			onCommitFailed: (err) => nextMatchingID,
+			onCommitFailed: (err) => {
+				console.log('commit failed:', err);
+				nextMatchingID(err);
+			},
 			onNextBlock: (data) => console.log('short_sell-onNextBlock', data),
 			onTradeSent: (data) => {
 				console.debug('trade sent', data);
@@ -60,11 +63,14 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
-			onTradeFailed: (err) => nextMatchingID
+			onTradeFailed: (err) => {
+				console.log('trade failed:', err);
+				nextMatchingID(err);
+			}
 		});
 	}, (err) => {
 		if (err && !err.isComplete) return cb(err);
-		console.log('short_sell success:', res);
+		console.log('short_sell success:', JSON.stringify(res, null, 2));
 		cb(null, res);
 	});
 }

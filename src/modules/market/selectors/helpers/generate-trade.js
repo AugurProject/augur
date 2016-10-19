@@ -76,14 +76,18 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 	}
 
 	return tradeActions.map(tradeAction => {
+		const noFeePrice = (market.type === 'scalar') ?
+			outcomeTradeInProgress.limitPrice :
+			tradeAction.noFeePrice;
 		if (tradeAction.action === 'SHORT_SELL') {
 			return makeShortSellTransaction(
 				market.id,
 				outcome.id,
+				market.type,
 				market.description,
 				outcome.name,
 				tradeAction.shares,
-				tradeAction.noFeePrice,
+				noFeePrice,
 				abi.bignum(tradeAction.costEth).abs().toFixed(),
 				tradeAction.feeEth,
 				tradeAction.feePercent,
@@ -98,7 +102,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			market.description,
 			outcome.name,
 			tradeAction.shares,
-			tradeAction.noFeePrice,
+			noFeePrice,
 			abi.bignum(tradeAction.costEth).abs().toFixed(),
 			tradeAction.feeEth,
 			tradeAction.feePercent,

@@ -250,7 +250,11 @@ export function assembleMarket(
 						});
 					}
 				} else {
-					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+					if (outcome.lastPrice.value) {
+						outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+					} else {
+						outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
+					}
 				}
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount);
