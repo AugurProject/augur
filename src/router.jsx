@@ -6,15 +6,15 @@ import SiteFooter from './modules/site/components/site-footer';
 import SideBar from './modules/site/components/side-bar';
 import MarketsView from './modules/markets/components/markets-view';
 import MarketView from './modules/market/components/market-view';
-import CreateMarketPage from './modules/create-market/components/create-market-page';
-import AuthPage from './modules/auth/components/auth-page';
+import CreateMarketView from './modules/create-market/components/create-market-view';
+import AuthView from './modules/auth/components/auth-view';
 import AccountPage from './modules/account/components/account-page';
 import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 import LoginMessagePage from './modules/login-message/components/login-message-page';
 import CoreStats from './modules/common/components/core-stats';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, MARKETS } from './modules/site/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import shouldComponentUpdatePure from './utils/should-component-update-pure';
@@ -62,7 +62,7 @@ export default class Router extends Component {
 	shouldDisplaySideBar() {
 		const currentRoute = this.currentRoute();
 
-		if (currentRoute.props.showSideBar) {
+		if (currentRoute.props.sideBarAllowed) {
 			this.setState({ isSideBarAllowed: true });
 		} else {
 			this.setState({ isSideBarAllowed: false });
@@ -79,97 +79,137 @@ export default class Router extends Component {
 			...routeProps
 		};
 
+		let viewProps = null; // Data props are split off into `viewProps` so code style wise there is a separation between element attributes + data attributes
+
 		switch (p.activeView) {
 		case REGISTER:
 		case LOGIN:
 		case IMPORT:
-		case LOGOUT:
+		case LOGOUT: {
+			viewProps = {
+				authForm: p.authForm
+			};
+
 			return (
-				<AuthPage
+				<AuthView
 					className={p.className}
-					authForm={p.authForm}
+					{...viewProps}
 				/>
 			);
-		case ACCOUNT:
+		}
+		case ACCOUNT: {
+			viewProps = {
+				loginMessageLink: p.links.loginMessageLink,
+				account: p.loginAccount,
+				onChangePass: p.loginAccount.onChangePass,
+				authLink: (p.links && p.links.authLink) || null
+			};
+
 			return (
 				<AccountPage
 					className={p.className}
-					loginMessageLink={p.links.loginMessageLink}
-					account={p.loginAccount}
-					onChangePass={p.loginAccount.onChangePass}
-					authLink={(p.links && p.links.authLink) || null}
+					{...viewProps}
 				/>
 			);
-		case MAKE:
-			return (
-				<CreateMarketPage
-					className={p.className}
-					createMarketForm={p.createMarketForm}
-				/>
-			);
-		case TRANSACTIONS:
+		}
+		case TRANSACTIONS: {
+			viewProps = {
+				transactions: p.transactions,
+				transactionsTotals: p.transactionsTotals
+			};
+
 			return (
 				<TransactionsPage
 					className={p.className}
-					transactions={p.transactions}
-					transactionsTotals={p.transactionsTotals}
+					{...viewProps}
 				/>
 			);
-		case M:
-			return (
-				<MarketView
-					className={p.className}
-					market={p.market}
-					marketDataAge={p.marketDataAge}
-					selectedOutcome={p.selectedOutcome}
-					orderCancellation={p.orderCancellation}
-					marketDataUpdater={p.marketDataUpdater}
-					numPendingReports={p.marketsTotals.numPendingReports}
-					isTradeCommitLocked={p.tradeCommitLock.isLocked}
-				/>
-			);
+		}
 		case MY_POSITIONS:
 		case MY_MARKETS:
-		case MY_REPORTS:
+		case MY_REPORTS: {
+			viewProps = {
+				activeView: p.activeView,
+				...p.portfolio
+			};
+
 			return (
 				<PortfolioView
-					{...p.portfolio}
 					className={p.className}
-					activeView={p.activeView}
+					{...viewProps}
 				/>
 			);
-		case LOGIN_MESSAGE:
+		}
+		case LOGIN_MESSAGE: {
+			viewProps = {
+				marketsLink: (p.links && p.links.marketsLink) || null
+			};
+
 			return (
 				<LoginMessagePage
 					className={p.className}
-					marketsLink={(p.links && p.links.marketsLink) || null}
+					{...viewProps}
 				/>
 			);
-		default:
+		}
+		case MAKE: {
+			viewProps = {
+				createMarketForm: p.createMarketForm
+			};
+
+			return (
+				<CreateMarketView
+					className={p.className}
+					{...viewProps}
+				/>
+			);
+		}
+		case M: {
+			viewProps = {
+				market: p.market,
+				marketDataAge: p.marketDataAge,
+				selectedOutcome: p.selectedOutcome,
+				orderCancellation: p.orderCancellation,
+				marketDataUpdater: p.marketDataUpdater,
+				numPendingReports: p.marketsTotals.numPendingReports,
+				isTradeCommitLocked: p.tradeCommitLock.isLocked
+			};
+
+			return (
+				<MarketView
+					className={p.className}
+					{...viewProps}
+				/>
+			);
+		}
+		default: {
+			viewProps = {
+				loginAccount: p.loginAccount,
+				createMarketLink: (p.links || {}).createMarketLink,
+				markets: p.markets,
+				marketsHeader: p.marketsHeader,
+				favoriteMarkets: p.favoriteMarkets,
+				pagination: p.pagination,
+				filterSort: p.filterSort,
+				keywords: p.keywords
+			};
+
 			return (
 				<MarketsView
 					className={p.className}
-					loginAccount={p.loginAccount}
-					createMarketLink={(p.links || {}).createMarketLink}
-					markets={p.markets}
-					marketsHeader={p.marketsHeader}
-					favoriteMarkets={p.favoriteMarkets}
-					pagination={p.pagination}
-					filterSort={p.filterSort}
-					keywords={p.keywords}
-					showSideBar
+					sideBarAllowed
+					{...viewProps}
 				/>
 			);
+		}
 		}
 	}
 
 	render() {
 		const p = this.props;
 		const s = this.state;
-
 		const CurrentRoute = this.currentRoute;
-
-		const siteHeader = {
+		const siteHeaderProps = {
 			isSideBarAllowed: s.isSideBarAllowed,
 			isSideBarCollapsed: s.isSideBarCollapsed,
 			toggleSideBar: () => { this.toggleSideBar(); },
@@ -191,12 +231,12 @@ export default class Router extends Component {
 		};
 
 		return (
-			<div>
+			<main>
 				{!!p &&
 					<div id="site_container">
-						<SiteHeader {...siteHeader} />
+						<SiteHeader {...siteHeaderProps} />
 						<div id="view_container" >
-							<main id="view_content_container">
+							<div id="view_content_container">
 								<div className="view-content-row">
 									{s.isSideBarAllowed && p.tags &&
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
@@ -213,11 +253,11 @@ export default class Router extends Component {
 								</div>
 								<div id="footer_push" />
 								<SiteFooter />
-							</main>
+							</div>
 						</div>
 					</div>
 				}
-			</div>
+			</main>
 		);
 	}
 }
