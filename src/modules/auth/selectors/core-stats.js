@@ -4,6 +4,7 @@ import store from '../../../store';
 import get from '../../../utils/get';
 import { augur, abi } from '../../../services/augurjs';
 import { dateToBlock } from '../../../utils/date-to-block-to-date';
+import { formatEther } from '../../../utils/format-number';
 
 export default function () {
 	return selectCoreStats();
@@ -14,28 +15,64 @@ export function selectCoreStats() {
 	const { loginAccount, loginAccountPositions } = require('../../../selectors');
 
 	// Group 1
-	const totalEth = loginAccount.eth;
+	const totalEth = loginAccount.ether;
 	const totalRep = loginAccount.rep;
 
 	// Group 2
 	// Total Risked
+	const totalRiskedEth = formatEther(0);
 	// Total Available
+	const totalAvailableEth = formatEther(0);
 
 	// Group 3
 	const totalPL = get(loginAccountPositions, 'summary.totalNet');
-	const thirtyDayPL = selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 30);
-	const oneDayPL = selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 1);
+	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 30));
+	const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 1));
 
-	// const coreStats = [
-	// 	{
-	//
-	// 	}
-	// ]
+	return [
+		{
+			totalEth: {
+				label: 'Total ETH',
+				title: 'Ether -- outcome trading currency',
+				value: totalEth
+			},
+			totalRep: {
+				label: 'Total REP',
+				title: 'Reputation -- event voting currency',
+				value: totalRep
+			}
+		},
+		{
+			totalRiskedEth: {
+				label: 'Risked ETH',
+				title: 'Risked Ether -- Ether tied up in positions',
+				value: totalRiskedEth
+			},
+			totalAvailableEth: {
+				label: 'Available ETH',
+				title: 'Available Ether -- Ether not tied up in positions',
+				value: totalAvailableEth
+			}
+		},
+		{
+			totalPL: {
+				label: 'Total P/L',
+				tile: 'Profit/Loss -- net of all trades',
+				value: totalPL
+			},
+			totalPLMonth: {
+				label: '30 Day P/L',
+				tile: 'Profit/Loss -- net of all trades over the last 30 days',
+				value: totalPLMonth
+			},
+			totalPLDay: {
+				label: '1 Day P/L',
+				tile: 'Profit/Loss -- net of all trades over the last day',
+				value: totalPLDay
+			}
+		}
+	];
 }
-
-// function selectCortStatsProfitLoss(){
-// 	// const totalPL = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
-// }
 
 // Period is in days
 const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, period) => {
