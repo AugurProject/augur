@@ -9,16 +9,16 @@ const PortfolioView = (p) => {
 	let node;
 
 	switch (p.activeView) {
-	default:
-	case MY_POSITIONS:
-		node = <Positions {...p.positions} />;
-		break;
-	case MY_MARKETS:
-		node = <Markets {...p.markets} />;
-		break;
-	case MY_REPORTS:
-		node = <Reports {...p.reports} />;
-		break;
+		default:
+		case MY_POSITIONS:
+			node = <Positions {...p.positions} />;
+			break;
+		case MY_MARKETS:
+			node = <Markets {...p.markets} />;
+			break;
+		case MY_REPORTS:
+			node = <Reports {...p.reports} />;
+			break;
 	}
 
 	return (

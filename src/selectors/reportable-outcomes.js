@@ -2,21 +2,21 @@ import { BINARY, CATEGORICAL } from '../../src/modules/markets/constants/market-
 
 const reportableOutcomes = (type, outcomes) => {
 	switch (type) {
-	case BINARY:
-		return [
-			{
-				id: '1',
-				name: 'No'
-			},
-			{
-				id: '2',
-				name: 'Yes'
-			}
-		];
-	case CATEGORICAL:
-		return outcomes;
-	default:
-		return [];
+		case BINARY:
+			return [
+				{
+					id: '1',
+					name: 'No'
+				},
+				{
+					id: '2',
+					name: 'Yes'
+				}
+			];
+		case CATEGORICAL:
+			return outcomes;
+		default:
+			return [];
 	}
 };
 

@@ -42,43 +42,43 @@ OpenOrder.propTypes = {
 
 function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
 	switch (status) {
-	case cancellationStatuses.CANCELLATION_CONFIRMATION:
-		return (
-			<span>
-				<button
-					className="button cancel-order-abort-confirmation"
-					title="No, don't cancel order"
-					onClick={(event) => {
-						abortCancelOrderConfirmation(orderID, marketID, type);
-					}}
-				>No</button>
+		case cancellationStatuses.CANCELLATION_CONFIRMATION:
+			return (
+				<span>
+					<button
+						className="button cancel-order-abort-confirmation"
+						title="No, don't cancel order"
+						onClick={(event) => {
+							abortCancelOrderConfirmation(orderID, marketID, type);
+						}}
+					>No</button>
+					<button
+						className="button cancel-order-action"
+						title="Yes, cancel order"
+						onClick={(event) => {
+							cancelOrder(orderID, marketID, type);
+						}}
+					>Yes</button>
+				</span>
+			);
+		case cancellationStatuses.CANCELLING:
+			return 'Cancelling';
+		case cancellationStatuses.CANCELLATION_FAILED:
+			return 'Failure';
+		case cancellationStatuses.CANCELLED:
+			return null;
+		default:
+			return (
 				<button
 					className="button cancel-order-action"
-					title="Yes, cancel order"
+					title="Cancel order"
 					onClick={(event) => {
-						cancelOrder(orderID, marketID, type);
+						showCancelOrderConfirmation(orderID, marketID, type);
 					}}
-				>Yes</button>
-			</span>
-		);
-	case cancellationStatuses.CANCELLING:
-		return 'Cancelling';
-	case cancellationStatuses.CANCELLATION_FAILED:
-		return 'Failure';
-	case cancellationStatuses.CANCELLED:
-		return null;
-	default:
-		return (
-			<button
-				className="button cancel-order-action"
-				title="Cancel order"
-				onClick={(event) => {
-					showCancelOrderConfirmation(orderID, marketID, type);
-				}}
-			>
-				Cancel
-			</button>
-		);
+				>
+					Cancel
+				</button>
+			);
 	}
 
 }

@@ -82,126 +82,126 @@ export default class Router extends Component {
 		let viewProps = null; // Data props are split off into `viewProps` so code style wise there is a separation between element attributes + data attributes
 
 		switch (p.activeView) {
-		case REGISTER:
-		case LOGIN:
-		case IMPORT:
-		case LOGOUT: {
-			viewProps = {
-				authForm: p.authForm
-			};
+			case REGISTER:
+			case LOGIN:
+			case IMPORT:
+			case LOGOUT: {
+				viewProps = {
+					authForm: p.authForm
+				};
 
-			return (
-				<AuthView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case ACCOUNT: {
-			viewProps = {
-				loginMessageLink: p.links.loginMessageLink,
-				account: p.loginAccount,
-				onChangePass: p.loginAccount.onChangePass,
-				authLink: (p.links && p.links.authLink) || null
-			};
+				return (
+					<AuthView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case ACCOUNT: {
+				viewProps = {
+					loginMessageLink: p.links.loginMessageLink,
+					account: p.loginAccount,
+					onChangePass: p.loginAccount.onChangePass,
+					authLink: (p.links && p.links.authLink) || null
+				};
 
-			return (
-				<AccountView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case TRANSACTIONS: {
-			viewProps = {
-				transactions: p.transactions,
-				transactionsTotals: p.transactionsTotals
-			};
+				return (
+					<AccountView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case TRANSACTIONS: {
+				viewProps = {
+					transactions: p.transactions,
+					transactionsTotals: p.transactionsTotals
+				};
 
-			return (
-				<TransactionsView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case MY_POSITIONS:
-		case MY_MARKETS:
-		case MY_REPORTS: {
-			viewProps = {
-				activeView: p.activeView,
-				...p.portfolio
-			};
+				return (
+					<TransactionsView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case MY_POSITIONS:
+			case MY_MARKETS:
+			case MY_REPORTS: {
+				viewProps = {
+					activeView: p.activeView,
+					...p.portfolio
+				};
 
-			return (
-				<PortfolioView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case LOGIN_MESSAGE: {
-			viewProps = {
-				marketsLink: (p.links && p.links.marketsLink) || null
-			};
+				return (
+					<PortfolioView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case LOGIN_MESSAGE: {
+				viewProps = {
+					marketsLink: (p.links && p.links.marketsLink) || null
+				};
 
-			return (
-				<LoginMessageView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case MAKE: {
-			viewProps = {
-				createMarketForm: p.createMarketForm
-			};
+				return (
+					<LoginMessageView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case MAKE: {
+				viewProps = {
+					createMarketForm: p.createMarketForm
+				};
 
-			return (
-				<CreateMarketView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		case M: {
-			viewProps = {
-				market: p.market,
-				marketDataAge: p.marketDataAge,
-				selectedOutcome: p.selectedOutcome,
-				orderCancellation: p.orderCancellation,
-				marketDataUpdater: p.marketDataUpdater,
-				numPendingReports: p.marketsTotals.numPendingReports,
-				isTradeCommitLocked: p.tradeCommitLock.isLocked
-			};
+				return (
+					<CreateMarketView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			case M: {
+				viewProps = {
+					market: p.market,
+					marketDataAge: p.marketDataAge,
+					selectedOutcome: p.selectedOutcome,
+					orderCancellation: p.orderCancellation,
+					marketDataUpdater: p.marketDataUpdater,
+					numPendingReports: p.marketsTotals.numPendingReports,
+					isTradeCommitLocked: p.tradeCommitLock.isLocked
+				};
 
-			return (
-				<MarketView
-					className={p.className}
-					{...viewProps}
-				/>
-			);
-		}
-		default: {
-			viewProps = {
-				loginAccount: p.loginAccount,
-				createMarketLink: (p.links || {}).createMarketLink,
-				markets: p.markets,
-				marketsHeader: p.marketsHeader,
-				favoriteMarkets: p.favoriteMarkets,
-				pagination: p.pagination,
-				filterSort: p.filterSort,
-				keywords: p.keywords
-			};
+				return (
+					<MarketView
+						className={p.className}
+						{...viewProps}
+					/>
+				);
+			}
+			default: {
+				viewProps = {
+					loginAccount: p.loginAccount,
+					createMarketLink: (p.links || {}).createMarketLink,
+					markets: p.markets,
+					marketsHeader: p.marketsHeader,
+					favoriteMarkets: p.favoriteMarkets,
+					pagination: p.pagination,
+					filterSort: p.filterSort,
+					keywords: p.keywords
+				};
 
-			return (
-				<MarketsView
-					className={p.className}
-					sideBarAllowed
-					{...viewProps}
-				/>
-			);
-		}
+				return (
+					<MarketsView
+						className={p.className}
+						sideBarAllowed
+						{...viewProps}
+					/>
+				);
+			}
 		}
 	}
 

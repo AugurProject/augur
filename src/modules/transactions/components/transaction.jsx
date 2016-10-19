@@ -29,193 +29,193 @@ const Transaction = (p) => {
 	};
 
 	switch (p.type) {
-	case BUY:
-	case BID:
-	case SELL:
-	case ASK:
-	case SHORT_SELL:
-	case SHORT_ASK:
-		switch (p.type) {
 		case BUY:
-			nodes.action = 'BUY';
-			break;
 		case BID:
-			nodes.action = 'BID';
-			break;
 		case SELL:
-			nodes.action = 'SELL';
-			break;
 		case ASK:
-			nodes.action = 'ASK';
-			break;
 		case SHORT_SELL:
-			nodes.action = 'SHORT SELL';
-			break;
 		case SHORT_ASK:
-			nodes.action = 'SHORT ASK';
+			switch (p.type) {
+				case BUY:
+					nodes.action = 'BUY';
+					break;
+				case BID:
+					nodes.action = 'BID';
+					break;
+				case SELL:
+					nodes.action = 'SELL';
+					break;
+				case ASK:
+					nodes.action = 'ASK';
+					break;
+				case SHORT_SELL:
+					nodes.action = 'SHORT SELL';
+					break;
+				case SHORT_ASK:
+					nodes.action = 'SHORT ASK';
+					break;
+				default:
+					break;
+			}
+
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<ValueDenomination className="shares" {...p.numShares} />
+					{p.data.marketType === CATEGORICAL &&
+						<span>
+							<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
+						</span>
+					}
+					<span className="at">@</span>
+					<ValueDenomination className="noFeePrice" {...p.noFeePrice} />
+					<br className="hide-in-tx-display" />
+					<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
+					<br />
+					{marketDescription()}
+					<br className="hide-in-trade-summary-display" />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
+
 			break;
-		default:
+
+		case SELL_COMPLETE_SETS:
+			nodes.action = `SELL COMPLETE SETS (${p.numShares.formatted})`;
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
 			break;
-		}
 
-		nodes.description = (
-			<span className="description">
-				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.numShares} />
-				{p.data.marketType === CATEGORICAL &&
-					<span>
-						<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
-					</span>
-				}
-				<span className="at">@</span>
-				<ValueDenomination className="noFeePrice" {...p.noFeePrice} />
-				<br className="hide-in-tx-display" />
-				<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
-				<br />
-				{marketDescription()}
-				<br className="hide-in-trade-summary-display" />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-		);
-
-		break;
-
-	case SELL_COMPLETE_SETS:
-		nodes.action = `SELL COMPLETE SETS (${p.numShares.formatted})`;
-		nodes.description = (
-			<span className="description">
-				<span className="action">{nodes.action}</span>
-				<br />
-				{marketDescription()}
-				<br />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-		);
-		break;
-
-	case LOGIN:
-		nodes.description = (
-			<span className="description">
-				Login
-			</span>
-		);
-		break;
-	case FUND_ACCOUNT:
-		nodes.action = 'REGISTER NEW ACCOUNT';
-		nodes.description = (
-			<span className="description">
-				<span className="action">{nodes.action}</span>
-				<br />
-				<span className="market-description">Request testnet Ether and Reputation</span>
-				<br />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-		);
-		break;
-	case CREATE_MARKET:
-		nodes.action = 'Create market';
-		nodes.description = (
-			<span className="description">
-				<span className="action">{nodes.action}</span>
-				<br />
-				{marketDescription()}
-				<br />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-		);
-		break;
-
-	case COMMIT_REPORT:
-	case REVEAL_REPORT:
-		switch (p.type) {
-		case REVEAL_REPORT:
-			nodes.action = 'Reveal report';
+		case LOGIN:
+			nodes.description = (
+				<span className="description">
+					Login
+				</span>
+			);
 			break;
+		case FUND_ACCOUNT:
+			nodes.action = 'REGISTER NEW ACCOUNT';
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<br />
+					<span className="market-description">Request testnet Ether and Reputation</span>
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
+			break;
+		case CREATE_MARKET:
+			nodes.action = 'Create market';
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
+			break;
+
 		case COMMIT_REPORT:
-			nodes.action = 'Commit report';
+		case REVEAL_REPORT:
+			switch (p.type) {
+				case REVEAL_REPORT:
+					nodes.action = 'Reveal report';
+					break;
+				case COMMIT_REPORT:
+					nodes.action = 'Commit report';
+					break;
+				default:
+					break;
+			}
+			if (p.data.isScalar || p.data.market.type === SCALAR) {
+				nodes.description = (
+					<span className="description">
+						<span className="action">{nodes.action}</span>
+						<strong>{p.data.market.reportedOutcome || ''}</strong>
+						{!!p.data.isUnethical &&
+							<strong className="unethical"> and Unethical</strong>
+						}
+						<br />
+						{marketDescription()}
+						<br />
+						{p.timestamp &&
+							<ValueTimestamp className="property-value" {...p.timestamp} />
+						}
+					</span>
+				);
+			} else {
+				nodes.description = (
+					<span className="description">
+						<span className="action">{nodes.action}</span>
+						<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</strong>
+						{!!p.data.isUnethical &&
+							<strong className="unethical"> and Unethical</strong>
+						}
+						<br />
+						{marketDescription()}
+						<br />
+						{p.timestamp &&
+							<ValueTimestamp className="property-value" {...p.timestamp} />
+						}
+					</span>
+				);
+			}
 			break;
+
+		case GENERATE_ORDER_BOOK:
+			nodes.action = 'Generate order book';
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
+			break;
+		case CANCEL_ORDER: {
+			nodes.description = (
+				<span className="description">
+					<span className="action">Cancel order</span>
+					<span className="at">to {p.data.order.type}</span>
+					<ValueDenomination className="shares" {...p.data.order.shares} />
+					<span className="of">of</span>
+					<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+
+			);
+			break;
+		}
 		default:
+			nodes.description = (<span className="description">{p.type}</span>);
 			break;
-		}
-		if (p.data.isScalar || p.data.market.type === SCALAR) {
-			nodes.description = (
-				<span className="description">
-					<span className="action">{nodes.action}</span>
-					<strong>{p.data.market.reportedOutcome || ''}</strong>
-					{!!p.data.isUnethical &&
-						<strong className="unethical"> and Unethical</strong>
-					}
-					<br />
-					{marketDescription()}
-					<br />
-					{p.timestamp &&
-						<ValueTimestamp className="property-value" {...p.timestamp} />
-					}
-				</span>
-			);
-		} else {
-			nodes.description = (
-				<span className="description">
-					<span className="action">{nodes.action}</span>
-					<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</strong>
-					{!!p.data.isUnethical &&
-						<strong className="unethical"> and Unethical</strong>
-					}
-					<br />
-					{marketDescription()}
-					<br />
-					{p.timestamp &&
-						<ValueTimestamp className="property-value" {...p.timestamp} />
-					}
-				</span>
-			);
-		}
-		break;
-
-	case GENERATE_ORDER_BOOK:
-		nodes.action = 'Generate order book';
-		nodes.description = (
-			<span className="description">
-				<span className="action">{nodes.action}</span>
-				<br />
-				{marketDescription()}
-				<br />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-		);
-		break;
-	case CANCEL_ORDER: {
-		nodes.description = (
-			<span className="description">
-				<span className="action">Cancel order</span>
-				<span className="at">to {p.data.order.type}</span>
-				<ValueDenomination className="shares" {...p.data.order.shares} />
-				<span className="of">of</span>
-				<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
-				<br />
-				{marketDescription()}
-				<br />
-				{p.timestamp &&
-					<ValueTimestamp className="property-value" {...p.timestamp} />
-				}
-			</span>
-
-		);
-		break;
-	}
-	default:
-		nodes.description = (<span className="description">{p.type}</span>);
-		break;
 	}
 
 	return (
