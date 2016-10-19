@@ -244,5 +244,103 @@ describe('modules/trade/actions/process-bid.js', () => {
 		], `Actions Dispatched didn't match up with expectations`);
 	});
 
-	it.skip('should process a bid for a scalar market', () => {});
+	it('should process a bid for a scalar market', () => {
+		store.dispatch(action.processBid('transid1', '0x000000000000000000000000000000000scalar1', '1', '20', '0.5', '0.15', '0.2', '0.015'));
+		assert.deepEqual(store.getActions(), [
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: {
+					status: 'placing bid...',
+					message: 'bidding 20 shares for 0.0075 ETH/share',
+					freeze: {
+						verb: 'freezing',
+						noFeeCost: {
+							value: -0.05,
+							formattedValue: -0.05,
+							formatted: '-0.0500',
+							roundedValue: -0.05,
+							rounded: '-0.0500',
+							minimized: '-0.05',
+							denomination: ' ETH',
+							full: '-0.0500 ETH'
+						},
+						tradingFees: {
+							value: 0.2,
+							formattedValue: 0.2,
+							formatted: '0.2000',
+							roundedValue: 0.2,
+							rounded: '0.2000',
+							minimized: '0.2',
+							denomination: ' ETH',
+							full: '0.2000 ETH'
+						}
+					},
+					gasFees: {
+						value: 0.015,
+						formattedValue: 0.015,
+						formatted: '0.0150',
+						roundedValue: 0.015,
+						rounded: '0.0150',
+						minimized: '0.015',
+						denomination: ' real ETH (estimated)',
+						full: '0.0150 real ETH (estimated)'
+					}
+				}
+			},
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: {
+					hash: 'testHash',
+					timestamp: 1480000000,
+					status: 'updating order book',
+					message: 'bid 20 shares for 0.0075 ETH/share',
+					freeze: {
+						verb: 'froze',
+						noFeeCost: {
+							value: -0.05,
+							formattedValue: -0.05,
+							formatted: '-0.0500',
+							roundedValue: -0.05,
+							rounded: '-0.0500',
+							minimized: '-0.05',
+							denomination: ' ETH',
+							full: '-0.0500 ETH'
+						},
+						tradingFees: {
+							value: 0.2,
+							formattedValue: 0.2,
+							formatted: '0.2000',
+							roundedValue: 0.2,
+							rounded: '0.2000',
+							minimized: '0.2',
+							denomination: ' ETH',
+							full: '0.2000 ETH'
+						}
+					},
+					gasFees: {
+						value: 0.1,
+						formattedValue: 0.1,
+						formatted: '0.1000',
+						roundedValue: 0.1,
+						rounded: '0.1000',
+						minimized: '0.1',
+						denomination: ' real ETH',
+						full: '0.1000 real ETH'
+					}
+				}
+			},
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: { status: 'success'}
+			},
+			{ type: 'LOAD_BIDS_ASKS', transactionID: 'transid1' },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: { status: 'failed', message: 'this is an error' }
+			}
+		], `Actions Dispatched didn't match up with expectations`);
+	});
 });
