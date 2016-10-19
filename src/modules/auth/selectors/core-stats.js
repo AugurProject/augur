@@ -12,17 +12,20 @@ export default function () {
 
 export function selectCoreStats() {
 	const { accountTrades, blockchain } = store.getState();
-	const { loginAccount, loginAccountPositions } = require('../../../selectors');
+	const { loginAccount, loginAccountPositions, userOpenOrders } = require('../../../selectors');
 
 	// Group 1
 	const totalEth = loginAccount.ether;
 	const totalRep = loginAccount.rep;
 
+	// console.log('accountPositions -- ', userOpenOrders);
+
+	// NOTE -- group two is excluded for now due to not having all OPEN orders available without calling against every market
 	// Group 2
 	// Total Risked
-	const totalRiskedEth = formatEther(0);
-	// Total Available
-	const totalAvailableEth = formatEther(0);
+	// const totalRiskedEth = formatEther(0);
+	// // Total Available
+	// const totalAvailableEth = formatEther(0);
 
 	// Group 3
 	const totalPL = get(loginAccountPositions, 'summary.totalNet');
@@ -42,18 +45,18 @@ export function selectCoreStats() {
 				value: totalRep
 			}
 		},
-		{
-			totalRiskedEth: {
-				label: 'Risked ETH',
-				title: 'Risked Ether -- Ether tied up in positions',
-				value: totalRiskedEth
-			},
-			totalAvailableEth: {
-				label: 'Available ETH',
-				title: 'Available Ether -- Ether not tied up in positions',
-				value: totalAvailableEth
-			}
-		},
+		// {
+		// 	totalRiskedEth: {
+		// 		label: 'Risked ETH',
+		// 		title: 'Risked Ether -- Ether tied up in positions',
+		// 		value: totalRiskedEth
+		// 	},
+		// 	totalAvailableEth: {
+		// 		label: 'Available ETH',
+		// 		title: 'Available Ether -- Ether not tied up in positions',
+		// 		value: totalAvailableEth
+		// 	}
+		// },
 		{
 			totalPL: {
 				label: 'Total P/L',
