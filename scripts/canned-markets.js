@@ -557,20 +557,20 @@ var cannedMarkets = [{
     resolution: "espn.com",
     orderBook: {
         buy: {
-            "1": [
+            "2": [
                 {shares: "150", price: "0.56"},
                 {shares: "250", price: "0.52"},
                 {shares: "200", price: "0.48"}
             ],
-            "2": []
+            "1": []
         },
         sell: {
-            "1": [
+            "2": [
                 {shares: "50", price: "0.6"},
                 {shares: "200", price: "0.65"},
                 {shares: "250", price: "0.68"}
             ],
-            "2": []
+            "1": []
         }
     }
 }, {
@@ -586,20 +586,20 @@ var cannedMarkets = [{
     resolution: "http://www.bloomberg.com/energy",
     orderBook: {
         buy: {
-            "1": [
+            "2": [
                 {shares: "100", price: "0.48"},
                 {shares: "150", price: "0.44"},
                 {shares: "250", price: "0.4"}
             ],
-            "2": []
+            "1": []
         },
         sell: {
-            "1": [
+            "2": [
                 {shares: "100", price: "0.52"},
                 {shares: "150", price: "0.56"},
                 {shares: "200", price: "0.6"}
             ],
-            "2": []
+            "1": []
         }
     }
 }, {
@@ -660,20 +660,20 @@ var cannedMarkets = [{
     resolution: "https://www.google.com/finance?q=NASDAQ:AAPL",
     orderBook: {
         buy: {
-            "1": [
+            "2": [
                 {shares: "100", price: "0.48"},
                 {shares: "150", price: "0.44"},
                 {shares: "250", price: "0.4"}
             ],
-            "2": []
+            "1": []
         },
         sell: {
-            "1": [
+            "2": [
                 {shares: "100", price: "0.52"},
                 {shares: "150", price: "0.56"},
                 {shares: "200", price: "0.6"}
             ],
-            "2": []
+            "1": []
         }
     }
 }];
