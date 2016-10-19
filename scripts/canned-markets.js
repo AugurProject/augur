@@ -10,7 +10,7 @@ var chalk = require("chalk");
 var augur = require("../src");
 var DEBUG = false;
 
-augur.options.debug.trading = true;
+augur.options.debug.trading = DEBUG;
 
 var closingBell = new Date();
 closingBell.setHours(20, 0, 0, 0);
@@ -152,6 +152,16 @@ var cannedMarkets = [{
     makerFee: "0.005",
     tags: ["housing", "economy", "bubble"]
 }, {
+    description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2017?",
+    expDate: parseInt(new Date("7-2-2017").getTime() / 1000, 10),
+    minValue: -10,
+    maxValue: 120,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    resolution: "http://forecast.weather.gov",
+    tags: ["temperature", "San Francisco", "weather"]
+}, {
     description: "Will the Larsen B ice shelf collapse by November 1, 2017?",
     expDate: parseInt(new Date("11-2-2017").getTime() / 1000, 10),
     minValue: 1,
@@ -212,7 +222,460 @@ var cannedMarkets = [{
     takerFee: "0.02",
     makerFee: "0.01",
     tags: ["mortality", "United States", "science"],
-    extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?"
+    extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
+    resolution: "CDC"
+}, {
+    description: "Who will win the NFL Rookie of the year Award?~|>Carson Wentz|Dak Prescott|Ezekiel Elliott|Will Fuller|Field (Anyone else)",
+    expDate: parseInt(new Date("2-5-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 5,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "200", price: "0.21"},
+                {shares: "100", price: "0.18"},
+                {shares: "100", price: "0.16"}
+            ],
+            "2": [
+                {shares: "200", price: "0.22"},
+                {shares: "100", price: "0.2"},
+                {shares: "100", price: "0.18"}
+            ],
+            "3": [
+                {shares: "250", price: "0.3"},
+                {shares: "200", price: "0.25"},
+                {shares: "100", price: "0.22"}
+            ],
+            "4": [
+                {shares: "200", price: "0.15"},
+                {shares: "100", price: "0.12"},
+                {shares: "150", price: "0.08"}
+            ],
+            "5": [
+                {shares: "250", price: "0.1"},
+                {shares: "200", price: "0.075"},
+                {shares: "200", price: "0.05"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "200", price: "0.24"},
+                {shares: "100", price: "0.28"},
+                {shares: "100", price: "0.3"}
+            ],
+            "2": [
+                {shares: "100", price: "0.25"},
+                {shares: "200", price: "0.28"},
+                {shares: "150", price: "0.32"}
+            ],
+            "3": [
+                {shares: "150", price: "0.33"},
+                {shares: "200", price: "0.36"},
+                {shares: "100", price: "0.38"}
+            ],
+            "4": [
+                {shares: "100", price: "0.18"},
+                {shares: "100", price: "0.22"},
+                {shares: "200", price: "0.25"}
+            ],
+            "5": [
+                {shares: "100", price: "0.15"},
+                {shares: "200", price: "0.18"},
+                {shares: "150", price: "0.2"}
+            ]
+        }
+    }
+}, {
+    description: "Who will win the NFC East Conference?~|>Cowboys|Redskins|Eagles|Giants",
+    expDate: parseInt(new Date("1-8-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 4,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "200", price: "0.34"},
+                {shares: "150", price: "0.32"},
+                {shares: "200", price: "0.3"}
+            ],
+            "2": [
+                {shares: "50", price: "0.23"},
+                {shares: "100", price: "0.26"},
+                {shares: "150", price: "0.24"}
+            ],
+            "3": [
+                {shares: "100", price: "0.21"},
+                {shares: "150", price: "0.22"},
+                {shares: "100", price: "0.2"}
+            ],
+            "4": [
+                {shares: "100", price: "0.2"},
+                {shares: "200", price: "0.18"},
+                {shares: "300", price: "0.16"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.4"},
+                {shares: "150", price: "0.45"},
+                {shares: "200", price: "0.5"}
+            ],
+            "2": [
+                {shares: "100", price: "0.28"},
+                {shares: "200", price: "0.32"},
+                {shares: "250", price: "0.36"}
+            ],
+            "3": [
+                {shares: "150", price: "0.25"},
+                {shares: "250", price: "0.29"},
+                {shares: "200", price: "0.33"}
+            ],
+            "4": [
+                {shares: "50", price: "0.25"},
+                {shares: "150", price: "0.28"},
+                {shares: "100", price: "0.3"}
+            ]
+        }
+    }
+}, {
+    description: "Who will win the MLB World Series?~|>Indians|Blue Jays|Dodgers|Cubs",
+    expDate: parseInt(new Date("11-5-2016").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 4,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["baseball", "MLB", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "100", price: "0.33"},
+                {shares: "200", price: "0.3"},
+                {shares: "150", price: "0.26"}
+            ],
+            "2": [
+                {shares: "50", price: "0.14"},
+                {shares: "100", price: "0.1"},
+                {shares: "100", price: "0.06"}
+            ],
+            "3": [
+                {shares: "100", price: "0.25"},
+                {shares: "100", price: "0.22"},
+                {shares: "200", price: "0.18"}
+            ],
+            "4": [
+                {shares: "200", price: "0.26"},
+                {shares: "100", price: "0.24"},
+                {shares: "200", price: "0.2"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.38"},
+                {shares: "200", price: "0.42"},
+                {shares: "150", price: "0.46"}
+            ],
+            "2": [
+                {shares: "200", price: "0.18"},
+                {shares: "250", price: "0.2"},
+                {shares: "300", price: "0.24"}
+            ],
+            "3": [
+                {shares: "100", price: "0.3"},
+                {shares: "200", price: "0.34"},
+                {shares: "200", price: "0.38"}
+            ],
+            "4": [
+                {shares: "100", price: "0.3"},
+                {shares: "150", price: "0.34"},
+                {shares: "200", price: "0.38"}
+            ]
+        }
+    }
+}, {
+    description: "Who will win the PGA Tournament of Champions?~|>Jason Day|Jordan Spieth|Dustin Johnson|Rory Mcllroy|Henrik Stenson|Field",
+    expDate: parseInt(new Date("1-10-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 6,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["golf", "PGA", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "200", price: "0.16"},
+                {shares: "100", price: "0.14"},
+                {shares: "100", price: "0.12"}
+            ],
+            "2": [
+                {shares: "200", price: "0.14"},
+                {shares: "100", price: "0.14"},
+                {shares: "100", price: "0.11"}
+            ],
+            "3": [
+                {shares: "250", price: "0.15"},
+                {shares: "200", price: "0.12"},
+                {shares: "100", price: "0.1"}
+            ],
+            "4": [
+                {shares: "200", price: "0.15"},
+                {shares: "100", price: "0.12"},
+                {shares: "150", price: "0.08"}
+            ],
+            "5": [
+                {shares: "250", price: "0.11"},
+                {shares: "200", price: "0.8"},
+                {shares: "200", price: "0.05"}
+            ],
+            "6": [
+                {shares: "250", price: "0.27"},
+                {shares: "150", price: "0.25"},
+                {shares: "200", price: "0.22"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "200", price: "0.22"},
+                {shares: "100", price: "0.25"},
+                {shares: "100", price: "0.3"}
+            ],
+            "2": [
+                {shares: "100", price: "0.18"},
+                {shares: "200", price: "0.22"},
+                {shares: "150", price: "0.25"}
+            ],
+            "3": [
+                {shares: "150", price: "0.18"},
+                {shares: "200", price: "0.22"},
+                {shares: "100", price: "0.26"}
+            ],
+            "4": [
+                {shares: "100", price: "0.19"},
+                {shares: "100", price: "0.22"},
+                {shares: "200", price: "0.25"}
+            ],
+            "5": [
+                {shares: "100", price: "0.15"},
+                {shares: "200", price: "0.18"},
+                {shares: "150", price: "0.2"}
+            ],
+            "6": [
+                {shares: "200", price: "0.3"},
+                {shares: "100", price: "0.34"},
+                {shares: "150", price: "0.38"}
+            ]
+        }
+    }
+}, {
+    description: "How many strokes will the winner of the PGA Tournament of Champions win by?~|>0 - will be decided by playoff|1|2|3|4|5 or more",
+    expDate: parseInt(new Date("1-10-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 6,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["golf", "PGA", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "150", price: "0.3"},
+                {shares: "200", price: "0.25"}
+            ],
+            "2": [
+                {shares: "200", price: "0.2"},
+                {shares: "100", price: "0.16"}
+            ],
+            "3": [
+                {shares: "50", price: "0.18"},
+                {shares: "100", price: "0.16"}
+            ],
+            "4": [
+                {shares: "125", price: "0.14"},
+                {shares: "150", price: "0.1"}
+            ],
+            "5": [],
+            "6": [
+                {shares: "100", price: "0.08"},
+                {shares: "250", price: "0.04"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "50", price: "0.34"},
+                {shares: "150", price: "0.38"}
+            ],
+            "2": [
+                {shares: "100", price: "0.25"},
+                {shares: "50", price: "0.28"}
+            ],
+            "3": [
+                {shares: "100", price: "0.22"},
+                {shares: "200", price: "0.26"}
+            ],
+            "4": [
+                {shares: "100", price: "0.18"},
+                {shares: "50", price: "0.2"}
+            ],
+            "5": [
+                {shares: "250", price: "0.14"},
+                {shares: "300", price: "0.18"}
+            ],
+            "6": [
+                {shares: "200", price: "0.12"},
+                {shares: "250", price: "0.14"}
+            ]
+        }
+    }
+}, {
+    description: "Will the NY Giants finish with a better regular season record than the NY Jets?",
+    expDate: parseInt(new Date("1-2-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "150", price: "0.56"},
+                {shares: "250", price: "0.52"},
+                {shares: "200", price: "0.48"}
+            ],
+            "2": []
+        },
+        sell: {
+            "1": [
+                {shares: "50", price: "0.6"},
+                {shares: "200", price: "0.65"},
+                {shares: "250", price: "0.68"}
+            ],
+            "2": []
+        }
+    }
+}, {
+    description: "Will WTI crude oil finish the year trading below $50.00/barrel? (After hours trading will not be considered on 12/30/2016.)",
+    expDate: parseInt(new Date("1-1-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["crude oil", "energy", "Nymex"],
+    extraInfo: "",
+    resolution: "http://www.bloomberg.com/energy",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "100", price: "0.48"},
+                {shares: "150", price: "0.44"},
+                {shares: "250", price: "0.4"}
+            ],
+            "2": []
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.52"},
+                {shares: "150", price: "0.56"},
+                {shares: "200", price: "0.6"}
+            ],
+            "2": []
+        }
+    }
+}, {
+    description: "Who will win the popular vote in the 2016 Presidential Election?~|>Hillary Clinton|Donald Trump|other",
+    expDate: parseInt(new Date("11-10-2016").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 3,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["US politics", "elections", "President"],
+    extraInfo: "",
+    resolution: "realclearpolitics.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "100", price: "0.48"},
+                {shares: "50", price: "0.45"},
+                {shares: "200", price: "0.42"}
+            ],
+            "2": [
+                {shares: "150", price: "0.44"},
+                {shares: "200", price: "0.4"},
+                {shares: "200", price: "0.36"}
+            ],
+            "3": [
+                {shares: "100", price: "0.02"},
+                {shares: "100", price: "0.01"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.52"},
+                {shares: "200", price: "0.56"},
+                {shares: "250", price: "0.6"}
+            ],
+            "2": [
+                {shares: "100", price: "0.49"},
+                {shares: "100", price: "0.53"},
+                {shares: "200", price: "0.56"}
+            ],
+            "3": [
+                {shares: "100", price: "0.05"},
+                {shares: "500", price: "0.1"}
+            ]
+        }
+    }
+}, {
+    description: "Will AAPL settle above $117.00 today?",
+    expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["AAPL", "NASDAQ", "stocks"],
+    extraInfo: "",
+    resolution: "https://www.google.com/finance?q=NASDAQ:AAPL",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "100", price: "0.48"},
+                {shares: "150", price: "0.44"},
+                {shares: "250", price: "0.4"}
+            ],
+            "2": []
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.52"},
+                {shares: "150", price: "0.56"},
+                {shares: "200", price: "0.6"}
+            ],
+            "2": []
+        }
+    }
 }];
 
 augur.connect({
@@ -224,6 +687,7 @@ augur.connect({
     augur.setCash(augur.from, "100000000000", augur.utils.noop, function (r) {
         console.debug("setCash success:", r.callReturn);
         async.eachSeries(cannedMarkets, function (market, nextMarket) {
+            if (augur.network_id === "9000" && !market.orderBook) return nextMarket();
             market.branchId = augur.constants.DEFAULT_BRANCH_ID;
             market.onSent = function (r) {
                 if (DEBUG) console.debug("createSingleEventMarket sent:", r);
@@ -232,46 +696,139 @@ augur.connect({
                 if (DEBUG) console.debug("createSingleEventMarket success:", r.callReturn);
                 console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
                 var initialFairPrices = new Array(market.numOutcomes);
+                var isScalar = false;
                 if (market.numOutcomes === 2 && (market.minValue !== 1 || market.maxValue !== 2)) {
                     var midpoint = ((market.maxValue - market.minValue) / 2).toString();
                     initialFairPrices[0] = midpoint;
                     initialFairPrices[1] = midpoint;
+                    isScalar = true;
                 } else {
                     for (var i = 0; i < market.numOutcomes; ++i) {
                         initialFairPrices[i] = (1 / market.numOutcomes).toString();
                     }
                 }
-                var orderBookParams = {
-                    market: r.callReturn,
-                    liquidity: 100,
-                    initialFairPrices: initialFairPrices,
-                    startingQuantity: 5,
-                    bestStartingQuantity: 10,
-                    priceWidth: "0.2"
-                };
-                console.log(chalk.blue.bold("Generating order book:"), chalk.cyan.dim(JSON.stringify(orderBookParams, null, 2)));
-                augur.generateOrderBook(orderBookParams, {
-                    onBuyCompleteSets: function (res) {
-                        if (DEBUG) console.log("onBuyCompleteSets", res);
-                    },
-                    onSetupOutcome: function (res) {
-                        if (DEBUG) console.log("onSetupOutcome", res);
-                        console.log(chalk.white.dim(" - Outcome"), chalk.cyan(res.outcome));
-                    },
-                    onSetupOrder: function (res) {
-                        if (DEBUG) console.log("onSetupOrder", res);
-                    },
-                    onSuccess: function (res) {
-                        console.log(chalk.blue.bold("Order book generated:"));
-                        console.log("  " + chalk.cyan(Object.keys(res.sell).length.toString() + " asks"));
-                        console.log("  " + chalk.green(Object.keys(res.buy).length.toString() + " bids"));
-                        nextMarket();
-                    },
-                    onFailed: function (err) {
-                        console.error(chalk.red.bold("generateOrderBook failed:"), err);
-                        nextMarket();
+                var marketID = r.callReturn;
+                if (!market.orderBook) {
+                    var orderBookParams = {
+                        market: marketID,
+                        liquidity: 100,
+                        initialFairPrices: initialFairPrices,
+                        startingQuantity: 5,
+                        bestStartingQuantity: 10,
+                        priceWidth: "0.2"
+                    };
+                    console.log(chalk.blue.bold("Generating order book:"), chalk.cyan.dim(JSON.stringify(orderBookParams, null, 2)));
+                    augur.generateOrderBook(orderBookParams, {
+                        onBuyCompleteSets: function (res) {
+                            if (DEBUG) console.log("onBuyCompleteSets", res);
+                        },
+                        onSetupOutcome: function (res) {
+                            if (DEBUG) console.log("onSetupOutcome", res);
+                            console.log(chalk.white.dim(" - Outcome"), chalk.cyan(res.outcome));
+                        },
+                        onSetupOrder: function (res) {
+                            if (DEBUG) console.log("onSetupOrder", res);
+                        },
+                        onSuccess: function (res) {
+                            console.log(chalk.blue.bold("Order book generated:"));
+                            console.log("  " + chalk.cyan(Object.keys(res.sell).length.toString() + " asks"));
+                            console.log("  " + chalk.green(Object.keys(res.buy).length.toString() + " bids"));
+                            nextMarket();
+                        },
+                        onFailed: function (err) {
+                            console.error(chalk.red.bold("generateOrderBook failed:"), err);
+                            nextMarket();
+                        }
+                    });
+                } else {
+                    var scalarMinMax = null;
+                    if (isScalar) {
+                        scalarMinMax = {minValue: market.minValue, maxValue: market.maxValue};
                     }
-                });
+                    var largestOutcomeShares = 0;
+                    for (var outcomeID in market.orderBook.sell) {
+                        if (!market.orderBook.sell.hasOwnProperty(outcomeID)) continue;
+                        var sellOrders = market.orderBook.sell[outcomeID];
+                        if (sellOrders && sellOrders.length) {
+                            var outcomeShares = 0;
+                            for (var i = 0; i < sellOrders.length; ++i) {
+                                outcomeShares += parseInt(sellOrders[i].shares, 10);
+                            }
+                            if (outcomeShares > largestOutcomeShares) {
+                                largestOutcomeShares = outcomeShares;
+                            }
+                        }
+                    }
+                    // console.log('largestOutcomeShares:', largestOutcomeShares);
+                    augur.buyCompleteSets({
+                        market: marketID,
+                        amount: "0x" + largestOutcomeShares.toString(16),
+                        onSent: function (res) {
+                            // console.log("buyCompleteSets sent:", res.txHash);
+                        },
+                        onSuccess: function (res) {
+                            // console.log("buyCompleteSets success:", res.callReturn);
+                            async.forEachOfSeries(market.orderBook, function (orders, orderType, nextOrderType) {
+                                async.forEachOfSeries(orders, function (outcomeOrders, outcome, nextOutcome) {
+                                    async.each(outcomeOrders, function (order, nextOrder) {
+                                        if (orderType === "buy") {
+                                            augur.buy({
+                                                amount: order.shares,
+                                                price: order.price,
+                                                market: marketID,
+                                                outcome: outcome,
+                                                scalarMinMax: scalarMinMax,
+                                                onSent: function (res) {
+                                                    // console.log("buy sent:", orderType, outcome, order, res.callReturn, res.txHash);
+                                                },
+                                                onSuccess: function (res) {
+                                                    // console.log("buy success:", orderType, outcome, order, res.callReturn, res.hash);
+                                                    nextOrder();
+                                                },
+                                                onFailed: function (err) {
+                                                    console.error("buy failed:", orderType, outcome, order);
+                                                    nextOrder(err);
+                                                }
+                                            });
+                                        } else {
+                                            augur.sell({
+                                                amount: order.shares,
+                                                price: order.price,
+                                                market: marketID,
+                                                outcome: outcome,
+                                                scalarMinMax: scalarMinMax,
+                                                onSent: function (res) {
+                                                    // console.log("sell sent:", orderType, outcome, order, res.callReturn, res.txHash);
+                                                },
+                                                onSuccess: function (res) {
+                                                    // console.log("sell success:", orderType, outcome, order, res.callReturn, res.hash);
+                                                    nextOrder();
+                                                },
+                                                onFailed: function (err) {
+                                                    console.error("sell failed:", orderType, outcome, order);
+                                                    nextOrder(err);
+                                                }
+                                            });
+                                        }
+                                    }, function (err) {
+                                        if (err) console.error("each order:", err);
+                                        nextOutcome();
+                                    });
+                                }, function (err) {
+                                    if (err) console.error("each outcome:", err);
+                                    nextOrderType();
+                                });
+                            }, function (err) {
+                                if (err) console.error("each order type:", err);
+                                nextMarket();
+                            });
+                        },
+                        onFailed: function (err) {
+                            console.error("buyCompleteSets failed:", err);
+                            nextMarket();
+                        }
+                    });
+                }
             };
             market.onFailed = function (e) {
                 console.error(chalk.red.bold("createSingleEventMarket failed:"), e);

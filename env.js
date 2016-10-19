@@ -11,7 +11,6 @@ global.assert = require("chai").assert;
 global.chalk = require("chalk");
 global.EthTx = require("ethereumjs-tx");
 global.EthUtil = require("ethereumjs-util");
-global.web3 = require("web3");
 global.contracts = require("augur-contracts");
 global.abi = require("augur-abi");
 global.constants = require("./src/constants");
@@ -32,8 +31,6 @@ try {
 } catch (exc) {
     console.log(exc);
 }
-
-web3.setProvider(new web3.providers.HttpProvider(process.env.AUGUR_HOST));
 
 global.balances = (global.balance = function (account, branch) {
     account = account || augur.from;
