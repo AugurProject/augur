@@ -9,10 +9,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 	const testCases = [
 		{
 			loginAccount: {},
-			limitPrice: 0.5,
-			totalFee: 0.5,
-			totalCost: 0.6,
-			gasFeesRealEth: 0.4,
+			orders: [],
 			result: null
 		},
 		{
