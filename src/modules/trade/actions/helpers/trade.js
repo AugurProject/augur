@@ -71,7 +71,10 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 							gasFees: res.gasFees
 						});
 					},
-					onCommitFailed: (err) => nextTrade,
+					onCommitFailed: (err) => {
+						console.log('commit failed:', err);
+						nextTrade(err);
+					},
 					onNextBlock: (data) => console.log('trade-onNextBlock', data),
 					onTradeSent: (data) => {
 						console.log('trade sent:', data);
@@ -110,7 +113,10 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 							});
 						}));
 					},
-					onTradeFailed: (err) => nextTrade
+					onTradeFailed: (err) => {
+						console.log('trade failed:', err);
+						nextTrade(err);
+					}
 				});
 			});
 		});
