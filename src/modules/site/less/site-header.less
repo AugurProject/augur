@@ -59,10 +59,12 @@
 		button {
 			padding: 1.5em 1.8em;
 
+			.transition(@speed-very-fast; background-color);
+
 			&:hover,
 			&:active {
 				&:not(.augur-brand):not(button) {
-					background: @color-nav-background-active;
+					background-color: @color-nav-background-active;
 					color: @color-text-light;
 					cursor: pointer;
 				}
@@ -72,7 +74,7 @@
 
 				.font-weight-light();
 
-				background: @color-nav-background-active;
+				background-color: @color-nav-background-active;
 				color: @color-text-light;
 			}
 

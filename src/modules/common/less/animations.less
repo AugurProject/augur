@@ -28,22 +28,8 @@
 }
 
 // Transitions
-.transition(@type: @speed-normal) {
-	& when(@type = @speed-slow) {
-		transition: all @speed-slow @default-animation-type;
-	}
-
-	& when (@type = @speed-normal) {
-		transition: all @speed-normal @default-animation-type;
-	}
-
-	& when (@type = @speed-fast) {
-		transition: all @speed-fast @default-animation-type;
-	}
-
-	& when (@type = @speed-very-fast) {
-		transition: all @speed-very-fast @default-animation-type;
-	}
+.transition(@property; @speed: @speed-normal) {
+	transition: @property @speed @default-animation-type;
 }
 
 //	Helpers
