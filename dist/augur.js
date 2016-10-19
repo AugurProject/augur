@@ -21261,6 +21261,44 @@ module.exports={
         "SlashRep": "0xbcafbd1583bb79849ddafedbfa9b91da650ac4f9", 
         "Trade": "0x4b9f5c03e5edca6e3e41e6fbb6325fc71d9f83ae", 
         "Trades": "0x9474fc1727afae6769e170e1bd10ebb71291caf9"
+    }, 
+    "9000": {
+        "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
+        "BuyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
+        "CloseMarket": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
+        "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "CreateMarket": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
+        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
+        "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "ProportionCorrect": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
     }
 }
 },{}],57:[function(require,module,exports){
@@ -43690,7 +43728,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.8";
+    this.version = "2.10.9";
 
     this.options = {
         debug: {

@@ -693,6 +693,7 @@ augur.connect({
                 if (DEBUG) console.debug("createSingleEventMarket sent:", r);
             };
             market.onSuccess = function (r) {
+                var i;
                 if (DEBUG) console.debug("createSingleEventMarket success:", r.callReturn);
                 console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
                 var initialFairPrices = new Array(market.numOutcomes);
@@ -703,7 +704,7 @@ augur.connect({
                     initialFairPrices[1] = midpoint;
                     isScalar = true;
                 } else {
-                    for (var i = 0; i < market.numOutcomes; ++i) {
+                    for (i = 0; i < market.numOutcomes; ++i) {
                         initialFairPrices[i] = (1 / market.numOutcomes).toString();
                     }
                 }
@@ -751,7 +752,7 @@ augur.connect({
                         var sellOrders = market.orderBook.sell[outcomeID];
                         if (sellOrders && sellOrders.length) {
                             var outcomeShares = 0;
-                            for (var i = 0; i < sellOrders.length; ++i) {
+                            for (i = 0; i < sellOrders.length; ++i) {
                                 outcomeShares += parseInt(sellOrders[i].shares, 10);
                             }
                             if (outcomeShares > largestOutcomeShares) {
