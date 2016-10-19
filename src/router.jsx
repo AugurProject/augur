@@ -8,10 +8,10 @@ import MarketsView from './modules/markets/components/markets-view';
 import MarketView from './modules/market/components/market-view';
 import CreateMarketView from './modules/create-market/components/create-market-view';
 import AuthView from './modules/auth/components/auth-view';
-import AccountPage from './modules/account/components/account-page';
+import AccountView from './modules/account/components/account-view';
 import PortfolioView from './modules/portfolio/components/portfolio-view';
-import TransactionsPage from './modules/transactions/components/transactions-page';
-import LoginMessagePage from './modules/login-message/components/login-message-page';
+import TransactionsView from './modules/transactions/components/transactions-view';
+import LoginMessageView from './modules/login-message/components/login-message-view';
 import CoreStats from './modules/common/components/core-stats';
 
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
@@ -106,7 +106,7 @@ export default class Router extends Component {
 			};
 
 			return (
-				<AccountPage
+				<AccountView
 					className={p.className}
 					{...viewProps}
 				/>
@@ -119,7 +119,7 @@ export default class Router extends Component {
 			};
 
 			return (
-				<TransactionsPage
+				<TransactionsView
 					className={p.className}
 					{...viewProps}
 				/>
@@ -146,7 +146,7 @@ export default class Router extends Component {
 			};
 
 			return (
-				<LoginMessagePage
+				<LoginMessageView
 					className={p.className}
 					{...viewProps}
 				/>
