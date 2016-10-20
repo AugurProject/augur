@@ -217,6 +217,12 @@ export default class AuthForm extends Component {
 					disabled={s.submitDisabled}
 				/>
 				<Link
+					className={classnames('airbitz-button airbitz-button-bottom')}
+					onClick={p.airbitzLink.onClick}
+				>
+					{p.airbitzLinkText}
+				</Link>
+				<Link
 					type="button"
 					className="button x-button unstyled"
 					title="Back to Markets Page"
