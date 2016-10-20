@@ -9,13 +9,19 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 	const testCases = [
 		{
 			loginAccount: {},
+			makerFee: '0.001000000000000000006', // from real market
+			takerFee: '0.019999999999999999994',
+			cumulativeScale: '1',
 			orders: [],
 			result: null
 		},
 		{
 			loginAccount: { id: 'address', ether: 0 },
-			orders: {
-				'0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
+			makerFee: '0.001000000000000000006',
+			takerFee: '0.019999999999999999994',
+			cumulativeScale: '1',
+			orders: [
+				{
 					amount: '10',
 					block: 1234,
 					id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
@@ -25,7 +31,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					price: '0.42',
 					type: 'buy'
 				},
-				'order2': {
+				{
 					amount: '10',
 					block: 1234,
 					id: 'order2',
@@ -35,11 +41,14 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					price: '0.44',
 					type: 'buy'
 				}
-			},
-			result: 0
+			],
+			result: '0'
 		},
 		{
 			loginAccount: { id: 'address', ether: 5 },
+			makerFee: '0.001000000000000000006',
+			takerFee: '0.019999999999999999994',
+			cumulativeScale: '1',
 			orders: [
 				{
 					amount: '1',
@@ -72,10 +81,13 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					type: 'buy'
 				}
 			],
-			result: 3
+			result: '3'
 		},
 		{
 			loginAccount: { id: 'address', ether: 9 },
+			makerFee: '0.001000000000000000006',
+			takerFee: '0.019999999999999999994',
+			cumulativeScale: '1',
 			orders: [
 				{
 					amount: '1',
@@ -108,12 +120,12 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					type: 'buy'
 				}
 			],
-			result: 3
+			result: '3'
 		}
 	];
 	testCases.forEach((test) => {
 		it(`calculateMaxPossibleShares(${JSON.stringify(test)})`, () => {
-			assert.equal(calculateMaxPossibleShares(test.loginAccount, test.orders), test.result);
+			assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale), test.result);
 		});
 	});
 });
