@@ -39,7 +39,7 @@
     "build:airbitz:copy": "rsync -az node_modules/airbitz-core-js-ui/assets build/abcui/",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
     "______": "",
-    "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:env & npm run -s watch:favicon & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
+    "watch:all": "npm run -s clean && npm run -s build:airbitz && (npm run -s watch:css & npm run -s watch:env & npm run -s watch:favicon & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
     "watch:env": "onchange './src/env.json' -i -- npm run -s build:env",
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s build:css",
