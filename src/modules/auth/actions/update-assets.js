@@ -2,7 +2,7 @@ import { augur } from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 
-export function updateAssets() {
+export function updateAssets(cb) {
 	return (dispatch, getState) => {
 		const { loginAccount, branch } = getState();
 		if (!loginAccount.id) {
@@ -15,11 +15,13 @@ export function updateAssets() {
 			(err, ether) => {
 				if (err) {
 					console.info('!! ERROR updateAssets() ether', err);
+					if (cb) return cb(err);
 					return;
 				}
 				if (!loginAccount.ether || loginAccount.ether !== ether) {
-					return dispatch(updateLoginAccount({ ether }));
+					dispatch(updateLoginAccount({ ether }));
 				}
+				if (cb) cb(null, ether);
 			},
 			(err, rep) => {
 				if (err) {

@@ -66,7 +66,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// if shares exist, but no limit price, use top order
 		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === '0' ? '0' : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
 
-		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
+		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== '0') {
 			cleanLimitPrice = topOrderPrice;
 		}
 		// if this isn't a scalar market, limitPrice must be positive.

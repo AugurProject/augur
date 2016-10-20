@@ -1,5 +1,5 @@
+import { abi } from '../../../services/augurjs';
 import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA } from '../../markets/actions/update-markets-data';
-
 import { CATEGORICAL, BINARY } from '../../markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-outcomes';
 
@@ -21,8 +21,10 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
 	// it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
 	return Object.keys(newMarketsData).reduce((p, marketID) => {
+		const normalizedMarketID = abi.format_int256(marketID);
+
 		const marketData = {
-			...existingMarketsData[marketID],
+			...existingMarketsData[normalizedMarketID],
 			...newMarketsData[marketID]
 		};
 
@@ -47,7 +49,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		marketData.isLoadedMarketInfo = !!marketData.type;
 
 		// save market (without outcomes)
-		p[marketID] = marketData;
+		p[normalizedMarketID] = marketData;
 
 		return p;
 	}, {});
