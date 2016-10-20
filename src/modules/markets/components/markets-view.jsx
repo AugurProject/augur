@@ -4,7 +4,7 @@ import MarketsList from '../../markets/components/markets-list';
 import Branch from '../../branch/components/branch';
 
 const MarketsView = p => (
-	<section>
+	<section id="markets_view">
 		{!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
 			<Branch {...p.branch} />
 		}
