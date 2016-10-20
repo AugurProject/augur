@@ -63,7 +63,7 @@ export default class AccountPage extends Component {
 		const s = this.state;
 
 		return (
-			<main className="page account">
+			<section id="account_view">
 				<section className="page-content">
 					{p.authLink &&
 						<Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
@@ -271,7 +271,7 @@ export default class AccountPage extends Component {
 						<span className="tooltip-text">Recipient&#39;s Ethereum address</span>
 					</ReactTooltip>
 				</section>
-			</main>
+			</section>
 		);
 	}
 }

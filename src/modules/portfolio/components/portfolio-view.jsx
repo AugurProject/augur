@@ -21,7 +21,7 @@ const PortfolioView = (p) => {
 			break;
 	}
 	return (
-		<section className="page portfolio">
+		<section id="portfolio_view" >
 			<header className="page-header portfolio-header">
 				{!!p.navItems && !!p.navItems.length &&
 					<TabNavigation

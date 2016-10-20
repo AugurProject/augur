@@ -16,10 +16,10 @@ import LoginMessageView from 'modules/login-message/components/login-message-vie
 import ChatView from 'modules/chat/components/chat-view';
 import CoreStats from 'modules/common/components/core-stats';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
-import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/site/constants/views';
+import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
-import shouldComponentUpdatePure from './utils/should-component-update-pure';
+import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Router extends Component {
 	constructor(props) {

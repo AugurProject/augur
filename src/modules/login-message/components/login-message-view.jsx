@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Link from 'modules/link/components/link';
 
 const LoginMessagePage = p => (
-	<main className="page login-message">
+	<section id="login_message_view" >
 		<div className="page-content">
 			<h1>{`Welcome to the Augur beta test!`}</h1>
 			<p>{`This is a beta test in advance of Augur's live release. There are bugs. There are features being
@@ -147,7 +147,7 @@ const LoginMessagePage = p => (
 				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
 			}
 		</div>
-	</main>
+	</section>
 );
 
 LoginMessagePage.propTypes = {
