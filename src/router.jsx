@@ -102,7 +102,8 @@ export default class Router extends Component {
 					loginMessageLink: p.links.loginMessageLink,
 					account: p.loginAccount,
 					onChangePass: p.loginAccount.onChangePass,
-					authLink: (p.links && p.links.authLink) || null
+					authLink: (p.links && p.links.authLink) || null,
+					onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
 				};
 
 				return (

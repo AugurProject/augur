@@ -1,6 +1,24 @@
 .page.auth {
 	width: 100%;
 
+	.airbitz-button {
+		background: #3b5998;
+		border: 0;
+		border-radius: 8px;
+		color: #ffffff;
+		display: inline-block;
+		font-family: 'Roboto', Arial, sans-serif;
+		font-size: 80%;
+		height: 2.8em;
+		line-height: 2.8em;
+		margin: 0;
+		outline: 0;
+		padding: 0 1em;
+		text-transform: uppercase;
+		transition: background 0.3s ease;
+		white-space: nowrap;
+	}
+
 	.auth-form {
 		display: block;
 		font-size: 3vmin;
@@ -117,9 +135,16 @@
 		}
 
 		.submit-button {
-			display: block;
+			display: inline;
 			font-size: 80%;
 			letter-spacing: 0.5px;
+			margin-top: 2vmin;
+			position: relative;
+		}
+
+		.airbitz-button-bottom {
+			display: inline;
+			float: right;
 			margin-top: 2vmin;
 			position: relative;
 		}
