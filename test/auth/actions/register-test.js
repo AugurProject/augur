@@ -26,8 +26,10 @@ describe(`modules/auth/actions/register.js`, () => {
 	const fakeSelectors = {};
 	const fakeFund = {};
 	const updtLoginAccStub = {};
-	const ldLoginAccStub = {};
 	const autoStub = {};
+	const ldLoginAccStub = {
+		loadLoginAccountDependents: () => {}
+	};
 
 	let action, clock, store;
 	let thisTestState = Object.assign({}, testState, {
@@ -63,7 +65,11 @@ describe(`modules/auth/actions/register.js`, () => {
 	let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
 	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({type: updateTestString });
-	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
+	// ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
+	sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
+		if (cb) cb(null, 2.5);
+		return { type: ldLoginAccDepTestString };
+	});
 	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({type: ldLoginAccLSTestString });
 
 	action = proxyquire('../../../src/modules/auth/actions/register', {
@@ -77,32 +83,28 @@ describe(`modules/auth/actions/register.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
-		clock = sinon.useFakeTimers();
 	});
 
 	afterEach(() => {
 		store.clearActions();
-		clock.restore();
 	});
 
 	it(`should register a new account`, () => {
 		const expectedOutput = [{
-				type: 'updateLoginAccount(loginAccount) called.'
-			}, {
-				type: 'loadLoginAccountLocalStorage(id) called.'
-			}, {
-				type: 'updateLoginAccount(loginAccount) called.'
-			}, {
-				type: 'loadLoginAccountDependents() called.'
-			},{
-				type: 'FUND_NEW_ACCOUNT'
+			type: 'updateLoginAccount(loginAccount) called.'
+		}, {
+			type: 'loadLoginAccountLocalStorage(id) called.'
+		}, {
+			type: 'updateLoginAccount(loginAccount) called.'
+		}, {
+			type: 'FUND_NEW_ACCOUNT'
+		}, {
+			type: 'loadLoginAccountDependents() called.'
 		}];
 
 		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
 		// Call again to simulate someone pasting loginID and then hitting signUp
 		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
-
-		clock.tick(2000);
 
 		assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
 		assert(fakeFund.addFundNewAccount.calledOnce, `addFundNewAccount wasn't called once as expected`);
@@ -112,38 +114,6 @@ describe(`modules/auth/actions/register.js`, () => {
 		assert(updtLoginAccStub.updateLoginAccount.calledTwice, `updateLoginAccount wasn't called twice as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
-
-	// it(`should fail with no uppercase letter in passwords entered`, () => {
-	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
-  //   err: { valid: false, code: PASSWORD_NEEDS_UPPERCASE, message: PASSWORD_NEEDS_UPPERCASE_MSG } } ];
-	//
-	// 	store.dispatch(action.register('', 't3sting', 't3sting'));
-	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no uppercase letter in the passwords.`);
-	// });
-	//
-	// it(`should fail with no number in passwords entered`, () => {
-	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
-  //   err: { valid: false, code: PASSWORD_NEEDS_NUMBER, message: PASSWORD_NEEDS_NUMBER_MSG } } ];
-	//
-	// 	store.dispatch(action.register('', 'Testing', 'Testing'));
-	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no number in the passwords.`);
-	// });
-	//
-	// it(`should fail with no lowercase letter in passwords entered`, () => {
-	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
-  //   err: { valid: false, code: PASSWORD_NEEDS_LOWERCASE, message: PASSWORD_NEEDS_LOWERCASE_MSG } } ];
-	//
-	// 	store.dispatch(action.register('', 'T3STING', 'T3STING'));
-	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when there was no lowercase letter in the passwords.`);
-	// });
-	//
-	// it(`should fail when passwords entered are too short.`, () => {
-	// 	const expectedOutput = [ { type: 'AUTH_ERROR',
-  //   err: { valid: false, code: PASSWORD_TOO_SHORT, message: PASSWORD_TOO_SHORT_MSG } } ];
-	//
-	// 	store.dispatch(action.register('', 'test', 'test'));
-	// 	assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when the passwords where too short.`);
-	// });
 
 	it(`should fail with mismatched passwords`, () => {
 		const expectedOutput = [{

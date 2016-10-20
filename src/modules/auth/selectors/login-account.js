@@ -35,6 +35,14 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 	}));
 	const downloadAccountDataString = `data:,${accountData}`;
 
+	if (loginAccount.airbitzAccount) {
+		loginAccount.onAirbitzManageAccount = () => {
+			require('../../../selectors').abc.openManageWindow(loginAccount.airbitzAccount, (result, account) => {
+				// Possibly update the loginAccount
+			});
+		};
+	}
+
 	return {
 		...loginAccount,
 		prettyLoginID,
