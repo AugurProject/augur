@@ -15,9 +15,9 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 
-export function loadLoginAccountDependents() {
+export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
-		dispatch(updateAssets());
+		dispatch(updateAssets(cb));
 		dispatch(clearAccountTrades());
 		dispatch(loadAccountTrades());
 		dispatch(loadEventsWithSubmittedReport());

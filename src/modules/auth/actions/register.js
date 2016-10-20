@@ -31,8 +31,9 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			}
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
-			setTimeout(() => dispatch(addFundNewAccount(loginAccount.address)), 1500);
+			dispatch(loadLoginAccountDependents((err, ether) => {
+				dispatch(addFundNewAccount(loginAccount.address));
+			}));
 			// decide if we need to display the loginMessage
 			const { loginMessage } = getState();
 			if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {

@@ -5,6 +5,7 @@ import {
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
+import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 
 export function loginWithAirbitz(airbitzAccount) {
 	return (dispatch, getState) => {
@@ -24,13 +25,15 @@ export function loginWithAirbitz(airbitzAccount) {
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
-			try {
-				dispatch(loadLoginAccountLocalStorage(loginAccount.id));
-				dispatch(updateLoginAccount(loginAccount));
-				dispatch(loadLoginAccountDependents());
-			} catch (e) {
-				console.log('Error setting account login data');
-			}
+			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(updateLoginAccount(loginAccount));
+			dispatch(loadLoginAccountDependents((err, ether) => {
+				console.log('got:', err, ether);
+				if (err) return console.error('loadLoginAccountDependents:', err);
+				if (ether === 0) {
+					dispatch(addFundNewAccount(loginAccount.id));
+				}
+			}));
 			if (links && links.marketsLink)	{
 				links.marketsLink.onClick(links.marketsLink.href);
 			}
