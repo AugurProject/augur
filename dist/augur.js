@@ -42647,6 +42647,60 @@ module.exports = function () {
             }); // deriveKey
         },
 
+
+        loginWithMasterKey: function (name, privateKey, cb) {
+            var self = this;
+            // derive secret key from password
+            var salt = new Buffer("6169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex");
+            var iv = new Buffer("ef40723ec10d95c4356c8d157ce4308e", "hex");
+            keys.deriveKey("password", salt, null, function (derivedKey) {
+                if (derivedKey.error) return cb(derivedKey);
+                if (!Buffer.isBuffer(derivedKey)) {
+                    derivedKey = new Buffer(derivedKey, "hex");
+                }
+                var encryptedPrivateKey = new Buffer(keys.encrypt(
+                    privateKey,
+                    derivedKey.slice(0, 16),
+                    iv
+                ), "base64").toString("hex");
+
+                // encrypt private key using derived key and IV, then
+                // store encrypted key & IV, indexed by handle
+                var address = abi.format_address(keys.privateKeyToAddress(privateKey));
+                var keystore = {
+                    address: address,
+                    crypto: {
+                        cipher: keys.constants.cipher,
+                        ciphertext: encryptedPrivateKey,
+                        cipherparams: {iv: iv.toString("hex")},
+                        kdf: constants.KDF,
+                        kdfparams: {
+                            c: keys.constants[constants.KDF].c,
+                            dklen: keys.constants[constants.KDF].dklen,
+                            prf: keys.constants[constants.KDF].prf,
+                            salt: salt.toString("hex")
+                        },
+                        mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+                    },
+                    version: 3,
+                    id: uuid.v4()
+                };
+                var unsecureLoginIDObject = {name: name, keystore: keystore};
+                var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+                // while logged in, web.account object is set
+                self.account = {
+                    name: name,
+                    secureLoginID: secureLoginID,
+                    privateKey: new Buffer(privateKey, "hex"),
+                    address: address,
+                    keystore: keystore,
+                    derivedKey: derivedKey
+                };
+                return cb(clone(self.account));
+            }); // deriveKey
+        },
+
         logout: function () {
             this.account = {};
             augur.rpc.clear();
@@ -43728,7 +43782,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.10.9";
+    this.version = "2.10.10";
 
     this.options = {
         debug: {
