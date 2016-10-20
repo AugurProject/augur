@@ -44,6 +44,9 @@ module.exports = function () {
             var url = constants.FAUCET + abi.format_address(registeredAddress);
             console.debug("fundNewAccountFromFaucet:", url);
             request(url, function (err, response, body) {
+                console.log('faucet err:', err);
+                console.log('faucet response:', response);
+                console.log('faucet body:', body);
                 if (err) return onFailed(err);
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
