@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+
+// import MarketOpen from '../../market/components/market-open';
+// import MarketClosed from '../../market/components/market-open';
+
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import MarketBasics from './market-basics';
 import MarketInfo from '../../market/components/market-info';
@@ -127,7 +131,7 @@ export default class MarketPage extends Component {
 		}
 
 		return (
-			<section className={`market ${p.className || ''}`}>
+			<section id="market_view">
 				{nodes}
 			</section>
 		);
