@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+
 import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 

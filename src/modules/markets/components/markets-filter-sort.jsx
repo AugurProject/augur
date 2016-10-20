@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Dropdown from 'modules/common/components/dropdown';
 import MarketsSearch from 'modules/markets/components/markets-search';
 

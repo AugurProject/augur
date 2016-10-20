@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
+
 import MarketBasics from 'modules/market/components/market-basics';
 import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
 import Link from 'modules/link/components/link';

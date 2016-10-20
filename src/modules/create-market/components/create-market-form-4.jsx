@@ -1,10 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import getValue from 'utils/get-value';
 import FormButtons from 'modules/create-market/components/create-market-form-buttons';
 import Input from 'modules/common/components/input';
 import Checkbox from 'modules/common/components/checkbox';
+
+import getValue from 'utils/get-value';
 
 const CreateMarketForm4 = p => (
 	<div className="step-4">

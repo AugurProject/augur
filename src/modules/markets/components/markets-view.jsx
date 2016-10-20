@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+
 import MarketsHeaders from 'modules/markets/components/markets-headers';
 import MarketsList from 'modules/markets/components/markets-list';
-import Branch from 'modules/markets/components/branch';
+import Branch from 'modules/branch/components/branch';
 
 const MarketsView = p => (
 	<section id="markets_view">

@@ -1,10 +1,11 @@
 import React from 'react';
 
 import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
-
-import { SCALAR } from 'modules/markets/constants/market-types';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 import getValue from 'utils/get-value';
+
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 const MarketOpenOrders = (p) => {
 	return (
