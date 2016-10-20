@@ -18,6 +18,7 @@ To help ensure this, the following conventions have been employed:
 * Import paths for `assets`, `modules`, and `utils` are aliased, so avoid relative paths.
   * Always traverse from the aliases.
 * Null component states (ex: 'no markets', 'no tags', etc.) should always come first in the component.
+* Conditional display should occur as far down the component tree as possible.
 
 ### Other Conventions
 Not all conventions are detailed above, but rather just the main points.
