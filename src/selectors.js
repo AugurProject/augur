@@ -1,4 +1,5 @@
 import activeView from './modules/app/selectors/active-view';
+import abc from './modules/auth/selectors/abc';
 import loginAccount from './modules/auth/selectors/login-account';
 import links from './modules/link/selectors/links';
 import url from './modules/link/selectors/url';
@@ -32,6 +33,7 @@ import coreStats from './modules/auth/selectors/core-stats';
 
 const selectors = {
 	activeView,
+	abc,
 	loginAccount,
 	links,
 	url,
