@@ -1,5 +1,5 @@
 import React from 'react';
-import ValueDenomination from '../../common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const OrderBook = p => (
 	<div className="order-book">

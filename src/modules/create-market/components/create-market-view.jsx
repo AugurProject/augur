@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import CreateMarketForm from '../../create-market/components/create-market-form';
+import CreateMarketForm from 'modules/create-market/components/create-market-form';
 
 const CreateMarketPage = p => (
 	<main className="page create-market">

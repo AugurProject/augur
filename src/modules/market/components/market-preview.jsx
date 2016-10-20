@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import MarketBasics from './market-basics';
-import MarketOutcomes from './market-outcomes';
-import Link from '../../link/components/link';
+import MarketBasics from 'modules/market/components/market-basics';
+import MarketOutcomes from 'modules/market/components/market-outcomes';
+import Link from 'modules/link/components/link';
 
 const MarketPreview = p => (
 	<article className={`market-preview ${p.className}`}>

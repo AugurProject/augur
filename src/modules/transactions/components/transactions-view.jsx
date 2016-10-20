@@ -1,5 +1,6 @@
 import React from 'react';
-import Transactions from '../../transactions/components/transactions';
+
+import Transactions from 'modules/transactions/components/transactions';
 
 const TransactionsPage = p => (
 	<main className="page transactions">

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import AuthForm from '../../auth/components/auth-form';
-import Link from '../../link/components/link';
+import AuthForm from 'modules/auth/components/auth-form';
+import Link from 'modules/link/components/link';
 
 class AuthPage extends React.Component {
 	componentDidMount() {

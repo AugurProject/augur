@@ -1,5 +1,5 @@
 import React from 'react';
-import TradeBuilderRow from '../../../modules/trade/components/trade-builder-row';
+import TradeBuilderRow from 'modules/trade/components/trade-builder-row';
 
 const TradePanel = p => (
 	<table className="trade-builder">

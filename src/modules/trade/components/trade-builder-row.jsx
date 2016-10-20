@@ -1,10 +1,12 @@
 import React from 'react';
 import classnames from 'classnames';
-import TradeBuilderBidAsk from '../../../modules/trade/components/trade-builder-bid-ask';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
-import Input from '../../../modules/common/components/input';
-import Toggler from '../../../modules/common/components/toggler';
-import { SCALAR } from '../../markets/constants/market-types';
+
+import TradeBuilderBidAsk from 'modules/trade/components/trade-builder-bid-ask';
+import ValueDenomination from 'modules/common/components/value-denomination';
+import Input from 'modules/common/components/input';
+import Toggler from 'modules/common/components/toggler';
+
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 const TradeBuilderRow = (p) => {
 	const bids = !p.showFullOrderBook ? p.orderBook.bids.slice(0, 1) : p.orderBook.bids;

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Link from '../../link/components/link';
+import Link from 'modules/link/components/link';
 
 const LoginMessagePage = p => (
 	<main className="page login-message">

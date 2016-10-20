@@ -1,10 +1,10 @@
 import React from 'react';
-import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import Form2Categorical from './create-market-form-2-categorical';
-import Form2Scalar from './create-market-form-2-scalar';
-import FormButtons from '../../create-market/components/create-market-form-buttons';
-import Input from '../../common/components/input';
-import DatePicker from '../../common/components/datepicker';
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import Form2Categorical from 'modules/create-market/components/create-market-form-2-categorical';
+import Form2Scalar from 'modules/create-market/components/create-market-form-2-scalar';
+import FormButtons from 'modules/create-market/components/create-market-form-buttons';
+import Input from 'modules/common/components/input';
+import DatePicker from 'modules/common/components/datepicker';
 
 const CreateMarketForm2 = (p) => {
 	let	typeSpecific;

@@ -3,15 +3,15 @@ import React, { Component } from 'react';
 // import MarketOpen from '../../market/components/market-open';
 // import MarketClosed from '../../market/components/market-open';
 
-import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-import MarketBasics from './market-basics';
-import MarketInfo from '../../market/components/market-info';
-import TradePanel from '../../../modules/trade/components/trade-panel';
-import ReportPanel from '../../reports/components/report-panel';
-import MarketPositions from '../../market/components/market-positions';
-import MarketOpenOrders from '../../market/components/market-open-orders';
-import Chart from './market-chart';
-import MarketSummary from './market-summary';
+import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+import MarketBasics from 'modules/market/components/market-basics';
+import MarketInfo from 'modules/market/components/market-info';
+import TradePanel from 'modules/trade/components/trade-panel';
+import ReportPanel from 'modules/reports/components/report-panel';
+import MarketPositions from 'modules/market/components/market-positions';
+import MarketOpenOrders from 'modules/market/components/market-open-orders';
+import Chart from 'modules/market/components/market-chart';
+import MarketSummary from 'modules/market/components/market-summary';
 
 export default class MarketPage extends Component {
 	// TODO -- Prop Validations

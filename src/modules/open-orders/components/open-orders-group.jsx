@@ -1,6 +1,6 @@
 import React from 'react';
 
-import OpenOrder from '../../open-orders/components/open-order';
+import OpenOrder from 'modules/open-orders/components/open-order';
 
 const OpenOrdersGroup = (p) => {
 	if (p.userOpenOrders == null || p.userOpenOrders.length === 0) {

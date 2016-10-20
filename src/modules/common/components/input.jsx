@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
+import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Input extends Component {
 	// TODO -- Prop Validations

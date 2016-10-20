@@ -1,5 +1,5 @@
 import React from 'react';
-import Transaction from '../../transactions/components/transaction';
+import Transaction from 'modules/transactions/components/transaction';
 
 const TradeSummary = p => (
 	<div className="trade-summary">

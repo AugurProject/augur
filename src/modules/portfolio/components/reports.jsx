@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import Report from '../../../modules/my-reports/components/my-report';
-import Link from '../../link/components/link';
+
+import Report from 'modules/my-reports/components/my-report';
+import Link from 'modules/link/components/link';
 
 const PortfolioReports = p => (
 	<div>

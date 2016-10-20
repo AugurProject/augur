@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import Checkbox from '../../common/components/checkbox';
-import { SCALAR } from '../../markets/constants/market-types';
+
+import Checkbox from 'modules/common/components/checkbox';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 export default class ReportForm extends Component {
 	// TODO -- Prop Validations

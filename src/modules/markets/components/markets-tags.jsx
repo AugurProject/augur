@@ -1,5 +1,5 @@
 import React from 'react';
-import Checkbox from '../../common/components/checkbox';
+import Checkbox from 'modules/common/components/checkbox';
 
 const Filters = p => (
 	<div className="filters">

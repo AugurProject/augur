@@ -1,5 +1,6 @@
 import React from 'react';
-import Checkbox from '../../common/components/checkbox';
+
+import Checkbox from 'modules/common/components/checkbox';
 
 const SideBar = p => (
 	<article className="side-bar" >

@@ -1,10 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/views';
-import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
-import { AUTH_TYPES } from '../../auth/constants/auth-types';
-import Link from '../../link/components/link';
-import AugurLogo from '../../common/components/augur-logo';
+
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/site/constants/views';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
+import { AUTH_TYPES } from 'modules/auth/constants/auth-types';
+import Link from 'modules/link/components/link';
+import AugurLogo from 'modules/common/components/augur-logo';
 
 const SiteHeader = p => (
 	<header className="site-header"	>

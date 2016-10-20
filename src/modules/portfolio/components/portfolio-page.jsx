@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import TabNavigation from '../../../modules/common/components/tab-navigation';
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/views';
-import Positions from '../../../modules/portfolio/components/positions';
-import Markets from '../../../modules/portfolio/components/markets';
-import Reports from '../../../modules/portfolio/components/reports';
+import TabNavigation from 'modules/common/components/tab-navigation';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/site/constants/views';
+import Positions from 'modules/portfolio/components/positions';
+import Markets from 'modules/portfolio/components/markets';
+import Reports from 'modules/portfolio/components/reports';
 
 const PortfolioPage = (p) => {
 	let node;

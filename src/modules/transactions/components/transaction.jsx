@@ -1,11 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import Link from '../../link/components/link';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from '../../transactions/constants/types';
-import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
-import { SCALAR, CATEGORICAL } from '../../markets/constants/market-types';
-import ValueDenomination from '../../common/components/value-denomination';
-import ValueTimestamp from '../../common/components/value-timestamp';
+import Link from 'modules/link/components/link';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { LOGIN, FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
+import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
+import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueTimestamp from 'modules/common/components/value-timestamp';
 
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 

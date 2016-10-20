@@ -1,7 +1,7 @@
 import React from 'react';
 
-import OpenOrdersGroup from '../../open-orders/components/open-orders-group';
-import ValueDenomination from '../../common/components/value-denomination';
+import OpenOrdersGroup from 'modules/open-orders/components/open-orders-group';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const OpenOrders = p => (
 	<div className="market-open-orders">

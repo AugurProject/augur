@@ -1,7 +1,7 @@
 // NOTE -- This is no longer used, but leaving for reference until functionality is re-employed
 
 import React from 'react';
-import ValueDenomination from '../../common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const OrderBookParameters = p => (
 	<section className="advanced">

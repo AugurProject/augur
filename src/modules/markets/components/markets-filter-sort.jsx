@@ -1,6 +1,6 @@
 import React from 'react';
-import DropDown from '../../common/components/dropdown';
-import MarketsSearch from '../../markets/components/markets-search';
+import DropDown from 'modules/common/components/dropdown';
+import MarketsSearch from 'modules/markets/components/markets-search';
 
 const MarketsFilterSort = p => (
 	<article className={`markets-view-header ${p.className}`}>

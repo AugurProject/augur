@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import Position from './my-position';
-import Link from '../../link/components/link';
+
+import Position from 'modules/my-positions/components/my-position';
+import Link from 'modules/link/components/link';
 
 const Positions = p => (
 	<section className="positions-list">

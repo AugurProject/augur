@@ -1,6 +1,6 @@
 import React from 'react';
-import TradeBuilder from '../../../modules/trade/components/trade-builder';
-import TradeSummary from '../../../modules/trade/components/trade-summary';
+import TradeBuilder from 'modules/trade/components/trade-builder';
+import TradeSummary from 'modules/trade/components/trade-summary';
 
 const TradePanel = p => (
 	<div className="trade-panel">

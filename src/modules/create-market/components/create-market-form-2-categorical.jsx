@@ -1,5 +1,5 @@
 import React from 'react';
-import InputList from '../../common/components/input-list';
+import InputList from 'modules/common/components/input-list';
 
 const CreateMarketForm2Categorical = p => (
 	<div className="categorical">

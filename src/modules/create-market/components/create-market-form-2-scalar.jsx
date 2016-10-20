@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from '../../common/components/input';
+import Input from 'modules/common/components/input';
 
 const CreateMarketForm2Scalar = p => (
 	<div className="scalar">

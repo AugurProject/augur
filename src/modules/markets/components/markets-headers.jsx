@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import MarketsFilterSort from '../../markets/components/markets-filter-sort';
-import Link from '../../link/components/link';
+import MarketsFilterSort from 'modules/markets/components/markets-filter-sort';
+import Link from 'modules/link/components/link';
 
 const MarketsHeaders = p => (
 	<article className={p.className}>

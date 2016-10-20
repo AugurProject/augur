@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
+
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const TradeBuilderBidAsk = p => (
 	<span>

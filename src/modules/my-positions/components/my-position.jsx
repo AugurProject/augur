@@ -1,6 +1,6 @@
 import React from 'react';
-import ValueDenomination from '../../common/components/value-denomination';
-import { SCALAR } from '../../markets/constants/market-types';
+import ValueDenomination from 'modules/common/components/value-denomination';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 const Position = p => (
 	<div className="position">

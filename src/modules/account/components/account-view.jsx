@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-import Link from '../../link/components/link';
-import Input from '../../common/components/input';
-import Checkbox from '../../common/components/checkbox';
+import Link from 'modules/link/components/link';
+import Input from 'modules/common/components/input';
+import Checkbox from 'modules/common/components/checkbox';
 
 export default class AccountPage extends Component {
 	// TODO -- Prop Validations

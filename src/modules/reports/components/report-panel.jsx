@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import ReportForm from '../../reports/components/report-form';
+
+import ReportForm from 'modules/reports/components/report-form';
 
 const ReportPanel = p => (
 	<section className={classnames('report-panel', p.className)}>

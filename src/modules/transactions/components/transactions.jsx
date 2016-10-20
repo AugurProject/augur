@@ -1,5 +1,5 @@
 import React from 'react';
-import Transaction from './transaction';
+import Transaction from 'modules/transactions/components/transaction';
 
 const Transactions = p => (
 	<section className={p.className}>
