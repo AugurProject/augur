@@ -1,20 +1,23 @@
 import memoizerific from 'memoizerific';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 import store from '../../../store';
+import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTED } from '../../markets/constants/filter-sort';
+import { isMarketDataExpired } from '../../../utils/is-market-data-open';
 
 export default function () {
-	const { keywords, selectedFilters, selectedTags } = store.getState();
+	const { keywords, selectedFilterSort, selectedTags } = store.getState();
 	const { allMarkets } = require('../../../selectors');
-	return selectFilteredMarkets(allMarkets, keywords, selectedFilters, selectedTags);
+	return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags);
 }
 
-export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilters, selectedTags) =>
-	markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilters, selectedTags))
+export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags) =>
+	markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags))
 );
 
-export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilters, selectedTags) => {
+export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilterSort, selectedTags) => {
+
 	const selectedTagsList = Object.keys(selectedTags);
-	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList) && isDisplayable(market);
+	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList) && isOfType(market, selectedFilterSort.type) && isDisplayable(market);
 
 	function isMatchKeywords(market, keys) {
 		const keywordsArray = cleanKeywordsArray(keys);
@@ -26,6 +29,18 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 			market.outcomes.some(outcome => outcome.name && outcome.name.indexOf(keyword) >= 0) ||
 			market.tags.some(tag => tag.name.indexOf(keyword) >= 0)
 		));
+	}
+
+	function isOfType(market, type) {
+		switch (type) {
+		case (FILTER_TYPE_CLOSED):
+			return isMarketDataExpired(market);
+		case (FILTER_TYPE_REPORTED):
+			return isMarketDataExpired(market) && !!market.reportedOutcome;
+		case (FILTER_TYPE_OPEN):
+		default:
+			return !isMarketDataExpired(market); // returns whether or not the endDate has occured
+		}
 	}
 
 	function isMatchTags(market, selectedTagsList) {
