@@ -14,6 +14,8 @@ To help ensure this, the following conventions have been employed:
   * Due to some implementation constraints, there may be a reason to deviate from this, but it should be dialoged over prior to implementation.
 * **Do** leave comments for functionality that may be non-obvious
   * Dependence on other methods, complex mutations/filters, etc.
+* Font Awesome characters are used directly in the components -- in order to render these inside your text editors/IDEs, reference the [typography](../src/modules/common/less/typography.less) stylesheet.
+* Import paths for `assets`, `modules`, and `utils` are aliased, so avoid relative paths
 
 ### Other Conventions    
 Not all conventions are detailed above, but rather just the main points.  

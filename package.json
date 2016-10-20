@@ -59,6 +59,7 @@
     "react-tooltip": "3.2.1"
   },
   "devDependencies": {
+    "aliasify": "2.0.0",
     "augur-ui-webserver": "1.1.0",
     "autoprefixer": "6.4.1",
     "babel-eslint": "6.1.2",
@@ -75,6 +76,7 @@
     "envify": "3.4.1",
     "eslint": "3.8.1",
     "eslint-config-airbnb": "12.0.0",
+    "eslint-import-resolver-node": "^0.2.3",
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-jsx-a11y": "2.2.2",
     "eslint-plugin-react": "6.3.0",
@@ -99,5 +101,17 @@
     "js_entry_file_build": "./src/components.jsx",
     "js_entry_file_demo": "./src/index.js",
     "less_entry_file": "./src/styles.less"
+  },
+  "browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+  "aliasify": {
+    "aliases": {
+      "assets": "./src/assets",
+      "modules": "./src/modules",
+      "utils": "./src/utils"
+    }
   }
 }
