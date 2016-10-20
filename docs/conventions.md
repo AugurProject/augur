@@ -7,6 +7,7 @@ To help ensure this, the following conventions have been employed:
 * Only one `main` tag
   * Currently employed in the `router.jsx` component to contain all view content.
 * All top-level components (i.e. - views) should be contained within a `section` tag.
+  * Though valid, `section` should **only** be used for view level components.
 * All `section` tags should have an accompanying ID attribute (excluding unique semantic tags (main, header, footer, etc.)).
 * All reusable complex components should be contained with an `article` tag.
 * Simpler components may be contained in either a `div` or some other semantically correct tag.
