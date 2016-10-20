@@ -159,13 +159,29 @@ export const tradeTestState = {
 	tradesInProgress: {}
 };
 
-export const tradeShapeAssertion = (tradeDetails) => {
+export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
+	const Data = UpdateTradesInProgressAction.data;
+	const tradeDetails = Data.details;
+	const action = tradeDetails.tradeActions[0];
+
+	assert.isDefined(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't defined`);
+	assert.isString(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't a String`);
+	assert.isDefined(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't defined`);
+	assert.isObject(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't a Object`);
+
+	assert.isDefined(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`);
+	assert.isString(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`);
+	assert.isDefined(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`);
+	assert.isString(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a String`);
+	assert.isDefined(Data.details, `UpdateTradesInProgressAction.data.details isn't defined`);
+	assert.isObject(Data.details, `UpdateTradesInProgressAction.data.details isn't a Object`);
+
 	assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`);
 	assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`);
 	assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`);
-	assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a number`);
+	assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a string`);
 	assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`);
-	assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a number`);
+	assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a string`);
 	assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`);
 	assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
 	assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);
@@ -179,7 +195,7 @@ export const tradeShapeAssertion = (tradeDetails) => {
 
 	assert.isDefined(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't defined`);
 	assert.isArray(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't an array`);
-	const action = tradeDetails.tradeActions[0];
+
 	assert.isDefined(action, `tradeDetails.tradeActions[0] isn't defined`);
 	assert.isObject(action, `tradeDetails.tradeActions[0] isn't an object`);
 
