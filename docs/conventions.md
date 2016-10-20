@@ -15,11 +15,12 @@ To help ensure this, the following conventions have been employed:
 * **Do** leave comments for functionality that may be non-obvious
   * Dependence on other methods, complex mutations/filters, etc.
 * Font Awesome characters are used directly in the components -- in order to render these inside your text editors/IDEs, reference the [typography](../src/modules/common/less/typography.less) stylesheet.
-* Import paths for `assets`, `modules`, and `utils` are aliased, so avoid relative paths.  
+* Import paths for `assets`, `modules`, and `utils` are aliased, so avoid relative paths.
   * Always traverse from the aliases.
+* Null component states (ex: 'no markets', 'no tags', etc.) should always come first in the component.
 
-### Other Conventions    
-Not all conventions are detailed above, but rather just the main points.  
+### Other Conventions
+Not all conventions are detailed above, but rather just the main points.
 For a full review of the breadth of the conventions employed, reference:
 
 * `.eslintrc` - JS linting rules
