@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import SiteHeader from './modules/site/components/site-header';
-import SiteFooter from './modules/site/components/site-footer';
-import SideBarHeader from './modules/site/components/side-bar-header';
-import SideBarContent from './modules/site/components/side-bar-content';
-import MarketsView from './modules/markets/components/markets-view';
-import MarketView from './modules/market/components/market-view';
-import CreateMarketView from './modules/create-market/components/create-market-view';
-import AuthView from './modules/auth/components/auth-view';
-import AccountView from './modules/account/components/account-view';
-import PortfolioView from './modules/portfolio/components/portfolio-view';
-import TransactionsView from './modules/transactions/components/transactions-view';
-import LoginMessageView from './modules/login-message/components/login-message-view';
-import ChatView from './modules/chat/components/chat-view';
-import CoreStats from './modules/common/components/core-stats';
+
+import SiteHeader from 'modules/site/components/site-header';
+import SiteFooter from 'modules/site/components/site-footer';
+import SideBarHeader from 'modules/site/components/side-bar-header';
+import SideBarContent from 'modules/site/components/side-bar-content';
+import MarketsView from 'modules/markets/components/markets-view';
+import MarketView from 'modules/market/components/market-view';
+import CreateMarketView from 'modules/create-market/components/create-market-view';
+import AuthView from 'modules/auth/components/auth-view';
+import AccountView from 'modules/account/components/account-view';
+import PortfolioView from 'modules/portfolio/components/portfolio-view';
+import TransactionsView from 'modules/transactions/components/transactions-view';
+import LoginMessageView from 'modules/login-message/components/login-message-view';
+import ChatView from 'modules/chat/components/chat-view';
+import CoreStats from 'modules/common/components/core-stats';
 
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
