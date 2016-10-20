@@ -8,15 +8,18 @@
 @speed-slow: 700ms;
 @speed-normal: 500ms;
 @speed-fast: 300ms;
+@speed-very-fast: 200ms;
 
 @direction-up: 'up';
 @direction-right: 'right';
 @direction-down: 'down';
 @direction-left: 'left';
 
+@default-animation-type: ease-in-out;
+
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(@speed-slow ease-in-out infinite alternate flash-slow);
+	.animation(flash-slow @speed-slow @default-animation-type infinite alternate);
 
 	.keyframes(flash-slow, {
 	0% { background: fade(@color, @amount-subtle) }
@@ -24,33 +27,11 @@
 	});
 }
 
-// 	Transitions
-.animation-slide(@direction) {
-	.animation(@speed-normal ease-in 0 1 slide);
-
-	& when (@direction = @direction-up) {
-		.keyframes(slide, {
-		100% { transform: translateY(-100%)}
-		})
-	}
-
-	& when (@direction = @direction-right) {
-		.keyframes(slide, {
-		100% { transform: translateX(100%)}
-		})
-	}
-
-	& when (@direction = @direction-down) {
-		.keyframes(slide, {
-		100% { transform: translateY(100%)}
-		})
-	}
-
-	& when (@direction = @direction-left) {
-		.keyframes(slide, {
-		100% { transform: translateX(-100%)}
-		})
-	}
+// Transitions
+// Don't pass `all`.  Can potentially cause performance issues.
+// Instead, pass a comma separated list of property/timing/easing to watch for changes with a `;` at the end
+.transition(...) {
+	transition: @arguments;
 }
 
 //	Helpers

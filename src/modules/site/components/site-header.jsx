@@ -6,21 +6,28 @@ import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-head
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import AugurLogo from '../../common/components/augur-logo';
-import ValueDenomination from '../../common/components/value-denomination';
 
 const SiteHeader = p => (
 	<header className="site-header"	>
 		<nav className="site-nav">
 			<div className="nav-group left-navs">
+				{ p.isSideBarAllowed &&
+					<button
+						className="unstyled"
+						onClick={p.toggleSideBar}
+					>
+						{p.isSideBarCollapsed ? <i></i> : <i></i>}
+					</button>
+				}
 				<Link
-					className={classnames('site-nav-link', { active: (p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader == null) })}
+					className={classnames('site-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
 					{...p.marketsLink}
 				>
 					Markets
 				</Link>
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numFavorites &&
 					<Link
-						className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+						className={classnames('site-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
 						{...p.favoritesLink}
 					>
 						{!!p.marketsInfo.numFavorites && p.marketsInfo.numFavorites} Favorites
@@ -28,7 +35,7 @@ const SiteHeader = p => (
 				}
 				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numPendingReports &&
 					<Link
-						className={classnames('site-nav-link', { active: p.activeView === MARKETS && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+						className={classnames('site-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
 						{...p.pendingReportsLink}
 					>
 						{!!p.marketsInfo.numPendingReports && p.marketsInfo.numPendingReports} Pending Reports
@@ -67,16 +74,7 @@ const SiteHeader = p => (
 						title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
 						{...p.accountLink}
 					>
-						<ValueDenomination
-							{...p.loginAccount.rep || {}}
-							formatted={p.loginAccount.rep && p.loginAccount.rep.rounded}
-							formattedValue={p.loginAccount.rep && p.loginAccount.rep.roundedValue}
-						/>
-						<ValueDenomination
-							{...p.loginAccount.ether || {}}
-							formatted={p.loginAccount.ether && p.loginAccount.ether.rounded}
-							formattedValue={p.loginAccount.ether && p.loginAccount.ether.roundedValue}
-						/>
+						Account
 					</Link>
 				}
 				{(!p.loginAccount || !p.loginAccount.id) &&

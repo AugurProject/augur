@@ -9,22 +9,22 @@ const CreateMarketForm = (p) => {
 	let form;
 
 	switch (p.step) {
-	case 1:
-	default:
-		form = <Form1 {...p} />;
-		break;
-	case 2:
-		form = <Form2 {...p} />;
-		break;
-	case 3:
-		form = <Form3 {...p} />;
-		break;
-	case 4:
-		form = <Form4 {...p} />;
-		break;
-	case 5:
-		form = <Form5 {...p} />;
-		break;
+		case 1:
+		default:
+			form = <Form1 {...p} />;
+			break;
+		case 2:
+			form = <Form2 {...p} />;
+			break;
+		case 3:
+			form = <Form3 {...p} />;
+			break;
+		case 4:
+			form = <Form4 {...p} />;
+			break;
+		case 5:
+			form = <Form5 {...p} />;
+			break;
 	}
 
 	return (

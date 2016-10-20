@@ -2,8 +2,6 @@
 .side-bar {
 	background-color: @color-side-bar-background;
 	color: @color-text-light-muted;
-	display: flex;
-	flex-direction: column;
 
 	h3 {
 
@@ -23,6 +21,9 @@
 		padding-top: 0.5rem;
 
 		.checkbox.tag {
+
+			.transition(background-color @speed-very-fast, color @speed-very-fast;);
+
 			padding: 1em 2rem;
 			text-align: left;
 

@@ -55,13 +55,17 @@
 		}
 
 		.link,
-		.header-search-icon {
+		.header-search-icon,
+		button {
+
+			.transition(background-color @speed-very-fast, color @speed-very-fast;);
+
 			padding: 1.5em 1.8em;
 
 			&:hover,
 			&:active {
-				&:not(.augur-brand) {
-					background: @color-nav-background-active;
+				&:not(.augur-brand):not(button) {
+					background-color: @color-nav-background-active;
 					color: @color-text-light;
 					cursor: pointer;
 				}
@@ -71,7 +75,7 @@
 
 				.font-weight-light();
 
-				background: @color-nav-background-active;
+				background-color: @color-nav-background-active;
 				color: @color-text-light;
 			}
 

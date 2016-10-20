@@ -39,21 +39,21 @@ function createMarketForm() {
 		if (newValues.step === 4) {
 			const labels = [];
 			switch (form.type) {
-			case BINARY:
-				setInitialFairPrices(['Yes', 'No'], BINARY);
-				break;
-			case SCALAR:
-				setInitialFairPrices(['⇧', '⇩'], SCALAR);
-				break;
-			case CATEGORICAL:
-				form.categoricalOutcomes.map((val, i) => {
-					labels[i] = val;
-					return val;
-				});
-				setInitialFairPrices(labels, CATEGORICAL);
-				break;
-			default:
-				break;
+				case BINARY:
+					setInitialFairPrices(['Yes', 'No'], BINARY);
+					break;
+				case SCALAR:
+					setInitialFairPrices(['⇧', '⇩'], SCALAR);
+					break;
+				case CATEGORICAL:
+					form.categoricalOutcomes.map((val, i) => {
+						labels[i] = val;
+						return val;
+					});
+					setInitialFairPrices(labels, CATEGORICAL);
+					break;
+				default:
+					break;
 			}
 		}
 

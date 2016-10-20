@@ -1,3 +1,5 @@
+import { MARKETS } from '../modules/site/constants/views';
+
 export default {
 	numPerPage: 10,
 	numPages: 10,
@@ -22,5 +24,7 @@ export default {
 				previousItemNum: ((selectedPageNum - 2) * 10) + 1
 			}
 		});
-	}
+	},
+	previousPageLink: { href: '/?page=1', onClick: url => require('../selectors').update({ activeView: MARKETS, url }) },
+	nextPageLink: { href: '/?page=2', onClick: url => require('../selectors').update({ activeView: MARKETS, url }) },
 };

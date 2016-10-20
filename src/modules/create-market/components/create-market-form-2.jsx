@@ -11,14 +11,14 @@ const CreateMarketForm2 = (p) => {
 	// const tomorrow = new Date();
 	// tomorrow.setDate(tomorrow.getDate() + 1);
 	switch (p.type) {
-	case CATEGORICAL:
-		typeSpecific = <Form2Categorical {...p} />;
-		break;
-	case SCALAR:
-		typeSpecific = <Form2Scalar {...p} />;
-		break;
-	default:
-		break;
+		case CATEGORICAL:
+			typeSpecific = <Form2Categorical {...p} />;
+			break;
+		case SCALAR:
+			typeSpecific = <Form2Scalar {...p} />;
+			break;
+		default:
+			break;
 	}
 
 	return (

@@ -1,29 +1,26 @@
 footer {
 
 	.border(true, @border-top);
-	.contained();
 
-	background: rgba(250, 250, 255, 1);
-	display: block;
-	font-size: 1rem;
-	font-weight: 700;
-	padding: 0;
-	text-align: center;
-	width: 100%;
+	background-color: @color-footer-background;
+	width: 100vw;
 
-	.link {
-		background: rgba(250, 250, 255, 1);
-		color: @color-dark-normal;
-		display: inline-block;
-		font-size: 0.9rem;
-		margin: 0.1rem;
-		padding: 1.5rem;
-		white-space: nowrap;
+	#footer_content {
 
-		&:hover,
-		&:active,
-		&:focus {
-			text-decoration: underline;
+		.contained();
+		.font-size-medium();
+
+		display: flex;
+		justify-content: center;
+
+		.link {
+			padding: 1.5em;
+
+			&:hover,
+			&:active,
+			&:focus {
+				text-decoration: underline;
+			}
 		}
 	}
 }
