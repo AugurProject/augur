@@ -10,8 +10,6 @@ To help ensure this, the following conventions have been employed:
 * All `section` tags should have an accompanying ID attribute (excluding unique semantic tags (main, header, footer, etc.)).
 * All reusable complex components should be contained with an `article` tag.
 * Simpler components may be contained in either a `div` or some other semantically correct tag.
-* All `section` or `article` tags should consume the `className` prop passed from a parent component.
-  * This ensures that contextualized styling can be dictated from the parent component's stylesheet.
 * All components should be standard HTML5 elements with their default behaviors intact.
   * Due to some implementation constraints, there may be a reason to deviate from this, but it should be dialoged over prior to implementation.
 * **Do** leave comments for functionality that may be non-obvious
@@ -38,7 +36,6 @@ To help ensure this, the following conventions have been employed:
 * Mixin inclusions should always come first within a declaration block.
 * Every component should have the **minimum** amount of styling required (helps maintain contextualization).
    * This allows for stylesheets of parent components that employ a component to apply any additional 'chrome' required.
-   * This is also the reason why both the `section` and `article` components consume the `className` prop.
 * Classnames should be contextual + non-generic.
 * Classnames should be discrete words delimited by a `-` (dash).
 * IDs should be discrete words delimited by an `_` (underscore).
