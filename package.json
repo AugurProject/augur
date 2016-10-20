@@ -26,7 +26,7 @@
     "publish-ipfs": "ipfs name publish `ipfs add -rq build | tail -1`",
     "restart-faucet": "ssh augur@eth1.augur.net \"sudo service faucet restart\"",
     "_____": "",
-    "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:env & npm run -s build:favicon & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
+    "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:env & npm run -s build:favicon & npm run -s build:js) && npm run -s build:html && npm run -s build:airbitz && npm run -s build:finish",
     "build:env": "cp ./src/env.json ./build/ && echo ---------ENV------------`date +%r`",
     "build:assets": "cp -R ./src/assets/. ./build/$npm_package_version/assets && cp -R $npm_package_config_assets_folder ./build/$npm_package_version/assets && echo ---------ASSETS---------`date +%r`",
     "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceBuildFolderString > ./build/$npm_package_version/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
@@ -35,6 +35,8 @@
     "build:favicon": "cp ./src/favicon.ico ./build/ && cat ./src/manifest.json | npm run -s partial:replaceBuildFolderString | npm run -s build:inline_sources > ./build/$npm_package_version/manifest.json && echo ---------FAVICON--------`date +%r`",
     "build:html": "cat ./src/index.html | npm run -s partial:replaceBuildFolderString | npm run -s build:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
     "build:inline_sources": "inline-source --compress false --root ./build -",
+    "build:airbitz": "mkdir -p build/abcui && npm run -s build:airbitz:copy",
+    "build:airbitz:copy": "rsync -az node_modules/airbitz-core-js-ui/assets build/abcui/",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
     "______": "",
     "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:env & npm run -s watch:favicon & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
@@ -56,6 +58,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
+    "airbitz-core-js-ui": "^0.0.9",
     "async": "1.5.2",
     "augur-ui-react-components": "3.3.7",
     "augur.js": "2.10.9",
