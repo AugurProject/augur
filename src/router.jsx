@@ -175,6 +175,7 @@ export default class Router extends Component {
 			}
 			default: {
 				viewProps = {
+					sideBarAllowed: true,
 					loginAccount: p.loginAccount,
 					createMarketLink: (p.links || {}).createMarketLink,
 					markets: p.markets,
@@ -187,10 +188,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<MarketsView
-						sideBarAllowed
-						{...viewProps}
-					/>
+					<MarketsView {...viewProps} />
 				);
 			}
 		}
