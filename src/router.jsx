@@ -97,10 +97,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<AuthView
-						className={p.className}
-						{...viewProps}
-					/>
+					<AuthView {...viewProps} />
 				);
 			}
 			case ACCOUNT: {
@@ -115,10 +112,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<AccountView
-						className={p.className}
-						{...viewProps}
-					/>
+					<AccountView {...viewProps} />
 				);
 			}
 			case TRANSACTIONS: {
@@ -128,10 +122,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<TransactionsView
-						className={p.className}
-						{...viewProps}
-					/>
+					<TransactionsView {...viewProps} />
 				);
 			}
 			case MY_POSITIONS:
@@ -144,10 +135,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<PortfolioView
-						className={p.className}
-						{...viewProps}
-					/>
+					<PortfolioView {...viewProps} />
 				);
 			}
 			case LOGIN_MESSAGE: {
@@ -156,10 +144,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<LoginMessageView
-						className={p.className}
-						{...viewProps}
-					/>
+					<LoginMessageView {...viewProps} />
 				);
 			}
 			case MAKE: {
@@ -168,10 +153,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<CreateMarketView
-						className={p.className}
-						{...viewProps}
-					/>
+					<CreateMarketView {...viewProps} />
 				);
 			}
 			case M: {
@@ -187,10 +169,7 @@ export default class Router extends Component {
 				};
 
 				return (
-					<MarketView
-						className={p.className}
-						{...viewProps}
-					/>
+					<MarketView {...viewProps} />
 				);
 			}
 			default: {
@@ -208,7 +187,6 @@ export default class Router extends Component {
 
 				return (
 					<MarketsView
-						className={p.className}
 						sideBarAllowed
 						{...viewProps}
 					/>
@@ -280,7 +258,7 @@ export default class Router extends Component {
 										</div>
 									}
 									<div className="view-content view-content-group-2">
-										<CurrentRoute className="view" />
+										<CurrentRoute />
 									</div>
 								</div>
 								<div className={classnames('view-content view-content-group-1', { collapsed: s.isChatCollapsed })} >
