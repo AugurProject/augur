@@ -11,7 +11,7 @@ const MarketsHeaders = p => (
 			<div className="view-header-group-2">
 				{p.loginAccount && p.loginAccount.id &&
 					<Link
-						className="button imperative"
+						className="button imperative navigational"
 						disabled={!p.loginAccount.id}
 						{...p.createMarketLink}
 					>
