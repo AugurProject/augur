@@ -344,7 +344,7 @@ module.exports = function () {
                 self.account = {
                     name: name,
                     secureLoginID: secureLoginID,
-                    privateKey: privateKey,
+                    privateKey: new Buffer(privateKey, "hex"),
                     address: address,
                     keystore: keystore,
                     derivedKey: derivedKey
