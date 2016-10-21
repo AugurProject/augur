@@ -1,12 +1,12 @@
-import makeNumber from '../utils/make-number';
-import { randomNum } from '../utils/random-number';
-import makeDate from '../utils/make-date';
-import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
-import selectReportableOutcomes from '../selectors/reportable-outcomes';
+import makeNumber from 'utils/make-number';
+import { randomNum } from 'utils/random-number';
+import makeDate from 'utils/make-date';
+import selectOrderBook from 'selectors/bids-asks/select-bids-asks';
+import selectReportableOutcomes from 'selectors/reportable-outcomes';
 
-import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
-import { M } from '../modules/site/constants/views';
+import { M } from 'modules/site/constants/views';
 
 module.exports = makeMarkets();
 

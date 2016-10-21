@@ -111,6 +111,7 @@
     "aliases": {
       "assets": "./src/assets",
       "modules": "./src/modules",
+      "selectors": "./src/selectors",
       "utils": "./src/utils"
     }
   }

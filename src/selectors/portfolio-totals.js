@@ -1,4 +1,4 @@
-import makeNumber from '../../src/utils/make-number';
+import makeNumber from 'utils/make-number';
 
 const randomSign = Math.random() < 0.5 ? -1 : 1;
 

@@ -1,5 +1,5 @@
-import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
-import { M } from '../modules/site/constants/views';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { M } from 'modules/site/constants/views';
 
 export default [
 	{

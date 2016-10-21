@@ -1,5 +1,5 @@
-import loginAccount from './login-account';
-import links from './links';
+import loginAccount from 'selectors/login-account';
+import links from 'selectors/links';
 
 const Shared = {
 	msg: null,

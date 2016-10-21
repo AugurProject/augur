@@ -2,21 +2,35 @@
 // These are determined by the content being displayed NOT the device displaying the content.
 // This allows for the most optimal presentation regardless of the device.
 
-// Maximum app width
-// .contained elements will max at this width, elements without that style will flow to full window width
+// 	Maximum app width
+// 	.contained elements will max at this width, elements without that style will flow to full window width
 @max-app-width: 1800px;
-@max-content-width: 1500px;
 
-// Break Points
-// 1: Smallest layout @ < 600px (Default)
-@breakpoint-1: true;
-@breakpoint-1-max-width: 600px;
-// 2: TODO
-@breakpoint-2: false;
+// 	Break Points
+// 	The breakpoints encompass:
+// 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur
+// 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps
 
-@media all and (max-width: @breakpoint-1-max-width) {
-	@breakpoint-1: true;
-}
+// 	STEP 1
+// 	Smallest layout @ < 600px (Default)
+//		Steps/Sub-Steps
+@step-1: 600px;
+//		Rules
+@breakpoint-1: ~"all and (max-width: @{step-1})";
+
+//	STEP 2
+// 	Medium layout @ > 600px && <= 1200px
+//		Steps & Sub-Steps
+@step-2: 1200px;
+//		Rules
+@breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";;
+
+//	STEP 3
+// 	Full layout @ > 1200px
+//		Steps & Sub-Steps
+@step-3: 1201px;
+//		Rules
+@breakpoint-3: ~"all and (min-width: @{step-3})";
 
 // HISTORICAL
 // TODO -- remove

@@ -9,8 +9,7 @@ To help ensure this, the following conventions have been employed:
 * All top-level components (i.e. - views) should be contained within a `section` tag.
   * Though valid, `section` should **only** be used for view level components.
 * All `section` tags should have an accompanying ID attribute (excluding unique semantic tags (main, header, footer, etc.)).
-* All reusable complex components should be contained with an `article` tag.
-* Simpler components may be contained in either a `div` or some other semantically correct tag.
+* All reusable components should be contained within an `article` tag unless this use would be semantically incorrect; in which case, use whatever tag is appropriate.
 * All components should be standard HTML5 elements with their default behaviors intact.
   * Due to some implementation constraints, there may be a reason to deviate from this, but it should be dialoged over prior to implementation.
 * **Do** leave comments for functionality that may be non-obvious

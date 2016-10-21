@@ -1,35 +1,36 @@
-import activeView from './selectors/active-view';
-import authForm from './selectors/auth-form';
-import orderCancellation from './selectors/order-cancellation';
-import createMarketForm from './selectors/create-market-form';
-import tags from './selectors/tags';
-import keywords from './selectors/keywords';
-import links from './selectors/links';
-import loginAccount from './selectors/login-account';
-import market from './selectors/market';
-import markets from './selectors/markets';
-import marketsTotals from './selectors/markets-totals';
-import marketDataUpdater from './selectors/market-data-updater';
-import marketDataAge from './selectors/market-data-age';
-import isTransactionsWorking from './selectors/is-transactions-working';
-import transactions from './selectors/transactions';
-import transactionsTotals from './selectors/transactions-totals';
-import url from './selectors/url';
-import portfolio from './selectors/portfolio';
-import portfolioNavItems from './selectors/portfolio-nav-items';
-import portfolioTotals from './selectors/portfolio-totals';
-import loginAccountPositions from './selectors/login-account-positions';
-import loginAccountMarkets from './selectors/login-account-markets';
-import loginAccountReports from './selectors/login-account-reports';
-import myReports from './selectors/my-reports';
-import tradeCommitLock from './selectors/trade-commit-lock';
-import positionsMarkets from './selectors/positions-markets';
-import myMarkets from './selectors/my-markets';
-import filterSort from './selectors/filter-sort';
-import pagination from './selectors/pagination';
-import selectedOutcome from './selectors/selected-outcome';
-import marketsHeader from './selectors/markets-header';
-import coreStats from './selectors/core-stats';
+import activeView from 'selectors/active-view';
+import authForm from 'selectors/auth-form';
+import orderCancellation from 'selectors/order-cancellation';
+import createMarketForm from 'selectors/create-market-form';
+import tags from 'selectors/tags';
+import keywords from 'selectors/keywords';
+import links from 'selectors/links';
+import loginAccount from 'selectors/login-account';
+import market from 'selectors/market';
+import markets from 'selectors/markets';
+import marketsTotals from 'selectors/markets-totals';
+import marketDataUpdater from 'selectors/market-data-updater';
+import marketDataAge from 'selectors/market-data-age';
+import isTransactionsWorking from 'selectors/is-transactions-working';
+import transactions from 'selectors/transactions';
+import transactionsTotals from 'selectors/transactions-totals';
+import url from 'selectors/url';
+import portfolio from 'selectors/portfolio';
+import portfolioNavItems from 'selectors/portfolio-nav-items';
+import portfolioTotals from 'selectors/portfolio-totals';
+import loginAccountPositions from 'selectors/login-account-positions';
+import loginAccountMarkets from 'selectors/login-account-markets';
+import loginAccountReports from 'selectors/login-account-reports';
+import myReports from 'selectors/my-reports';
+import tradeCommitLock from 'selectors/trade-commit-lock';
+import positionsMarkets from 'selectors/positions-markets';
+import myMarkets from 'selectors/my-markets';
+import filterSort from 'selectors/filter-sort';
+import pagination from 'selectors/pagination';
+import selectedOutcome from 'selectors/selected-outcome';
+import marketsHeader from 'selectors/markets-header';
+import coreStats from 'selectors/core-stats';
+import marketDataNavItems from 'selectors/market-data-nav-items';
 
 // all selectors should go here
 const selectors = {
@@ -66,7 +67,8 @@ const selectors = {
 	pagination,
 	selectedOutcome,
 	marketsHeader,
-	coreStats
+	coreStats,
+	marketDataNavItems
 };
 
 // add update helper fn to selectors object

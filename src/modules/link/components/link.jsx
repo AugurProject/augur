@@ -33,7 +33,7 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const p = Object.keys(this.props).reduce((prev, key) => { // Strips on invalid attrs for `a` tag
+		const p = Object.keys(this.props).reduce((prev, key) => { // Strips certain invalid attrs for `a` tag
 			if (key !== 'text') {
 				return {
 					...prev,

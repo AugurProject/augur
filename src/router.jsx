@@ -161,12 +161,13 @@ export default class Router extends Component {
 				viewProps = {
 					market: p.market,
 					settings: p.settings,
+					marketDataNavItems: p.marketDataNavItems,
 					marketDataAge: p.marketDataAge,
 					selectedOutcome: p.selectedOutcome,
 					orderCancellation: p.orderCancellation,
 					marketDataUpdater: p.marketDataUpdater,
 					numPendingReports: p.marketsTotals.numPendingReports,
-					isTradeCommitLocked: p.tradeCommitLock.isLocked
+					isTradeCommitLocked: p.tradeCommitLock.isLocked,
 				};
 
 				return (

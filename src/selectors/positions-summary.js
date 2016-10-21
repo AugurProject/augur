@@ -1,5 +1,5 @@
-import makeNumber from '../utils/make-number';
-import { randomNum } from '../utils/random-number';
+import makeNumber from 'utils/make-number';
+import { randomNum } from 'utils/random-number';
 
 export default {
 	numPositions: makeNumber(randomNum(), 'Positions', true),

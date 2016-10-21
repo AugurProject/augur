@@ -1,4 +1,4 @@
-import { BINARY, CATEGORICAL } from '../../src/modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
 
 const reportableOutcomes = (type, outcomes) => {
 	switch (type) {

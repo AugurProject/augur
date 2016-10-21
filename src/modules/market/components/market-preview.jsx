@@ -13,7 +13,6 @@ const MarketPreview = p => (
 				<div className="market-link">
 					<Link
 						{...p.marketLink}
-						onClick={p.marketLink.onClick}
 						className={classnames('button', p.marketLink.className)}
 					>
 						{p.marketLink.text}
