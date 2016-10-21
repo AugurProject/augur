@@ -14,6 +14,7 @@ import { updateAccountTradesData } from '../../../modules/my-positions/actions/u
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
+import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
 export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
@@ -65,6 +66,10 @@ export function loadLoginAccountLocalStorage(accountID) {
 			});
 			dispatch(updateTransactionsData(localState.transactionsData));
 		}
+		if (localState.settings) {
+			console.log('localState.settings:', localState.settings);
+			dispatch(updateAccountSettings(localState.settings));
+		}
 
 		if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
 			dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
@@ -94,7 +99,9 @@ export function loadLoginAccount() {
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
+			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 
+			console.log('localLoginAccount:', localLoginAccount);
 			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
