@@ -1,5 +1,4 @@
 import { augur } from '../../../services/augurjs';
-
 import {
 PASSWORDS_DO_NOT_MATCH,
 } from '../../auth/constants/form-errors';
@@ -12,6 +11,7 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
+import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
 export function register(name, password, password2, loginID, rememberMe, loginAccount, cb) {
 	return (dispatch, getState) => {
@@ -29,10 +29,14 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
+			loginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
+			loginAccount.settings = loginAccount.settings || {};
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
-			setTimeout(() => dispatch(addFundNewAccount(loginAccount.address)), 1500);
+			dispatch(loadLoginAccountDependents((err, ether) => {
+				dispatch(addFundNewAccount(loginAccount.address));
+			}));
+
 			// decide if we need to display the loginMessage
 			const { loginMessage } = getState();
 			if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
@@ -51,14 +55,16 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const localLoginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
+			const localLoginAccount = {
+				...account,
+				id: account.address,
+				loginID: account.loginID || account.secureLoginID
+			};
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
-
 			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
 			// dispatch(addFundNewAccount(localLoginAccount.address));
-
 			if (typeof cb === 'function') {
 				cb(localLoginAccount);
 			}

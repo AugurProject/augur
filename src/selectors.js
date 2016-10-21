@@ -1,4 +1,5 @@
 import activeView from './modules/app/selectors/active-view';
+import abc from './modules/auth/selectors/abc';
 import loginAccount from './modules/auth/selectors/login-account';
 import links from './modules/link/selectors/links';
 import url from './modules/link/selectors/url';
@@ -29,9 +30,11 @@ import tradesInProgress from './modules/trade/selectors/trade-in-progress';
 import tradeCommitLock from './modules/trade/selectors/trade-commit-lock';
 import createMarketForm from './modules/create-market/selectors/create-market-form';
 import coreStats from './modules/auth/selectors/core-stats';
+import settings from './modules/auth/selectors/account-settings';
 
 const selectors = {
 	activeView,
+	abc,
 	loginAccount,
 	links,
 	url,
@@ -61,7 +64,8 @@ const selectors = {
 	isTransactionsWorking,
 	tradesInProgress,
 	tradeCommitLock,
-	coreStats
+	coreStats,
+	settings
 };
 
 module.exports = {};

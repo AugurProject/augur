@@ -1,6 +1,7 @@
 // import memoizerific from 'memoizerific';
 import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
 import store from '../../../store';
+import { makeLocation } from '../../../utils/parse-url';
 
 export default function () {
 	const { pagination } = store.getState();
@@ -8,6 +9,15 @@ export default function () {
 
 	if (!pagination || !marketsTotals.numUnpaginated) {
 		return {};
+	}
+
+	function makeLink(page, o) {
+		const href = makeLocation({ page }).url;
+
+		return {
+			href,
+			onClick: () => { o.onUpdateSelectedPageNum(page); }
+		};
 	}
 
 	const o = {
@@ -27,6 +37,9 @@ export default function () {
 
 		o.nextItemNum = o.selectedPageNum < o.numPages ? o.endItemNum + 1 : undefined;
 		o.previousItemNum = o.selectedPageNum >= 2 ? o.startItemNum - o.numPerPage : undefined;
+
+		o.nextPageLink = !!o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
+		o.previousPageLink = !!o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
 	}
 
 	return o;
