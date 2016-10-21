@@ -301,6 +301,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 
 		it('should pass shape tests for buying 10 shares of Outcome 1 at the default limitPrice', () => {
 			store.dispatch(action.updateTradesInProgress('0x0000000000000000000000000000categorical1', '1', BUY, '10.0', undefined, undefined));
+			console.log(store.getActions()[0]);
 			updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
 		});
 
