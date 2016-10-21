@@ -2,12 +2,14 @@ import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
 import Input from '../../common/components/input';
+import Checkbox from '../../common/components/checkbox';
 
 export default class AccountPage extends Component {
 	// TODO -- Prop Validations
 	static propTypes = {
 		// loginMessageLink: PropTypes.object.isRequired,
 		account: PropTypes.object,
+		settings: PropTypes.object,
 		// siteHeader: PropTypes.object
 		// authLink: PropTypes.object
 	};
@@ -23,6 +25,7 @@ export default class AccountPage extends Component {
 			sendAmount: '',
 			currency: 'eth',
 			recipientAddress: '',
+			settings: this.props.settings
 		};
 
 		this.handleTransfer = this.handleTransfer.bind(this);
@@ -171,6 +174,18 @@ export default class AccountPage extends Component {
 
 							</tbody>
 						</table>
+					</div>
+					<div className="account-section">
+						<h2 className="heading">Settings</h2>
+						<Checkbox
+							text="Automatically sell complete sets"
+							isChecked={s.settings.autoSellCompleteSets || p.settings.autoSellCompleteSets}
+							onClick={() => {
+								s.settings.autoSellCompleteSets = !s.settings.autoSellCompleteSets;
+								this.setState(s);
+								p.onUpdateSettings(s.settings);
+							}}
+						/>
 					</div>
 					<div className={classnames('account-section')}>
 						<div className="account-info-item">

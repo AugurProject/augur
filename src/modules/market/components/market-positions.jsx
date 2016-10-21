@@ -21,7 +21,7 @@ export default class MarketPositions extends Component {
 				{p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value &&
 					<PositionsSummary {...p.market.myPositionsSummary} className="market-section-header" />
 				}
-				<Positions market={p.market} />
+				<Positions market={p.market} settings={p.settings} />
 			</section>
 		);
 	}

@@ -26,7 +26,7 @@ const Positions = p => (
 				/>
 			)
 		}
-		{p.market.hasCompleteSet &&
+		{!p.settings.autoSellCompleteSets && p.market.hasCompleteSet &&
 			<div className="complete-sets">
 				<div className="close-position-button">
 					<button

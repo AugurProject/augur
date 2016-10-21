@@ -101,6 +101,8 @@ export default class Router extends Component {
 				viewProps = {
 					loginMessageLink: p.links.loginMessageLink,
 					account: p.loginAccount,
+					settings: p.settings,
+					onUpdateSettings: p.loginAccount.onUpdateAccountSettings,
 					onChangePass: p.loginAccount.onChangePass,
 					authLink: (p.links && p.links.authLink) || null,
 					onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
@@ -131,6 +133,7 @@ export default class Router extends Component {
 			case MY_REPORTS: {
 				viewProps = {
 					activeView: p.activeView,
+					settings: p.settings,
 					...p.portfolio
 				};
 
@@ -168,6 +171,7 @@ export default class Router extends Component {
 			case M: {
 				viewProps = {
 					market: p.market,
+					settings: p.settings,
 					marketDataAge: p.marketDataAge,
 					selectedOutcome: p.selectedOutcome,
 					orderCancellation: p.orderCancellation,

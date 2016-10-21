@@ -101,6 +101,7 @@ export default class MarketPage extends Component {
 							key="market-positions"
 							className="market-positions"
 							market={p.market}
+							settings={p.settings}
 						/>
 					);
 				}

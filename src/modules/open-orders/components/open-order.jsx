@@ -49,6 +49,8 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 						className="button cancel-order-abort-confirmation"
 						title="No, don't cancel order"
 						onClick={(event) => {
+							console.log(event);
+							console.log('clicked NO:', orderID, marketID, type);
 							abortCancelOrderConfirmation(orderID, marketID, type);
 						}}
 					>No</button>
@@ -56,6 +58,8 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 						className="button cancel-order-action"
 						title="Yes, cancel order"
 						onClick={(event) => {
+							console.log(event);
+							console.log('clicked YES:', orderID, marketID, type);
 							cancelOrder(orderID, marketID, type);
 						}}
 					>Yes</button>
