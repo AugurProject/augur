@@ -23,7 +23,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
 		cb();
-		return { type: 'LOAD_BIDS_ASKS', transactionID: 'transid1' };
+		return { type: 'LOAD_BIDS_ASKS' };
 	})
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
@@ -136,7 +136,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 					transactionID: 'transid1',
 					data: { status: 'success'}
 				},
-				{ type: 'LOAD_BIDS_ASKS', transactionID: 'transid1' },
+				{ type: 'LOAD_BIDS_ASKS' },
 				{ type: 'UPDATE_EXISTING_TRANSACTION',
   				transactionID: 'transid1',
   				data: { status: 'failed', message: 'this is an error' }
@@ -145,11 +145,11 @@ describe('modules/trade/actions/process-bid.js', () => {
 	});
 
 	it('should process a bid for a categorical market', () => {
-		store.dispatch(action.processBid('transid1', '0x0000000000000000000000000000categorical1', '1', '15', '0.55', '0.05', '0.1', '0.005'));
+		store.dispatch(action.processBid('transid2', '0x0000000000000000000000000000categorical1', '1', '15', '0.55', '0.05', '0.1', '0.005'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid2',
 				data: {
 					status: 'placing bid...',
 					message: 'bidding 15 shares for 0.0033 ETH/share',
@@ -190,7 +190,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 			},
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid2',
 				data: {
 					hash: 'testHash',
 					timestamp: 1480000000,
@@ -233,23 +233,23 @@ describe('modules/trade/actions/process-bid.js', () => {
 			},
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid2',
 				data: { status: 'success'}
 			},
-			{ type: 'LOAD_BIDS_ASKS', transactionID: 'transid1' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid2',
 				data: { status: 'failed', message: 'this is an error' }
 			}
 		], `Actions Dispatched didn't match up with expectations`);
 	});
 
 	it('should process a bid for a scalar market', () => {
-		store.dispatch(action.processBid('transid1', '0x000000000000000000000000000000000scalar1', '1', '20', '0.5', '0.15', '0.2', '0.015'));
+		store.dispatch(action.processBid('transid3', '0x000000000000000000000000000000000scalar1', '1', '20', '55', '0.15', '0.2', '0.015'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid3',
 				data: {
 					status: 'placing bid...',
 					message: 'bidding 20 shares for 0.0075 ETH/share',
@@ -290,7 +290,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 			},
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid3',
 				data: {
 					hash: 'testHash',
 					timestamp: 1480000000,
@@ -333,12 +333,12 @@ describe('modules/trade/actions/process-bid.js', () => {
 			},
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid3',
 				data: { status: 'success'}
 			},
-			{ type: 'LOAD_BIDS_ASKS', transactionID: 'transid1' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'transid1',
+				transactionID: 'transid3',
 				data: { status: 'failed', message: 'this is an error' }
 			}
 		], `Actions Dispatched didn't match up with expectations`);
