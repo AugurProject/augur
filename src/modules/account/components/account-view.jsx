@@ -178,7 +178,7 @@ export default class AccountPage extends Component {
 					<div className="account-section">
 						<h2 className="heading">Settings</h2>
 						<Checkbox
-							text="Automatically sell complete sets"
+							text="If I own shares of every outcome in a market, automatically close out my position (1 ETH for 1 share of every outcome)"
 							isChecked={s.settings.autoSellCompleteSets || p.settings.autoSellCompleteSets}
 							onClick={() => {
 								s.settings.autoSellCompleteSets = !s.settings.autoSellCompleteSets;

@@ -18,6 +18,7 @@ const PortfolioPositions = p => (
 						className="page-content positions-content"
 						market={market}
 						marketLink={market.marketLink}
+						settings={p.settings}
 					/>
 				}
 			</div>

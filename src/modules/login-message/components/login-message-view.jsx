@@ -54,15 +54,38 @@ const LoginMessagePage = p => (
 					preserves price/time priority in Augur's markets.`}
 				</li>
 			</ol>
-			<h2>Status:</h2>
-			<p>The following issues have been refined as of Sep 1, 2016:</p>
-			1/
-			2/
-			3/
-			<p>The following issues have been refined as of Aug 26, 2016</p>
-			1/
-			2/
-			3/
+			<h2>Technical updates:</h2>
+			<p>Oct 22, 2016 @ 2:09AM PST [<a href="mailto:jack@augur.net">Jack</a>]:</p>
+			<ol>
+				<li>
+					&quot;Sell Complete Sets&quot; has been re-labeled to &quot;Close Out Position&quot; everywhere this concept is exposed to the user.  This is intended to avoid confusion for users attempting to close out a short position (which requires them, somewhat unintuitively, to sell a complete set).
+				</li>
+				<li>
+					The label for the automatic sell complete sets checkbox on the Accounts page has been improved.
+				</li>
+				<li>
+					Buy and sell complete sets are now explicitly accounted for in the positions and P/L calculations.  (Testers: feedback / suggestions on the sell complete sets stuff is especially valuable, as I am finding this to be a somewhat tricky UX problem!)
+					<ol>
+						<li>
+							Shares acquired via buy complete sets (i.e., new shares issued) are included in the positions total.  However, since there is not a price for each outcome within the complete set, the shares from the complete set do <b>not</b> contribute to the mean price of open position.  (Note: this only applies to complete sets bought manually by the user.  Complete sets bought as part of short selling are not included in the positions total.)
+						</li>
+						<li>
+							Complete sets sold to close out a <b>long</b> position are deducted from your total position.  Since there is not a price for each outcome within the complete set, selling the complete set does <b>not</b> change realized P/L.
+						</li>
+						<li>
+							Motivating example: suppose you have short sold 2 shares of one outcome in a market.  The UI displays your position as -2 in that outcome, and 0 in the other outcomes.  To close out your short position, you buy 2 shares in the same outcome.  The UI now shows your position as 0 in all outcomes.  However, what has happened behind the scenes is, you were actually long the other outcomes (and 0 in the outcome you shorted), and when you bought back 2 shares, now you have 2 shares in all outcomes.  Therefore, to actually close out your position, you have to sell 2 complete sets.
+							<br />
+							Complete sets sold to close out a <b>short</b> position work as follows.  If you have a short position, shares bought back are added to your position, but they do not contribute to your realized P/L until you have actually sold the complete set(s) back.  Shares that have been bought back but not yet closed out (via sell complete sets) are &quot;queued&quot;, and the system calculates a &quot;queued P/L&quot; for these shares.  (Currently, queued P/L is simply added to unrealized P/L, but it may help clarify things for the user to show it explicitly in the positions display.)  Also, note that if you have manually bought any complete sets, your complete sets sold are first netted with the complete sets bought; only the excess complete sets sold are used to close out queued shares.
+						</li>
+					</ol>
+				</li>
+				<li>
+					Open orders are now sorted in descending order, asks first.
+				</li>
+				<li>
+					Fixed a bug that was preventing the Portfolio page from loading.
+				</li>
+			</ol>
 			<br />
 			{p.marketsLink &&
 				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>

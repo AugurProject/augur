@@ -30,13 +30,14 @@ const Positions = p => (
 			<div className="complete-sets">
 				<div className="close-position-button">
 					<button
+						title={p.market.smallestPosition.full}
 						className="button"
 						onClick={(event) => {
 							event.stopPropagation();
 							p.market.onSubmitClosePosition();
 						}}
 					>
-						Sell Complete Sets ({p.market.smallestPosition.formatted})
+						Close Out Position
 					</button>
 				</div>
 			</div>
