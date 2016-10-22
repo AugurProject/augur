@@ -2224,7 +2224,8 @@ describe("positions", function () {
                     position: "0",
                     meanOpenPrice: "0",
                     realized: "0",
-                    unrealized: "0"
+                    unrealized: "0",
+                    queued: "0"
                 });
             }
         });
@@ -2237,7 +2238,8 @@ describe("positions", function () {
                     position: "0",
                     meanOpenPrice: "0",
                     realized: "0",
-                    unrealized: "0"
+                    unrealized: "0",
+                    queued: "0"
                 });
             }
         });
@@ -2257,7 +2259,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "2",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2275,7 +2278,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -2293,7 +2297,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "3",
                         realized: "0",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -2311,7 +2316,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "3",
                         realized: "0",
-                        unrealized: "-2"
+                        unrealized: "-2",
+                        queued: "0"
                     });
                 }
             });
@@ -2329,7 +2335,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2352,7 +2359,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -2375,7 +2383,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -2398,7 +2407,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "2",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2426,7 +2436,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2454,7 +2465,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -2482,7 +2494,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -2510,7 +2523,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2538,7 +2552,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "2",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2561,7 +2576,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "2",
                         realized: "-1",
-                        unrealized: "-2"
+                        unrealized: "-2",
+                        queued: "0"
                     });
                 }
             });
@@ -2589,7 +2605,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "-1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2612,7 +2629,8 @@ describe("positions", function () {
                         position: "90",
                         meanOpenPrice: "0.5",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2640,7 +2658,8 @@ describe("positions", function () {
                         position: "90",
                         meanOpenPrice: "0.5",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2663,7 +2682,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2686,7 +2706,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "3"
+                        unrealized: "3",
+                        queued: "0"
                     });
                 }
             });
@@ -2709,7 +2730,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "-3"
+                        unrealized: "-3",
+                        queued: "0"
                     });
                 }
             });
@@ -2732,7 +2754,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "-7"
+                        unrealized: "-7",
+                        queued: "0"
                     });
                 }
             });
@@ -2760,7 +2783,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.3",
                         realized: "-1",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -2788,7 +2812,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.2",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2816,7 +2841,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.2",
                         realized: "0",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -2849,7 +2875,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2882,7 +2909,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.1",
                         realized: "0.5",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2915,7 +2943,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.166666666666666666667",
                         realized: "0.166666666666666666665",
-                        unrealized: "-0.66666666666666666667"
+                        unrealized: "-0.66666666666666666667",
+                        queued: "0"
                     });
                 }
             });
@@ -2948,7 +2977,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.166666666666666666667",
                         realized: "1.166666666666666666665",
-                        unrealized: "1.33333333333333333333"
+                        unrealized: "1.33333333333333333333",
+                        queued: "0"
                     });
                 }
             });
@@ -2971,7 +3001,8 @@ describe("positions", function () {
                         position: "-20",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -2994,7 +3025,8 @@ describe("positions", function () {
                         position: "-20",
                         meanOpenPrice: "0.15",
                         realized: "0",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -3017,7 +3049,8 @@ describe("positions", function () {
                         position: "-20",
                         meanOpenPrice: "0.15",
                         realized: "0",
-                        unrealized: "-3"
+                        unrealized: "-3",
+                        queued: "0"
                     });
                 }
             });
@@ -3040,7 +3073,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3062,8 +3096,199 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "0",
                         meanOpenPrice: "0",
+                        realized: "0",
+                        unrealized: "-1",
+                        queued: "-1"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.2, buy 10 @ 0.1], last price 0.1",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }],
+                lastPrice: "0.1",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "0",
+                        unrealized: "1",
+                        queued: "1"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 10], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
                         realized: "-1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.2, buy 10 @ 0.1, sell complete sets 10], last price 0.1",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10"
+                }],
+                lastPrice: "0.1",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "1",
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 5], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "5"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "-0.5",
+                        unrealized: "-0.5",
+                        queued: "-0.5"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 2, sell complete sets 3], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "2"
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "3"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "-0.5",
+                        unrealized: "-0.5",
+                        queued: "-0.5"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "5"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "5",
+                        meanOpenPrice: "0",
+                        realized: "0",
+                        unrealized: "-1",
+                        queued: "-1"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy complete sets 5, sell complete sets 5], last price 0.2",
+                trades: [{
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "5"
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "5"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "0",
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3085,6 +3310,35 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "0",
                         meanOpenPrice: "0",
+                        queued: "0.5",
+                        realized: "0",
+                        unrealized: "0.5"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.05, sell complete sets 10], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10"
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        queued: "0",
                         realized: "0.5",
                         unrealized: "0"
                     });
@@ -3108,8 +3362,37 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "-5",
                         meanOpenPrice: "0.1",
+                        realized: "0",
+                        unrealized: "0.25",
+                        queued: "0.25"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 5 @ 0.05, sell complete sets 5], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "5",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: 5
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-5",
+                        meanOpenPrice: "0.1",
                         realized: "0.25",
-                        unrealized: "0.25"
+                        unrealized: "0.25",
+                        queued: "0"
                     });
                 }
             });
@@ -3136,8 +3419,42 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "-5",
                         meanOpenPrice: "0.1",
+                        realized: "0",
+                        unrealized: "0.25",
+                        queued: "0.25"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.05, sell complete sets 5], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "1",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "4",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "5"
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-5",
+                        meanOpenPrice: "0.1",
                         realized: "0.25",
-                        unrealized: "0.25"
+                        unrealized: "0.25",
+                        queued: "0"
                     });
                 }
             });
@@ -3164,8 +3481,42 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "-5",
                         meanOpenPrice: "0.1",
+                        realized: "0",
+                        unrealized: "0.25",
+                        queued: "0.25"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.1, sell complete sets 5], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "1",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "4",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "5"
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-5",
+                        meanOpenPrice: "0.1",
                         realized: "0.05",
-                        unrealized: "0.25"
+                        unrealized: "0.25",
+                        queued: "0"
                     });
                 }
             });
@@ -3192,11 +3543,81 @@ describe("positions", function () {
                     assert.deepEqual(output, {
                         position: "-10",
                         meanOpenPrice: "0.15",
-                        realized: "-0.5",
-                        unrealized: "-0.5"
+                        realized: "0",
+                        unrealized: "-0.5",
+                        queued: "-0.5"
                     });
                 }
             });
+            test({
+                description: "trades: [sell 10 @ 0.1, sell 10 @ 0.2, buy 10 @ 0.2, sell complete sets 10], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 2,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-10",
+                        meanOpenPrice: "0.15",
+                        realized: "-0.5",
+                        unrealized: "-0.5",
+                        queued: "0"
+                    });
+                }
+            });
+
+            // SCENARIO 1
+            // On-chain:
+            //   0   2   2 (short sell 2 of 1)
+            //   1   2   2 (buy 1 of 1)
+            //   0   1   1 (sell 1 complete set)
+            // UI:
+            //  -2   0   0 (short sell 2 of 1)
+            //  -1*  0   0 (buy 1 of 1)
+            //  -1   0   0 (sell 1 complete set)
+
+            // SCENARIO 2
+            // On-chain:
+            //   0   2   2 (short sell 2 of 1)
+            //   1   2   3 (short sell 1 of 2)
+            //   2   2   3 (buy 1 of 1)
+            //   0   0   1 (sell 2 complete sets)
+            // UI:
+            //  -2   0   0 (short sell 2 of 1)
+            //  -2  -1   0 (short sell 1 of 2)
+            //  -1* -1   0 (buy 1 of 1)
+            //   0   0   0 (sell 2 complete sets)
+
+            // SCENARIO 3
+            // On-chain:
+            //   0   2   2 (short sell 2 of 1)
+            //   1   2   3 (short sell 1 of 2)
+            //   0   1   2 (sell 1 complete set)
+            //   1   1   2 (buy 1 of 1)
+            //   0   0   1 (sell 1 complete set)
+            // UI:
+            //  -2   0   0 (short sell 2 of 1)
+            //  -2  -1   0 (short sell 1 of 2)
+            //  -1   0   0 (sell 1 complete set)
+            //  -1*  0   0 (buy 1 of 1)
+            //   0   0   0 (sell 2 complete sets)
         });
 
         describe("maker trades", function () {
@@ -3214,7 +3635,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "2",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3232,7 +3654,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -3250,7 +3673,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "3",
                         realized: "0",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -3268,7 +3692,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "3",
                         realized: "0",
-                        unrealized: "-2"
+                        unrealized: "-2",
+                        queued: "0"
                     });
                 }
             });
@@ -3286,7 +3711,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3309,7 +3735,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "0",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -3332,7 +3759,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -3355,7 +3783,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "2",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3383,7 +3812,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3411,7 +3841,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -3439,7 +3870,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "1"
+                        unrealized: "1",
+                        queued: "0"
                     });
                 }
             });
@@ -3467,7 +3899,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3495,7 +3928,8 @@ describe("positions", function () {
                         position: "1",
                         meanOpenPrice: "1",
                         realized: "2",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3518,7 +3952,8 @@ describe("positions", function () {
                         position: "2",
                         meanOpenPrice: "2",
                         realized: "-1",
-                        unrealized: "-2"
+                        unrealized: "-2",
+                        queued: "0"
                     });
                 }
             });
@@ -3546,7 +3981,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "-1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3569,7 +4005,8 @@ describe("positions", function () {
                         position: "90",
                         meanOpenPrice: "0.5",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3597,7 +4034,8 @@ describe("positions", function () {
                         position: "90",
                         meanOpenPrice: "0.5",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3620,7 +4058,8 @@ describe("positions", function () {
                         position: "0",
                         meanOpenPrice: "0",
                         realized: "1",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3643,7 +4082,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "3"
+                        unrealized: "3",
+                        queued: "0"
                     });
                 }
             });
@@ -3666,7 +4106,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "-3"
+                        unrealized: "-3",
+                        queued: "0"
                     });
                 }
             });
@@ -3689,7 +4130,8 @@ describe("positions", function () {
                         position: "20",
                         meanOpenPrice: "0.45",
                         realized: "0",
-                        unrealized: "-7"
+                        unrealized: "-7",
+                        queued: "0"
                     });
                 }
             });
@@ -3717,7 +4159,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.3",
                         realized: "-1",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -3745,7 +4188,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.2",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3773,7 +4217,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.2",
                         realized: "0",
-                        unrealized: "-1"
+                        unrealized: "-1",
+                        queued: "0"
                     });
                 }
             });
@@ -3806,7 +4251,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3839,7 +4285,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.1",
                         realized: "0.5",
-                        unrealized: "0"
+                        unrealized: "0",
+                        queued: "0"
                     });
                 }
             });
@@ -3872,7 +4319,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.166666666666666666667",
                         realized: "0.166666666666666666665",
-                        unrealized: "-0.66666666666666666667"
+                        unrealized: "-0.66666666666666666667",
+                        queued: "0"
                     });
                 }
             });
@@ -3905,7 +4353,8 @@ describe("positions", function () {
                         position: "10",
                         meanOpenPrice: "0.166666666666666666667",
                         realized: "1.166666666666666666665",
-                        unrealized: "1.33333333333333333333"
+                        unrealized: "1.33333333333333333333",
+                        queued: "0"
                     });
                 }
             });

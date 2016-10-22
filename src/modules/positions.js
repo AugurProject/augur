@@ -320,13 +320,73 @@ module.exports = {
             .plus(shares.dividedBy(shares.plus(position)).times(price));
     },
 
+    buyCompleteSetsPL: function (PL, shares) {
+        return {
+            position: PL.position,
+            meanOpenPrice: PL.meanOpenPrice,
+            realized: PL.realized,
+            completeSetsBought: PL.completeSetsBought.plus(shares),
+            queued: PL.queued,
+            tradeQueue: PL.tradeQueue
+        };
+    },
+
+    sellCompleteSetsPL: function (PL, shares) {
+        var updatedPL = {
+            position: PL.position,
+            meanOpenPrice: PL.meanOpenPrice,
+            realized: PL.realized,
+            completeSetsBought: PL.completeSetsBought,
+            queued: PL.queued,
+            tradeQueue: PL.tradeQueue
+        };
+
+        // If completeSetsBought > 0, subtract the complete sets sold first
+        if (PL.completeSetsBought.gt(constants.ZERO)) {
+            if (shares.gte(PL.completeSetsBought)) {
+                updatedPL.completeSetsBought = constants.ZERO;
+                shares = shares.minus(PL.completeSetsBought);
+            } else {
+                updatedPL.completeSetsBought = PL.completeSetsBought.minus(shares);
+                shares = constants.ZERO;
+            }
+        }
+
+        // If position <= 0, user is closing out a short position:
+        //  - update realized P/L
+        if (PL.position.lte(constants.ZERO)) {
+            if (shares.gt(constants.ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
+                while (updatedPL.tradeQueue.length) {
+                    if (updatedPL.tradeQueue[0].shares.gt(shares)) {
+                        updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
+                        updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
+                        break;
+                    } else {
+                        updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
+                        updatedPL.tradeQueue.splice(0, 1);
+                    }
+                }
+            }
+
+        // If position > 0, user is decreasing their long position:
+        //  - decrease position
+        } else {
+            updatedPL.position = updatedPL.position.minus(shares);
+        }
+
+        return updatedPL;
+    },
+
     // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
     // realized P/L = shares sold * (price on cash out - price on buy in)
     longerPositionPL: function (PL, shares, price) {
         var updatedPL = {
             position: PL.position.plus(shares),
             meanOpenPrice: PL.meanOpenPrice,
-            realized: PL.realized
+            realized: PL.realized,
+            completeSetsBought: PL.completeSetsBought,
+            queued: PL.queued,
+            tradeQueue: PL.tradeQueue
         };
 
         // If position >= 0, user is increasing a long position:
@@ -337,9 +397,16 @@ module.exports = {
             updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
 
         // If position < 0, user is decreasing a short position:
-        //  - update realized P/L (assumes complete sets will be sold)
-        } else {
-            updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares.neg(), price);
+        //  - update "almost realized" queue (P/L becomes realized when complete sets are sold)
+        }
+        else {
+            if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
+            updatedPL.tradeQueue.push({
+                meanOpenPrice: PL.meanOpenPrice,
+                realized: PL.realized,
+                shares: shares,
+                price: price
+            });
         }
 
         return updatedPL;
@@ -349,7 +416,10 @@ module.exports = {
         var updatedPL = {
             position: PL.position.minus(shares),
             meanOpenPrice: PL.meanOpenPrice,
-            realized: PL.realized
+            realized: PL.realized,
+            completeSetsBought: PL.completeSetsBought,
+            queued: PL.queued,
+            tradeQueue: PL.tradeQueue
         };
 
         // If position < 0, user is increasing a short position:
@@ -376,12 +446,12 @@ module.exports = {
 
         // Sell: matched user's bid order
         if (type === 2) {
-            console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+            // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
             return this.longerPositionPL(PL, shares, price);
         }
 
         // Buy: matched user's ask order
-        console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+        // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
         return this.shorterPositionPL(PL, shares, price);
     },
 
@@ -392,17 +462,24 @@ module.exports = {
 
         // Buy order
         if (type === 1) {
-            console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+            // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
             return this.longerPositionPL(PL, shares, price);
         }
 
         // Sell order
-        console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed());
+        // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
         return this.shorterPositionPL(PL, shares, price);
     },
 
     calculateTradePL: function (PL, trade) {
-        if (trade.maker) {
+        if (trade.isCompleteSet) {
+            if (trade.type === 1) {
+                // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.shares, JSON.stringify(PL.tradeQueue));
+                return this.buyCompleteSetsPL(PL, abi.bignum(trade.shares));
+            }
+            // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.shares, JSON.stringify(PL.tradeQueue));
+            return this.sellCompleteSetsPL(PL, abi.bignum(trade.shares));
+        } else if (trade.maker) {
             return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
         }
         return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
@@ -438,22 +515,37 @@ module.exports = {
             position: constants.ZERO,
             meanOpenPrice: constants.ZERO,
             realized: constants.ZERO,
-            unrealized: constants.ZERO
+            unrealized: constants.ZERO,
+            queued: constants.ZERO,
+            completeSetsBought: constants.ZERO,
+            tradeQueue: []
         };
+        var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
         if (trades) {
             PL = this.calculateTradesPL(PL, trades);
+            var queuedShares = constants.ZERO;
+            if (PL.tradeQueue && PL.tradeQueue.length) {
+                for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
+                    queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
+                }
+                if (queuedShares.gt(constants.ZERO)) {
+                    PL.queued = this.calculateUnrealizedPL(queuedShares.neg(), PL.meanOpenPrice, bnLastTradePrice);
+                }
+            }
+            PL.unrealized = this.calculateUnrealizedPL(PL.position.plus(PL.completeSetsBought).plus(queuedShares), PL.meanOpenPrice, bnLastTradePrice);
             if (PL.position.abs().lt(constants.PRECISION.zero)) {
                 PL.position = constants.ZERO;
                 PL.meanOpenPrice = constants.ZERO;
                 PL.unrealized = constants.ZERO;
-            } else {
-                PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, abi.bignum(lastTradePrice));
             }
         }
-        PL.position = PL.position.toFixed();
+        PL.position = PL.position.plus(PL.completeSetsBought).toFixed();
         PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
         PL.realized = PL.realized.toFixed();
-        PL.unrealized = PL.unrealized.toFixed();
+        PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
+        PL.queued = PL.queued.toFixed();
+        delete PL.completeSetsBought;
+        delete PL.tradeQueue;
         return PL;
     }
 };

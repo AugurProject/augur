@@ -39,9 +39,9 @@ module.exports = {
         return trades;
     },
 
-    parseCompleteSetsLogs: function (logs) {
-        var marketID, logData, numOutcomes, logTypeCode;
-        var parsed = {};
+    parseCompleteSetsLogs: function (logs, mergeInto) {
+        var marketID, logData, numOutcomes, logTypeCode, parsed;
+        parsed = mergeInto || {};
         for (var i = 0, n = logs.length; i < n; ++i) {
             if (logs[i] && logs[i].data !== undefined &&
                 logs[i].data !== null && logs[i].data !== "0x") {
@@ -49,13 +49,26 @@ module.exports = {
                 logTypeCode = parseInt(logs[i].topics[3], 16);
                 logData = this.rpc.unmarshal(logs[i].data);
                 numOutcomes = parseInt(logData[1], 16);
-                if (!parsed[marketID]) parsed[marketID] = [];
-                parsed[marketID].push({
-                    type: logTypeCode,
-                    amount: abi.unfix(logData[0], "string"),
-                    numOutcomes: numOutcomes,
-                    blockNumber: parseInt(logs[i].blockNumber, 16)
-                });
+                if (mergeInto) {
+                    if (!parsed[marketID]) parsed[marketID] = {};
+                    for (var j = 1; j <= numOutcomes; ++j) {
+                        if (!parsed[marketID][j]) parsed[marketID][j] = [];
+                        parsed[marketID][j].push({
+                            type: logTypeCode,
+                            isCompleteSet: true,
+                            shares: abi.unfix(logData[0], "string"),
+                            blockNumber: parseInt(logs[i].blockNumber, 16)
+                        });
+                    }
+                } else {
+                    if (!parsed[marketID]) parsed[marketID] = [];
+                    parsed[marketID].push({
+                        type: logTypeCode,
+                        amount: abi.unfix(logData[0], "string"),
+                        numOutcomes: numOutcomes,
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
             }
         }
         return parsed;
@@ -334,19 +347,16 @@ module.exports = {
                                         if (!trades || Object.keys(trades).length === 0) {
                                             return cb(null);
                                         }
-                                        var marketIDs = Object.keys(trades);
-                                        var numMarkets = marketIDs.length;
-                                        var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
-                                        for (var i = 0; i < numMarkets; ++i) {
-                                            marketTrades = trades[marketIDs[i]];
-                                            outcomeIDs = Object.keys(marketTrades);
-                                            numOutcomes = outcomeIDs.length;
-                                            for (var j = 0; j < numOutcomes; ++j) {
-                                                outcomeTrades = marketTrades[outcomeIDs[j]];
-                                                outcomeTrades = outcomeTrades.sort(self.sortByBlockNumber);
-                                            }
+                                        if (options.noCompleteSets) {
+                                            cb(self.sortTradesByBlockNumber(trades));
+                                        } else {
+                                            options.shortAsk = false;
+                                            options.mergeInto = trades;
+                                            self.getParsedCompleteSetsLogs(account, options, function (err, merged) {
+                                                if (err) return cb(self.sortTradesByBlockNumber(trades));
+                                                cb(self.sortTradesByBlockNumber(merged));
+                                            });
                                         }
-                                        cb(trades);
                                     });
                                 });
                             });
@@ -355,6 +365,22 @@ module.exports = {
                 });              
             });
         });
+    },
+
+    sortTradesByBlockNumber: function (trades) {
+        var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
+        var marketIDs = Object.keys(trades);
+        var numMarkets = marketIDs.length;
+        for (var i = 0; i < numMarkets; ++i) {
+            marketTrades = trades[marketIDs[i]];
+            outcomeIDs = Object.keys(marketTrades);
+            numOutcomes = outcomeIDs.length;
+            for (var j = 0; j < numOutcomes; ++j) {
+                outcomeTrades = marketTrades[outcomeIDs[j]];
+                outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
+            }
+        }
+        return trades;
     },
 
     getMarketTrades: function (marketID, options, cb) {
@@ -481,7 +507,7 @@ module.exports = {
         }
         this.getCompleteSetsLogs(account, options, function (err, logs) {
             if (err) return callback(err);
-            callback(null, self.parseCompleteSetsLogs(logs));
+            callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
         });
     },    
 
