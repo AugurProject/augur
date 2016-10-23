@@ -55,8 +55,11 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
-			<p>Oct 23, 2016 @ 12:18AM PST [<a href="mailto:jack@augur.net">Jack</a>]:</p>
+			<p>Oct 23, 2016 @ 2:38AM PST [<a href="mailto:jack@augur.net">Jack</a>]:</p>
 			<ol>
+				<li>
+					Fixed P/L calculations for trades going from a net long to net short position, or vice-versa.
+				</li>
 				<li>
 					&quot;Close Out Position&quot; has been re-labeled &quot;Redeem X Complete Sets&quot;.
 				</li>
