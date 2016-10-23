@@ -83,7 +83,7 @@ const Transaction = (p) => {
 			break;
 
 		case SELL_COMPLETE_SETS:
-			nodes.action = `CLOSE OUT POSITION`;
+			nodes.action = `REDEEM ${p.numShares.formatted} COMPLETE SETS`;
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
