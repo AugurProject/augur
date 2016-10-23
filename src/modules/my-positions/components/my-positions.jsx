@@ -37,7 +37,7 @@ const Positions = p => (
 							p.market.onSubmitClosePosition();
 						}}
 					>
-						Close Out Position
+						Redeem {p.market.smallestPosition.formatted} Complete Sets
 					</button>
 				</div>
 			</div>
