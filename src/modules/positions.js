@@ -397,16 +397,31 @@ module.exports = {
             updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
 
         // If position < 0, user is decreasing a short position:
-        //  - update "almost realized" queue (P/L becomes realized when complete sets are sold)
-        }
-        else {
+        } else {
             if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
-            updatedPL.tradeQueue.push({
-                meanOpenPrice: PL.meanOpenPrice,
-                realized: PL.realized,
-                shares: shares,
-                price: price
-            });
+
+            // If |position| >= shares, user is buying back a short position:
+            //  - update queued P/L (becomes realized P/L when complete sets sold)
+            if (PL.position.abs().gte(shares)) {
+                updatedPL.tradeQueue.push({
+                    meanOpenPrice: PL.meanOpenPrice,
+                    realized: PL.realized,
+                    shares: shares,
+                    price: price
+                });
+
+            // If |position| < shares, user is buying back short then going long:
+            //  - update queued P/L for the short position (buy to 0)
+            //  - update mean open price for the remainder of shares
+            } else {
+                updatedPL.tradeQueue.push({
+                    meanOpenPrice: PL.meanOpenPrice,
+                    realized: PL.realized,
+                    shares: PL.position.abs(),
+                    price: price
+                });
+                updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
+            }
         }
 
         return updatedPL;
@@ -430,10 +445,21 @@ module.exports = {
         } else if (PL.position.lt(constants.PRECISION.zero)) {
             updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
 
-        // If position > 0, user is decreasing a long position (i.e., ordinary sale):
-        //  - update realized P/L
+        // If position > 0, user is decreasing a long position
         } else {
-            updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+
+            // If position >= shares, user is doing a regular sale:
+            //  - update realized P/L
+            if (PL.position.gte(shares)) {
+                updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+
+            // If position < shares, user is selling then short selling:
+            //  - update realized P/L for the current position (sell to 0)
+            //  - update mean open price for the remainder of shares (short sell)
+            } else {
+                updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
+                updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
+            }
         }
 
         return updatedPL;
@@ -527,9 +553,7 @@ module.exports = {
             if (PL.tradeQueue && PL.tradeQueue.length) {
                 for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
                     queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
-                }
-                if (queuedShares.gt(constants.ZERO)) {
-                    PL.queued = this.calculateUnrealizedPL(queuedShares.neg(), PL.meanOpenPrice, bnLastTradePrice);
+                    PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
                 }
             }
             PL.unrealized = this.calculateUnrealizedPL(PL.position.plus(PL.completeSetsBought).plus(queuedShares), PL.meanOpenPrice, bnLastTradePrice);
