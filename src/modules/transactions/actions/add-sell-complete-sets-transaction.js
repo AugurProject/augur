@@ -32,7 +32,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 					console.debug('sellCompleteSets sent:', r);
 					dispatch(updateExistingTransaction(transactionID, {
 						status: SUBMITTED,
-						message: `closing out ${fmtValue.full} position`
+						message: `redeeming ${fmtValue.full} complete sets`
 					}));
 				},
 				onSuccess: (r) => {
@@ -41,7 +41,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 						status: SUCCESS,
 						hash: r.hash,
 						timestamp: r.timestamp,
-						message: `closed out ${fmtValue.full} position`,
+						message: `redeemed ${fmtValue.full} complete sets`,
 						gasFees: formatRealEther(r.gasFees)
 					}));
 					dispatch(updateAssets());
