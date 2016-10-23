@@ -4,7 +4,7 @@ import Link from '../../link/components/link';
 const LoginMessagePage = p => (
 	<main className="page login-message">
 		<div className="page-content">
-			<h1>{`Welcome to Augur's beta test v2!`}</h1>
+			<h1>{`Welcome to the Augur beta test!`}</h1>
 			<p>{`This is a beta test in advance of Augur's live release. There are bugs. There are features being
 				added, improved, and re-designed. There are a few hundred enhancements scheduled to be added in the next few
 				months. Your thoughtful feedback now is essential. Please use the feedback button at the bottom right of
@@ -18,7 +18,7 @@ const LoginMessagePage = p => (
 				{`. From your submissions, the development team will coordinate fixes and new features. Changes and fixes will be
 				displayed when you log in again.`}
 			</p>
-			<h2>Important Information:</h2>
+			<h2>Important information:</h2>
 			<ol>
 				<li>
 					Because Augur is a <b>completely decentralized</b> system, if you lose your login credentials it
@@ -55,6 +55,13 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<p>Oct 23, 2016 @ 12:18AM PST [<a href="mailto:jack@augur.net">Jack</a>]:</p>
+			<ol>
+				<li>
+					&quot;Close Out Position&quot; has been re-labeled &quot;Redeem X Complete Sets&quot;.
+				</li>
+			</ol>
+			<br />
 			<p>Oct 22, 2016 @ 2:09AM PST [<a href="mailto:jack@augur.net">Jack</a>]:</p>
 			<ol>
 				<li>
@@ -86,7 +93,6 @@ const LoginMessagePage = p => (
 					Fixed a bug that was preventing the Portfolio page from loading.
 				</li>
 			</ol>
-			<br />
 			{p.marketsLink &&
 				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
 			}
