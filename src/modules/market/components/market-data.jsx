@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ComponentNav from 'modules/common/components/component-nav';
 
 export default class MarketData extends Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
 
 		console.log('props -- ', props);

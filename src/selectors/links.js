@@ -13,5 +13,5 @@ export default {
 	myMarketsLink: { href: '/?page=my-markets', onClick: url => require('../selectors').update({ activeView: MY_MARKETS, url }) },
 	myReportsLink: { href: '/?page=my-reports', onClick: url => require('../selectors').update({ activeView: MY_REPORTS, url }) },
 	loginMessageLink: { href: '/?page=login-message', onClick: url => require('../selectors').update({ activeView: LOGIN_MESSAGE, url }) },
-	marketDataNavLink: { href: '/?marketDataNav=internal-nav-selection', onClick: value => { console.log(`updates the 'marketDataNav' url param with ${value}`); }}
+	marketDataNavLink: { href: '/?marketDataNav=internal-nav-selection', onClick: (value) => { console.log(`updates the 'marketDataNav' url param with ${value}`); } }
 };
