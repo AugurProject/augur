@@ -195,11 +195,9 @@ module.exports = {
                     augur.fundNewAccount({
                         branch: newBranchID,
                         onSent: function (res) {
-                            assert(res.txHash);
                             assert(res.callReturn === "1");
                         },
                         onSuccess: function (res) {
-                            assert(res.txHash);
                             assert(res.callReturn === "1");
                             assert(augur.getRepBalance(newBranchID, account) === "47");
                             nextAccount();
