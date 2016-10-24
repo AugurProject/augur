@@ -246,7 +246,7 @@ export default class Router extends Component {
 						<SiteHeader {...siteHeaderProps} />
 						<div className="sub-header" >
 							<div className="view-content-row">
-								{s.isSideBarAllowed && p.tags &&
+								{p.loginAccount && p.loginAccount.id && s.isSideBarAllowed && p.tags &&
 									<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
 										<SideBarHeader />
 									</div>
@@ -259,7 +259,7 @@ export default class Router extends Component {
 						<div id="view_container" >
 							<div id="view_content_container">
 								<div className="view-content-row">
-									{s.isSideBarAllowed && p.tags &&
+									{p.loginAccount && p.loginAccount.id && s.isSideBarAllowed && p.tags &&
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
 											<SideBarContent
 												className="side-bar"
