@@ -3,13 +3,13 @@ import React from 'react';
 import Link from 'modules/link/components/link';
 
 const ComponentNav = p => (
-	<ul className="internal-nav">
+	<ul className="component-nav">
 		{p.navItems.length && p.navItems.map(nav => (
-			<li>
-				<Link {...nav.link} >
+			<Link {...nav.link} >
+				<li key={nav.label} className={`${nav.selected && 'selected'}`}>
 					{nav.label}
-				</Link>
-			</li>
+				</li>
+			</Link>
 		))}
 	</ul>
 );

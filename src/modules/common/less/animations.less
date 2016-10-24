@@ -5,21 +5,21 @@
 // appended `-<times>` denotes finite iteration
 
 // Default Animation Values
-@speed-slow: 700ms;
-@speed-normal: 500ms;
-@speed-fast: 300ms;
-@speed-very-fast: 200ms;
+@animation-speed-slow: 700ms;
+@animation-speed-normal: 500ms;
+@animation-speed-fast: 300ms;
+@animation-speed-very-fast: 200ms;
 
-@direction-up: 'up';
-@direction-right: 'right';
-@direction-down: 'down';
-@direction-left: 'left';
+@animation-direction-up: 'up';
+@animation-direction-right: 'right';
+@animation-direction-down: 'down';
+@animation-direction-left: 'left';
 
-@default-animation-type: ease-in-out;
+@animation-default-type: ease-in-out;
 
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(flash-slow @speed-slow @default-animation-type infinite alternate);
+	.animation(flash-slow @animation-speed-slow @animation-default-type infinite alternate);
 
 	.keyframes(flash-slow, {
 	0% { background: fade(@color, @amount-subtle) }

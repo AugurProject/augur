@@ -47,7 +47,7 @@ export default class Link extends Component {
 			<a
 				{...p}
 				href={p.href}
-				className={`link ${p.className}`}
+				className={`link ${p.className || ''}`}
 				onClick={this.handleClick}
 			>
 				{p.children}

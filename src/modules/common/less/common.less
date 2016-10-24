@@ -72,7 +72,9 @@ hr {
 input,
 select,
 textarea {
-	border: 1px solid @color-border-darker;
+
+	.border(true);
+
 	border-radius: 1px;
 	box-sizing: border-box;
 	color: inherit;
@@ -87,7 +89,8 @@ textarea {
 	resize: both;
 
 	&:focus {
-		border: 1px solid @color-border-darker;
+
+		.border(true);
 	}
 }
 

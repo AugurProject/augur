@@ -1,4 +1,5 @@
 import { ACCOUNT, MARKETS, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/site/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_INFO } from 'modules/market/constants/market-component-nav-items';
 import { LOGIN } from 'modules/auth/constants/auth-types';
 
 export default {
@@ -13,5 +14,7 @@ export default {
 	myMarketsLink: { href: '/?page=my-markets', onClick: url => require('../selectors').update({ activeView: MY_MARKETS, url }) },
 	myReportsLink: { href: '/?page=my-reports', onClick: url => require('../selectors').update({ activeView: MY_REPORTS, url }) },
 	loginMessageLink: { href: '/?page=login-message', onClick: url => require('../selectors').update({ activeView: LOGIN_MESSAGE, url }) },
-	marketDataNavLink: { href: '/?marketDataNav=internal-nav-selection', onClick: (value) => { console.log(`updates the 'marketDataNav' url param with ${value}`); } }
+	marketDataNavOutcomesLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_OUTCOMES}`, onClick: url => require('../selectors').update({ url }) },
+	marketDataNavChartsLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_CHARTS}`, onClick: url => require('../selectors').update({ url }) },
+	marketDataNavInfoLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_INFO}`, onClick: url => require('../selectors').update({ url }) },
 };

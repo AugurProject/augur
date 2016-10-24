@@ -7,12 +7,12 @@ import OutcomeTrade from 'modules/outcome/components/outcome-trade';
 
 const MarketActive = p => (
 	<article className="market-active">
-		<div className="market-active-group">
+		<div className="market-group">
 			<MarketData {...p} />
 			<OutcomeOrderBook />
 			<OutcomeTrade />
 		</div>
-		<div className="market-active-group">
+		<div className="market-group">
 			<MarketUserData />
 			<OutcomeTrade />
 		</div>

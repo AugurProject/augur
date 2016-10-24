@@ -1,24 +1,31 @@
 // BORDERS
 //	Constants
+// 		Defaults
 @border-all: 'all sides';
+@border-default-chroma: @color-border;
+@border-default-width: 1px;
+
+//		Sides
 @border-top: border-top;
 @border-right: border-right;
 @border-bottom: border-bottom;
 @border-left: border-left;
 
-@border-default-chroma: @color-border;
+//		Chroma
 @border-muted: @color-border-muted;
 @border-light: @color-border-light;
 
-@default-values: 1px solid;
+//		Width
+@border-width-2: 2px;
+@border-width-3: 3px;
 
-.border(@side: false; @property: @border-all; @chroma: @border-default-chroma) {
+.border(@side: false; @property: @border-all; @chroma: @border-default-chroma; @width: @border-default-width) {
 	& when (@side) {
 		& when (@property = @border-all) {
-			border: @default-values @chroma;
+			border: @width solid @chroma;
 		}
 
-		@{property}: @default-values @chroma;
+		@{property}: @width solid @chroma;
 	}
 
 	& when not (@side) {
