@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const CoreStats = p => (
-	<article className={`core-stats ${p.className || ''}`}>
+	<article className="core-stats" >
 		{p.coreStats && p.coreStats.map((statGroup, i) => (
 			<div
 				key={i}
