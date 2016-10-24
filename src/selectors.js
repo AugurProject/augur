@@ -31,6 +31,7 @@ import selectedOutcome from 'selectors/selected-outcome';
 import marketsHeader from 'selectors/markets-header';
 import coreStats from 'selectors/core-stats';
 import marketDataNavItems from 'selectors/market-data-nav-items';
+import settings from 'selectors/settings';
 
 // all selectors should go here
 const selectors = {
@@ -68,7 +69,8 @@ const selectors = {
 	selectedOutcome,
 	marketsHeader,
 	coreStats,
-	marketDataNavItems
+	marketDataNavItems,
+	settings
 };
 
 // add update helper fn to selectors object
