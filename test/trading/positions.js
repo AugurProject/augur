@@ -3141,7 +3141,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "10"
+                    shares: "10",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
@@ -3169,7 +3170,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "10"
+                    shares: "10",
+                    price: "0.2"
                 }],
                 lastPrice: "0.1",
                 assertions: function (output) {
@@ -3197,7 +3199,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
@@ -3225,11 +3228,13 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "2"
+                    shares: "2",
+                    price: "0.2"
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "3"
+                    shares: "3",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
@@ -3243,7 +3248,7 @@ describe("positions", function () {
                 }
             });
             test({
-                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5], last price 0.2",
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5 @ 0.2], last price 0.2",
                 trades: [{
                     type: 2,
                     shares: "10",
@@ -3257,15 +3262,93 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 1,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
                     assert.deepEqual(output, {
                         position: "5",
-                        meanOpenPrice: "0",
+                        meanOpenPrice: "0.2",
                         realized: "0",
                         unrealized: "-1",
+                        queued: "-1"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy complete sets 5 @ 0.5], last price 0.2",
+                trades: [{
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "5",
+                    price: "0.5"
+                }],
+                lastPrice: "0.5",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "5",
+                        meanOpenPrice: "0.5",
+                        realized: "0",
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.2, buy 10 @ 0.2, buy complete sets 1 @ 0.25], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "1",
+                    price: "0.25"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "1",
+                        meanOpenPrice: "0.25",
+                        realized: "0",
+                        unrealized: "-0.05",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5 @ 0.5], last price 0.2",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "10",
+                    price: "0.2",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "5",
+                    price: "0.5"
+                }],
+                lastPrice: "0.2",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "5",
+                        meanOpenPrice: "0.5",
+                        realized: "0",
+                        unrealized: "-2.5",
                         queued: "-1"
                     });
                 }
@@ -3275,11 +3358,13 @@ describe("positions", function () {
                 trades: [{
                     isCompleteSet: true,
                     type: 1,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.2"
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
@@ -3345,6 +3430,78 @@ describe("positions", function () {
                 }
             });
             test({
+                description: "trades: [sell 1 @ 0.1, buy 1 @ 0.05], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "1",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "1",
+                    price: "0.05",
+                    maker: false
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "0",
+                        unrealized: "0.05",
+                        queued: "0.05"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 2 @ 0.1, buy 1 @ 0.05], last price 0.05",
+                trades: [{
+                    type: 2,
+                    shares: "2",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "1",
+                    price: "0.05",
+                    maker: false
+                }],
+                lastPrice: "0.05",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-1",
+                        meanOpenPrice: "0.1",
+                        realized: "0",
+                        unrealized: "0.1",
+                        queued: "0.05"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy 2 @ 0.05, sell 1 @ 0.1], last price 0.1",
+                trades: [{
+                    type: 1,
+                    shares: "2",
+                    price: "0.05",
+                    maker: false
+                }, {
+                    type: 2,
+                    shares: "1",
+                    price: "0.1",
+                    maker: false
+                }],
+                lastPrice: "0.1",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "1",
+                        meanOpenPrice: "0.05",
+                        realized: "0.05",
+                        unrealized: "0.05",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
                 description: "trades: [sell 10 @ 0.1, buy 5 @ 0.05], last price 0.05",
                 trades: [{
                     type: 2,
@@ -3363,8 +3520,56 @@ describe("positions", function () {
                         position: "-5",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0.25",
+                        unrealized: "0.5",
                         queued: "0.25"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 5 @ 0.15], last price 0.15",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "5",
+                    price: "0.15",
+                    maker: false
+                }],
+                lastPrice: "0.15",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-5",
+                        meanOpenPrice: "0.1",
+                        realized: "0",
+                        unrealized: "-0.5",
+                        queued: "-0.25"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.1, buy 20 @ 0.15], last price 0.15",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.1",
+                    maker: false
+                }, {
+                    type: 1,
+                    shares: "20",
+                    price: "0.15",
+                    maker: false
+                }],
+                lastPrice: "0.15",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "10",
+                        meanOpenPrice: "0.15",
+                        realized: "0",
+                        unrealized: "-0.5",
+                        queued: "-0.5"
                     });
                 }
             });
@@ -3383,7 +3588,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: 5
+                    shares: 5,
+                    price: "0.2"
                 }],
                 lastPrice: "0.05",
                 assertions: function (output) {
@@ -3420,7 +3626,7 @@ describe("positions", function () {
                         position: "-5",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0.25",
+                        unrealized: "0.5",
                         queued: "0.25"
                     });
                 }
@@ -3445,7 +3651,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.05"
                 }],
                 lastPrice: "0.05",
                 assertions: function (output) {
@@ -3482,7 +3689,7 @@ describe("positions", function () {
                         position: "-5",
                         meanOpenPrice: "0.1",
                         realized: "0",
-                        unrealized: "0.05",
+                        unrealized: "0.3",
                         queued: "0.05"
                     });
                 }
@@ -3507,7 +3714,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "5"
+                    shares: "5",
+                    price: "0.1"
                 }],
                 lastPrice: "0.05",
                 assertions: function (output) {
@@ -3544,7 +3752,7 @@ describe("positions", function () {
                         position: "-10",
                         meanOpenPrice: "0.15",
                         realized: "0",
-                        unrealized: "-0.5",
+                        unrealized: "-1",
                         queued: "-0.5"
                     });
                 }
@@ -3569,7 +3777,8 @@ describe("positions", function () {
                 }, {
                     isCompleteSet: true,
                     type: 2,
-                    shares: "10"
+                    shares: "10",
+                    price: "0.2"
                 }],
                 lastPrice: "0.2",
                 assertions: function (output) {
@@ -3636,6 +3845,143 @@ describe("positions", function () {
                 }
             });
             test({
+                description: "trades: [buy 10 @ 0.52, sell complete sets 10 @ 0.48, sell 10 @ 0.48], last price 0.48",
+                trades: [{
+                    type: 1,
+                    shares: "10",
+                    price: "0.52",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10",
+                    price: "0.48"
+                }, {
+                    type: 2,
+                    shares: "10",
+                    price: "0.48",
+                    maker: false
+                }],
+                lastPrice: "0.48",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-10",
+                        meanOpenPrice: "0.48",
+                        realized: "-0.4",
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy complete sets 10 @ 0.52, sell complete sets 10 @ 0.48, sell 10 @ 0.48], last price 0.48",
+                trades: [{
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "10",
+                    price: "0.52"
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "10",
+                    price: "0.48"
+                }, {
+                    type: 2,
+                    shares: "10",
+                    price: "0.48",
+                    maker: false
+                }],
+                lastPrice: "0.48",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "-10",
+                        meanOpenPrice: "0.48",
+                        realized: "-0.4",
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy 10 @ 0.52, sell 5 @ 0.48, sell complete sets 5 @ 0.48], last price 0.48",
+                trades: [{
+                    type: 1,
+                    shares: "10",
+                    price: "0.52"
+                }, {
+                    type: 2,
+                    shares: "5",
+                    price: "0.48",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "5",
+                    price: "0.48"
+                }],
+                lastPrice: "0.48",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "0",
+                        meanOpenPrice: "0",
+                        realized: "-0.4",
+                        unrealized: "0",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy 10 @ 0.52, sell 6 @ 0.48], last price 0.48",
+                trades: [{
+                    type: 1,
+                    shares: "10",
+                    price: "0.52"
+                }, {
+                    type: 2,
+                    shares: "6",
+                    price: "0.48",
+                    maker: false
+                }],
+                lastPrice: "0.48",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "4",
+                        meanOpenPrice: "0.52",
+                        realized: "-0.24",
+                        unrealized: "-0.16",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
+                description: "trades: [buy 10 @ 0.52, sell 5 @ 0.48, sell complete sets 1 @ 0.48], last price 0.48",
+                trades: [{
+                    type: 1,
+                    shares: "10",
+                    price: "0.52"
+                }, {
+                    type: 2,
+                    shares: "5",
+                    price: "0.48",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 2,
+                    shares: "1",
+                    price: "0.48"
+                }],
+                lastPrice: "0.48",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "4",
+                        meanOpenPrice: "0.52",
+                        realized: "-0.24",
+                        unrealized: "-0.16",
+                        queued: "0"
+                    });
+                }
+            });
+            test({
                 description: "trades: [sell 10 @ 0.48, buy 10 @ 0.52, buy 10 @ 0.52], last price 0.52",
                 trades: [{
                     type: 2,
@@ -3676,6 +4022,30 @@ describe("positions", function () {
                     shares: "20",
                     price: "0.52",
                     maker: false
+                }],
+                lastPrice: "0.52",
+                assertions: function (output) {
+                    assert.deepEqual(output, {
+                        position: "10",
+                        meanOpenPrice: "0.52",
+                        realized: "0",
+                        unrealized: "-0.4",
+                        queued: "-0.4"
+                    });
+                }
+            });
+            test({
+                description: "trades: [sell 10 @ 0.48, buy complete sets 20 @ 0.52], last price 0.52",
+                trades: [{
+                    type: 2,
+                    shares: "10",
+                    price: "0.48",
+                    maker: false
+                }, {
+                    isCompleteSet: true,
+                    type: 1,
+                    shares: "20",
+                    price: "0.52"
                 }],
                 lastPrice: "0.52",
                 assertions: function (output) {

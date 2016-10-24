@@ -10,6 +10,8 @@ var abi = require("augur-abi");
 var constants = require("../constants");
 var utils = require("../utilities");
 
+var ONE = abi.bignum("1");
+
 module.exports = {
 
     /***********
@@ -57,6 +59,7 @@ module.exports = {
                             type: logTypeCode,
                             isCompleteSet: true,
                             shares: abi.unfix(logData[0], "string"),
+                            price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
                             blockNumber: parseInt(logs[i].blockNumber, 16)
                         });
                     }
