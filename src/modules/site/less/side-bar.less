@@ -25,7 +25,12 @@
 		display: flex;
 		flex: 1;
 		flex-direction: column;
-		padding-top: 0.5rem;
+		padding: 0.5rem 0;
+
+		.null-state {
+			align-self: center;
+			position: fixed; // Simply for the case where tags are failing to load, scrolling won't cause this to go out of view
+		}
 
 		.checkbox.tag {
 

@@ -121,13 +121,7 @@ class AppComponent extends Component {
 								<div className={classnames('view-content-row', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 									{s.isSideBarAllowed &&
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
-											{p.tags ?
 												<SideBarContent {...sideBarProps} />
-
-												:
-
-												<span>No Tags</span>
-											}
 										</div>
 									}
 									<div className="view-content view-content-group-2">

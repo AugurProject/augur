@@ -5,7 +5,7 @@ import Checkbox from 'modules/common/components/checkbox';
 const SideBar = p => (
 	<article className="side-bar" >
 		<div className="tags">
-			{!!p.tags.length && p.tags.map(tag =>
+			{!!p.tags.length ? p.tags.map(tag =>
 				<Checkbox
 					key={tag.value}
 					className="tag"
@@ -14,7 +14,9 @@ const SideBar = p => (
 					isChecked={tag.isSelected}
 					onClick={tag.onClick}
 				/>
-			)}
+			) :
+			<span className="null-state">No Tags</span>
+		}
 		</div>
 	</article>
 );
