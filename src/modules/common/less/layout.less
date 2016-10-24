@@ -21,8 +21,6 @@
 	.sub-header {
 		display: flex;
 
-		.contained();
-
 		z-index: @above-all-content;
 	}
 
@@ -52,6 +50,10 @@
 		flex: 1 0 auto;
 		padding: 0%;
 		width: 100vw;
+
+		&:first-child {
+			overflow: visible;
+		}
 	}
 
 	.view-content-group-1 {
