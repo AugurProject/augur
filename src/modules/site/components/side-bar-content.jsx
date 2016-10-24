@@ -3,7 +3,6 @@ import Checkbox from '../../common/components/checkbox';
 
 const SideBar = p => (
 	<article className={`${p.className}`}>
-		<h3>All Tags</h3>
 		<div className="tags">
 			{!!p.tags.length && p.tags.map(tag =>
 				<Checkbox

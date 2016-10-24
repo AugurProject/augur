@@ -1,17 +1,18 @@
 // NOTE -- additional styles located in common/less/layout.less
 .side-bar {
-	background-color: @color-side-bar-background;
-	color: @color-text-light-muted;
-
-	h3 {
-
-		.font-weight-light();
-		.font-size-medium();
-
+	.header-container {
+		margin: 0 2rem;
 		border-bottom: 1px solid @color-text-light-light;
-		color: @color-text-light;
-		margin: 2rem 2rem 0;
-		padding-bottom: 1rem;
+		height: 100%;
+
+		h3 {
+
+			.font-weight-light();
+			.font-size-medium();
+
+			color: @color-text-light;
+			padding-top: 1rem;
+		}
 	}
 
 	.tags {

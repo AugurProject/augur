@@ -3,7 +3,8 @@ import classnames from 'classnames';
 
 import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
-import SideBar from './modules/site/components/side-bar';
+import SideBarHeader from './modules/site/components/side-bar-header';
+import SideBarContent from './modules/site/components/side-bar-content';
 import MarketsView from './modules/markets/components/markets-view';
 import MarketView from './modules/market/components/market-view';
 import CreateMarketView from './modules/create-market/components/create-market-view';
@@ -243,19 +244,30 @@ export default class Router extends Component {
 				{!!p &&
 					<div id="site_container">
 						<SiteHeader {...siteHeaderProps} />
+						<div className="sub-header" >
+							<div className="view-content-row">
+								{s.isSideBarAllowed && p.tags &&
+									<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
+										<SideBarHeader />
+									</div>
+								}
+								<div className="view-content view-content-group-2">
+									<CoreStats coreStats={p.coreStats} />
+								</div>
+							</div>
+						</div>
 						<div id="view_container" >
 							<div id="view_content_container">
 								<div className="view-content-row">
 									{s.isSideBarAllowed && p.tags &&
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
-											<SideBar
+											<SideBarContent
 												className="side-bar"
 												{...sideBarProps}
 											/>
 										</div>
 									}
 									<div className="view-content view-content-group-2">
-										<CoreStats coreStats={p.coreStats} />
 										<CurrentRoute className="view" />
 									</div>
 								</div>
