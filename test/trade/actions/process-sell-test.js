@@ -339,19 +339,17 @@ describe('modules/trade/actions/process-sell.js', () => {
 					status: 'success',
 					hash: 'testhash',
 					timestamp: 1500000000,
-					tradingFees: '0.02',
+					tradingFees: '0.01536',
 					gasFees: '0.02791268',
-					remainingEth: '500.0',
 					filledShares: '0',
 					filledEth: '0',
 					remainingShares: '20'
 				});
 				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
 				args[8](undefined, {
-					remainingEth: abi.bignum('500.0'),
 					filledShares: abi.bignum('0'),
 					filledEth: abi.bignum('0'),
-					tradingFees: abi.bignum('0.02'),
+					tradingFees: abi.bignum('0.01536'),
 					gasFees: abi.bignum('0.02791268'),
 					remainingShares: abi.bignum('20')
 				});
@@ -362,22 +360,31 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}
 			break;
 		case '0x000000000000000000000000000000000scalar1':
-			args[7]({
-				status: 'success',
-				hash: 'testhash',
-				timestamp: 1500000000,
-				tradingFees: '5.36982248520710025',
-				gasFees: '0.01450404',
-				remainingEth: '50.0',
-				filledShares: '10'
-			});
-			args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-			args[8](undefined, {
-				remainingEth: abi.bignum('50.0'),
-				filledShares: abi.bignum('10'),
-				tradingFees: abi.bignum('5.36982248520710025'),
-				gasFees: abi.bignum('0.01450404')
-			});
+			switch (mockTrade.trade.callCount) {
+				case 1:
+					args[7]({
+						status: 'success',
+						hash: 'testhash',
+						timestamp: 1500000000,
+						tradingFees: '-13068',
+						gasFees: '0.01450404',
+						filledShares: '10',
+						filledEth: '-12518',
+						remainingShares: '0'
+					});
+					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
+					args[8](undefined, {
+						remainingShares: abi.bignum('0'),
+						filledShares: abi.bignum('10'),
+						filledEth: abi.bignum('-12518'),
+						tradingFees: abi.bignum('-13068'),
+						gasFees: abi.bignum('0.01450404')
+					});
+					break;
+				default:
+					console.log('scalar default break, callcount: ', mockTrade.trade.callCount);
+					break;
+			}
 			break;
 		default:
 			break;
@@ -2415,14 +2422,14 @@ describe('modules/trade/actions/process-sell.js', () => {
 					hash: 'testhash',
 					timestamp: 1500000000,
 					tradingFees: {
-						value: 0.02,
-						formattedValue: 0.02,
-						formatted: '0.0200',
-						roundedValue: 0.02,
-						rounded: '0.0200',
-						minimized: '0.02',
+						value: 0.01536,
+						formattedValue: 0.0154,
+						formatted: '0.0154',
+						roundedValue: 0.0154,
+						rounded: '0.0154',
+						minimized: '0.0154',
 						denomination: ' ETH',
-						full: '0.0200 ETH'
+						full: '0.0154 ETH'
 					},
 					gasFees: {
 						value: 0.02791268,
@@ -2469,14 +2476,14 @@ describe('modules/trade/actions/process-sell.js', () => {
 						full: '0 ETH'
 					},
 					tradingFees: {
-						value: 0.02,
-						formattedValue: 0.02,
-						formatted: '0.0200',
-						roundedValue: 0.02,
-						rounded: '0.0200',
-						minimized: '0.02',
+						value: 0.01536,
+						formattedValue: 0.0154,
+						formatted: '0.0154',
+						roundedValue: 0.0154,
+						rounded: '0.0154',
+						minimized: '0.0154',
 						denomination: ' ETH',
-						full: '0.0200 ETH'
+						full: '0.0154 ETH'
 					},
 					gasFees: {
 						value: 0.02791268,
@@ -2572,7 +2579,17 @@ describe('modules/trade/actions/process-sell.js', () => {
 		], `Didn't produce the expected actions or calculations`);
 	});
 
-	it('should process a sell order for a scalar market where all shares are sold');
+	it.skip('should process a sell order for a scalar market where all shares are sold', () => {
+		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '10', '55', '-12518', '-13068', '0.01450404'));
+		console.log(store.getActions());
+		console.log(store.getActions()[0]);
+		console.log(store.getActions()[1]);
+		console.log(store.getActions()[5]);
+
+		assert.deepEqual(store.getActions(), [
+
+		], `Didn't produce the expected actions and calculations`);
+	});
 
 	it('should process a sell order for a scalar market where only some shares are filled, ask for the rest.');
 
