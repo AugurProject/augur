@@ -57,6 +57,16 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
+					Oct 23, 2016 @ 8:32PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+				</li>
+				<li>
+					<ol>
+						<li>
+							Buy/sell complete sets now have an implicit price assigned to them of 1/numOutcomes (that is, all outcomes are equally priced for the complete set).  The purpose behind this change is so that complete sets buy/sells can be included in per-outcome P/L calculations.  Note that, if this equal-price-per-outcome value differs from the market price at the time the complete set is bought or sold, the outcome realized P/L values may be somewhat different than if you executed an ordinary buy or sell trade!  However, the net realized P/L (for the entire market, across all outcomes) will be correct.
+						</li>
+					</ol>
+				</li>
+				<li>
 					Oct 23, 2016 @ 2:38AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>
