@@ -236,7 +236,8 @@ export default class Router extends Component {
 			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
 		};
 		const sideBarProps = {
-			tags: p.tags
+			tags: p.tags,
+			loginAccount: p.loginAccount
 		};
 
 		return (
@@ -244,27 +245,32 @@ export default class Router extends Component {
 				{!!p &&
 					<div id="site_container">
 						<SiteHeader {...siteHeaderProps} />
-						<div className="sub-header" >
+						<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 							<div className="view-content-row">
-								{p.loginAccount && p.loginAccount.id && s.isSideBarAllowed && p.tags &&
+								{s.isSideBarAllowed &&
 									<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
 										<SideBarHeader />
 									</div>
 								}
 								<div className="view-content view-content-group-2">
-									<CoreStats coreStats={p.coreStats} />
+									{p.loginAccount && p.loginAccount.id &&
+										<CoreStats coreStats={p.coreStats} />
+									}
 								</div>
 							</div>
 						</div>
 						<div id="view_container" >
 							<div id="view_content_container">
-								<div className="view-content-row">
-									{p.loginAccount && p.loginAccount.id && s.isSideBarAllowed && p.tags &&
+								<div className={classnames('view-content-row', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+									{s.isSideBarAllowed &&
 										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
-											<SideBarContent
-												className="side-bar"
-												{...sideBarProps}
-											/>
+											{p.tags ?
+												<SideBarContent {...sideBarProps} />
+
+												:
+
+												<span>No Tags</span>
+											}
 										</div>
 									}
 									<div className="view-content view-content-group-2">

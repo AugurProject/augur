@@ -2,7 +2,7 @@ import React from 'react';
 import Checkbox from '../../common/components/checkbox';
 
 const SideBar = p => (
-	<article className={`${p.className}`}>
+	<article className="side-bar" >
 		<div className="tags">
 			{!!p.tags.length && p.tags.map(tag =>
 				<Checkbox

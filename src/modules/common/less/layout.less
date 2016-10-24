@@ -21,6 +21,14 @@
 	.sub-header {
 		display: flex;
 		z-index: @above-all-content;
+
+		&.logged-out {
+			height: 0;
+
+			.core-stats {
+				display: none;
+			}
+		}
 	}
 
 	#view_container {
@@ -53,6 +61,14 @@
 		&:first-child {
 			overflow: visible;
 		}
+
+		&.logged-out {
+			.view-content-group-1 {
+				> * {
+					padding-top: 3rem;
+				}
+			}
+		}
 	}
 
 	.view-content-group-1 {
@@ -70,8 +86,7 @@
 		.view {
 			display: flex;
 			flex-direction: column;
-			margin: 3rem 6rem 0;
-			max-width: @max-content-width;
+			margin: 2rem 6rem 0;
 
 			.view-header {
 				align-items: center;
@@ -83,8 +98,6 @@
 	}
 
 	.side-bar {
-		background-color: @color-side-bar-background;
-		color: @color-text-light-muted;
 		flex: 1;
 	}
 }
