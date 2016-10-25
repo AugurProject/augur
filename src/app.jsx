@@ -49,7 +49,7 @@ class AppComponent extends Component {
 		}
 
 		if (this.state.doScrollTop) {
-			window.document.getElementById('view_container').scrollTop = 0;
+			window.scroll(0, 0);
 			this.setState({ doScrollTop: false });
 		}
 	}
