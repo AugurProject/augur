@@ -20,9 +20,8 @@ html {
 
 	#app_header {
 		position: fixed;
-		z-index: @above-all-content;
-
 		width: 100vw;
+		z-index: @above-all-content;
 
 		.site-header .site-nav {
 
@@ -56,12 +55,14 @@ html {
 		}
 
 		#app_view_container {
-			display: flex;
 
 			.contained();
+
+			display: flex;
 			width: 100%;
 
 			#side_bar {
+				display: flex;
 				flex: 1;
 			}
 
