@@ -57,6 +57,19 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
+					Oct 25, 2016 @ 4:08PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+				</li>
+				<li>
+					<ol>
+						<li>
+							Fixed partial message chat input entry bug.
+						</li>
+						<li>
+							Chat input text box now properly clears after sending.
+						</li>
+					</ol>
+				</li>
+				<li>
 					Oct 25, 2016 @ 6:34AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>

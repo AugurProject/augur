@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
-import Input from '../../common/components/input';
 import ValueTimestamp from '../../common/components/value-timestamp';
 
 export default class ChatView extends Component {
 
 	static propTypes = {
-		newMessage: React.PropTypes.string,
 		onSubmitChatMessage: React.PropTypes.func
 	};
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			newMessage: this.props.newMessage
-		};
-	}
-
 	onSubmitChatMessage = (e) => {
 		e.preventDefault();
-		this.props.onSubmitChatMessage('augur', this.state.newMessage);
+		this.props.onSubmitChatMessage('augur', this.refs.chatMessageInput.value);
+		this.refs.chatMessageForm.reset();
 	}
 
 	render() {
@@ -53,12 +45,12 @@ export default class ChatView extends Component {
 					</div>
 				</div>
 				<div className="chat-inputs">
-					<form name="chat-message-form" onSubmit={this.onSubmitChatMessage}>
-						<Input
+					<form ref="chatMessageForm" name="chat-message-form" onSubmit={this.onSubmitChatMessage}>
+						<input
+							ref="chatMessageInput"
 							className="chat-message-input"
 							type="text"
 							placeholder="Say something!"
-							onChange={newMessage => this.setState({ newMessage })}
 						/>
 						<button className="chat-message-button">
 							Chat
