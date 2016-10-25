@@ -13,6 +13,7 @@ import AccountView from './modules/account/components/account-view';
 import PortfolioView from './modules/portfolio/components/portfolio-view';
 import TransactionsView from './modules/transactions/components/transactions-view';
 import LoginMessageView from './modules/login-message/components/login-message-view';
+import ChatView from './modules/chat/components/chat-view';
 import CoreStats from './modules/common/components/core-stats';
 
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from './modules/site/constants/views';
@@ -27,6 +28,7 @@ export default class Router extends Component {
 		this.state = {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,
+			isChatCollapsed: true,
 			doScrollTop: false
 		};
 
@@ -68,6 +70,10 @@ export default class Router extends Component {
 		} else {
 			this.setState({ isSideBarAllowed: false });
 		}
+	}
+
+	toggleChat() {
+		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
 	toggleSideBar() {
@@ -259,7 +265,7 @@ export default class Router extends Component {
 								</div>
 							</div>
 						</div>
-						<div id="view_container" >
+						<div id="view_container">
 							<div id="view_content_container">
 								<div className={classnames('view-content-row', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 									{s.isSideBarAllowed &&
@@ -277,6 +283,15 @@ export default class Router extends Component {
 										<CurrentRoute className="view" />
 									</div>
 								</div>
+								<div className={classnames('view-content view-content-group-1', { collapsed: s.isChatCollapsed })} >
+									<ChatView
+										{...p.chat.augur}
+										toggleChat={() => { this.toggleChat(); }}
+									/>
+								</div>
+								<button id="chat-button" onClick={() => { this.toggleChat(); }}>
+									Chat
+								</button>
 								<SiteFooter />
 							</div>
 						</div>

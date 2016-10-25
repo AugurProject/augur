@@ -57,6 +57,25 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
+					Oct 25, 2016 @ 6:34AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+				</li>
+				<li>
+					<ol>
+						<li>
+							Sprinkle fixed the Firefox scrolling bug.
+						</li>
+						<li>
+							Added chat box.  Right now there is just a single chat room for the entire site -- a &quot;trollbox&quot; ala Poloniex, Bittrex, et al.  The chat middleware is set up in a way that is trivially extensible, so if we decide we want separate chatboxes for each market, that is straightforward to add.  Note: the chat box uses <a href="https://github.com/ethereum/wiki/wiki/Whisper">Whisper</a>, a P2P messaging protocol that does not have any kind of persistence built-in.  Messages only last for a few minutes, and you have to be online to see new messages.
+						</li>
+						<li>
+							Removed Doorbell.io (Feedback button) as people were not using it.
+						</li>
+						<li>
+							Changed navbar/sidebar colors back to &quot;Augur purple&quot;, just to see how it looks.  (If users prefer the blue, can definitely change it back!)
+						</li>
+					</ol>
+				</li>
+				<li>
 					Oct 23, 2016 @ 8:32PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>
