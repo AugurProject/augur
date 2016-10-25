@@ -40,7 +40,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.2";
+    this.version = "2.11.3";
 
     this.options = {
         debug: {
@@ -78,6 +78,7 @@ function Augur() {
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
+    this.chat = this.Chat();
     this.augurNode = this.AugurNode();
     if (this.options.debug.tools) this.tools = require("../test/tools");
     this.sync();
@@ -85,6 +86,7 @@ function Augur() {
 
 Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
+Augur.prototype.Chat = require("./chat");
 Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();

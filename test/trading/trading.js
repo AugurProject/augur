@@ -102,7 +102,7 @@ describe("Unit tests", function () {
     describe("abacus.calculateTradingCost", function () {
         var test = function (t) {
             it(JSON.stringify(t), function () {
-                var tradingCost = abacus.calculateTradingCost(t.amount, t.price, t.tradingFee, t.range);
+                var tradingCost = abacus.calculateTradingCost(t.amount, t.price, t.tradingFee, t.makerProportionOfFee, t.range);
                 assert.strictEqual(tradingCost.fee.toFixed(), t.expected.fee);
                 assert.strictEqual(tradingCost.percentFee.toFixed(), t.expected.percentFee);
                 assert.strictEqual(tradingCost.cost.toFixed(), t.expected.cost);
@@ -112,176 +112,208 @@ describe("Unit tests", function () {
             amount: 1,
             price: "0.4",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.00768",
                 percentFee: "0.0192",
-                cost: "0.40768"
+                cost: "0.40768",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.5",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.01",
                 percentFee: "0.02",
-                cost: "0.51"
+                cost: "0.51",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "0.5",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.02",
                 percentFee: "0.02",
-                cost: "1.02"
+                cost: "1.02",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.5",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0.0075",
                 percentFee: "0.015",
-                cost: "0.5075"
+                cost: "0.5075",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "1",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0",
                 percentFee: "0",
-                cost: "1"
+                cost: "1",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "1",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0",
                 percentFee: "0",
-                cost: "2"
+                cost: "2",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "1",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0.04",
                 percentFee: "0.02",
-                cost: "2.04"
+                cost: "2.04",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0",
                 percentFee: "0",
-                cost: "0"
+                cost: "0",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "0",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0",
                 percentFee: "0",
-                cost: "0"
+                cost: "0",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0",
                 percentFee: "0",
-                cost: "0"
+                cost: "0",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.75",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.01125",
                 percentFee: "0.015",
-                cost: "0.76125"
+                cost: "0.76125",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "0.75",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.0225",
                 percentFee: "0.015",
-                cost: "1.5225"
+                cost: "1.5225",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.75",
             tradingFee: "0.02",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0.0140625",
                 percentFee: "0.01875",
-                cost: "0.7640625"
+                cost: "0.7640625",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.75",
             tradingFee: "0.08",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.045",
                 percentFee: "0.06",
-                cost: "0.795"
+                cost: "0.795",
+                cash: "0"
             }
         });
         test({
             amount: 2,
             price: "0.75",
             tradingFee: "0.08",
+            makerProportionOfFee: "0.5",
             range: 1,
             expected: {
                 fee: "0.09",
                 percentFee: "0.06",
-                cost: "1.59"
+                cost: "1.59",
+                cash: "0"
             }
         });
         test({
             amount: 1,
             price: "0.75",
             tradingFee: "0.08",
+            makerProportionOfFee: "0.5",
             range: 2,
             expected: {
                 fee: "0.05625",
                 percentFee: "0.075",
-                cost: "0.80625"
+                cost: "0.80625",
+                cash: "0"
             }
         });
     });
