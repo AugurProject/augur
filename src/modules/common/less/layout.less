@@ -8,6 +8,13 @@ html {
 	overflow-x: hidden;
 }
 
+body,
+#app,
+main,
+#app_container {
+	height: 100%;
+}
+
 .contained {
 	margin: 0 auto;
 	max-width: @max-app-width;
@@ -29,9 +36,11 @@ html {
 		}
 
 		.sub-header {
-			display: flex;
 
 			.contained();
+
+			display: flex;
+			overflow-x: visible; // Allows for the display of the box shadow
 
 			.core-stats-bumper {
 				flex: 1;
@@ -45,7 +54,7 @@ html {
 
 	#app_views {
 		display: flex;
-		flex: auto;
+		flex: 1 0 auto;
 		flex-direction: column;
 
 		width: 100vw;
