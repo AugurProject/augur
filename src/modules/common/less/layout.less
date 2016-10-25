@@ -2,6 +2,12 @@
 // parent level structural styling
 // These classes may also have presentational styling housed in separate stylesheets
 
+html {
+	height: 100vh;
+	width: 100vw;
+	overflow-x: hidden;
+}
+
 .contained {
 	margin: 0 auto;
 	max-width: @max-app-width;
@@ -14,34 +20,53 @@
 
 	#app_header {
 		position: fixed;
+		z-index: @above-all-content;
+
 		width: 100vw;
 
-		.site-header .site-nav,
-		.core-stats {
+		.site-header .site-nav {
+
+			.contained();
+		}
+
+		.sub-header {
+			display: flex;
 
 			.contained();
 		}
 	}
 
-	#side-bar {
-		// float: left;
-	}
-
-	#app_view_container {
+	#app_views {
 		display: flex;
 		flex: auto;
-		flex-direction: row;
+		flex-direction: column;
 
-		.contained();
+		width: 100vw;
 
-		width: 100%;
-
-		#side_bar {
-			flex: 1;
+		.site-header {
+			visibility: hidden;
 		}
 
-		#app_view {
-			flex: 4;
+		#app_view_container {
+			display: flex;
+
+			.contained();
+			width: 100%;
+
+			#side_bar {
+				flex: 1;
+			}
+
+			#app_view {
+				display: flex;
+				flex-direction: column;
+
+				flex: 4;
+
+				.sub-header {
+					visibility: hidden;
+				}
+			}
 		}
 	}
 
@@ -62,67 +87,3 @@ section {
 		padding: 1.5em 0;
 	}
 }
-
-// 		.view-content-row {
-//
-// 		.contained();
-//
-// 		display: flex;
-// 		flex: 1 0 auto;
-// 		padding: 0%;
-// 		width: 100vw;
-//
-// 		&:first-child {
-// 			overflow: visible;
-// 		}
-//
-// 		&.logged-out {
-// 			.view-content-group-1 {
-// 				> * {
-// 					padding-top: 3rem;
-// 				}
-// 			}
-// 		}
-// 	}
-//
-// 	.view-content-group-1 {
-// 		display: flex;
-// 		flex: 1;
-//
-// 		&.collapsed {
-// 			display: none;
-// 		}
-// 	}
-//
-// 	.view-content-group-2 {
-// 		flex: 4;
-//
-// 			.core-state-container {
-// 				width: 100%;
-//
-// 				flex: none;
-//
-// 				.core-stats {
-// 					position: fixed;
-// 				}
-// 			}
-//
-// 		.view {
-// 			display: flex;
-// 			flex-direction: column;
-// 			margin: 2rem 6rem 0;
-//
-// 			.view-header {
-// 				align-items: center;
-// 				display: flex;
-// 				flex: 1;
-// 				padding: 1.5em 0;
-// 			}
-// 		}
-// 	}
-//
-// 	.side-bar {
-// 		flex: 1;
-// 		float: left;
-// 	}
-// }
