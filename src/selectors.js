@@ -31,6 +31,7 @@ import tradeCommitLock from './modules/trade/selectors/trade-commit-lock';
 import createMarketForm from './modules/create-market/selectors/create-market-form';
 import coreStats from './modules/auth/selectors/core-stats';
 import settings from './modules/auth/selectors/account-settings';
+import chat from './modules/chat/selectors/chat-messages';
 
 const selectors = {
 	activeView,
@@ -65,7 +66,8 @@ const selectors = {
 	tradesInProgress,
 	tradeCommitLock,
 	coreStats,
-	settings
+	settings,
+	chat
 };
 
 module.exports = {};

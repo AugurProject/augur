@@ -6,6 +6,7 @@ import { updateEnv } from '../../app/actions/update-env';
 import initTimer from '../../app/actions/init-timer';
 
 import { updateConnectionStatus } from '../../app/actions/update-connection';
+import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
@@ -24,6 +25,7 @@ export function initAugur() {
 				AugurJS.connect(env, (err, connected) => {
 					if (err) return console.error('connect failure:', err);
 					dispatch(updateConnectionStatus(connected));
+					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
 						dispatch(reportingTestSetup());
