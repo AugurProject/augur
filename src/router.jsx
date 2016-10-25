@@ -13,7 +13,7 @@ import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, L
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
 const Router = (p) => {
-	// console.log('updated Props to Router -- ', p.activeView);
+	console.log('updated Props to Router -- ', p.activeView);
 
 	let viewProps = null;
 
@@ -96,7 +96,7 @@ const Router = (p) => {
 				orderCancellation: p.orderCancellation,
 				marketDataUpdater: p.marketDataUpdater,
 				numPendingReports: p.marketsTotals.numPendingReports,
-				isTradeCommitLocked: p.tradeCommitLock.isLocked,
+				isTradeCommitLocked: p.tradeCommitLock.isLocked
 			};
 
 			return (

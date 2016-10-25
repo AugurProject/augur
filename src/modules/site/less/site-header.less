@@ -5,11 +5,6 @@
 
 	background: @color-nav-background;
 	color: @color-text-light-muted;
-	// display: flex;
-	// position: fixed;
-	// top: 0;
-	// width: 100vw;
-	// z-index: @above-all-content;
 
 	.site-nav {
 		display: flex;
@@ -31,12 +26,11 @@
 
 			&.left-navs,
 			&.right-navs {
+				flex: 2;
 				vertical-align: middle;
 			}
 
-			&.branding .link,
-			&.left-navs .link,
-			&.right-navs .link {
+			.link {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
@@ -90,11 +84,6 @@
 					white-space: nowrap;
 				}
 			}
-		}
-
-		.header-search-icon {
-			align-items: center;
-			display: flex;
 		}
 	}
 }
