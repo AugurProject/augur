@@ -6,8 +6,7 @@ import Router from 'base/router';
 
 import SiteHeader from 'modules/site/components/site-header';
 import SiteFooter from 'modules/site/components/site-footer';
-import SideBarHeader from 'modules/site/components/side-bar-header';
-import SideBarContent from 'modules/site/components/side-bar-content';
+import SideBar from 'modules/site/components/side-bar';
 import CoreStats from 'modules/common/components/core-stats';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
@@ -100,37 +99,26 @@ class AppComponent extends Component {
 		return (
 			<main>
 				{!!p &&
-					<div id="site_container">
-						<SiteHeader {...siteHeaderProps} />
-						<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-							<div className="view-content-row">
-								{s.isSideBarAllowed &&
-									<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
-										<SideBarHeader />
-									</div>
+					<div id="app_container" >
+						<div id="app_header">
+							<SiteHeader {...siteHeaderProps} />
+							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+								{p.loginAccount && p.loginAccount.id &&
+									<CoreStats coreStats={p.coreStats} />
 								}
-								<div className="view-content view-content-group-2">
-									{p.loginAccount && p.loginAccount.id &&
-										<CoreStats coreStats={p.coreStats} />
-									}
-								</div>
 							</div>
 						</div>
-						<div id="view_container" >
-							<div id="view_content_container">
-								<div className={classnames('view-content-row', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-									{s.isSideBarAllowed &&
-										<div className={classnames('view-content view-content-group-1', { collapsed: s.isSideBarCollapsed })} >
-												<SideBarContent {...sideBarProps} />
-										</div>
-									}
-									<div className="view-content view-content-group-2">
-										<Router {...p} />
-									</div>
+						<div id="app_view_container" >
+							{s.isSideBarAllowed &&
+								<div id="side_bar" >
+									<SideBar {...sideBarProps} />
 								</div>
-								<SiteFooter />
+							}
+							<div id="app_view">
+								<Router {...p} />
 							</div>
 						</div>
+						<SiteFooter />
 					</div>
 				}
 			</main>

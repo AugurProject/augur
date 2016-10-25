@@ -8,97 +8,45 @@
 	overflow-x: hidden;
 }
 
-#site_container {
+#app_container {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
 
-	.site-header,
-	.sub-header {
-		flex: none;
-	}
+	#app_header {
+		position: fixed;
+		width: 100vw;
 
-	.sub-header {
-		display: flex;
-		z-index: @above-all-content;
+		.site-header .site-nav,
+		.core-stats {
 
-		&.logged-out {
-			height: 0;
-
-			.core-stats {
-				display: none;
-			}
+			.contained();
 		}
 	}
 
-	#view_container {
+	#side-bar {
+		// float: left;
+	}
+
+	#app_view_container {
 		display: flex;
 		flex: auto;
-		flex-direction: column;
-		overflow-y: auto;
-		position: relative;
-
-		#view_content_container {
-			display: flex;
-			flex: auto;
-			flex-direction: column;
-		}
-
-		footer {
-			flex: none;
-		}
-	}
-
-	.view-content-row {
+		flex-direction: row;
 
 		.contained();
 
-		display: flex;
-		flex: 1 0 auto;
-		padding: 0%;
-		width: 100vw;
+		width: 100%;
 
-		&:first-child {
-			overflow: visible;
+		#side_bar {
+			flex: 1;
 		}
 
-		&.logged-out {
-			.view-content-group-1 {
-				> * {
-					padding-top: 3rem;
-				}
-			}
+		#app_view {
+			flex: 4;
 		}
 	}
 
-	.view-content-group-1 {
-		display: flex;
-		flex: 1;
-
-		&.collapsed {
-			display: none;
-		}
-	}
-
-	.view-content-group-2 {
-		flex: 4;
-
-		.view {
-			display: flex;
-			flex-direction: column;
-			margin: 2rem 6rem 0;
-
-			.view-header {
-				align-items: center;
-				display: flex;
-				flex: 1;
-				padding: 1.5em 0;
-			}
-		}
-	}
-
-	.side-bar {
-		flex: 1;
+	footer {
+		flex: none;
 	}
 }
 
@@ -114,3 +62,67 @@ section {
 		padding: 1.5em 0;
 	}
 }
+
+// 		.view-content-row {
+//
+// 		.contained();
+//
+// 		display: flex;
+// 		flex: 1 0 auto;
+// 		padding: 0%;
+// 		width: 100vw;
+//
+// 		&:first-child {
+// 			overflow: visible;
+// 		}
+//
+// 		&.logged-out {
+// 			.view-content-group-1 {
+// 				> * {
+// 					padding-top: 3rem;
+// 				}
+// 			}
+// 		}
+// 	}
+//
+// 	.view-content-group-1 {
+// 		display: flex;
+// 		flex: 1;
+//
+// 		&.collapsed {
+// 			display: none;
+// 		}
+// 	}
+//
+// 	.view-content-group-2 {
+// 		flex: 4;
+//
+// 			.core-state-container {
+// 				width: 100%;
+//
+// 				flex: none;
+//
+// 				.core-stats {
+// 					position: fixed;
+// 				}
+// 			}
+//
+// 		.view {
+// 			display: flex;
+// 			flex-direction: column;
+// 			margin: 2rem 6rem 0;
+//
+// 			.view-header {
+// 				align-items: center;
+// 				display: flex;
+// 				flex: 1;
+// 				padding: 1.5em 0;
+// 			}
+// 		}
+// 	}
+//
+// 	.side-bar {
+// 		flex: 1;
+// 		float: left;
+// 	}
+// }
