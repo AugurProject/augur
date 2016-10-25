@@ -6,6 +6,7 @@ import {
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
+import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
 export function login(secureLoginID, password, rememberMe) {
 	return (dispatch, getState) => {
@@ -16,7 +17,13 @@ export function login(secureLoginID, password, rememberMe) {
 			} else if (account.error) {
 				return dispatch(authError({ code: account.error, message: account.message }));
 			}
-			const loginAccount = { ...account, id: account.address, loginID: account.loginID || account.secureLoginID };
+			const loginAccount = {
+				...account,
+				id: account.address,
+				loginID: account.loginID || account.secureLoginID,
+				settings: {},
+				onUpdateAccountSettings: (settings) => dispatch(updateAccountSettings(settings))
+			};
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}

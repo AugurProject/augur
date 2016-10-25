@@ -32,6 +32,7 @@ const localStorageMiddleware = store => next => action => {
 			transactionsData: state.transactionsData,
 			accountTrades: state.accountTrades,
 			reports: state.reports,
+			settings: state.settings,
 			loginMessageVersionRead: state.loginMessage.userVersionRead
 		}));
 	}

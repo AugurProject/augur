@@ -18,8 +18,7 @@ export function blockToDate(block, currentBlock) {
  * @return {Number}
  */
 export function dateToBlock(date, currentBlock) {
-	const now = new Date();
-	const secondsDelta = date.getSeconds() - now.getSeconds();
-	const blockDelta = parseInt(secondsDelta / (MILLIS_PER_BLOCK / 1000), 10);
+	const milliDelta = date.getTime() - new Date().getTime();
+	const blockDelta = parseInt(milliDelta / MILLIS_PER_BLOCK, 10);
 	return currentBlock + blockDelta;
 }
