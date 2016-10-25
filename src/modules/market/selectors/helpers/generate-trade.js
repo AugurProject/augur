@@ -1,11 +1,12 @@
 import memoizerific from 'memoizerific';
 
 import { formatEther, formatShares, formatRealEther } from '../../../../utils/format-number';
-import { abi } from '../../../../services/augurjs';
+import { augur, abi } from '../../../../services/augurjs';
 
 import { calculateMaxPossibleShares } from '../../../market/selectors/helpers/calculate-max-possible-shares';
 
 import { BUY, SELL } from '../../../trade/constants/types';
+import { BID, ASK } from '../../../bids-asks/constants/bids-asks-types';
 import { ZERO } from '../../../trade/constants/numbers';
 import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
 
@@ -15,14 +16,23 @@ import { makeShortSellTransaction } from '../../../transactions/actions/add-shor
 
 import store from '../../../../store';
 
-export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress, loginAccount) => {
+/**
+ * @param {Object} market
+ * @param {Object} outcome
+ * @param {Object} outcomeTradeInProgress
+ * @param {Object} loginAccount
+ * @param {Object} orderBooks Orders for market
+ */
+export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress, loginAccount, orderBooks) => {
 	const side = outcomeTradeInProgress && outcomeTradeInProgress.side || BUY;
 	const numShares = outcomeTradeInProgress && outcomeTradeInProgress.numShares || null;
 	const limitPrice = outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || null;
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
 	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
-	const maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, limitPrice, totalFee, totalCost, gasFeesRealEth));
+
+	const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(orderBooks[side === BUY ? ASK : BID], side, limitPrice, outcome.id, loginAccount.address);
+	const maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, orders, market.makerFee, market.takerFee, market.cumulativeScale, outcomeTradeInProgress));
 
 	return {
 		side,

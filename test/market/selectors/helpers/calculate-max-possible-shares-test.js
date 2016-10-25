@@ -125,7 +125,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 	];
 	testCases.forEach((test) => {
 		it(`calculateMaxPossibleShares(${JSON.stringify(test)})`, () => {
-			assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale), test.result);
+			assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale, {}), test.result);
 		});
 	});
 });

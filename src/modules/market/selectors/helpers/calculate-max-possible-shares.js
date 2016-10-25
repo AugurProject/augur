@@ -11,8 +11,12 @@ import { augur } from '../../../../services/augurjs';
  *
  * @param loginAccount {Object}
  * @param orders {Array}
+ * @param makerFee {String}
+ * @param takerFee {String}
+ * @param range {String}
+ * @param outcomeTradeInProgress {Object} used to bust memoizerific cache
  */
-export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, orders, makerFee, takerFee, range) => {
+export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress) => {
 	if (loginAccount.id == null) {
 		return null;
 	}
