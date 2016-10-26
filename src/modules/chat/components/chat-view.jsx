@@ -7,6 +7,18 @@ export default class ChatView extends Component {
 		onSubmitChatMessage: React.PropTypes.func
 	};
 
+	componentWillUpdate() {
+		const node = this.refs.chatbox;
+		this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+	}
+
+	componentDidUpdate() {
+		if (this.shouldScrollBottom) {
+			const node = this.refs.chatbox;
+			node.scrollTop = node.scrollHeight;
+		}
+	}
+
 	onSubmitChatMessage = (e) => {
 		e.preventDefault();
 		const chatMessage = this.refs.chatMessageInput.value;
@@ -18,15 +30,26 @@ export default class ChatView extends Component {
 
 	render() {
 		const p = this.props;
+		let messageCount = 0;
 		const chatMessages = (
 			<ul>
 				<li>Welcome to Augur!</li>
 				{p.messages &&
 					p.messages.map((payload) => {
-						const key = `${payload.address}_${payload.timestamp.full}`;
+						const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
+						messageCount += 1;
+						let userName;
+						let userPopupName;
+						if (payload.name === '') {
+							userName = payload.address;
+							userPopupName = null;
+						} else {
+							userName = payload.name;
+							userPopupName = payload.address;
+						}
 						return (
 							<li key={key}>
-								{payload.name !== '' ? payload.name : payload.address} [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+								<span title={userPopupName}>{userName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
 							</li>
 						);
 					})
@@ -42,7 +65,7 @@ export default class ChatView extends Component {
 				>
 					<i>&#x25BC;</i>
 				</button>
-				<div id="chatbox">
+				<div id="chatbox" ref="chatbox">
 					<div id="babble">
 						{chatMessages}
 					</div>

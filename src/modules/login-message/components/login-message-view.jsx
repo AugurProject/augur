@@ -57,7 +57,7 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
-					Oct 25, 2016 @ 6:01PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 25, 2016 @ 7:12PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>
 					<ol>
@@ -75,6 +75,15 @@ const LoginMessagePage = p => (
 						</li>
 						<li>
 							Users are no longer required to login to chat.
+						</li>
+						<li>
+							Chatbox now auto-scrolls all the way to the bottom (if user was already at the bottom).
+						</li>
+						<li>
+							Fixed duplicate list key warning in chatbox.
+						</li>
+						<li>
+							Added address as popup text if user is chatting with their display name instead of address.
 						</li>
 					</ol>
 				</li>
