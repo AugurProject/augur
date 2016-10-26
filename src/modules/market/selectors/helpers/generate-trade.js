@@ -31,8 +31,13 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 	const gasFeesRealEth = outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
 
-	const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(orderBooks[side === BUY ? ASK : BID], side, limitPrice, outcome.id, loginAccount.address);
-	const maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, orders, market.makerFee, market.takerFee, market.cumulativeScale, outcomeTradeInProgress));
+	let maxNumShares;
+	if (limitPrice != null) {
+		const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(orderBooks[side === BUY ? ASK : BID], side, limitPrice, outcome.id, loginAccount.address);
+		maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, orders, market.makerFee, market.takerFee, market.cumulativeScale, outcomeTradeInProgress));
+	} else {
+		maxNumShares = formatShares(0);
+	}
 
 	return {
 		side,
