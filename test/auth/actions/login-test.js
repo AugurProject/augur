@@ -14,10 +14,8 @@ describe(`modules/auth/actions/login.js`, () => {
 	const fakeAugurJS = {
 		augur: {
 			web: {},
-			getLatestUserTime: () => {},
-			Sessions: {
-				login: () => {},
-				logout: () => {},
+			getRegisterBlockNumber: () => {},
+			Register: {
 				register: () => {}
 			}
 		}
@@ -45,19 +43,11 @@ describe(`modules/auth/actions/login.js`, () => {
 		realEther: 0,
 		rep: 0
 	});
-	sinon.stub(fakeAugurJS.augur.Sessions, 'login', (o) => {
+	sinon.stub(fakeAugurJS.augur.Register, 'register', (o) => {
 		o.onSent({ callReturn: 1 });
 		o.onSuccess({ callReturn: 1 });
 	});
-	sinon.stub(fakeAugurJS.augur.Sessions, 'logout', (o) => {
-		o.onSent({ callReturn: 1 });
-		o.onSuccess({ callReturn: 1 });
-	});
-	sinon.stub(fakeAugurJS.augur.Sessions, 'register', (o) => {
-		o.onSent({ callReturn: 1 });
-		o.onSuccess({ callReturn: 1 });
-	});
-	sinon.stub(fakeAugurJS.augur, 'getLatestUserTime', (account, cb) => {
+	sinon.stub(fakeAugurJS.augur, 'getRegisterBlockNumber', (account, cb) => {
 		cb(null, 123456789);
 	});
 

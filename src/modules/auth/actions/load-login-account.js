@@ -18,18 +18,25 @@ import { updateAccountSettings } from '../../auth/actions/update-account-setting
 
 export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
+		const { loginAccount } = getState();
 		dispatch(updateAssets(cb));
-		dispatch(clearAccountTrades());
-		dispatch(loadAccountTrades());
-		dispatch(loadEventsWithSubmittedReport());
+		AugurJS.augur.getRegisterBlockNumber(loginAccount.id, (err, blockNumber) => {
+			if (!err && blockNumber) {
+				loginAccount.registerBlockNumber = blockNumber;
+				dispatch(updateLoginAccount(loginAccount));
+			}
+			dispatch(clearAccountTrades());
+			dispatch(loadAccountTrades());
+			dispatch(loadEventsWithSubmittedReport());
 
-		const { selectedMarketID } = getState();
-		if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
+			const { selectedMarketID } = getState();
+			if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
 
-		// clear and load reports for any markets that have been loaded
-		// (partly to handle signing out of one account and into another)
-		dispatch(clearReports());
-		dispatch(checkPeriod());
+			// clear and load reports for any markets that have been loaded
+			// (partly to handle signing out of one account and into another)
+			dispatch(clearReports());
+			dispatch(checkPeriod());
+		});
 	};
 }
 

@@ -3,6 +3,7 @@ import { augur, fundNewAccount } from '../../../services/augurjs';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { updateLoginAccount } from '../../auth/actions/update-login-account';
 
 export function processFundNewAccount(transactionID, address) {
 	return (dispatch, getState) => {
@@ -41,6 +42,9 @@ export function processFundNewAccount(transactionID, address) {
 							timestamp: r.timestamp,
 							gasFees: formatRealEther(r.gasFees)
 						}));
+						const { loginAccount } = getState();
+						loginAccount.registerBlockNumber = r.blockNumber;
+						dispatch(updateLoginAccount(loginAccount));
 						console.log('augur.Register.register success:', r);
 					},
 					onFailed: (e) => console.error('augur.Register.register failed:', e)
