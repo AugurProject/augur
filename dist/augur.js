@@ -43042,7 +43042,7 @@ module.exports = function () {
                 topics: [abi.prefix_hex(abi.encode_hex(roomName))],
                 payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
                 priority: "0x64",
-                ttl: "0xfa"
+                ttl: "0x384"
             }, function (posted) {
                 if (!posted) return callback("couldn't post message: " + message);
                 callback(null);
@@ -43879,7 +43879,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.4";
+    this.version = "2.11.5";
 
     this.options = {
         debug: {
