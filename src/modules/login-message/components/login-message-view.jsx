@@ -57,7 +57,7 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
-					Oct 25, 2016 @ 4:08PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 25, 2016 @ 6:01PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>
 					<ol>
@@ -69,6 +69,9 @@ const LoginMessagePage = p => (
 						</li>
 						<li>
 							Added mutex locks to <a href="https://github.com/AugurProject/ethrpc">ethrpc&#39;s</a> transaction objects.  These are locked while the onNewBlock listener callback is executing.  This should prevent the &quot;callback-already-called&quot; exception that was sometimes thrown if 2+ blocks arrived in short succession (common right after private chain resets, when block times are abnormally fast).  I believe this fixes the persistent &quot;last trade price not updated&quot; error (although I am not positive -- please ping me if it is observed again).
+						</li>
+						<li>
+							Chat input will no longer submit empty strings / strings containing only spaces.
 						</li>
 					</ol>
 				</li>

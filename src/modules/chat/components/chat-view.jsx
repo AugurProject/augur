@@ -9,7 +9,10 @@ export default class ChatView extends Component {
 
 	onSubmitChatMessage = (e) => {
 		e.preventDefault();
-		this.props.onSubmitChatMessage('augur', this.refs.chatMessageInput.value);
+		const chatMessage = this.refs.chatMessageInput.value;
+		if (chatMessage && chatMessage.trim() !== '') {
+			this.props.onSubmitChatMessage('augur', chatMessage.trim());
+		}
 		this.refs.chatMessageForm.reset();
 	}
 
