@@ -12,8 +12,9 @@ confinement: strict
 
 apps:
   server:
-    command: sh -c \"$SNAP/lib/node_modules/augur-ui && npm start\"
+    command: sh -c \"cd $SNAP/lib/node_modules/augur-ui && npm start\"
     plugs: [network, network-bind]
+    daemon: simple
 
 parts:
   augur:
