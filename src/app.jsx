@@ -110,7 +110,7 @@ class AppComponent extends Component {
 						<div id="app_header">
 							<SiteHeader {...siteHeaderProps} />
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-								{s.isSideBarAllowed &&
+								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
 								}
 								{p.loginAccount && p.loginAccount.id &&
@@ -121,7 +121,7 @@ class AppComponent extends Component {
 						<div id="app_views" >
 							<SiteHeader {...siteHeaderProps} />
 							<div id="app_view_container">
-								{s.isSideBarAllowed &&
+								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div id="side_bar" >
 										<SideBar {...sideBarProps} />
 									</div>
