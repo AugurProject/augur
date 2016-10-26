@@ -109,7 +109,6 @@
   },
   "aliasify": {
     "aliases": {
-			"base": "./src",
       "assets": "./src/assets",
       "modules": "./src/modules",
       "selectors": "./src/selectors",

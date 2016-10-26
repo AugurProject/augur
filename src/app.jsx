@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import classnames from 'classnames';
 
-import Router from 'base/router';
-
 import SiteHeader from 'modules/site/components/site-header';
 import SiteFooter from 'modules/site/components/site-footer';
 import SideBar from 'modules/site/components/side-bar';
 import CoreStats from 'modules/common/components/core-stats';
+import ChatView from 'modules/chat/components/chat-view';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+
+import Router from './router';
 
 export default function (appElement, selectors) {
 	render(<AppComponent {...selectors} />, appElement);
@@ -22,6 +23,7 @@ class AppComponent extends Component {
 		this.state = {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,
+			isChatCollapsed: true,
 			doScrollTop: false
 		};
 
@@ -29,6 +31,7 @@ class AppComponent extends Component {
 
 		this.handleScrollTop = this.handleScrollTop.bind(this);
 		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
+		this.toggleChat = this.toggleChat.bind(this);
 	}
 
 	componentDidMount() {
@@ -55,7 +58,7 @@ class AppComponent extends Component {
 	}
 
 	shouldDisplaySideBar() {
-		const currentRoute = Router(this.props);
+		const currentRoute = Router(this.props); // eslint-disable-line new-cap
 
 		if (currentRoute.props.sideBarAllowed) {
 			this.setState({ isSideBarAllowed: true });
@@ -66,6 +69,10 @@ class AppComponent extends Component {
 
 	toggleSideBar() {
 		this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
+	}
+
+	toggleChat() {
+		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
 	render() {
@@ -104,7 +111,7 @@ class AppComponent extends Component {
 							<SiteHeader {...siteHeaderProps} />
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 								{s.isSideBarAllowed &&
-									<div className="core-stats-bumper"></div>
+									<div className="core-stats-bumper" />
 								}
 								{p.loginAccount && p.loginAccount.id &&
 									<CoreStats coreStats={p.coreStats} />
@@ -129,6 +136,13 @@ class AppComponent extends Component {
 								</div>
 							</div>
 						</div>
+						<ChatView
+							{...p.chat.augur}
+							toggleChat={() => { this.toggleChat(); }}
+						/>
+						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
+							Chat
+						</button>
 						<SiteFooter />
 					</div>
 				}

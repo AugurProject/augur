@@ -1,5 +1,5 @@
-import { App } from 'base/components';
-import selectors from 'base/selectors';
+import { App } from './components';
+import selectors from './selectors';
 
 const appElement = document.getElementById('app');
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-import ValueTimestamp from '../../common/components/value-timestamp';
+
+import ValueTimestamp from 'modules/common/components/value-timestamp';
 
 export default class ChatView extends Component {
 
