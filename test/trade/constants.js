@@ -156,7 +156,45 @@ export const tradeTestState = {
 			}
 		},
 	},
-	tradesInProgress: {}
+	tradesInProgress: {},
+	transactionsData: {
+		'trans1': {
+			data: {
+				marketID: '0x000000000000000000000000000000000binary1',
+				outcomeID: '2',
+				marketType: 'binary',
+				marketDescription: 'test binary market',
+				outcomeName: 'YES'
+			},
+			feePercent: {
+				value: '0.199203187250996016'
+			}
+		},
+		'trans2': {
+			data: {
+				marketID: '0x0000000000000000000000000000categorical1',
+				outcomeID: '1',
+				marketType: 'categorical',
+				marketDescription: 'test categorical market',
+				outcomeName: 'Democratic'
+			},
+			feePercent: {
+				value: '0.099800399201596707'
+			}
+		},
+		'trans3': {
+			data: {
+				marketID: '0x000000000000000000000000000000000scalar1',
+				outcomeID: '1',
+				marketType: 'scalar',
+				marketDescription: 'test scalar market',
+				outcomeName: ''
+			},
+			feePercent: {
+				value: '0.95763203714451532'
+			}
+		}
+	},
 };
 
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
