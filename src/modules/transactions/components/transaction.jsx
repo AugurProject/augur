@@ -19,7 +19,7 @@ const Transaction = (p) => {
 
 		if ((p.data.description || p.data.marketDescription) && p.data.marketLink) {
 			return (
-				<Link onClick={p.data.marketLink.onClick}>
+				<Link href={p.data.marketLink.href} onClick={p.data.marketLink.onClick}>
 					{description()}
 				</Link>
 			);
