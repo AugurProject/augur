@@ -38,14 +38,17 @@ To help ensure this, the following conventions have been employed:
 * All styles should be contextual and housed within their relevant files (1-to-1 component to stylesheet)
 * If an identical style is to be applied to multiple elements, that declaration block should probably be abstracted to a mixin.
   * This can be seen in the way (not exhaustive) typography (`common/less/typography.less`) and borders (`common/less/borders.less`) are employed.
+* Do use mixins where provided
+  * Notable ones available: animations/transitions, borders, colors, and typography.
 * Mixin inclusions should always come first within a declaration block.
 * Every component should have the **minimum** amount of styling required (helps maintain contextualization).
    * This allows for stylesheets of parent components that employ a component to apply any additional 'chrome' required.
 * Classnames should be contextual + non-generic.
 * Classnames should be discrete words delimited by a `-` (dash).
 * IDs should be discrete words delimited by an `_` (underscore).
-* Flexbox should be utilized for component layout.
+* Flexbox should be utilized for **all** layout (exceptions would be something like a fixed element, but that should be very rare).
 * Comments should be employed for mixins to help inform the utilization.
+* Avoid the use of `!important` unless absolutely necessary
 * The full breadth of Less's functionality is permissible.
 
 ### Other Conventions
