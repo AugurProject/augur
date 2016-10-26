@@ -232,12 +232,19 @@ describe('modules/trade/actions/process-buy.js', () => {
 		args[1]();
 		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
 	});
+	const mockLoadBidAsks = { loadBidsAsks: () => {} };
+	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
+		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
+		cb(undefined, store.getState().orderBooks[marketID]);
+		return { type: 'LOAD_BIDS_ASKS' };
+	})
 
 	const action = proxyquire('../../../src/modules/trade/actions/process-buy.js', {
 		'../../trade/actions/helpers/trade': mockTrade,
 		'../../transactions/actions/add-bid-transaction': mockAddBidTransaction,
 		'../../../modules/my-positions/actions/load-account-trades': mockLoadAccountTrades,
-		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction
+		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction,
+		'../../bids-asks/actions/load-bids-asks': mockLoadBidAsks
 	});
 
 	beforeEach(() => {
@@ -384,6 +391,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					status: 'success'
 				}
 			},
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
@@ -597,6 +605,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				status: 'success'
 			}
 		},
+		{ type: 'LOAD_BIDS_ASKS' },
 		{
 			type: 'LOAD_ACCOUNT_TRADES',
 			marketID: '0x000000000000000000000000000000000binary1'
@@ -740,6 +749,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					status: 'success'
 				}
 			},
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x0000000000000000000000000000categorical1'
@@ -953,6 +963,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					status: 'success'
 				}
 			},
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				marketID: '0x0000000000000000000000000000categorical1',
 				type: 'LOAD_ACCOUNT_TRADES'
@@ -1096,6 +1107,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					status: 'success'
 				}
 			},
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
@@ -1307,7 +1319,8 @@ describe('modules/trade/actions/process-buy.js', () => {
 					status: 'success'
 				}
 			},
-					{
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}

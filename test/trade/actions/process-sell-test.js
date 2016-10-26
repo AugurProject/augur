@@ -712,7 +712,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',
 				data: { status: 'success' }
-			}, {
+			},
+ 			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
 			}
@@ -918,7 +920,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
 			}
@@ -1191,7 +1195,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
 			}
@@ -1398,7 +1404,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
 			}
@@ -1606,7 +1614,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',
 				data: { status: 'success' }
-			}, {
+			},
+ 			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000binary1'
 			}
@@ -1741,7 +1751,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x0000000000000000000000000000categorical1'
 			}
@@ -1945,7 +1957,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x0000000000000000000000000000categorical1'
 			}
@@ -2218,6 +2232,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 		    transactionID: 'trans2',
 		    data: { status: 'success' }
 			},
+			{ type: 'LOAD_BIDS_ASKS' },
 		  { type: 'LOAD_ACCOUNT_TRADES',
 		    marketID: '0x0000000000000000000000000000categorical1'
 			}
@@ -2420,6 +2435,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
 				data: { status: 'success' } },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x0000000000000000000000000000categorical1'
@@ -2625,6 +2641,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 		  { type: 'UPDATE_EXISTING_TRANSACTION',
 		    transactionID: 'trans2',
 		    data: { status: 'success' } },
+			{ type: 'LOAD_BIDS_ASKS' },
 		  {
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x0000000000000000000000000000categorical1'
@@ -2763,7 +2780,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}
@@ -2970,7 +2989,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: { status: 'success' }
-			}, {
+			},
+ 			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}
@@ -3241,7 +3262,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: { status: 'success' }
-			}, {
+			},
+ 			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}
@@ -3445,7 +3468,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: { status: 'success' }
-			}, {
+			},
+ 			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}
@@ -3651,7 +3676,9 @@ describe('modules/trade/actions/process-sell.js', () => {
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: { status: 'success' }
-			}, {
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+ 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: '0x000000000000000000000000000000000scalar1'
 			}
