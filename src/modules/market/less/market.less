@@ -4,24 +4,19 @@
 	.market-group{
 		display: flex;
 
-		> *:first-child {
-			flex: 3;
-		}
-
-		> *:not(:first-child) {
-			flex: 1;
-		}
-
 		article {
-			background-color: @color-white;
-
 			.border(true);
 
+			background-color: @color-white;
+
 			&:first-child {
+				flex: 3;
 				margin: 1rem 0.5rem 0.5rem 1rem;
-			}
-			&:not(:first-child) {
-				margin: 1rem 1rem 0.5rem 0.5rem;
+
+				& + article {
+					flex: 1;
+					margin: 1rem 1rem 0.5rem 0.5rem;
+				}
 			}
 		}
 
@@ -29,9 +24,10 @@
 			article {
 				&:first-child {
 					margin: 0.5rem 0.5rem 0.5rem 1rem;
-				}
-				&:not(:first-child) {
-					margin: 0.5rem 1rem 0.5rem 0.5rem;
+
+					& + article {
+						margin: 0.5rem 1rem 0.5rem 0.5rem;
+					}
 				}
 			}
 		}
