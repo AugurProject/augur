@@ -38,18 +38,16 @@ export default class ChatView extends Component {
 					p.messages.map((payload) => {
 						const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
 						messageCount += 1;
-						let userName;
-						let userPopupName;
 						if (payload.name === '') {
-							userName = payload.address;
-							userPopupName = null;
-						} else {
-							userName = payload.name;
-							userPopupName = payload.address;
+							return (
+								<li key={key}>
+									<span>{payload.address}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+								</li>
+							);
 						}
 						return (
 							<li key={key}>
-								<span title={userPopupName}>{userName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+								<span title={payload.address}>{payload.name}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
 							</li>
 						);
 					})
