@@ -30,6 +30,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeAugurJS.augur.batchGetMarketInfo = (marketIDs, account, cb) => {
 		cb(null);
 	};
+	fakeAugurJS.augur.getRegisterBlockNumber = (account, cb) => {
+		cb(null, 10000);
+	};
 	fakeUpdateAssets.updateAssets = () => {
 		return (dispatch, getState) => {
 			let ether = 500,
@@ -86,6 +89,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		}, {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: { realEther: 100 }
+		}, {
+			type: 'UPDATE_LOGIN_ACCOUNT',
+			data: { registerBlockNumber: 10000 }
 		}, {
 			type: 'CLEAR_ACCOUNT_TRADES'
 		}, {
