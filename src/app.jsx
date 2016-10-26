@@ -9,6 +9,7 @@ import CoreStats from 'modules/common/components/core-stats';
 import ChatView from 'modules/chat/components/chat-view';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+import handleScrollTop from 'utils/scroll-top-on-change';
 
 import Router from './router';
 
@@ -23,13 +24,11 @@ class AppComponent extends Component {
 		this.state = {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,
-			isChatCollapsed: true,
-			doScrollTop: false
+			isChatCollapsed: true
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-		this.handleScrollTop = this.handleScrollTop.bind(this);
 		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
 		this.toggleChat = this.toggleChat.bind(this);
 	}
@@ -40,21 +39,7 @@ class AppComponent extends Component {
 
 	componentDidUpdate() {
 		this.shouldDisplaySideBar();
-		this.handleScrollTop();
-	}
-
-	handleScrollTop() {
-		const p = this.props;
-
-		if (p.url !== window.location.pathname + window.location.search) {
-			window.history.pushState(null, null, p.url);
-			this.setState({ doScrollTop: true });
-		}
-
-		if (this.state.doScrollTop) {
-			window.scroll(0, 0);
-			this.setState({ doScrollTop: false });
-		}
+		handleScrollTop(this.props.url);
 	}
 
 	shouldDisplaySideBar() {
@@ -72,8 +57,6 @@ class AppComponent extends Component {
 	}
 
 	toggleChat() {
-		console.log('toggleChat');
-
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
