@@ -440,7 +440,7 @@ var cannedMarkets = [{
             ],
             "5": [
                 {shares: "250", price: "0.11"},
-                {shares: "200", price: "0.8"},
+                {shares: "200", price: "0.08"},
                 {shares: "200", price: "0.05"}
             ],
             "6": [
