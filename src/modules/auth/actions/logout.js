@@ -7,6 +7,8 @@ export function logout() {
 		augur.web.logout();
 		if (localStorageRef && localStorageRef.removeItem) {
 			localStorageRef.removeItem('account');
+			localStorageRef.removeItem('airbitz.current_user');
+			localStorageRef.removeItem('airbitz.users');
 		}
 		dispatch(clearLoginAccount());
 	};

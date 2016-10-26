@@ -3,6 +3,7 @@ import { abi, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
@@ -60,6 +61,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 					dispatch(addShortAskTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
+						transactionData.data.marketType,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
 						res.remainingShares.toFixed(),
@@ -72,7 +74,9 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 
 				// update user's position
 				dispatch(loadAccountTrades(marketID, () => {
-					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+					dispatch(loadBidsAsks(marketID, () => {
+						dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+					}));
 				}));
 			}
 		);

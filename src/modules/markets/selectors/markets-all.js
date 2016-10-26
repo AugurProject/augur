@@ -51,8 +51,8 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			dispatch);
 
 	}).sort((a, b) => {
-		const aVal = cleanSortVal(a[selectedFilterSort.prop]);
-		const bVal = cleanSortVal(b[selectedFilterSort.prop]);
+		const aVal = cleanSortVal(a[selectedFilterSort.sort]);
+		const bVal = cleanSortVal(b[selectedFilterSort.sort]);
 
 		if (bVal < aVal) {
 			return selectedFilterSort.isDesc ? -1 : 1;

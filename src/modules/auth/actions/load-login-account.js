@@ -14,21 +14,29 @@ import { updateAccountTradesData } from '../../../modules/my-positions/actions/u
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
+import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
-export function loadLoginAccountDependents() {
+export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
-		dispatch(updateAssets());
-		dispatch(clearAccountTrades());
-		dispatch(loadAccountTrades());
-		dispatch(loadEventsWithSubmittedReport());
+		const { loginAccount } = getState();
+		dispatch(updateAssets(cb));
+		AugurJS.augur.getRegisterBlockNumber(loginAccount.id, (err, blockNumber) => {
+			if (!err && blockNumber) {
+				loginAccount.registerBlockNumber = blockNumber;
+				dispatch(updateLoginAccount(loginAccount));
+			}
+			dispatch(clearAccountTrades());
+			dispatch(loadAccountTrades());
+			dispatch(loadEventsWithSubmittedReport());
 
-		const { selectedMarketID } = getState();
-		if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
+			const { selectedMarketID } = getState();
+			if (selectedMarketID) dispatch(loadMarketsInfo([selectedMarketID]));
 
-		// clear and load reports for any markets that have been loaded
-		// (partly to handle signing out of one account and into another)
-		dispatch(clearReports());
-		dispatch(checkPeriod());
+			// clear and load reports for any markets that have been loaded
+			// (partly to handle signing out of one account and into another)
+			dispatch(clearReports());
+			dispatch(checkPeriod());
+		});
 	};
 }
 
@@ -65,6 +73,10 @@ export function loadLoginAccountLocalStorage(accountID) {
 			});
 			dispatch(updateTransactionsData(localState.transactionsData));
 		}
+		if (localState.settings) {
+			console.log('localState.settings:', localState.settings);
+			dispatch(updateAccountSettings(localState.settings));
+		}
 
 		if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
 			dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
@@ -94,7 +106,9 @@ export function loadLoginAccount() {
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
+			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 
+			console.log('localLoginAccount:', localLoginAccount);
 			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());

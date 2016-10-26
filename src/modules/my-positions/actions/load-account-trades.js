@@ -5,15 +5,15 @@ import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positions-plus-asks';
 
-// const loadAccountTradesLock = {};
-
 export function loadAccountTrades(marketID, cb) {
 	return (dispatch, getState) => {
-		const account = getState().loginAccount.id;
-		const options = { market: marketID };
-		// if (account && !loadAccountTradesLock[marketID]) {
+		const { loginAccount } = getState();
+		const account = loginAccount.id;
 		if (account) {
-			// loadAccountTradesLock[marketID] = true;
+			const options = { market: marketID };
+			if (loginAccount.registerBlockNumber) {
+				options.fromBlock = loginAccount.registerBlockNumber;
+			}
 			if (!marketID) dispatch(clearAccountTrades());
 			async.parallel({
 				positions: (callback) => {
@@ -36,12 +36,8 @@ export function loadAccountTrades(marketID, cb) {
 					callback(null, completeSetsBought);
 				})
 			}, (err, data) => {
-				if (err) {
-					// loadAccountTradesLock[marketID] = false;
-					return console.error('loadAccountTrades error:', err);
-				}
+				if (err) return console.error('loadAccountTrades error:', err);
 				console.log('loadAccountTrades data:', data);
-				// loadAccountTradesLock[marketID] = false;
 				dispatch(sellCompleteSets(marketID, cb));
 			});
 		} else {

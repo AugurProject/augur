@@ -2,7 +2,8 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { updateSmallestPositions } from '../../my-positions/actions/update-account-trades-data';
+import { addSellCompleteSetsTransaction } from '../../transactions/actions/add-sell-complete-sets-transaction';
+import { updateSmallestPositions, updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
@@ -62,6 +63,10 @@ function sellCompleteSetsMarket(marketID, callback) {
 					return callback(null, marketID);
 				}
 				dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
+				if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
+					dispatch(updateSellCompleteSetsLock(marketID, true));
+					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed()));
+				}
 				if (callback) callback(null);
 			}));
 		} else {

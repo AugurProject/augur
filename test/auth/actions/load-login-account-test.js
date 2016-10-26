@@ -30,6 +30,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeAugurJS.augur.batchGetMarketInfo = (marketIDs, account, cb) => {
 		cb(null);
 	};
+	fakeAugurJS.augur.getRegisterBlockNumber = (account, cb) => {
+		cb(null, 10000);
+	};
 	fakeUpdateAssets.updateAssets = () => {
 		return (dispatch, getState) => {
 			let ether = 500,
@@ -87,6 +90,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: { realEther: 100 }
 		}, {
+			type: 'UPDATE_LOGIN_ACCOUNT',
+			data: { registerBlockNumber: 10000 }
+		}, {
 			type: 'CLEAR_ACCOUNT_TRADES'
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
@@ -99,6 +105,15 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			data: { reportPeriod: 19 }
 		}];
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't properly update the logged in account`);
+		const actual = store.getActions();
+		const numActions = actual.length;
+		for (let i = 0; i < numActions; ++i) {
+			if (actual[i].type === 'UPDATE_LOGIN_ACCOUNT') {
+				if (actual[i].data && actual[i].data.onUpdateAccountSettings) {
+					delete actual[i].data.onUpdateAccountSettings;
+				}
+			}
+		}
+		assert.deepEqual(actual, expectedOutput, `didn't properly update the logged in account`);
 	});
 });

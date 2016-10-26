@@ -41,6 +41,9 @@ import selectedTags from './modules/markets/reducers/selected-tags';
 import selectedFilterSort from './modules/markets/reducers/selected-filter-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
+import settings from './modules/auth/reducers/account-settings';
+import chatMessages from './modules/chat/reducers/chat-messages';
+
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
 import loginMessage from './modules/login-message/reducers/login-message';
 
@@ -92,6 +95,9 @@ module.exports = {
 	completeSetsBought,
 	netEffectiveTrades,
 	transactionsData,
+
+	settings,
+	chatMessages,
 
 	marketCreatorFees
 };
