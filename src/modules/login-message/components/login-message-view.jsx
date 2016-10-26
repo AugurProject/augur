@@ -73,6 +73,9 @@ const LoginMessagePage = p => (
 						<li>
 							Chat input will no longer submit empty strings / strings containing only spaces.
 						</li>
+						<li>
+							Users are no longer required to login to chat.
+						</li>
 					</ol>
 				</li>
 				<li>
