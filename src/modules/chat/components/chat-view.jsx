@@ -70,7 +70,7 @@ export default class ChatView extends Component {
 			</ul>
 		);
 		return (
-			<section className="chat">
+			<article className="chat">
 				<button
 					className="unstyled close-chat-button"
 					data-tip data-for="close-chat-tooltip"
@@ -101,7 +101,7 @@ export default class ChatView extends Component {
 				<ReactTooltip id="close-chat-tooltip" type="error" effect="solid" place="top">
 					<span className="tooltip-text">Close chat window</span>
 				</ReactTooltip>
-			</section>
+			</article>
 		);
 	}
 }
