@@ -72,6 +72,8 @@ class AppComponent extends Component {
 	}
 
 	toggleChat() {
+		console.log('toggleChat');
+
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
@@ -136,10 +138,12 @@ class AppComponent extends Component {
 								</div>
 							</div>
 						</div>
-						<ChatView
-							{...p.chat.augur}
-							toggleChat={() => { this.toggleChat(); }}
-						/>
+						{!s.isChatCollapsed &&
+							<ChatView
+								{...p.chat.augur}
+								toggleChat={() => { this.toggleChat(); }}
+							/>
+						}
 						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
 							Chat
 						</button>
