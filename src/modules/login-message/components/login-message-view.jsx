@@ -57,6 +57,16 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
+					Oct 25, 2016 @ 11:33PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+				</li>
+				<li>
+					<ol>
+						<li>
+							If you create an account through our registration process, the block number in which you registered is saved (logged) to the blockchain.  The front-end now uses this registration blocknumber to intelligently set the lower bound (fromBlock) of <a href="https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getlogs">event log lookups</a>.  This should help speed up the lookup of your trading activity, which can be a data-heavy request.
+						</li>
+					</ol>
+				</li>
+				<li>
 					Oct 25, 2016 @ 7:12PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
 				</li>
 				<li>
