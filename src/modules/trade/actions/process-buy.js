@@ -2,6 +2,7 @@ import { formatEther, formatShares, formatRealEther, formatEtherEstimate, format
 import { abi, constants } from '../../../services/augurjs';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { trade } from '../../trade/actions/helpers/trade';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
@@ -79,7 +80,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					}
 				}
 				dispatch(loadAccountTrades(marketID, () => {
-					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+					dispatch(loadBidsAsks(marketID, () => {
+						dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+					}));
 				}));
 			}
 		);
