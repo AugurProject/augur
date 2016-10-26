@@ -21,7 +21,7 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
 		return null;
 	}
 
-	const userEther = new BigNumber(loginAccount.ether);
+	const userEther = loginAccount.ether != null ? new BigNumber(loginAccount.ether) : ZERO;
 	if (userEther.eq(ZERO)) {
 		return '0';
 	}
