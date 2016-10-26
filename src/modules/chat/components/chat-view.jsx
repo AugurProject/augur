@@ -70,15 +70,17 @@ export default class ChatView extends Component {
 				</div>
 				<div className="chat-inputs">
 					<form ref="chatMessageForm" name="chat-message-form" onSubmit={this.onSubmitChatMessage}>
-						<input
-							ref="chatMessageInput"
-							className="chat-message-input"
-							type="text"
-							placeholder="Say something!"
-						/>
-						<button className="chat-message-button">
-							Chat
-						</button>
+						<div className="chat-message-wrapper">
+							<input
+								ref="chatMessageInput"
+								className="chat-message-input"
+								type="text"
+								placeholder="Say something!"
+							/>
+							<button className="chat-message-button">
+								Chat
+							</button>
+						</div>
 					</form>
 				</div>
 			</section>
