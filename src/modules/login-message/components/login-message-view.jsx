@@ -67,6 +67,9 @@ const LoginMessagePage = p => (
 						<li>
 							Chat input text box now properly clears after sending.
 						</li>
+						<li>
+							Added mutex locks to <a href="https://github.com/AugurProject/ethrpc">ethrpc&#39;s</a> transaction objects.  These are locked while the onNewBlock listener callback is executing.  This should prevent the &quot;callback-already-called&quot; exception that was sometimes thrown if 2+ blocks arrived in short succession (common right after private chain resets, when block times are abnormally fast).  I believe this fixes the persistent &quot;last trade price not updated&quot; error (although I am not positive -- please ping me if it is observed again).
+						</li>
 					</ol>
 				</li>
 				<li>
