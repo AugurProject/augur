@@ -23,7 +23,7 @@ export default class ChatView extends Component {
 		e.preventDefault();
 		const chatMessage = this.refs.chatMessageInput.value;
 		if (chatMessage && chatMessage.trim() !== '') {
-			this.props.onSubmitChatMessage('augur', chatMessage.trim());
+			this.props.onSubmitChatMessage('augur', encodeURIComponent(chatMessage.trim()));
 		}
 		this.refs.chatMessageForm.reset();
 	}
@@ -47,7 +47,7 @@ export default class ChatView extends Component {
 						}
 						return (
 							<li key={key}>
-								<span title={payload.address}>{payload.name}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+								<span title={payload.address}>{payload.name}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
 							</li>
 						);
 					})

@@ -85,6 +85,9 @@ const LoginMessagePage = p => (
 						<li>
 							Added address as popup text if user is chatting with their display name instead of address.
 						</li>
+						<li>
+							Added Unicode support to chat.
+						</li>
 					</ol>
 				</li>
 				<li>
