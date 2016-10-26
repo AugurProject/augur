@@ -23,7 +23,8 @@ class AppComponent extends Component {
 		this.state = {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,
-			isChatCollapsed: true
+			isChatCollapsed: true,
+			doScrollTop: false
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
