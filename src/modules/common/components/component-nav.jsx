@@ -4,13 +4,13 @@ import Link from 'modules/link/components/link';
 
 const ComponentNav = p => (
 	<ul className="component-nav">
-		{p.navItems.length && p.navItems.map(nav => (
+		{p.navItems && Object.keys(p.navItems).map(nav => (
 			<Link
-				{...nav.link}
-				key={nav.id}
+				key={nav}
+				{...p.navItems[nav].link}
 			>
-				<li className={`${nav.selected && 'selected'}`} >
-					{nav.label}
+				<li className={`${p.navItems.selected === nav && 'selected'}`} >
+					{p.navItems[nav].label}
 				</li>
 			</Link>
 		))}

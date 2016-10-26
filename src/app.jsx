@@ -38,8 +38,8 @@ class AppComponent extends Component {
 	}
 
 	componentDidUpdate() {
-		this.shouldDisplaySideBar();
 		handleScrollTop(this.props.url);
+		this.shouldDisplaySideBar();
 	}
 
 	shouldDisplaySideBar() {

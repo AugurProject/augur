@@ -14,7 +14,37 @@ export default {
 	myMarketsLink: { href: '/?page=my-markets', onClick: url => require('../selectors').update({ activeView: MY_MARKETS, url }) },
 	myReportsLink: { href: '/?page=my-reports', onClick: url => require('../selectors').update({ activeView: MY_REPORTS, url }) },
 	loginMessageLink: { href: '/?page=login-message', onClick: url => require('../selectors').update({ activeView: LOGIN_MESSAGE, url }) },
-	marketDataNavOutcomesLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_OUTCOMES}`, onClick: url => require('../selectors').update({ url }) },
-	marketDataNavChartsLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_CHARTS}`, onClick: url => require('../selectors').update({ url }) },
-	marketDataNavInfoLink: { href: `?m=0&marketDataNav=${MARKET_DATA_NAV_INFO}`, onClick: url => require('../selectors').update({ url }) },
+	marketDataNavOutcomesLink: {
+		onClick: () => {
+			require('../selectors').update({
+				url: `/?page=m&m=0&marketDataNav=${MARKET_DATA_NAV_OUTCOMES}`,
+				marketDataNavItems: {
+					...require('../selectors').marketDataNavItems,
+					selected: MARKET_DATA_NAV_OUTCOMES
+				}
+			});
+		}
+	},
+	marketDataNavChartsLink: {
+		onClick: () => {
+			require('../selectors').update({
+				url: `/?page=m&m=0&marketDataNav=${MARKET_DATA_NAV_CHARTS}`,
+				marketDataNavItems: {
+					...require('../selectors').marketDataNavItems,
+					selected: MARKET_DATA_NAV_CHARTS
+				}
+			});
+		}
+	},
+	marketDataNavInfoLink: {
+		onClick: () => {
+			require('../selectors').update({
+				url: `/?page=m&m=0&marketDataNav=${MARKET_DATA_NAV_INFO}`,
+				marketDataNavItems: {
+					...require('../selectors').marketDataNavItems,
+					selected: MARKET_DATA_NAV_INFO
+				}
+			});
+		}
+	}
 };
