@@ -1,12 +1,8 @@
 // TABLES
 // 	Styles + mixins for the display of tables
 
-.cell-spacing {
+.table-cell-spacing {
 	padding: 0.8em 0;
-
-	&:first-child {
-		padding-left: 1em;
-	}
 }
 
 .table {
@@ -36,7 +32,7 @@
 
 	& > * {
 
-		.cell-spacing();
+		.table-cell-spacing();
 	}
 }
 
@@ -48,7 +44,7 @@
 
 	& > * {
 
-		.cell-spacing();
+		.table-cell-spacing();
 
 		&:not(:first-child) {
 			.border(true, @border-left, @border-light);

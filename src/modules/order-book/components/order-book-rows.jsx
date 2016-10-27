@@ -1,11 +1,11 @@
 import React from 'react';
 
-import OrderBookSideRow from 'modules/order-book/components/order-book-side-row';
+import OrderBookRowSide from 'modules/order-book/components/order-book-row-side';
 
 const OrderBookRows = p => (
-	<article className="outcome-order-book-rows">
-		<OrderBookSideRow orders={p.bids} />
-		<OrderBookSideRow orders={p.asks} />
+	<article className="order-book-rows">
+		<OrderBookRowSide orders={p.bids} />
+		<OrderBookRowSide orders={p.asks} />
 	</article>
 );
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OrderBookHeader = () => (
-	<article className="outcome-order-book-header">
+	<article className="order-book-header">
 		<span>Bid Q.</span>
 		<span>Bid</span>
 		<span>Ask</span>

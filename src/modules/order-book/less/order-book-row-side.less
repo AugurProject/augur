@@ -1,0 +1,22 @@
+.order-book-row-side {
+	flex: 1;
+
+	&:first-child {
+
+		.border(true, @border-right, @border-light);
+	}
+
+	.order-book-side-row {
+
+		.border(true, @border-top, @border-light);
+
+		display: flex;
+
+		& > * {
+
+			.table-cell-spacing();
+
+			flex: 1;
+		}
+	}
+}
