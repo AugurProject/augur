@@ -7,12 +7,12 @@ To help ensure this, the following conventions have been employed:
 * Only one `main` tag
   * Currently employed in the `router.jsx` component to contain all view content.
 * All top-level components (i.e. - views) should be contained within a `section` tag.
-  * Though valid, `section` should **only** be used for view level components.
+  * Though valid, `section` should only be used for view level components.
 * All `section` tags should have an accompanying ID attribute (excluding unique semantic tags (main, header, footer, etc.)).
 * All reusable components should be contained within an `article` tag unless this use would be semantically incorrect; in which case, use whatever tag is appropriate.
 * All components should be standard HTML5 elements with their default behaviors intact.
   * Due to some implementation constraints, there may be a reason to deviate from this, but it should be dialoged over prior to implementation.
-* **Do** leave comments for functionality that may be non-obvious
+* Do leave comments for functionality that may be non-obvious
   * Dependence on other methods, complex mutations/filters, etc.
 * Font Awesome characters are used directly in the components -- in order to render these inside your text editors/IDEs, reference the [typography](../src/modules/common/less/typography.less) stylesheet.
 * Import paths for `assets`, `modules`, `utils`, and `src` are aliased, so avoid the use of relative paths.
@@ -40,12 +40,12 @@ To help ensure this, the following conventions have been employed:
 * Do use mixins where provided
   * Notable ones available: animations/transitions, borders, colors, and typography.
 * Mixin inclusions should always come first within a declaration block.
-* Every component should have the **minimum** amount of styling required (helps maintain contextualization).
+* Every component should have the minimum amount of styling required (helps maintain contextualization).
    * This allows for stylesheets of parent components that employ a component to apply any additional 'chrome' required.
 * Classnames should be contextual + non-generic.
 * Classnames should be discrete words delimited by a `-` (dash).
 * IDs should be discrete words delimited by an `_` (underscore).
-* Flexbox should be utilized for **all** layout (exceptions would be something like a fixed element, but that should be very rare).
+* Flexbox should be utilized for all layout (exceptions would be something like a fixed element, but that should be very rare).
 * Comments should be employed for mixins to help inform the utilization.
 * Avoid the use of `!important` unless absolutely necessary
 * The full breadth of Less's functionality is permissible.
