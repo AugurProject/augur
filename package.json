@@ -22,7 +22,7 @@
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "1.2.24",
+    "ethereumjs-connect": "1.2.25",
     "ethereumjs-tx": "1.1.1",
     "ethereumjs-util": "4.4.1",
     "ethrpc": "2.0.6",
