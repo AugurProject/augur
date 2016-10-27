@@ -40,12 +40,10 @@ export default class MarketChart extends Component {
 		};
 
 		return (
-			<section className="price-history-chart">
-				<div className="market-section-header">
-					Price History
-				</div>
+			<article className="price-history-chart">
+				<h3>Market Price History</h3>
 				<ReactHighcharts config={config} />
-			</section>
+			</article>
 		);
 	}
 }
