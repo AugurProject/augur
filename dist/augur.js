@@ -43879,7 +43879,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.9";
+    this.version = "2.11.10";
 
     this.options = {
         debug: {
