@@ -147,6 +147,13 @@ export const tradeTestState = {
 			}
 		},
 		'0x000000000000000000000000000000000scalar1': {
+			'1': {
+				id: 1,
+				name: '',
+				outstandingShares: '0',
+				price: '65',
+				sharesPurchased: '0'
+			},
 			'2': {
 				id: 2,
 				name: '',
