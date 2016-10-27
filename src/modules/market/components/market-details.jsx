@@ -2,19 +2,19 @@ import React, { PropTypes } from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 
-const MarketInfo = p => (
-	<div className="market-info">
+const MarketDetails = p => (
+	<div className="market-details">
 		<ul className="properties">
-			{p.outstandingShares != null &&
-				<li className="property outstanding-shares">
-					<span className="property-label">outstanding shares</span>
-					<ValueDenomination className="property-value" {...p.outstandingShares} />
-				</li>
-			}
 			{p.author != null &&
 				<li className="property author">
 					<span className="property-label">author</span>
 					<span className="property-value">{p.author}</span>
+				</li>
+			}
+			{p.outstandingShares != null &&
+				<li className="property outstanding-shares">
+					<span className="property-label">outstanding shares</span>
+					<ValueDenomination className="property-value" {...p.outstandingShares} />
 				</li>
 			}
 			{p.extraInfo != null && p.extraInfo !== '' &&
@@ -56,7 +56,7 @@ const MarketInfo = p => (
 	</div>
 );
 
-MarketInfo.propTypes = {
+MarketDetails.propTypes = {
 	author: PropTypes.string,
 	extraInfo: PropTypes.string,
 	resolution: PropTypes.string,
@@ -68,7 +68,7 @@ MarketInfo.propTypes = {
 	reportedOutcome: PropTypes.string
 };
 
-export default MarketInfo;
+export default MarketDetails;
 
 function getResolutionNode(resolution) {
 	let resolutionText;
