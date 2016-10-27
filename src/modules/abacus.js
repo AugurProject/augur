@@ -53,13 +53,15 @@ module.exports = {
     calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var fxpAmount = abi.fix(amount);
         var fxpPrice = abi.fix(price);
-        var percentFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
+        var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
         var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(percentFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
+        var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
         var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
         return {
             fee: abi.unfix(fee),
-            percentFee: abi.unfix(takerFee),
+            percentFee: (noFeeCost.gt(constants.ZERO)) ?
+                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE)) :
+                constants.ZERO,
             cost: abi.unfix(noFeeCost.plus(fee)),
             cash: abi.unfix(noFeeCost.minus(fee))
         };
@@ -70,13 +72,13 @@ module.exports = {
     calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var bnAmount = abi.bignum(amount);
         var bnPrice = abi.bignum(price);
-        var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+        var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
         var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(percentFee.times(bnAmount).times(bnPrice));
+        var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
         var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
-            percentFee: takerFee,
+            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost) : constants.ZERO,
             cost: noFeeCost.plus(fee),
             cash: noFeeCost.minus(fee)
         };

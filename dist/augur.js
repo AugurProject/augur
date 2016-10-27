@@ -43879,7 +43879,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.7";
+    this.version = "2.11.8";
 
     this.options = {
         debug: {
@@ -43988,13 +43988,15 @@ module.exports = {
     calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var fxpAmount = abi.fix(amount);
         var fxpPrice = abi.fix(price);
-        var percentFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
+        var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
         var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(percentFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
+        var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
         var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
         return {
             fee: abi.unfix(fee),
-            percentFee: abi.unfix(takerFee),
+            percentFee: (noFeeCost.gt(constants.ZERO)) ?
+                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE)) :
+                constants.ZERO,
             cost: abi.unfix(noFeeCost.plus(fee)),
             cash: abi.unfix(noFeeCost.minus(fee))
         };
@@ -44005,13 +44007,13 @@ module.exports = {
     calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var bnAmount = abi.bignum(amount);
         var bnPrice = abi.bignum(price);
-        var percentFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+        var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
         var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(percentFee.times(bnAmount).times(bnPrice));
+        var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
         var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
-            percentFee: takerFee,
+            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost) : constants.ZERO,
             cost: noFeeCost.plus(fee),
             cash: noFeeCost.minus(fee)
         };
@@ -48881,7 +48883,7 @@ module.exports = {
                 console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
             }
-            augur.nodes = augur.rpc.nodes.hosted;
+            augur.rpc.clear();
         }
         return augur;
     },
@@ -49621,7 +49623,9 @@ module.exports = {
                 this.subscriptions[msg.params.subscription]) {
                 return this.subscriptions[msg.params.subscription](msg.params.result);
             } else {
-                console.warn("[" + type + "] Unknown message received:", msg.data || msg);
+                if (this.debug.broadcast || this.debug.tx) {
+                    console.warn("[" + type + "] Unknown message received:", msg.data || msg);
+                }
             }
         }
     },
@@ -49714,7 +49718,6 @@ module.exports = {
             calledCallback = true;
             self.resetNewBlockSubscription(callback);
             if (isFunction(self.resetCustomSubscription)) {
-                console.log("resetCustomSubscription:", self.resetCustomSubscription.toString());
                 self.resetCustomSubscription();
             }
         };
@@ -50057,6 +50060,7 @@ module.exports = {
 
     // delete cached network, notification, and transaction data
     clear: function () {
+        // var self = this;
         this.txs = {};
         for (var n in this.notifications) {
             if (!this.notifications.hasOwnProperty(n)) continue;
@@ -50064,6 +50068,21 @@ module.exports = {
                 clearTimeout(this.notifications[n]);
             }
         }
+        // if (this.blockFilter.id !== null) {
+        //     this.unregisterSubscriptionCallback(this.blockFilter.id);
+        //     this.unsubscribe(this.blockFilter.id, function () {
+        //         self.blockFilter.id = null;
+        //     });
+        // }
+        // for (var id in this.subscriptions) {
+        //     if (!this.subscriptions.hasOwnProperty(id)) continue;
+        //     if (this.subscriptions[id]) {
+        //         console.debug('unsubscribing', id);
+        //         this.unregisterSubscriptionCallback(id);
+        //         this.unsubscribe(id);
+        //     }
+        // }
+        // this.blockFilter.id = null;
         this.notifications = {};
         this.rawTxs = {};
         this.txs = {};

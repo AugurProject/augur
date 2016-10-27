@@ -568,7 +568,7 @@ module.exports = {
                 console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
             }
-            augur.nodes = augur.rpc.nodes.hosted;
+            augur.rpc.clear();
         }
         return augur;
     },
