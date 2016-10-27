@@ -71,7 +71,7 @@ module.exports = function () {
                 topics: [abi.prefix_hex(abi.encode_hex(roomName))],
                 payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
                 priority: "0x64",
-                ttl: "0x708"
+                ttl: "0x15180"
             }, function (posted) {
                 if (!posted) return callback("couldn't post message: " + message);
                 callback(null);
