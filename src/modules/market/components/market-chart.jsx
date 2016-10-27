@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import ReactHighcharts from 'react-highcharts';
 
-export default class Chart extends Component {
+export default class MarketChart extends Component {
 	static propTypes = {
 		series: PropTypes.array
 	};
