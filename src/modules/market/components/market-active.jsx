@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import MarketData from 'modules/market/components/market-data';
 import MarketUserData from 'modules/market/components/market-user-data';
@@ -43,3 +43,9 @@ export default class MarketActive extends Component {
 		);
 	}
 }
+
+MarketActive.propTypes = {
+	market: PropTypes.shape({
+		outcomes: PropTypes.array
+	})
+};

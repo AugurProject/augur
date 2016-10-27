@@ -6,7 +6,7 @@ const SideBar = p => (
 	<article className="side-bar" >
 		<h3>All Tags</h3>
 		<div className="tags">
-			{!!p.tags.length ? p.tags.map(tag =>
+			{p.tags.length ? p.tags.map(tag =>
 				<Checkbox
 					key={tag.value}
 					className="tag"
@@ -15,8 +15,7 @@ const SideBar = p => (
 					isChecked={tag.isSelected}
 					onClick={tag.onClick}
 				/>
-			) :
-			<span className="null-state">No Tags</span>
+			) : <span className="null-state">No Tags</span>
 		}
 		</div>
 	</article>

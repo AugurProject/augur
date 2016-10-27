@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { render } from 'react-dom';
 import classnames from 'classnames';
 
@@ -140,3 +140,7 @@ class AppComponent extends Component {
 		);
 	}
 }
+
+AppComponent.propTypes = {
+	url: PropTypes.string
+};

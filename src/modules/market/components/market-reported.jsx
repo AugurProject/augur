@@ -1,7 +1,7 @@
 import React from 'react';
 
 import MarketBasics from 'modules/market/components/market-basics';
-import MarketInfo from 'modules/market/components/market-info';
+import MarketDetails from 'modules/market/components/market-details';
 
 const MarketReported = p => (
 	<article className="market-reported">
@@ -12,7 +12,7 @@ const MarketReported = p => (
 			updateData={p.marketDataUpdater.update}
 			updateIntervalSecs={p.marketDataUpdater.updateIntervalSecs}
 		/>
-		<MarketInfo key="market-info" {...p.market} />
+		<MarketDetails key="market-info" {...p.market} />
 	</article>
 );
 
