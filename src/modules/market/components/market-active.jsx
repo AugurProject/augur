@@ -9,7 +9,7 @@ const MarketActive = p => (
 	<article className="market-active">
 		<div className="market-group">
 			<MarketData {...p} />
-			<OutcomeOrderBook />
+			<OutcomeOrderBook {...p} />
 			<OutcomeTrade />
 		</div>
 		<div className="market-group">
