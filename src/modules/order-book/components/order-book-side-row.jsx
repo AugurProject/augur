@@ -2,7 +2,7 @@ import React from 'react';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 
-const OutcomeOrderBookSideRow = p => (
+const OrderBookSideRow = p => (
 	<article className="order-book-side-row">
 		{(p.orders || []).map((order, i) => (
 			<div
@@ -16,4 +16,4 @@ const OutcomeOrderBookSideRow = p => (
 	</article>
 );
 
-export default OutcomeOrderBookSideRow;
+export default OrderBookSideRow;

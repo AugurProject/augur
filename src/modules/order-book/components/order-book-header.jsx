@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OutcomeOrderBookHeader = () => (
+const OrderBookHeader = () => (
 	<article className="outcome-order-book-header">
 		<span>Bid Q.</span>
 		<span>Bid</span>
@@ -9,4 +9,4 @@ const OutcomeOrderBookHeader = () => (
 	</article>
 );
 
-export default OutcomeOrderBookHeader;
+export default OrderBookHeader;
