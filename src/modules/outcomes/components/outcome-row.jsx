@@ -11,8 +11,8 @@ const OutcomeRow = p => (
 	>
 		<span className="outcome">{p.outcome.name || ''}</span>
 		<ValueDenomination formatted={p.outcome.topBid.shares.formatted} />
-		<ValueDenomination formatted={p.outcome.topBid.price.formatted} />
-		<ValueDenomination formatted={p.outcome.topAsk.price.formatted} />
+		<ValueDenomination className="emphasized" formatted={p.outcome.topBid.price.formatted} />
+		<ValueDenomination className="emphasized" formatted={p.outcome.topAsk.price.formatted} />
 		<ValueDenomination formatted={p.outcome.topAsk.shares.formatted} />
 		<ValueDenomination formatted={p.outcome.lastPrice.formatted} />
 	</Link>
