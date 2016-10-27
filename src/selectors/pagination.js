@@ -1,4 +1,4 @@
-import { MARKETS } from 'modules/site/constants/views';
+import { MARKETS } from 'modules/app/constants/views';
 
 export default {
 	numPerPage: 10,

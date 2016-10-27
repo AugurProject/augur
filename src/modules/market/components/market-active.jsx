@@ -2,8 +2,8 @@ import React from 'react';
 
 import MarketData from 'modules/market/components/market-data';
 import MarketUserData from 'modules/market/components/market-user-data';
-import OutcomeOrderBook from 'modules/outcome/components/outcome-order-book';
-import OutcomeTrade from 'modules/outcome/components/outcome-trade';
+import OutcomeOrderBook from 'modules/outcomes/components/outcome-order-book';
+import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 const MarketActive = p => (
 	<article className="market-active">

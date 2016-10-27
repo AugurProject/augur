@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import ValueDenomination from '../../common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const CoreStats = p => (
 	<article className="core-stats" >

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SiteFooter = () => (
+const Footer = () => (
 	<footer>
 		<div id="footer_content">
 			<a className="link" href="https://augur.net" target="_blank" rel="noopener noreferrer" >About</a>
@@ -9,4 +9,4 @@ const SiteFooter = () => (
 	</footer>
 );
 
-export default SiteFooter;
+export default Footer;

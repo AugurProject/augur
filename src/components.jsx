@@ -1,7 +1,7 @@
-import App from './app';
-import * as VIEWS from './modules/site/constants/views';
-import * as AUTH_TYPES from './modules/auth/constants/auth-types';
-import * as TRANSACTION_TYPES from './modules/transactions/constants/types';
+import App from 'modules/app/components/app';
+import * as VIEWS from 'modules/app/constants/views';
+import * as AUTH_TYPES from 'modules/auth/constants/auth-types';
+import * as TRANSACTION_TYPES from 'modules/transactions/constants/types';
 
 const constants = {
 	VIEWS,
@@ -20,4 +20,3 @@ export {
 	App,
 	constants
 };
-

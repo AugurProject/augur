@@ -9,12 +9,10 @@ import PortfolioView from 'modules/portfolio/components/portfolio-view';
 import TransactionsView from 'modules/transactions/components/transactions-view';
 import LoginMessageView from 'modules/login-message/components/login-message-view';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/site/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/app/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
-const Router = (p) => {
-	console.log('updated Props to Router -- ', p.activeView);
-
+const Routes = (p) => {
 	let viewProps = null;
 
 	switch (p.activeView) {
@@ -123,4 +121,4 @@ const Router = (p) => {
 	}
 };
 
-export default Router;
+export default Routes;

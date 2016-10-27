@@ -1,6 +1,6 @@
 import links from 'selectors/links';
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/site/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 import makeNumber from 'utils/make-number';
 import { randomNum } from 'utils/random-number';

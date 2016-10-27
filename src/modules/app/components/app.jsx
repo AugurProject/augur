@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import classnames from 'classnames';
 
-import SiteHeader from 'modules/site/components/site-header';
-import SiteFooter from 'modules/site/components/site-footer';
-import SideBar from 'modules/site/components/side-bar';
-import CoreStats from 'modules/common/components/core-stats';
+import Header from 'modules/app/components/header';
+import Footer from 'modules/app/components/footer';
+import SideBar from 'modules/app/components/side-bar';
+import CoreStats from 'modules/app/components/core-stats';
+import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
-
-import Router from './router';
 
 export default function (appElement, selectors) {
 	render(<AppComponent {...selectors} />, appElement);
@@ -43,7 +42,7 @@ class AppComponent extends Component {
 	}
 
 	shouldDisplaySideBar() {
-		const currentRoute = Router(this.props); // eslint-disable-line new-cap
+		const currentRoute = Routes(this.props); // eslint-disable-line new-cap
 
 		if (currentRoute.props.sideBarAllowed) {
 			this.setState({ isSideBarAllowed: true });
@@ -88,12 +87,16 @@ class AppComponent extends Component {
 			loginAccount: p.loginAccount
 		};
 
+		// NOTE -- A few implementation details:
+		// An attention has been paid to avoid JS manipulation of app layout
+		// As a result, you'll notice that both the `Header` + `CortStats` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
+		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
 		return (
 			<main>
 				{!!p &&
 					<div id="app_container" >
 						<div id="app_header">
-							<SiteHeader {...siteHeaderProps} />
+							<Header {...siteHeaderProps} />
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
@@ -104,7 +107,7 @@ class AppComponent extends Component {
 							</div>
 						</div>
 						<div id="app_views" >
-							<SiteHeader {...siteHeaderProps} />
+							<Header {...siteHeaderProps} />
 							<div id="app_view_container">
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div id="side_bar" >
@@ -117,7 +120,7 @@ class AppComponent extends Component {
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>
-									<Router {...p} />
+									<Routes {...p} />
 								</div>
 							</div>
 						</div>
@@ -130,7 +133,7 @@ class AppComponent extends Component {
 						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
 							Chat
 						</button>
-						<SiteFooter />
+						<Footer />
 					</div>
 				}
 			</main>

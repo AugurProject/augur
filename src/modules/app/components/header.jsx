@@ -1,13 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/site/constants/views';
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
 import { AUTH_TYPES } from 'modules/auth/constants/auth-types';
 import Link from 'modules/link/components/link';
 import AugurLogo from 'modules/common/components/augur-logo';
 
-const SiteHeader = p => (
+const Header = p => (
 	<header className="site-header"	>
 		<nav className="site-nav">
 			<div className="nav-group left-navs">
@@ -85,7 +85,7 @@ const SiteHeader = p => (
 	</header>
 );
 
-export default SiteHeader;
+export default Header;
 
 // TODO -- Prop Validations
 // SiteHeader.propTypes = {
