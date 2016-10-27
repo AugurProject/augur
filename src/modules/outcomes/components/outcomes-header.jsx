@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OutcomesHeader = () => (
-	<article className="outcome-header">
+	<article className="outcomes-header">
 		<span>Outcomes</span>
 		<span>Bid Q.</span>
 		<span>Bid</span>

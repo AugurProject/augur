@@ -10,7 +10,7 @@ import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_INFO 
 const MarketData = p => (
 	<article className="market-data">
 		<h3>{p.market.description}</h3>
-		<ComponentNav navItems={p.marketDataNavItems} />
+		<ComponentNav {...p.marketDataNavItems} />
 
 		{p.marketDataNavItems.selected === MARKET_DATA_NAV_OUTCOMES &&
 			<Outcomes

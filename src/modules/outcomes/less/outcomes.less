@@ -1,4 +1,23 @@
 .outcomes {
 	display: flex;
 	flex-direction: column;
+	margin-top: 1em;
+
+	.outcomes-header,
+	.outcome-row {
+		display: flex;
+		flex: 1;
+
+		> * {
+			&:first-child{
+				flex: 3;
+			}
+
+			flex: 1;
+		}
+
+		span:not(:first-child) {
+			text-align: center;
+		}
+	}
 }

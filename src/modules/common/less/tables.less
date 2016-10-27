@@ -1,2 +1,49 @@
 // TABLES
 // 	Styles + mixins for the display of tables
+
+.cell-spacing {
+	padding: 0.8em 0;
+
+	&:first-child {
+		padding-left: 1em;
+	}
+}
+
+.table-header {
+
+	.font-weight-normal();
+
+	& > * {
+
+		.cell-spacing();
+	}
+}
+
+.table-row {
+
+	.border(true, @border-top, @border-light);
+
+	& > * {
+
+		.cell-spacing();
+
+		&:not(:first-child) {
+			.border(true, @border-left, @border-light);
+		}
+	}
+
+	&.selected {
+
+		.border(true, @border-top, @color-blue-light);
+		.border(true, @border-right, @color-blue-light);
+		.border(true, @border-bottom, @color-blue-light);
+		.border(true, @border-left, @color-blue, @border-width-3);
+
+		background-color: @color-blue-extra-light;
+	}
+
+	&:hover,
+	&:active {
+		background-color: @color-blue-extra-light;
+	}
+}
