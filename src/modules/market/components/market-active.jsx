@@ -1,25 +1,64 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import MarketData from 'modules/market/components/market-data';
 import MarketUserData from 'modules/market/components/market-user-data';
 import OutcomeOrderBook from 'modules/outcomes/components/outcome-order-book';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
-const MarketActive = p => (
-	<article className="market-active">
-		<div className="market-group">
-			<MarketData {...p} />
-			<OutcomeOrderBook {...p} />
-			<OutcomeTrade />
-		</div>
-		<div className="market-group">
-			<MarketUserData />
-			<OutcomeTrade />
-		</div>
-	</article>
-);
+export default class MarketActive extends Component {
+	constructor(props) {
+		super(props);
 
-export default MarketActive;
+		this.state = {
+			selectedOutcome: this.props.market.outcomes[0]
+		};
+
+		this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
+	}
+
+	updateSelectedOutcome(selectedOutcome) {
+		this.setState({ selectedOutcome });
+	}
+
+	render() {
+		const p = this.props;
+		const s = this.state;
+
+		return (
+			<article className="market-active">
+				<div className="market-group">
+					<MarketData
+						{...p}
+						selectedOutcome={s.selectedOutcome}
+						updateSelectedOutcome={this.updateSelectedOutcome}
+					/>
+					<OutcomeOrderBook outcome={s.selectedOutcome} />
+					<OutcomeTrade />
+				</div>
+				<div className="market-group">
+					<MarketUserData />
+					<OutcomeTrade />
+				</div>
+			</article>
+		);
+	}
+}
+
+// const MarketActive = p => (
+// 	<article className="market-active">
+// 		<div className="market-group">
+// 			<MarketData {...p} />
+// 			<OutcomeOrderBook currentOutcome={...p} />
+// 			<OutcomeTrade />
+// 		</div>
+// 		<div className="market-group">
+// 			<MarketUserData />
+// 			<OutcomeTrade />
+// 		</div>
+// 	</article>
+// );
+//
+// export default MarketActive;
 
 // <MarketBasics
 // 	{...p.market}

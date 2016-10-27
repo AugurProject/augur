@@ -13,7 +13,11 @@ const MarketData = p => (
 		<ComponentNav navItems={p.marketDataNavItems} />
 
 		{p.marketDataNavItems.selected === MARKET_DATA_NAV_OUTCOMES &&
-			<Outcomes outcomes={p.market.outcomes} />
+			<Outcomes
+				outcomes={p.market.outcomes}
+				selectedOutcome={p.selectedOutcome}
+				updateSelectedOutcome={p.updateSelectedOutcome}
+			/>
 		}
 		{p.marketDataNavItems.selected === MARKET_DATA_NAV_CHARTS &&
 			<MarketChart series={p.market.priceTimeSeries} />

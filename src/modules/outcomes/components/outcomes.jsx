@@ -7,7 +7,12 @@ const Outcomes = p => (
 	<article className="outcomes" >
 		<OutcomesHeader />
 		{p.outcomes && p.outcomes.map(outcome => (
-			<OutcomeRow key={outcome.id} outcome={outcome} />
+			<OutcomeRow
+				key={outcome.id}
+				outcome={outcome}
+				selectedOutcome={p.selectedOutcome}
+				updateSelectedOutcome={p.updateSelectedOutcome}
+			/>
 		))}
 	</article>
 );
