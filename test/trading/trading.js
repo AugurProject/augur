@@ -904,338 +904,338 @@ describe("Integration tests", function () {
         });
     });
 
-    describe("trade.isUnderGasLimit", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                assert.strictEqual(augur.isUnderGasLimit(t.tradeTypes), t.expected);
-                augur.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
-                    assert.strictEqual(isUnderGasLimit, t.expected);
-                    augur.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
-                        assert.strictEqual(isUnderGasLimit, t.expected);
-                        done();
-                    });
-                });
-            });
-        };
-        test({
-            tradeTypes: ["buy"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["sell", "buy"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["buy", "buy", "sell"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["sell", "buy", "sell", "buy"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
-            expected: true
-        });
-        test({
-            tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
-            expected: false
-        });
-    });
+    // describe("trade.isUnderGasLimit", function () {
+    //     var test = function (t) {
+    //         it(JSON.stringify(t), function (done) {
+    //             assert.strictEqual(augur.isUnderGasLimit(t.tradeTypes), t.expected);
+    //             augur.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
+    //                 assert.strictEqual(isUnderGasLimit, t.expected);
+    //                 augur.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
+    //                     assert.strictEqual(isUnderGasLimit, t.expected);
+    //                     done();
+    //                 });
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         tradeTypes: ["buy"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["sell", "buy"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["buy", "buy", "sell"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["sell", "buy", "sell", "buy"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
+    //         expected: true
+    //     });
+    //     test({
+    //         tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
+    //         expected: false
+    //     });
+    // });
 
-    describe("BuyAndSellShares.buy", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
-                    initialTotalTrades = parseInt(initialTotalTrades);
-                    augur.buy({
-                        amount: t.amount,
-                        price: t.price,
-                        market: markets[t.market],
-                        outcome: t.outcome,
-                        onSent: function (r) {
-                            assert.isString(r.txHash);
-                            assert.isNull(r.callReturn);
-                        },
-                        onSuccess: function (r) {
-                            assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
-                            augur.get_trade(r.callReturn, function (trade) {
-                                assert.isObject(trade);
-                                assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
-                                assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
-                                assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
-                                assert.strictEqual(trade.outcome, t.outcome);
-                                augur.get_total_trades(markets[t.market], function (totalTrades) {
-                                    assert.isAbove(parseInt(totalTrades), initialTotalTrades);
-                                    done();
-                                });
-                            });
-                        },
-                        onFailed: done
-                    });
-                });
-            });
-        };
-        test({
-            market: "binary",
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "1.5",
-            price: "0.1",
-            outcome: "2"
-        });
-        test({
-            market: "categorical",
-            amount: 1,
-            price: "0.5",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "1.5",
-            price: "0.1",
-            outcome: "7"
-        });
-        test({
-            market: "scalar",
-            amount: 1,
-            price: "2.5",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "0.25",
-            price: "2.6",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "1.5",
-            price: "1.2",
-            outcome: "2"
-        });
-    });
+    // describe("BuyAndSellShares.buy", function () {
+    //     var test = function (t) {
+    //         it(JSON.stringify(t), function (done) {
+    //             this.timeout(tools.TIMEOUT);
+    //             augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
+    //                 initialTotalTrades = parseInt(initialTotalTrades);
+    //                 augur.buy({
+    //                     amount: t.amount,
+    //                     price: t.price,
+    //                     market: markets[t.market],
+    //                     outcome: t.outcome,
+    //                     onSent: function (r) {
+    //                         assert.isString(r.txHash);
+    //                         assert.isNull(r.callReturn);
+    //                     },
+    //                     onSuccess: function (r) {
+    //                         assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+    //                         augur.get_trade(r.callReturn, function (trade) {
+    //                             assert.isObject(trade);
+    //                             assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
+    //                             assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
+    //                             assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
+    //                             assert.strictEqual(trade.outcome, t.outcome);
+    //                             augur.get_total_trades(markets[t.market], function (totalTrades) {
+    //                                 assert.isAbove(parseInt(totalTrades), initialTotalTrades);
+    //                                 done();
+    //                             });
+    //                         });
+    //                     },
+    //                     onFailed: done
+    //                 });
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         market: "binary",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "1.5",
+    //         price: "0.1",
+    //         outcome: "2"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "1.5",
+    //         price: "0.1",
+    //         outcome: "7"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: 1,
+    //         price: "2.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "0.25",
+    //         price: "2.6",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "1.5",
+    //         price: "1.2",
+    //         outcome: "2"
+    //     });
+    // });
 
-    describe("BuyAndSellShares.sell", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
-                augur.buyCompleteSets({
-                    market: markets[t.market],
-                    amount: t.amount,
-                    onSent: function (r) {
-                        assert.isNull(r.callReturn);
-                    },
-                    onSuccess: function (r) {
-                        var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
-                        assert.strictEqual(parseFloat(finalShares - initShares), parseFloat(t.amount));
-                        augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
-                            initialTotalTrades = parseInt(initialTotalTrades);
-                            augur.sell({
-                                amount: t.amount,
-                                price: t.price,
-                                market: markets[t.market],
-                                outcome: t.outcome,
-                                onSent: function (r) {
-                                    assert.isString(r.txHash);
-                                    assert.isNull(r.callReturn);
-                                },
-                                onSuccess: function (r) {
-                                    assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
-                                    augur.get_trade(r.callReturn, function (trade) {
-                                        assert.isObject(trade);
-                                        assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
-                                        assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
-                                        assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
-                                        assert.strictEqual(trade.outcome, t.outcome);
-                                        augur.get_total_trades(markets[t.market], function (totalTrades) {
-                                            assert.isAbove(parseInt(totalTrades), initialTotalTrades);
-                                            done();
-                                        });
-                                    });
-                                },
-                                onFailed: done
-                            });
-                        });
-                    },
-                    onFailed: done
-                });
-            });
-        };
-        test({
-            market: "binary",
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "1.5",
-            price: "0.9",
-            outcome: "2"
-        });
-        test({
-            market: "categorical",
-            amount: 1,
-            price: "0.5",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "1.5",
-            price: "0.9",
-            outcome: "7"
-        });
-        test({
-            market: "scalar",
-            amount: 1,
-            price: "2.5",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "0.25",
-            price: "2.6",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "1.5",
-            price: "1.2",
-            outcome: "2"
-        });
-    });
+    // describe("BuyAndSellShares.sell", function () {
+    //     var test = function (t) {
+    //         it(JSON.stringify(t), function (done) {
+    //             this.timeout(tools.TIMEOUT);
+    //             var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+    //             augur.buyCompleteSets({
+    //                 market: markets[t.market],
+    //                 amount: t.amount,
+    //                 onSent: function (r) {
+    //                     assert.isNull(r.callReturn);
+    //                 },
+    //                 onSuccess: function (r) {
+    //                     var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+    //                     assert.strictEqual(parseFloat(finalShares - initShares), parseFloat(t.amount));
+    //                     augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
+    //                         initialTotalTrades = parseInt(initialTotalTrades);
+    //                         augur.sell({
+    //                             amount: t.amount,
+    //                             price: t.price,
+    //                             market: markets[t.market],
+    //                             outcome: t.outcome,
+    //                             onSent: function (r) {
+    //                                 assert.isString(r.txHash);
+    //                                 assert.isNull(r.callReturn);
+    //                             },
+    //                             onSuccess: function (r) {
+    //                                 assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+    //                                 augur.get_trade(r.callReturn, function (trade) {
+    //                                     assert.isObject(trade);
+    //                                     assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
+    //                                     assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
+    //                                     assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
+    //                                     assert.strictEqual(trade.outcome, t.outcome);
+    //                                     augur.get_total_trades(markets[t.market], function (totalTrades) {
+    //                                         assert.isAbove(parseInt(totalTrades), initialTotalTrades);
+    //                                         done();
+    //                                     });
+    //                                 });
+    //                             },
+    //                             onFailed: done
+    //                         });
+    //                     });
+    //                 },
+    //                 onFailed: done
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         market: "binary",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "1.5",
+    //         price: "0.9",
+    //         outcome: "2"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "1.5",
+    //         price: "0.9",
+    //         outcome: "7"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: 1,
+    //         price: "2.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "0.25",
+    //         price: "2.6",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "1.5",
+    //         price: "1.2",
+    //         outcome: "2"
+    //     });
+    // });
 
-    describe("BuyAndSellShares.cancel", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.buyCompleteSets({
-                    market: markets[t.market],
-                    amount: t.amount,
-                    onSent: utils.noop,
-                    onSuccess: function (r) {
-                        augur.sell({
-                            amount: t.amount,
-                            price: t.price,
-                            market: markets[t.market],
-                            outcome: t.outcome,
-                            onSent: function (r) {
-                                assert(r.txHash);
-                                assert.isNull(r.callReturn);
-                            },
-                            onSuccess: function (r) {
-                                assert(r.hash);
-                                assert.isNotNull(r.callReturn);
-                                assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
-                                augur.cancel(r.callReturn, function (r) {
-                                    assert.isNull(r.callReturn);
-                                }, function (r) {
-                                    assert(r.hash);
-                                    assert.strictEqual(r.callReturn, "1");
-                                    done();
-                                }, done);
-                            },
-                            onFailed: done
-                        });
-                    },
-                    onFailed: done
-                });
-            });
-        };
-        test({
-            market: "binary",
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "1"
-        });
-        test({
-            market: "binary",
-            amount: "1.5",
-            price: "0.1",
-            outcome: "2"
-        });
-        test({
-            market: "categorical",
-            amount: 1,
-            price: "0.5",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "0.25",
-            price: "0.52",
-            outcome: "3"
-        });
-        test({
-            market: "categorical",
-            amount: "1.5",
-            price: "0.1",
-            outcome: "7"
-        });
-        test({
-            market: "scalar",
-            amount: 1,
-            price: "2.5",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "0.25",
-            price: "2.6",
-            outcome: "1"
-        });
-        test({
-            market: "scalar",
-            amount: "1.5",
-            price: "1.2",
-            outcome: "2"
-        });
-    });
+    // describe("BuyAndSellShares.cancel", function () {
+    //     var test = function (t) {
+    //         it(JSON.stringify(t), function (done) {
+    //             this.timeout(tools.TIMEOUT);
+    //             augur.buyCompleteSets({
+    //                 market: markets[t.market],
+    //                 amount: t.amount,
+    //                 onSent: utils.noop,
+    //                 onSuccess: function (r) {
+    //                     augur.sell({
+    //                         amount: t.amount,
+    //                         price: t.price,
+    //                         market: markets[t.market],
+    //                         outcome: t.outcome,
+    //                         onSent: function (r) {
+    //                             assert(r.txHash);
+    //                             assert.isNull(r.callReturn);
+    //                         },
+    //                         onSuccess: function (r) {
+    //                             assert(r.hash);
+    //                             assert.isNotNull(r.callReturn);
+    //                             assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+    //                             augur.cancel(r.callReturn, function (r) {
+    //                                 assert.isNull(r.callReturn);
+    //                             }, function (r) {
+    //                                 assert(r.hash);
+    //                                 assert.strictEqual(r.callReturn, "1");
+    //                                 done();
+    //                             }, done);
+    //                         },
+    //                         onFailed: done
+    //                     });
+    //                 },
+    //                 onFailed: done
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         market: "binary",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "binary",
+    //         amount: "1.5",
+    //         price: "0.1",
+    //         outcome: "2"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: 1,
+    //         price: "0.5",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "0.25",
+    //         price: "0.52",
+    //         outcome: "3"
+    //     });
+    //     test({
+    //         market: "categorical",
+    //         amount: "1.5",
+    //         price: "0.1",
+    //         outcome: "7"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: 1,
+    //         price: "2.5",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "0.25",
+    //         price: "2.6",
+    //         outcome: "1"
+    //     });
+    //     test({
+    //         market: "scalar",
+    //         amount: "1.5",
+    //         price: "1.2",
+    //         outcome: "2"
+    //     });
+    // });
 
     describe("Trade.trade", function () {
         var test = function (t) {
@@ -1264,7 +1264,9 @@ describe("Integration tests", function () {
                                     assert.include(trade_ids, abi.hex(new_trade_id));
                                     // var orderBook = augur.getOrderBook(markets[t.market]);
                                     // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
-                                    var cost = augur.calculateTradingCost(t.amount, t.price, augur.getTradingFee(markets[t.market]), augur.getCumScale(markets[t.market])).cost.toFixed();
+                                    var tradingFee = augur.getTradingFee(markets[t.market]);
+                                    var makerProportionOfFee = augur.getMakerFees(markets[t.market]);
+                                    var cost = augur.calculateFxpTradingCost(t.amount, t.price, abi.fix(tradingFee), abi.fix(makerProportionOfFee), augur.getCumScale(markets[t.market])).cost.toFixed();
                                     augur.trade({
                                         max_value: cost,
                                         max_amount: 0,
