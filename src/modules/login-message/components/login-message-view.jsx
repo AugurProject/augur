@@ -57,7 +57,17 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
-					Oct 25, 2016 @ 11:33PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 27, 2016 @ 3:31AM PST
+				</li>
+				<li>
+					<ol>
+						<li>
+							Added extra blocknumber check and catch-up for missed blocks due to dropped websocket connections.
+						</li>
+					</ol>
+				</li>
+				<li>
+					Oct 25, 2016 @ 11:33PM PST
 				</li>
 				<li>
 					<ol>
@@ -67,7 +77,7 @@ const LoginMessagePage = p => (
 					</ol>
 				</li>
 				<li>
-					Oct 25, 2016 @ 7:12PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 25, 2016 @ 7:12PM PST
 				</li>
 				<li>
 					<ol>
@@ -101,7 +111,7 @@ const LoginMessagePage = p => (
 					</ol>
 				</li>
 				<li>
-					Oct 25, 2016 @ 6:34AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 25, 2016 @ 6:34AM PST
 				</li>
 				<li>
 					<ol>
@@ -120,7 +130,7 @@ const LoginMessagePage = p => (
 					</ol>
 				</li>
 				<li>
-					Oct 23, 2016 @ 8:32PM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 23, 2016 @ 8:32PM PST
 				</li>
 				<li>
 					<ol>
@@ -130,7 +140,7 @@ const LoginMessagePage = p => (
 					</ol>
 				</li>
 				<li>
-					Oct 23, 2016 @ 2:38AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 23, 2016 @ 2:38AM PST
 				</li>
 				<li>
 					<ol>
@@ -143,7 +153,7 @@ const LoginMessagePage = p => (
 					</ol>
 				</li>
 				<li>
-					Oct 22, 2016 @ 2:09AM PST [<a href="mailto:jack@augur.net">Jack</a>]:
+					Oct 22, 2016 @ 2:09AM PST
 				</li>
 				<li>
 					<ol>
