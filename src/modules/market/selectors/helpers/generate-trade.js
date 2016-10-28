@@ -33,8 +33,20 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 
 	let maxNumShares;
 	if (limitPrice != null) {
-		const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(orderBooks[side === BUY ? ASK : BID], side, limitPrice, outcome.id, loginAccount.address);
-		maxNumShares = formatShares(calculateMaxPossibleShares(loginAccount, orders, market.makerFee, market.takerFee, market.cumulativeScale, outcomeTradeInProgress));
+		const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(
+			orderBooks[side === BUY ? ASK : BID],
+			side,
+			limitPrice,
+			outcome.id,
+			loginAccount.address);
+		maxNumShares = formatShares(calculateMaxPossibleShares(
+			loginAccount,
+			orders,
+			market.makerFee,
+			market.takerFee,
+			market.cumulativeScale,
+			outcomeTradeInProgress,
+			market.type === 'scalar' ? market.minValue : null));
 	} else {
 		maxNumShares = formatShares(0);
 	}
