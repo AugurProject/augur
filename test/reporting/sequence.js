@@ -161,7 +161,6 @@ describe("Reporting sequence", function () {
                     period: period,
                     periodLength: periodLength,
                     onSent: function (res) {
-                        assert(res.txHash);
                     },
                     onSuccess: function (res) {
                         var storedReportHash = augur.ExpiringEvents.getReportHash({
@@ -241,7 +240,6 @@ describe("Reporting sequence", function () {
                             isScalar: type === "scalar",
                             isIndeterminate: false,
                             onSent: function (res) {
-                                assert(res.txHash);
                                 console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
                             },
                             onSuccess: function (res) {
@@ -258,7 +256,6 @@ describe("Reporting sequence", function () {
                                     console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
                                     console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
                                 }
-                                assert(res.txHash);
                                 assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
                                 assert.strictEqual(parseInt(storedReport), report);
                                 nextEvent();
