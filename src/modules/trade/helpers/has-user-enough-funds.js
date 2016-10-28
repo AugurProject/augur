@@ -17,6 +17,10 @@ export default memoizerific(10)((trades, loginAccount) => {
 		return false;
 	}
 
-	const totalCost = trades.reduce((totalCost, trade) => totalCost.plus(new BigNumber(trade.totalCost.value, 10)), ZERO);
+	const totalCost = trades.reduce((totalCost, trade) => (
+        trade.side === 'buy' ?
+            totalCost.plus(new BigNumber(trade.totalCost.value, 10)) :
+            totalCost.plus(new BigNumber(trade.totalFee.value, 10))
+    ), ZERO);
 	return totalCost.lte(new BigNumber(loginAccount.ether, 10));
 });
