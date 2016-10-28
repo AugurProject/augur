@@ -30,7 +30,7 @@ export default class MarketData extends Component {
 			<article className="market-data">
 				<h3>{p.market.description}</h3>
 				<ComponentNav
-					{...p.marketDataNavItems}
+					navItems={p.marketDataNavItems}
 					selectedNav={s.selectedNav}
 					updateSelectedNav={this.updateSelectedNav}
 				/>
