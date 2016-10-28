@@ -136,7 +136,7 @@
     "aliases": {
       "assets": "./src/assets",
       "modules": "./src/modules",
-      "selectors": "./src/selectors",
+      "services": "./src/services",
       "utils": "./src/utils"
     }
   }
