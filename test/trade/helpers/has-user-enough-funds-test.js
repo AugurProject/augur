@@ -10,11 +10,11 @@ describe('modules/trade/helpers/has-user-enough-funds.js', () => {
 	it(`should return false if user doesn't have enough money or is not logged in`, () => {
 		assert.isFalse(hasUserEnoughFunds([], { id: null, ether: undefined }));
 		assert.isFalse(hasUserEnoughFunds([], { id: 'address', ether: undefined }));
-		assert.isFalse(hasUserEnoughFunds([{ totalCost: formatEther(11) }], { id: 'address', ether: 10 }));
+		assert.isFalse(hasUserEnoughFunds([{ side: 'buy', totalCost: formatEther(11) }], { id: 'address', ether: 10 }));
 	});
 
 	it('should return true if user has enough money', () => {
-		assert.isTrue(hasUserEnoughFunds([{ totalCost: formatEther(10) }], { id: 'address', ether: 10 }));
-		assert.isTrue(hasUserEnoughFunds([{ totalCost: formatEther(9) }], { id: 'address', ether: 10 }));
+		assert.isTrue(hasUserEnoughFunds([{ side: 'buy', totalCost: formatEther(10) }], { id: 'address', ether: 10 }));
+		assert.isTrue(hasUserEnoughFunds([{ side: 'buy', totalCost: formatEther(9) }], { id: 'address', ether: 10 }));
 	});
 });
