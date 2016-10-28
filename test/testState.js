@@ -212,11 +212,9 @@ const testState = {
 	},
 	tradesInProgress: {
 		testMarketID: {
-			testMarketID: {
-				numShares: 5000,
-				limitPrice: 100,
-				totalCost: 50
-			}
+			numShares: 5000,
+			limitPrice: 100,
+			totalCost: 50
 		}
 	},
 	transactionsData: {
