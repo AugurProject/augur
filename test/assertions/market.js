@@ -297,6 +297,10 @@ export default function (market) {
 			assertFormattedNumber(tradeSummary.totalGas, 'tradeSummary.totalGas');
 		});
 
+		it('market.tradeSummary.hasUserEnoughFunds', () => {
+			assert.isBoolean(tradeSummary.hasUserEnoughFunds);
+		});
+
 		const tradeOrders = tradeSummary.tradeOrders;
 		it('market.tradeSummary.tradeOrders', () => {
 			assert.isDefined(tradeOrders);

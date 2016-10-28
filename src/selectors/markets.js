@@ -69,6 +69,7 @@ function makeMarkets(numMarkets = 10) {
 
 		// trade summary
 		m.tradeSummary = {
+			hasUserEnoughFunds: index !== 1,
 			totalGas: makeNumber(0, ' ETH'),
 			tradeOrders: []
 		};
