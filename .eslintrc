@@ -20,5 +20,20 @@
     "prefer-template": 0,
     "space-infix-ops": 0,
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }]
-  }
+  },
+	"settings": {
+		"import/resolver": {
+			"node": {
+				extensions: [
+					"",
+					".js",
+					".jsx"
+				],
+				"moduleDirectory": [
+					"node_modules",
+					"src" # prevents linting issues w/ aliased paths
+				]
+			}
+		}
+	}
 }

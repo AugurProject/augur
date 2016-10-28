@@ -74,6 +74,7 @@
     "secure-random": "1.1.1"
   },
   "devDependencies": {
+    "aliasify": "^2.0.0",
     "augur-ui-webserver": "1.1.0",
     "babel-eslint": "6.1.2",
     "babel-plugin-transform-remove-console": "6.8.0",
@@ -125,5 +126,18 @@
     "js_entry_file": "./src/index.js",
     "less_entry_files": "./src/less/*.less",
     "assets_folder": "./node_modules/augur-ui-react-components/build/assets/**"
+  },
+	"browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+	"aliasify": {
+    "aliases": {
+      "assets": "./src/assets",
+      "modules": "./src/modules",
+      "selectors": "./src/selectors",
+      "utils": "./src/utils"
+    }
   }
 }
