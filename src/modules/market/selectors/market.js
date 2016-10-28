@@ -49,6 +49,7 @@ import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids
 import getOutstandingShares from '../../market/selectors/helpers/get-outstanding-shares';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
+import hasUserEnoughFunds from '../../trade/helpers/has-user-enough-funds';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
 
 import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
@@ -290,6 +291,7 @@ export function assembleMarket(
 			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
 			market.tradeSummary = generateTradeSummary(marketTradeOrders);
+			market.tradeSummary.hasUserEnoughFunds = hasUserEnoughFunds(market.outcomes.map(outcome => outcome.trade), loginAccount);
 
 			if (!!marketAccountTrades) {
 				market.myPositionsSummary = generateMarketsPositionsSummary([market]);
