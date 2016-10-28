@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
 					Re-organized this technical updates list a bit :)
 				</li>
 				<li>
+					If you cannot afford to make a trade, the Place Trade button will be disabled.  (If you hover over it, a popup will inform you that you do not have enough funds to make the trade.)
+				</li>
+				<li>
 					Re-introduced Doorbell.io &quot;Feedback&quot; button in the lower left-hand corner.
 				</li>
 				<li>
