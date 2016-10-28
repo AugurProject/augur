@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
 						<li>
 							Added extra blocknumber check and catch-up for missed blocks due to dropped websocket connections.
 						</li>
+						<li>
+							augur.js unit tests have been fixed/updated and are now working properly.
+						</li>
 					</ol>
 				</li>
 				<li>
