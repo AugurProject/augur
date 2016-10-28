@@ -39,6 +39,8 @@ import marketDataAge from '../test/assertions/market-data-age';
 import filterSort from '../test/assertions/filter-sort';
 import coreStats from '../test/assertions/core-stats';
 import marketDataNavItems from '../test/assertions/market-data-nav-items';
+import settings from '../test/assertions/settings';
+import chat from '../test/assertions/chat';
 
 export default {
 	activeView,
@@ -81,5 +83,7 @@ export default {
 	marketDataAge,
 	filterSort,
 	coreStats,
-	marketDataNavItems
+	marketDataNavItems,
+	settings,
+	chat
 };
