@@ -43042,7 +43042,7 @@ module.exports = function () {
                 topics: [abi.prefix_hex(abi.encode_hex(roomName))],
                 payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
                 priority: "0x64",
-                ttl: "0x15180"
+                ttl: "0x93a80"
             }, function (posted) {
                 if (!posted) return callback("couldn't post message: " + message);
                 callback(null);
@@ -43879,7 +43879,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.10";
+    this.version = "2.11.11";
 
     this.options = {
         debug: {
@@ -43995,7 +43995,7 @@ module.exports = {
         return {
             fee: abi.unfix(fee),
             percentFee: (noFeeCost.gt(constants.ZERO)) ?
-                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE)) :
+                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) :
                 constants.ZERO,
             cost: abi.unfix(noFeeCost.plus(fee)),
             cash: abi.unfix(noFeeCost.minus(fee))
@@ -44013,7 +44013,7 @@ module.exports = {
         var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
-            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost) : constants.ZERO,
+            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
             cost: noFeeCost.plus(fee),
             cash: noFeeCost.minus(fee)
         };

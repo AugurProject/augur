@@ -60,7 +60,7 @@ module.exports = {
         return {
             fee: abi.unfix(fee),
             percentFee: (noFeeCost.gt(constants.ZERO)) ?
-                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE)) :
+                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) :
                 constants.ZERO,
             cost: abi.unfix(noFeeCost.plus(fee)),
             cash: abi.unfix(noFeeCost.minus(fee))
@@ -78,7 +78,7 @@ module.exports = {
         var noFeeCost = bnAmount.times(bnPrice);
         return {
             fee: fee,
-            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost) : constants.ZERO,
+            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
             cost: noFeeCost.plus(fee),
             cash: noFeeCost.minus(fee)
         };
