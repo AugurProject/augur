@@ -7,7 +7,7 @@ const LoginMessagePage = p => (
 			<h1>{`Welcome to the Augur beta test!`}</h1>
 			<p>{`This is a beta test in advance of Augur's live release. There are bugs. There are features being
 				added, improved, and re-designed. There are a few hundred enhancements scheduled to be added in the next few
-				months. Your thoughtful feedback now is essential. Please use the feedback button at the bottom right of
+				months. Your thoughtful feedback now is essential. Please use the feedback button at the bottom left of
 				every page to submit your feedback, or feel free to send an email to `}
 				<a
 					className="link"
@@ -55,40 +55,42 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
-			<ul>
+			<h3>October 28, 2016</h3>
+			<ol>
 				<li>
-					Oct 28, 2016 @ 12:14AM PST
+					Re-organized this technical updates list a bit :)
 				</li>
 				<li>
-					<ol>
-						<li>
-							Pointed <a href="https://augur-dev.firebaseapp.com">augur-dev</a> and <a href="http://local.augur.net">local.augur.net</a> at our private testing chain (geth JSON RPC endpoints: <a href="https://eth9000.augur.net">HTTPS</a>, <a href="wss://ws9000.augur.net">websockets</a>).  The public (Morden) testnet has been almost unusable for the past several weeks due to excessive network congestion.  Once things are moving on Morden again, our test instances will switch back.  (Note: <a href="https://app.augur.net">app.augur.net</a> remains pointed at the Morden testnet for now, although we may redirect that as well soon.)
-						</li>
-						<li>
-							Percent fee now always displays as a positive number.
-						</li>
-						<li>
-							Added a popup displaying the &quot;maximum number of shares&quot; you can buy at a particular limit price (only visible after you have entered a limit price).
-						</li>
-						<li>
-							Increased the lifetime of chat messages (Whisper TTL) to 1 week; plan is to decrease this if/when the chatbox starts seeing more use.
-						</li>
-					</ol>
+					Re-introduced Doorbell.io &quot;Feedback&quot; button in the lower left-hand corner.
 				</li>
 				<li>
-					Oct 27, 2016 @ 3:31AM PST
+					Pointed <a className="link" rel="noopener noreferrer" target="_blank" href="https://augur-dev.firebaseapp.com">augur-dev</a> and <a className="link" rel="noopener noreferrer" target="_blank" href="http://local.augur.net">local.augur.net</a> at our private testing chain (geth JSON RPC endpoints: <a className="link" rel="noopener noreferrer" target="_blank" href="https://eth9000.augur.net">HTTPS</a>, <a className="link" rel="noopener noreferrer" target="_blank" href="wss://ws9000.augur.net">websockets</a>).  The public (Morden) testnet has been almost unusable for the past several weeks due to excessive network congestion.  Once things are moving on Morden again, our test instances will switch back.  (Note: <a className="link" rel="noopener noreferrer" target="_blank" href="https://app.augur.net">app.augur.net</a> remains pointed at the Morden testnet for now, although we may redirect that as well soon.)
 				</li>
 				<li>
-					<ol>
-						<li>
-							Added extra blocknumber check and catch-up for missed blocks due to dropped websocket connections.
-						</li>
-						<li>
-							augur.js unit tests have been fixed/updated and are now working properly.
-						</li>
-					</ol>
+					There is now a popup displaying the &quot;maximum number of shares&quot; you can buy at a particular limit price (only visible after you have entered a limit price).
 				</li>
-			</ul>
+				<li>
+					Increased the lifetime of chat messages (Whisper TTL) to 1 week; plan is to decrease this if/when the chatbox starts seeing more use.
+				</li>
+			</ol>
+			<h3>October 27, 2016</h3>
+			<ol>
+				<li>
+					Percent fee now always displays as a positive number.
+				</li>
+				<li>
+					Finished updating/fixing the augur.js integration tests.
+				</li>
+				<li>
+					Upgraded our private chain geth instance server (Linode) to support an expanded testing group.
+				</li>
+				<li>
+					Added extra blocknumber check and catch-up for missed blocks due to dropped websocket connections.
+				</li>
+				<li>
+					augur.js unit tests have been fixed/updated and are now working properly.
+				</li>
+			</ol>
 			{p.marketsLink &&
 				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
 			}
