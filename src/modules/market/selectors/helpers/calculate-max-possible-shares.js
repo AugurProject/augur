@@ -56,11 +56,20 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
 		} else {
 			const remainingEther = abi.fix(userEther.minus(runningCost));
 			let remainingShares;
-			const feePerShare = abi.fix(orderCost.fee.abs()).dividedBy(abi.fix(orderAmount)).times(constants.ONE).floor();
+			const feePerShare = abi.fix(orderCost.fee.abs())
+				.dividedBy(abi.fix(orderAmount))
+				.times(constants.ONE)
+				.floor();
 			if (order.type === 'buy') {
-				remainingShares = abi.unfix(remainingEther.dividedBy(feePerShare).times(constants.ONE).floor());
+				remainingShares = abi.unfix(
+					remainingEther.dividedBy(feePerShare)
+						.times(constants.ONE)
+						.floor());
 			} else {
-				remainingShares = abi.unfix(remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice))).times(constants.ONE).floor());
+				remainingShares = abi.unfix(
+					remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice)))
+						.times(constants.ONE)
+						.floor());
 			}
 			maxPossibleShares = maxPossibleShares.plus(remainingShares);
 			break;
