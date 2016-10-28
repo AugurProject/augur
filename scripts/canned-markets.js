@@ -171,16 +171,16 @@ var cannedMarkets = [{
     makerFee: "0.01",
     resolution: "",
     tags: ["climate change", "Antartica", "warming"]
-// }, {
-//     description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
-//     expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
-//     minValue: 0,
-//     maxValue: 1000000,
-//     numOutcomes: 2,
-//     takerFee: "0.02",
-//     makerFee: "0.01",
-//     resolution: "science!",
-//     tags: ["climate", "extinction", "marine biology"]
+}, {
+    description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
+    expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
+    minValue: 0,
+    maxValue: 10000,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    resolution: "science!",
+    tags: ["climate", "extinction", "marine biology"]
 }, {
     description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
     expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
@@ -676,6 +676,35 @@ var cannedMarkets = [{
             "1": []
         }
     }
+}, {
+    description: "How many regular season wins will the NY Jets finish with in the 2016-2017 season?",
+    expDate: parseInt(new Date("1-2-2017").getTime() / 1000, 10),
+    minValue: 0,
+    maxValue: 16,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["sports", "NFL", "Jets"],
+    extraInfo: "",
+    resolution: "http://www.footballdb.com/teams/nfl/new-york-jets/results",
+    orderBook: {
+        buy: {
+            "2": [
+                {shares: "50", price: "6"},
+                {shares: "200", price: "5.5"},
+                {shares: "250", price: "5"}
+            ],
+            "1": []
+        },
+        sell: {
+            "2": [
+                {shares: "100", price: "7"},
+                {shares: "150", price: "7.5"},
+                {shares: "200", price: "8"}
+            ],
+            "1": []
+        }
+    }
 }];
 
 augur.connect({
@@ -684,10 +713,9 @@ augur.connect({
     ws: "ws://127.0.0.1:8546"
 }, function (connected) {
     if (!connected) return console.error("connect failed:", connected);
-    augur.setCash(augur.from, "100000000000", augur.utils.noop, function (r) {
+    augur.setCash(augur.from, "10000000000000", augur.utils.noop, function (r) {
         console.debug("setCash success:", r.callReturn);
         async.eachSeries(cannedMarkets, function (market, nextMarket) {
-            if (augur.network_id === "9000" && !market.orderBook) return nextMarket();
             market.branchId = augur.constants.DEFAULT_BRANCH_ID;
             market.onSent = function (r) {
                 if (DEBUG) console.debug("createSingleEventMarket sent:", r);
