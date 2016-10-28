@@ -52,7 +52,7 @@ const TradeBuilderRow = (p) => {
 					type="number"
 					step="0.1"
 					value={p.trade.numShares}
-					title={p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
+					title={p.trade.limitPrice && p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
 					min="0"
 					max={p.trade.maxNumShares}
 					onChange={value => p.trade.updateTradeOrder(value, undefined, p.trade.side)}

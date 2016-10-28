@@ -57,6 +57,19 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
+					Oct 27, 2016 @ 11:38PM PST
+				</li>
+				<li>
+					<ol>
+						<li>
+							Added a popup displaying the &quot;maximum number of shares&quot; you can buy at a particular limit price (only visible after you have entered a limit price).
+						</li>
+						<li>
+							Increased the lifetime of chat messages (Whisper TTL) to 1 week; plan is to decrease this if/when the chatbox starts seeing more use.
+						</li>
+					</ol>
+				</li>
+				<li>
 					Oct 27, 2016 @ 3:31AM PST
 				</li>
 				<li>
