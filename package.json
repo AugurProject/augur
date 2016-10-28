@@ -46,7 +46,7 @@
     "clean:build": "rm -rf ./build/* && mkdir -p ./build && echo ---------CLEAN----------`date +%r`",
     "clean:lib": "rm -rf ./lib/* && mkdir -p ./lib && echo ---------CLEAN:lib------`date +%r`",
     "__________": "",
-    "partial:uglify": "[ $NODE_ENV = production ] && uglifyjs --compress drop_console,unused=true --mangle --screw-ie8 || cat"
+    "partial:uglify": "[ $NODE_ENV = production ] && uglifyjs --compress unused=true --mangle --screw-ie8 || cat"
   },
   "dependencies": {
     "classnames": "2.2.5",

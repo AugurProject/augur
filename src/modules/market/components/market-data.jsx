@@ -1,31 +1,54 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Outcomes from 'modules/outcomes/components/outcomes';
 import MarketChart from 'modules/market/components/market-chart';
 import MarketDetails from 'modules/market/components/market-details';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/market/constants/market-component-nav-items';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
 
-const MarketData = p => (
-	<article className="market-data">
-		<h3>{p.market.description}</h3>
-		<ComponentNav {...p.marketDataNavItems} />
+export default class MarketData extends Component {
+	constructor(props) {
+		super(props);
 
-		{p.marketDataNavItems.selected === MARKET_DATA_NAV_OUTCOMES &&
-			<Outcomes
-				outcomes={p.market.outcomes}
-				selectedOutcome={p.selectedOutcome}
-				updateSelectedOutcome={p.updateSelectedOutcome}
-			/>
-		}
-		{p.marketDataNavItems.selected === MARKET_DATA_NAV_CHARTS &&
-			<MarketChart series={p.market.priceTimeSeries} />
-		}
-		{p.marketDataNavItems.selected === MARKET_DATA_NAV_DETAILS &&
-			<MarketDetails {...p.market} />
-		}
-	</article>
-);
+		this.state = {
+			selectedNav: MARKET_DATA_NAV_OUTCOMES
+		};
 
-export default MarketData;
+		this.updateSelectedNav = this.updateSelectedNav.bind(this);
+	}
+
+	updateSelectedNav(selectedNav) {
+		this.setState({ selectedNav });
+	}
+
+	render() {
+		const p = this.props;
+		const s = this.state;
+
+		return (
+			<article className="market-data">
+				<h3>{p.market.description}</h3>
+				<ComponentNav
+					{...p.marketDataNavItems}
+					selectedNav={s.selectedNav}
+					updateSelectedNav={this.updateSelectedNav}
+				/>
+
+				{s.selectedNav === MARKET_DATA_NAV_OUTCOMES &&
+					<Outcomes
+						outcomes={p.market.outcomes}
+						selectedOutcome={p.selectedOutcome}
+						updateSelectedOutcome={p.updateSelectedOutcome}
+					/>
+				}
+				{s.selectedNav === MARKET_DATA_NAV_CHARTS &&
+					<MarketChart series={p.market.priceTimeSeries} />
+				}
+				{s.selectedNav === MARKET_DATA_NAV_DETAILS &&
+					<MarketDetails {...p.market} />
+				}
+			</article>
+		);
+	}
+}
