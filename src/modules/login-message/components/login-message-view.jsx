@@ -57,10 +57,16 @@ const LoginMessagePage = p => (
 			<h2>Technical updates:</h2>
 			<ul>
 				<li>
-					Oct 27, 2016 @ 11:38PM PST
+					Oct 28, 2016 @ 12:14AM PST
 				</li>
 				<li>
 					<ol>
+						<li>
+							Pointed <a href="https://augur-dev.firebaseapp.com">augur-dev</a> and <a href="http://local.augur.net">local.augur.net</a> at our private testing chain (geth JSON RPC endpoints: <a href="https://eth9000.augur.net">HTTPS</a>, <a href="wss://ws9000.augur.net">websockets</a>).  The public (Morden) testnet has been almost unusable for the past several weeks due to excessive network congestion.  Once things are moving on Morden again, our test instances will switch back.  (Note: <a href="https://app.augur.net">app.augur.net</a> remains pointed at the Morden testnet for now, although we may redirect that as well soon.)
+						</li>
+						<li>
+							Percent fee now always displays as a positive number.
+						</li>
 						<li>
 							Added a popup displaying the &quot;maximum number of shares&quot; you can buy at a particular limit price (only visible after you have entered a limit price).
 						</li>
