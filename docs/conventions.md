@@ -18,6 +18,7 @@ To help ensure this, the following conventions have been employed:
 * Import paths for `assets`, `modules`, `utils`, and `src` are aliased, so avoid the use of relative paths.
 * Null component states (ex: 'no markets', 'no tags', etc.) should always come first in the component.
 * Conditional display should occur as far down the component tree as possible.
+* Props that are being passed to a component should be explicit from both ends
 
 ### Other Conventions
 Not all conventions are detailed above, but rather just the main points.

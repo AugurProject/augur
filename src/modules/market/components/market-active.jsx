@@ -37,7 +37,9 @@ export default class MarketActive extends Component {
 				</div>
 				<div className="market-group">
 					<MarketUserData />
-					<OutcomeTrade />
+					<OutcomeTrade
+						selectedOutcome={s.selectedOutcome}
+					/>
 				</div>
 			</article>
 		);
