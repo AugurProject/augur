@@ -4,34 +4,37 @@
 	h3 {
 		margin-left: 1em;
 	}
+}
 
-	.market-group {
+.market-group {
+	display: flex;
+
+	& > article {
+
+		.border(true);
+
+		background-color: @color-white;
 		display: flex;
+		flex-direction: column;
 
-		> article {
-			.border(true);
+		&:first-child {
+			flex: 3;
+			margin: 1rem 0.5rem 0.5rem 1rem;
 
-			background-color: @color-white;
-
-			&:first-child {
-				flex: 3;
-				margin: 1rem 0.5rem 0.5rem 1rem;
-
-				& + article {
-					flex: 1;
-					margin: 1rem 1rem 0.5rem 0.5rem;
-				}
+			& + article {
+				flex: 1;
+				margin: 1rem 1rem 0.5rem 0.5rem;
 			}
 		}
+	}
 
-		&:last-child {
-			> article {
-				&:first-child {
-					margin: 0.5rem 0.5rem 0.5rem 1rem;
+	&:last-child {
+		& > article {
+			&:first-child {
+				margin: 0.5rem 0.5rem 0.5rem 1rem;
 
-					& + article {
-						margin: 0.5rem 1rem 0.5rem 0.5rem;
-					}
+				& + article {
+					margin: 0.5rem 1rem 0.5rem 0.5rem;
 				}
 			}
 		}

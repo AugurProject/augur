@@ -1,8 +1,8 @@
 .component-nav {
-	display: flex;
-	flex: 1;
 
 	.border(true, @border-bottom, @border-muted);
+
+	display: flex;
 
 	li {
 		margin: 0 1em -1px; // -1px pulls bottom `up` one pixel to stylistically overlap w/ component-nav bottom border
@@ -16,6 +16,7 @@
 		}
 
 		&:hover:not(.selected) {
+
 			.border(true, @border-bottom, @color-purple, @border-width-2);
 		}
 	}

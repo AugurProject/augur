@@ -39,7 +39,7 @@ To help ensure this, the following conventions have been employed:
   * This can be seen in the way (not exhaustive) typography (`common/less/typography.less`) and borders (`common/less/borders.less`) are employed.
 * Do use mixins where provided
   * Notable ones available: animations/transitions, borders, colors, and typography.
-* Mixin inclusions should always come first within a declaration block.
+* Mixin inclusions should always come first within a declaration block and be alphabetical.
 * Every component should have the minimum amount of styling required (helps maintain contextualization).
    * This allows for stylesheets of parent components that employ a component to apply any additional 'chrome' required.
 * Classnames should be contextual + non-generic.
