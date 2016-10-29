@@ -90,7 +90,7 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'processing transferring of 5 eth to toTestAddress456'
+				status: 'transferring 5 eth to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -131,7 +131,7 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'processing transferring of 5 realEth to toTestAddress456'
+				status: 'transferring 5 realEth to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
@@ -172,7 +172,7 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			data: {
-				status: 'processing transferring of 5 REP to toTestAddress456'
+				status: 'transferring 5 REP to toTestAddress456'
 			}
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
