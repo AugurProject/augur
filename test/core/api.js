@@ -19,6 +19,7 @@ var invoke = function (send) {
 };
 
 describe("Auto-generated API", function () {
+    if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
     async.forEachOfSeries(augur.tx, function (methods, contract, nextContract) {
         describe(contract, function () {
             var api, methodLists;

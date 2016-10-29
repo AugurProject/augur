@@ -87,15 +87,15 @@ module.exports = {
     loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
         this.getCashBalance(accountID, function (result) {
             if (!result || result.error) return cbEther(result);
-            return cbEther(null, parseFloat(result, 10));
+            return cbEther(null, abi.string(result));
         });
         this.getRepBalance(branchID, accountID, function (result) {
             if (!result || result.error) return cbRep(result);
-            return cbRep(null, parseFloat(result, 10));
+            return cbRep(null, abi.string(result));
         });
         this.rpc.balance(accountID, function (wei) {
             if (!wei || wei.error) return cbRealEther(wei);
-            return cbRealEther(null, abi.bignum(wei).dividedBy(constants.ONE).toNumber());
+            return cbRealEther(null, abi.unfix(wei, "string"));
         });
     },
 
@@ -140,15 +140,18 @@ module.exports = {
             callback = callback || market.callback;
             market = market.market;
         }
-        var tx = clone(this.tx.CompositeGetters.getPositionInMarket);
-        tx.params = [market, account || this.from];
-        return this.fire(tx, callback, this.parsePositionInMarket);
+        return this.CompositeGetters.getPositionInMarket(
+            market,
+            account || this.from,
+            callback);
     },
 
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
         var minValue, order;
-        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+        var isScalar = scalarMinMax &&
+            scalarMinMax.minValue !== undefined &&
+            scalarMinMax.maxValue !== undefined;
         if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
         var numOrders = orderArray.length / 8;
         var orderBook = {buy: {}, sell: {}};
@@ -194,7 +197,6 @@ module.exports = {
 
     // account is optional, if provided will return sharesPurchased
     getMarketInfo: function (market, account, callback) {
-        var self = this;
         if (market && market.market) {
             callback = callback || market.callback;
             account = market.account;
@@ -204,10 +206,7 @@ module.exports = {
             callback = account;
             account = null;
         }
-        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = [market, account || 0];
-        tx.timeout = 45000;
-        return this.fire(tx, callback, this.validateMarketInfo);
+        return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
     },
 
     parseBatchMarketInfo: function (marketsArray, numMarkets) {

@@ -136,44 +136,14 @@ module.exports = {
         }, onFailed, onConfirmed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed, onConfirmed) {
-        if (event.constructor === Object) {
-            salt = event.salt;
-            report = event.report;
-            ethics = event.ethics;
-            isScalar = event.isScalar;
-            isIndeterminate = event.isIndeterminate;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            onConfirmed = event.onConfirmed;
-            event = event.event;
-        }
-        onSent = onSent || utils.pass;
-        onSuccess = onSuccess || utils.pass;
-        onFailed = onFailed || utils.pass;
-        var tx = clone(this.tx.MakeReports.submitReport);
-        tx.params = [
+    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed) {
+        return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
             this.fixReport(report, isScalar, isIndeterminate),
-            abi.fix(ethics, "hex")
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    },
-
-    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
-        var tx = clone(this.tx.MakeReports.validateReport);
-        tx.params = [
-            eventID,
-            branch,
-            votePeriod,
-            abi.fix(report, "hex"),
-            forkedOverEthicality,
-            forkedOverThisEvent,
-            roundTwo,
-            abi.fix(balance, "hex")
-        ];
-        return this.fire(tx, callback);
+            ethics,
+            onSent,
+            onSuccess,
+            onFailed);
     }
 };

@@ -29,7 +29,7 @@ module.exports = {
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
-     * @returns BigNumber
+     * @return BigNumber
      */
     calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
         return tradingFee.times(4).times(price).times(
@@ -42,14 +42,14 @@ module.exports = {
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
-     * @returns BigNumber
+     * @return BigNumber
      */
     calculateAdjustedTradingFee: function (tradingFee, price, range) {
         return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
     },
 
     // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
-    // @returns {BigNumbers}
+    // @return {BigNumbers}
     calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var fxpAmount = abi.fix(amount);
         var fxpPrice = abi.fix(price);
@@ -68,7 +68,7 @@ module.exports = {
     },
 
     // Calculates adjusted total trade cost at a specified price
-    // @returns {BigNumbers}
+    // @return {BigNumbers}
     calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var bnAmount = abi.bignum(amount);
         var bnPrice = abi.bignum(price);

@@ -20,10 +20,8 @@ var modules = [
     require("./modules/cash"),
     require("./modules/events"),
     require("./modules/markets"),
-    require("./modules/trades"),
     require("./modules/buyAndSellShares"),
     require("./modules/trade"),
-    require("./modules/completeSets"),
     require("./modules/createBranch"),
     require("./modules/sendReputation"),
     require("./modules/makeReports"),
@@ -40,7 +38,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.11";
+    this.version = "3.0.0";
 
     this.options = {
         debug: {

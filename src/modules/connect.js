@@ -6,6 +6,7 @@
 "use strict";
 
 var clone = require("clone");
+var abi = require("augur-abi");
 var connector = require("ethereumjs-connect");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -24,7 +25,7 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, numInputs, cb, i, onSent, onSuccess, onFailed, onConfirmed;
+            var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
             tx = clone(self.api.functions[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
@@ -52,41 +53,56 @@ module.exports = {
                         cb = params[numInputs];
                     }
                 }
-                if (!utils.is_function(cb)) return self.fire(tx);
-                return self.fire(tx, cb);
+                if (tx.fixed && tx.fixed.length) {
+                    numFixed = tx.fixed.length;
+                    for (i = 0; i < numFixed; ++i) {
+                        tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+                    }
+                }
+                if (!tx.parser) {
+                    if (!utils.is_function(cb)) return self.fire(tx);
+                    return self.fire(tx, cb);
+                }
+                if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
+                return self.fire(tx, cb, self[tx.parser]);
             }
             if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
                 onSent = params[0].onSent;
                 onSuccess = params[0].onSuccess;
                 onFailed = params[0].onFailed;
-                onConfirmed = params[0].onConfirmed;
                 if (numInputs) {
                     tx.params = new Array(numInputs);
                     for (i = 0; i < tx.inputs.length; ++i) {
                         tx.params[i] = params[0][tx.inputs[i]];
                     }
                 }
-                return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-            }
-            if (numInputs) {
-                tx.params = new Array(numInputs);
-                for (i = 0; i < tx.inputs.length; ++i) {
-                    tx.params[i] = params[i];
+            } else {
+                if (numInputs) {
+                    tx.params = new Array(numInputs);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[i];
+                    }
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs])) {
+                    onSent = params[numInputs];
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+                    onSuccess = params[numInputs + 1];
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+                    onFailed = params[numInputs + 2];
                 }
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs])) {
-                onSent = params[numInputs];
+            if (tx.fixed && tx.fixed.length) {
+                numFixed = tx.fixed.length;
+                for (i = 0; i < numFixed; ++i) {
+                    tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+                }
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
-                onSuccess = params[numInputs + 1];
+            if (!tx.parser) {
+                return self.transact(tx, onSent, onSuccess, onFailed);
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
-                onFailed = params[numInputs + 2];
-            }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 3])) {
-                onConfirmed = params[numInputs + 3];
-            }
-            return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+            return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
         };
     },
     bindContractAPI: function (methods) {

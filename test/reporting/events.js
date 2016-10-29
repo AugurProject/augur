@@ -21,6 +21,7 @@ describe("Integration tests", function () {
 
     describe("getMarkets(" + eventID + ")", function () {
         var test = function (res) {
+            console.log('market:', JSON.stringify(res));
             assert.isArray(res);
             assert.isAbove(res.length, 0);
             assert.include(res, marketID);

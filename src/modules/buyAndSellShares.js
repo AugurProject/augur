@@ -12,7 +12,7 @@ var constants = require("../constants");
 
 module.exports = {
 
-    cancel: function (trade_id, onSent, onSuccess, onFailed, onConfirmed) {
+    cancel: function (trade_id, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("cancel:", JSON.stringify(trade_id, null, 2));
         }
@@ -21,7 +21,6 @@ module.exports = {
             onSent = trade_id.onSent;
             onSuccess = trade_id.onSuccess;
             onFailed = trade_id.onFailed;
-            onConfirmed = trade_id.onConfirmed;
             trade_id = trade_id.trade_id;
         }
         onSent = onSent || utils.noop;
@@ -59,11 +58,10 @@ module.exports = {
         this.transact(tx,
             onSent,
             utils.compose(prepare, onSuccess),
-            onFailed,
-            utils.compose(prepare, onConfirmed));
+            onFailed);
     },
 
-    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("buy:", JSON.stringify(amount, null, 2));
         }
@@ -75,7 +73,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -89,10 +86,10 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("sell:", JSON.stringify(amount, null, 2));
         }
@@ -104,7 +101,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -118,10 +114,10 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("shortAsk:", JSON.stringify(amount, null, 2));
         }
@@ -133,7 +129,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -147,6 +142,6 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };

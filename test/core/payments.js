@@ -35,7 +35,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
     describe("Ether-for-cash conversion (deposit/withdraw)", function () {
 
         var value = paymentValue;
-        var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
+        var weiValue = abi.fix(value, "string");
         var sender = augur.from;
         var initialCash = abi.bignum(augur.getCashBalance(sender));
         var account = sender;
@@ -46,11 +46,9 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             augur.depositEther({
                 value: value,
                 onSent: function (res) {
-                    assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                 },
                 onSuccess: function (res) {
-                    assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                     assert.strictEqual(res.from, sender);
                     assert.strictEqual(res.to, augur.contracts.Cash);
@@ -59,7 +57,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     if (DEBUG) printBalance(account);
                     assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
                     if (DEBUG) printBalance(account);
-                    augur.rpc.receipt(res.txHash, function (depositReceipt) {
+                    augur.rpc.receipt(res.hash, function (depositReceipt) {
                         if (DEBUG) console.log(JSON.stringify(depositReceipt, null, 2));
                         assert.notProperty(depositReceipt, "error");
                         assert.isArray(depositReceipt.logs);
@@ -69,18 +67,16 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             to: sender,
                             value: value,
                             onSent: function (r) {
-                                assert.strictEqual(r.txHash.length, 66);
                                 assert.strictEqual(r.callReturn, "1");
                             },
                             onSuccess: function (r) {
                                 if (DEBUG) printBalance(account);
-                                assert.strictEqual(r.txHash.length, 66);
                                 assert.strictEqual(r.callReturn, "1");
                                 assert.strictEqual(r.from, sender);
                                 assert.strictEqual(r.to, augur.contracts.Cash);
                                 var finalCash = abi.bignum(augur.getCashBalance(sender));
                                 assert.strictEqual(initialCash.toFixed(), finalCash.toFixed());
-                                augur.rpc.receipt(r.txHash, function (withdrawReceipt) {
+                                augur.rpc.receipt(r.hash, function (withdrawReceipt) {
                                     if (DEBUG) console.log(JSON.stringify(withdrawReceipt, null, 2));
                                     assert.notProperty(withdrawReceipt, "error");
                                     assert.isArray(withdrawReceipt.logs);
@@ -127,14 +123,12 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCash({
-                to: receiver,
+                recver: receiver,
                 value: paymentValue,
                 onSent: function (res) {
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = abi.bignum(augur.getCashBalance(coinbase));
                     assert.strictEqual(start_balance.minus(final_balance).toNumber(), paymentValue);
@@ -149,15 +143,13 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
             var start_balance = abi.bignum(augur.getCashBalance(coinbase));
             augur.sendCashFrom({
-                to: receiver,
+                recver: receiver,
                 value: paymentValue,
                 from: coinbase,
                 onSent: function (res) {
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = abi.bignum(augur.getCashBalance(coinbase));
                     assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
@@ -179,12 +171,10 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 value: paymentValue,
                 onSent: function (res) {
                     if (DEBUG) console.log(res);
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
                     if (DEBUG) console.log(res);
-                    assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = augur.getRepBalance(branch, coinbase);
                     final_balance = abi.bignum(final_balance);

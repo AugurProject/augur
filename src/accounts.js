@@ -33,7 +33,7 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -60,8 +60,7 @@ module.exports = function () {
                             branch: branch || constants.DEFAULT_BRANCH_ID,
                             onSent: onSent,
                             onSuccess: onSuccess,
-                            onFailed: onFailed,
-                            onConfirmed: onConfirmed
+                            onFailed: onFailed
                         });
                     } else {
                         async.until(function () {
@@ -81,8 +80,7 @@ module.exports = function () {
                                 branch: branch || constants.DEFAULT_BRANCH_ID,
                                 onSent: onSent,
                                 onSuccess: onSuccess,
-                                onFailed: onFailed,
-                                onConfirmed: onConfirmed
+                                onFailed: onFailed
                             });
                         });
                     }
@@ -90,7 +88,7 @@ module.exports = function () {
             });
         },
 
-        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -104,8 +102,7 @@ module.exports = function () {
                         branch: branch || constants.DEFAULT_BRANCH_ID,
                         onSent: onSent,
                         onSuccess: onSuccess,
-                        onFailed: onFailed,
-                        onConfirmed: onConfirmed
+                        onFailed: onFailed
                     });
                 },
                 onFailed: onFailed
@@ -113,14 +110,13 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-            var self = this;
             cb = cb || utils.pass;
 
             // web.account object is set to use new name
-            self.account.name = newName;
+            this.account.name = newName;
 
             // send back the new updated loginAccount object.
-            return cb(clone(self.account));
+            return cb(clone(this.account));
         },
 
         register: function (name, password, cb) {

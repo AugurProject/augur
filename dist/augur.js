@@ -17391,6 +17391,7 @@ module.exports={
     }, 
     "Cash": {
       "addCash": {
+        "fixed": [1], 
         "inputs": [
           "ID", 
           "amount"
@@ -17430,6 +17431,7 @@ module.exports={
         ]
       }, 
       "send": {
+        "fixed": [1], 
         "inputs": [
           "recver", 
           "value"
@@ -17443,6 +17445,7 @@ module.exports={
         ]
       }, 
       "sendFrom": {
+        "fixed": [1], 
         "inputs": [
           "recver", 
           "value", 
@@ -17458,6 +17461,7 @@ module.exports={
         ]
       }, 
       "setCash": {
+        "fixed": [1], 
         "inputs": [
           "address", 
           "balance"
@@ -17483,6 +17487,7 @@ module.exports={
         ]
       }, 
       "withdrawEther": {
+        "fixed": [1],
         "inputs": [
           "to", 
           "value"
@@ -17582,6 +17587,7 @@ module.exports={
     }, 
     "CompleteSets": {
       "buyCompleteSets": {
+        "fixed": [1], 
         "gas": 698875, 
         "inputs": [
           "market", 
@@ -17597,6 +17603,7 @@ module.exports={
         ]
       }, 
       "sellCompleteSets": {
+        "fixed": [1], 
         "gas": 535220, 
         "inputs": [
           "market", 
@@ -17667,6 +17674,7 @@ module.exports={
           "account"
         ], 
         "method": "getMarketInfo", 
+        "parser": "validateMarketInfo", 
         "returns": "hash[]", 
         "signature": [
           "int256", 
@@ -17714,6 +17722,7 @@ module.exports={
           "numTradesToLoad"
         ], 
         "method": "getOrderBook", 
+        "parser": "parseOrderBook", 
         "returns": "hash[]", 
         "signature": [
           "int256", 
@@ -17727,6 +17736,7 @@ module.exports={
           "account"
         ], 
         "method": "getPositionInMarket", 
+        "parser": "parsePositionInMarket", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -18336,6 +18346,7 @@ module.exports={
           "event"
         ], 
         "method": "getEventInfo", 
+        "parser": "parseEventInfo", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -18407,6 +18418,7 @@ module.exports={
           "marketIndex"
         ], 
         "method": "getMarket", 
+        "parser": "parseMarket", 
         "returns": "int256", 
         "signature": [
           "int256", 
@@ -18418,6 +18430,7 @@ module.exports={
           "event"
         ], 
         "method": "getMarkets", 
+        "parser": "parseMarkets",
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -19762,6 +19775,7 @@ module.exports={
         ]
       }, 
       "submitReport": {
+        "fixed": [3], 
         "inputs": [
           "event", 
           "salt", 
@@ -19797,6 +19811,7 @@ module.exports={
         ]
       }, 
       "validateReport": {
+        "fixed": [3, 7], 
         "inputs": [
           "eventID", 
           "branch", 
@@ -21054,6 +21069,7 @@ module.exports={
         ]
       }, 
       "fill_trade": {
+        "fixed": [1], 
         "inputs": [
           "id", 
           "fill"
@@ -21111,6 +21127,7 @@ module.exports={
           "id"
         ], 
         "method": "get_trade", 
+        "parser": "parseTradeInfo", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -21142,6 +21159,7 @@ module.exports={
         ]
       }, 
       "saveTrade": {
+        "fixed": [3, 4], 
         "inputs": [
           "trade_id", 
           "type", 
@@ -21165,6 +21183,7 @@ module.exports={
         ]
       }, 
       "update_trade": {
+        "fixed": [1], 
         "inputs": [
           "id", 
           "price"
@@ -42381,7 +42400,7 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -42408,8 +42427,7 @@ module.exports = function () {
                             branch: branch || constants.DEFAULT_BRANCH_ID,
                             onSent: onSent,
                             onSuccess: onSuccess,
-                            onFailed: onFailed,
-                            onConfirmed: onConfirmed
+                            onFailed: onFailed
                         });
                     } else {
                         async.until(function () {
@@ -42429,8 +42447,7 @@ module.exports = function () {
                                 branch: branch || constants.DEFAULT_BRANCH_ID,
                                 onSent: onSent,
                                 onSuccess: onSuccess,
-                                onFailed: onFailed,
-                                onConfirmed: onConfirmed
+                                onFailed: onFailed
                             });
                         });
                     }
@@ -42438,7 +42455,7 @@ module.exports = function () {
             });
         },
 
-        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -42452,8 +42469,7 @@ module.exports = function () {
                         branch: branch || constants.DEFAULT_BRANCH_ID,
                         onSent: onSent,
                         onSuccess: onSuccess,
-                        onFailed: onFailed,
-                        onConfirmed: onConfirmed
+                        onFailed: onFailed
                     });
                 },
                 onFailed: onFailed
@@ -42461,14 +42477,13 @@ module.exports = function () {
         },
 
         changeAccountName: function (newName, cb) {
-            var self = this;
             cb = cb || utils.pass;
 
             // web.account object is set to use new name
-            self.account.name = newName;
+            this.account.name = newName;
 
             // send back the new updated loginAccount object.
-            return cb(clone(self.account));
+            return cb(clone(this.account));
         },
 
         register: function (name, password, cb) {
@@ -42835,7 +42850,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":237,"./utilities":263,"_process":192,"async":79,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":274,"locks":175,"node-uuid":184,"request":87}],234:[function(require,module,exports){
+},{"./constants":237,"./utilities":261,"_process":192,"async":79,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":272,"locks":175,"node-uuid":184,"request":87}],234:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -43596,7 +43611,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":237,"./utilities":263,"async":79,"augur-abi":1,"augur-contracts":58,"clone":119}],239:[function(require,module,exports){
+},{"./constants":237,"./utilities":261,"async":79,"augur-abi":1,"augur-contracts":58,"clone":119}],239:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -43859,10 +43874,8 @@ var modules = [
     require("./modules/cash"),
     require("./modules/events"),
     require("./modules/markets"),
-    require("./modules/trades"),
     require("./modules/buyAndSellShares"),
     require("./modules/trade"),
-    require("./modules/completeSets"),
     require("./modules/createBranch"),
     require("./modules/sendReputation"),
     require("./modules/makeReports"),
@@ -43879,7 +43892,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.11.11";
+    this.version = "3.0.0";
 
     this.options = {
         debug: {
@@ -43931,7 +43944,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":265,"./accounts":233,"./augurNode":234,"./batch":235,"./chat":236,"./constants":237,"./filters":238,"./generateOrderBook":239,"./modules/abacus":241,"./modules/buyAndSellShares":242,"./modules/cash":243,"./modules/collectFees":244,"./modules/completeSets":245,"./modules/compositeGetters":246,"./modules/connect":247,"./modules/createBranch":248,"./modules/createMarket":249,"./modules/events":250,"./modules/logs":251,"./modules/makeReports":252,"./modules/markets":253,"./modules/positions":254,"./modules/register":255,"./modules/reportingTools":256,"./modules/sendReputation":257,"./modules/trade":258,"./modules/trades":259,"./modules/tradingActions":260,"./modules/transact":261,"./modules/whitelist":262,"./utilities":263,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":268}],241:[function(require,module,exports){
+},{"../test/tools":263,"./accounts":233,"./augurNode":234,"./batch":235,"./chat":236,"./constants":237,"./filters":238,"./generateOrderBook":239,"./modules/abacus":241,"./modules/buyAndSellShares":242,"./modules/cash":243,"./modules/collectFees":244,"./modules/compositeGetters":245,"./modules/connect":246,"./modules/createBranch":247,"./modules/createMarket":248,"./modules/events":249,"./modules/logs":250,"./modules/makeReports":251,"./modules/markets":252,"./modules/positions":253,"./modules/register":254,"./modules/reportingTools":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/tradingActions":258,"./modules/transact":259,"./modules/whitelist":260,"./utilities":261,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":266}],241:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -43964,7 +43977,7 @@ module.exports = {
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
-     * @returns BigNumber
+     * @return BigNumber
      */
     calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
         return tradingFee.times(4).times(price).times(
@@ -43977,14 +43990,14 @@ module.exports = {
      * @param tradingfee BigNumber
      * @param price BigNumber
      * @param range BigNumber
-     * @returns BigNumber
+     * @return BigNumber
      */
     calculateAdjustedTradingFee: function (tradingFee, price, range) {
         return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
     },
 
     // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
-    // @returns {BigNumbers}
+    // @return {BigNumbers}
     calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var fxpAmount = abi.fix(amount);
         var fxpPrice = abi.fix(price);
@@ -44003,7 +44016,7 @@ module.exports = {
     },
 
     // Calculates adjusted total trade cost at a specified price
-    // @returns {BigNumbers}
+    // @return {BigNumbers}
     calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
         var bnAmount = abi.bignum(amount);
         var bnPrice = abi.bignum(price);
@@ -44327,7 +44340,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":237,"../utilities":263,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":114,"buffer":116,"clone":119}],242:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":114,"buffer":116,"clone":119}],242:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44342,7 +44355,7 @@ var constants = require("../constants");
 
 module.exports = {
 
-    cancel: function (trade_id, onSent, onSuccess, onFailed, onConfirmed) {
+    cancel: function (trade_id, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("cancel:", JSON.stringify(trade_id, null, 2));
         }
@@ -44351,7 +44364,6 @@ module.exports = {
             onSent = trade_id.onSent;
             onSuccess = trade_id.onSuccess;
             onFailed = trade_id.onFailed;
-            onConfirmed = trade_id.onConfirmed;
             trade_id = trade_id.trade_id;
         }
         onSent = onSent || utils.noop;
@@ -44389,11 +44401,10 @@ module.exports = {
         this.transact(tx,
             onSent,
             utils.compose(prepare, onSuccess),
-            onFailed,
-            utils.compose(prepare, onConfirmed));
+            onFailed);
     },
 
-    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("buy:", JSON.stringify(amount, null, 2));
         }
@@ -44405,7 +44416,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -44419,10 +44429,10 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("sell:", JSON.stringify(amount, null, 2));
         }
@@ -44434,7 +44444,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -44448,10 +44457,10 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed, onConfirmed) {
+    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("shortAsk:", JSON.stringify(amount, null, 2));
         }
@@ -44463,7 +44472,6 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -44477,11 +44485,11 @@ module.exports = {
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
-},{"../constants":237,"../utilities":263,"augur-abi":1,"clone":119}],243:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"clone":119}],243:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44496,14 +44504,13 @@ var constants = require("../constants");
 
 module.exports = {
 
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
+    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
         if (to && to.constructor === Object && to.value) {
             value = to.value;
             if (to.from) from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;
-            if (to.onConfirmed) onConfirmed = to.onConfirmed;
             to = to.to;
         }
         return this.transact({
@@ -44512,37 +44519,13 @@ module.exports = {
             value: abi.fix(value, "hex"),
             returns: "null",
             gas: "0xcf08"
-        }, onSent, onSuccess, onConfirmed);
+        }, onSent, onSuccess);
     },
     
-    depositEther: function (value, onSent, onSuccess, onFailed, onConfirmed) {
+    depositEther: function (value, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Cash.depositEther);
         var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
         tx.value = abi.fix(unpacked.params[0], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    withdrawEther: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.withdrawEther);
-        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    setCash: function (address, balance, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.setCash);
-        var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-    
-    addCash: function (ID, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.addCash);
-        var unpacked = utils.unpack(ID, utils.labels(this.addCash), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
     
@@ -44550,40 +44533,16 @@ module.exports = {
         return this.Cash.balance(account, callback);
     },
 
-    sendCash: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
-        // to: ethereum account
-        // value: number -> fixed-point
-        if (to && to.value !== null && to.value !== undefined) {
-            value = to.value;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        var tx = clone(this.tx.Cash.send);
-        tx.params = [to, abi.fix(value, "hex")];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    sendCash: function (recver, value, onSent, onSuccess, onFailed) {
+        return this.Cash.send(recver, value, onSent, onSuccess, onFailed);
     },
 
-    sendCashFrom: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
-        // to: ethereum account
-        // value: number -> fixed-point
-        // from: ethereum account
-        if (to && to.value) {
-            value = to.value;
-            from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        var tx = clone(this.tx.Cash.sendFrom);
-        tx.params = [to, abi.fix(value, "hex"), from];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    sendCashFrom: function (recver, value, from, onSent, onSuccess, onFailed) {
+        return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
     }
 };
 
-},{"../constants":237,"../utilities":263,"augur-abi":1,"clone":119}],244:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"clone":119}],244:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44639,38 +44598,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"bignumber.js":82,"clone":119}],245:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.CompleteSets.buyCompleteSets);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.buyCompleteSets), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    sellCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.CompleteSets.sellCompleteSets);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.sellCompleteSets), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    }
-};
-
-},{"../utilities":263,"augur-abi":1,"clone":119}],246:[function(require,module,exports){
+},{"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],245:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44760,15 +44688,15 @@ module.exports = {
     loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
         this.getCashBalance(accountID, function (result) {
             if (!result || result.error) return cbEther(result);
-            return cbEther(null, parseFloat(result, 10));
+            return cbEther(null, abi.string(result));
         });
         this.getRepBalance(branchID, accountID, function (result) {
             if (!result || result.error) return cbRep(result);
-            return cbRep(null, parseFloat(result, 10));
+            return cbRep(null, abi.string(result));
         });
         this.rpc.balance(accountID, function (wei) {
             if (!wei || wei.error) return cbRealEther(wei);
-            return cbRealEther(null, abi.bignum(wei).dividedBy(constants.ONE).toNumber());
+            return cbRealEther(null, abi.unfix(wei, "string"));
         });
     },
 
@@ -44813,15 +44741,18 @@ module.exports = {
             callback = callback || market.callback;
             market = market.market;
         }
-        var tx = clone(this.tx.CompositeGetters.getPositionInMarket);
-        tx.params = [market, account || this.from];
-        return this.fire(tx, callback, this.parsePositionInMarket);
+        return this.CompositeGetters.getPositionInMarket(
+            market,
+            account || this.from,
+            callback);
     },
 
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
         var minValue, order;
-        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+        var isScalar = scalarMinMax &&
+            scalarMinMax.minValue !== undefined &&
+            scalarMinMax.maxValue !== undefined;
         if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
         var numOrders = orderArray.length / 8;
         var orderBook = {buy: {}, sell: {}};
@@ -44867,7 +44798,6 @@ module.exports = {
 
     // account is optional, if provided will return sharesPurchased
     getMarketInfo: function (market, account, callback) {
-        var self = this;
         if (market && market.market) {
             callback = callback || market.callback;
             account = market.account;
@@ -44877,10 +44807,7 @@ module.exports = {
             callback = account;
             account = null;
         }
-        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = [market, account || 0];
-        tx.timeout = 45000;
-        return this.fire(tx, callback, this.validateMarketInfo);
+        return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
     },
 
     parseBatchMarketInfo: function (marketsArray, numMarkets) {
@@ -44989,7 +44916,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"augur-abi":1,"bignumber.js":82,"clone":119}],247:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],246:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -44998,6 +44925,7 @@ module.exports = {
 "use strict";
 
 var clone = require("clone");
+var abi = require("augur-abi");
 var connector = require("ethereumjs-connect");
 var constants = require("../constants");
 var utils = require("../utilities");
@@ -45016,7 +44944,7 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, numInputs, cb, i, onSent, onSuccess, onFailed, onConfirmed;
+            var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
             tx = clone(self.api.functions[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
@@ -45044,41 +44972,56 @@ module.exports = {
                         cb = params[numInputs];
                     }
                 }
-                if (!utils.is_function(cb)) return self.fire(tx);
-                return self.fire(tx, cb);
+                if (tx.fixed && tx.fixed.length) {
+                    numFixed = tx.fixed.length;
+                    for (i = 0; i < numFixed; ++i) {
+                        tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+                    }
+                }
+                if (!tx.parser) {
+                    if (!utils.is_function(cb)) return self.fire(tx);
+                    return self.fire(tx, cb);
+                }
+                if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
+                return self.fire(tx, cb, self[tx.parser]);
             }
             if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
                 onSent = params[0].onSent;
                 onSuccess = params[0].onSuccess;
                 onFailed = params[0].onFailed;
-                onConfirmed = params[0].onConfirmed;
                 if (numInputs) {
                     tx.params = new Array(numInputs);
                     for (i = 0; i < tx.inputs.length; ++i) {
                         tx.params[i] = params[0][tx.inputs[i]];
                     }
                 }
-                return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-            }
-            if (numInputs) {
-                tx.params = new Array(numInputs);
-                for (i = 0; i < tx.inputs.length; ++i) {
-                    tx.params[i] = params[i];
+            } else {
+                if (numInputs) {
+                    tx.params = new Array(numInputs);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[i];
+                    }
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs])) {
+                    onSent = params[numInputs];
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+                    onSuccess = params[numInputs + 1];
+                }
+                if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+                    onFailed = params[numInputs + 2];
                 }
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs])) {
-                onSent = params[numInputs];
+            if (tx.fixed && tx.fixed.length) {
+                numFixed = tx.fixed.length;
+                for (i = 0; i < numFixed; ++i) {
+                    tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+                }
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
-                onSuccess = params[numInputs + 1];
+            if (!tx.parser) {
+                return self.transact(tx, onSent, onSuccess, onFailed);
             }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
-                onFailed = params[numInputs + 2];
-            }
-            if (params.length > numInputs && utils.is_function(params[numInputs + 3])) {
-                onConfirmed = params[numInputs + 3];
-            }
-            return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+            return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
         };
     },
     bindContractAPI: function (methods) {
@@ -45173,7 +45116,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"clone":119,"ethereumjs-connect":266}],248:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"clone":119,"ethereumjs-connect":264}],247:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45275,7 +45218,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":119}],249:[function(require,module,exports){
+},{"../utilities":261,"augur-abi":1,"clone":119}],248:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45443,7 +45386,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"bignumber.js":82,"clone":119}],250:[function(require,module,exports){
+},{"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],249:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45451,48 +45394,45 @@ module.exports = {
 
 "use strict";
 
-var clone = require("clone");
 var abi = require("augur-abi");
-var utils = require("../utilities");
 
 module.exports = {
 
-    getEventInfo: function (eventId, callback) {
-        // eventId: hash id
-        var self = this;
-        var parse_info = function (info) {
-            // eventinfo = string(7*32 + length)
-            // eventinfo[0] = self.Events[event].branch
-            // eventinfo[1] = self.Events[event].expirationDate 
-            // eventinfo[2] = self.Events[event].outcome
-            // eventinfo[3] = self.Events[event].minValue
-            // eventinfo[4] = self.Events[event].maxValue
-            // eventinfo[5] = self.Events[event].numOutcomes
-            // eventinfo[6] = self.Events[event].bond
-            if (info && info.length) {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]).toFixed();
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.unfix(abi.hex(info[3], true), "string");
-                info[4] = abi.unfix(abi.hex(info[4], true), "string");
-                info[5] = parseInt(info[5]);
-                info[6] = abi.unfix(info[6], "string");
-            }
-            return info;
-        };
-        var tx = clone(this.tx.Events.getEventInfo);
-        tx.params = eventId;
-        if (utils.is_function(callback)) {
-            this.fire(tx, function (info) {
-                callback(parse_info(info));
-            });
-        } else {
-            return parse_info(this.fire(tx));
+    parseMarket: function (market) {
+        return abi.format_int256(market);
+    },
+
+    parseMarkets: function (markets) {
+        var numMarkets = markets.length;
+        var parsedMarkets = new Array(numMarkets);
+        for (var i = 0; i < numMarkets; ++i) {
+            parsedMarkets[i] = this.parseMarket(markets[i]);
         }
+        return parsedMarkets;
+    },
+
+    parseEventInfo: function (info) {
+        // 0: self.Events[event].branch
+        // 1: self.Events[event].expirationDate 
+        // 2: self.Events[event].outcome
+        // 3: self.Events[event].minValue
+        // 4: self.Events[event].maxValue
+        // 5: self.Events[event].numOutcomes
+        // 6: self.Events[event].bond
+        if (info && info.length) {
+            info[0] = abi.hex(info[0]);
+            info[1] = abi.bignum(info[1]).toFixed();
+            info[2] = abi.unfix(info[2], "string");
+            info[3] = abi.unfix(abi.hex(info[3], true), "string");
+            info[4] = abi.unfix(abi.hex(info[4], true), "string");
+            info[5] = parseInt(info[5]);
+            info[6] = abi.unfix(info[6], "string");
+        }
+        return info;
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":119}],251:[function(require,module,exports){
+},{"augur-abi":1}],250:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46070,7 +46010,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"augur-abi":1,"clone":119}],252:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"clone":119}],251:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -46210,50 +46150,20 @@ module.exports = {
         }, onFailed, onConfirmed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed, onConfirmed) {
-        if (event.constructor === Object) {
-            salt = event.salt;
-            report = event.report;
-            ethics = event.ethics;
-            isScalar = event.isScalar;
-            isIndeterminate = event.isIndeterminate;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            onConfirmed = event.onConfirmed;
-            event = event.event;
-        }
-        onSent = onSent || utils.pass;
-        onSuccess = onSuccess || utils.pass;
-        onFailed = onFailed || utils.pass;
-        var tx = clone(this.tx.MakeReports.submitReport);
-        tx.params = [
+    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed) {
+        return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
             this.fixReport(report, isScalar, isIndeterminate),
-            abi.fix(ethics, "hex")
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    },
-
-    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
-        var tx = clone(this.tx.MakeReports.validateReport);
-        tx.params = [
-            eventID,
-            branch,
-            votePeriod,
-            abi.fix(report, "hex"),
-            forkedOverEthicality,
-            forkedOverThisEvent,
-            roundTwo,
-            abi.fix(balance, "hex")
-        ];
-        return this.fire(tx, callback);
+            ethics,
+            onSent,
+            onSuccess,
+            onFailed);
     }
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":237,"../utilities":263,"augur-abi":1,"augur-contracts":58,"buffer":116,"clone":119,"keythereum":274}],253:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"augur-contracts":58,"buffer":116,"clone":119,"keythereum":272}],252:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46294,7 +46204,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"clone":119}],254:[function(require,module,exports){
+},{"../utilities":261,"clone":119}],253:[function(require,module,exports){
 /**
  * Tools to adjust positions in Augur markets for display.
  * @author Jack Peterson (jack@tinybike.net)
@@ -46856,7 +46766,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"async":79,"augur-abi":1,"bignumber.js":82}],255:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"async":79,"augur-abi":1,"bignumber.js":82}],254:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46968,7 +46878,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"augur-abi":1,"clone":119}],256:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"augur-abi":1,"clone":119}],255:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -47206,7 +47116,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"async":79,"augur-abi":1}],257:[function(require,module,exports){
+},{"../utilities":261,"async":79,"augur-abi":1}],256:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -47268,7 +47178,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":119}],258:[function(require,module,exports){
+},{"../utilities":261,"augur-abi":1,"clone":119}],257:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -47581,71 +47491,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"../utilities":263,"./abacus":241,"async":79,"augur-abi":1,"clone":119,"ethrpc":268}],259:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.saveTrade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);
-        tx.params = unpacked.params;
-        tx.params[3] = abi.fix(tx.params[3], "hex");
-        tx.params[4] = abi.fix(tx.params[4], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    get_trade: function (id, callback) {
-        // trade = array(9)
-        // trade[0] = self.trades[id].id
-        // trade[1] = self.trades[id].type
-        // trade[2] = self.trades[id].market
-        // trade[3] = self.trades[id].amount
-        // trade[4] = self.trades[id].price
-        // trade[5] = self.trades[id].owner
-        // trade[6] = self.trades[id].block
-        // trade[7] = self.trades[id].outcome
-        var self = this;
-        var tx = clone(this.tx.Trades.get_trade);
-        tx.params = id;
-        if (!utils.is_function(callback)) {
-            var trade = this.fire(tx);
-            if (!trade || trade.error) return trade;
-            return this.parseTradeInfo(trade);
-        }
-        this.fire(tx, function (trade) {
-            if (!trade || trade.error) return callback(trade);
-            callback(self.parseTradeInfo(trade));
-        });
-    },
-
-    update_trade: function (id, price, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.update_trade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.update_trade), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    fill_trade: function (id, fill, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.fill_trade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.fill_trade), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    }
-};
-
-},{"../utilities":263,"augur-abi":1,"clone":119}],260:[function(require,module,exports){
+},{"../constants":237,"../utilities":261,"./abacus":241,"async":79,"augur-abi":1,"clone":119,"ethrpc":266}],258:[function(require,module,exports){
 /*
  * Author: priecint
  */
@@ -48038,7 +47884,7 @@ module.exports = {
     }
 };
 
-},{"../constants":237,"./abacus":241,"augur-abi":1,"bignumber.js":82,"clone":119,"ethereumjs-tx":157}],261:[function(require,module,exports){
+},{"../constants":237,"./abacus":241,"augur-abi":1,"bignumber.js":82,"clone":119,"ethereumjs-tx":157}],259:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -48057,18 +47903,18 @@ module.exports = {
         return this.rpc.fire(tx, callback, wrapper, aux);
     },
 
-    transact: function (tx, onSent, onSuccess, onFailed, onConfirmed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
         if (this.web && this.web.account && this.web.account.address) {
             tx.from = this.web.account.address;
             tx.invocation = {invoke: this.web.invoke, context: this.web};
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        return this.rpc.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.rpc.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
-},{}],262:[function(require,module,exports){
+},{}],260:[function(require,module,exports){
 /**
  * Testing-only: these methods are whitelisted on production contracts!
  */
@@ -48106,7 +47952,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":263,"augur-abi":1,"clone":119}],263:[function(require,module,exports){
+},{"../utilities":261,"augur-abi":1,"clone":119}],261:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -48281,7 +48127,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":237,"_process":192,"augur-abi":1,"bignumber.js":82,"buffer":116,"clone":119,"crypto":126}],264:[function(require,module,exports){
+},{"./constants":237,"_process":192,"augur-abi":1,"bignumber.js":82,"buffer":116,"clone":119,"crypto":126}],262:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -48311,7 +48157,7 @@ module.exports = {
     }    
 };
 
-},{}],265:[function(require,module,exports){
+},{}],263:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -49001,7 +48847,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":237,"../src/modules/reportingTools":256,"../src/utilities":263,"./madlibs":264,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],266:[function(require,module,exports){
+},{"../src/constants":237,"../src/modules/reportingTools":255,"../src/utilities":261,"./madlibs":262,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],264:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -49333,9 +49179,9 @@ module.exports = {
 
 };
 
-},{"async":267,"augur-contracts":58,"ethrpc":268}],267:[function(require,module,exports){
+},{"async":265,"augur-contracts":58,"ethrpc":266}],265:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":192,"dup":79}],268:[function(require,module,exports){
+},{"_process":192,"dup":79}],266:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -51192,17 +51038,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":192,"async":269,"augur-abi":1,"augur-contracts":58,"bignumber.js":270,"browser-request":271,"clone":272,"js-sha3":273,"net":113,"request":87,"sync-request":87,"websocket":87}],269:[function(require,module,exports){
+},{"_process":192,"async":267,"augur-abi":1,"augur-contracts":58,"bignumber.js":268,"browser-request":269,"clone":270,"js-sha3":271,"net":113,"request":87,"sync-request":87,"websocket":87}],267:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":192,"dup":79}],270:[function(require,module,exports){
+},{"_process":192,"dup":79}],268:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],271:[function(require,module,exports){
+},{"dup":2}],269:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"dup":86}],272:[function(require,module,exports){
+},{"dup":86}],270:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":116,"dup":59}],273:[function(require,module,exports){
+},{"buffer":116,"dup":59}],271:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],274:[function(require,module,exports){
+},{"dup":38}],272:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -51808,7 +51654,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":275,"./lib/scrypt":276,"_process":192,"buffer":116,"crypto":126,"elliptic":280,"ethereumjs-util":297,"fs":113,"node-uuid":306,"path":189,"validator":308}],275:[function(require,module,exports){
+},{"./lib/keccak":273,"./lib/scrypt":274,"_process":192,"buffer":116,"crypto":126,"elliptic":278,"ethereumjs-util":295,"fs":113,"node-uuid":304,"path":189,"validator":306}],273:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -52002,7 +51848,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],276:[function(require,module,exports){
+},{}],274:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -63723,7 +63569,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":192,"fs":113,"path":189}],277:[function(require,module,exports){
+},{"_process":192,"fs":113,"path":189}],275:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -66172,9 +66018,9 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],278:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],279:[function(require,module,exports){
+},{"dup":5}],277:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -66200,9 +66046,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":116,"js-sha3":305}],280:[function(require,module,exports){
+},{"buffer":116,"js-sha3":303}],278:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":296,"./elliptic/curve":283,"./elliptic/curves":286,"./elliptic/ec":287,"./elliptic/eddsa":290,"./elliptic/hmac-drbg":293,"./elliptic/utils":295,"brorand":278,"dup":11}],281:[function(require,module,exports){
+},{"../package.json":294,"./elliptic/curve":281,"./elliptic/curves":284,"./elliptic/ec":285,"./elliptic/eddsa":288,"./elliptic/hmac-drbg":291,"./elliptic/utils":293,"brorand":276,"dup":11}],279:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -66555,7 +66401,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":280,"bn.js":277}],282:[function(require,module,exports){
+},{"../../elliptic":278,"bn.js":275}],280:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -66963,9 +66809,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],283:[function(require,module,exports){
+},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],281:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":281,"./edwards":282,"./mont":284,"./short":285,"dup":14}],284:[function(require,module,exports){
+},{"./base":279,"./edwards":280,"./mont":282,"./short":283,"dup":14}],282:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -67143,7 +66989,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],285:[function(require,module,exports){
+},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],283:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -68052,7 +67898,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":280,"../curve":283,"bn.js":277,"inherits":304}],286:[function(require,module,exports){
+},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],284:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -68211,7 +68057,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":280,"./precomputed/secp256k1":294,"hash.js":298}],287:[function(require,module,exports){
+},{"../elliptic":278,"./precomputed/secp256k1":292,"hash.js":296}],285:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -68423,7 +68269,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":280,"./key":288,"./signature":289,"bn.js":277}],288:[function(require,module,exports){
+},{"../../elliptic":278,"./key":286,"./signature":287,"bn.js":275}],286:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -68532,7 +68378,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":277}],289:[function(require,module,exports){
+},{"bn.js":275}],287:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -68604,9 +68450,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":280,"bn.js":277}],290:[function(require,module,exports){
+},{"../../elliptic":278,"bn.js":275}],288:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":280,"./key":291,"./signature":292,"dup":21,"hash.js":298}],291:[function(require,module,exports){
+},{"../../elliptic":278,"./key":289,"./signature":290,"dup":21,"hash.js":296}],289:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -68704,7 +68550,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":280}],292:[function(require,module,exports){
+},{"../../elliptic":278}],290:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -68772,11 +68618,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":280,"bn.js":277}],293:[function(require,module,exports){
+},{"../../elliptic":278,"bn.js":275}],291:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":280,"dup":24,"hash.js":298}],294:[function(require,module,exports){
+},{"../elliptic":278,"dup":24,"hash.js":296}],292:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],295:[function(require,module,exports){
+},{"dup":25}],293:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -68950,7 +68796,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":277}],296:[function(require,module,exports){
+},{"bn.js":275}],294:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -69051,7 +68897,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],297:[function(require,module,exports){
+},{}],295:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -69399,23 +69245,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":277,"buffer":116,"elliptic":280,"rlp":307,"sha3":279}],298:[function(require,module,exports){
+},{"assert":78,"bn.js":275,"buffer":116,"elliptic":278,"rlp":305,"sha3":277}],296:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":299,"./hash/hmac":300,"./hash/ripemd":301,"./hash/sha":302,"./hash/utils":303,"dup":31}],299:[function(require,module,exports){
+},{"./hash/common":297,"./hash/hmac":298,"./hash/ripemd":299,"./hash/sha":300,"./hash/utils":301,"dup":31}],297:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":298,"dup":32}],300:[function(require,module,exports){
+},{"../hash":296,"dup":32}],298:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":298,"dup":33}],301:[function(require,module,exports){
+},{"../hash":296,"dup":33}],299:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":298,"dup":34}],302:[function(require,module,exports){
+},{"../hash":296,"dup":34}],300:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":298,"dup":35}],303:[function(require,module,exports){
+},{"../hash":296,"dup":35}],301:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":304}],304:[function(require,module,exports){
+},{"dup":36,"inherits":302}],302:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],305:[function(require,module,exports){
+},{"dup":37}],303:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],306:[function(require,module,exports){
+},{"dup":38}],304:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -69664,7 +69510,7 @@ arguments[4][38][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],307:[function(require,module,exports){
+},{}],305:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -69893,7 +69739,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"buffer":116}],308:[function(require,module,exports){
+},{"assert":78,"buffer":116}],306:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
