@@ -58,6 +58,9 @@ const LoginMessagePage = p => (
 			<h3>October 29, 2016</h3>
 			<ol>
 				<li>
+					Market detail page now displays market creation and ending date and time (instead of just the date).  Hovering displays the full UTC timestamp, including milliseconds and day of the week.
+				</li>
+				<li>
 					Added fixed-point conversions and result parser methods to the auto-generated API methods (as well as the associated static API data and back-end API maker script).
 				</li>
 				<li>

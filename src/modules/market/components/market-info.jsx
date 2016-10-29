@@ -41,8 +41,8 @@ const MarketInfo = p => (
 					<span className="property-value">{p.maxValue}</span>
 				</li>
 			}
-			<li className="property creation-date">
-				<span className="property-label">creation date</span>
+			<li className="property creation-date" title={`created: ${p.creationTime.full}`}>
+				<span className="property-label">created</span>
 				<ValueDate className="property-value" {...p.creationTime} />
 			</li>
 		</ul>
