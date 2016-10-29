@@ -55,6 +55,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>October 29, 2016</h3>
+			<ol>
+				<li>
+					Added fixed-point conversions and result parser methods to the auto-generated API methods (as well as the associated static API data and back-end API maker script).
+				</li>
+				<li>
+					Removed deprecated onConfirmed callbacks from augur.js.
+				</li>
+				<li>
+					Normalized market IDs received from get-market-ID-from-event-ID methods getMarket and getMarkets.
+				</li>
+			</ol>
 			<h3>October 28, 2016</h3>
 			<ol>
 				<li>
@@ -82,7 +94,7 @@ const LoginMessagePage = p => (
 					Percent fee now always displays as a positive number.
 				</li>
 				<li>
-					Finished updating/fixing the augur.js integration tests.
+					Finished fixing/updating the integration tests for augur.js.
 				</li>
 				<li>
 					Upgraded our private chain geth instance server (Linode) to support an expanded testing group.
