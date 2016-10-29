@@ -104,7 +104,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
@@ -288,7 +288,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
@@ -424,7 +424,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
@@ -641,7 +641,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				categoricalOutcomes: [
@@ -778,7 +778,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				initialFairPrices: {
@@ -967,7 +967,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
+					formatted: 'Jan 1, 3000 8:00 AM',
 					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
 				},
 				outcomes: [
