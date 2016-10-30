@@ -111,6 +111,9 @@ module.exports = {
         this.getPeriodLength(branchID, function (periodLength) {
             if (!periodLength || periodLength.error) return callback(periodLength);
             branch.periodLength = periodLength;
+            branch.currentPeriod = self.getCurrentPeriod(periodLength);
+            branch.currentPeriodProgress = self.getCurrentPeriodProgress(periodLength);
+            branch.isReportConfirmationPhase = branch.currentPeriodProgress > 50;
             self.finishLoadBranch(branch, callback);
         });
         this.getDescription(branchID, function (description) {

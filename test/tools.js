@@ -223,18 +223,12 @@ module.exports = {
         });
     },
 
+    is_created: function (markets) {
+        return markets.scalar && markets.categorical && markets.binary;
+    },
+
     create_each_market_type: function (augur, branchID, expDate, callback) {
         var self = this;
-        function is_created(markets) {
-            return markets.scalar && markets.categorical && markets.binary;
-        }
-
-        if (branchID && !parseInt(augur.getCreator(branchID), 16)) {
-            return this.setup_new_branch(augur, augur.getPeriodLength(augur.constants.DEFAULT_BRANCH_ID), augur.constants.DEFAULT_BRANCH_ID, augur.web.account.address || augur.from, function (err, newBranchID) {
-                if (err) return callback(err);
-                self.create_each_market_type(augur, newBranchID, expDate, callback);
-            });
-        }
 
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
@@ -256,6 +250,7 @@ module.exports = {
         var markets = {};
 
         // create a binary market
+        console.debug('new markets expire at:', expDate, new Date().getTime());
         augur.createSingleEventMarket({
             branchId: branchID,
             description: description,
@@ -307,7 +302,7 @@ module.exports = {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
                                 assert(res.callReturn !== null);
                                 markets.scalar = res.callReturn;
-                                if (is_created(markets)) callback(null, markets);
+                                if (self.is_created(markets)) callback(null, markets);
                             },
                             onFailed: function (err) {
                                 if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
@@ -319,7 +314,7 @@ module.exports = {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
                         assert(res.callReturn !== null);
                         markets.categorical = res.callReturn;
-                        if (is_created(markets)) callback(null, markets);
+                        if (self.is_created(markets)) callback(null, markets);
                     },
                     onFailed: function (err) {
                         if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
@@ -331,7 +326,7 @@ module.exports = {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
                 assert(res.callReturn !== null);
                 markets.binary = res.callReturn;
-                if (is_created(markets)) callback(null, markets);
+                if (self.is_created(markets)) callback(null, markets);
             },
             onFailed: function (err) {
                 if (self.DEBUG) console.error("createSingleEventMarket failed:", err);

@@ -43892,7 +43892,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.0";
+    this.version = "3.0.1";
 
     this.options = {
         debug: {
@@ -44712,6 +44712,9 @@ module.exports = {
         this.getPeriodLength(branchID, function (periodLength) {
             if (!periodLength || periodLength.error) return callback(periodLength);
             branch.periodLength = periodLength;
+            branch.currentPeriod = self.getCurrentPeriod(periodLength);
+            branch.currentPeriodProgress = self.getCurrentPeriodProgress(periodLength);
+            branch.isReportConfirmationPhase = branch.currentPeriodProgress > 50;
             self.finishLoadBranch(branch, callback);
         });
         this.getDescription(branchID, function (description) {
@@ -48384,18 +48387,12 @@ module.exports = {
         });
     },
 
+    is_created: function (markets) {
+        return markets.scalar && markets.categorical && markets.binary;
+    },
+
     create_each_market_type: function (augur, branchID, expDate, callback) {
         var self = this;
-        function is_created(markets) {
-            return markets.scalar && markets.categorical && markets.binary;
-        }
-
-        if (branchID && !parseInt(augur.getCreator(branchID), 16)) {
-            return this.setup_new_branch(augur, augur.getPeriodLength(augur.constants.DEFAULT_BRANCH_ID), augur.constants.DEFAULT_BRANCH_ID, augur.web.account.address || augur.from, function (err, newBranchID) {
-                if (err) return callback(err);
-                self.create_each_market_type(augur, newBranchID, expDate, callback);
-            });
-        }
 
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
@@ -48417,6 +48414,7 @@ module.exports = {
         var markets = {};
 
         // create a binary market
+        console.debug('new markets expire at:', expDate, new Date().getTime());
         augur.createSingleEventMarket({
             branchId: branchID,
             description: description,
@@ -48468,7 +48466,7 @@ module.exports = {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
                                 assert(res.callReturn !== null);
                                 markets.scalar = res.callReturn;
-                                if (is_created(markets)) callback(null, markets);
+                                if (self.is_created(markets)) callback(null, markets);
                             },
                             onFailed: function (err) {
                                 if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
@@ -48480,7 +48478,7 @@ module.exports = {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
                         assert(res.callReturn !== null);
                         markets.categorical = res.callReturn;
-                        if (is_created(markets)) callback(null, markets);
+                        if (self.is_created(markets)) callback(null, markets);
                     },
                     onFailed: function (err) {
                         if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
@@ -48492,7 +48490,7 @@ module.exports = {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
                 assert(res.callReturn !== null);
                 markets.binary = res.callReturn;
-                if (is_created(markets)) callback(null, markets);
+                if (self.is_created(markets)) callback(null, markets);
             },
             onFailed: function (err) {
                 if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
@@ -49762,6 +49760,9 @@ module.exports = {
 
         if (this.debug.broadcast) {
             console.log("[ethrpc] broadcast: " + JSON.stringify(command, null, 2));
+            console.log(" - HTTP: " + JSON.stringify(this.nodes, null, 2));
+            console.log(" - WS:   " + this.wsUrl);
+            console.log(" - IPC:  " + this.ipcpath);
         }
 
         // if we're on Node, use IPC if available and ipcpath is specified
@@ -50654,7 +50655,7 @@ module.exports = {
 
             // newHeads push notification
             if (block.number) {
-                if (this.debug.tx) console.debug("new block:", block.number);
+                if (this.debug.tx) console.debug("new block:", parseInt(block.number, 16));
                 this.block = abi.copy(block);
                 this.block.number = parseInt(this.block.number, 16);
                 var hashes = Object.keys(this.txs);
