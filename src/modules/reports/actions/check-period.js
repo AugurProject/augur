@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { UPDATE_BLOCKCHAIN } from '../../app/actions/update-blockchain';
+import { updateBranch } from '../../app/actions/update-branch';
 import { loadReports } from '../../reports/actions/load-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
@@ -23,7 +23,7 @@ export function checkPeriod(cb) {
 			}
 			augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
 				if (err) return cb && cb(err);
-				dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod } });
+				dispatch(updateBranch({ reportPeriod }));
 				dispatch(loadEventsWithSubmittedReport());
 				dispatch(loadReports((err) => {
 					if (err) return cb && cb(err);
