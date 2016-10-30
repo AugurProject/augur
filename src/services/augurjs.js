@@ -108,7 +108,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	const tools = augur.tools;
 	const constants = augur.constants;
 	const sender = augur.web.account.address || augur.from;
-	const periodLength = periodLen || 900;
+	const periodLength = periodLen || 1200;
 	const callback = cb || function callback(e, r) {
 		if (e) console.error(e);
 		if (r) console.log(r);
@@ -129,6 +129,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 		console.log('Expiration time:  ', expDate);
 		console.log('Expiration period:', expirationPeriod);
 		cb(null, 1, newBranchID);
+		// augur.rpc.debug.broadcast = true;
 		tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 			if (err) return callback(err);
 			cb(null, 2);
@@ -192,6 +193,7 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 };
 
 ex.augur = augur;
+ex.rpc = augur.rpc;
 ex.abi = augur.abi;
 ex.constants = augur.constants;
 
