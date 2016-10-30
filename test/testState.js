@@ -20,15 +20,16 @@ const testState = {
 	},
 	blockchain: {
 		currentBlockMillisSinceEpoch: 1461774253983,
-		currentBlockNumber: 833339,
-		currentPeriod: 20,
-		isReportConfirmationPhase: true,
-		reportPeriod: 19
+		currentBlockNumber: 833339
 	},
 	branch: {
 		id: 1010101,
 		description: 'root branch',
-		periodLength: 4000
+		periodLength: 4000,
+		currentPeriod: 20,
+		isReportConfirmationPhase: true,
+		reportPeriod: 19,
+		currentPeriodProgress: 52
 	},
 	connection: {
 		isConnected: true
