@@ -61,16 +61,26 @@ export default function () {
 	return selectMarket(selectedMarketID);
 }
 
+export const selectMarketReport = (marketID, branchReports) => {
+	if (marketID && branchReports) {
+		const branchReportsEventIDs = Object.keys(branchReports);
+		const numBranchReports = branchReportsEventIDs.length;
+		for (let i = 0; i < numBranchReports; ++i) {
+			if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+				return branchReports[branchReportsEventIDs[i]];
+			}
+		}
+	}
+};
+
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
 	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
-	const branchReports = reports[branch.id || BRANCH_ID];
-	const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 	return assembleMarket(
 		marketID,
@@ -81,7 +91,7 @@ export const selectMarket = (marketID) => {
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		marketReport,
+		selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
 		(accountPositions || {})[marketID],
 		(netEffectiveTrades || {})[marketID],
 		(accountTrades || {})[marketID],
@@ -92,7 +102,7 @@ export const selectMarket = (marketID) => {
 		endDate.getMonth(),
 		endDate.getDate(),
 
-		blockchain && !!blockchain.isReportConfirmationPhase,
+		branch && !!branch.isReportConfirmationPhase,
 
 		orderBooks[marketID],
 		orderCancellation,
