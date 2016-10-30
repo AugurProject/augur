@@ -15,14 +15,18 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			loadBranch: () => {}
 		}
 	};
-	let mockLoginAcc = {};
+	let mockLoadLoginAccount = {};
+	let mockLoadChatMessages = {};
 	let mockReportingTestSetup = {};
 
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
 	});
-	mockLoginAcc.loadLoginAccount = sinon.stub().returns({
+	mockLoadLoginAccount.loadLoginAccount = sinon.stub().returns({
 		type: 'LOAD_LOGIN_ACCOUNT'
+	});
+	mockLoadChatMessages.loadChatMessages = sinon.stub().returns({
+		type: 'LOAD_CHAT_MESSAGES'
 	});
 	sinon.stub(mockAugurJS.augur, 'loadBranch', (branchID, cb) => {
 		cb(null, 'testBranch');
@@ -33,7 +37,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 
 	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../auth/actions/load-login-account': mockLoginAcc,
+		'../../auth/actions/load-login-account': mockLoadLoginAccount,
+		'../../chat/actions/load-chat-messages': mockLoadChatMessages,
 		'../../reports/actions/reportingTestSetup': mockReportingTestSetup
 	});
 
@@ -58,6 +63,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			},
 			type: 'UPDATE_CONNECTION_STATUS'
 		}, {
+			type: 'LOAD_CHAT_MESSAGES'
+		}, {
 			type: 'LOAD_LOGIN_ACCOUNT'
 		}, {
 			type: 'CLEAR_MARKETS_DATA'
@@ -68,7 +75,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false }`);
 
 		assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
-		assert(mockLoginAcc.loadLoginAccount.calledOnce, `Didn't call loadLoginAccount() exactly once as expected`);
+		assert(mockLoadLoginAccount.loadLoginAccount.calledOnce, `Didn't call loadLoginAccount exactly once as expected`);
+		assert(mockLoadChatMessages.loadChatMessages.calledOnce, `Didn't call loadChatMessages exactly once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
 	});
 });
