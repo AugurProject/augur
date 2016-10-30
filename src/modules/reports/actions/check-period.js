@@ -6,6 +6,7 @@ import { collectFees } from '../../reports/actions/collect-fees';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 const tracker = {
+	checkPeriodLock: false,
 	feesCollected: false,
 	reportsRevealed: false,
 	notSoCurrentPeriod: 0
@@ -21,25 +22,35 @@ export function checkPeriod(cb) {
 				tracker.reportsRevealed = false;
 				tracker.notSoCurrentPeriod = currentPeriod;
 			}
-			augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
-				if (err) return cb && cb(err);
-				dispatch(updateBranch({ reportPeriod }));
-				dispatch(loadEventsWithSubmittedReport());
-				dispatch(loadReports((err) => {
-					if (err) return cb && cb(err);
-					if (blockchain.isReportConfirmationPhase) {
-						if (!tracker.feesCollected) {
-							dispatch(collectFees());
-							tracker.feesCollected = true;
-						}
-						if (!tracker.reportsRevealed) {
-							dispatch(revealReports());
-							tracker.reportsRevealed = true;
-						}
+			if (!tracker.checkPeriodLock) {
+				tracker.checkPeriodLock = true;
+				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
+					if (err) {
+						tracker.checkPeriodLock = false;
+						return cb && cb(err);
 					}
-					return cb && cb(null, reportPeriod);
-				}));
-			});
+					dispatch(updateBranch({ reportPeriod }));
+					dispatch(loadEventsWithSubmittedReport());
+					dispatch(loadReports((err) => {
+						if (err) {
+							tracker.checkPeriodLock = false;
+							return cb && cb(err);
+						}
+						if (blockchain.isReportConfirmationPhase) {
+							if (!tracker.feesCollected) {
+								dispatch(collectFees());
+								tracker.feesCollected = true;
+							}
+							if (!tracker.reportsRevealed) {
+								dispatch(revealReports());
+								tracker.reportsRevealed = true;
+							}
+						}
+						tracker.checkPeriodLock = false;
+						return cb && cb(null, reportPeriod);
+					}));
+				});
+			}
 		}
 	};
 }
