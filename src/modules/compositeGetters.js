@@ -244,7 +244,7 @@ module.exports = {
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
-    parseMarketsInfo: function (marketsArray) {
+    parseMarketsInfo: function (marketsArray, branch) {
         var len, shift, marketID, fees;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
@@ -259,6 +259,7 @@ module.exports = {
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
             marketsInfo[marketID] = {
                 sortOrder: i,
+                branchId: branch,
                 tradingPeriod: parseInt(marketsArray[shift + 1], 16),
                 tradingFee: fees.trading,
                 makerFee: fees.maker,
@@ -307,7 +308,7 @@ module.exports = {
             var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
             tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
             tx.timeout = 240000;
-            return this.fire(tx, callback, this.parseMarketsInfo);
+            return this.fire(tx, callback, this.parseMarketsInfo, branch);
         }
         this.augurNode.getMarketsInfo(branch, function (err, result) {
             if (err) {

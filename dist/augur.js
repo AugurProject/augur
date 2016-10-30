@@ -43892,7 +43892,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.1";
+    this.version = "3.0.2";
 
     this.options = {
         debug: {
@@ -44845,7 +44845,7 @@ module.exports = {
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
-    parseMarketsInfo: function (marketsArray) {
+    parseMarketsInfo: function (marketsArray, branch) {
         var len, shift, marketID, fees;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
@@ -44860,6 +44860,7 @@ module.exports = {
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
             marketsInfo[marketID] = {
                 sortOrder: i,
+                branchId: branch,
                 tradingPeriod: parseInt(marketsArray[shift + 1], 16),
                 tradingFee: fees.trading,
                 makerFee: fees.maker,
@@ -44908,7 +44909,7 @@ module.exports = {
             var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
             tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
             tx.timeout = 240000;
-            return this.fire(tx, callback, this.parseMarketsInfo);
+            return this.fire(tx, callback, this.parseMarketsInfo, branch);
         }
         this.augurNode.getMarketsInfo(branch, function (err, result) {
             if (err) {
@@ -48194,7 +48195,7 @@ var displayed_connection_info = false;
 
 module.exports = {
 
-    DEBUG: false,
+    DEBUG: true,
 
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
@@ -48244,7 +48245,10 @@ module.exports = {
         }
         async.eachSeries(accounts, function (account, nextAccount) {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
-                if (res && res.error) return nextAccount();
+                if (res && res.error) {
+                    console.warn("Couldn't unlock account:", account);
+                    return nextAccount();
+                }
                 if (self.DEBUG) console.log(chalk.white.dim("Unlocked account:"), chalk.green(account));
                 augur.Cash.balance(account, function (cashBalance) {
                     augur.Reporting.getRepBalance({
@@ -48403,7 +48407,7 @@ module.exports = {
         var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
         var tags = [streetName, action, city];
         var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
-        expDate = expDate || parseInt(new Date().getTime() / 995);
+        expDate = expDate || parseInt(new Date().getTime() / 995, 10);
         var takerFee = "0.02";
         var makerFee = "0.01";
         var numCategories = 7;
@@ -48414,10 +48418,10 @@ module.exports = {
         var markets = {};
 
         // create a binary market
-        console.debug('new markets expire at:', expDate, new Date().getTime());
+        console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
         augur.createSingleEventMarket({
             branchId: branchID,
-            description: description,
+            description: description + " [" + Math.random().toString(36).substring(4) + "]",
             expDate: expDate,
             minValue: 1,
             maxValue: 2,
@@ -48433,7 +48437,7 @@ module.exports = {
                 // create a categorical market
                 augur.createSingleEventMarket({
                     branchId: branchID,
-                    description: description + "~|>" + categories.join('|'),
+                    description: description + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
                     expDate: expDate,
                     minValue: 1,
                     maxValue: 2,
@@ -48449,7 +48453,7 @@ module.exports = {
                         // create a scalar market
                         augur.createSingleEventMarket({
                             branchId: branchID,
-                            description: description + "?",
+                            description: description + " [" + Math.random().toString(36).substring(4) + "]",
                             expDate: expDate,
                             minValue: 5,
                             maxValue: 10,
@@ -48469,7 +48473,7 @@ module.exports = {
                                 if (self.is_created(markets)) callback(null, markets);
                             },
                             onFailed: function (err) {
-                                if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                                if (self.DEBUG) console.error("Scalar createSingleEventMarket failed:", err);
                                 callback(new Error(self.pp(err)));
                             }
                         });
@@ -48481,7 +48485,7 @@ module.exports = {
                         if (self.is_created(markets)) callback(null, markets);
                     },
                     onFailed: function (err) {
-                        if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                        if (self.DEBUG) console.error("Categorical createSingleEventMarket failed:", err);
                         callback(new Error(self.pp(err)));
                     }
                 });
@@ -48493,7 +48497,7 @@ module.exports = {
                 if (self.is_created(markets)) callback(null, markets);
             },
             onFailed: function (err) {
-                if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                if (self.DEBUG) console.error("Binary createSingleEventMarket failed:", err);
                 callback(new Error(self.pp(err)));
             }
         });
