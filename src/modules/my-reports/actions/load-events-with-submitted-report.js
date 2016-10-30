@@ -6,16 +6,16 @@ import { updateEventsWithAccountReportData } from '../../my-reports/actions/upda
 
 export function loadEventsWithSubmittedReport(loadMore) {
 	return (dispatch, getState) => {
-		const { branch, blockchain, loginAccount, oldestLoadedEventPeriod } = getState();
+		const { branch, loginAccount, oldestLoadedEventPeriod } = getState();
 
-		if (branch.id && blockchain.currentPeriod && loginAccount.id) {
-			const oldestLoadedPeriod = oldestLoadedEventPeriod || blockchain.currentPeriod - 5;
+		if (branch.id && branch.currentPeriod && loginAccount.id) {
+			const oldestLoadedPeriod = oldestLoadedEventPeriod || branch.currentPeriod - 5;
 
 			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
 
 			dispatch(updateOldestLoadedEventPeriod(startPeriod));
 
-			while (startPeriod <= blockchain.currentPeriod) {
+			while (startPeriod <= branch.currentPeriod) {
 				getEventsWithReports(branch.id, startPeriod, loginAccount.id);
 				startPeriod++;
 			}

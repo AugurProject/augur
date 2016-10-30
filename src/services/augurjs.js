@@ -18,8 +18,8 @@ ex.connect = function connect(env, cb) {
 		if (!isEnvWss) options.ws = null;
 	}
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
-	augur.options.debug.trading = true;
-	augur.options.debug.nonce = true;
+	augur.options.debug.trading = false;
+	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
 	augur.rpc.debug.tx = true;
 	augur.connect(options, (connection) => {
@@ -129,7 +129,6 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 		console.log('Expiration time:  ', expDate);
 		console.log('Expiration period:', expirationPeriod);
 		cb(null, 1, newBranchID);
-		// augur.rpc.debug.broadcast = true;
 		tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 			if (err) return callback(err);
 			cb(null, 2);

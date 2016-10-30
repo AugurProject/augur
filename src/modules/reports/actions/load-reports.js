@@ -20,11 +20,11 @@ function decryptReport(loginAccount, branchID, period, eventID, report, callback
 
 export function loadReports(callback) {
 	return (dispatch, getState) => {
-		const { loginAccount, blockchain, branch, reports } = getState();
-		if (!loginAccount || !loginAccount.id || !branch.id || !blockchain.reportPeriod) {
+		const { loginAccount, branch, reports } = getState();
+		if (!loginAccount || !loginAccount.id || !branch.id || !branch.reportPeriod) {
 			return;
 		}
-		const period = blockchain.reportPeriod;
+		const period = branch.reportPeriod;
 		const account = loginAccount.id;
 		const branchID = branch.id;
 		console.log('calling getEventsToReportOn:', branchID, period, account);
@@ -34,33 +34,36 @@ export function loadReports(callback) {
 				if (!reports[branchID]) reports[branchID] = {};
 				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
 				const report = reports[branchID][eventID] || { eventID };
-				console.log('report for', eventID, report);
-				if (report.reportedOutcomeID && report.salt) {
-					console.debug('Event', eventID, 'is good-to-go!');
-					return nextEvent();
-				}
-				if (report.reportHash) {
-					decryptReport(loginAccount, branchID, period, eventID, report, (err, decryptedReport) => {
-						if (err) return nextEvent(err);
-						reports[branchID][eventID] = decryptedReport;
-						nextEvent();
-					});
-				} else {
-					augur.getReportHash(branchID, period, account, eventID, (reportHash) => {
-						console.log('augur.getReportHash:', reportHash);
-						if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
-							report.reportHash = null;
-							reports[branchID][eventID] = report;
-							return nextEvent();
-						}
-						report.reportHash = reportHash;
+				augur.getMarket(eventID, 0, (marketID) => {
+					if (marketID && !marketID.error) report.marketID = marketID;
+					console.log('report for', eventID, report, marketID);
+					if (report.reportedOutcomeID && report.salt) {
+						console.debug('Event', eventID, 'is good-to-go!');
+						return nextEvent();
+					}
+					if (report.reportHash) {
 						decryptReport(loginAccount, branchID, period, eventID, report, (err, decryptedReport) => {
 							if (err) return nextEvent(err);
 							reports[branchID][eventID] = decryptedReport;
 							nextEvent();
 						});
-					});
-				}
+					} else {
+						augur.getReportHash(branchID, period, account, eventID, (reportHash) => {
+							console.log('augur.getReportHash:', reportHash);
+							if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
+								report.reportHash = null;
+								reports[branchID][eventID] = report;
+								return nextEvent();
+							}
+							report.reportHash = reportHash;
+							decryptReport(loginAccount, branchID, period, eventID, report, (err, decryptedReport) => {
+								if (err) return nextEvent(err);
+								reports[branchID][eventID] = decryptedReport;
+								nextEvent();
+							});
+						});
+					}
+				});
 			}, (err) => {
 				if (err) return callback && callback(err);
 				console.debug('updated reports:', reports);

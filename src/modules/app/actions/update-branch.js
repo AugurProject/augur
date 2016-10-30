@@ -12,7 +12,6 @@ export function updateBranch(branch) {
 export function syncBranch(callback) {
 	return (dispatch, getState) => {
 		const { branch } = getState();
-		console.log('sync branch:', branch);
 		augur.getVotePeriod(branch.id, (period) => {
 			if (period && period.error) {
 				if (callback) return callback(period || 'could not look up period');
@@ -37,7 +36,7 @@ export function syncBranch(callback) {
 				// if report period is caught up and we're not in a new
 				// report phase, callback and exit
 				if (!loginAccount.id || (isCaughtUpReportPeriod && !isChangedReportPhase)) {
-					if (callback) return callback(true, reportPeriod);
+					if (callback) return callback(null, reportPeriod);
 
 				// check if period needs to be incremented / penalizeWrong
 				// needs to be called
@@ -46,7 +45,7 @@ export function syncBranch(callback) {
 						if (err) {
 							if (callback) return callback(err);
 						} else {
-							if (callback) return callback(true, period);
+							if (callback) return callback(null, period);
 						}
 					}));
 				}

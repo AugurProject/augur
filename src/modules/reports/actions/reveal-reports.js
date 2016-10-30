@@ -5,12 +5,12 @@ import { constants } from '../../../services/augurjs';
 
 export function revealReports() {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount, reports, branch } = getState();
+		const { branch, loginAccount, reports } = getState();
 		// Make sure that:
 		//  - branch is in the second half of its reporting period
 		//  - user is logged in and has Rep
 		//  - that this user has committed reports to reveal
-		if (blockchain.isReportConfirmationPhase && loginAccount.rep && reports) {
+		if (branch.isReportConfirmationPhase && loginAccount.rep && reports) {
 			const branchReports = reports[branch.id];
 			if (branchReports) {
 				const revealableReports = Object.keys(branchReports)

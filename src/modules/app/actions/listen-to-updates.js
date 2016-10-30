@@ -31,7 +31,7 @@ export function listenToUpdates() {
 				dispatch(syncBlockchain());
 				dispatch(syncBranch((err, reportPeriod) => {
 					if (err) return console.error('syncBranch:', err);
-					console.debug('syncBranch:', reportPeriod);
+					// console.debug('syncBranch complete:', reportPeriod);
 				}));
 			},
 

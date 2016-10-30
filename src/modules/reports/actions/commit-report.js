@@ -29,7 +29,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 
 export function sendCommitReport(transactionID, market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { loginAccount, blockchain, branch } = getState();
+		const { loginAccount, branch } = getState();
 		const eventID = market.eventID;
 		const branchID = branch.id;
 
@@ -42,7 +42,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
 		const report = {
-			reportPeriod: blockchain.reportPeriod.toString(),
+			reportPeriod: branch.reportPeriod.toString(),
 			reportedOutcomeID,
 			isCategorical: market.type === CATEGORICAL,
 			isScalar: market.type === SCALAR,

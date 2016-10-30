@@ -14,7 +14,7 @@ const tracker = {
 
 export function checkPeriod(cb) {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount, branch } = getState();
+		const { loginAccount, branch } = getState();
 		if (branch.id && loginAccount.id && loginAccount.rep) {
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
 			if (currentPeriod > tracker.notSoCurrentPeriod) {
@@ -36,7 +36,7 @@ export function checkPeriod(cb) {
 							tracker.checkPeriodLock = false;
 							return cb && cb(err);
 						}
-						if (blockchain.isReportConfirmationPhase) {
+						if (branch.isReportConfirmationPhase) {
 							if (!tracker.feesCollected) {
 								dispatch(collectFees());
 								tracker.feesCollected = true;
