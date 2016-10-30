@@ -55,6 +55,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>October 30, 2016</h3>
+			<ol>
+				<li>
+					Market ID is now looked up automatically when getting events that you are required to report on.  All reports you are required to fill out are now loaded during the initial markets loading (rather than only after you happen to browse to the page containing the associated markets).
+				</li>
+				<li>
+					Updated/fixed the middleware and UI reporting user-test setup functions, and successfully completed a run-thru of the UI reporting setup.
+				</li>
+			</ol>
 			<h3>October 29, 2016</h3>
 			<ol>
 				<li>
