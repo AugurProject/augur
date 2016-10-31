@@ -61,7 +61,8 @@ module.exports = {
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
         return {
             salt: salt,
-            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string")
+            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string"),
+            ethics: (arr.length >= 2) ? arr[2] : false
         };
     },
 
@@ -80,12 +81,13 @@ module.exports = {
         return this.fire(tx, callback, this.parseAndDecryptReport, secret);
     },
 
-    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (event.constructor === Object) {
             reportHash = event.reportHash;
             encryptedReport = event.encryptedReport;
             encryptedSalt = event.encryptedSalt;
+            ethics = event.ethics;
             branch = event.branch;
             period = event.period;
             periodLength = event.periodLength;
@@ -99,7 +101,13 @@ module.exports = {
             return onFailed({"-2": "not in first half of period (commit phase)"});
         }
         var tx = clone(this.tx.MakeReports.submitReportHash);
-        tx.params = [event, reportHash, encryptedReport || 0, encryptedSalt || 0];
+        tx.params = [
+            event,
+            reportHash,
+            encryptedReport || 0,
+            encryptedSalt || 0,
+            abi.fix(ethics, "hex")
+        ];
         return this.transact(tx, onSent, function (res) {
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
@@ -110,6 +118,7 @@ module.exports = {
                         reportHash: reportHash,
                         encryptedReport: encryptedReport,
                         encryptedSalt: encryptedSalt,
+                        ethics: ethics,
                         branch: branch,
                         period: period,
                         periodLength: periodLength,
