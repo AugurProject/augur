@@ -1,4 +1,5 @@
 import secureRandom from 'secure-random';
+import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
@@ -19,6 +20,8 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 			eventID =>	!branchReports[eventID].reportHash
 		);
 		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
+		console.debug('next pending report eventID:', nextPendingReportEventID);
+		console.debug('next pending report marketID:', nextPendingReportMarket);
 		if (nextPendingReportMarket) {
 			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
 		} else {
@@ -74,21 +77,25 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			period: report.reportPeriod,
 			periodLength: branch.periodLength,
 			onSent: (res) => {
-				console.debug('SRH sent:', res);
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
+				console.debug('submitReportHash sent:', res);
+				dispatch(updateExistingTransaction(transactionID, {
+					status: 'committing report'
+				}));
 			},
 			onSuccess: (res) => {
-				console.debug('SRH successful:', res.callReturn);
+				console.debug('submitReportHash successful:', res.callReturn);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
+					message: 'committed report',
 					hash: res.hash,
-					timestamp: res.timestamp
+					timestamp: res.timestamp,
+					gasFees: formatRealEther(res.gasFees)
 				}));
 				report.reportHash = reportHash;
 				dispatch(updateReports({ [branchID]: { [eventID]: report } }));
 			},
 			onFailed: (err) => {
-				console.error('SRH failed', err);
+				console.error('submitReportHash failed', err);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: FAILED,
 					message: err.message

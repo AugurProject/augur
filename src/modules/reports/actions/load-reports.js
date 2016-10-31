@@ -2,7 +2,6 @@ import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { updateReports } from '../../reports/actions/update-reports';
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { loadFullMarket } from '../../market/actions/load-full-market';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 function decryptReport(loginAccount, branchID, period, eventID, report, callback) {
@@ -45,7 +44,6 @@ export function loadReports(callback) {
 					console.log('report for', eventID, report, marketID);
 					if (report.reportedOutcomeID && report.salt) {
 						console.debug('Event', eventID, 'is good-to-go!');
-						// dispatch(loadMarketsInfo([marketID], ()));
 						return nextEvent();
 					}
 					if (report.reportHash) {
