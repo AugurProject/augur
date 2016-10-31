@@ -134,52 +134,45 @@ const Transaction = (p) => {
 			break;
 
 		case COMMIT_REPORT:
-		case REVEAL_REPORT:
+		case REVEAL_REPORT: {
+			let isScalar;
+			let reportedOutcome;
 			switch (p.type) {
-				case REVEAL_REPORT:
-					nodes.action = 'Reveal report';
-					break;
 				case COMMIT_REPORT:
 					nodes.action = 'Commit report';
+					isScalar = p.data.market.type === SCALAR;
+					if (isScalar) {
+						reportedOutcome = p.data.market.reportedOutcomeID;
+					}
+					break;
+				case REVEAL_REPORT:
+					nodes.action = 'Reveal report';
+					isScalar = p.data.isScalar;
+					if (isScalar) reportedOutcome = p.data.reportedOutcomeID;
 					break;
 				default:
 					break;
 			}
-			if (p.data.isScalar || p.data.market.type === SCALAR) {
-				nodes.description = (
-					<span className="description">
-						<span className="action">{nodes.action}</span>
-						<strong>{p.data.market.reportedOutcome || ''}</strong>
-						{!!p.data.isUnethical &&
-							<strong className="unethical"> and Unethical</strong>
-						}
-						<br />
-						{marketDescription()}
-						<br />
-						{p.timestamp &&
-							<ValueTimestamp className="property-value" {...p.timestamp} />
-						}
-					</span>
-				);
-			} else {
-				nodes.description = (
-					<span className="description">
-						<span className="action">{nodes.action}</span>
-						<strong>{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</strong>
-						{!!p.data.isUnethical &&
-							<strong className="unethical"> and Unethical</strong>
-						}
-						<br />
-						{marketDescription()}
-						<br />
-						{p.timestamp &&
-							<ValueTimestamp className="property-value" {...p.timestamp} />
-						}
-					</span>
-				);
+			if (!isScalar) {
+				reportedOutcome = p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
 			}
+			nodes.description = (
+				<span className="description">
+					<span className="action">{nodes.action}</span>
+					<strong>{reportedOutcome}</strong>
+					{!!p.data.isUnethical &&
+						<strong className="unethical"> and Unethical</strong>
+					}
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
 			break;
-
+		}
 		case GENERATE_ORDER_BOOK:
 			nodes.action = 'Generate order book';
 			nodes.description = (
@@ -194,6 +187,7 @@ const Transaction = (p) => {
 				</span>
 			);
 			break;
+
 		case CANCEL_ORDER: {
 			nodes.description = (
 				<span className="description">

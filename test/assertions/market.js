@@ -457,11 +457,6 @@ export default function (market) {
 			assert.isObject(report);
 		});
 
-		it('market.report.isUnethical', () => {
-			assert.isDefined(report.isUnethical);
-			assert.isBoolean(report.isUnethical);
-		});
-
 		it('market.report.onSubmitReport', () => {
 			assert.isDefined(report.onSubmitReport);
 			assert.isFunction(report.onSubmitReport);

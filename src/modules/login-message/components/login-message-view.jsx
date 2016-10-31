@@ -55,6 +55,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>October 31, 2016</h3>
+			<ol>
+				<li>
+					The transaction display for reports on scalar events now shows the numerical outcome reported.
+				</li>
+				<li>
+					After submitting a report, you are now automatically taken to the next available event for reporting (instead of to the associated market detail page).  After submitting your final report, you end up at the markets listing.
+				</li>
+				<li>
+					Added (actual) gas fees to the commit report transaction display, and properly labeled the estimated gas fees as an estimate.
+				</li>
+				<li>
+					Report ethicality is now stored on-chain (with the encrypted report and salt), and is automatically looked up for events the user is required to report on.  The ethics field is simply added to submitReportHash as an extra argument.  (This way writing it to chain does not require an extra transaction, and reading it back can be done at the same time as looking up the encrypted report and salt, which would be done anyway.)
+				</li>
+				<li>
+					Reset the private testing chain (private.augur.net, as well as temporarily augur-dev.firebaseapp.com and local.augur.net) due to minor contract changes.
+				</li>
+				<li>
+					Stored reports are now loaded directly from the blockchain, if available.
+				</li>
+				<li>
+					Added a new &quot;rootBranch&quot; setting to the front-end config file (src/env.json).  If rootBranch is set to false, you start on the most recently created created branch (instead of the root branch 1010101, which is normally the default).  This can be useful for reporting testing because the test sequence spawns a new branch when it is run, so it can be used to continue an aborted reporting test.
+				</li>
+			</ol>
 			<h3>October 30, 2016</h3>
 			<ol>
 				<li>
