@@ -62,7 +62,9 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 
 	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
 	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) => {
-		callback(null);
+		return (dispatch, getState) => {
+			callback(null);
+		};
 	});
 
 	action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
@@ -81,25 +83,10 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 					test1: { ...reports[testState.branch.id].test1, isRevealed: true }
 				}
 			}
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: {
-				[testState.branch.id]: {
-					test2: { ...reports[testState.branch.id].test2, isRevealed: true }
-				}
-			}
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: {
-				[testState.branch.id]: {
-					test3: { ...reports[testState.branch.id].test3, isRevealed: true }
-				}
-			}
 		}];
 		store.dispatch(action.revealReports());
-		console.log(store.getActions())
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledThrice, `Didn't call submitReport 3 times as expected`);
+		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledOnce, `Didn't call addRevealReportTransaction once as expected`);
 	});
 
 });
