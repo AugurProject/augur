@@ -5,6 +5,8 @@ import MarketUserData from 'modules/market/components/market-user-data';
 import OrderBook from 'modules/order-book/components/order-book';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
+import getValue from 'utils/get-value';
+
 export default class MarketActive extends Component {
 	constructor(props) {
 		super(props);
@@ -16,6 +18,15 @@ export default class MarketActive extends Component {
 		this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
 	}
 
+	componentWillReceiveProps(nextProps) {
+		const selectedOutcomeID = this.state.selectedOutcome.id;
+		const nextPropsOutcome = nextProps.market.outcomes.find(outcome => outcome.id === selectedOutcomeID);
+
+		if (JSON.stringify(nextPropsOutcome) !== JSON.stringify(this.state.selectedOutcome)) {
+			this.setState({ selectedOutcome: nextPropsOutcome });
+		}
+	}
+
 	updateSelectedOutcome(selectedOutcome) {
 		this.setState({ selectedOutcome });
 	}
@@ -23,6 +34,8 @@ export default class MarketActive extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
+
+		const tradeSummary = getValue(p, 'market.tradeSummary');
 
 		return (
 			<article className="market-active">
@@ -33,14 +46,22 @@ export default class MarketActive extends Component {
 						updateSelectedOutcome={this.updateSelectedOutcome}
 					/>
 					<OrderBook outcome={s.selectedOutcome} />
-					<OutcomeTrade />
+					{p.logged &&
+						<OutcomeTrade
+							selectedOutcome={s.selectedOutcome}
+							tradeSummary={tradeSummary}
+						/>
+					}
 				</div>
-				<div className="market-group">
-					<MarketUserData />
-					<OutcomeTrade
-						selectedOutcome={s.selectedOutcome}
-					/>
-				</div>
+				{p.logged &&
+					<div className="market-group">
+						<MarketUserData />
+						<OutcomeTrade
+							selectedOutcome={s.selectedOutcome}
+							tradeSummary={tradeSummary}
+						/>
+					</div>
+				}
 			</article>
 		);
 	}

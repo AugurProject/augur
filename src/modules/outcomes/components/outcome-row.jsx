@@ -4,14 +4,14 @@ import classnames from 'classnames';
 import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
-import get from 'utils/get';
+import getValue from 'utils/get-value';
 
 const OutcomeRow = (p) => {
-	const topBidShares = get(p, 'outcome.topBid.shares.formatted');
-	const topBidPrice = get(p, 'outcome.topBid.price.formatted');
-	const topAskPrice = get(p, 'outcome.topAsk.price.formatted');
-	const topAskShares = get(p, 'outcome.topAsk.shares.formatted');
-	const lastPrice = get(p, 'outcome.lastPrice.formatted');
+	const topBidShares = getValue(p, 'outcome.topBid.shares.formatted');
+	const topBidPrice = getValue(p, 'outcome.topBid.price.formatted');
+	const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted');
+	const topAskShares = getValue(p, 'outcome.topAsk.shares.formatted');
+	const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
 
 	return (
 		<Link

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import get from 'utils/get';
+import getValue from 'utils/get-value';
 import FormButtons from 'modules/create-market/components/create-market-form-buttons';
 import Input from 'modules/common/components/input';
 import Checkbox from 'modules/common/components/checkbox';
@@ -101,7 +101,7 @@ const CreateMarketForm4 = p => (
 								}
 							/>
 							<span className="denomination">ETH | {cV.label}</span>
-							{!!get(p.errors, `initialFairPrice.${i}`) &&
+							{!!getValue(p, `errors.initialFairPrice.${i}`) &&
 								<span className="error-message">
 									{p.errors.initialFairPrice[`${i}`]}
 								</span>

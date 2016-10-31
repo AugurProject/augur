@@ -3,14 +3,16 @@ import React from 'react';
 import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
 
-import get from 'utils/get';
+import getValue from 'utils/get-value';
 
 const OutcomeTrade = (p) => {
-	console.log('p -- ', p);
+	console.log('OutcomeTrade -- ', p);
 
-	const name = get(p, 'selectedOutcome.name');
-	const trade = get(p, 'selectedOutcome.trade');
-	const tradeOrders = get(p, 'selectedOutcome.trade.tradeSummary.tradeOrders');
+	const name = getValue(p, 'selectedOutcome.name');
+	const trade = getValue(p, 'selectedOutcome.trade');
+	const tradeOrders = getValue(p, 'tradeSummary.tradeOrders');
+
+	console.log('tradeOrders -- ', !!tradeOrders, tradeOrders);
 
 	return (
 		<article className="outcome-trade">
@@ -37,10 +39,10 @@ const OutcomeTrade = (p) => {
 					/>
 				</div>
 			}
-			{tradeOrders &&
+			{tradeOrders.length &&
 				<OutcomeTradeSummary tradeOrders={tradeOrders} />
 			}
-			{tradeOrders &&
+			{tradeOrders.length &&
 				<div className="outcome-trade-actions" >
 					<button>Sell</button>
 					<button>Buy</button>

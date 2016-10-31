@@ -12,6 +12,8 @@ import LoginMessageView from 'modules/login-message/components/login-message-vie
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/app/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
+import getValue from 'utils/get-value';
+
 const Routes = (p) => {
 	let viewProps = null;
 
@@ -86,6 +88,7 @@ const Routes = (p) => {
 		}
 		case M: {
 			viewProps = {
+				logged: getValue(p, 'loginAccount.address'),
 				market: p.market,
 				settings: p.settings,
 				marketDataNavItems: p.marketDataNavItems,
