@@ -73,6 +73,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			reportHash,
 			encryptedReport,
 			encryptedSalt,
+			ethics: Number(!isUnethical),
 			branch: branchID,
 			period: report.reportPeriod,
 			periodLength: branch.periodLength,

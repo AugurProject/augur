@@ -6,7 +6,6 @@ import { augur } from '../../../services/augurjs';
 
 export const makeCommitReportTransaction =
 (market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas, dispatch) => {
-	const gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReportHash }, augur.rpc.gasPrice));
 	const obj = {
 		type: COMMIT_REPORT,
 		gas,
@@ -17,9 +16,9 @@ export const makeCommitReportTransaction =
 			outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
 			reportedOutcomeID,
 			isUnethical,
-			isIndeterminate,
-			gasFees
+			isIndeterminate
 		},
+		gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReportHash }, augur.rpc.gasPrice)),
 		action: (transactionID) =>
 			dispatch(
 				sendCommitReport(
