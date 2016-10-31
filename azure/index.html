@@ -24,15 +24,31 @@
 <body>
 	<div id="app"><div id="splash"><span id="splash-text"></span></div></div>
 	<script type="text/javascript">
-	    window.doorbellOptions = {
-	        appKey: 'oUA3fjlc5PyMSUDPZ0UieGm1Plbse3U9gX2TToTMmyzoyNBCjzIND5qHWcxTBa6S'
-	    };
-	    (function(w, d, t) {
-	        var hasLoaded = false;
-	        function l() { if (hasLoaded) { return; } hasLoaded = true; window.doorbellOptions.windowLoaded = true; var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/4290?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g); }
-	        if (w.attachEvent) { w.attachEvent('onload', l); } else if (w.addEventListener) { w.addEventListener('load', l, false); } else { l(); }
-	        if (d.readyState == 'complete') { l(); }
-	    }(window, document, 'script'));
+	 UserVoice = window.UserVoice || [];
+	 (function() {
+	 	var uv = document.createElement('script');
+	 	uv.type = 'text/javascript';
+	 	uv.async = true;
+	 	uv.src = 'https://widget.uservoice.com/CDL6e6K1fQciGvhFmwEUg.js';
+	 	var s = document.getElementsByTagName('script')[0];
+	 	s.parentNode.insertBefore(uv, s)
+	 })();
+	 UserVoice.push(['set', {
+	 	strings: {
+	 		post_suggestion_title: 'Have an idea for Augur?',
+	 		post_suggestion_body: 'Submit your thoughts to have the community join in!',
+	 		post_suggestion_message_placeholder: 'Functionality improvements, new feature requests, etc.',
+	 		contact_menu_label: 'Want to send the team a message?',
+	 		contact_message_placeholder: 'Need help, have a question, or need to contact the team? Let us know here.'
+	 	}
+	 }]);
+	 UserVoice.push(['addTrigger', {
+	 	mode: 'smartvote',
+	 	trigger_style: 'tab',
+	 	trigger_position: 'left',
+	 	trigger_background_color: '#5c2634',
+	 	accent_color: '#5c2634'
+	 }]);
 	</script>
 </body>
 </html>
