@@ -24,11 +24,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
 				[testState.branch.id]: {
 					test: {
 						eventID: 'test',
-						example: 'example'
+						example: 'example',
+						isScalar: false,
+						isIndeterminate: false,
+						isUnethical: false,
+						isRevealed: false
 					},
 					example: {
 						eventID: 'example',
-						test: 'test'
+						test: 'test',
+						isScalar: false,
+						isIndeterminate: false,
+						isUnethical: false,
+						isRevealed: false
 					}
 				}
 			}
@@ -37,15 +45,26 @@ describe(`modules/reports/reducers/reports.js`, () => {
 			[testState.branch.id]: {
 				test: {
 					eventID: 'test',
-					example: 'example'
+					example: 'example',
+					isScalar: false,
+					isIndeterminate: false,
+					isUnethical: false,
+					isRevealed: false
 				},
 				example: {
 					eventID: 'example',
-					test: 'test'
+					test: 'test',
+					isScalar: false,
+					isIndeterminate: false,
+					isUnethical: false,
+					isRevealed: false
 				},
 				testEventID: {
 					eventID: 'testEventID',
-					isUnethical: false
+					isScalar: false,
+					isIndeterminate: false,
+					isUnethical: false,
+					isRevealed: false
 				}
 			}
 		};
@@ -63,11 +82,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
 			[testState.branch.id]: {
 				test: {
 					eventID: 'test',
-					example: 'example'
+					example: 'example',
+					isScalar: false,
+					isIndeterminate: false,
+					isUnethical: false,
+					isRevealed: false
 				},
 				example: {
 					eventID: 'example',
-					test: 'test'
+					test: 'test',
+					isScalar: false,
+					isIndeterminate: false,
+					isUnethical: false,
+					isRevealed: false
 				}
 			}
 		};

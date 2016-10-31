@@ -23,7 +23,7 @@ const testState = {
 		currentBlockNumber: 833339
 	},
 	branch: {
-		id: 1010101,
+		id: '0xf69b5',
 		description: 'root branch',
 		periodLength: 4000,
 		currentPeriod: 20,
@@ -153,46 +153,33 @@ const testState = {
 		testMarketID: {},
 		'0xMARKET1': {
 			0: [
-				{
-					shares: 10
-				},
-				{
-					shares: 20
-				}
+				{ shares: 10 },
+				{ shares: 20 }
 			],
 			1: [
-				{
-					shares: 10
-				},
-				{
-					shares: 20
-				}
+				{ shares: 10 },
+				{ shares: 20 }
 			]
 		},
 		'0xMARKET2': {
 			0: [
-				{
-					shares: 10
-				},
-				{
-					shares: 20
-				}
+				{ shares: 10 },
+				{ shares: 20 }
 			],
 			1: [
-				{
-					shares: 10
-				},
-				{
-					shares: 20
-				}
+				{ shares: 10 },
+				{ shares: 20 }
 			]
 		},
 	},
 	reports: {
-		1010101: {
+		'0xf69b5': {
 			testEventID: {
 				eventID: 'testEventID',
-				isUnethical: false
+				isScalar: false,
+				isIndeterminate: false,
+				isUnethical: false,
+				isRevealed: false
 			}
 		}
 	},

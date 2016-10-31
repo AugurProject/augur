@@ -16,7 +16,9 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		[testState.branch.id]: {
 			test1: {
 				eventID: 'test1',
+				marketID: 'market1',
 				reportHash: '0xtesthash123456789testhash1',
+				salt: 'salt1',
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID1',
 				isUnethical: false,
@@ -25,7 +27,9 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			},
 			test2: {
 				eventID: 'test2',
+				marketID: 'market2',
 				reportHash: '0xtesthash123456789testhash2',
+				salt: 'salt2',
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID2',
 				isUnethical: false,
@@ -34,7 +38,9 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			},
 			test3: {
 				eventID: 'test3',
+				marketID: 'market3',
 				reportHash: '0xtesthash123456789testhash3',
+				salt: 'salt3',
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID3',
 				isUnethical: true,
@@ -55,7 +61,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	store = mockStore(state);
 
 	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
-	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) => {
+	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) => {
 		callback(null);
 	});
 
@@ -67,22 +73,31 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		store.clearActions();
 	});
 
-	afterEach(() => {
-		store.clearActions();
-	});
-
 	it('should reveal reports', () => {
 		let out = [{
 			type: 'UPDATE_REPORTS',
-			reports: { [testState.branch.id]: { test1: { ...reports[testState.branch.id].test1, isRevealed: true } } }
+			reports: {
+				[testState.branch.id]: {
+					test1: { ...reports[testState.branch.id].test1, isRevealed: true }
+				}
+			}
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: { [testState.branch.id]: { test2: { ...reports[testState.branch.id].test2, isRevealed: true } } }
+			reports: {
+				[testState.branch.id]: {
+					test2: { ...reports[testState.branch.id].test2, isRevealed: true }
+				}
+			}
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: { [testState.branch.id]: { test3: { ...reports[testState.branch.id].test3, isRevealed: true } } }
+			reports: {
+				[testState.branch.id]: {
+					test3: { ...reports[testState.branch.id].test3, isRevealed: true }
+				}
+			}
 		}];
 		store.dispatch(action.revealReports());
+		console.log(store.getActions())
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledThrice, `Didn't call submitReport 3 times as expected`);
 	});
