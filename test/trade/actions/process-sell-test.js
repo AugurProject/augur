@@ -505,13 +505,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
 		switch (mockAugur.augur.getParticipantSharesPurchased.callCount) {
 			case 1:
-				cb(15);
+				cb('15');
 				break;
 			case 2:
-				cb(5);
+				cb('5');
 				break;
 			default:
-				cb(0);
+				cb('0');
 				break;
 		}
 	});

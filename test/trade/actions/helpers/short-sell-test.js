@@ -18,11 +18,11 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		onTradeHash({ data: 'data' });
 		onCommitSent({ data: 'data' });
 		if (mockAugur.augur.short_sell.callCount !== 3)onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-		if (mockAugur.augur.short_sell.callCount === 3) onCommitFailed({ code: 'error', message: 'error message' });
+		if (mockAugur.augur.short_sell.callCount === 3) onCommitFailed({ error: 'error', message: 'error message' });
 		if (mockAugur.augur.short_sell.callCount !== 3) onNextBlock({ data: 'data' });
 		if (mockAugur.augur.short_sell.callCount !== 3) onTradeSent({ data: 'data' });
 		if (mockAugur.augur.short_sell.callCount === 1) onTradeSuccess({ sharesBought: '0', cashFromTrade: '10.00', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
-		if (mockAugur.augur.short_sell.callCount === 2) onTradeFailed({ code: 'error', message: 'error message' });
+		if (mockAugur.augur.short_sell.callCount === 2) onTradeFailed({ error: 'error', message: 'error message' });
 	});
 
 	const mockCBStatus = sinon.stub();
@@ -75,7 +75,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 			gasFees: abi.bignum('0.01450404')
 		}), `Didn't send the right details`);
 		assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't call cbStatus with a filling status`);
-		assert(mockCB.calledWithExactly({ code: 'error', message: 'error message' }), `Didn't calle cb with an error status`);
+		assert(mockCB.calledWithExactly({ error: 'error', message: 'error message' }), `Didn't calle cb with an error status`);
 
 
 		assert.deepEqual(mockCBStatus.callCount, 4, `Didn't call status callback 5 times as expected`);
@@ -88,7 +88,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
-		assert(mockCB.calledWithExactly({ code: 'error', message: 'error message' }), `Didn't calle cb with an error status`);
+		assert(mockCB.calledWithExactly({ error: 'error', message: 'error message' }), `Didn't calle cb with an error status`);
 
 		assert.deepEqual(mockCBStatus.callCount, 2, `Didn't call status callback 5 times as expected`);
 		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);

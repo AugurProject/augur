@@ -149,7 +149,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 	});
 
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
-		cb(10);
+		cb('10');
 	});
 
 	sinon.stub(mockAugur.augur, 'getCashBalance', (takerAddress, cb) => {
@@ -161,15 +161,15 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		onTradeHash({ data: 'data' });
 		onCommitSent({ data: 'data' });
 		onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-		onCommitFailed({ code: 'error', message: 'error message' });
+		onCommitFailed({ error: 'error', message: 'error message' });
 		onNextBlock({ data: 'data' });
 		onTradeSent({ data: 'data' });
 		if (mockAugur.augur.trade.callCount === 1) {
 			onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 		} else {
-			onTradeSuccess({ sharesBought: '0', cashFromTrade: '10.00', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
+			onTradeSuccess({ sharesBought: '0', cashFromTrade: '10', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 		}
-		onTradeFailed({ code: 'error', message: 'error message' });
+		onTradeFailed({ error: 'error', message: 'error message' });
 	});
 
 	const mockCBStatus = sinon.stub();

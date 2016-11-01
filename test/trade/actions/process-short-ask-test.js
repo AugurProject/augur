@@ -111,7 +111,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 			timestamp: 1500000000,
 			gasFees: '0.02791268'
 		});
-		onFailed({ code: 0, message: 'error message!' });
+		onFailed({ error: 0, message: 'error message!' });
 	});
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
