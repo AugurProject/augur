@@ -51,7 +51,7 @@ export default class MarketActive extends Component {
 						<OutcomeTrade
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
-							submitTrade={submitTrade}
+							submitTrade={(id) => { submitTrade(id); }}
 						/>
 					}
 				</div>
@@ -61,7 +61,7 @@ export default class MarketActive extends Component {
 						<OutcomeTrade
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
-							submitTrade={submitTrade}
+							submitTrade={(id) => { submitTrade(id); }}
 						/>
 					</div>
 				}
