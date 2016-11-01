@@ -41,6 +41,7 @@ import coreStats from '../test/assertions/core-stats';
 import marketDataNavItems from '../test/assertions/market-data-nav-items';
 import settings from '../test/assertions/settings';
 import chat from '../test/assertions/chat';
+import marketUserDataNavItems from '../test/assertions/market-user-data-nav-items';
 
 export default {
 	activeView,
@@ -85,5 +86,6 @@ export default {
 	coreStats,
 	marketDataNavItems,
 	settings,
-	chat
+	chat,
+	marketUserDataNavItems
 };
