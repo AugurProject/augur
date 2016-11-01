@@ -86,10 +86,14 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	});
 	store = mockStore(state);
 	let mockMarket = {
-		assembleMarket: () => {}
+		assembleMarket: () => {},
+		selectMarketReport: () => {}
 	};
-	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, marketDataTimestamp, dispatch) => {
+	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => {
 		return market;
+	});
+	sinon.stub(mockMarket, 'selectMarketReport', (marketID, branchReports) => {
+		return {};
 	});
 
 	selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {

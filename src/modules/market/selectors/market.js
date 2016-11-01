@@ -49,6 +49,7 @@ import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids
 import getOutstandingShares from '../../market/selectors/helpers/get-outstanding-shares';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
+import hasUserEnoughFunds from '../../trade/helpers/has-user-enough-funds';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
 
 import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
@@ -60,16 +61,26 @@ export default function () {
 	return selectMarket(selectedMarketID);
 }
 
+export const selectMarketReport = (marketID, branchReports) => {
+	if (marketID && branchReports) {
+		const branchReportsEventIDs = Object.keys(branchReports);
+		const numBranchReports = branchReportsEventIDs.length;
+		for (let i = 0; i < numBranchReports; ++i) {
+			if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+				return branchReports[branchReportsEventIDs[i]];
+			}
+		}
+	}
+};
+
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, smallestPositions } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
 	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
-	const branchReports = reports[branch.id || BRANCH_ID];
-	const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 	return assembleMarket(
 		marketID,
@@ -80,7 +91,7 @@ export const selectMarket = (marketID) => {
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		marketReport,
+		selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
 		(accountPositions || {})[marketID],
 		(netEffectiveTrades || {})[marketID],
 		(accountTrades || {})[marketID],
@@ -91,11 +102,12 @@ export const selectMarket = (marketID) => {
 		endDate.getMonth(),
 		endDate.getDate(),
 
-		blockchain && !!blockchain.isReportConfirmationPhase,
+		branch && !!branch.isReportConfirmationPhase,
 
 		orderBooks[marketID],
 		orderCancellation,
 		(smallestPositions || {})[marketID],
+		loginAccount,
 		store.dispatch);
 };
 
@@ -127,6 +139,7 @@ export function assembleMarket(
 		orderBooks,
 		orderCancellation,
 		smallestPosition,
+		loginAccount,
 		dispatch) {
 
 	if (!assembledMarketsCache[marketID]) {
@@ -149,6 +162,7 @@ export function assembleMarket(
 			orderBooks,
 			orderCancellation,
 			smallestPosition,
+			loginAccount,
 			dispatch) => { // console.log('>>assembleMarket<<');
 
 			const market = {
@@ -254,7 +268,7 @@ export function assembleMarket(
 					}
 				}
 
-				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
+				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
 
 				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
@@ -287,6 +301,7 @@ export function assembleMarket(
 			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
 			market.tradeSummary = generateTradeSummary(marketTradeOrders);
+			market.tradeSummary.hasUserEnoughFunds = hasUserEnoughFunds(market.outcomes.map(outcome => outcome.trade), loginAccount);
 
 			if (!!marketAccountTrades) {
 				market.myPositionsSummary = generateMarketsPositionsSummary([market]);

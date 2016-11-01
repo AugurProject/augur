@@ -1,6 +1,6 @@
 import { augur } from '../../../services/augurjs';
-import { updateBranch } from '../../app/actions/update-branch';
-import { updateBlockchain } from '../../app/actions/update-blockchain';
+import { updateBranch, syncBranch } from '../../app/actions/update-branch';
+import { syncBlockchain } from '../../app/actions/update-blockchain';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
@@ -21,7 +21,8 @@ export function loadBranch(branchID) {
 				dispatch(loadFullMarket(selectedMarketID));
 			}
 
-			dispatch(updateBlockchain(true, () => {
+			dispatch(syncBlockchain());
+			dispatch(syncBranch((err, reportPeriod) => {
 				dispatch(listenToUpdates());
 			}));
 		});

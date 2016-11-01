@@ -1,16 +1,15 @@
 import async from 'async';
 import { updateReports } from '../../reports/actions/update-reports';
 import { addRevealReportTransaction } from '../../transactions/actions/add-reveal-report-transaction';
-import { constants } from '../../../services/augurjs';
 
 export function revealReports() {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount, reports, branch } = getState();
+		const { branch, loginAccount, reports } = getState();
 		// Make sure that:
 		//  - branch is in the second half of its reporting period
 		//  - user is logged in and has Rep
 		//  - that this user has committed reports to reveal
-		if (blockchain.isReportConfirmationPhase && loginAccount.rep && reports) {
+		if (branch.isReportConfirmationPhase && loginAccount.rep && reports) {
 			const branchReports = reports[branch.id];
 			if (branchReports) {
 				const revealableReports = Object.keys(branchReports)
@@ -20,9 +19,10 @@ export function revealReports() {
 						const obj = { ...branchReports[eventID], eventID };
 						return obj;
 					});
-				if (revealableReports && revealableReports.length && loginAccount && loginAccount.id) {
-					async.eachLimit(revealableReports, constants.PARALLEL_LIMIT, (report, nextReport) => {
-						addRevealReportTransaction(report.eventID, report.reportedOutcomeID, report.salt, report.isUnethical, report.isScalar, report.isIndeterminate, (e) => {
+				if (revealableReports && revealableReports.length && loginAccount.id) {
+					async.eachSeries(revealableReports, (report, nextReport) => {
+						console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.isUnethical, report.isScalar, report.isIndeterminate);
+						dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.isUnethical, report.isScalar, report.isIndeterminate, (e) => {
 							if (e) return nextReport(e);
 							dispatch(updateReports({
 								[branch.id]: {
@@ -30,7 +30,7 @@ export function revealReports() {
 								}
 							}));
 							nextReport();
-						});
+						}));
 					}, (e) => {
 						if (e) return console.error('revealReports:', e);
 					});

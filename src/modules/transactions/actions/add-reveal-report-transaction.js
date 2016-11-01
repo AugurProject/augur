@@ -6,41 +6,35 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { updateAssets } from '../../auth/actions/update-assets';
 import { augur } from '../../../services/augurjs';
 
-export function addRevealReportTransaction(eventID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) {
+export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) {
 	return (dispatch, getState) => {
 		augur.getDescription(eventID, (eventDescription) => {
-			// TODO use selectMarketFromEventID
-			augur.getMarket(eventID, 0, (marketID) => {
-				if (!marketID || marketID.error) {
-					return callback(marketID || `market not found for event ${eventID}`);
-				}
-				const outcome = getState().outcomesData[marketID][reportedOutcomeID] || {};
-				const transaction = {
-					type: REVEAL_REPORT,
-					data: {
-						event: eventID,
-						outcome,
-						description: eventDescription || getState().marketsData[marketID].description,
-						reportedOutcomeID,
-						isUnethical,
-						isScalar,
-						isIndeterminate
-					},
-					gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
-				};
-				console.info(REVEAL_REPORT, transaction.data);
-				transaction.action = (transactionID) => dispatch(processRevealReport(
-					transactionID,
-					eventID,
+			const outcome = getState().outcomesData[marketID][reportedOutcomeID] || {};
+			const transaction = {
+				type: REVEAL_REPORT,
+				data: {
+					event: eventID,
+					outcome,
+					description: eventDescription || getState().marketsData[marketID].description,
 					reportedOutcomeID,
-					salt,
 					isUnethical,
 					isScalar,
-					isIndeterminate,
-					outcome.name || reportedOutcomeID,
-					callback));
-				dispatch(addTransaction(transaction));
-			});
+					isIndeterminate
+				},
+				gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
+			};
+			console.info(REVEAL_REPORT, transaction.data);
+			transaction.action = (transactionID) => dispatch(processRevealReport(
+				transactionID,
+				eventID,
+				reportedOutcomeID,
+				salt,
+				isUnethical,
+				isScalar,
+				isIndeterminate,
+				outcome.name || reportedOutcomeID,
+				callback));
+			dispatch(addTransaction(transaction));
 		});
 	};
 }

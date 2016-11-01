@@ -171,7 +171,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: 'transID1',
-			status: { status: 'success', hash: undefined, timestamp: undefined }
+			status: {
+				status: 'success',
+				message: 'committed report',
+				hash: undefined,
+				timestamp: undefined,
+				gasFees: {
+					denomination: ' real ETH',
+					formatted: '0',
+					formattedValue: 0,
+					full: '0 real ETH',
+					minimized: '0',
+					rounded: '0',
+					roundedValue: 0,
+					value: 0
+				}
+			}
 		}, {
 			[testState.branch.id]: {
 				testEventID1: {

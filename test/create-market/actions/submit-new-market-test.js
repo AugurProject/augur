@@ -28,7 +28,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		out,
 		clock,
 		transID = 'testtransaction12345',
-		branchID = 1010101,
+		branchID = '0xf69b5',
 		failedMarketData = {
 			type: BINARY,
 			minValue: 1,

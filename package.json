@@ -60,8 +60,8 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.0.10",
     "async": "1.5.2",
-    "augur-ui-react-components": "3.5.11",
-    "augur.js": "2.11.10",
+    "augur-ui-react-components": "3.5.23",
+    "augur.js": "3.0.4",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",

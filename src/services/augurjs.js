@@ -18,8 +18,8 @@ ex.connect = function connect(env, cb) {
 		if (!isEnvWss) options.ws = null;
 	}
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
-	augur.options.debug.trading = true;
-	augur.options.debug.nonce = true;
+	augur.options.debug.trading = false;
+	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
 	augur.rpc.debug.tx = true;
 	augur.connect(options, (connection) => {
@@ -108,7 +108,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	const tools = augur.tools;
 	const constants = augur.constants;
 	const sender = augur.web.account.address || augur.from;
-	const periodLength = periodLen || 900;
+	const periodLength = periodLen || 1200;
 	const callback = cb || function callback(e, r) {
 		if (e) console.error(e);
 		if (r) console.log(r);
@@ -192,6 +192,7 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 };
 
 ex.augur = augur;
+ex.rpc = augur.rpc;
 ex.abi = augur.abi;
 ex.constants = augur.constants;
 

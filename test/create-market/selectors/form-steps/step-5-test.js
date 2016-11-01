@@ -40,7 +40,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		beforeEach(() => {
 			formState = {
 				description: 'test',
-				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
+				endDate: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				expirySource: 'testing',
@@ -103,9 +103,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				initialFairPrices: {
 					type: BINARY,
@@ -287,9 +287,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				outcomes: [
 					{
@@ -423,9 +423,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -640,9 +640,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -777,9 +777,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				initialFairPrices: {
 					type: SCALAR,
@@ -966,9 +966,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
-					value: new Date(3000, 0, 1, 0, 0, 0, 0),
-					formatted: 'Jan 1, 3000',
-					full: new Date(3000, 0, 1, 0, 0, 0, 0).toUTCString()
+					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+					formatted: 'Jan 1, 3000 12:00 AM',
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
 				},
 				outcomes: [
 					{

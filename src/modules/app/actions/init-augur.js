@@ -27,17 +27,22 @@ export function initAugur() {
 					dispatch(updateConnectionStatus(connected));
 					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
+					let branchID;
+					if (env.rootBranch === false) {
+						const branches = AugurJS.augur.getBranches();
+						branchID = branches[branches.length - 1];
+					} else {
+						branchID = BRANCH_ID;
+					}
 					if (env.reportingTest) {
 						dispatch(reportingTestSetup());
 					} else {
-						dispatch(loadBranch(BRANCH_ID));
-
+						dispatch(loadBranch(branchID));
 						const { loginAccount, loginMessage } = getState();
 						if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
 							const { links } = require('../../../selectors');
 							links.loginMessageLink.onClick();
 						}
-
 						dispatch(initTimer());
 					}
 				});

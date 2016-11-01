@@ -13,11 +13,8 @@ export function loadFullMarket(marketID) {
 		// load price history, and other non-basic market details here, dispatching
 		// the necessary actions to save each part in relevant state
 		const loadDetails = () => {
-			console.info('loadBidsAsks', marketID);
 			dispatch(loadBidsAsks(marketID, () => {
-				console.info('loadAccountTrades', marketID);
 				dispatch(loadAccountTrades(marketID, () => {
-					console.info('loadPriceHistory', marketID);
 					dispatch(loadPriceHistory(marketID));
 					dispatch(updateMarketDataTimestamp(marketID, new Date().getTime()));
 				}));

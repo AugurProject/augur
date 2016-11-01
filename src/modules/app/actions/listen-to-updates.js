@@ -1,6 +1,7 @@
 import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { updateBlockchain } from '../../app/actions/update-blockchain';
+import { syncBlockchain } from '../../app/actions/update-blockchain';
+import { syncBranch } from '../../app/actions/update-branch';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
@@ -27,7 +28,11 @@ export function listenToUpdates() {
 			// block arrivals
 			block: (blockHash) => {
 				dispatch(updateAssets());
-				dispatch(updateBlockchain());
+				dispatch(syncBlockchain());
+				dispatch(syncBranch((err, reportPeriod) => {
+					if (err) return console.error('syncBranch:', err);
+					// console.debug('syncBranch complete:', reportPeriod);
+				}));
 			},
 
 			// trade filled: { market, outcome (id), price }

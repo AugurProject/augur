@@ -108,7 +108,6 @@ export function loadLoginAccount() {
 			}
 			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 
-			console.log('localLoginAccount:', localLoginAccount);
 			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
