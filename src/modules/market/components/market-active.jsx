@@ -36,6 +36,7 @@ export default class MarketActive extends Component {
 		const s = this.state;
 
 		const tradeSummary = getValue(p, 'market.tradeSummary');
+		const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
 
 		return (
 			<article className="market-active">
@@ -50,6 +51,7 @@ export default class MarketActive extends Component {
 						<OutcomeTrade
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
+							submitTrade={submitTrade}
 						/>
 					}
 				</div>
@@ -59,6 +61,7 @@ export default class MarketActive extends Component {
 						<OutcomeTrade
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
+							submitTrade={submitTrade}
 						/>
 					</div>
 				}
