@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import Positions from 'modules/my-positions/components/my-positions';
 import MarketPositionsRow from 'modules/market/components/market-positions-row';
 
 import getValue from 'utils/get-value';
