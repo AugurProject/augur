@@ -77,76 +77,92 @@ module.exports = {
             });
         }
 
-        function checkPenalizeWrong(branch, votePeriod, next) {
+        function checkPenalizeWrong(branch, periodLength, votePeriod, next) {
             console.log("checking penalizeWrong for period", votePeriod);
             self.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
-                if (!events || events.constructor !== Array || !events.length) {
-                    // if > first period, then call penalizeWrong(branch, 0)
-                    console.log("No events found for period", votePeriod);
-                    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-                        lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
-                            console.log("Penalizations caught up!");
-                            return next(null);
-                        }
-                        console.log("Calling penalizeWrong(branch, 0)...");
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                console.log(abi.bignum(r.callReturn, "string", true));
-                                next(null);
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(null);
-                            }
-                        });
-                    });
-                } else {
-                    console.log("Events found for period " + votePeriod + ", looping through...");
-                    async.eachSeries(events, function (event, nextEvent) {
-                        console.log(" - penalizeWrong:", event);
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: event,
-                            onSent: utils.noop,
-                            onSuccess: function (r) {
-                                console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                console.log(" - closing extra markets");
-                                self.getMarkets(event, function (markets) {
-                                    if (!markets) return nextEvent("no markets found for " + event);
-                                    if (markets && markets.error) return nextEvent(markets);
-                                    if (markets.length <= 1) return nextEvent();
-                                    async.eachSeries(markets.slice(1), function (market, nextMarket) {
-                                        self.closeMarket({
-                                            branch: branch,
-                                            market: market,
-                                            sender: sender,
-                                            onSent: function (res) {
-                                                console.log("closeMarket", market, res);
-                                            },
-                                            onSuccess: function (res) {
-                                                console.log("closeMarket success", market, res.callReturn);
-                                                nextMarket();
-                                            },
-                                            onFailed: nextMarket
-                                        });
-                                    }, nextEvent);
+                console.log(" - [checkPenalizeWrong] collectFees for period", votePeriod);
+                self.collectFees({
+                    branch: branch,
+                    sender: sender,
+                    periodLength: periodLength,
+                    onSent: function (r) {
+                        console.log(" - checkPenalizeWrong.collectFees sent:", r);
+                    },
+                    onSuccess: function (r) {
+                        console.log(" - checkPenalizeWrong.collectFees success:", r);
+                        if (!events || events.constructor !== Array || !events.length) {
+                            // if > first period, then call penalizeWrong(branch, 0)
+                            console.log("No events found for period", votePeriod);
+                            self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+                                lastPeriodPenalized = parseInt(lastPeriodPenalized);
+                                if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
+                                    console.log("Penalizations caught up!");
+                                    return next(null);
+                                }
+                                console.log("Calling penalizeWrong(branch, 0)...");
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: 0,
+                                    onSent: function (r) {
+                                        console.log("penalizeWrong sent:", r);
+                                    },
+                                    onSuccess: function (r) {
+                                        console.log("penalizeWrong(branch, 0) success:", r);
+                                        console.log(abi.bignum(r.callReturn, "string", true));
+                                        next(null);
+                                    },
+                                    onFailed: function (err) {
+                                        console.error("penalizeWrong(branch, 0) error:", err);
+                                        next(null);
+                                    }
                                 });
-                            },
-                            onFailed: function (err) {
-                                console.error(" - penalizeWrong error:", err);
-                                nextEvent(err);
-                            }
-                        });
-                    }, next);
-                }
+                            });
+                        } else {
+                            console.log("Events found for period " + votePeriod + ", looping through...");
+                            async.eachSeries(events, function (event, nextEvent) {
+                                console.log(" - penalizeWrong:", event);
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: event,
+                                    onSent: utils.noop,
+                                    onSuccess: function (r) {
+                                        console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                        console.log(" - closing extra markets");
+                                        self.getMarkets(event, function (markets) {
+                                            if (!markets) return nextEvent("no markets found for " + event);
+                                            if (markets && markets.error) return nextEvent(markets);
+                                            if (markets.length <= 1) return nextEvent();
+                                            async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                                self.closeMarket({
+                                                    branch: branch,
+                                                    market: market,
+                                                    sender: sender,
+                                                    onSent: function (res) {
+                                                        console.log("closeMarket", market, res);
+                                                    },
+                                                    onSuccess: function (res) {
+                                                        console.log("closeMarket success", market, res.callReturn);
+                                                        nextMarket();
+                                                    },
+                                                    onFailed: nextMarket
+                                                });
+                                            }, nextEvent);
+                                        });
+                                    },
+                                    onFailed: function (err) {
+                                        console.error(" - penalizeWrong error:", err);
+                                        nextEvent(err);
+                                    }
+                                });
+                            }, next);
+                        }
+                    },
+                    onFailed: function (err) {
+                        console.error(" - checkPenalizeWrong.collectFees error:", err);
+                        next(null);
+                    }
+                });
             });
         }
 
@@ -173,7 +189,7 @@ module.exports = {
             console.log("checkIncrementPeriod:", err, votePeriod);
             if (err) return callback(err);
             console.log("calling checkPenalizeWrong...", branch, votePeriod - 1);
-            checkPenalizeWrong(branch, votePeriod - 1, function (err) {
+            checkPenalizeWrong(branch, periodLength, votePeriod - 1, function (err) {
                 console.log("checkPenalizeWrong:", err);
                 if (err) return callback(err);
                 self.checkPeriod(branch, periodLength, sender, callback);

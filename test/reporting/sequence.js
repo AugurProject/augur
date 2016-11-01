@@ -160,6 +160,7 @@ describe("Reporting sequence", function () {
                     branch: branch,
                     period: period,
                     periodLength: periodLength,
+                    ethics: 1,
                     onSent: function (res) {
                     },
                     onSuccess: function (res) {
@@ -290,76 +291,99 @@ describe("Reporting sequence", function () {
         it("closeMarket + penalizeWrong", function (done) {
             this.timeout(tools.TIMEOUT*100);
             augur.useAccount(sender);
-            async.forEachOf(events, function (event, type, nextEvent) {
-                if (DEBUG) printReportingStatus(event, "[" + type  + "] Penalizing incorrect reports for event " + event);
-                augur.rpc.personal("unlockAccount", [sender, password], function (res) {
-                    if (res && res.error) return nextEvent(res);
-                    augur.penalizeWrong({
-                        branch: newBranchID,
-                        event: event,
-                        onSent: function (res) {
-                            assert.isNull(res.callReturn);
-                        },
-                        onSuccess: function (res) {
-                            assert.strictEqual(res.callReturn, "1");
-                            if (DEBUG) {
-                                printReportingStatus(event, "[" + type  + "] Event " + event + " penalized");
-                                console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
-                            }
-                            if (DEBUG) printReportingStatus(event, "[" + type  + "] Closing market " + markets[type]);
-                            augur.closeMarket({
-                                branch: newBranchID,
-                                market: markets[type],
-                                sender: sender,
-                                onSent: function (res) {
-                                    assert.isNull(res.callReturn);
-                                },
-                                onSuccess: function (res) {
-                                    assert.strictEqual(res.callReturn, "1");
-                                    if (DEBUG) {
-                                        printReportingStatus(event, "[" + type  + "] Market closed");
-                                        console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
-                                        console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
-                                    }
-                                    var winningOutcomes = augur.getWinningOutcomes(markets[type]);
-                                    var eventOutcome = augur.getOutcome(event);
-                                    if (DEBUG) {
-                                        console.log("winningOutcomes:", winningOutcomes);
-                                        console.log("event", event, "outcome:", eventOutcome);
-                                    }
-                                    assert(parseInt(winningOutcomes[0]) !== 0);
-                                    assert(parseInt(eventOutcome) !== 0);
-                                    augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
-                                        if (res && res.error) return nextEvent(res);
-                                        var claimable = [markets.binary, markets.categorical, markets.scalar];
-                                        augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
-                                            assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
-                                            console.log("claimable:", claimable);
-                                            console.log("claimed:  ", claimed);
-                                            assert.sameMembers(claimable, claimed);
-                                            nextEvent();
-                                        });
-                                    });
-                                },
-                                onFailed: function (err) {
-                                    if (DEBUG) {
-                                        printReportingStatus(event, "closeMarket failed");
-                                        console.error(chalk.red.bold("closeMarket error:"), err);
-                                    }
-                                    nextEvent(new Error(tools.pp(err)));
-                                }
-                            });
-                        },
-                        onFailed: function (err) {
-                            if (DEBUG) {
-                                printReportingStatus(event, "penalizeWrong failed");
-                                console.error(chalk.red.bold("penalizeWrong error:"), err);
-                            }
-                            nextEvent(new Error(tools.pp(err)));
+            augur.rpc.personal("unlockAccount", [sender, password], function (res) {
+                if (res && res.error) console.error("Couldn't unlock account: " + sender);
+                augur.collectFees({
+                    branch: newBranchID,
+                    sender: sender,
+                    periodLength: periodLength,
+                    onSent: function (r) {
+                        console.log("collectFees sent:", r);
+                    },
+                    onSuccess: function (r) {
+                        if (DEBUG) {
+                            printReportingStatus(eventID, "Collect fees success");
+                            console.log(chalk.white.dim("collectFees return value:"), chalk.cyan(res.callReturn));
                         }
-                    });
+                        async.forEachOf(events, function (event, type, nextEvent) {
+                            if (DEBUG) printReportingStatus(event, "[" + type  + "] Penalizing incorrect reports for event " + event);
+                            augur.rpc.personal("unlockAccount", [sender, password], function (res) {
+                                if (res && res.error) return nextEvent(res);
+                                augur.penalizeWrong({
+                                    branch: newBranchID,
+                                    event: event,
+                                    onSent: function (res) {
+                                        assert.isNull(res.callReturn);
+                                    },
+                                    onSuccess: function (res) {
+                                        assert.strictEqual(res.callReturn, "1");
+                                        if (DEBUG) {
+                                            printReportingStatus(event, "[" + type  + "] Event " + event + " penalized");
+                                            console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
+                                        }
+                                        if (DEBUG) printReportingStatus(event, "[" + type  + "] Closing market " + markets[type]);
+                                        augur.closeMarket({
+                                            branch: newBranchID,
+                                            market: markets[type],
+                                            sender: sender,
+                                            onSent: function (res) {
+                                                assert.isNull(res.callReturn);
+                                            },
+                                            onSuccess: function (res) {
+                                                assert.strictEqual(res.callReturn, "1");
+                                                if (DEBUG) {
+                                                    printReportingStatus(event, "[" + type  + "] Market closed");
+                                                    console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
+                                                    console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
+                                                }
+                                                var winningOutcomes = augur.getWinningOutcomes(markets[type]);
+                                                var eventOutcome = augur.getOutcome(event);
+                                                if (DEBUG) {
+                                                    console.log("winningOutcomes:", winningOutcomes);
+                                                    console.log("event", event, "outcome:", eventOutcome);
+                                                }
+                                                assert(parseInt(winningOutcomes[0]) !== 0);
+                                                assert(parseInt(eventOutcome) !== 0);
+                                                augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
+                                                    if (res && res.error) return nextEvent(res);
+                                                    var claimable = [markets.binary, markets.categorical, markets.scalar];
+                                                    augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
+                                                        assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
+                                                        console.log("claimable:", claimable);
+                                                        console.log("claimed:  ", claimed);
+                                                        assert.sameMembers(claimable, claimed);
+                                                        nextEvent();
+                                                    });
+                                                });
+                                            },
+                                            onFailed: function (err) {
+                                                if (DEBUG) {
+                                                    printReportingStatus(event, "closeMarket failed");
+                                                    console.error(chalk.red.bold("closeMarket error:"), err);
+                                                }
+                                                nextEvent(new Error(tools.pp(err)));
+                                            }
+                                        });
+                                    },
+                                    onFailed: function (err) {
+                                        if (DEBUG) {
+                                            printReportingStatus(event, "penalizeWrong failed");
+                                            console.error(chalk.red.bold("penalizeWrong error:"), err);
+                                        }
+                                        nextEvent(new Error(tools.pp(err)));
+                                    }
+                                });
+                            });
+                        }, done);
+                    },
+                    onFailed: function (err) {
+                        if (DEBUG) {
+                            printReportingStatus(event, "collectFees failed");
+                            console.error(chalk.red.bold("collectFees error:"), err);
+                        }
+                    }
                 });
-            }, done);
+            });
         });
     });
 
