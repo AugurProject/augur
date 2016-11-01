@@ -92,6 +92,7 @@ const Routes = (p) => {
 				market: p.market,
 				settings: p.settings,
 				marketDataNavItems: p.marketDataNavItems,
+				marketUserDataNavItems: p.marketUserDataNavItems,
 				marketDataAge: p.marketDataAge,
 				selectedOutcome: p.selectedOutcome,
 				orderCancellation: p.orderCancellation,

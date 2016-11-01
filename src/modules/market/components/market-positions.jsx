@@ -1,28 +1,40 @@
 import React, { Component } from 'react';
-import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+
 import Positions from 'modules/my-positions/components/my-positions';
-import PositionsSummary from 'modules/my-positions/components/my-positions-summary';
+import MarketPositionsRow from 'modules/market/components/market-positions-row';
+
+import getValue from 'utils/get-value';
 
 export default class MarketPositions extends Component {
-	// TODO -- Prop Validations
-	// static propTypes = {
-	// 	market: PropTypes.object
-	// };
-
 	constructor(props) {
 		super(props);
-		this.shouldComponentUpdate = shouldComponentUpdatePure;
 	}
 
 	render() {
 		const p = this.props;
+
+		const outcomePositions = getValue(p, 'market.myPositionOutcomes');
+		const marketType = getValue(p, 'market.type');
+
 		return (
-			<section className="market-positions">
-				{p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value &&
-					<PositionsSummary {...p.market.myPositionsSummary} className="market-section-header" />
-				}
-				<Positions market={p.market} settings={p.settings} />
-			</section>
+			<article className="market-positions">
+				<div className="market-positions-header">
+					<span>Outcomes</span>
+					<span>Shares</span>
+					<span>Avg Price</span>
+					<span>Last Price</span>
+					<span>Realized P/L</span>
+					<span>Unrealized P/L</span>
+					<span>Total P/L</span>
+				</div>
+				{(outcomePositions || []).map(outcome =>
+					<MarketPositionsRow
+						key={outcome.id}
+						type={marketType}
+						outcome={outcome}
+					/>
+				)}
+			</article>
 		);
 	}
 }

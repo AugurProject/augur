@@ -1,12 +1,18 @@
 import React from 'react';
 
-import OutcomesHeader from 'modules/outcomes/components/outcomes-header';
 import OutcomeRow from 'modules/outcomes/components/outcome-row';
 
 const Outcomes = p => (
 	<article className="outcomes" >
-		<OutcomesHeader />
-		{p.outcomes && p.outcomes.map(outcome => (
+		<div className="outcomes-header">
+			<span>Outcomes</span>
+			<span>Bid Q.</span>
+			<span>Bid</span>
+			<span>Ask</span>
+			<span>Ask Q</span>
+			<span>Last</span>
+		</div>
+		{(p.outcomes || []).map(outcome => (
 			<OutcomeRow
 				key={outcome.id}
 				outcome={outcome}

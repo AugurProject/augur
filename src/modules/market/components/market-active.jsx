@@ -57,7 +57,10 @@ export default class MarketActive extends Component {
 				</div>
 				{p.logged &&
 					<div className="market-group">
-						<MarketUserData />
+						<MarketUserData
+							{...p}
+							navItems={p.marketUserDataNavItems}
+						/>
 						<OutcomeTrade
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}

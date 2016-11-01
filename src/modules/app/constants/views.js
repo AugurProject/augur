@@ -14,3 +14,5 @@ export const MY_REPORTS = 'my-reports';
 export const MARKET_DATA_NAV_OUTCOMES = 'outcomes';
 export const MARKET_DATA_NAV_CHARTS = 'charts';
 export const MARKET_DATA_NAV_DETAILS = 'details';
+export const MARKET_USER_DATA_NAV_POSITIONS = 'positions';
+export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders';

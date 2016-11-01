@@ -33,6 +33,7 @@ import coreStats from 'selectors/core-stats';
 import marketDataNavItems from 'selectors/market-data-nav-items';
 import settings from 'selectors/settings';
 import chat from 'selectors/chat';
+import marketUserDataNavItems from 'selectors/market-user-data-nav-items';
 
 // all selectors should go here
 const selectors = {
@@ -72,7 +73,8 @@ const selectors = {
 	coreStats,
 	marketDataNavItems,
 	settings,
-	chat
+	chat,
+	marketUserDataNavItems
 };
 
 // add update helper fn to selectors object
