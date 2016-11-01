@@ -214,7 +214,7 @@ export function assembleMarket(
 
 			market.marketLink = selectMarketLink(market, dispatch);
 			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
+			market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
 			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);

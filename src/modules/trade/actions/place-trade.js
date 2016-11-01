@@ -13,7 +13,7 @@ import { addAskTransaction } from '../../transactions/actions/add-ask-transactio
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
-export function placeTrade(marketID) {
+export function placeTrade(marketID, outcomeID) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
@@ -21,7 +21,12 @@ export function placeTrade(marketID) {
 		if (!marketTradeInProgress || !market) {
 			return;
 		}
-		async.forEachOf(marketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
+
+		// Just submit the currently selected outcome's trade
+		// This is primarily a slight refactor to allow for single outcome trading, while leaving in place the functionality for multi-trade
+		const singleOutcomeMarketTradeInProgress = { [outcomeID]: marketTradeInProgress[outcomeID] };
+
+		async.forEachOf(singleOutcomeMarketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
 			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
 				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
 			}
