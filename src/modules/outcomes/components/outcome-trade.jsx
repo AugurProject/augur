@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
+import OutcomeTradeAction from 'modules/outcomes/components/outcome-trade-action';
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
@@ -94,19 +95,11 @@ export default class OutcomeTrade extends Component {
 						tradeOrder={tradeOrder}
 					/>
 				}
-				{tradeOrder && hasFunds &&
-					<div className="outcome-trade-actions" >
-						<button
-							onClick={() => {
-								p.submitTrade(selectedID);
-							}}
-						>
-							Place Trade
-						</button>
-					</div>
-				}
-				{tradeOrder && !hasFunds &&
-					<span>Insufficient Funds</span>
+				{tradeOrder &&
+					<OutcomeTradeAction
+						hasFunds={hasFunds}
+						selectedID={selectedID}
+					/>
 				}
 			</article>
 		);
