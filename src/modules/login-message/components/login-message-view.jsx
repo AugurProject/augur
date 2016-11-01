@@ -58,6 +58,9 @@ const LoginMessagePage = p => (
 			<h3>October 31, 2016</h3>
 			<ol>
 				<li>
+					Added <a href="https://crypto.stanford.edu/sjcl/" className="link" target="_blank" rel="noopener noreferrer">SJCL</a> to <a href="https://github.com/ethereumjs/keythereum" className="link" target="_blank" rel="noopener noreferrer">keythereum</a> as a fallback implementation of PBKDF2, for cases where a build/browserify error deletes the built-in Node.js&#39;s built-in <a href="https://nodejs.org/api/crypto.html" className="link" target="_blank" rel="noopener noreferrer">crypto module&#39;s</a> pbkdf2 and pbkdf2Sync methods.  Note: SJCL&#39;s <a href="https://github.com/bitwiseshiftleft/sjcl/blob/master/core/pbkdf2.js" className="link" target="_blank" rel="noopener noreferrer">PBKDF2 implementation</a> is significantly slower than the crypto module&#39; implementation, so keythereum will use the crypto module methods if they are available.
+				</li>
+				<li>
 					The transaction display for reports on scalar events now shows the numerical outcome reported.
 				</li>
 				<li>
@@ -97,7 +100,7 @@ const LoginMessagePage = p => (
 					Added result parser method names to the auto-generated API.  In combination with automatic fixed-point conversion, nearly all the API will now be dynamically generated and can be updated automatically when new contracts are uploaded.  The only remaining manual API endpoints will be a handful of bindings that do a significant amount of pre- or post-request processing: the &quot;big getters&quot;, the primary trading methods (buy, ask, and trade on the develop contracts), and a couple of the reporting methods.
 				</li>
 				<li>
-					Started full remove-and-resync of the Augur geth public testnet node (eth3.augur.net and wss.augur.net).
+					Full remove-and-resync of the Augur geth public testnet node (eth3.augur.net and ws.augur.net) as well as the separate geth instance on our faucet server.
 				</li>
 				<li>
 					Market detail page now displays market creation and ending date and time (instead of just the date).  Hovering displays the full UTC timestamp, including milliseconds and day of the week.
