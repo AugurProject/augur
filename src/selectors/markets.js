@@ -67,9 +67,11 @@ function makeMarkets(numMarkets = 10) {
 
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
+		console.log('index -- ', index);
+
 		// trade summary
 		m.tradeSummary = {
-			hasUserEnoughFunds: index !== 1,
+			hasUserEnoughFunds: true,
 			totalGas: makeNumber(0, ' ETH'),
 			tradeOrders: []
 		};
@@ -274,7 +276,6 @@ function makeMarkets(numMarkets = 10) {
 						updateTradeOrder: (shares, limitPrice, side) => {
 							console.log('update trade order:', shares, limitPrice, side);
 
-
 							const outcome = {
 								...m.outcomes.find(outcome => outcome.id === outcomeID)
 							};
@@ -317,18 +318,24 @@ function makeMarkets(numMarkets = 10) {
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
 									ether: makeNumber(outcome.trade.totalCost.value - gas, ' ETH'),
 									data: {
+										outcomeID: outcome.id,
 										gasFees: makeNumber(gas, ' ETH'),
 										marketType: m.type,
 										outcomeName: outcome.name,
 										marketDescription: m.description,
 										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, ' ETH'),
-									}
+									},
+									tradingFees: makeNumber(randomNum()),
+									feePercent: makeNumber(randomNum()),
+									gasFees: makeNumber(randomNum()),
+									totalCost: makeNumber(randomNum())
 								});
 
 								return p;
 							}, { totalGas: 0, tradeOrders: [] });
 
 							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
+							m.tradeSummary.hasUserEnoughFunds = true;
 
 							require('../selectors').update({
 								markets: markets.map((currentMarket) => {

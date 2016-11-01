@@ -7,6 +7,7 @@ const ComponentNav = p => (
 		{Object.keys(p.navItems || {}).map(nav => (
 			<Link
 				key={nav}
+				className={`${p.selectedNav === nav && 'selected'}`}
 				onClick={() => { p.updateSelectedNav(nav); }}
 			>
 				<li className={`${p.selectedNav === nav && 'selected'}`} >

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
+import ComponentNav from 'modules/common/components/component-nav';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 
@@ -12,8 +13,11 @@ export default class OutcomeTrade extends Component {
 		super(props);
 
 		this.state = {
-			timestamp: Date.now() // Utilized to force a re-render and subsequent update of the input fields' values
+			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values
+			selectedNav: BUY
 		};
+
+		this.updateSelectedNav = this.updateSelectedNav.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -22,6 +26,15 @@ export default class OutcomeTrade extends Component {
 
 		if (newTrade !== oldTrade) {
 			this.setState({ timestamp: Date.now() });
+		}
+	}
+
+	updateSelectedNav(selectedNav) {
+		this.setState({ selectedNav });
+
+		const trade = getValue(this.props, 'selectedOutcome.trade');
+		if (trade && trade.updateTradeOrder) {
+			trade.updateTradeOrder(undefined, undefined, selectedNav);
 		}
 	}
 
@@ -34,6 +47,7 @@ export default class OutcomeTrade extends Component {
 		const trade = getValue(p, 'selectedOutcome.trade');
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
+		const maxShares = getValue(trade, 'maxNumShares.value');
 
 		return (
 			<article className="outcome-trade">
@@ -47,28 +61,31 @@ export default class OutcomeTrade extends Component {
 						className="outcome-trade-inputs"
 					>
 						<div className="outcome-trade-inputs-sides">
-							<button onClick={() => { trade.updateTradeOrder(undefined, undefined, BUY); }} >
-								Buy
-							</button>
-							<button onClick={() => { trade.updateTradeOrder(undefined, undefined, SELL); }} >
-								Sell
-							</button>
+							<ComponentNav
+								navItems={{ [BUY]: { label: BUY }, [SELL]: { label: SELL } }}
+								selectedNav={s.selectedNav}
+								updateSelectedNav={this.updateSelectedNav}
+							/>
 						</div>
-						<Input
-							type="number"
-							step="0.1"
-							value={trade.numShares}
-							title={trade.limitPrice && trade.maxNumShares && `${trade.maxNumShares.minimized} shares max at this price`}
-							min="0"
-							max={trade.maxNumShares.value}
-							onChange={(value) => { trade.updateTradeOrder(value, undefined, trade.side); }}
-						/>
-						<Input
-							type="number"
-							step="0.1"
-							value={trade.limitPrice}
-							onChange={(value) => { trade.updateTradeOrder(undefined, value, trade.side); }}
-						/>
+						<div className="outcome-trade-inputs-fields">
+							<Input
+								placeholder="Quantity"
+								type="number"
+								step="0.1"
+								value={trade.numShares}
+								min="0"
+								max={maxShares}
+								onChange={(value) => { trade.updateTradeOrder(value, undefined, trade.side); }}
+							/>
+							<span>@</span>
+							<Input
+								placeholder="Price"
+								type="number"
+								step="0.1"
+								value={trade.limitPrice}
+								onChange={(value) => { trade.updateTradeOrder(undefined, value, trade.side); }}
+							/>
+						</div>
 					</div>
 				}
 				{tradeOrder &&
