@@ -47,9 +47,7 @@ function completeSetsCheck(marketID, callback) {
 					}
 				}
 			}
-			const smallestPosition = getSmallestPositionInMarket(position);
-			console.log('smallest position:', marketID, smallestPosition.toFixed());
-			callback(null, smallestPosition);
+			callback(null, getSmallestPositionInMarket(position));
 		});
 	};
 }

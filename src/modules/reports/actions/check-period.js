@@ -21,7 +21,9 @@ export function checkPeriod(cb) {
 				tracker.feesCollected = false;
 				tracker.reportsRevealed = false;
 				tracker.notSoCurrentPeriod = currentPeriod;
+				tracker.checkPeriodLock = false;
 			}
+			console.debug('checkPeriodLock:', tracker.checkPeriodLock);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
