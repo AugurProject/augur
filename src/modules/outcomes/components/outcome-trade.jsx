@@ -99,6 +99,7 @@ export default class OutcomeTrade extends Component {
 					<OutcomeTradeAction
 						hasFunds={hasFunds}
 						selectedID={selectedID}
+						submitTrade={p.submitTrade}
 					/>
 				}
 			</article>
