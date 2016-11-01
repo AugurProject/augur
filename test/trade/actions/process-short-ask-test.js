@@ -10,7 +10,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -40,7 +40,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -70,7 +70,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -147,7 +147,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 
 	it('should process an short ask order for a binary market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortAsk('trans1', '0x000000000000000000000000000000000binary1', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		store.dispatch(action.processShortAsk('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [
 			{
@@ -250,7 +250,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 
 	it('should process an short ask order for a categorical market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortAsk('trans2', '0x0000000000000000000000000000categorical1', '1', '10', '0.5', '-10.004999999999999995', '0.004999999999999995', '0.02791268'));
+		store.dispatch(action.processShortAsk('trans2', 'testCategoricalMarketID', '1', '10', '0.5', '-10.004999999999999995', '0.004999999999999995', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [
 			{
@@ -359,7 +359,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 
 	it('should process an short ask order for a scalar market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortAsk('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
+		store.dispatch(action.processShortAsk('trans3', 'testScalarMarketID', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [{
 			type: 'UPDATE_EXISTING_TRANSACTION',

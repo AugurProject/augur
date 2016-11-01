@@ -5,8 +5,8 @@ export { BID, ASK } from '../../src/modules/bids-asks/constants/bids-asks-types'
 
 export const tradeTestState = {
 	loginAccount: {
-		address: '0x00000000000000000000000000000000000user1',
-		id: '0x00000000000000000000000000000000000user1',
+		address: 'testUser1',
+		id: 'testUser1',
 		name: 'test',
 		loginID: 'longLoginID',
 		localNode: false,
@@ -15,19 +15,19 @@ export const tradeTestState = {
 		ether: '10000.00',
 		realEther: '5.0',
 		rep: '50.0',
-		keystore: { id: '0x00000000000000000000000000000000000user1' }
+		keystore: { id: 'testUser1' }
 	},
-	selectedMarketID: '0x000000000000000000000000000000000binary1',
+	selectedMarketID: 'testBinaryMarketID',
 	marketsData: {
-		'0x000000000000000000000000000000000binary1': {
-			author: '0x000000000000000000000000000000000author1',
+		'testBinaryMarketID': {
+			author: 'testAuthor1',
 			branchID: '0x010101',
 			creationFee: '22.5',
 			creationTime: 1475951522,
 			cumulativeScale: '1',
 			description: 'test binary market?',
 			endDate: 1495317600,
-			eventID: '0x0000000000000000000000000000000000event1',
+			eventID: 'testEventID1',
 			isEthical: undefined,
 			isLoadedMarketInfo: true,
 			makerFee: '0.002',
@@ -46,15 +46,15 @@ export const tradeTestState = {
 			volume: '3030',
 			winningOutcomes: []
 		},
-		'0x0000000000000000000000000000categorical1': {
-			author: '0x000000000000000000000000000000000author2',
+		'testCategoricalMarketID': {
+			author: 'testAuthor2',
 			branchId: '0x010101',
 			creationFee: '12.857142857142857142',
 			creationTime: 1476694751,
 			cumulativeScale: '1',
 			description: 'test categorical market?',
 			endDate: 2066554498,
-			eventID: '0x0000000000000000000000000000000000event2',
+			eventID: 'testEventID2',
 			extraInfo: 'extra info',
 			isEthical: undefined,
 			isLoadedMarketInfo: true,
@@ -75,15 +75,15 @@ export const tradeTestState = {
 			volume: '0',
 			winningOutcomes: []
 		},
-		'0x000000000000000000000000000000000scalar1': {
-			author: '0x000000000000000000000000000000000author3',
+		'testScalarMarketID': {
+			author: 'testAuthor3',
 			branchID: '0x010101',
 			creationFee: '9',
 			creationTime: 1476486515,
 			cumulativeScale: '130',
 			description: 'test scalar market?',
 			endDate: 1496514800,
-			eventID: '0x0000000000000000000000000000000000event3',
+			eventID: 'testEventID3',
 			isEthical: undefined,
 			isLoadedMarketInfo: true,
 			makerFee: '0.01',
@@ -104,7 +104,7 @@ export const tradeTestState = {
 			winningOutcomes: []
 		},
 	}, outcomesData: {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			'2': {
 				id: 2,
 				name: 'Yes',
@@ -120,7 +120,7 @@ export const tradeTestState = {
 				sharesPurchased: '0'
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			'1': {
 				name: 'Democratic',
 				outstandingShares: '0',
@@ -146,7 +146,7 @@ export const tradeTestState = {
 				sharesPurchased: '0'
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			'1': {
 				id: 1,
 				name: '',
@@ -167,7 +167,7 @@ export const tradeTestState = {
 	transactionsData: {
 		'trans1': {
 			data: {
-				marketID: '0x000000000000000000000000000000000binary1',
+				marketID: 'testBinaryMarketID',
 				outcomeID: '2',
 				marketType: 'binary',
 				marketDescription: 'test binary market',
@@ -179,7 +179,7 @@ export const tradeTestState = {
 		},
 		'trans2': {
 			data: {
-				marketID: '0x0000000000000000000000000000categorical1',
+				marketID: 'testCategoricalMarketID',
 				outcomeID: '1',
 				marketType: 'categorical',
 				marketDescription: 'test categorical market',
@@ -191,7 +191,7 @@ export const tradeTestState = {
 		},
 		'trans3': {
 			data: {
-				marketID: '0x000000000000000000000000000000000scalar1',
+				marketID: 'testScalarMarketID',
 				outcomeID: '1',
 				marketType: 'scalar',
 				marketDescription: 'test scalar market',

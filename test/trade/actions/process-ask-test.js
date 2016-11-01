@@ -45,7 +45,7 @@ describe('modules/trade/actions/process-ask.js', () => {
 	});
 
 	it('should process an ask for a binary market', () => {
-		store.dispatch(action.processAsk('transid1', '0x000000000000000000000000000000000binary1', '2', '10', '0.5', '0.1234', '0.1', '0.005'));
+		store.dispatch(action.processAsk('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', '0.005'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -151,7 +151,7 @@ describe('modules/trade/actions/process-ask.js', () => {
 	});
 
 	it('should process an ask for a categorical market', () => {
-		store.dispatch(action.processAsk('transid1', '0x0000000000000000000000000000categorical1', '1', '15', '0.55', '0.05', '0.1', '0.005'));
+		store.dispatch(action.processAsk('transid1', 'testCategoricalMarketID', '1', '15', '0.55', '0.05', '0.1', '0.005'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -255,7 +255,7 @@ describe('modules/trade/actions/process-ask.js', () => {
 	});
 
 	it('should process an ask for a scalar market', () => {
-		store.dispatch(action.processAsk('transid3', '0x000000000000000000000000000000000scalar1', '1', '10', '55', '0.1234', '0.1', '0.005'));
+		store.dispatch(action.processAsk('transid3', 'testScalarMarketID', '1', '10', '55', '0.1234', '0.1', '0.005'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',

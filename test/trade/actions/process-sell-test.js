@@ -11,7 +11,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -41,7 +41,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -71,7 +71,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -107,7 +107,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 	sinon.stub(mockTrade, 'trade', (...args) => {
 		args[5]();
 		switch (args[0]) {
-		case '0x000000000000000000000000000000000binary1':
+		case 'testBinaryMarketID':
 			switch (mockTrade.trade.callCount) {
 				case 1:
 					args[7]({
@@ -214,7 +214,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					break;
 			}
 			break;
-		case '0x0000000000000000000000000000categorical1':
+		case 'testCategoricalMarketID':
 			switch (mockTrade.trade.callCount) {
 			case 1:
 				args[7]({
@@ -321,7 +321,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				break;
 			}
 			break;
-		case '0x000000000000000000000000000000000scalar1':
+		case 'testScalarMarketID':
 			switch (mockTrade.trade.callCount) {
 				case 1:
 					args[7]({
@@ -547,7 +547,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 	});
 
 	it('should process a sell order for a binary market where all shares are sold', () => {
-		store.dispatch(action.processSell('trans1', '0x000000000000000000000000000000000binary1', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -678,13 +678,13 @@ describe('modules/trade/actions/process-sell.js', () => {
  			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a binary market where only some shares are filled, ask for the rest', () => {
-		store.dispatch(action.processSell('trans1', '0x000000000000000000000000000000000binary1', '2', '20', '0.5', '-20.02', '0.02', '0.02791268'));
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '20', '0.5', '-20.02', '0.02', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -811,7 +811,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -886,13 +886,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a binary market where only 1/4 of the shares are filled, rest to ask and short_ask', () => {
-		store.dispatch(action.processSell('trans1', '0x000000000000000000000000000000000binary1', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1018,7 +1018,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -1087,7 +1087,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -1161,13 +1161,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a binary market where no shares are filled, short_ask for all', () => {
-		store.dispatch(action.processSell('trans1', '0x000000000000000000000000000000000binary1', '2', '20', '0.5', '-20.02', '0.02', '0.02791268'));
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '20', '0.5', '-20.02', '0.02', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1294,7 +1294,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -1370,13 +1370,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a binary market where no shares are filled, short_sell for all', () => {
-		store.dispatch(action.processSell('trans1', '0x000000000000000000000000000000000binary1', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1504,7 +1504,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{
 				type: 'short_sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -1580,13 +1580,13 @@ describe('modules/trade/actions/process-sell.js', () => {
  			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a categorical market where all shares are sold', () => {
-		store.dispatch(action.processSell('trans2', '0x0000000000000000000000000000categorical1', '1', '10', '0.5', '-10.004999999999999995', '0.004999999999999995', '0.02791268'));
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '10', '0.5', '-10.004999999999999995', '0.004999999999999995', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1717,13 +1717,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a categorical market where only some shares are filled, ask for the rest.', () => {
-		store.dispatch(action.processSell('trans2', '0x0000000000000000000000000000categorical1', '1', '20', '0.5', '-20.00999999999999999', '0.00999999999999999', '0.02791268'));
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '20', '0.5', '-20.00999999999999999', '0.00999999999999999', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1849,7 +1849,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -1923,13 +1923,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a categorical market where only 1/4 of the shares are filled, rest to ask and short_ask', () => {
-		store.dispatch(action.processSell('trans2', '0x0000000000000000000000000000categorical1', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -2053,7 +2053,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -2122,7 +2122,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -2196,13 +2196,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
 		  { type: 'LOAD_ACCOUNT_TRADES',
-		    marketID: '0x0000000000000000000000000000categorical1'
+		    marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions or calculations`);
 	});
 
 	it('should process a sell order for a categorical market where no shares are filled, short_ask for all', () => {
-		store.dispatch(action.processSell('trans2', '0x0000000000000000000000000000categorical1', '1', '20', '0.5', '-20.00999999999999999', '0.00999999999999999', '0.02791268'));
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '20', '0.5', '-20.00999999999999999', '0.00999999999999999', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -2326,7 +2326,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -2400,13 +2400,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a categorical market where no shares are filled, short_sell for all', () => {
-		store.dispatch(action.processSell('trans2', '0x0000000000000000000000000000categorical1', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -2532,7 +2532,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 		  {
 				type: 'short_sell',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -2606,13 +2606,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 		  {
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions or calculations`);
 	});
 
 	it('should process a sell order for a scalar market where all shares are sold', () => {
-		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '10', '55', '-15.36982248520710025', '5.36982248520710025', '0.02791268'));
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '10', '55', '-15.36982248520710025', '5.36982248520710025', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -2746,13 +2746,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a scalar market where only some shares are filled, ask for the rest.', () => {
-		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -2881,7 +2881,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -2955,13 +2955,13 @@ describe('modules/trade/actions/process-sell.js', () => {
  			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a scalar market where only 1/4 of the shares are filled, rest to ask and short_ask', () => {
-		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -3085,7 +3085,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -3154,7 +3154,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -3228,13 +3228,13 @@ describe('modules/trade/actions/process-sell.js', () => {
  			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a scalar market where no shares are filled, short_ask for all', () => {
-		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '20', '55', '-30.7396449704142005', '10.7396449704142005', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -3358,7 +3358,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -3434,13 +3434,13 @@ describe('modules/trade/actions/process-sell.js', () => {
  			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a scalar market where no shares are filled, short_sell for all', () => {
-		store.dispatch(action.processSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -3566,7 +3566,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{
 				type: 'short_sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -3642,7 +3642,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
  			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});

@@ -11,7 +11,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -41,7 +41,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -71,7 +71,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -103,7 +103,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		}
 	};
 	testState.tradesInProgress =  {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			'2': {
 				side: BUY,
 				numShares: '10',
@@ -125,7 +125,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.199203187250996016'
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			'1': {
 				side: BUY,
 				numShares: '10',
@@ -147,7 +147,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.099800399201596707'
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			'1': {
 				side: BUY,
 				numShares: '10',
@@ -321,11 +321,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Binary Market Place Trade Tests', () => {
 		it('should place a BUY trade for a binary market', () => {
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true }, {
 				type: 'buy',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market?',
@@ -393,13 +393,13 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			},
 		  { type: 'CLEAR_TRADE_IN_PROGRESS',
-		    marketID: '0x000000000000000000000000000000000binary1' },
+		    marketID: 'testBinaryMarketID' },
 		  { type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected actions and calculations`);
 		});
 
 		it('should place a BID trade for a binary market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000binary1'] = {
+			store.getState().tradesInProgress['testBinaryMarketID'] = {
 				'2': {
 				side: 'buy',
 				numShares: '10',
@@ -421,11 +421,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.18133992268143956'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'bid',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market?',
@@ -493,7 +493,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -501,7 +501,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK trade for a binary market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000binary1'] = { '2': { side: 'sell',
+			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
 			  numShares: '10',
 			  limitPrice: '0.5',
 			  totalFee: '0.01',
@@ -519,11 +519,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.099800399201596806' }
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [ {
 					type: 'ask',
 					data: {
-						marketID: '0x000000000000000000000000000000000binary1',
+						marketID: 'testBinaryMarketID',
 						outcomeID: '2',
 						marketType: 'binary',
 						marketDescription: 'test binary market?',
@@ -591,18 +591,18 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					}
 				},
 			  { type: 'CLEAR_TRADE_IN_PROGRESS',
-			    marketID: '0x000000000000000000000000000000000binary1' },
+			    marketID: 'testBinaryMarketID' },
 			  { type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a binary market', () => {
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			console.log(store.getActions());
 			assert.deepEqual(store.getActions(), [ {
 			 	type: 'ask',
 			 	data: {
-			 		marketID: '0x000000000000000000000000000000000binary1',
+			 		marketID: 'testBinaryMarketID',
 			 		outcomeID: '2',
 			 		marketType: 'binary',
 			 		marketDescription: 'test binary market?',
@@ -671,7 +671,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			 }, {
 			 	type: 'short_ask',
 			 	data: {
-			 		marketID: '0x000000000000000000000000000000000binary1',
+			 		marketID: 'testBinaryMarketID',
 			 		outcomeID: '2',
 			 		marketType: 'binary',
 			 		marketDescription: 'test binary market?',
@@ -739,13 +739,13 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			 	}
 			},
 			{ type: 'CLEAR_TRADE_IN_PROGRESS',
-			  marketID: '0x000000000000000000000000000000000binary1' },
+			  marketID: 'testBinaryMarketID' },
 			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a SELL trade for a binary market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000binary1'] = { '2': { side: 'sell',
+			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
 			  numShares: '10',
 			  limitPrice: '0.45',
 			  totalFee: '0.00891',
@@ -763,14 +763,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.088941506235887648' }
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market?',
@@ -838,7 +838,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -846,7 +846,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_ASK trade for a binary market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000binary1'] = { '2': { side: 'sell',
+			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
 			  numShares: '10',
 			  limitPrice: '0.5',
 			  totalFee: '0.01',
@@ -864,11 +864,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.099800399201596806' }
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market?',
@@ -936,7 +936,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -944,7 +944,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_SELL trade for a binary market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000binary1'] = { '2': { side: 'sell',
+			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
 			  numShares: '10',
 			  limitPrice: '0.45',
 			  totalFee: '0.00891',
@@ -962,14 +962,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.088941506235887648' }
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000binary1'));
+			store.dispatch(action.placeTrade('testBinaryMarketID'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'short_sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market?',
@@ -1037,7 +1037,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1047,14 +1047,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Categorical Market Place Trade Tests', () => {
 		it('should place a BUY trade for a categorical market', () => {
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'buy',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1122,7 +1122,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1130,7 +1130,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a BID trade for a categorical market', () => {
-			store.getState().tradesInProgress['0x0000000000000000000000000000categorical1'] = {
+			store.getState().tradesInProgress['testCategoricalMarketID'] = {
 				'1': {
 					side: 'buy',
 					numShares: '10',
@@ -1152,11 +1152,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.090834680880796836'
 				}
 			};
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1224,7 +1224,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1232,7 +1232,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK trade for a categorical market', () => {
-			store.getState().tradesInProgress['0x0000000000000000000000000000categorical1'] = {
+			store.getState().tradesInProgress['testCategoricalMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -1254,11 +1254,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0499500499500499'
 				}
 			};
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1326,7 +1326,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1334,11 +1334,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a categorical market', () => {
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1407,7 +1407,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1475,7 +1475,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1483,7 +1483,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SELL trade for a categorical market', () => {
-			store.getState().tradesInProgress['0x0000000000000000000000000000categorical1'] = {
+			store.getState().tradesInProgress['testCategoricalMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -1505,14 +1505,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0445103412859142'
 				}
 			};
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'sell',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1580,7 +1580,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1588,7 +1588,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_ASK trade for a categorical market', () => {
-			store.getState().tradesInProgress['0x0000000000000000000000000000categorical1'] = {
+			store.getState().tradesInProgress['testCategoricalMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -1610,11 +1610,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0499500499500499'
 				}
 			};
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1682,7 +1682,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1690,7 +1690,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_SELL trade for a categorical market', () => {
-			store.getState().tradesInProgress['0x0000000000000000000000000000categorical1'] = {
+			store.getState().tradesInProgress['testCategoricalMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -1712,14 +1712,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0445103412859142'
 				}
 			};
-			store.dispatch(action.placeTrade('0x0000000000000000000000000000categorical1'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'short_sell',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market?',
@@ -1787,7 +1787,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1797,14 +1797,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Scalar Market Place Trade Tests', () => {
 		it('should place a BUY trade for a scalar market', () => {
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'buy',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -1872,7 +1872,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1880,7 +1880,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a BID trade for a scalar market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000scalar1'] = {
+			store.getState().tradesInProgress['testScalarMarketID'] = {
 				'1': {
 					side: 'buy',
 					numShares: '10',
@@ -1902,11 +1902,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.7747873703833158'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -1974,7 +1974,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -1982,7 +1982,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK trade for a scalar market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000scalar1'] = {
+			store.getState().tradesInProgress['testScalarMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -2004,11 +2004,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '25.891583452211126167'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2076,7 +2076,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -2084,11 +2084,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a scalar market', () => {
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2157,7 +2157,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2225,7 +2225,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -2233,7 +2233,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SELL trade for a scalar market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000scalar1'] = {
+			store.getState().tradesInProgress['testScalarMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -2255,14 +2255,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '22.448646886208020204'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2330,7 +2330,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -2338,7 +2338,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_ASK trade for a scalar market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000scalar1'] = {
+			store.getState().tradesInProgress['testScalarMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -2360,11 +2360,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '25.891583452211126167'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2432,7 +2432,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
@@ -2440,7 +2440,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_SELL trade for a scalar market', () => {
-			store.getState().tradesInProgress['0x000000000000000000000000000000000scalar1'] = {
+			store.getState().tradesInProgress['testScalarMarketID'] = {
 				'1': {
 					side: 'sell',
 					numShares: '10',
@@ -2462,14 +2462,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '22.448646886208020204'
 				}
 			};
-			store.dispatch(action.placeTrade('0x000000000000000000000000000000000scalar1'));
+			store.dispatch(action.placeTrade('testScalarMarketID'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
 				type: 'short_sell',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market?',
@@ -2537,7 +2537,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'

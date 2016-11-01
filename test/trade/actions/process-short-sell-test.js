@@ -11,7 +11,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -41,7 +41,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -71,7 +71,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -150,13 +150,13 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		assert.isFunction(cb, `cb passed to shortSell isn't a function`);
 		let tradingFees;
 		switch(marketID) {
-			case '0x000000000000000000000000000000000binary1':
+			case 'testBinaryMarketID':
 				tradingFees = '0.01536';
 				break;
-			case '0x0000000000000000000000000000categorical1':
+			case 'testCategoricalMarketID':
 				tradingFees = '0.007679999999999992';
 				break;
-			case '0x000000000000000000000000000000000scalar1':
+			case 'testScalarMarketID':
 				tradingFees = '6.8165680473372776';
 				break;
 			default:
@@ -185,7 +185,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 
 	it('should process an short sell order for a binary market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortSell('trans1', '0x000000000000000000000000000000000binary1', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
+		store.dispatch(action.processShortSell('trans1', 'testBinaryMarketID', '2', '20', '0.4', '-20.01536', '0.01536', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [
 			{
@@ -299,7 +299,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			}, {
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -375,7 +375,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 	});
 	it('should process an short sell order for a categorical market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortSell('trans2', '0x0000000000000000000000000000categorical1', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
+		store.dispatch(action.processShortSell('trans2', 'testCategoricalMarketID', '1', '20', '0.4', '-20.007679999999999992', '0.007679999999999992', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [
 			{
@@ -489,7 +489,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			},
 			{ type: 'short_ask',
 		    data:
-		     { marketID: '0x0000000000000000000000000000categorical1',
+		     { marketID: 'testCategoricalMarketID',
 		       outcomeID: '1',
 		       marketType: 'categorical',
 		       marketDescription: 'test categorical market',
@@ -557,7 +557,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 	});
 	it('should process an short sell order for a scalar market', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
-		store.dispatch(action.processShortSell('trans3', '0x000000000000000000000000000000000scalar1', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
+		store.dispatch(action.processShortSell('trans3', 'testScalarMarketID', '1', '20', '40', '-26.8165680473372776', '6.8165680473372776', '0.02791268'));
 
 		assert.deepEqual(store.getActions(), [
 			{
@@ -672,7 +672,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			{
 				type: 'short_ask',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',

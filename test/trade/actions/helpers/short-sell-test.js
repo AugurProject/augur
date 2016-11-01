@@ -40,7 +40,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	it('should handle a short sell with a successful trade', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
-		helper.shortSell('0x000000000000000000000000000000000binary1', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
 
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
@@ -65,7 +65,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	it('should handle a short sell with a failed trade', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
-		helper.shortSell('0x000000000000000000000000000000000binary1', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
 		assert(mockCBStatus.calledWith({
@@ -84,7 +84,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	it('should handle a short sell with a commit failure', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
-		helper.shortSell('0x000000000000000000000000000000000binary1', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [3, 4], mockCBStatus, mockCB);
 
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);

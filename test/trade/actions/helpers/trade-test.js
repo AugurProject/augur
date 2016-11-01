@@ -12,7 +12,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 	testState.transactionsData = {
 		'trans1': {
 			data: {
-				marketID: '0x000000000000000000000000000000000binary1',
+				marketID: 'testBinaryMarketID',
 				outcomeID: '2',
 				marketType: 'binary',
 				marketDescription: 'test binary market',
@@ -24,7 +24,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		},
 		'trans2': {
 			data: {
-				marketID: '0x0000000000000000000000000000categorical1',
+				marketID: 'testCategoricalMarketID',
 				outcomeID: '1',
 				marketType: 'categorical',
 				marketDescription: 'test categorical market',
@@ -36,7 +36,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		},
 		'trans3': {
 			data: {
-				marketID: '0x000000000000000000000000000000000scalar1',
+				marketID: 'testScalarMarketID',
 				outcomeID: '1',
 				marketType: 'scalar',
 				marketDescription: 'test scalar market',
@@ -48,7 +48,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		}
 	};
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -78,7 +78,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -108,7 +108,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -188,7 +188,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 
 	it('should help with sell trades', () => {
 		// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
-		helper.trade('0x000000000000000000000000000000000binary1', '2', '10', '0', '0xtaker1', () => [3, 4], store.dispatch, mockCBStatus, mockCB);
+		helper.trade('testBinaryMarketID', '2', '10', '0', '0xtaker1', () => [3, 4], store.dispatch, mockCBStatus, mockCB);
 
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
@@ -218,7 +218,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 
 	it('should help with buy trades', () => {
 		// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
-		helper.trade('0x000000000000000000000000000000000binary1', '2', '0', '10.01', '0xtaker1', () => [1, 2], store.dispatch, mockCBStatus, mockCB);
+		helper.trade('testBinaryMarketID', '2', '0', '10.01', '0xtaker1', () => [1, 2], store.dispatch, mockCBStatus, mockCB);
 
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);

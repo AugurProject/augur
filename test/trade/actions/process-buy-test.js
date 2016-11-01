@@ -11,7 +11,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = {
-		'0x000000000000000000000000000000000binary1': {
+		'testBinaryMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -41,7 +41,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			}
 		},
-		'0x0000000000000000000000000000categorical1': {
+		'testCategoricalMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -71,7 +71,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			}
 		},
-		'0x000000000000000000000000000000000scalar1': {
+		'testScalarMarketID': {
 			buy: {
 				'order1': {
 					id: 1,
@@ -107,7 +107,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 	sinon.stub(mockTrade, 'trade', (...args) => {
 		args[5]();
 		switch (args[0]) {
-		case '0x000000000000000000000000000000000binary1':
+		case 'testBinaryMarketID':
 			args[7]({
 				status: 'success',
 				hash: 'testhash',
@@ -125,7 +125,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				gasFees: abi.bignum('0.01450404')
 			});
 			break;
-		case '0x0000000000000000000000000000categorical1':
+		case 'testCategoricalMarketID':
 			args[7]({
 				status: 'success',
 				hash: 'testhash',
@@ -143,7 +143,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				gasFees: abi.bignum('0.01450404')
 			});
 			break;
-		case '0x000000000000000000000000000000000scalar1':
+		case 'testScalarMarketID':
 			args[7]({
 				status: 'success',
 				hash: 'testhash',
@@ -218,7 +218,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 	});
 
 	it('should process a buy order for a binary market where all buy orders are filled', () => {
-		store.dispatch(action.processBuy('trans1', '0x000000000000000000000000000000000binary1', '2', '10', '0.5', '5.01', '0.01', '0.01450404'));
+		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', '5.01', '0.01', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -356,13 +356,13 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000binary1'
+				marketID: 'testBinaryMarketID'
 			}
 		], `Didn't produce the expected actions`);
 	});
 
 	it('should process a buy order for a binary market where all buy orders are NOT filled', () => {
-		store.dispatch(action.processBuy('trans1', '0x000000000000000000000000000000000binary1', '2', '600', '0.5', '300.6', '0.6', '0.01450404'));
+		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '600', '0.5', '300.6', '0.6', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -493,7 +493,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{
 				type: 'bid',
 				data: {
-					marketID: '0x000000000000000000000000000000000binary1',
+					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
 					marketDescription: 'test binary market',
@@ -570,13 +570,13 @@ describe('modules/trade/actions/process-buy.js', () => {
 		{ type: 'LOAD_BIDS_ASKS' },
 		{
 			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: '0x000000000000000000000000000000000binary1'
+			marketID: 'testBinaryMarketID'
 		}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
 	it('should process a buy order for a categorical market where all buy orders are filled', () => {
-		store.dispatch(action.processBuy('trans2', '0x0000000000000000000000000000categorical1', '1', '10', '0.5', '5.004999999999999995', '0.004999999999999995', '0.01450404'));
+		store.dispatch(action.processBuy('trans2', 'testCategoricalMarketID', '1', '10', '0.5', '5.004999999999999995', '0.004999999999999995', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -714,13 +714,13 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x0000000000000000000000000000categorical1'
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a buy order for a categorical market where all buy orders are NOT filled', () => {
-		store.dispatch(action.processBuy('trans2', '0x0000000000000000000000000000categorical1', '1', '60', '0.5', '30.06', '0.06', '0.01450404'));
+		store.dispatch(action.processBuy('trans2', 'testCategoricalMarketID', '1', '60', '0.5', '30.06', '0.06', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -851,7 +851,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{
 				type: 'bid',
 				data: {
-					marketID: '0x0000000000000000000000000000categorical1',
+					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
 					marketDescription: 'test categorical market',
@@ -927,14 +927,14 @@ describe('modules/trade/actions/process-buy.js', () => {
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
-				marketID: '0x0000000000000000000000000000categorical1',
+				marketID: 'testCategoricalMarketID',
 				type: 'LOAD_ACCOUNT_TRADES'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a buy order for a scalar market where all buy orders are filled', () => {
-		store.dispatch(action.processBuy('trans3', '0x000000000000000000000000000000000scalar1', '1', '10', '55', '555.36982248520710025', '5.36982248520710025', '0.01450404'));
+		store.dispatch(action.processBuy('trans3', 'testScalarMarketID', '1', '10', '55', '555.36982248520710025', '5.36982248520710025', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1072,13 +1072,13 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a buy order for a scalar market where all buy orders are NOT filled', () => {
-		store.dispatch(action.processBuy('trans3', '0x000000000000000000000000000000000scalar1', '1', '60', '55', '-75108', '-78408', '0.01450404'));
+		store.dispatch(action.processBuy('trans3', 'testScalarMarketID', '1', '60', '55', '-75108', '-78408', '0.01450404'));
 		assert.deepEqual(store.getActions(), [
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -1207,7 +1207,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 			}, {
 				type: 'bid',
 				data: {
-					marketID: '0x000000000000000000000000000000000scalar1',
+					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
 					marketDescription: 'test scalar market',
@@ -1284,7 +1284,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: '0x000000000000000000000000000000000scalar1'
+				marketID: 'testScalarMarketID'
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
