@@ -43922,7 +43922,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.6";
+    this.version = "3.0.7";
 
     this.options = {
         debug: {
