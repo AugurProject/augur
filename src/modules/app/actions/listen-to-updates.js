@@ -9,7 +9,6 @@ import { loadAccountTrades } from '../../my-positions/actions/load-account-trade
 
 export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
-		console.log('refreshMarket', marketID);
 		if (getState().marketsData[marketID]) {
 			dispatch(loadMarketsInfo([marketID], () => {
 				dispatch(loadBidsAsks(marketID));
