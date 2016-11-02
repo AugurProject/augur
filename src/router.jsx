@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-
 import SiteHeader from './modules/site/components/site-header';
 import SiteFooter from './modules/site/components/site-footer';
 import SideBarHeader from './modules/site/components/side-bar-header';
@@ -203,7 +202,8 @@ export default class Router extends Component {
 					favoriteMarkets: p.favoriteMarkets,
 					pagination: p.pagination,
 					filterSort: p.filterSort,
-					keywords: p.keywords
+					keywords: p.keywords,
+					branch: p.branch
 				};
 
 				return (

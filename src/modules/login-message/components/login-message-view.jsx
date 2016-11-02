@@ -55,10 +55,20 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 2, 2016</h3>
+			<ol>
+				<li>
+					Added reporting cycle info and progress bar display at the top of the markets listing if you are logged in.
+				</li>
+			</ol>
 			<h3>November 1, 2016</h3>
 			<ol>
 				<li>
-					Added support for <a href="https://github.com/AugurProject/augur-core/commit/7daf6441e3ba652aa7f19e1ec9e5587d90cd718e" className="link" target="_blank" rel="noopener noreferrer">off-chain orders</a> to the back-end.  This is the first step toward Augur&#39;s planned integration with <a href="https://github.com/raiden-network/raiden">Raiden</a> (state channels), which will allow thousands of trades to occur essentially instantaneously every second, instead of being limited by Ethereum&#39;s block interval.
+					Added support for <a href="https://github.com/AugurProject/augur-core/commit/7daf6441e3ba652aa7f19e1ec9e5587d90cd718e" className="link" target="_blank" rel="noopener noreferrer">off-chain orders</a> to the back-end.  Off chain trading will allow users to place orders for the low low cost of zero! This means you can place limit orders on the book to buy and sell and update them at no cost and effectively instantly without waiting for blocks. The largest cost in trading on Augur was actually placing orders, not taking them interestingly enough, so this solves that problem. It will make the experience cheaper and faster. Trades taking orders off the book [or in other words filling them] however will still occur on chain until state channels progress further.
+					<br />
+					The off chain order book can be stored anywhere, so something like Whisper [which has a PoW to mitigate DDoS] or IPFS or even using logs on Ethereum [which is still about 100x cheaper than the original on chain orderbook system].
+					<br />
+					Off chain order placement allows people to trade more like they&#39;re used to, being able to add, remove, and update orders easily and quickly as opposed to waiting for their transaction to be mined as they have to do now.
 				</li>
 				<li>
 					Fixed the logged return value (error code -3) in submitReport on-contract function that is generated when the computed report hash does not match the stored report hash.

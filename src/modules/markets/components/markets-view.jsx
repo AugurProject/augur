@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
 import MarketsHeaders from '../../markets/components/markets-headers';
 import MarketsList from '../../markets/components/markets-list';
+import Branch from '../../markets/components/branch';
 
 const MarketsView = p => (
 	<section className={p.className}>
+		{!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
+			<Branch {...p.branch} />
+		}
 		<MarketsHeaders
 			createMarketLink={p.createMarketLink}
 			loginAccount={p.loginAccount}
@@ -25,7 +29,8 @@ MarketsView.propTypes = {
 	marketsHeader: PropTypes.object,
 	markets: PropTypes.array,
 	pagination: PropTypes.object,
-	keywords: PropTypes.object
+	keywords: PropTypes.object,
+	branch: PropTypes.object
 };
 
 export default MarketsView;
