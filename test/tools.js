@@ -556,7 +556,7 @@ module.exports = {
         augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
+            // if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
                 console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
                 console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
@@ -565,7 +565,7 @@ module.exports = {
                 console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
                 console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
-            }
+            // }
             augur.rpc.clear();
         }
         return augur;

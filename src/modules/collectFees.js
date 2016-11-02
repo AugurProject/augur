@@ -12,7 +12,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
         if (branch && branch.branch) {
             sender = branch.sender;
@@ -20,7 +20,6 @@ module.exports = {
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
-            onConfirmed = branch.onConfirmed;
             branch = branch.branch;
         }
         if (this.getCurrentPeriodProgress(periodLength) < 50) {
@@ -49,6 +48,6 @@ module.exports = {
                 });
             });
         };
-        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
     }
 };

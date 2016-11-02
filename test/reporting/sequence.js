@@ -386,7 +386,7 @@ describe("Reporting sequence", function () {
                     },
                     onFailed: function (err) {
                         if (DEBUG) {
-                            printReportingStatus(event, "collectFees failed");
+                            printReportingStatus(eventID, "collectFees failed");
                             console.error(chalk.red.bold("collectFees error:"), err);
                         }
                     }

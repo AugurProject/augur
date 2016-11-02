@@ -19802,7 +19802,7 @@ module.exports={
         ], 
         "method": "submitReport", 
         "mutable": true, 
-        "returns": "int256", 
+        "returns": "number", 
         "send": true, 
         "signature": [
           "int256", 
@@ -43922,7 +43922,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.5";
+    this.version = "3.0.6";
 
     this.options = {
         debug: {
@@ -44587,7 +44587,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
         if (branch && branch.branch) {
             sender = branch.sender;
@@ -44595,7 +44595,6 @@ module.exports = {
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
-            onConfirmed = branch.onConfirmed;
             branch = branch.branch;
         }
         if (this.getCurrentPeriodProgress(periodLength) < 50) {
@@ -44624,7 +44623,7 @@ module.exports = {
                 });
             });
         };
-        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
     }
 };
 
@@ -44742,9 +44741,6 @@ module.exports = {
         this.getPeriodLength(branchID, function (periodLength) {
             if (!periodLength || periodLength.error) return callback(periodLength);
             branch.periodLength = periodLength;
-            branch.currentPeriod = self.getCurrentPeriod(periodLength);
-            branch.currentPeriodProgress = self.getCurrentPeriodProgress(periodLength);
-            branch.isReportConfirmationPhase = branch.currentPeriodProgress > 50;
             self.finishLoadBranch(branch, callback);
         });
         this.getDescription(branchID, function (description) {
@@ -48788,7 +48784,7 @@ module.exports = {
         augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
+            // if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
                 console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
                 console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
@@ -48797,7 +48793,7 @@ module.exports = {
                 console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
                 console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
-            }
+            // }
             augur.rpc.clear();
         }
         return augur;
@@ -49654,7 +49650,7 @@ module.exports = {
             self.blockNumber(function (blockNumber) {
                 var blockGap = parseInt(blockNumber, 16) - self.block.number;
                 if (!blockGap) return callback(true);
-                console.debug("Block gap", blockGap, "found, catching up...");
+                if (self.debug.tx) console.debug("Block gap", blockGap, "found, catching up...");
                 for (var i = 1; i <= blockGap; ++i) {
                     self.onNewBlock({number: "0x" + (self.block.number + i).toString(16)});
                 }
