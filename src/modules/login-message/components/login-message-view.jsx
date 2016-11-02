@@ -55,6 +55,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 1, 2016</h3>
+			<ol>
+				<li>
+					Added support for <a href="https://github.com/AugurProject/augur-core/commit/7daf6441e3ba652aa7f19e1ec9e5587d90cd718e" className="link" target="_blank" rel="noopener noreferrer">off-chain orders</a> to the back-end.  This is the first step toward Augur&#39;s planned integration with <a href="https://github.com/raiden-network/raiden">Raiden</a> (state channels), which will allow thousands of trades to occur essentially instantaneously every second, instead of being limited by Ethereum&#39;s block interval.
+				</li>
+				<li>
+					Fixed the logged return value (error code -3) in submitReport on-contract function that is generated when the computed report hash does not match the stored report hash.
+				</li>
+				<li>
+					Completed full contract re-upload to the public testnet (Morden).
+				</li>
+			</ol>
 			<h3>October 31, 2016</h3>
 			<ol>
 				<li>
