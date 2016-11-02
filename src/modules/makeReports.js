@@ -81,7 +81,7 @@ module.exports = {
         return this.fire(tx, callback, this.parseAndDecryptReport, secret);
     },
 
-    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
         if (event.constructor === Object) {
             reportHash = event.reportHash;
@@ -94,7 +94,6 @@ module.exports = {
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
-            onConfirmed = event.onConfirmed;
             event = event.event;
         }
         if (this.getCurrentPeriodProgress(periodLength) >= 50) {
@@ -124,8 +123,7 @@ module.exports = {
                         periodLength: periodLength,
                         onSent: onSent,
                         onSuccess: onSuccess,
-                        onFailed: onFailed,
-                        onConfirmed: onConfirmed
+                        onFailed: onFailed
                     });
                 });
             }
@@ -142,10 +140,24 @@ module.exports = {
                     onSuccess(res);
                 }
             });
-        }, onFailed, onConfirmed);
+        }, onFailed);
     },
 
     submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed) {
+        if (event.constructor === Object) {
+            salt = event.salt;
+            report = event.report;
+            ethics = event.ethics;
+            isScalar = event.isScalar;
+            isIndeterminate = event.isIndeterminate;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
+            event = event.event;
+        }
+        console.log('submitReport:', event, abi.hex(salt),
+            this.fixReport(report, isScalar, isIndeterminate),
+            ethics);
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
