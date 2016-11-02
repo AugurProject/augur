@@ -13,7 +13,7 @@ run any more than it has to.
 
 To achieve that, we pass in the minimum number of the shallowest arguments possible.
 For example, instead of passing in the entire `favorites` collection and letting the
-function find the one it needs for the market, we instead find the specific fvorite
+function find the one it needs for the market, we instead find the specific favorite
 for that market in advance, and only pass in a boolean: `!!favorites[marketID]`
 That way the market only gets re-assembled when that specific favorite changes.
 
