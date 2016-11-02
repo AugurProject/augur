@@ -3,7 +3,7 @@ import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateReports } from '../../reports/actions/update-reports';
@@ -17,11 +17,11 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 		const branchReports = reports[branch.id];
 		if (!branchReports) return selectMarketsLink(dispatch).onClick();
 		const nextPendingReportEventID = Object.keys(branchReports).find(
-			eventID =>	!branchReports[eventID].reportHash
+			eventID =>	!branchReports[eventID].salt
 		);
-		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
 		console.debug('next pending report eventID:', nextPendingReportEventID);
-		console.debug('next pending report marketID:', nextPendingReportMarket);
+		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
+		console.debug('next pending report marketID:', nextPendingReportMarket.id);
 		if (nextPendingReportMarket) {
 			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
 		} else {
@@ -80,7 +80,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			onSent: (res) => {
 				console.debug('submitReportHash sent:', res);
 				dispatch(updateExistingTransaction(transactionID, {
-					status: 'committing report'
+					status: SUBMITTED,
+					message: 'committing report'
 				}));
 			},
 			onSuccess: (res) => {

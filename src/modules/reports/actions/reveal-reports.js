@@ -9,7 +9,7 @@ export function revealReports() {
 		//  - branch is in the second half of its reporting period
 		//  - user is logged in and has Rep
 		//  - that this user has committed reports to reveal
-		if (branch.isReportConfirmationPhase && loginAccount.rep && reports) {
+		if (branch.isReportRevealPhase && loginAccount.rep && reports) {
 			const branchReports = reports[branch.id];
 			if (branchReports) {
 				const revealableReports = Object.keys(branchReports)

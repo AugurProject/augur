@@ -4,7 +4,7 @@ import { updateAssets } from '../../auth/actions/update-assets';
 export function collectFees() {
 	return (dispatch, getState) => {
 		const { branch, loginAccount } = getState();
-		if (branch.isReportConfirmationPhase) {
+		if (branch.isReportRevealPhase) {
 			augur.collectFees({
 				branch: branch.id,
 				sender: loginAccount.id,

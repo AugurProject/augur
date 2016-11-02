@@ -38,7 +38,7 @@ export function checkPeriod(cb) {
 							tracker.checkPeriodLock = false;
 							return cb && cb(err);
 						}
-						if (branch.isReportConfirmationPhase) {
+						if (branch.isReportRevealPhase) {
 							if (!tracker.feesCollected) {
 								dispatch(collectFees());
 								tracker.feesCollected = true;
