@@ -53,7 +53,7 @@ describe("Reporting sequence", function () {
     password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
     unlockable = augur.rpc.accounts();
     description = madlibs.adjective() + " " + madlibs.noun();
-    periodLength = 1200;
+    periodLength = 900;
     report = 1;
     salt = "1337";
     markets = {};
@@ -222,7 +222,7 @@ describe("Reporting sequence", function () {
         });
         it("makeReports.submitReport", function (done) {
             this.timeout(tools.TIMEOUT*100);
-            var period = augur.Branches.getVotePeriod(newBranchID);
+            var period = augur.getVotePeriod(newBranchID);
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
                 assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
@@ -233,6 +233,14 @@ describe("Reporting sequence", function () {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
                     augur.rpc.personal("unlockAccount", [sender, password], function (res) {
                         if (res && res.error) return nextEvent(res);
+                        console.log('submitReport input:', {
+                            event: event,
+                            salt: salt,
+                            report: report,
+                            ethics: 1, // 1 = ethical
+                            isScalar: type === "scalar",
+                            isIndeterminate: false
+                        });
                         augur.submitReport({
                             event: event,
                             salt: salt,
