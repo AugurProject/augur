@@ -3,8 +3,11 @@ import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketOpenOrdersRow = (p) => {
+	console.log('is First -- ', p);
+
 	return (
-		<article className="market-open-orders-row">
+		<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
+			<span>{p.isFirst && p.name}</span>
 			<span>{p.type}</span>
 			<ValueDenomination {...p.unmatchedShares} />
 			<ValueDenomination {...p.avgPrice} />
@@ -21,23 +24,19 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 			return (
 				<span>
 					<button
-						className="button cancel-order-abort-confirmation"
-						title="No, don't cancel order"
-						onClick={(event) => {
-							console.log(event);
-							console.log('clicked NO:', orderID, marketID, type);
-							abortCancelOrderConfirmation(orderID, marketID, type);
-						}}
-					>No</button>
+						className="unstyled no confirm"
+						onClick={(event) => { abortCancelOrderConfirmation(orderID, marketID, type); }}
+					>
+						No
+					</button>
 					<button
-						className="button cancel-order-action"
-						title="Yes, cancel order"
+						className="unstyled yes confirm"
 						onClick={(event) => {
-							console.log(event);
-							console.log('clicked YES:', orderID, marketID, type);
 							cancelOrder(orderID, marketID, type);
 						}}
-					>Yes</button>
+					>
+						Yes
+					</button>
 				</span>
 			);
 		case cancellationStatuses.CANCELLING:
@@ -49,13 +48,12 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 		default:
 			return (
 				<button
-					className="button cancel-order-action"
-					title="Cancel order"
+					className="unstyled cancel"
 					onClick={(event) => {
 						showCancelOrderConfirmation(orderID, marketID, type);
 					}}
 				>
-					Cancel
+					<i></i> cancel
 				</button>
 			);
 	}

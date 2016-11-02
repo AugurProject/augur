@@ -1,0 +1,21 @@
+.market-open-orders {
+	.market-open-orders-header,
+	.market-open-orders-row {
+		span:not(:first-child) {
+			text-align: center;
+		}
+	}
+
+	.market-open-orders-header {
+
+		.table-header();
+
+		& > * {
+			flex: 1;
+
+			&:first-child {
+				flex: 2;
+			}
+		}
+	}
+}

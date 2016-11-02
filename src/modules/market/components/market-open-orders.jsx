@@ -15,7 +15,6 @@ const MarketOpenOrders = p => (
 			(p.outcomes || []).map((outcome, index) => (
 				<MarketOpenOrdersGroup
 					key={outcome.name}
-					isFirst={index === 0}
 					id={outcome.id}
 					name={outcome.name}
 					userOpenOrders={outcome.userOpenOrders}
