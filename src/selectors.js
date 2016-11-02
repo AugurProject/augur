@@ -70,7 +70,7 @@ const selectors = {
 	coreStats,
 	settings,
 	chat,
-	branch
+	branch,
 	marketDataNavItems
 };
 
