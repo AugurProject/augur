@@ -50,91 +50,267 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 	testState.orderBooks = {
 		'testBinaryMarketID': {
 			buy: {
-				'order1': {
-					id: 1,
+				'orderID1': {
+					id: 'orderID1',
 					price: '0.45',
+					numShares: '10',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order2': {
-					id: 2,
+				'orderID2': {
+					id: 'orderID2',
 					price: '0.45',
+					numShares: '5',
 					outcome: '1',
-					owner: 'owner1'
+					owner: 'owner2'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '0.45',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '0.44',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '0.46',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '0.43',
+					numShares: '5',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			},
 			sell: {
-				'order3': {
-					id: 3,
+				'orderID1': {
+					id: 'orderID1',
 					price: '0.4',
+					numShares: '10',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order4': {
-					id: 4,
+				'orderID2': {
+					id: 'orderID2',
 					price: '0.4',
+					numShares: '5',
 					outcome: '1',
-					owner: 'owner1'
+					owner: 'owner2'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '0.4',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '0.39',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '0.41',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '0.415',
+					numShares: '20',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			}
 		},
 		'testCategoricalMarketID': {
 			buy: {
-				'order1': {
-					id: 1,
+				'orderID1': {
+					id: 'orderID1',
 					price: '0.45',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order2': {
-					id: 2,
+				'orderID2': {
+					id: 'orderID2',
 					price: '0.45',
 					outcome: '1',
 					owner: 'owner1'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '0.45',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '0.44',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '0.46',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '0.43',
+					numShares: '5',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			},
 			sell: {
-				'order3': {
-					id: 3,
+				'orderID1': {
+					id: 'orderID1',
 					price: '0.4',
+					numShares: '10',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order4': {
-					id: 4,
+				'orderID2': {
+					id: 'orderID2',
 					price: '0.4',
+					numShares: '5',
 					outcome: '1',
-					owner: 'owner1'
+					owner: 'owner2'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '0.4',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '0.39',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '0.41',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '0.415',
+					numShares: '20',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			}
 		},
 		'testScalarMarketID': {
 			buy: {
-				'order1': {
-					id: 1,
+				'orderID1': {
+					id: 'orderID1',
 					price: '45',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order2': {
-					id: 2,
+				'orderID2': {
+					id: 'orderID2',
 					price: '45',
 					outcome: '1',
 					owner: 'owner1'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '45',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '44',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '46',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '43',
+					numShares: '5',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			},
 			sell: {
-				'order3': {
-					id: 3,
+				'orderID1': {
+					id: 'orderID1',
 					price: '40',
+					numShares: '10',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order4': {
-					id: 4,
+				'orderID2': {
+					id: 'orderID2',
 					price: '40',
+					numShares: '5',
 					outcome: '1',
-					owner: 'owner1'
+					owner: 'owner2'
+				},
+				'orderID3': {
+					id: 'orderID3',
+					price: '40',
+					numShares: '10',
+					outcome: '1',
+					owner: 'owner3'
+				},
+				'orderID4': {
+					id: 'orderID4',
+					price: '39',
+					numShares: '3',
+					outcome: '1',
+					owner: 'owner4'
+				},
+				'orderID5': {
+					id: 'orderID5',
+					price: '41',
+					numShares: '15',
+					outcome: '1',
+					owner: 'owner5'
+				},
+				'orderID6': {
+					id: 'orderID6',
+					price: '415',
+					numShares: '20',
+					outcome: '1',
+					owner: 'owner6'
 				}
 			}
 		}
@@ -220,6 +396,62 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
 		helper.trade('testBinaryMarketID', '2', '0', '10.01', '0xtaker1', () => [1, 2], store.dispatch, mockCBStatus, mockCB);
 
+		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+		assert(mockCBStatus.calledWith({
+			status: 'sending',
+			hash: 'testhash',
+			timestamp: 1500000000,
+			gasFees: abi.bignum('0.01450404')
+		}), `Didn't send the right details`);
+		assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+		assert(mockCBStatus.calledWith({
+			status: 'filled',
+			hash: 'testhash',
+			timestamp: 1500000000,
+			tradingFees: abi.bignum('0.01'),
+			gasFees: abi.bignum('0.02900808'),
+			filledShares: abi.bignum('0'),
+			filledEth: abi.bignum('10'),
+			remainingShares: abi.bignum('0'),
+			remainingEth: abi.bignum('0')
+		}), `Didn't call cbStatus with a filled status`);
+
+		assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
+		assert.deepEqual(mockCB.callCount, 3, `Didn't call the callback 3 times as expected`);
+		assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
+	});
+
+	it('should handle a buy trade with js numbers sent in to trade helper', () => {
+		helper.trade('testBinaryMarketID', 2, 0, 10.01, 'taker1', () => [1, 2], store.dispatch, mockCBStatus, mockCB);
+		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+		assert(mockCBStatus.calledWith({
+			status: 'sending',
+			hash: 'testhash',
+			timestamp: 1500000000,
+			gasFees: abi.bignum('0.01450404')
+		}), `Didn't send the right details`);
+		assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+		assert(mockCBStatus.calledWith({
+			status: 'filled',
+			hash: 'testhash',
+			timestamp: 1500000000,
+			tradingFees: abi.bignum('0.01'),
+			gasFees: abi.bignum('0.02900808'),
+			filledShares: abi.bignum('0'),
+			filledEth: abi.bignum('10'),
+			remainingShares: abi.bignum('0'),
+			remainingEth: abi.bignum('0')
+		}), `Didn't call cbStatus with a filled status`);
+
+		assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
+		assert.deepEqual(mockCB.callCount, 3, `Didn't call the callback 3 times as expected`);
+		assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
+	});
+
+	it('should handle a buy trade with bignums sent in to trade helper', () => {
+		helper.trade('testBinaryMarketID', '2', abi.bignum('0'), abi.bignum('10.01'), 'taker1', () => [1, 2], store.dispatch, mockCBStatus, mockCB);
 		assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 		assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
 		assert(mockCBStatus.calledWith({
