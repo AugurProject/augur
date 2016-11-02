@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
 import ComponentNav from 'modules/common/components/component-nav';
-import Positions from 'modules/market/components/market-positions';
+import MarketPositions from 'modules/market/components/market-positions';
+import MarketOpenOrders from 'modules/market/components/market-open-orders';
 
 import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from 'modules/app/constants/views';
+
+import getValue from 'utils/get-value';
 
 export default class MarketUserData extends Component {
 	constructor(props) {
@@ -26,6 +29,8 @@ export default class MarketUserData extends Component {
 
 		console.log('MarketUserData -- ', p);
 
+		const outcomes = getValue(p, 'market.outcomes');
+
 		return (
 			<article className="market-user-data">
 				<h3>My Trading</h3>
@@ -35,10 +40,13 @@ export default class MarketUserData extends Component {
 					updateSelectedNav={this.updateSelectedNav}
 				/>
 				{s.selectedNav === MARKET_USER_DATA_NAV_POSITIONS &&
-					<Positions {...p} />
+					<MarketPositions {...p} />
 				}
 				{s.selectedNav === MARKET_USER_DATA_NAV_OPEN_ORDERS &&
-					<span>Open Orders</span>
+					<MarketOpenOrders
+						outcomes={outcomes}
+						orderCancellation={p.orderCancellation}
+				 />
 				}
 			</article>
 		);

@@ -11,13 +11,13 @@ const MarketPositionsRow = (p) => {
 	console.log('p -- ', p);
 
 	const outcomeName = getValue(p, 'outcome.name');
-	const lastPricePercent = getValue(p, 'lastPricePercent.rounded') || <EmDash />;
-	const quantityOfShares = getValue(p, 'outcome.position.qtyShares.formatted') || <EmDash />;
-	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted') || <EmDash />;
-	const lastPrice = getValue(p, 'outcome.position.lastPrice.formatted') || <EmDash />;
-	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted') || <EmDash />;
-	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted') || <EmDash />;
-	const totalNet = getValue(p, 'outcome.position.totalNet.formatted') || <EmDash />;
+	const lastPricePercent = getValue(p, 'lastPricePercent.rounded');
+	const quantityOfShares = getValue(p, 'outcome.position.qtyShares.formatted');
+	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
+	const lastPrice = getValue(p, 'outcome.position.lastPrice.formatted');
+	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
+	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
+	const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
 
 	return (
 		<article className="market-positions-row not-selectable" >

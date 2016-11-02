@@ -1,31 +1,29 @@
 import React from 'react';
 
-import OpenOrdersGroup from 'modules/open-orders/components/open-orders-group';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
 
-const OpenOrders = p => (
-	<div className="market-open-orders">
-		<div className="market-section-header">
-			<ValueDenomination {...p.userOpenOrdersSummary.openOrdersCount} />
+const MarketOpenOrders = p => (
+	<article className="market-open-orders">
+		<div className="market-open-orders-header">
+			<span>Outcomes</span>
+			<span>Type</span>
+			<span>Shares</span>
+			<span>Price</span>
+			<span>Action</span>
 		</div>
-
-		<div className="open-orders-list">
-			<table className="open-orders-group">
-				{
-					p.outcomes.map((outcome, index) => (
-						<OpenOrdersGroup
-							key={outcome.id}
-							isFirst={index === 0}
-							id={outcome.id}
-							name={outcome.name}
-							userOpenOrders={outcome.userOpenOrders}
-							orderCancellation={p.orderCancellation}
-						/>
-					))
-				}
-			</table>
-		</div>
-	</div>
+		{
+			(p.outcomes || []).map((outcome, index) => (
+				<MarketOpenOrdersGroup
+					key={outcome.name}
+					isFirst={index === 0}
+					id={outcome.id}
+					name={outcome.name}
+					userOpenOrders={outcome.userOpenOrders}
+					orderCancellation={p.orderCancellation}
+				/>
+			))
+		}
+	</article>
 );
 
 // TODO -- Prop Validations
@@ -35,4 +33,4 @@ const OpenOrders = p => (
 // 	orderCancellation: React.PropTypes.object.isRequired
 // };
 
-export default OpenOrders;
+export default MarketOpenOrders;
