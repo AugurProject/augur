@@ -27,8 +27,6 @@ export default class MarketUserData extends Component {
 		const p = this.props;
 		const s = this.state;
 
-		console.log('MarketUserData -- ', p);
-
 		const outcomes = getValue(p, 'market.outcomes');
 
 		return (
@@ -46,7 +44,7 @@ export default class MarketUserData extends Component {
 					<MarketOpenOrders
 						outcomes={outcomes}
 						orderCancellation={p.orderCancellation}
-				 />
+					/>
 				}
 			</article>
 		);

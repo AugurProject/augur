@@ -2,21 +2,15 @@ import React from 'react';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 
-const MarketOpenOrdersRow = (p) => {
-	console.log('is First -- ', p);
-
-	return (
-		<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
-			<span>{p.isFirst && p.name}</span>
-			<span>{p.type}</span>
-			<ValueDenomination {...p.unmatchedShares} />
-			<ValueDenomination {...p.avgPrice} />
-			<span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
-		</article>
-	)
-};
-
-export default MarketOpenOrdersRow;
+const MarketOpenOrdersRow = p => (
+	<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
+		<span>{p.isFirst && p.name}</span>
+		<span>{p.type}</span>
+		<ValueDenomination {...p.unmatchedShares} />
+		<ValueDenomination {...p.avgPrice} />
+		<span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
+	</article>
+);
 
 function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
 	switch (status) {
@@ -58,3 +52,5 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 			);
 	}
 }
+
+export default MarketOpenOrdersRow;

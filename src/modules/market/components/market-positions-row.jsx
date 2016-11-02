@@ -1,6 +1,5 @@
 import React from 'react';
 
-import EmDash from 'modules/common/components/em-dash';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
@@ -8,7 +7,6 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 import getValue from 'utils/get-value';
 
 const MarketPositionsRow = (p) => {
-	console.log('p -- ', p);
 
 	const outcomeName = getValue(p, 'outcome.name');
 	const lastPricePercent = getValue(p, 'lastPricePercent.rounded');
