@@ -27,7 +27,7 @@ const testState = {
 		description: 'root branch',
 		periodLength: 4000,
 		currentPeriod: 20,
-		isReportConfirmationPhase: true,
+		isReportRevealPhase: true,
 		reportPeriod: 19,
 		currentPeriodProgress: 52
 	},

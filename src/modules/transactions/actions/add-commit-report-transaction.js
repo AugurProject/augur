@@ -12,6 +12,7 @@ export const makeCommitReportTransaction =
 		ether: etherWithoutGas,
 		data: {
 			market,
+			marketID: market.id,
 			description: market.description,
 			outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
 			reportedOutcomeID,

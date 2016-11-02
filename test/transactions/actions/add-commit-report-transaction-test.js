@@ -63,6 +63,7 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 				ether: 5,
 				data: {
 					market,
+					marketID: 'testMarket',
 					outcome: [{
 						id: 'test1'
 					}, {
