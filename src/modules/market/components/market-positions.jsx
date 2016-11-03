@@ -2,16 +2,17 @@ import React from 'react';
 
 import MarketPositionsRow from 'modules/market/components/market-positions-row';
 
+import { SCALAR } from 'modules/markets/constants/market-types';
+
 import getValue from 'utils/get-value';
 
 const MarketPositions = (p) => {
 	const outcomePositions = getValue(p, 'market.myPositionOutcomes');
-	const marketType = getValue(p, 'market.type');
 
 	return (
 		<article className="market-positions">
 			<div className="market-positions-header">
-				<span>Outcomes</span>
+				<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
 				<span>Shares</span>
 				<span>Avg Price</span>
 				<span>Last Price</span>
@@ -22,7 +23,7 @@ const MarketPositions = (p) => {
 			{(outcomePositions || []).map(outcome =>
 				<MarketPositionsRow
 					key={outcome.id}
-					type={marketType}
+					marketType={p.marketType}
 					outcome={outcome}
 				/>
 			)}

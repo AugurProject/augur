@@ -2,15 +2,30 @@ import React from 'react';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 
-const MarketOpenOrdersRow = p => (
+import { SCALAR } from 'modules/markets/constants/market-types';
+
+const MarketOpenOrdersRow = p => {
+
+	console.log('MarketOpenOrdersRow -- ', p);
+
+	return (
 	<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
-		<span>{p.isFirst && p.name}</span>
+		{p.isFirst ?
+			<span>
+				{p.marketType === SCALAR ?
+					<ValueDenomination formatted={p.lastPricePercent} /> :
+					<span>{p.name}</span>
+				}
+			</span> :
+			<span />
+		}
 		<span>{p.type}</span>
 		<ValueDenomination {...p.unmatchedShares} />
 		<ValueDenomination {...p.avgPrice} />
 		<span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
 	</article>
 );
+}
 
 function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
 	switch (status) {

@@ -4,8 +4,10 @@ import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
 import OutcomeTradeAction from 'modules/outcomes/components/outcome-trade-action';
 import ComponentNav from 'modules/common/components/component-nav';
+import EmDash from 'modules/common/components/em-dash';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
 
@@ -52,9 +54,9 @@ export default class OutcomeTrade extends Component {
 
 		return (
 			<article className="outcome-trade">
-				<h3>Create Order</h3>
-				{name &&
-					<span className="outcome-name">{name}</span>
+				{!p.marketType === SCALAR ?
+					<h3>Create Order <EmDash /> {name && name}</h3> :
+					<h3>Create Order</h3>
 				}
 				{trade &&
 					<div

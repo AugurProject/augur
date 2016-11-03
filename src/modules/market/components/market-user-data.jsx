@@ -38,11 +38,15 @@ export default class MarketUserData extends Component {
 					updateSelectedNav={this.updateSelectedNav}
 				/>
 				{s.selectedNav === MARKET_USER_DATA_NAV_POSITIONS &&
-					<MarketPositions {...p} />
+					<MarketPositions
+						{...p}
+						marketType={p.marketType}
+					/>
 				}
 				{s.selectedNav === MARKET_USER_DATA_NAV_OPEN_ORDERS &&
 					<MarketOpenOrders
 						outcomes={outcomes}
+						marketType={p.marketType}
 						orderCancellation={p.orderCancellation}
 					/>
 				}

@@ -10,6 +10,8 @@ const MarketOpenOrdersGroup = p => (
 				isFirst={i === 0}
 				{...order}
 				name={p.name}
+				marketType={p.marketType}
+				lastPricePercent={p.lastPricePercent}
 				status={p.orderCancellation[order.id]}
 				cancellationStatuses={p.orderCancellation.cancellationStatuses}
 				cancelOrder={p.orderCancellation.cancelOrder}

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import MarketBasics from 'modules/market/components/market-basics';
-import MarketOutcomes from 'modules/market/components/market-outcomes';
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
 import Link from 'modules/link/components/link';
 
 const MarketPreview = p => (
@@ -23,7 +23,7 @@ const MarketPreview = p => (
 
 		{p.outcomes &&
 			<div className="market-preview-group-2">
-				<MarketOutcomes outcomes={p.outcomes} />
+				<MarketPreviewOutcomes outcomes={p.outcomes} />
 			</div>
 		}
 	</article>

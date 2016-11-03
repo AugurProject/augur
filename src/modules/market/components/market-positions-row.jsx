@@ -9,7 +9,7 @@ import getValue from 'utils/get-value';
 const MarketPositionsRow = (p) => {
 
 	const outcomeName = getValue(p, 'outcome.name');
-	const lastPricePercent = getValue(p, 'lastPricePercent.rounded');
+	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
 	const quantityOfShares = getValue(p, 'outcome.position.qtyShares.formatted');
 	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
 	const lastPrice = getValue(p, 'outcome.position.lastPrice.formatted');
@@ -19,8 +19,8 @@ const MarketPositionsRow = (p) => {
 
 	return (
 		<article className="market-positions-row not-selectable" >
-			{p.type === SCALAR ?
-				<span>{lastPricePercent}</span> :
+			{p.marketType === SCALAR ?
+				<ValueDenomination formatted={lastPricePercent} /> :
 				<span>{outcomeName}</span>
 			}
 			<ValueDenomination formatted={quantityOfShares} />

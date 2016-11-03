@@ -37,6 +37,7 @@ export default class MarketActive extends Component {
 
 		const tradeSummary = getValue(p, 'market.tradeSummary');
 		const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
+		const marketType = getValue(p, 'market.type');
 
 		return (
 			<article className="market-active">
@@ -46,9 +47,13 @@ export default class MarketActive extends Component {
 						selectedOutcome={s.selectedOutcome}
 						updateSelectedOutcome={this.updateSelectedOutcome}
 					/>
-					<OrderBook outcome={s.selectedOutcome} />
+					<OrderBook
+						marketType={marketType}
+						outcome={s.selectedOutcome}
+					/>
 					{p.logged &&
 						<OutcomeTrade
+							marketType={marketType}
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
@@ -59,9 +64,11 @@ export default class MarketActive extends Component {
 					<div className="market-group">
 						<MarketUserData
 							{...p}
+							marketType={marketType}
 							navItems={p.marketUserDataNavItems}
 						/>
 						<OutcomeTrade
+							marketType={marketType}
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}

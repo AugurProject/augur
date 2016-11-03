@@ -7,6 +7,8 @@ import MarketDetails from 'modules/market/components/market-details';
 
 import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
 
+import getValue from 'utils/get-value';
+
 export default class MarketData extends Component {
 	constructor(props) {
 		super(props);
@@ -26,6 +28,8 @@ export default class MarketData extends Component {
 		const p = this.props;
 		const s = this.state;
 
+		const marketType = getValue(p, 'market.type');
+
 		return (
 			<article className="market-data">
 				<h3>{p.market.description}</h3>
@@ -37,6 +41,7 @@ export default class MarketData extends Component {
 
 				{s.selectedNav === MARKET_DATA_NAV_OUTCOMES &&
 					<Outcomes
+						marketType={marketType}
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						updateSelectedOutcome={p.updateSelectedOutcome}
