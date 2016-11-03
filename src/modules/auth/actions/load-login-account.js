@@ -15,6 +15,7 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
+import { updateScalarMarketShareDenomination } from '../../market/actions/update-scalar-market-share-denomination';
 
 export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
@@ -56,6 +57,11 @@ export function loadLoginAccountLocalStorage(accountID) {
 
 		if (localState.favorites) {
 			dispatch(updateFavorites(localState.favorites));
+		}
+		if (localState.scalarMarketsShareDenomination) {
+			Object.keys(localState.scalarMarketsShareDenomination).forEach(marketID => {
+				dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
+			});
 		}
 		if (localState.accountTrades) {
 			dispatch(clearAccountTrades());
