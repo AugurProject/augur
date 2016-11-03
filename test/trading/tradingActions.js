@@ -13,6 +13,24 @@ var utils = require("../../src/utilities");
 
 describe("getTradingActions", function () {
 
+    var testFields = [
+        "action",
+        "shares",
+        "feeEth",
+        "costEth",
+        "avgPrice",
+        "feePercent",
+        "noFeePrice"
+    ];
+
+    function testTradeActions(actions, expected) {
+        for (var i = 0; i < expected.length; ++i) {
+            for (var j = 0; j < testFields.length; ++j) {
+                assert.strictEqual(actions[i][testFields[j]], expected[i][testFields[j]]);
+            }
+        }
+    }
+
     function runTestCase(testCase) {
         it(testCase.description, function () {
             var actions = augur.getTradingActions({
@@ -71,7 +89,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -150,7 +168,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -191,7 +209,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.8838304552590266",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -232,7 +250,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "0.8"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -282,7 +300,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -323,7 +341,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.8838304552590266",
                     noFeePrice: "0.4"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -373,7 +391,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -430,7 +448,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.6080062970875969",
                     noFeePrice: "0.28"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -488,7 +506,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -537,7 +555,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.7450086464392391",
                     avgPrice: "0.339253333333333333"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
     });
@@ -571,7 +589,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -612,7 +630,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -662,7 +680,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -721,7 +739,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -771,7 +789,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -812,7 +830,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -862,7 +880,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -920,7 +938,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -977,7 +995,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.1147282233402387",
                     noFeePrice: "0.82"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1064,7 +1082,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1114,7 +1132,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1164,7 +1182,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1214,7 +1232,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1264,7 +1282,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1331,7 +1349,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1397,7 +1415,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.4216671958231911",
                     noFeePrice: "0.766666666666666666"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1454,7 +1472,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.72522159548751",
                     noFeePrice: "0.9"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1486,7 +1504,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1527,7 +1545,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.9575856443719412",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1577,7 +1595,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1618,7 +1636,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.7087062652563059",
                     noFeePrice: "0.7"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1668,7 +1686,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1726,7 +1744,7 @@ describe("getTradingActions", function () {
                     feePercent: "0.96",
                     noFeePrice: "0.6"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1783,7 +1801,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.1147282233402387",
                     noFeePrice: "0.82"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1840,7 +1858,7 @@ describe("getTradingActions", function () {
                     feePercent: "1.1147282233402387",
                     noFeePrice: "0.82"
                 }];
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1882,7 +1900,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "3"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1924,7 +1942,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "2"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -1975,7 +1993,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "3"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -2026,7 +2044,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "3"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
 
@@ -2068,7 +2086,7 @@ describe("getTradingActions", function () {
                     noFeePrice: "2"
                 }];
                 assert.lengthOf(actions, expected.length);
-                assert.deepEqual(actions, expected);
+                testTradeActions(actions, expected);
             }
         });
     });
