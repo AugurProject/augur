@@ -87,8 +87,10 @@ const Routes = (p) => {
 			);
 		}
 		case M: {
+			const logged = getValue(p, 'loginAccount.address');
+
 			viewProps = {
-				logged: getValue(p, 'loginAccount.address'),
+				logged,
 				market: p.market,
 				settings: p.settings,
 				marketDataNavItems: p.marketDataNavItems,
@@ -98,7 +100,8 @@ const Routes = (p) => {
 				orderCancellation: p.orderCancellation,
 				marketDataUpdater: p.marketDataUpdater,
 				numPendingReports: p.marketsTotals.numPendingReports,
-				isTradeCommitLocked: p.tradeCommitLock.isLocked
+				isTradeCommitLocked: p.tradeCommitLock.isLocked,
+				scalarShareDenomination: p.scalarShareDenomination
 			};
 
 			return (

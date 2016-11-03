@@ -3,7 +3,7 @@ import MarketsFilterSort from 'modules/markets/components/markets-filter-sort';
 import Link from 'modules/link/components/link';
 
 const MarketsHeaders = p => (
-	<article className={p.className}>
+	<article>
 		<div className="view-header">
 			<div className="view-header-group-1">
 				<h2>Markets</h2>

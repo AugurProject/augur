@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import MarketDataHeader from 'modules/market/components/market-data-header';
 import ComponentNav from 'modules/common/components/component-nav';
 import Outcomes from 'modules/outcomes/components/outcomes';
 import MarketChart from 'modules/market/components/market-chart';
@@ -28,11 +29,18 @@ export default class MarketData extends Component {
 		const p = this.props;
 		const s = this.state;
 
-		const marketType = getValue(p, 'market.type');
+		const marketDescription = getValue(p, 'market.description');
 
 		return (
 			<article className="market-data">
-				<h3>{p.market.description}</h3>
+				<MarketDataHeader
+					marketID={p.marketID}
+					marketType={p.marketType}
+					marketDescription={marketDescription}
+					selectedShareDenomination={p.selectedShareDenomination}
+					shareDenominations={p.shareDenominations}
+					updateSelectedShareDenomination={p.updateSelectedShareDenomination}
+				/>
 				<ComponentNav
 					navItems={p.marketDataNavItems}
 					selectedNav={s.selectedNav}
@@ -41,7 +49,7 @@ export default class MarketData extends Component {
 
 				{s.selectedNav === MARKET_DATA_NAV_OUTCOMES &&
 					<Outcomes
-						marketType={marketType}
+						marketType={p.marketType}
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						updateSelectedOutcome={p.updateSelectedOutcome}
