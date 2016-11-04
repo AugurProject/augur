@@ -127,5 +127,8 @@ export default class MarketActive extends Component {
 MarketActive.propTypes = {
 	market: PropTypes.shape({
 		outcomes: PropTypes.array
+	}),
+	scalarShareDenomination: PropTypes.shape({
+		updateSelectedShareDenomination: PropTypes.function
 	})
 };

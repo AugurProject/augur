@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
@@ -20,13 +20,12 @@ export default class OutcomeTrade extends Component {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values
 			selectedNav: BUY,
 			shareInputPlaceholder: this.generateShareInputPlaceholder(this.props.selectedShareDenomination),
-			maxSharesDenominated: this.denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
-			sharesDenominated: this.denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
+			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
+			sharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
 		this.handleSharesInput = this.handleSharesInput.bind(this);
-		this.generateShareInputPlaceholder = this.generateShareInputPlaceholder.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -36,9 +35,9 @@ export default class OutcomeTrade extends Component {
 		if (newTrade !== oldTrade || this.props.selectedShareDenomination !== nextProps.selectedShareDenomination) {
 			this.setState({
 				timestamp: Date.now(),
-				shareInputPlaceholder: this.generateShareInputPlaceholder(nextProps.selectedShareDenomination),
-				maxSharesDenominated: this.denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
-				sharesDenominated: this.denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination)
+				shareInputPlaceholder: generateShareInputPlaceholder(nextProps.selectedShareDenomination),
+				maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
+				sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination)
 			});
 		}
 	}
@@ -54,56 +53,9 @@ export default class OutcomeTrade extends Component {
 
 	handleSharesInput(value) {
 		const trade = getValue(this.props, 'selectedOutcome.trade');
-		const valueDenominated = this.denominateShares(value, this.props.selectedShareDenomination, SHARE);
+		const valueDenominated = denominateShares(value, this.props.selectedShareDenomination, SHARE);
 
 		trade.updateTradeOrder(valueDenominated, undefined, trade.side);
-	}
-
-	denominateShares(shares, fromDenomination, toDenomination) {
-		if (shares == null || fromDenomination === toDenomination) {
-			return shares;
-		}
-
-		const options = [SHARE, MILLI_SHARE, MICRO_SHARE];
-		let fromValue = 0;
-		options.some((value, i) => {
-			if (value === fromDenomination) {
-				fromValue = i;
-				return true;
-			}
-
-			return false;
-		});
-
-		let toValue = 0;
-		options.some((value, i) => {
-			if (value === toDenomination) {
-				toValue = i;
-				return true;
-			}
-
-			return false;
-		});
-
-		if (fromValue < toValue) {
-			return shares * Math.pow(1000, toValue - fromValue);
-		}
-
-		return shares / Math.pow(1000, Math.abs(toValue - fromValue));
-	}
-
-	generateShareInputPlaceholder(denomination) {
-		const base = 'Quantity';
-
-		switch (denomination) {
-			case (MICRO_SHARE):
-				return `${base} (μShare)`;
-			case (MILLI_SHARE):
-				return `${base} (mShare)`;
-			default:
-			case (SHARE):
-				return base;
-		}
 	}
 
 	render() {
@@ -168,5 +120,56 @@ export default class OutcomeTrade extends Component {
 				}
 			</article>
 		);
+	}
+}
+
+OutcomeTrade.propTypes = {
+	selectedShareDenomination: PropTypes.string
+};
+
+function denominateShares(shares, fromDenomination, toDenomination) {
+	if (shares == null || fromDenomination === toDenomination) {
+		return shares;
+	}
+
+	const options = [SHARE, MILLI_SHARE, MICRO_SHARE];
+	let fromValue = 0;
+	options.some((value, i) => {
+		if (value === fromDenomination) {
+			fromValue = i;
+			return true;
+		}
+
+		return false;
+	});
+
+	let toValue = 0;
+	options.some((value, i) => {
+		if (value === toDenomination) {
+			toValue = i;
+			return true;
+		}
+
+		return false;
+	});
+
+	if (fromValue < toValue) {
+		return shares * Math.pow(1000, toValue - fromValue);
+	}
+
+	return shares / Math.pow(1000, Math.abs(toValue - fromValue));
+}
+
+function generateShareInputPlaceholder(denomination) {
+	const base = 'Quantity';
+
+	switch (denomination) {
+		case (MICRO_SHARE):
+			return `${base} (μShare)`;
+		case (MILLI_SHARE):
+			return `${base} (mShare)`;
+		default:
+		case (SHARE):
+			return base;
 	}
 }
