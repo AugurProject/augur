@@ -11,7 +11,7 @@ export default function () {
 }
 
 export function selectCoreStats() {
-	const { accountTrades, blockchain } = store.getState();
+	const { accountTrades, blockchain, outcomesData } = store.getState();
 	const { loginAccount, loginAccountPositions } = require('../../../selectors');
 
 	// Group 1
@@ -29,8 +29,8 @@ export function selectCoreStats() {
 
 	// Group 3
 	const totalPL = get(loginAccountPositions, 'summary.totalNet');
-	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 30));
-	const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, 1));
+	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
+	const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
 
 	return [
 		{
@@ -83,7 +83,7 @@ export function selectCoreStats() {
 }
 
 // Period is in days
-const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, period) => {
+const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, outcomesData, period) => {
 	if (!accountTrades || !markets || !blockchain) {
 		return null;
 	}
@@ -92,6 +92,7 @@ const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, peri
 	const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber);
 
 	return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs
+		if (!outcomesData[marketID]) return p;
 		const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
 			const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
 			const lastPrice = selectOutcomeLastPrice(markets, marketID, outcomeID);
