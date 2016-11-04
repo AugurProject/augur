@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 
 import Link from '../../link/components/link';
@@ -22,18 +23,27 @@ const TabNavigation = p => (
 						<section className="nav-values">
 							{navItem.leadingValue &&
 								<ValueDenomination
-									title={navItem.leadingTitle ? `${navItem.leadingTitle}: ${navItem.leadingValue.full}` : ''}
+									data-tip data-for={`tab-${i}-leading-tooltip`}
 									{...navItem.leadingValue || {}}
 								/>
 							}
-
 							{navItem.trailingValue &&
 								<ValueDenomination
-									title={navItem.trailingTitle ? `${navItem.trailingTitle}: ${navItem.trailingValue.full}` : ''}
+									data-tip data-for={`tab-${i}-trailing-tooltip`}
 									className="colorize"
 									{...navItem.trailingValue || {}}
 								/>
 							}
+							<ReactTooltip id={`tab-${i}-leading-tooltip`} type="light" effect="solid" place="top">
+								<span className="tooltip-text">
+									{navItem.leadingTitle ? `${navItem.leadingTitle}: ${navItem.leadingValue.full}` : ''}
+								</span>
+							</ReactTooltip>
+							<ReactTooltip id={`tab-${i}-trailing-tooltip`} type="light" effect="solid" place="top">
+								<span className="tooltip-text">
+									{navItem.trailingTitle ? `${navItem.trailingTitle}: ${navItem.trailingValue.full}` : ''}
+								</span>
+							</ReactTooltip>
 						</section>
 					}
 				</Link>
