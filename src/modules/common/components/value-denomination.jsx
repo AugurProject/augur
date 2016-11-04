@@ -11,10 +11,10 @@ const ValueDenomination = p => (
 				<span className="prefix">{p.prefix}</span>
 			}
 			{p.formatted && p.fullPrecision &&
-				<a className="value" data-tip={p.fullPrecision} data-event="click focus">{p.formatted}</a>
+				<span className="value pointer" data-tip={p.fullPrecision} data-event="click focus">{p.formatted}</span>
 			}
 			{p.formatted && !p.fullPrecision &&
-				<a className="value">{p.formatted}</a>
+				<span className="value">{p.formatted}</span>
 			}
 			{p.denomination &&
 				<span className="denomination">{p.denomination}</span>
