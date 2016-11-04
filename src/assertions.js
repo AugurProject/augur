@@ -42,6 +42,7 @@ import marketDataNavItems from '../test/assertions/market-data-nav-items';
 import settings from '../test/assertions/settings';
 import chat from '../test/assertions/chat';
 import marketUserDataNavItems from '../test/assertions/market-user-data-nav-items';
+import scalarShareDenomination from '../test/assertions/scalar-share-denomination';
 
 export default {
 	activeView,
@@ -87,5 +88,6 @@ export default {
 	marketDataNavItems,
 	settings,
 	chat,
-	marketUserDataNavItems
+	marketUserDataNavItems,
+	scalarShareDenomination
 };

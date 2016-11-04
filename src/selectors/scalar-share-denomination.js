@@ -1,7 +1,9 @@
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
 
 export default {
-	markets: {},
+	markets: {
+		'0xyz': MILLI_SHARE
+	},
 	denominations: [
 		{
 			label: 'Share',
