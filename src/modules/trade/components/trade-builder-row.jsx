@@ -1,11 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
-
 import TradeBuilderBidAsk from '../../../modules/trade/components/trade-builder-bid-ask';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import Input from '../../../modules/common/components/input';
 import Toggler from '../../../modules/common/components/toggler';
-
 import { SCALAR } from '../../markets/constants/market-types';
 
 const TradeBuilderRow = (p) => {
@@ -52,7 +50,7 @@ const TradeBuilderRow = (p) => {
 					type="number"
 					step="0.1"
 					value={p.trade.numShares}
-					title={p.trade.limitPrice && p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
+					data-tip={p.trade.limitPrice && p.trade.maxNumShares && `${p.trade.maxNumShares.minimized} shares max at this price`}
 					min="0"
 					max={p.trade.maxNumShares}
 					onChange={value => p.trade.updateTradeOrder(value, undefined, p.trade.side)}

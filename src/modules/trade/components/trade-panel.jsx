@@ -19,7 +19,7 @@ const TradePanel = p => (
 			<button
 				className="button place-trade"
 				disabled={!(!!p.tradeSummary && !!p.tradeSummary.tradeOrders && !!p.tradeSummary.tradeOrders.length) || p.isTradeCommitLocked || !p.tradeSummary.hasUserEnoughFunds}
-				title={!p.tradeSummary.hasUserEnoughFunds ? `You don't have enough funds` : null}
+				data-tip={!p.tradeSummary.hasUserEnoughFunds ? `You don't have enough funds` : null}
 				onClick={(event) => {
 					event.stopPropagation();
 					p.onSubmitPlaceTrade();
