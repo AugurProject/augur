@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import Report from '../../../modules/my-reports/components/my-report';
 import Link from '../../link/components/link';
 
@@ -12,7 +13,7 @@ const PortfolioReports = p => (
 						{market.isChallenged &&
 							<span
 								className="fa outcome-challenged"
-								title="This outcome is currently being challenged"
+								data-tip="This outcome is currently being challenged"
 							>
 								&#xf0e3;
 							</span>
@@ -20,7 +21,7 @@ const PortfolioReports = p => (
 						{!market.isChallenged && market.isChallengeable &&
 							<span
 								className="fa outcome-challengeable"
-								title="This outcome may be challenged"
+								data-tip="This outcome is eligible to be challenged"
 							>
 								&#xf06a;
 							</span>
@@ -34,6 +35,7 @@ const PortfolioReports = p => (
 				</div>
 			</Link>
 		))}
+		<ReactTooltip type="light" effect="solid" place="top" />
 	</div>
 );
 
