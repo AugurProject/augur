@@ -4,14 +4,14 @@ import classnames from 'classnames';
 import ReportForm from 'modules/reports/components/report-form';
 
 const ReportPanel = p => (
-	<section className={classnames('report-panel', p.className)}>
+	<article className={classnames('report-panel', p.className)}>
 		<span className="num-total-reports">{p.numPendingReports}</span>
 		<ReportForm
 			{...p}
 			isReported={p.isReported || p.isReportSubmitted}
 			onClickSubmit={p.onSubmitReport}
 		/>
-	</section>
+	</article>
 );
 
 ReportPanel.propTypes = {

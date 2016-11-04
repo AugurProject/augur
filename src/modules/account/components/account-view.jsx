@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
 import Checkbox from 'modules/common/components/checkbox';
@@ -64,7 +65,7 @@ export default class AccountPage extends Component {
 
 		return (
 			<section id="account_view">
-				<section className="page-content">
+				<article className="page-content">
 					{p.authLink &&
 						<Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
 					}
@@ -270,7 +271,7 @@ export default class AccountPage extends Component {
 					<ReactTooltip id="recipient-address-tooltip" type="light" effect="solid" place="top">
 						<span className="tooltip-text">Recipient&#39;s Ethereum address</span>
 					</ReactTooltip>
-				</section>
+				</article>
 			</section>
 		);
 	}

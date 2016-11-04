@@ -2,7 +2,7 @@ import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 const PositionsMarketOverview = p => (
-	<section className="positions-market-overview">
+	<article className="positions-market-overview">
 		<div className="position">
 			<span className="description">{p.description}</span>
 			<div className="position-group">
@@ -20,7 +20,7 @@ const PositionsMarketOverview = p => (
 				</div>
 			</div>
 		</div>
-	</section>
+	</article>
 );
 
 PositionsMarketOverview.propTypes = {

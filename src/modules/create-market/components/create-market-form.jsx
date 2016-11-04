@@ -28,9 +28,9 @@ const CreateMarketForm = (p) => {
 	}
 
 	return (
-		<section className={p.className}>
+		<article className={p.className}>
 			{form}
-		</section>
+		</article>
 	);
 };
 

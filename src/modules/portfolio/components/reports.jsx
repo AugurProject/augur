@@ -29,9 +29,9 @@ const PortfolioReports = p => (
 						}
 					</span>
 					{!!market &&
-						<section className="portfolio-list">
+						<article className="portfolio-list">
 							<Report {...market} />
-						</section>
+						</article>
 					}
 				</div>
 			</Link>

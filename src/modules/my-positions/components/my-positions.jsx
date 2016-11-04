@@ -5,7 +5,7 @@ import Position from 'modules/my-positions/components/my-position';
 import Link from 'modules/link/components/link';
 
 const Positions = p => (
-	<section className="positions-list">
+	<article className="positions-list">
 		{p.marketLink &&
 			<Link key={p.market.id} href={p.marketLink.href} onClick={p.marketLink.onClick} >
 				{(p.market.myPositionOutcomes || []).map(outcome =>
@@ -45,7 +45,7 @@ const Positions = p => (
 			</div>
 		}
 		<ReactTooltip type="light" effect="solid" place="top" globalEventOff="click" />
-	</section>
+	</article>
 );
 
 // TODO -- Prop Validations

@@ -94,7 +94,7 @@ export default class ReportForm extends Component {
 		}
 
 		return (
-			<section className={classnames('report-form', { reported: s.isReported })}>
+			<article className={classnames('report-form', { reported: s.isReported })}>
 				<div className="outcome-options">
 					<h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
 					{outcomeOptions}
@@ -147,7 +147,7 @@ export default class ReportForm extends Component {
 						Report Again
 					</button>
 				}
-			</section>
+			</article>
 		);
 	}
 }
