@@ -35,14 +35,19 @@ export function selectCoreStats() {
 	return [
 		{
 			totalEth: {
-				label: 'Total ETH',
+				label: 'ETH',
 				title: 'Ether -- outcome trading currency',
-				value: totalEth
+				value: { ...totalEth, denomination: null }
+			},
+			totalRealEth: {
+				label: 'Real ETH',
+				title: 'Real Ether -- pays transaction gas fees',
+				value: { ...loginAccount.realEther, denomination: null }
 			},
 			totalRep: {
-				label: 'Total REP',
+				label: 'REP',
 				title: 'Reputation -- event voting currency',
-				value: totalRep
+				value: { ...totalRep, denomination: null }
 			}
 		},
 		// {
