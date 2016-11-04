@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
 import Input from '../../common/components/input';
@@ -53,7 +54,7 @@ export default class AccountPage extends Component {
 			this.refs.fullLoginID.select(); // TODO -- verify this in UI
 			document.execCommand('copy');
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
 	};
 
@@ -82,14 +83,14 @@ export default class AccountPage extends Component {
 											/>
 										}
 										{!s.editName &&
-											<span title="Click here to add a name to your account.">
+											<span data-tip data-for="edit-name-tooltip">
 												{p.account.name || 'Click here to add a name.'}
 											</span>
 										}
 										{!s.editName &&
 											<button
+												data-tip data-for="change-name-tooltip"
 												className="link" onClick={() => this.setState({ editName: true })}
-												title="Click here to change your Account Name"
 											>
 												(change name)
 											</button>
@@ -97,8 +98,8 @@ export default class AccountPage extends Component {
 										{s.editName &&
 											<button
 												className="button"
+												data-tip data-for="cancel-edit-name-tooltip"
 												onClick={() => this.setState({ name: '', editName: false })}
-												title="Cancel without saving new name"
 											>
 												cancel
 											</button>
@@ -106,11 +107,11 @@ export default class AccountPage extends Component {
 										{s.editName &&
 											<button
 												className="button make"
+												data-tip data-for="save-name-tooltip"
 												onClick={() => {
 													p.account.editName(s.name);
 													this.setState({ name: '', editName: false });
 												}}
-												title="Save new account name"
 											>
 												save change
 											</button>
@@ -139,7 +140,6 @@ export default class AccountPage extends Component {
 											<textarea
 												ref="fullLoginID"
 												className="display-full-login-id"
-												title="Click here to copy your Login ID."
 												value={p.account.loginID}
 												readOnly
 												onClick={this.loginIDCopy}
@@ -147,7 +147,6 @@ export default class AccountPage extends Component {
 										}
 										<button
 											className="link"
-											title={s.showFullID ? 'Hide full id' : 'Show full id'}
 											onClick={() => {
 												this.setState({ showFullID: !s.showFullID });
 											}}
@@ -155,7 +154,12 @@ export default class AccountPage extends Component {
 											{s.showFullID ? '(hide id)' : '(show full id)'}
 										</button>
 										{s.showFullID &&
-											<button className="button" title="Click here to copy your Login ID." onClick={this.loginIDCopy}>Copy Login ID</button>
+											<button
+												className="button"
+												onClick={this.loginIDCopy}
+											>
+												Copy Login ID
+											</button>
 										}
 									</td>
 								</tr>
@@ -202,17 +206,17 @@ export default class AccountPage extends Component {
 									min="0.0"
 									name="sendAmount"
 									placeholder="Amount to transfer"
-									title="Amount to transfer"
+									data-tip data-for="amount-to-transfer-tooltip"
 									value={this.state.sendAmount}
 									onChange={sendAmount => this.setState({ sendAmount: sendAmount.target.value })}
 								/>
 								<select
 									className="currency-selector"
-									title="Currency Type"
+									data-tip data-for="select-currency-tooltip"
 									onChange={currency => this.setState({ currency: currency.target.value })}
 								>
-									<option value="eth">ether (eth)</option>
-									<option value="realEth">Real Ether (eth)</option>
+									<option value="ETH">Ether (ETH)</option>
+									<option value="real ETH">Real Ether (ETH)</option>
 									<option value="REP">REP (REP)</option>
 								</select>
 								<span>To:</span>
@@ -221,13 +225,12 @@ export default class AccountPage extends Component {
 									className={classnames('auth-input')}
 									name="recipientAddress"
 									placeholder="Recipient Address"
-									title="Recipient Address"
+									data-tip data-for="recipient-address-tooltip"
 									value={this.state.recipientAddress}
 									onChange={recipientAddress => this.setState({ recipientAddress: recipientAddress.target.value })}
 								/>
 								<button
 									className="button make"
-									title="Click to Send Currency"
 									onClick={this.handleTransfer}
 								>
 									Send Currency
@@ -245,9 +248,8 @@ export default class AccountPage extends Component {
 								className="button download-account"
 								href={p.account.downloadAccountDataString}
 								download={p.account.downloadAccountFileName}
-								title="Click here to Download your Account Key File."
 							>
-							Download Account Key File
+								Download Account Key File
 							</a>
 						</div>
 					</div>
@@ -255,12 +257,19 @@ export default class AccountPage extends Component {
 						<div className="account-info-item">
 							<h2 className="heading">Important Information</h2>
 							<p>
-								Read <Link {...p.loginMessageLink}>
-									important information
-								</Link> about Augur
+								Read <Link {...p.loginMessageLink}> important information</Link> about Augur
 							</p>
 						</div>
 					</div>
+					<ReactTooltip id="edit-name-tooltip" type="light" effect="solid" place="top">
+						<span className="tooltip-text">Click here to add a name to your account</span>
+					</ReactTooltip>
+					<ReactTooltip id="change-name-tooltip" type="light" effect="solid" place="top">
+						<span className="tooltip-text">Click here to change your account name</span>
+					</ReactTooltip>
+					<ReactTooltip id="recipient-address-tooltip" type="light" effect="solid" place="top">
+						<span className="tooltip-text">Recipient&#39;s Ethereum address</span>
+					</ReactTooltip>
 				</section>
 			</main>
 		);
