@@ -14,7 +14,7 @@ const OrderBookRowSide = p => (
 			return (
 				<div
 					key={i}
-					className="order-book-side-row"
+					className="order-book-side-row not-selectable"
 				>
 					<ValueDenomination formatted={shares} />
 					<ValueDenomination formatted={price} />
