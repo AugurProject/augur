@@ -4,49 +4,12 @@ import sinon from 'sinon';
 import * as mocks from '../../../mockStore';
 import { augur, abi, constants } from '../../../../src/services/augurjs';
 import { tradeTestState } from '../../constants';
+import { ZERO } from '../../../../src/modules/trade/constants/numbers';
 
 describe('modules/trade/actions/helpers/trade.js', () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
-	testState.transactionsData = {
-		'trans1': {
-			data: {
-				marketID: 'testBinaryMarketID',
-				outcomeID: '2',
-				marketType: 'binary',
-				marketDescription: 'test binary market',
-				outcomeName: 'YES'
-			},
-			feePercent: {
-				value: '0.199203187250996016'
-			}
-		},
-		'trans2': {
-			data: {
-				marketID: 'testCategoricalMarketID',
-				outcomeID: '1',
-				marketType: 'categorical',
-				marketDescription: 'test categorical market',
-				outcomeName: 'Democratic'
-			},
-			feePercent: {
-				value: '0.099800399201596707'
-			}
-		},
-		'trans3': {
-			data: {
-				marketID: 'testScalarMarketID',
-				outcomeID: '1',
-				marketType: 'scalar',
-				marketDescription: 'test scalar market',
-				outcomeName: ''
-			},
-			feePercent: {
-				value: '0.95763203714451532'
-			}
-		}
-	};
 	testState.orderBooks = {
 		'testBinaryMarketID': {
 			buy: {
@@ -512,6 +475,40 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
 		});
 
+		it('should not call trade when given a negative numShares input', () => {
+			helper.trade('testBinaryMarketID', '2', '-10', '0', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCB.calledWithExactly(null, {
+			  remainingEth: abi.bignum("0"),
+			  remainingShares: abi.bignum("-10"),
+			  filledShares: abi.bignum("0"),
+			  filledEth: abi.bignum("0"),
+			  tradingFees: abi.bignum("0"),
+			  gasFees: abi.bignum("0")
+			}), `Didn't cancel the trade and return the expected trade object.`);
+
+			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
+
+			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
+		});
+
+		it('should not call trade when given 0 as an input for both shares and remainingEth', () => {
+			helper.trade('testBinaryMarketID', '2', '0', '0', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCB.calledWithExactly(null, {
+			  remainingEth: abi.bignum("0"),
+			  remainingShares: abi.bignum("0"),
+			  filledShares: abi.bignum("0"),
+			  filledEth: abi.bignum("0"),
+			  tradingFees: abi.bignum("0"),
+			  gasFees: abi.bignum("0")
+			}), `Didn't cancel the trade and return the expected trade object.`);
+
+			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
+
+			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
+		});
+
 		it('Should handle a failed commit', () => {
 			helper.trade('testBinaryMarketID', '2', '0', '20.01', '0xtaker1', () => ['orderID1', 'orderID2', 'orderID3'], store.dispatch, mockCBStatus, mockCB);
 
@@ -542,6 +539,8 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
 		});
+
+
 	});
 
 	describe.skip('Sell Trade Tests', () => {
