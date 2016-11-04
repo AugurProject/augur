@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
@@ -62,7 +61,6 @@ const SiteHeader = p => (
 				{!!p.loginAccount && !!p.loginAccount.id &&
 					<Link
 						className={classnames('site-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
-						title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
 						{...p.transactionsLink}
 					>
 						{p.transactionsTotals.title}
@@ -71,7 +69,6 @@ const SiteHeader = p => (
 				{!!p.loginAccount && !!p.loginAccount.id &&
 					<Link
 						className={classnames('site-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
-						title={p.loginAccount.realEther && `${p.loginAccount.realEther.full} real ETH`}
 						{...p.accountLink}
 					>
 						Account
