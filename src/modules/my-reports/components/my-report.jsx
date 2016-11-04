@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import ValueDate from '../../../modules/common/components/value-date';
 
@@ -21,13 +22,13 @@ const Report = p => (
 					{p.isReportEqual ?
 						<span
 							className="fa report-equal"
-							title="Your report matches the consensus outcome"
+							data-tip="Your report matches the consensus outcome"
 						>
 							&#xf058;
 						</span> :
 						<span
 							className="fa report-unequal"
-							title="Your report does not match the consensus outcome"
+							data-tip="Your report does not match the consensus outcome"
 						>
 							&#xf057;
 						</span>
@@ -55,6 +56,7 @@ const Report = p => (
 				<ValueDate {...p.endDate} />
 			</div>
 		</div>
+		<ReactTooltip type="light" effect="solid" place="top" />
 	</div>
 );
 
