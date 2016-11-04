@@ -55,10 +55,37 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 4, 2016</h3>
+			<ol>
+				<li>
+					Changed the tooltips in the market preview panel (in the main markets listing) to use click-to-show-and-hide tooltips, instead of hover-to-show, since hover is not available on mobile.  If these tooltips have the desired feel, the remainder of the tooltips can be converted to this form as well.  (There are only a few exceptions, in the case of elements that have both a tooltip and a click function.)
+				</li>
+				<li>
+					Market titles in the main markets listing now link to the trade page.
+				</li>
+				<li>
+					Clicking on tags in the market preview panel (in the main markets listing) now works correctly.
+				</li>
+				<li>
+					Added Real ETH (i.e., testnet Ether) balance display to the sub-navbar.  Previously this was displayed as a popup when hovering over the transactions button on the main navbar, which did not make sense.  Real ETH is an important value for users to know and to distinguish from the play-money &quot;ETH&quot; used for trading (i.e., Ether IOU tokens which will be tradeable one-to-one for Ether when Augur is live, but which are simply play-money during beta).
+				</li>
+			</ol>
 			<h3>November 3, 2016</h3>
 			<ol>
 				<li>
-					Moved Branch component to its own module.
+					Added <a href="https://github.com/wwayne/react-tooltip" className="link" target="_blank" rel="noopener noreferrer">react-tooltip</a> module, and converted all &quot;title&quot; fields in the UI to instead use proper tooltips.  (Values in title fields are not viewable on mobile.)
+				</li>
+				<li>
+					Only add market description tooltips to the transactions display if a market description is truncated (to 100 characters).
+				</li>
+				<li>
+					Changed currency abbreviations on the Account page to match those used elsewhere in the UI (REP for Reputation, real ETH for real Ether, and ETH for Ether).
+				</li>
+				<li>
+					Changed the units for reporting cycle length display (was seconds).
+				</li>
+				<li>
+					Moved the Branch component to its own module.
 				</li>
 			</ol>
 			{p.marketsLink &&
