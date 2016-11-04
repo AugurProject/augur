@@ -8,12 +8,10 @@ import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketOpenOrdersRow = (p) => {
-	console.log('unmatchedSHares -- ', p.unmatchedShares);
-
 	const unmatchedShares = setShareDenomination(getValue(p, 'unmatchedShares.formatted'), p.selectedShareDenomination);
 
 	return (
-		<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
+		<article className={`market-open-orders-row not-selectable ${p.isFirst ? 'isFirst' : ''}`} >
 			{p.isFirst ?
 				<span>
 					{p.marketType === SCALAR ?

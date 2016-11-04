@@ -19,7 +19,7 @@ export default class OutcomeTrade extends Component {
 		this.state = {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values
 			selectedNav: BUY,
-			shareInputPlaceholder: this.generateShareInputPlaceholder(this.props.selectedShareDenomination),
+			shareInputPlaceholder: generateShareInputPlaceholder(this.props.selectedShareDenomination),
 			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
 			sharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
 		};
