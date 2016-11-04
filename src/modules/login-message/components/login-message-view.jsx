@@ -58,6 +58,9 @@ const LoginMessagePage = p => (
 			<h3>November 4, 2016</h3>
 			<ol>
 				<li>
+					Added check that market outcome data has loaded before using it to calculate P/L.
+				</li>
+				<li>
 					Changed the tooltips in the market preview panel (in the main markets listing) to use click-to-show-and-hide tooltips, instead of hover-to-show, since hover is not available on mobile.  If these tooltips have the desired feel, the remainder of the tooltips can be converted to this form as well.  (There are only a few exceptions, in the case of elements that have both a tooltip and a click function.)
 				</li>
 				<li>
