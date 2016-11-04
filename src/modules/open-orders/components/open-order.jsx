@@ -1,6 +1,6 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = p => (
@@ -47,7 +47,7 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 				<span>
 					<button
 						className="button cancel-order-abort-confirmation"
-						title="No, don't cancel order"
+						data-tip="No, don't cancel order"
 						onClick={(event) => {
 							console.log(event);
 							console.log('clicked NO:', orderID, marketID, type);
@@ -56,13 +56,14 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 					>No</button>
 					<button
 						className="button cancel-order-action"
-						title="Yes, cancel order"
+						data-tip="Yes, cancel order"
 						onClick={(event) => {
 							console.log(event);
 							console.log('clicked YES:', orderID, marketID, type);
 							cancelOrder(orderID, marketID, type);
 						}}
 					>Yes</button>
+					<ReactTooltip type="light" effect="solid" place="top" />
 				</span>
 			);
 		case cancellationStatuses.CANCELLING:
@@ -73,15 +74,18 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 			return null;
 		default:
 			return (
-				<button
-					className="button cancel-order-action"
-					title="Cancel order"
-					onClick={(event) => {
-						showCancelOrderConfirmation(orderID, marketID, type);
-					}}
-				>
-					Cancel
-				</button>
+				<span>
+					<button
+						className="button cancel-order-action"
+						data-tip="Cancel order"
+						onClick={(event) => {
+							showCancelOrderConfirmation(orderID, marketID, type);
+						}}
+					>
+						Cancel
+					</button>
+					<ReactTooltip type="light" effect="solid" place="top" />
+				</span>
 			);
 	}
 
