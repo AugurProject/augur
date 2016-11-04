@@ -6,6 +6,7 @@ import OutcomeTradeAction from 'modules/outcomes/components/outcome-trade-action
 import ComponentNav from 'modules/common/components/component-nav';
 import EmDash from 'modules/common/components/em-dash';
 
+import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations';
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
@@ -17,18 +18,28 @@ export default class OutcomeTrade extends Component {
 
 		this.state = {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values
-			selectedNav: BUY
+			selectedNav: BUY,
+			shareInputPlaceholder: this.generateShareInputPlaceholder(this.props.selectedShareDenomination),
+			maxSharesDenominated: this.denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
+			sharesDenominated: this.denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
+		this.handleSharesInput = this.handleSharesInput.bind(this);
+		this.generateShareInputPlaceholder = this.generateShareInputPlaceholder.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
 		const oldTrade = JSON.stringify(getValue(this.props, 'selectedOutcome.trade'));
 		const newTrade = JSON.stringify(getValue(nextProps, 'selectedOutcome.trade'));
 
-		if (newTrade !== oldTrade) {
-			this.setState({ timestamp: Date.now() });
+		if (newTrade !== oldTrade || this.props.selectedShareDenomination !== nextProps.selectedShareDenomination) {
+			this.setState({
+				timestamp: Date.now(),
+				shareInputPlaceholder: this.generateShareInputPlaceholder(nextProps.selectedShareDenomination),
+				maxSharesDenominated: this.denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
+				sharesDenominated: this.denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination)
+			});
 		}
 	}
 
@@ -41,6 +52,60 @@ export default class OutcomeTrade extends Component {
 		}
 	}
 
+	handleSharesInput(value) {
+		const trade = getValue(this.props, 'selectedOutcome.trade');
+		const valueDenominated = this.denominateShares(value, this.props.selectedShareDenomination, SHARE);
+
+		trade.updateTradeOrder(valueDenominated, undefined, trade.side);
+	}
+
+	denominateShares(shares, fromDenomination, toDenomination) {
+		if (shares == null || fromDenomination === toDenomination) {
+			return shares;
+		}
+
+		const options = [SHARE, MILLI_SHARE, MICRO_SHARE];
+		let fromValue = 0;
+		options.some((value, i) => {
+			if (value === fromDenomination) {
+				fromValue = i;
+				return true;
+			}
+
+			return false;
+		});
+
+		let toValue = 0;
+		options.some((value, i) => {
+			if (value === toDenomination) {
+				toValue = i;
+				return true;
+			}
+
+			return false;
+		});
+
+		if (fromValue < toValue) {
+			return shares * Math.pow(1000, toValue - fromValue);
+		}
+
+		return shares / Math.pow(1000, Math.abs(toValue - fromValue));
+	}
+
+	generateShareInputPlaceholder(denomination) {
+		const base = 'Quantity';
+
+		switch (denomination) {
+			case (MICRO_SHARE):
+				return `${base} (μShare)`;
+			case (MILLI_SHARE):
+				return `${base} (mShare)`;
+			default:
+			case (SHARE):
+				return base;
+		}
+	}
+
 	render() {
 		const p = this.props;
 		const s = this.state;
@@ -50,7 +115,6 @@ export default class OutcomeTrade extends Component {
 		const trade = getValue(p, 'selectedOutcome.trade');
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
-		const maxShares = getValue(trade, 'maxNumShares.value');
 
 		return (
 			<article className="outcome-trade">
@@ -72,19 +136,17 @@ export default class OutcomeTrade extends Component {
 						</div>
 						<div className="outcome-trade-inputs-fields">
 							<Input
-								placeholder="Quantity"
+								placeholder={s.shareInputPlaceholder}
 								type="number"
-								step="0.1"
-								value={trade.numShares}
+								value={s.sharesDenominated}
 								min="0"
-								max={maxShares}
-								onChange={(value) => { trade.updateTradeOrder(value, undefined, trade.side); }}
+								max={s.maxSharesDenominated}
+								onChange={(value) => { this.handleSharesInput(value); }}
 							/>
 							<span>@</span>
 							<Input
 								placeholder="Price"
 								type="number"
-								step="0.1"
 								value={trade.limitPrice}
 								onChange={(value) => { trade.updateTradeOrder(undefined, value, trade.side); }}
 							/>

@@ -74,8 +74,6 @@ export default class MarketActive extends Component {
 		const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 		const updateSelectedShareDenomination = getValue(p, 'scalarShareDenomination.updateSelectedShareDenomination');
 
-		console.log('selectedShareDenomination -- ', selectedShareDenomination);
-
 		return (
 			<article className="market-active">
 				<div className="market-group">
