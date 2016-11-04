@@ -3,6 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueDate from '../../common/components/value-date';
+import Link from '../../link/components/link';
 
 const MarketBasics = p => (
 	<article className="market-basics">
@@ -11,7 +12,7 @@ const MarketBasics = p => (
 				{!!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{p.tags.map((tag, i) => (
-							<li key={i} className={classnames('tag', { link: !!tag.name })} >
+							<li key={i} className={classnames('tag', 'pointer', { link: !!tag.name })} >
 								<button
 									className="unstyled"
 									onClick={tag.onClick && tag.onClick}
@@ -49,7 +50,13 @@ const MarketBasics = p => (
 			</div>
 		</div>
 
-		<span className="market-description">{p.description}</span>
+		<Link
+			{...p.marketLink}
+			onClick={p.marketLink.onClick}
+			className="market-description"
+		>
+			{p.description}
+		</Link>
 
 		<ul className="market-properties">
 			{!!p.endDate &&
