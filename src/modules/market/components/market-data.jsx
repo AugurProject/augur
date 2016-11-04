@@ -53,6 +53,7 @@ export default class MarketData extends Component {
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						updateSelectedOutcome={p.updateSelectedOutcome}
+						selectedShareDenomination={p.selectedShareDenomination}
 					/>
 				}
 				{s.selectedNav === MARKET_DATA_NAV_CHARTS &&

@@ -69,9 +69,12 @@ export default class MarketActive extends Component {
 		const tradeSummary = getValue(p, 'market.tradeSummary');
 		const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
 		const marketType = getValue(p, 'market.type');
+
 		const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`);
 		const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 		const updateSelectedShareDenomination = getValue(p, 'scalarShareDenomination.updateSelectedShareDenomination');
+
+		console.log('selectedShareDenomination -- ', selectedShareDenomination);
 
 		return (
 			<article className="market-active">
@@ -89,14 +92,15 @@ export default class MarketActive extends Component {
 					<OrderBook
 						marketType={marketType}
 						outcome={s.selectedOutcome}
+						selectedShareDenomination={selectedShareDenomination}
 					/>
 					{p.logged &&
 						<OutcomeTrade
-							shareDenomination={s.shareDenomination}
 							marketType={marketType}
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
+							selectedShareDenomination={selectedShareDenomination}
 						/>
 					}
 				</div>
@@ -106,12 +110,14 @@ export default class MarketActive extends Component {
 							{...p}
 							marketType={marketType}
 							navItems={p.marketUserDataNavItems}
+							selectedShareDenomination={selectedShareDenomination}
 						/>
 						<OutcomeTrade
 							marketType={marketType}
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
+							selectedShareDenomination={selectedShareDenomination}
 						/>
 					</div>
 				}

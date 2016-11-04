@@ -7,14 +7,15 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
+import setShareDenomination from 'utils/set-share-denomination';
 
 const OutcomeRow = (p) => {
-	console.log('OutcomeRow -- ', p);
+	const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination);
+	const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination);
 
-	const topBidShares = getValue(p, 'outcome.topBid.shares.formatted');
 	const topBidPrice = getValue(p, 'outcome.topBid.price.formatted');
 	const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted');
-	const topAskShares = getValue(p, 'outcome.topAsk.shares.formatted');
+
 	const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
 	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
 

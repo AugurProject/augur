@@ -28,7 +28,8 @@ function makeMarkets(numMarkets = 10) {
 	return markets;
 
 	function makeMarket(index) {
-		const id = index.toString();
+		let id = index.toString();
+		id += 'xyz';
 		const d = new Date('2017/12/12');
 		const m = {
 			id,

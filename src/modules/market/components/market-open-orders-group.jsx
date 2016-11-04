@@ -17,6 +17,7 @@ const MarketOpenOrdersGroup = p => (
 				cancelOrder={p.orderCancellation.cancelOrder}
 				abortCancelOrderConfirmation={p.orderCancellation.abortCancelOrderConfirmation}
 				showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
+				selectedShareDenomination={p.selectedShareDenomination}
 			/>
 		))}
 	</article>

@@ -41,6 +41,7 @@ export default class MarketUserData extends Component {
 					<MarketPositions
 						{...p}
 						marketType={p.marketType}
+						selectedShareDenomination={p.selectedShareDenomination}
 					/>
 				}
 				{s.selectedNav === MARKET_USER_DATA_NAV_OPEN_ORDERS &&
@@ -48,6 +49,7 @@ export default class MarketUserData extends Component {
 						outcomes={outcomes}
 						marketType={p.marketType}
 						orderCancellation={p.orderCancellation}
+						selectedShareDenomination={p.selectedShareDenomination}
 					/>
 				}
 			</article>

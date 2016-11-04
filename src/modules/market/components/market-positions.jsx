@@ -25,6 +25,7 @@ const MarketPositions = (p) => {
 					key={outcome.id}
 					marketType={p.marketType}
 					outcome={outcome}
+					selectedShareDenomination={p.selectedShareDenomination}
 				/>
 			)}
 		</article>

@@ -5,12 +5,14 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
+import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketPositionsRow = (p) => {
 
+	const quantityOfShares = setShareDenomination(getValue(p, 'outcome.position.qtyShares.formatted'), p.selectedShareDenomination);
+
 	const outcomeName = getValue(p, 'outcome.name');
 	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
-	const quantityOfShares = getValue(p, 'outcome.position.qtyShares.formatted');
 	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
 	const lastPrice = getValue(p, 'outcome.position.lastPrice.formatted');
 	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');

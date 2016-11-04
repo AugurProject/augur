@@ -4,28 +4,32 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
 
-const MarketOpenOrdersRow = p => {
+import getValue from 'utils/get-value';
+import setShareDenomination from 'utils/set-share-denomination';
 
-	console.log('MarketOpenOrdersRow -- ', p);
+const MarketOpenOrdersRow = (p) => {
+	console.log('unmatchedSHares -- ', p.unmatchedShares);
+
+	const unmatchedShares = setShareDenomination(getValue(p, 'unmatchedShares.formatted'), p.selectedShareDenomination);
 
 	return (
-	<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
-		{p.isFirst ?
-			<span>
-				{p.marketType === SCALAR ?
-					<ValueDenomination formatted={p.lastPricePercent} /> :
-					<span>{p.name}</span>
-				}
-			</span> :
-			<span />
-		}
-		<span>{p.type}</span>
-		<ValueDenomination {...p.unmatchedShares} />
-		<ValueDenomination {...p.avgPrice} />
-		<span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
-	</article>
-);
-}
+		<article className={`market-open-orders-row ${p.isFirst ? 'isFirst' : ''}`} >
+			{p.isFirst ?
+				<span>
+					{p.marketType === SCALAR ?
+						<ValueDenomination formatted={p.lastPricePercent} /> :
+						<span>{p.name}</span>
+					}
+				</span> :
+				<span />
+			}
+			<span>{p.type}</span>
+			<ValueDenomination formatted={unmatchedShares} />
+			<ValueDenomination {...p.avgPrice} />
+			<span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
+		</article>
+	);
+};
 
 function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
 	switch (status) {

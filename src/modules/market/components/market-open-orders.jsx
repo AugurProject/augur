@@ -29,6 +29,7 @@ const MarketOpenOrders = (p) => {
 							lastPricePercent={lastPricePercent}
 							userOpenOrders={outcome.userOpenOrders}
 							orderCancellation={p.orderCancellation}
+							selectedShareDenomination={p.selectedShareDenomination}
 						/>
 					)
 				})

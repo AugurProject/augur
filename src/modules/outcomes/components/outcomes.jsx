@@ -21,6 +21,7 @@ const Outcomes = p => (
 				outcome={outcome}
 				selectedOutcome={p.selectedOutcome}
 				updateSelectedOutcome={p.updateSelectedOutcome}
+				selectedShareDenomination={p.selectedShareDenomination}
 			/>
 		))}
 	</article>
