@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
 import Checkbox from '../../common/components/checkbox';
@@ -204,7 +205,7 @@ export default class AuthForm extends Component {
 					</Link>
 					<Checkbox
 						className={classnames({ displayNone: !p.isVisibleRememberMe })}
-						title="Click Here to remember your account information locally."
+						data-tip data-for="remember-me-tooltip"
 						text="Remember Me"
 						isChecked={s.rememberMe}
 						onClick={() => this.setState({ rememberMe: !s.rememberMe })}
@@ -225,12 +226,18 @@ export default class AuthForm extends Component {
 				<Link
 					type="button"
 					className="button x-button unstyled"
-					title="Back to Markets Page"
+					data-tip data-for="close-link-tooltip"
 					href={p.closeLink.href}
 					onClick={p.closeLink.onClick}
 				>
 					<i></i>
 				</Link>
+				<ReactTooltip id="remember-me-tooltip" type="light" effect="solid" place="top">
+					<span className="tooltip-text">Click here to save your account information in your browser&#39;s local storage.</span>
+				</ReactTooltip>
+				<ReactTooltip id="close-link-tooltip" type="light" effect="solid" place="top">
+					<span className="tooltip-text">Back to Markets Page</span>
+				</ReactTooltip>
 			</form>
 		);
 	}
