@@ -55,7 +55,8 @@
     "react": "15.2.1",
     "react-datetime": "2.3.2",
     "react-dom": "15.2.1",
-    "react-highcharts": "9.0.0"
+    "react-highcharts": "9.0.0",
+    "react-tooltip": "3.2.1"
   },
   "devDependencies": {
     "augur-ui-webserver": "1.1.0",
