@@ -35,9 +35,9 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 		};
 
 		switch (currency) {
-		case 'eth':
-			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed, null);
-		case 'realEth':
+		case 'ETH':
+			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed);
+		case 'real ETH':
 			return augur.sendEther({
 				to,
 				value: amount,
@@ -47,7 +47,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 				onFailed: failed
 			});
 		case 'REP':
-			return augur.sendReputation(branch.id, to, amount, sent, success, failed, null);
+			return augur.sendReputation(branch.id, to, amount, sent, success, failed);
 		default:
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
