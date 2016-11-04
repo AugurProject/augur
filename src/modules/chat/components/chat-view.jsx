@@ -97,7 +97,7 @@ export default class ChatView extends Component {
 						</div>
 					</form>
 				</div>
-				<ReactTooltip id="close-chat-tooltip" type="light" effect="solid" place="top">
+				<ReactTooltip id="close-chat-tooltip" type="error" effect="solid" place="top">
 					<span className="tooltip-text">Close chat window</span>
 				</ReactTooltip>
 			</section>
