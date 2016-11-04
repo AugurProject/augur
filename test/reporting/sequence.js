@@ -233,14 +233,6 @@ describe("Reporting sequence", function () {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
                     augur.rpc.personal("unlockAccount", [sender, password], function (res) {
                         if (res && res.error) return nextEvent(res);
-                        console.log('submitReport input:', {
-                            event: event,
-                            salt: salt,
-                            report: report,
-                            ethics: 1, // 1 = ethical
-                            isScalar: type === "scalar",
-                            isIndeterminate: false
-                        });
                         augur.submitReport({
                             event: event,
                             salt: salt,
