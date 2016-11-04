@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import Position from './my-position';
 import Link from '../../link/components/link';
 
@@ -30,7 +31,7 @@ const Positions = p => (
 			<div className="complete-sets">
 				<div className="close-position-button">
 					<button
-						title={p.market.smallestPosition.full}
+						data-tip={p.market.smallestPosition.full}
 						className="button"
 						onClick={(event) => {
 							event.stopPropagation();
@@ -42,6 +43,7 @@ const Positions = p => (
 				</div>
 			</div>
 		}
+		<ReactTooltip type="light" effect="solid" place="top" globalEventOff="click" />
 	</section>
 );
 
