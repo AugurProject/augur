@@ -10,11 +10,28 @@ const Branch = p => (
 			strokeColor="#5c2634"
 		/>
 		<br />
-		<span className="reporting-cycle-info">Reporting Cycle {p.reportPeriod} &middot; {Math.round(p.currentPeriodProgress)}% complete &middot; {p.phaseLabel} phase ends {p.phaseTimeRemaining}</span>
+		<span className="reporting-cycle-info">
+			Reporting Cycle {p.reportPeriod} &middot; {Math.round(p.currentPeriodProgress)}% complete &middot; {p.phaseLabel} phase ends {p.phaseTimeRemaining}
+		</span>
 		<br />
-		<span className="branch-description" data-tip data-for="branch-id-tooltip">{p.description}</span> &middot; {p.periodLength / 3600} hours per cycle
-		<ReactTooltip id="branch-id-tooltip" type="light" effect="solid" place="top">
-			<span className="tooltip-text">Branch ID: {p.id}</span>
+		<a
+			data-tip
+			data-for="branch-id-tooltip"
+			data-event="click focus"
+			className="branch-description"
+		>
+			{p.description}
+		</a> &middot; {p.periodLength / 3600} hours per cycle
+		<ReactTooltip
+			id="branch-id-tooltip"
+			type="light"
+			effect="solid"
+			place="top"
+			globalEventOff="click"
+		>
+			<span className="tooltip-text">
+				Branch ID: {p.id}
+			</span>
 		</ReactTooltip>
 	</section>
 );
