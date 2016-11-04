@@ -543,7 +543,74 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 
 	});
 
-	describe.skip('Sell Trade Tests', () => {
+	describe('Sell Trade Tests', () => {
+		const mockAugurSell = { augur: { ...augur }, abi: { ...abi }, constants: { ...constants } };
+
+		sinon.stub(mockAugurSell.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
+			console.log('getParticipantSharesPurchasedcc:', mockAugurSell.augur.getParticipantSharesPurchased.callCount);
+			switch (mockAugurSell.augur.getParticipantSharesPurchased.callCount) {
+			// case 0:
+			// 	cb('5');
+			// 	break;
+			// case 1:
+			// 	cb('5');
+			// 	break;
+			default:
+				cb('10');
+				break;
+			}
+			return;
+		});
+
+		sinon.stub(mockAugurSell.augur, 'getCashBalance', (takerAddress, cb) => {
+			console.log('getCashBalance cc:', mockAugur.augur.getCashBalance.callCount);
+			switch (mockAugurSell.augur.getCashBalance.callCount) {
+			default:
+				cb('10000.0');
+				break;
+			}
+			return;
+		});
+
+		sinon.stub(mockAugurSell.augur, 'trade', (args) => {
+			// if buying numShares must be 0, if selling totalEthWithFee must be 0
+			const { max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
+			onTradeHash('tradeHash1');
+			onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
+			console.log('trade cc:', mockAugurSell.augur.trade.callCount);
+			switch (mockAugurSell.augur.trade.callCount) {
+			// case 4:
+			// 	onCommitFailed({ error: 'commit failed error', message: 'commit failed error message' });
+			// 	break;
+			// case 5:
+			// 	onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
+			// 	onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+			// 	onTradeFailed({ error: 'trade failed error', message: 'trade failed error message' });
+			// 	break;
+			default:
+				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
+				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
+				break;
+			}
+			return;
+			// onCommitFailed({ error: 'error', message: 'error message' });
+			// onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
+
+			// onTradeFailed({ error: 'error', message: 'error message' });
+		});
+
+		const helper = proxyquire('../../../../src/modules/trade/actions/helpers/trade.js', {
+			'../../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
+			'../../../../services/augurjs': mockAugurSell
+		});
+
+		beforeEach(() => {
+			store.clearActions();
+			mockCB.reset();
+			mockCBStatus.reset();
+		});
+
 		it('should help with a sell trade', () => {
 			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
 			helper.trade('testBinaryMarketID', '2', '10', '0', '0xtaker1', () => ['orderID1', 'orderID2', 'orderID3'], store.dispatch, mockCBStatus, mockCB);
@@ -570,7 +637,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			}), `Didn't call cbStatus with a filled status`);
 
 			assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
-			assert.deepEqual(mockCB.callCount, 3, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
 			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
 		});
 	});
