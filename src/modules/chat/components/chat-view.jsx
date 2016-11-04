@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import ValueTimestamp from '../../common/components/value-timestamp';
 
 export default class ChatView extends Component {
@@ -37,17 +38,30 @@ export default class ChatView extends Component {
 				{p.messages &&
 					p.messages.map((payload) => {
 						const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
-						messageCount += 1;
+						let displayName;
+						let tooltipID;
 						if (payload.name === '') {
+							displayName = payload.address;
+						} else if (payload.name === 'Anonymous Coward') {
+							displayName = payload.name;
+						} else {
+							displayName = payload.name;
+							tooltipID = `${key}-address-tooltip`;
+						}
+						messageCount += 1;
+						if (!tooltipID) {
 							return (
 								<li key={key}>
-									<span>{payload.address}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+									<span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
 								</li>
 							);
 						}
 						return (
 							<li key={key}>
-								<span title={payload.address}>{payload.name}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
+								<span data-tip data-for={tooltipID}>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
+								<ReactTooltip id={tooltipID} type="light" effect="solid" place="top">
+									<span className="tooltip-text">{payload.address}</span>
+								</ReactTooltip>
 							</li>
 						);
 					})
@@ -58,7 +72,7 @@ export default class ChatView extends Component {
 			<section className="chat">
 				<button
 					className="unstyled close-chat-button"
-					title="Close chat window"
+					data-tip data-for="close-chat-tooltip"
 					onClick={p.toggleChat}
 				>
 					<i>&#x25BC;</i>
@@ -83,6 +97,9 @@ export default class ChatView extends Component {
 						</div>
 					</form>
 				</div>
+				<ReactTooltip id="close-chat-tooltip" type="light" effect="solid" place="top">
+					<span className="tooltip-text">Close chat window</span>
+				</ReactTooltip>
 			</section>
 		);
 	}
