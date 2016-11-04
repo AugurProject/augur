@@ -13,19 +13,33 @@ const Transaction = (p) => {
 	const nodes = {};
 
 	const marketDescription = () => {
-		const description = () => <span className="market-description" title={p.data.description || p.data.marketDescription}>
-			{p.data.description ? p.data.description.substring(0, 100) + ((p.data.description.length > 100 && '...') || '') : p.data.marketDescription.substring(0, 100) + ((p.data.marketDescription.length > 100 && '...') || '')}
-		</span>;
-
-		if ((p.data.description || p.data.marketDescription) && p.data.marketLink) {
+		const shortDescription = p.data.description ?
+			p.data.description.substring(0, 100) + ((p.data.description.length > 100 && '...') || '') :
+			p.data.marketDescription.substring(0, 100) + ((p.data.marketDescription.length > 100 && '...') || '');
+		const fullDescription = p.data.description || p.data.marketDescription;
+		const description = (isShortened) => {
+			if (isShortened) {
+				return (
+					<span className="market-description" data-tip={fullDescription}>
+						{shortDescription}
+					</span>
+				);
+			}
+			return (
+				<span className="market-description">
+					{shortDescription}
+				</span>
+			);
+		};
+		const isShortened = shortDescription !== fullDescription;
+		if (shortDescription && p.data.marketLink) {
 			return (
 				<Link href={p.data.marketLink.href} onClick={p.data.marketLink.onClick}>
-					{description()}
+					{description(isShortened)}
 				</Link>
 			);
 		}
-
-		return <span>{description()}</span>;
+		return <span>{description(isShortened)}</span>;
 	};
 
 	switch (p.type) {
