@@ -1,6 +1,6 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-
 import ValueDenomination from '../../common/components/value-denomination';
 import ValueDate from '../../common/components/value-date';
 
@@ -39,7 +39,7 @@ const MarketBasics = p => (
 						<button
 							className="button"
 							disabled={p.marketDataAge.isMarketDataLoading}
-							title={p.marketDataAge.isMarketDataLoading ? 'Loading' : 'Reload market data'}
+							data-tip={p.marketDataAge.isMarketDataLoading ? 'Loading' : 'Reload market data'}
 							onClick={() => p.updateData(p.id)}
 						>
 							Reload
@@ -49,28 +49,29 @@ const MarketBasics = p => (
 			</div>
 		</div>
 
-		<span className="market-description" title={p.description}>{p.description}</span>
+		<span className="market-description">{p.description}</span>
 
 		<ul className="market-properties">
 			{!!p.endDate &&
-				<li className="property end-date" title={`${p.endDateLabel}: ${p.endDate.full}`}>
+				<li className="property end-date" data-tip={`${p.endDateLabel}: ${p.endDate.full}`}>
 					<span className="property-label">{p.endDateLabel}:</span>
 					<ValueDate className="property-value" {...p.endDate} />
 				</li>
 			}
-			<li className="property fee" title={`${p.makerFeePercent.full} discounted fee for placing bids or asks on the books`}>
+			<li className="property fee" data-tip={`${p.makerFeePercent.full} discounted fee for placing bids or asks on the books`}>
 				<span className="property-label">Maker Fee:</span>
 				<ValueDenomination className="property-value" {...p.makerFeePercent} />
 			</li>
-			<li className="property fee" title={`${p.takerFeePercent.full} fee for taking bids or asks from the books`}>
+			<li className="property fee" data-tip={`${p.takerFeePercent.full} fee for taking bids or asks from the books`}>
 				<span className="property-label">Taker Fee:</span>
 				<ValueDenomination className="property-value" {...p.takerFeePercent} />
 			</li>
-			<li className="property volume" title={`${p.volume.rounded} total ${p.volume.denomination} traded`}>
+			<li className="property volume" data-tip={`${p.volume.fullPrecision || p.volume.formatted} total ${p.volume.denomination} traded`}>
 				<span className="property-label">Volume:</span>
 				<ValueDenomination className="property-value" {...p.volume} formatted={p.volume.rounded} />
 			</li>
 		</ul>
+		<ReactTooltip type="light" effect="solid" place="top" />
 	</article>
 );
 
