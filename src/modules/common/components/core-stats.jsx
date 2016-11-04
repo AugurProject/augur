@@ -13,7 +13,12 @@ const CoreStats = p => (
 						key={stat}
 						className="core-stat"
 					>
-						<span className="core-stat-label">{p.coreStats[i][stat].label}:</span>
+						<span
+							className="core-stat-label"
+							data-tip={p.coreStats[i][stat].title}
+						>
+							{p.coreStats[i][stat].label}:
+						</span>
 						{p.coreStats[i][stat].value && p.coreStats[i][stat].value.value ?
 							<ValueDenomination
 								className={`${p.coreStats[i][stat].colorize ? 'colorize' : ''}`}
