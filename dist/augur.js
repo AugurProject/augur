@@ -18985,7 +18985,7 @@ module.exports={
           "sender"
         ], 
         "method": "getEthicReport", 
-        "returns": "number", 
+        "returns": "unfix", 
         "signature": [
           "int256", 
           "int256", 
@@ -43921,7 +43921,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.8";
+    this.version = "3.0.9";
 
     this.options = {
         debug: {
