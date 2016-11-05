@@ -35,7 +35,7 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		if (n == null) return null;
 		return new BigNumber(n, 10);
 	});
-	sinon.stub(mockCheckPeriod, 'checkPeriod', (cb) => {
+	sinon.stub(mockCheckPeriod, 'checkPeriod', (unlock, cb) => {
 		return (dispatch, getState) => {
 			const reportPeriod = 19;
 			dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });

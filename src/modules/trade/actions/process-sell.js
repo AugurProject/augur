@@ -63,17 +63,11 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) {
-					console.debug('-- SELL COMPLETE, SHARES REMAINING --');
 					augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
-						console.log('sharesPurchased:', sharesPurchased);
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
-						console.log('position:', position.toFixed());
-						console.log('transactionData:', transactionData);
-						console.log('remainingShares:', remainingShares.toFixed());
 						if (position.gt(constants.PRECISION.zero)) {
-							console.log('position > 0, creating ask...');
 							let askShares;
 							let shortAskShares;
 							if (position.gt(remainingShares)) {
@@ -83,8 +77,6 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								askShares = position.toFixed();
 								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
 							}
-							console.log('askShares:', askShares);
-							console.log('shortAskShares:', shortAskShares);
 							dispatch(addAskTransaction(
 								transactionData.data.marketID,
 								transactionData.data.outcomeID,
@@ -112,14 +104,10 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 									gasFeesRealEth));
 							}
 						} else {
-							console.log('no position, creating short sell...');
 							dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
 								if (err) console.error('loadBidsAsks:', err);
-								console.log('bids/asks loaded:', updatedOrderBook);
 								const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.id);
-								console.log('trade IDs:', tradeIDs);
 								if (tradeIDs && tradeIDs.length) {
-									console.log('short selling...');
 									dispatch(updateTradeCommitLock(true));
 									dispatch(addShortSellTransaction(
 										transactionData.data.marketID,
@@ -134,7 +122,6 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										transactionData.feePercent.value,
 										gasFeesRealEth));
 								} else {
-									console.log('short asking...');
 									dispatch(addShortAskTransaction(
 										transactionData.data.marketID,
 										transactionData.data.outcomeID,

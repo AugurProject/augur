@@ -12,12 +12,12 @@ const tracker = {
 	notSoCurrentPeriod: 0
 };
 
-export function checkPeriod(cb) {
+export function checkPeriod(unlock, cb) {
 	return (dispatch, getState) => {
 		const { loginAccount, branch } = getState();
 		if (branch.id && loginAccount.id && loginAccount.rep) {
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
-			if (currentPeriod > tracker.notSoCurrentPeriod) {
+			if (unlock || currentPeriod > tracker.notSoCurrentPeriod) {
 				tracker.feesCollected = false;
 				tracker.reportsRevealed = false;
 				tracker.notSoCurrentPeriod = currentPeriod;
@@ -27,6 +27,7 @@ export function checkPeriod(cb) {
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
+					console.log('checkPeriod complete:', err, reportPeriod);
 					if (err) {
 						tracker.checkPeriodLock = false;
 						return cb && cb(err);
@@ -40,10 +41,12 @@ export function checkPeriod(cb) {
 						}
 						if (branch.isReportRevealPhase) {
 							if (!tracker.feesCollected) {
+								console.log('collecting fees');
 								dispatch(collectFees());
 								tracker.feesCollected = true;
 							}
 							if (!tracker.reportsRevealed) {
+								console.log('reveal reports');
 								dispatch(revealReports());
 								tracker.reportsRevealed = true;
 							}

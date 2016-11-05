@@ -101,7 +101,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				console.debug('submitReportHash sent:', res);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUBMITTED,
-					message: 'committing to report outcome ${outcomeName}'
+					message: `committing to report outcome ${outcomeName}`
 				}));
 			},
 			onSuccess: (res) => {

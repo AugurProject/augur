@@ -60,7 +60,7 @@ export function syncBranch(callback) {
 				// check if period needs to be incremented / penalizeWrong
 				// needs to be called
 				} else {
-					dispatch(checkPeriod((err, period) => {
+					dispatch(checkPeriod(isChangedReportPhase, (err, period) => {
 						if (err) {
 							if (callback) return callback(err);
 						} else {

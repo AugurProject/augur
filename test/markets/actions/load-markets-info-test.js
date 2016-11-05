@@ -34,7 +34,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, account, cb) => {
 		cb({
 			test123: {
-				author: '0xtest123',
+				author: '0x0000000000000000000000000000000000000001',
 				branchId: testState.branch.id,
 				events: [{
 					id: 'event1',
@@ -66,7 +66,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 				type: 'UPDATE_MARKETS_DATA',
 				marketsData: {
 					test123: {
-						author: '0xtest123',
+						author: '0x0000000000000000000000000000000000000001',
 						branchId: testState.branch.id,
 						events: [{
 							id: 'event1',
