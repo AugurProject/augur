@@ -3,7 +3,7 @@
     "gethWebsocketsURL": "ws://127.0.0.1:8546",
     "augurNodeURL": "http://augurnode.eastus.cloudapp.azure.com:8547",
     "autoLogin": true,
-    "rootBranch": true,
+    "branchID": "0xf69b5",
     "reportingTest": false,
     "fundNewAccountFromAddress": {
         "address": "0x0",
