@@ -21255,10 +21255,10 @@ module.exports={
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
         "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0xd474b6cc4b63a5cefc256e008e049a61f9025b71", 
+        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0xf9a9d2be12ee6bb9237e9e5dae024ec81c5ef871", 
+        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
@@ -21266,9 +21266,9 @@ module.exports={
         "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0x98d990969cfdfd51eaaf92f1fecab17aa54f3236", 
-        "RoundTwoPenalize": "0x6b7fbdc60bb2d22c32929b5201eb5d1e28ca69e3", 
-        "SendReputation": "0x8447cf782e95d112314489ee85e6772dc4698f81", 
+        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
         "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
         "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
@@ -21444,8 +21444,7 @@ module.exports={
         "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
         "-5": "already done for all events in this period",
         "-6": "forked events should be penalized using the fork penalization function",
-        "-7": "no outcome",
-        "-8": "needed to collect fees last period which sets the before/after rep"
+        "-7": "no outcome"
     },
     "proveReporterDidntReportEnough": {
         "-1": "already done",
@@ -43922,7 +43921,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.7";
+    this.version = "3.0.8";
 
     this.options = {
         debug: {
@@ -46199,9 +46198,6 @@ module.exports = {
             onFailed = event.onFailed;
             event = event.event;
         }
-        console.log('submitReport:', event, abi.hex(salt),
-            this.fixReport(report, isScalar, isIndeterminate),
-            ethics);
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
@@ -46963,19 +46959,26 @@ module.exports = {
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
+            console.log('claimMarketsProceeds: getting winning outcomes for market:', market);
             self.getWinningOutcomes(market, function (winningOutcomes) {
                 // market not yet resolved
+                console.log('got winning outcomes:', winningOutcomes);
                 if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+                    console.log("market not yet resolved", market);
                     return nextMarket();
                 }
+                console.log('claimProceeds:', {
+                    branch: branch,
+                    market: market
+                });
                 self.claimProceeds({
                     branch: branch,
                     market: market,
                     onSent: function (res) {
-                        // console.log("claim proceeds sent:", market, res);
+                        console.log("claim proceeds sent:", market, res);
                     },
                     onSuccess: function (res) {
-                        // console.log("claim proceeds success:", market, res.callReturn);
+                        console.log("claim proceeds success:", market, res.callReturn);
                         if (res.callReturn === "1") {
                             claimedMarkets.push(market);
                             return nextMarket();
@@ -47013,88 +47016,103 @@ module.exports = {
             console.log("checking penalizeWrong for period", votePeriod);
             self.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
-                console.log(" - [checkPenalizeWrong] collectFees for period", votePeriod);
-                self.collectFees({
-                    branch: branch,
-                    sender: sender,
-                    periodLength: periodLength,
-                    onSent: function (r) {
-                        console.log(" - checkPenalizeWrong.collectFees sent:", r);
-                    },
-                    onSuccess: function (r) {
-                        console.log(" - checkPenalizeWrong.collectFees success:", r);
-                        if (!events || events.constructor !== Array || !events.length) {
-                            // if > first period, then call penalizeWrong(branch, 0)
-                            console.log("No events found for period", votePeriod);
-                            self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-                                lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                                if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
-                                    console.log("Penalizations caught up!");
-                                    return next(null);
-                                }
-                                console.log("Calling penalizeWrong(branch, 0)...");
-                                self.penalizeWrong({
-                                    branch: branch,
-                                    event: 0,
-                                    onSent: function (r) {
-                                        console.log("penalizeWrong sent:", r);
-                                    },
-                                    onSuccess: function (r) {
-                                        console.log("penalizeWrong(branch, 0) success:", r);
-                                        console.log(abi.bignum(r.callReturn, "string", true));
-                                        next(null);
-                                    },
-                                    onFailed: function (err) {
-                                        console.error("penalizeWrong(branch, 0) error:", err);
-                                        next(null);
-                                    }
-                                });
-                            });
-                        } else {
-                            console.log("Events found for period " + votePeriod + ", looping through...");
-                            async.eachSeries(events, function (event, nextEvent) {
-                                console.log(" - penalizeWrong:", event);
-                                self.penalizeWrong({
-                                    branch: branch,
-                                    event: event,
-                                    onSent: utils.noop,
-                                    onSuccess: function (r) {
-                                        console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                        console.log(" - closing extra markets");
-                                        self.getMarkets(event, function (markets) {
-                                            if (!markets) return nextEvent("no markets found for " + event);
-                                            if (markets && markets.error) return nextEvent(markets);
-                                            if (markets.length <= 1) return nextEvent();
-                                            async.eachSeries(markets.slice(1), function (market, nextMarket) {
-                                                self.closeMarket({
-                                                    branch: branch,
-                                                    market: market,
-                                                    sender: sender,
-                                                    onSent: function (res) {
-                                                        console.log("closeMarket", market, res);
-                                                    },
-                                                    onSuccess: function (res) {
-                                                        console.log("closeMarket success", market, res.callReturn);
-                                                        nextMarket();
-                                                    },
-                                                    onFailed: nextMarket
-                                                });
-                                            }, nextEvent);
-                                        });
-                                    },
-                                    onFailed: function (err) {
-                                        console.error(" - penalizeWrong error:", err);
-                                        nextEvent(err);
-                                    }
-                                });
-                            }, next);
+                if (!events || events.constructor !== Array || !events.length) {
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    console.log("No events found for period", votePeriod);
+                    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+                        lastPeriodPenalized = parseInt(lastPeriodPenalized);
+                        console.log(" - [checkPenalizeWrong] penalizedUpTo:", lastPeriodPenalized);
+                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
+                            console.log("Penalizations caught up!");
+                            return next(null);
                         }
-                    },
-                    onFailed: function (err) {
-                        console.error(" - checkPenalizeWrong.collectFees error:", err);
-                        next(null);
-                    }
-                });
+                        console.log("Calling penalizeWrong(branch, 0)...");
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: 0,
+                            onSent: function (r) {
+                                console.log("penalizeWrong sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                console.log("penalizeWrong(branch, 0) success:", r);
+                                console.log(abi.bignum(r.callReturn, "string", true));
+                                next(null);
+                            },
+                            onFailed: function (err) {
+                                console.error("penalizeWrong(branch, 0) error:", err);
+                                next(null);
+                            }
+                        });
+                    });
+                } else {
+                    console.log("Events found for period " + votePeriod + ", looping through...");
+                    async.eachSeries(events, function (event, nextEvent) {
+                        console.log(" - penalizeWrong:", event);
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: event,
+                            onSent: utils.noop,
+                            onSuccess: function (r) {
+                                console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                if (r.callReturn === "-8") {
+                                    if (self.getCurrentPeriodProgress(periodLength) > 50) {
+                                        console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
+                                        console.log(" - collectFees params:", {
+                                            branch: branch,
+                                            sender: sender,
+                                            periodLength: periodLength
+                                        });
+                                        return self.collectFees({
+                                            branch: branch,
+                                            sender: sender,
+                                            periodLength: periodLength,
+                                            onSent: function (r) {
+                                                console.log(" - collectFees sent:", r);
+                                            },
+                                            onSuccess: function (r) {
+                                                console.log(" - collectFees success:", r.callReturn);
+                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                            },
+                                            onFailed: function (e) {
+                                                console.error(" - collectFees error:", e);
+                                                nextEvent(e);
+                                            }
+                                        });
+                                    }
+                                    return nextEvent({
+                                        "-8": "needed to collect fees last period which sets the before/after rep"
+                                    });
+                                }
+                                console.log(" - closing extra markets");
+                                self.getMarkets(event, function (markets) {
+                                    if (!markets) return nextEvent("no markets found for " + event);
+                                    if (markets && markets.error) return nextEvent(markets);
+                                    if (markets.length <= 1) return nextEvent();
+                                    async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                        self.closeMarket({
+                                            branch: branch,
+                                            market: market,
+                                            sender: sender,
+                                            onSent: function (res) {
+                                                console.log("closeMarket", market, res);
+                                            },
+                                            onSuccess: function (res) {
+                                                console.log("closeMarket success", market, res.callReturn);
+                                                nextMarket();
+                                            },
+                                            onFailed: nextMarket
+                                        });
+                                    }, nextEvent);
+                                });
+                            },
+                            onFailed: function (err) {
+                                console.error(" - penalizeWrong error:", err);
+                                nextEvent(err);
+                            }
+                        });
+                    }, next);
+                }
             });
         }
 
@@ -50702,6 +50720,10 @@ module.exports = {
 
     updateTx: function (tx) {
         if (!tx.locked) {
+            if (tx.tx === undefined) {
+                tx.locked = true;
+                return this.updatePendingTx(tx);
+            }
             switch (tx.status) {
             case "pending":
                 tx.locked = true;
@@ -50758,35 +50780,43 @@ module.exports = {
                 throw new this.Error(errors.TRANSACTION_FAILED);
             }
             if (this.txs[txHash]) throw new this.Error(errors.DUPLICATE_TRANSACTION);
-            var tx = this.getTransaction(txHash);
-            if (!tx) throw new this.Error(errors.TRANSACTION_FAILED);
             this.txs[txHash] = {
                 hash: txHash,
                 payload: payload,
-                tx: tx,
                 callReturn: callReturn,
                 count: 0,
                 status: "pending"
             };
+            var tx = this.getTransaction(txHash);
+            if (!tx) throw new this.Error(errors.TRANSACTION_FAILED);
+            this.txs[txHash].tx = tx;
             return;
         }
         if (!payload || txHash === null || txHash === undefined) {
+            console.error("payload undefined or txhash null/undefined:", payload, txHash);
             return callback(errors.TRANSACTION_FAILED);
         }
         if (this.txs[txHash]) return callback(errors.DUPLICATE_TRANSACTION);
-        this.getTransaction(txHash, function (tx) {
-            if (!tx) return callback(errors.TRANSACTION_FAILED);
-            self.txs[txHash] = {
-                hash: txHash,
-                payload: payload,
-                tx: tx,
-                callReturn: callReturn,
-                onSent: onSent,
-                onSuccess: onSuccess,
-                onFailed: onFailed,
-                count: 0,
-                status: "pending"
-            };
+        this.txs[txHash] = {
+            hash: txHash,
+            payload: payload,
+            callReturn: callReturn,
+            onSent: onSent,
+            onSuccess: onSuccess,
+            onFailed: onFailed,
+            count: 0,
+            status: "pending"
+        };
+        if (this.block && this.block.number) {
+            this.updateTx(this.txs[txHash]);
+            return callback(null);
+        }
+        this.blockNumber(function (blockNumber) {
+            if (!blockNumber || blockNumber.error) {
+                return callback(blockNumber || "rpc.blockNumber lookup failed");
+            }
+            self.block = {number: parseInt(blockNumber, 16)};
+            self.updateTx(self.txs[txHash]);
             callback(null);
         });
     },

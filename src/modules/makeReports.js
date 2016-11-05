@@ -155,9 +155,6 @@ module.exports = {
             onFailed = event.onFailed;
             event = event.event;
         }
-        console.log('submitReport:', event, abi.hex(salt),
-            this.fixReport(report, isScalar, isIndeterminate),
-            ethics);
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
