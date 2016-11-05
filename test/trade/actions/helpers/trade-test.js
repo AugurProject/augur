@@ -17,42 +17,42 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					id: 'orderID1',
 					price: '0.45',
 					numShares: '10',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner1'
 				},
 				'orderID2': {
 					id: 'orderID2',
 					price: '0.45',
 					numShares: '5',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner2'
 				},
 				'orderID3': {
 					id: 'orderID3',
 					price: '0.45',
 					numShares: '3',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner3'
 				},
 				'orderID4': {
 					id: 'orderID4',
 					price: '0.44',
 					numShares: '10',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner4'
 				},
 				'orderID5': {
 					id: 'orderID5',
 					price: '0.46',
 					numShares: '15',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner5'
 				},
 				'orderID6': {
 					id: 'orderID6',
 					price: '0.43',
 					numShares: '5',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner6'
 				}
 			},
@@ -61,42 +61,42 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					id: 'orderID1',
 					price: '0.4',
 					numShares: '10',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner1'
 				},
 				'orderID2': {
 					id: 'orderID2',
 					price: '0.4',
 					numShares: '5',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner2'
 				},
 				'orderID3': {
 					id: 'orderID3',
 					price: '0.4',
 					numShares: '10',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner3'
 				},
 				'orderID4': {
 					id: 'orderID4',
 					price: '0.39',
 					numShares: '3',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner4'
 				},
 				'orderID5': {
 					id: 'orderID5',
 					price: '0.41',
 					numShares: '15',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner5'
 				},
 				'orderID6': {
 					id: 'orderID6',
 					price: '0.415',
 					numShares: '20',
-					outcome: '1',
+					outcome: '2',
 					owner: 'owner6'
 				}
 			}
@@ -300,6 +300,15 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			case 1:
 				cb('5');
 				break;
+			case 9:
+				cb('0');
+				break;
+			case 10:
+				cb('20');
+				break;
+			case 11:
+				cb('80');
+				break;
 			default:
 				cb('10');
 				break;
@@ -310,6 +319,13 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		sinon.stub(mockAugur.augur, 'getCashBalance', (takerAddress, cb) => {
 			console.log('getCashBalance cc:', mockAugur.augur.getCashBalance.callCount);
 			switch (mockAugur.augur.getCashBalance.callCount) {
+			case 10:
+				cb('9960.0');
+				break;
+			case 11:
+			case 12:
+				cb('9800.0');
+				break;
 			default:
 				cb('10000.0');
 				break;
@@ -332,6 +348,16 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
 				onTradeFailed({ error: 'trade failed error', message: 'trade failed error message' });
 				break;
+			case 6:
+				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
+				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSuccess({ sharesBought: '20', cashFromTrade: '0', unmatchedShares: '80', unmatchedCash: '160', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
+				break;
+			case 7:
+				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
+				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSuccess({ sharesBought: '80', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
+				break;
 			default:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
@@ -339,10 +365,6 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 				break;
 			}
 			return;
-			// onCommitFailed({ error: 'error', message: 'error message' });
-			// onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
-
-			// onTradeFailed({ error: 'error', message: 'error message' });
 		});
 
 		const helper = proxyquire('../../../../src/modules/trade/actions/helpers/trade.js', {
@@ -540,7 +562,81 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
 		});
 
+		it('should handle null inputs gracefully.', () => {
+			helper.trade('testBinaryMarketID', '2', null, null, '0xtaker1', () => ['orderID1', 'orderID2', 'orderID3'], store.dispatch, mockCBStatus, mockCB);
 
+			assert(mockCB.calledWithExactly(null, {
+			  remainingEth: abi.bignum('0'),
+			  remainingShares: abi.bignum('0'),
+			  filledShares: abi.bignum('0'),
+			  filledEth: abi.bignum('0'),
+			  tradingFees: abi.bignum('0'),
+			  gasFees: abi.bignum('0')
+			}), `Didn't return the expected error object for a failed trade`);
+			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
+		});
+
+		it('should be able to handle a large amount of trade ids (100)', () => {
+			const tradeIDs = [];
+			for (let i = 1; i <= 100; i++) {
+				let order = {
+					id: 'orderID' + i,
+					price: (Math.random() * (.8 - .2) + .2) + '',
+					numShares: (Math.random() * (100 - 5) + 5) + '',
+					outcome: '2',
+					owner: 'owner' + i
+				};
+				store.getState().orderBooks.testBinaryMarketID.sell['orderID'+i] = order;
+				tradeIDs.push('orderID' + i);
+			}
+			helper.trade('testBinaryMarketID', '2', '0', '200.02', '0xtaker1', () => tradeIDs, store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+			// first commit success data check
+			assert(mockCBStatus.calledWithExactly({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.01450404')
+			}), `Didn't send the right details`);
+			// second commit success data check, gas fees should increase
+			assert(mockCBStatus.calledWithExactly({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.04351212')
+			}), `Didn't send the right details`);
+			assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+			// first succesfully filled trade, should fill 20 shares at 40 total eth cost
+			assert(mockCBStatus.calledWithExactly({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.01'),
+				gasFees: abi.bignum('0.02900808'),
+				filledShares: abi.bignum('20'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('80'),
+				remainingEth: abi.bignum('160')
+			}), `Didn't call cbStatus with a filled status`);
+			// 2nd successfully filled trade, should fill 80 shares at 160 total eth cost
+			assert(mockCBStatus.calledWithExactly({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.02'),
+				gasFees: abi.bignum('0.05801616'),
+				filledShares: abi.bignum('100'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('0'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert.deepEqual(mockCBStatus.callCount, 10, `Didn't call status callback 10 times as expected`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' } ], `Didn't dispatch a load_bids_asks action twice as expected`);
+		});
 	});
 
 	describe('Sell Trade Tests', () => {
