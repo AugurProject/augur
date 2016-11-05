@@ -150,26 +150,21 @@ const Transaction = (p) => {
 		case COMMIT_REPORT:
 		case REVEAL_REPORT: {
 			let isScalar;
-			let reportedOutcome;
 			switch (p.type) {
 				case COMMIT_REPORT:
 					nodes.action = 'Commit report';
 					isScalar = p.data.market.type === SCALAR;
-					if (isScalar) {
-						reportedOutcome = p.data.market.reportedOutcomeID;
-					}
 					break;
 				case REVEAL_REPORT:
 					nodes.action = 'Reveal report';
 					isScalar = p.data.isScalar;
-					if (isScalar) reportedOutcome = p.data.reportedOutcomeID;
 					break;
 				default:
 					break;
 			}
-			if (!isScalar) {
-				reportedOutcome = p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
-			}
+			const reportedOutcome = isScalar ?
+				p.data.reportedOutcomeID :
+				p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>

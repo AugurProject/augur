@@ -49,12 +49,28 @@ const LoginMessagePage = p => (
 					</a>.
 				</li>
 				<li>
-					{`The site is only as fast as Ethereum blocks are mined. However, it is important to know that all orders
-					are placed into order books according to best price, and in the order in which they are received. This
-					preserves price/time priority in Augur's markets.`}
+					{`A note on price/time priority on the blockchain.  The site is only as fast as Ethereum blocks are mined.  Augur's matching engine sorts order books by price, then by block number, then by transaction index. Within a single block, transactions are ordered by the miner who mines the block.  When constructing a block, miners typically order transactions first by gasprice (highest to lowest), and then by the order received (oldest to newest).  Instead of price/time priority, Augur uses "price/gasprice/time priority".  Presently, Augur does not attempt to adjust gasprices in response to other pending transactions, although, if desired, gasprice can be adjusted manually using the API, by changing the "gasPrice" field attached to every sendTransaction payload.`}
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 5, 2016</h3>
+			<ol>
+				<li>
+					Fixed transaction failure (error 500) edge case that failed (nulled) without retrying the transaction, even if retryDroppedTxs was set to true.
+				</li>
+				<li>
+					Added extra on-chain market ID lookup and loadMarketsInfo action for the case where a commit report action has been sent but the eventID field of the market selector has not yet been assigned.  As far as I can tell, the click-thru-to-next-report functionality is now working properly.
+				</li>
+				<li>
+					Fixed scalar report outcome displays on transactions page.
+				</li>
+				<li>
+					Added outcome names / IDs to transaction messages for commit report (submitReportHash) actions.
+				</li>
+				<li>
+					Fixed initial trade-in-each-market setup for augur.js reporting-sequence tests.
+				</li>
+			</ol>
 			<h3>November 4, 2016</h3>
 			<ol>
 				<li>
