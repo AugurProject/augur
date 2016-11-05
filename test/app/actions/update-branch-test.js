@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import {
 	assert
 } from 'chai';
@@ -15,12 +16,13 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		branch: {
 			currentPeriod: 20,
 			currentPeriodProgress: 52,
-			isReportConfirmationPhase: true,
-			reportPeriod: 18
+			isReportRevealPhase: true,
+			reportPeriod: 18,
+			periodLength: 900
 		}
 	});
 	let store = mockStore(state);
-	let mockAugurJS = { augur: {} };
+	let mockAugurJS = { augur: {}, abi: { bignum: () => {} } };
 	let mockCheckPeriod = { checkPeriod: () => {} };
 	let mockClaimProceeds = {};
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
@@ -29,7 +31,11 @@ describe(`modules/app/actions/update-branch.js`, () => {
 	mockAugurJS.augur.getVotePeriod.onCall(1).yields(15);
 	mockAugurJS.augur.getVotePeriod.onCall(2).yields(18);
 	mockClaimProceeds.claimProceeds = sinon.stub().returns({ type: 'CLAIM_PROCEEDS' });
-	sinon.stub(mockCheckPeriod, 'checkPeriod', (cb) => {
+	sinon.stub(mockAugurJS.abi, 'bignum', (n) => {
+		if (n == null) return null;
+		return new BigNumber(n, 10);
+	});
+	sinon.stub(mockCheckPeriod, 'checkPeriod', (unlock, cb) => {
 		return (dispatch, getState) => {
 			const reportPeriod = 19;
 			dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });
@@ -62,8 +68,10 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			branch: {
 				currentPeriod: 20,
 				currentPeriodProgress: 52,
-				isReportConfirmationPhase: true,
-				reportPeriod: 19
+				isReportRevealPhase: true,
+				reportPeriod: 19,
+				phaseLabel: 'Reveal',
+				phaseTimeRemaining: 'in 7 minutes'
 			}
 		}, {
 			type: 'CLAIM_PROCEEDS'
@@ -86,8 +94,10 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			branch: {
 				currentPeriod: 20,
 				currentPeriodProgress: 42,
-				isReportConfirmationPhase: false,
-				reportPeriod: 15
+				isReportRevealPhase: false,
+				reportPeriod: 15,
+				phaseLabel: 'Commit',
+				phaseTimeRemaining: 'in a minute'
 			}
 		}, {
 			type: 'CLAIM_PROCEEDS'
@@ -116,8 +126,10 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			branch: {
 				currentPeriod: 20,
 				currentPeriodProgress: 52,
-				isReportConfirmationPhase: true,
-				reportPeriod: 18
+				isReportRevealPhase: true,
+				reportPeriod: 18,
+				phaseLabel: 'Reveal',
+				phaseTimeRemaining: 'in 7 minutes'
 			}
 		}, {
 			type: 'CLAIM_PROCEEDS'

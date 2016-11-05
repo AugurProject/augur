@@ -9,11 +9,18 @@ import { augur } from '../../../services/augurjs';
 export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) {
 	return (dispatch, getState) => {
 		augur.getDescription(eventID, (eventDescription) => {
-			const outcome = getState().outcomesData[marketID][reportedOutcomeID] || {};
+			const outcomesData = getState().outcomesData[marketID];
+			let outcome;
+			if (isScalar) {
+				outcome = outcomesData ? outcomesData[1] : {};
+			} else {
+				outcome = outcomesData ? outcomesData[reportedOutcomeID] : {};
+			}
 			const transaction = {
 				type: REVEAL_REPORT,
 				data: {
 					event: eventID,
+					marketID,
 					outcome,
 					description: eventDescription || getState().marketsData[marketID].description,
 					reportedOutcomeID,

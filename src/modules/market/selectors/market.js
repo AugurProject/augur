@@ -102,7 +102,7 @@ export const selectMarket = (marketID) => {
 		endDate.getMonth(),
 		endDate.getDate(),
 
-		branch && !!branch.isReportConfirmationPhase,
+		branch && !!branch.isReportRevealPhase,
 
 		orderBooks[marketID],
 		orderCancellation,
@@ -135,7 +135,7 @@ export function assembleMarket(
 		endDateYear,
 		endDateMonth,
 		endDateDay,
-		isReportConfirmationPhase,
+		isReportRevealPhase,
 		orderBooks,
 		orderCancellation,
 		smallestPosition,
@@ -158,7 +158,7 @@ export function assembleMarket(
 			endDateYear,
 			endDateMonth,
 			endDateDay,
-			isReportConfirmationPhase,
+			isReportRevealPhase,
 			orderBooks,
 			orderCancellation,
 			smallestPosition,
@@ -206,10 +206,10 @@ export function assembleMarket(
 			market.volume = formatShares(marketData.volume, { positiveSign: false });
 
 			market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase; // account is required to report on this unreported market during reporting phase
 			market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
 			market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
-			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
+			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
 			market.isMissedOrReported = market.isMissedReport || market.isReported;
 
 			market.marketLink = selectMarketLink(market, dispatch);

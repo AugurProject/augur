@@ -3,29 +3,45 @@ import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateReports } from '../../reports/actions/update-reports';
-import { selectMarketFromEventID } from '../../market/selectors/market';
+import { selectMarketFromEventID, selectMarket } from '../../market/selectors/market';
 import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links';
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { reports, branch } = getState();
+		const { reports, branch, marketsData } = getState();
 		dispatch(addCommitReportTransaction(market, reportedOutcomeID, isUnethical, isIndeterminate));
 		const branchReports = reports[branch.id];
 		if (!branchReports) return selectMarketsLink(dispatch).onClick();
 		const nextPendingReportEventID = Object.keys(branchReports).find(
-			eventID =>	!branchReports[eventID].reportHash
+			eventID =>	!branchReports[eventID].salt
 		);
-		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
 		console.debug('next pending report eventID:', nextPendingReportEventID);
-		console.debug('next pending report marketID:', nextPendingReportMarket);
-		if (nextPendingReportMarket) {
-			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
+		if (!marketsData[nextPendingReportEventID] || !marketsData[nextPendingReportEventID].eventID) {
+			augur.getMarket(nextPendingReportEventID, 0, (nextPendingReportMarketID) => {
+				console.log('nextPendingReportMarketID:', nextPendingReportMarketID);
+				dispatch(loadMarketsInfo([nextPendingReportMarketID], () => {
+					console.log('loaded market info');
+					const nextPendingReportMarket = selectMarket(nextPendingReportMarketID);
+					console.debug('next pending report market:', nextPendingReportMarket);
+					if (nextPendingReportMarket) {
+						selectMarketLink(nextPendingReportMarket, dispatch).onClick();
+					} else {
+						selectMarketsLink(dispatch).onClick();
+					}
+				}));
+			});
 		} else {
-			selectMarketsLink(dispatch).onClick();
+			const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
+			if (nextPendingReportMarket) {
+				selectMarketLink(nextPendingReportMarket, dispatch).onClick();
+			} else {
+				selectMarketsLink(dispatch).onClick();
+			}
 		}
 	};
 }
@@ -38,7 +54,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID) {
 			return dispatch(updateExistingTransaction(transactionID, {
-				status: FAILED, message: 'Missing data'
+				status: FAILED,
+				message: 'Missing data'
 			}));
 		}
 
@@ -68,6 +85,9 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			encryptedReport = augur.encryptReport(fixedReport, derivedKey, report.salt);
 			encryptedSalt = augur.encryptReport(report.salt, derivedKey, loginAccount.keystore.crypto.kdfparams.salt);
 		}
+		const outcomeName = report.isScalar ?
+			reportedOutcomeID :
+			(market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {}).name;
 		augur.submitReportHash({
 			event: eventID,
 			reportHash,
@@ -80,14 +100,15 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			onSent: (res) => {
 				console.debug('submitReportHash sent:', res);
 				dispatch(updateExistingTransaction(transactionID, {
-					status: 'committing report'
+					status: SUBMITTED,
+					message: `committing to report outcome ${outcomeName}`
 				}));
 			},
 			onSuccess: (res) => {
 				console.debug('submitReportHash successful:', res.callReturn);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
-					message: 'committed report',
+					message: `committed to report outcome ${outcomeName}`,
 					hash: res.hash,
 					timestamp: res.timestamp,
 					gasFees: formatRealEther(res.gasFees)

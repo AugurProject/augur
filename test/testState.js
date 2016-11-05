@@ -27,7 +27,7 @@ const testState = {
 		description: 'root branch',
 		periodLength: 4000,
 		currentPeriod: 20,
-		isReportConfirmationPhase: true,
+		isReportRevealPhase: true,
 		reportPeriod: 19,
 		currentPeriodProgress: 52
 	},
@@ -40,8 +40,8 @@ const testState = {
 	},
 	env,
 	loginAccount: {
-		address: '0xtest123',
-		id: '0xtest123',
+		address: '0x0000000000000000000000000000000000000001',
+		id: '0x0000000000000000000000000000000000000001',
 		name: 'testTesterson',
 		loginID: 'testSecureID',
 		localNode: false,
@@ -52,13 +52,13 @@ const testState = {
 		realEther: 0,
 		rep: 0,
 		keystore: {
-			id: '0xtest123'
+			id: '0x0000000000000000000000000000000000000001'
 		}
 	},
 	keywords: 'test testtag',
 	marketsData: {
 		testMarketID: {
-			author: '0xtest123',
+			author: '0x0000000000000000000000000000000000000001',
 			eventID: 'testEventID',
 			name: 'testMarket',
 			description: 'some test description',
@@ -95,7 +95,7 @@ const testState = {
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.42',
 					type: 'buy'
 				}
@@ -208,7 +208,7 @@ const testState = {
 	transactionsData: {
 		testtransaction12345: {
 			id: 'testtransaction12345',
-			message: 'CORS request rejected: https://faucet.augur.net/faucet/0xtest123',
+			message: 'CORS request rejected: https://faucet.augur.net/faucet/0x0000000000000000000000000000000000000001',
 			status: 'failed',
 			type: 'register',
 			data: {}
@@ -247,7 +247,7 @@ const testState = {
 	allMarkets: [
 		{
 			id: '0xMARKET1',
-			author: '0xtest123',
+			author: '0x0000000000000000000000000000000000000001',
 			description: 'test-market-1',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),
@@ -296,7 +296,7 @@ const testState = {
 		},
 		{
 			id: '0xMARKET2',
-			author: '0xtest123',
+			author: '0x0000000000000000000000000000000000000001',
 			description: 'test-market-2',
 			endDate: formatDate(new Date('2017/12/12')),
 			volume: formatNumber(100),

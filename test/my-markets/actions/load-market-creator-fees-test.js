@@ -29,7 +29,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 	before(() => {
 		store.clearActions();
 
-		store.dispatch(action.loadMarketCreatorFees('0xtest123'));
+		store.dispatch(action.loadMarketCreatorFees('0x0000000000000000000000000000000000000001'));
 	});
 
 	after(() => {
@@ -44,7 +44,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 		const out = [{
 			type: 'TESTING',
 			data: {
-				'0xtest123': abi.bignum('10')
+				'0x0000000000000000000000000000000000000001': abi.bignum('10')
 			}
 		}];
 

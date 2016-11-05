@@ -92,6 +92,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 					},
 					reportedOutcomeID: '2',
 					isUnethical: false,
+					marketID: 'testMarketID',
 					isScalar: false,
 					isIndeterminate: false
 				},

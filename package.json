@@ -60,17 +60,18 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.0.10",
     "async": "1.5.2",
-    "augur-ui-react-components": "3.5.23",
-    "augur.js": "3.0.4",
+    "augur-ui-react-components": "3.5.29",
+    "augur.js": "3.0.9",
     "bignumber.js": "2.3.0",
+    "express": "4.14.0",
+    "helmet": "2.3.0",
     "memoizerific": "1.8.4",
+    "moment": "2.14.1",
+    "prerender-node": "^2.4.0",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1",
-    "express": "^4.14.0",
-    "helmet": "^2.3.0",
-    "prerender-node": "^2.4.0",
-    "rimraf": "2.5.4"
+    "rimraf": "2.5.4",
+    "secure-random": "1.1.1"
   },
   "devDependencies": {
     "augur-ui-webserver": "1.1.0",

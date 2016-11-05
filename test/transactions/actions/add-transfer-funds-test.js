@@ -40,7 +40,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 		const expectedOutput = [
 			{
 				type: 'transfer_funds',
-				fromAddress: '0xtest123',
+				fromAddress: '0x0000000000000000000000000000000000000001',
 				amount: 5,
 				currency: 'eth',
 				toAddress: 'testAddress123',
@@ -49,7 +49,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 			{
 				type: 'PROCESS_TRANSFER_FUNDS',
 				transID: 'testTransactionID',
-				fromAddress: '0xtest123',
+				fromAddress: '0x0000000000000000000000000000000000000001',
 				amount: 5,
 				currency: 'eth',
 				toAddress: 'testAddress123'
