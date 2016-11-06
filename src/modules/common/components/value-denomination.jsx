@@ -5,13 +5,22 @@ import classnames from 'classnames';
 const ValueDenomination = p => (
 	<span>
 		<span
-			className={classnames('value-denomination', p.className, { positive: p.formattedValue > 0, negative: p.formattedValue < 0 })}
+			className={classnames('value-denomination', p.className, {
+				positive: p.formattedValue > 0,
+				negative: p.formattedValue < 0
+			})}
 		>
 			{p.prefix &&
 				<span className="prefix">{p.prefix}</span>
 			}
 			{p.formatted && p.fullPrecision &&
-				<span className="value pointer" data-tip={p.fullPrecision} data-event="click focus">{p.formatted}</span>
+				<span
+					className="value pointer"
+					data-tip={p.fullPrecision}
+					data-event="click focus"
+				>
+					{p.formatted}
+				</span>
 			}
 			{p.formatted && !p.fullPrecision &&
 				<span className="value">{p.formatted}</span>

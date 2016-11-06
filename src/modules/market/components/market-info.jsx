@@ -46,6 +46,13 @@ const MarketInfo = p => (
 				<ValueDate className="property-value" {...p.creationTime} />
 			</li>
 		</ul>
+		{!!p.reportedOutcome &&
+			<div className="reported-outcome">
+				<hr />
+				<h4>This market is closed.</h4>
+				Reported outcome: {p.reportedOutcome}
+			</div>
+		}
 	</div>
 );
 
@@ -57,7 +64,8 @@ MarketInfo.propTypes = {
 	creationTime: PropTypes.object,
 	type: PropTypes.string,
 	minValue: PropTypes.string,
-	maxValue: PropTypes.string
+	maxValue: PropTypes.string,
+	reportedOutcome: PropTypes.string
 };
 
 export default MarketInfo;

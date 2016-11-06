@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 6, 2016</h3>
+			<ol>
+				<li>
+					Added a message to markets that have been reported on and closed out: &quot;This market is closed. Reported outcome: X&quot;
+				</li>
+				<li>
+					Made a modified reporting test sequence script that goes through a second full reporting cycle on the same branch ID that has already successfully completed its initial reporting cycle.  Completed full test runs of both the initial reporting cycle sequence as well as multiple follow-up sequences.  These automated use-tests only use a single reporter, but the results are as expected for this reporter.  Next-up: automated reporting sequences using multiple accounts!
+				</li>
+				<li>
+					Decoupled the UI reportingTestSetup method from its spawn-new-branch subroutine.
+				</li>
+				<li>
+					Refactored load-reports and associated methods.  load-reports is a group of functions that build the reports data structure (as well as update other related data) in the front-end.  They lookup what events you are required to report on, which of these you have already reported on, pull your encrypted report and salt from the chain (and decrypt them), lookup if you have submitted a report hash or plaintext report, collates this info and stows it in Redux (the front-end data store).  These methods did not have good unit test coverage (my fault -- they became more complicated over time and the tests did not keep up).  Since I have found multiple edge-case bugs over the past few days as I am user-testing reporting, I decided to take the time to pull these methods apart and added more thorough unit tests for them.  Coverage is now significantly improved for these methods.  (Note: to simplify mock creation for the unit tests, I split load-reports into several separate files/methods: load-reports, load-report, load-report-descriptors, and decrypt-reports.)
+				</li>
+			</ol>
 			<h3>November 5, 2016</h3>
 			<ol>
 				<li>
