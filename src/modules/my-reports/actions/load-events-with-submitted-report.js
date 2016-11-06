@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur, abi } from '../../../services/augurjs';
 import store from '../../../store';
 import { dateToBlock } from '../../../utils/date-to-block-to-date';
 import { updateOldestLoadedEventPeriod } from '../../my-reports/actions/update-oldest-loaded-event-period';
@@ -48,12 +48,13 @@ function loadAdditionalEventData(events) {
 	Object.keys(events).forEach(eventID => {
 		augur.getExpiration(eventID, expirationDate => {
 			if (!!expirationDate) {
-				updateEvent(eventID, { expirationDate });
-				const expirationBlock = dateToBlock(expirationDate, blockchain.currentBlockNumber);
+				const expDate = new Date(parseInt(expirationDate, 10) * 1000);
+				updateEvent(eventID, { expirationDate: expDate });
+				const expirationBlock = dateToBlock(expDate, blockchain.currentBlockNumber);
 				augur.rpc.getLogs({
 					fromBlock: expirationBlock,
 					address: augur.contracts.Consensus,
-					topics: [augur.format_int256(loginAccount.id)]
+					topics: [abi.format_int256(loginAccount.id)]
 				}, repEarned => !!repEarned && updateEvent(eventID, { repEarned }));
 			}
 		});
@@ -67,8 +68,8 @@ function loadAdditionalEventData(events) {
 		augur.getOutcome(eventID, marketOutcome => !!marketOutcome && updateEvent(eventID, { marketOutcome }));
 		augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && updateEvent(eventID, { proportionCorrect }));
 		augur.getReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.id, accountReport => !!accountReport && updateEvent(eventID, { accountReport }));
-		augur.getRepBalance(loginAccount.id, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
-		augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
+		augur.getRepBalance(events[eventID].branch, loginAccount.id, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
+		// augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
 		augur.getRoundTwo(eventID, isChallenged => !!isChallenged && updateEvent(eventID, { isChallenged }));
 	});
 }
