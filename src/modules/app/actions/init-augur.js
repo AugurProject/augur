@@ -28,7 +28,7 @@ export function initAugur() {
 					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
-						dispatch(reportingTestSetup());
+						dispatch(reportingTestSetup(env.branchID));
 					} else {
 						dispatch(loadBranch(env.branchID || BRANCH_ID));
 						const { loginAccount, loginMessage } = getState();

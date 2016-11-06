@@ -27,7 +27,12 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		}
 	});
 	store = mockStore(state);
-	let mockAugurJS = { augur: { submitReportHash: () => {}, getMarket: () => {} } };
+	let mockAugurJS = {
+		augur: {
+			submitReportHash: () => {},
+			getMarket: () => {}
+		}
+	};
 	let mockAddCommitReportTransaction = {};
 	let mockUpdateExistingTransaction = {
 		updateExistingTransaction: () => {}
@@ -155,6 +160,8 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 					isIndeterminate: false,
 					isCategorical: false,
 					isScalar: true,
+					isSubmitted: true,
+					isCommitted: true,
 					isRevealed: false,
 					isUnethical: false,
 					salt: 'salt12345',
@@ -184,14 +191,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		}, {
 			[testState.branch.id]: {
 				testEventID1: {
-					reportPeriod: '19',
-					reportedOutcomeID: 'testOutcomeID',
-					isIndeterminate: false,
-					isCategorical: false,
-					isScalar: true,
-					isRevealed: false,
-					isUnethical: false,
-					salt: 'salt12345',
+					isCommitted: true,
 					reportHash: '0xdeadbeef'
 				}
 			},

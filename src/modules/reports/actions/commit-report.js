@@ -50,6 +50,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 	return (dispatch, getState) => {
 		const { loginAccount, branch } = getState();
 		const eventID = market.eventID;
+		console.log('reporting on market', market.id, 'event', eventID);
 		const branchID = branch.id;
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID) {
@@ -70,6 +71,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			isIndeterminate,
 			salt: bytesToHex(secureRandom(32)),
 			reportHash: null,
+			isSubmitted: true,
+			isCommitted: false,
 			isRevealed: false
 		};
 
@@ -106,6 +109,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			},
 			onSuccess: (res) => {
 				console.debug('submitReportHash successful:', res.callReturn);
+				console.log('eventID:', eventID);
+				console.log('marketID:', market.id);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUCCESS,
 					message: `committed to report outcome ${outcomeName}`,
@@ -113,8 +118,19 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 					timestamp: res.timestamp,
 					gasFees: formatRealEther(res.gasFees)
 				}));
+				const branchReports = getState().reports[branch.id] || {};
+				console.log('branchReports:', branchReports, branchReports[eventID]);
 				report.reportHash = reportHash;
-				dispatch(updateReports({ [branchID]: { [eventID]: report } }));
+				report.isCommitted = true;
+				dispatch(updateReports({
+					[branchID]: {
+						[eventID]: {
+							...branchReports[eventID],
+							reportHash,
+							isCommitted: true
+						}
+					}
+				}));
 			},
 			onFailed: (err) => {
 				console.error('submitReportHash failed', err);

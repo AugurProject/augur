@@ -26,6 +26,7 @@ export function loadMarketsInfo(marketIDs, cb) {
 					}
 					marketInfoIDs = Object.keys(marketsData);
 					if (marketInfoIDs.length) {
+						console.log('updateMarketsData:', marketsData);
 						dispatch(updateMarketsData(marketsData));
 						marketInfoIDs.forEach(marketId => {
 							if (marketsData[marketId].author === loginAccount.id) {
