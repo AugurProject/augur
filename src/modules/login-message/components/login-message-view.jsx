@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
 				<li>
 					Reordered checkPeriod callback sequences to allow for full reporter catch-up even if their REP redistribution is behind by multiple periods.  Also added an extra check for REP redistribution to the submitReportHash onSuccess callback, which should short-circuit failing submitReportHash loops, if they are caused by not being caught up on penalizations/redistributions.
 				</li>
+				<li>
+					Fixed chat messages display sent by users who do not have a name set (address-only).
+				</li>
 			</ol>
 			<h3>November 6, 2016</h3>
 			<ol>
