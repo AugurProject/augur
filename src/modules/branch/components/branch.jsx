@@ -14,14 +14,14 @@ const Branch = p => (
 			Reporting Cycle {p.reportPeriod} &middot; {Math.round(p.currentPeriodProgress)}% complete &middot; {p.phaseLabel} phase ends {p.phaseTimeRemaining}
 		</span>
 		<br />
-		<a
+		<span
 			data-tip
 			data-for="branch-id-tooltip"
 			data-event="click focus"
-			className="branch-description"
+			className="branch-description pointer"
 		>
 			{p.description}
-		</a> &middot; {p.periodLength / 3600} hours per cycle
+		</span> &middot; {p.periodLength / 3600} hours per cycle
 		<ReactTooltip
 			id="branch-id-tooltip"
 			type="light"
