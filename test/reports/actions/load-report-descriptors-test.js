@@ -3,7 +3,6 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
 
 describe('modules/reports/actions/load-report-descriptors.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -38,7 +37,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'binary market, not indeterminate, not unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -64,7 +63,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'binary'
 				}
 			},
@@ -73,15 +72,14 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1',
 						salt: null,
 						isIndeterminate: false,
 						isUnethical: false,
 						isRevealed: false,
-						isCommitted: false,
-						isSubmitted: false
+						isCommitted: false
 					}
 				}
 			}
@@ -94,7 +92,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1',
 							salt: null,
@@ -102,8 +100,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							isIndeterminate: false,
 							isScalar: false,
 							isRevealed: false,
-							isCommitted: false,
-							isSubmitted: false
+							isCommitted: false
 						}
 					}
 				}
@@ -113,7 +110,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'categorical market, not indeterminate, not unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -139,7 +136,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'categorical'
 				}
 			},
@@ -148,15 +145,14 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1',
 						salt: null,
 						isIndeterminate: false,
 						isUnethical: false,
 						isRevealed: false,
-						isCommitted: false,
-						isSubmitted: false
+						isCommitted: false
 					}
 				}
 			}
@@ -169,7 +165,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1',
 							salt: null,
@@ -177,8 +173,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							isIndeterminate: false,
 							isScalar: false,
 							isRevealed: false,
-							isCommitted: false,
-							isSubmitted: false
+							isCommitted: false
 						}
 					}
 				}
@@ -188,7 +183,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'scalar market, not indeterminate, unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -214,7 +209,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'scalar'
 				}
 			},
@@ -223,14 +218,13 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1.2345',
 						salt: null,
 						isUnethical: false,
 						isRevealed: false,
-						isCommitted: false,
-						isSubmitted: false
+						isCommitted: false
 					}
 				}
 			}
@@ -243,7 +237,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1.2345',
 							salt: null,
@@ -251,8 +245,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							isIndeterminate: false,
 							isScalar: true,
 							isRevealed: false,
-							isCommitted: false,
-							isSubmitted: false
+							isCommitted: false
 						}
 					}
 				}
@@ -262,7 +255,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'categorical market, indeterminate, not unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -288,7 +281,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'categorical'
 				}
 			},
@@ -297,14 +290,13 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1.5',
 						salt: null,
 						isUnethical: false,
 						isRevealed: false,
-						isCommitted: false,
-						isSubmitted: false
+						isCommitted: false
 					}
 				}
 			}
@@ -317,7 +309,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1.5',
 							salt: null,
@@ -325,8 +317,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							isIndeterminate: true,
 							isScalar: false,
 							isRevealed: false,
-							isCommitted: false,
-							isSubmitted: false
+							isCommitted: false
 						}
 					}
 				}
@@ -336,7 +327,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'scalar market, indeterminate, not unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -362,7 +353,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'scalar'
 				}
 			},
@@ -371,7 +362,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1.500000000000000001',
 						salt: null,
@@ -391,7 +382,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1.500000000000000001',
 							salt: null,
@@ -410,7 +401,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'categorical market, not indeterminate, unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -436,7 +427,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'categorical'
 				}
 			},
@@ -445,7 +436,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '3',
 						salt: null,
@@ -465,7 +456,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '3',
 							salt: null,
@@ -484,7 +475,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 	test({
 		description: 'scalar market, not indeterminate, unethical',
 		eventID: '0xe1',
-		marketID: '0xf1',
+		marketID: '0xa1',
 		blockchain: {
 			ethicReports: {
 				'0xb1': {
@@ -510,7 +501,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				rep: '47'
 			},
 			marketsData: {
-				'0xf1': {
+				'0xa1': {
 					type: 'scalar'
 				}
 			},
@@ -519,7 +510,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 					'0xe1': {
 						eventID: '0xe1',
 						period: 7,
-						marketID: '0xf1',
+						marketID: '0xa1',
 						reportHash: null,
 						reportedOutcomeID: '1.2345',
 						salt: null,
@@ -539,7 +530,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 						'0xe1': {
 							eventID: '0xe1',
 							period: 7,
-							marketID: '0xf1',
+							marketID: '0xa1',
 							reportHash: null,
 							reportedOutcomeID: '1.2345',
 							salt: null,
