@@ -112,22 +112,29 @@ module.exports = {
             if (res.callReturn === "0") {
                 return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
                     if (err) return onFailed(err);
-                    return self.submitReportHash({
-                        event: event,
-                        reportHash: reportHash,
-                        encryptedReport: encryptedReport,
-                        encryptedSalt: encryptedSalt,
-                        ethics: ethics,
-                        branch: branch,
-                        period: period,
-                        periodLength: periodLength,
-                        onSent: onSent,
-                        onSuccess: onSuccess,
-                        onFailed: onFailed
+                    self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
+                        console.log('rep redistribution done:', repRedistributionDone);
+                        if (repRedistributionDone === "0") {
+                            return onFailed("rep redistribution not done");
+                        }
+                        self.submitReportHash({
+                            event: event,
+                            reportHash: reportHash,
+                            encryptedReport: encryptedReport,
+                            encryptedSalt: encryptedSalt,
+                            ethics: ethics,
+                            branch: branch,
+                            period: period,
+                            periodLength: periodLength,
+                            onSent: onSent,
+                            onSuccess: onSuccess,
+                            onFailed: onFailed
+                        });
                     });
                 });
+            } else if (res.callReturn !== "-2") {
+                return onSuccess(res);
             }
-            if (res.callReturn !== "-2") return onSuccess(res);
             self.ExpiringEvents.getReportHash({
                 branch: branch,
                 expDateIndex: period,
