@@ -33,6 +33,9 @@ import coreStats from './modules/auth/selectors/core-stats';
 import settings from './modules/auth/selectors/account-settings';
 import chat from './modules/chat/selectors/chat-messages';
 import branch from './modules/app/selectors/branch';
+import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
+import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
+import scalarShareDenomination from './modules/market/selectors/scalar-share-denomination';
 
 const selectors = {
 	activeView,
@@ -69,7 +72,10 @@ const selectors = {
 	coreStats,
 	settings,
 	chat,
-	branch
+	branch,
+	marketDataNavItems,
+	marketUserDataNavItems,
+	scalarShareDenomination
 };
 
 module.exports = {};
