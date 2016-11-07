@@ -1,210 +1,707 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
 
 describe(`modules/reports/actions/commit-report.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState, {
-		marketsData: {
-			test1: {
-				eventID: 'test1EventID'
-			}
+
+	const test = (t) => {
+		it(t.description, () => {
+			const store = mockStore(t.state);
+			const AddCommitReportTransaction = {
+				addCommitReportTransaction: () => {}
+			};
+			const AugurJS = { augur: {} };
+			const BytesToHex = {};
+			const NextReportPage = {};
+			const action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
+				'../../transactions/actions/add-commit-report-transaction': AddCommitReportTransaction,
+				'../../../services/augurjs': AugurJS,
+				'../../../utils/bytes-to-hex': BytesToHex,
+				'../../reports/actions/next-report-page': NextReportPage
+			});
+			sinon.stub(AddCommitReportTransaction, 'addCommitReportTransaction', (market, reportedOutcomeID, isUnethical, isIndeterminate) => {
+				return {
+					type: 'ADD_COMMIT_REPORT_TRANSACTION',
+					market,
+					reportedOutcomeID,
+					isUnethical,
+					isIndeterminate
+				};
+			});
+			AugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
+			AugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef');
+			BytesToHex.bytesToHex = sinon.stub().returns('0x1337');
+			NextReportPage.nextReportPage = sinon.stub().returns({
+				type: 'NEXT_REPORT_PAGE'
+			});
+			store.dispatch(action.commitReport(t.params.market, t.params.reportedOutcomeID, t.params.isUnethical, t.params.isIndeterminate));
+			t.assertions(store.getActions());
+			store.clearActions();
+		});
+	};
+	test({
+		description: 'commit to report outcome 1 for binary event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'binary',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1',
+			isUnethical: false,
+			isIndeterminate: false
 		},
-		reports: {
-			[testState.branch.id]: {
-				test1EventID: {
-					id: 'test1EventID'
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1',
+							salt: '0x1337',
+							isIndeterminate: false,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: false
+						}
+					}
 				}
-			}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'binary',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1',
+				isUnethical: false,
+				isIndeterminate: false
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
 		}
 	});
-	store = mockStore(state);
-	let mockAugurJS = { augur: { submitReportHash: () => {}, getMarket: () => {} } };
-	let mockAddCommitReportTransaction = {};
-	let mockUpdateExistingTransaction = {
-		updateExistingTransaction: () => {}
-	};
-	let mockUpdateReports = { updateReports: () => {} };
-	let mockMarket = {};
-	let mockLinks = {
-		selectMarketsLink: () => {},
-		selectMarketLink: () => {}
-	};
-	let mockHex = {};
-	sinon.stub(mockUpdateReports, 'updateReports', (obj) => {
-		return {
-			type: 'UPDATE_REPORTS',
-			...obj
+	test({
+		description: 'commit to report outcome 2 for binary event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'binary',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '2',
+			isUnethical: false,
+			isIndeterminate: false
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '2',
+							salt: '0x1337',
+							isIndeterminate: false,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'binary',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '2',
+				isUnethical: false,
+				isIndeterminate: false
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
 		}
 	});
-	mockAddCommitReportTransaction.addCommitReportTransaction = sinon.stub().returns({
-		type: 'ADD_REPORT_TRANSACTION'
-	});
-	mockMarket.selectMarketFromEventID = sinon.stub().returns('0xdeadbeef');
-	mockMarket.selectMarketFromEventID.onCall(1).returns(false);
-	sinon.stub(mockLinks, 'selectMarketLink', (nextPendingReportMarket,
-		dispatch) => {
-		return {
-			onClick: () => {
-				dispatch({
-					type: 'SELECT_MARKET_LINK',
-					nextPendingReportMarket
-				})
-			}
-		};
-	});
-	sinon.stub(mockLinks, 'selectMarketsLink', (dispatch) => {
-		return {
-			onClick: () => {
-				dispatch({
-					type: 'SELECT_MARKETS_LINK'
-				})
-			}
-		};
-	});
-	sinon.stub(mockUpdateExistingTransaction, 'updateExistingTransaction', (transID, status) => {
-		return {
-			type: 'UPDATE_EXISTING_TRANSACTIONS',
-			transactionID: transID,
-			status
-		};
-	});
-	mockAugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
-	mockAugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef')
-	sinon.stub(mockAugurJS.augur, 'submitReportHash', (o) => {
-		o.onSuccess({ callReturn: 1 });
-	});
-	sinon.stub(mockAugurJS.augur, 'getMarket', (eventID, index, callback) => {
-		callback('0xdeadbeef');
-	});
-	mockHex.bytesToHex = sinon.stub().returns('salt12345');
-
-	action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
-		'../../../services/augurjs': mockAugurJS,
-		'../../transactions/actions/add-commit-report-transaction': mockAddCommitReportTransaction,
-		'../../transactions/actions/update-existing-transaction': mockUpdateExistingTransaction,
-		'../../reports/actions/update-reports': mockUpdateReports,
-		'../../market/selectors/market': mockMarket,
-		'../../link/selectors/links': mockLinks,
-		'../../../utils/bytes-to-hex': mockHex
-	});
-
-	beforeEach(() => {
-		store.clearActions();
-	});
-
-	afterEach(() => {
-		store.clearActions();
-		mockUpdateReports.updateReports.reset();
-		mockAddCommitReportTransaction.addCommitReportTransaction.reset();
-		mockMarket.selectMarketFromEventID.reset();
-		mockAugurJS.augur.submitReportHash.reset();
-		mockLinks.selectMarketLink.reset();
-		mockLinks.selectMarketsLink.reset();
-		mockUpdateExistingTransaction.updateExistingTransaction.reset();
-		mockHex.bytesToHex.reset();
-	});
-
-	it(`should initiate a report commit`, () => {
-		let market = { id: 'test1' };
-		out = [{
-			type: 'ADD_REPORT_TRANSACTION'
-		}];
-
-		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
-
-		assert(mockAddCommitReportTransaction.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
-
-		store.clearActions();
-
-		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
-
-		out = [{
-			type: 'ADD_REPORT_TRANSACTION'
-		}];
-
-		assert(mockAddCommitReportTransaction.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions.`);
-	});
-
-	it(`should broadcast the report commit to the blockchain`, () => {
-		let market = {
-			id: 'test1',
-			type: 'scalar',
-			eventID: 'testEventID1'
-		};
-		global.event = {};
-		out = [{
-			type: 'UPDATE_EXISTING_TRANSACTIONS',
-			transactionID: 'transID1',
-			status: { status: 'sending...' }
-		}, {
-			[testState.branch.id]: {
-				testEventID1: {
-					reportPeriod: '19',
-					reportedOutcomeID: 'testOutcomeID',
-					isIndeterminate: false,
-					isCategorical: false,
-					isScalar: true,
-					isRevealed: false,
-					isUnethical: false,
-					salt: 'salt12345',
-					reportHash: '0xdeadbeef'
-				}
+	test({
+		description: 'commit to report outcome 5 for categorical event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'categorical',
+				description: 'Market 1'
 			},
-			type: 'UPDATE_REPORTS'
-		}, {
-			type: 'UPDATE_EXISTING_TRANSACTIONS',
-			transactionID: 'transID1',
-			status: {
-				status: 'success',
-				message: 'committed to report outcome testOutcomeID',
-				hash: undefined,
-				timestamp: undefined,
-				gasFees: {
-					denomination: ' real ETH',
-					formatted: '0',
-					formattedValue: 0,
-					full: '0 real ETH',
-					minimized: '0',
-					rounded: '0',
-					roundedValue: 0,
-					value: 0
-				}
-			}
-		}, {
-			[testState.branch.id]: {
-				testEventID1: {
-					reportPeriod: '19',
-					reportedOutcomeID: 'testOutcomeID',
-					isIndeterminate: false,
-					isCategorical: false,
-					isScalar: true,
-					isRevealed: false,
-					isUnethical: false,
-					salt: 'salt12345',
-					reportHash: '0xdeadbeef'
-				}
+			reportedOutcomeID: '5',
+			isUnethical: false,
+			isIndeterminate: false
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
 			},
-			type: 'UPDATE_REPORTS'
-		}];
-
-		store.dispatch(action.sendCommitReport('transID1', market, 'testOutcomeID', false, false));
-
-		assert(mockHex.bytesToHex.calledOnce, `bytesToHex wasn't called once as expected`);
-		assert(mockUpdateReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
-		assert(mockUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction wasn't called twice as expected`);
-		assert(mockAugurJS.augur.submitReportHash.calledOnce, `Didn't call commitReport once as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions for processing a report`);
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '5',
+							salt: '0x1337',
+							isIndeterminate: false,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: true,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'categorical',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '5',
+				isUnethical: false,
+				isIndeterminate: false
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
 	});
-
+	test({
+		description: 'commit to report outcome 1.2345 for scalar event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'scalar',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.2345',
+			isUnethical: false,
+			isIndeterminate: false
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.2345',
+							salt: '0x1337',
+							isIndeterminate: false,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: true
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'scalar',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.2345',
+				isUnethical: false,
+				isIndeterminate: false
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report unethical outcome 1.2345 for scalar event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'scalar',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.2345',
+			isUnethical: true,
+			isIndeterminate: false
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.2345',
+							salt: '0x1337',
+							isIndeterminate: false,
+							isUnethical: true,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: true
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'scalar',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.2345',
+				isUnethical: true,
+				isIndeterminate: false
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report indeterminate for binary event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'binary',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.5',
+			isUnethical: false,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.5',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'binary',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.5',
+				isUnethical: false,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report indeterminate for categorical event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'categorical',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.5',
+			isUnethical: false,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.5',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: true,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'categorical',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.5',
+				isUnethical: false,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report indeterminate for scalar event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'scalar',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.500000000000000001',
+			isUnethical: false,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.500000000000000001',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: false,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: true
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'scalar',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.500000000000000001',
+				isUnethical: false,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report unethical and indeterminate for binary event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'binary',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.5',
+			isUnethical: true,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.5',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: true,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'binary',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.5',
+				isUnethical: true,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report unethical and indeterminate for categorical event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'categorical',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.5',
+			isUnethical: true,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.5',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: true,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: true,
+							isScalar: false
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'categorical',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.5',
+				isUnethical: true,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
+	test({
+		description: 'commit to report unethical and indeterminate for scalar event',
+		params: {
+			market: {
+				id: '0xa1',
+				eventID: '0xe1',
+				type: 'scalar',
+				description: 'Market 1'
+			},
+			reportedOutcomeID: '1.500000000000000001',
+			isUnethical: true,
+			isIndeterminate: true
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b'
+			},
+			reports: {}
+		},
+		assertions: (actions) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_REPORTS',
+				reports: {
+					'0xb1': {
+						'0xe1': {
+							eventID: '0xe1',
+							period: 7,
+							marketID: '0xa1',
+							reportHash: '0xdeadbeef',
+							reportedOutcomeID: '1.500000000000000001',
+							salt: '0x1337',
+							isIndeterminate: true,
+							isUnethical: true,
+							isCommitted: false,
+							isRevealed: false,
+							isCategorical: false,
+							isScalar: true
+						}
+					}
+				}
+			}, {
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market: {
+					id: '0xa1',
+					eventID: '0xe1',
+					type: 'scalar',
+					description: 'Market 1'
+				},
+				reportedOutcomeID: '1.500000000000000001',
+				isUnethical: true,
+				isIndeterminate: true
+			}, {
+				type: 'NEXT_REPORT_PAGE'
+			}]);
+		}
+	});
 });

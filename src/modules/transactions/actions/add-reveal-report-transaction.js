@@ -39,7 +39,7 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				isUnethical,
 				isScalar,
 				isIndeterminate,
-				outcome.name || reportedOutcomeID,
+				(outcome && outcome.name) ? outcome.name : reportedOutcomeID,
 				callback));
 			dispatch(addTransaction(transaction));
 		});

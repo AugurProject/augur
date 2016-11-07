@@ -1,6 +1,7 @@
 import { augur } from '../../../services/augurjs';
 import { updateBranch } from '../../app/actions/update-branch';
 import { loadReports } from '../../reports/actions/load-reports';
+import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
@@ -22,6 +23,7 @@ export function checkPeriod(unlock, cb) {
 				tracker.reportsRevealed = false;
 				tracker.notSoCurrentPeriod = currentPeriod;
 				tracker.checkPeriodLock = false;
+				dispatch(clearOldReports());
 			}
 			console.debug('checkPeriodLock:', tracker.checkPeriodLock);
 			if (!tracker.checkPeriodLock) {
@@ -34,6 +36,7 @@ export function checkPeriod(unlock, cb) {
 					}
 					dispatch(updateBranch({ reportPeriod }));
 					dispatch(loadEventsWithSubmittedReport());
+					dispatch(clearOldReports());
 					dispatch(loadReports((err) => {
 						if (err) {
 							tracker.checkPeriodLock = false;

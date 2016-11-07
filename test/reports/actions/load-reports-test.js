@@ -1,6 +1,4 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -11,64 +9,332 @@ describe('modules/reports/actions/load-reports.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockAugurJS = { augur: {} };
-	let mockMarketData = {};
-	let mockUpdateReports = { updateReports: () => {} };
 
-	mockAugurJS.augur.getEventsToReportOn = sinon.stub().yields(['test1', 'test2']);
-	mockAugurJS.augur.getReportHash = sinon.stub().yields(null);
-	mockAugurJS.augur.getAndDecryptReport = sinon.stub().yields({ report: 1, salt: 1337 });
-	sinon.stub(mockUpdateReports, 'updateReports', (reports) => {
-		return { type: 'UPDATE_REPORTS', reports };
+	const test = (t) => {
+		it(t.description, (done) => {
+			const store = mockStore(t.state);
+			const AugurJS = {
+				augur: {
+					getEventsToReportOn: () => {},
+					getMarket: () => {}
+				}
+			};
+			const LoadMarketsInfo = {
+				loadMarketsInfo: () => {}
+			};
+			const LoadReport = {
+				loadReport: () => {}
+			};
+			const LoadReportDescriptors = {
+				loadReportDescriptors: () => {}
+			};
+			const action = proxyquire('../../../src/modules/reports/actions/load-reports', {
+				'../../../services/augurjs': AugurJS,
+				'../../markets/actions/load-markets-info': LoadMarketsInfo,
+				'../../reports/actions/load-report': LoadReport,
+				'../../reports/actions/load-report-descriptors': LoadReportDescriptors
+			});
+			sinon.stub(AugurJS.augur, 'getEventsToReportOn', (branchID, period, account, index, cb) => {
+				cb(t.blockchain.eventsToReportOn[branchID]);
+			});
+			sinon.stub(AugurJS.augur, 'getMarket', (eventID, index, cb) => {
+				cb(t.blockchain.eventToMarket[eventID]);
+			});
+			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => {
+				return (dispatch, getState) => {
+					dispatch({ type: 'LOAD_MARKETS_INFO' });
+					cb();
+				}
+			});
+			sinon.stub(LoadReport, 'loadReport', (branchID, period, eventID, marketID, cb) => {
+				return (dispatch, getState) => {
+					dispatch({ type: 'LOAD_REPORT' });
+					cb(null);
+				};
+			});
+			sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', (cb) => {
+				return (dispatch, getState) => {
+					dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
+					cb(null);
+				};
+			});
+			store.dispatch(action.loadReports((e, marketIDs) => {
+				assert.isNull(e);
+				t.assertions(store.getActions(), marketIDs);
+				store.clearActions();
+				done();
+			}));
+		});
+	};
+	test({
+		description: 'no events to report on',
+		blockchain: {
+			eventToMarket: {},
+			eventsToReportOn: {
+				'0xb1': []
+			}
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				description: 'Branch 1',
+				periodLength: 200,
+				currentPeriod: 8,
+				reportPeriod: 7,
+				currentPeriodProgress: 10,
+				isReportRevealPhase: false
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b',
+				derivedKey: new Buffer('42', 'hex'),
+				ether: '10000',
+				realEther: '2.5',
+				rep: '47'
+			},
+			reports: {}
+		},
+		assertions: (actions, marketIDs) => {
+			assert.isArray(actions);
+			assert.isArray(marketIDs);
+			assert.lengthOf(actions, 0);
+			assert.lengthOf(marketIDs, 0);
+		}
 	});
-
-	action = proxyquire('../../../src/modules/reports/actions/load-reports', {
-		'../../../services/augurjs': mockAugurJS,
-		'../../reports/actions/update-reports': mockUpdateReports
+	test({
+		description: 'one event to report on',
+		blockchain: {
+			eventToMarket: {
+				'0xe1': '0xf1'
+			},
+			eventsToReportOn: {
+				'0xb1': [
+					'0xe1'
+				]
+			}
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				description: 'Branch 1',
+				periodLength: 200,
+				currentPeriod: 8,
+				reportPeriod: 7,
+				currentPeriodProgress: 10,
+				isReportRevealPhase: false
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b',
+				derivedKey: new Buffer('42', 'hex'),
+				ether: '10000',
+				realEther: '2.5',
+				rep: '47'
+			},
+			reports: {}
+		},
+		assertions: (actions, marketIDs) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf1': {
+						eventID: '0xe1'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'LOAD_MARKETS_INFO'
+			}, {
+				type: 'LOAD_REPORT_DESCRIPTORS'
+			}]);
+			assert.deepEqual(marketIDs, ['0xf1']);
+		}
 	});
-
-	beforeEach(() => {
-		store.clearActions();
+	test({
+		description: 'two events to report on',
+		blockchain: {
+			eventToMarket: {
+				'0xe1': '0xf1',
+				'0xe2': '0xf2'
+			},
+			eventsToReportOn: {
+				'0xb1': [
+					'0xe1',
+					'0xe2'
+				]
+			}
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				description: 'Branch 1',
+				periodLength: 200,
+				currentPeriod: 8,
+				reportPeriod: 7,
+				currentPeriodProgress: 10,
+				isReportRevealPhase: false
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b',
+				derivedKey: new Buffer('42', 'hex'),
+				ether: '10000',
+				realEther: '2.5',
+				rep: '47'
+			},
+			reports: {}
+		},
+		assertions: (actions, marketIDs) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf1': {
+						eventID: '0xe1'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf2': {
+						eventID: '0xe2'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'LOAD_MARKETS_INFO'
+			}, {
+				type: 'LOAD_REPORT_DESCRIPTORS'
+			}]);
+			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
+		}
 	});
-
-	afterEach(() => {
-		store.clearActions();
-	});
-
-	after(() => {
-		testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
-	});
-
-	it('should call augur.getEventsToReportOn, lookup stored report hash for each event, then dispatch updateReports', () => {
-		out = [{
-			type: 'UPDATE_REPORTS',
+	test({
+		description: 'two events to report on, one already revealed',
+		blockchain: {
+			eventToMarket: {
+				'0xe1': '0xf1',
+				'0xe2': '0xf2'
+			},
+			eventsToReportOn: {
+				'0xb1': [
+					'0xe1',
+					'0xe2'
+				]
+			}
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				description: 'Branch 1',
+				periodLength: 200,
+				currentPeriod: 8,
+				reportPeriod: 7,
+				currentPeriodProgress: 10,
+				isReportRevealPhase: false
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b',
+				derivedKey: new Buffer('42', 'hex'),
+				ether: '10000',
+				realEther: '2.5',
+				rep: '47'
+			},
 			reports: {
-				[testState.branch.id]: {
-					testEventID: {
-						eventID: 'testEventID',
-						isUnethical: false
-					},
-					test1: {
-						eventID: 'test1',
-						reportHash: null
-					},
-					test2: {
-						eventID: 'test2',
-						reportHash: null
+				'0xb1': {
+					'0xe1': {
+						isRevealed: true
 					}
 				}
 			}
-		}];
-
-		store.dispatch(action.loadReports((err) => {
-			assert.isNull(err);
-			assert(mockAugurJS.augur.getEventsToReportOn.calledOnce, `augur.getEventsToReportOn() wasn't only called once as expected`);
-			assert(mockUpdateReports.updateReports.calledOnce, `updateReports wasn't only called once as expected`);
-			assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct information`);
-		}));
+		},
+		assertions: (actions, marketIDs) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf1': {
+						eventID: '0xe1'
+					}
+				}
+			}, {
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf2': {
+						eventID: '0xe2'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'LOAD_MARKETS_INFO'
+			}, {
+				type: 'LOAD_REPORT_DESCRIPTORS'
+			}]);
+			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
+		}
+	});
+	test({
+		description: 'two events to report on current branch, one event elsewhere',
+		blockchain: {
+			eventToMarket: {
+				'0xe1': '0xf1',
+				'0xe2': '0xf2',
+				'0xe3': '0xf3'
+			},
+			eventsToReportOn: {
+				'0xb1': [
+					'0xe1',
+					'0xe2'
+				],
+				'0xb2': [
+					'0xe3'
+				]
+			}
+		},
+		state: {
+			branch: {
+				id: '0xb1',
+				description: 'Branch 1',
+				periodLength: 200,
+				currentPeriod: 8,
+				reportPeriod: 7,
+				currentPeriodProgress: 10,
+				isReportRevealPhase: false
+			},
+			loginAccount: {
+				address: '0x0000000000000000000000000000000000000b0b',
+				derivedKey: new Buffer('42', 'hex'),
+				ether: '10000',
+				realEther: '2.5',
+				rep: '47'
+			},
+			reports: {}
+		},
+		assertions: (actions, marketIDs) => {
+			assert.deepEqual(actions, [{
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf1': {
+						eventID: '0xe1'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'UPDATE_MARKETS_DATA',
+				marketsData: {
+					'0xf2': {
+						eventID: '0xe2'
+					}
+				}
+			}, {
+				type: 'LOAD_REPORT'
+			}, {
+				type: 'LOAD_MARKETS_INFO'
+			}, {
+				type: 'LOAD_REPORT_DESCRIPTORS'
+			}]);
+			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
+		}
 	});
 });

@@ -1,4 +1,4 @@
-import { formatEther, formatPercent, formatRep } from '../../../utils/format-number';
+import { formatEther, formatPercent } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { abi } from '../../../services/augurjs';
@@ -27,7 +27,9 @@ export default function () {
 		const reported = selectMarketOutcome(eventsWithAccountReport[eventId].accountReport, marketId);
 		const isReportEqual = outcome != null && reported != null && outcome === reported || null; // Can be done here
 		const feesEarned = calculateFeesEarned(eventsWithAccountReport[eventId]);
-		const repEarned = eventsWithAccountReport[eventId].repEarned && formatRep(eventsWithAccountReport[eventId].repEarned) || null;
+		// TODO why is repEarned set to an empty array??
+		// const repEarned = eventsWithAccountReport[eventId].repEarned && formatRep(eventsWithAccountReport[eventId].repEarned) || null;
+		const repEarned = null;
 		const endDate = expirationDate && formatDate(expirationDate) || null;
 		const isChallenged = eventsWithAccountReport[eventId].isChallenged || null;
 		const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged;

@@ -6,7 +6,11 @@ export default function () {
 	const reports = selectMyReports();
 
 	const numReports = reports.length;
-	const netRep = reports.reduce((prevNet, report) => prevNet.plus(abi.bignum(report.repEarned.value)), ZERO).toNumber();
+	const netRep = reports.reduce((prevNet, report) => (
+        report.repEarned && report.repEarned.value ?
+            prevNet.plus(abi.bignum(report.repEarned.value)) :
+            prevNet
+    ), ZERO).toNumber();
 
 	return {
 		numReports,

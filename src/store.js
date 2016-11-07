@@ -28,6 +28,7 @@ const localStorageMiddleware = store => next => action => {
 
 	if (windowRef.localStorage && windowRef.localStorage.setItem) {
 		windowRef.localStorage.setItem(state.loginAccount.id, JSON.stringify({
+			scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
 			favorites: state.favorites,
 			transactionsData: state.transactionsData,
 			accountTrades: state.accountTrades,
