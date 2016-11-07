@@ -14,7 +14,7 @@ export function revealReports() {
 			if (branchReports) {
 				const revealableReports = Object.keys(branchReports)
 					.filter(eventID => branchReports[eventID].reportHash &&
-					branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed)
+					branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
 					.map(eventID => {
 						const obj = { ...branchReports[eventID], eventID };
 						return obj;
