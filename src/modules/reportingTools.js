@@ -109,7 +109,35 @@ module.exports = {
                             onSuccess: function (r) {
                                 console.log("penalizeWrong(branch, 0) success:", r);
                                 console.log(abi.bignum(r.callReturn, "string", true));
-                                next(null, penalizePeriod);
+                                if (r.callReturn !== "-8") return next(null, penalizePeriod);
+                                if (self.getCurrentPeriodProgress(periodLength) > 50) {
+                                    console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
+                                    console.log(" - collectFees params:", {
+                                        branch: branch,
+                                        sender: sender,
+                                        periodLength: periodLength
+                                    });
+                                    return self.collectFees({
+                                        branch: branch,
+                                        sender: sender,
+                                        periodLength: periodLength,
+                                        onSent: function (r) {
+                                            console.log(" - collectFees sent:", r);
+                                        },
+                                        onSuccess: function (r) {
+                                            console.log(" - collectFees success:", r.callReturn);
+                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                        },
+                                        onFailed: function (e) {
+                                            console.error(" - collectFees error:", e);
+                                            next(e);
+                                        }
+                                    });
+                                }
+                                return next({
+                                    "-8": "needed to collect fees last period which sets the before/after rep"
+                                });
                             },
                             onFailed: function (err) {
                                 console.error("penalizeWrong(branch, 0) error:", err);
