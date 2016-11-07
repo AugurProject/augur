@@ -18047,7 +18047,8 @@ module.exports={
           "period"
         ], 
         "method": "setPenalizedUpTo", 
-        "returns": "int256", 
+        "returns": "number", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -43921,7 +43922,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.12";
+    this.version = "3.0.13";
 
     this.options = {
         debug: {
@@ -47043,7 +47044,6 @@ module.exports = {
                             },
                             onSuccess: function (r) {
                                 console.log("penalizeWrong(branch, 0) success:", r);
-                                console.log(abi.bignum(r.callReturn, "string", true));
                                 if (r.callReturn !== "-8") return next(null, penalizePeriod);
                                 if (self.getCurrentPeriodProgress(periodLength) > 50) {
                                     console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
@@ -47069,14 +47069,40 @@ module.exports = {
                                             next(e);
                                         }
                                     });
+                                } else {
+                                    console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
+                                    console.log(" - setPenalizedUpTo params:", {
+                                        branch: branch,
+                                        sender: sender,
+                                        period: penalizePeriod
+                                    });
+                                    // BAD BAD BAD
+                                    // TODO stop the badness
+                                    self.setPenalizedUpTo({
+                                        branch: branch,
+                                        sender: sender,
+                                        period: penalizePeriod,
+                                        onSent: function (r) {
+                                            console.log(" - setPenalizedUpTo sent:", r);
+                                        },
+                                        onSuccess: function (r) {
+                                            console.log(" - setPenalizedUpTo success:", r.callReturn);
+                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                        },
+                                        onFailed: function (e) {
+                                            console.error(" - setPenalizedUpTo error:", e);
+                                            next(e);
+                                        }
+                                    });
                                 }
-                                return next({
-                                    "-8": "needed to collect fees last period which sets the before/after rep"
-                                });
+                                // return next({
+                                //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                // });
                             },
                             onFailed: function (err) {
                                 console.error("penalizeWrong(branch, 0) error:", err);
-                                next(null, penalizePeriod);
+                                next(err);
                             }
                         });
                     } else {
@@ -47114,10 +47140,36 @@ module.exports = {
                                                 nextEvent(e);
                                             }
                                         });
+                                    } else {
+                                        console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
+                                        console.log(" - setPenalizedUpTo params:", {
+                                            branch: branch,
+                                            sender: sender,
+                                            period: penalizePeriod
+                                        });
+                                        // BAD BAD BAD
+                                        // TODO stop the badness
+                                        self.setPenalizedUpTo({
+                                            branch: branch,
+                                            sender: sender,
+                                            period: penalizePeriod,
+                                            onSent: function (r) {
+                                                console.log(" - setPenalizedUpTo sent:", r);
+                                            },
+                                            onSuccess: function (r) {
+                                                console.log(" - setPenalizedUpTo success:", r.callReturn);
+                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                            },
+                                            onFailed: function (e) {
+                                                console.error(" - setPenalizedUpTo error:", e);
+                                                nextEvent(e);
+                                            }
+                                        });
                                     }
-                                    return nextEvent({
-                                        "-8": "needed to collect fees last period which sets the before/after rep"
-                                    });
+                                    // return nextEvent({
+                                    //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                    // });
                                     // console.log(" - closing extra markets");
                                     // self.getMarkets(event, function (markets) {
                                     //     if (!markets) return nextEvent("no markets found for " + event);
