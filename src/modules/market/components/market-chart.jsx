@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactHighcharts from 'react-highcharts';
 
+import NullStateMessage from 'modules/common/components/null-state-message';
+
 export default class MarketChart extends Component {
 	static propTypes = {
 		series: PropTypes.array
@@ -14,6 +16,7 @@ export default class MarketChart extends Component {
 
 	render() {
 		const p = this.props;
+
 		const config = {
 			title: {
 				text: ''
@@ -39,10 +42,14 @@ export default class MarketChart extends Component {
 			series: p.series
 		};
 
+		const nullMessage = 'No Completed Trades';
+
 		return (
 			<article className="price-history-chart">
-				<h3>Market Price History</h3>
-				<ReactHighcharts config={config} />
+				{!p.series || !p.series.length ?
+					<NullStateMessage message={nullMessage} /> :
+					<ReactHighcharts config={config} />
+				}
 			</article>
 		);
 	}
