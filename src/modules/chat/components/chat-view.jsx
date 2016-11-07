@@ -52,7 +52,7 @@ export default class ChatView extends Component {
 						if (!tooltipID) {
 							return (
 								<li key={key}>
-									<span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {payload.message}
+									<span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
 								</li>
 							);
 						}
