@@ -6,81 +6,49 @@ import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-import { updateReports } from '../../reports/actions/update-reports';
-import { selectMarketFromEventID, selectMarket } from '../../market/selectors/market';
-import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links';
+import { updateReport, updateReports } from '../../reports/actions/update-reports';
+import { nextReportPage } from '../../reports/actions/next-report-page';
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { reports, branch, marketsData } = getState();
+		const { branch, loginAccount } = getState();
+		const isScalar = market.type === SCALAR;
+		const salt = bytesToHex(secureRandom(32));
+		const fixedReport = augur.fixReport(reportedOutcomeID, isScalar, isIndeterminate);
+		const reportHash = augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address);
+		dispatch(updateReport(branch.id, market.eventID, {
+			eventID: market.eventID,
+			marketID: market.id,
+			period: branch.reportPeriod,
+			reportedOutcomeID,
+			isCategorical: market.type === CATEGORICAL,
+			isScalar,
+			isUnethical,
+			isIndeterminate,
+			salt,
+			reportHash,
+			isCommitted: false,
+			isRevealed: false
+		}));
 		dispatch(addCommitReportTransaction(market, reportedOutcomeID, isUnethical, isIndeterminate));
-		const branchReports = reports[branch.id];
-		if (!branchReports) return selectMarketsLink(dispatch).onClick();
-		const nextPendingReportEventID = Object.keys(branchReports).find(
-			eventID =>	!branchReports[eventID].salt
-		);
-		console.debug('next pending report eventID:', nextPendingReportEventID);
-		if (!marketsData[nextPendingReportEventID] || !marketsData[nextPendingReportEventID].eventID) {
-			augur.getMarket(nextPendingReportEventID, 0, (nextPendingReportMarketID) => {
-				console.log('nextPendingReportMarketID:', nextPendingReportMarketID);
-				dispatch(loadMarketsInfo([nextPendingReportMarketID], () => {
-					console.log('loaded market info');
-					const nextPendingReportMarket = selectMarket(nextPendingReportMarketID);
-					console.debug('next pending report market:', nextPendingReportMarket);
-					if (nextPendingReportMarket) {
-						selectMarketLink(nextPendingReportMarket, dispatch).onClick();
-					} else {
-						selectMarketsLink(dispatch).onClick();
-					}
-				}));
-			});
-		} else {
-			const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
-			if (nextPendingReportMarket) {
-				selectMarketLink(nextPendingReportMarket, dispatch).onClick();
-			} else {
-				selectMarketsLink(dispatch).onClick();
-			}
-		}
+		dispatch(nextReportPage());
 	};
 }
 
 export function sendCommitReport(transactionID, market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { loginAccount, branch } = getState();
+		const { loginAccount, branch, reports } = getState();
 		const eventID = market.eventID;
-		console.log('reporting on market', market.id, 'event', eventID);
+		const report = reports[branch.id][eventID];
+		console.log('reporting on market', market.id, 'event', eventID, report);
 		const branchID = branch.id;
-
-		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID) {
+		if (!loginAccount || !loginAccount.address || !eventID || !event || !market || !reportedOutcomeID) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: 'Missing data'
 			}));
 		}
-
-		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
-
-		const report = {
-			reportPeriod: branch.reportPeriod.toString(),
-			reportedOutcomeID,
-			isCategorical: market.type === CATEGORICAL,
-			isScalar: market.type === SCALAR,
-			isUnethical,
-			isIndeterminate,
-			salt: bytesToHex(secureRandom(32)),
-			reportHash: null,
-			isSubmitted: true,
-			isCommitted: false,
-			isRevealed: false
-		};
-
-		dispatch(updateReports({ [branchID]: { [eventID]: report } }));
-
-		// TODO move to augur.js
-		const fixedReport = augur.fixReport(report.reportedOutcomeID, report.isScalar, report.isIndeterminate);
-		const reportHash = augur.makeHash(report.salt, fixedReport, eventID, loginAccount.id);
+		const fixedReport = augur.fixReport(reportedOutcomeID, report.isScalar, isIndeterminate);
 		let encryptedReport = 0;
 		let encryptedSalt = 0;
 		if (loginAccount.derivedKey) {
@@ -93,7 +61,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			(market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {}).name;
 		augur.submitReportHash({
 			event: eventID,
-			reportHash,
+			reportHash: report.reportHash,
 			encryptedReport,
 			encryptedSalt,
 			ethics: Number(!isUnethical),
@@ -120,13 +88,10 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				}));
 				const branchReports = getState().reports[branch.id] || {};
 				console.log('branchReports:', branchReports, branchReports[eventID]);
-				report.reportHash = reportHash;
-				report.isCommitted = true;
 				dispatch(updateReports({
 					[branchID]: {
 						[eventID]: {
 							...branchReports[eventID],
-							reportHash,
 							isCommitted: true
 						}
 					}
