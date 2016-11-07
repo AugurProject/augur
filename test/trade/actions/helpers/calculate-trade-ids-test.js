@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import * as helper from '../../../../src/modules/trade/actions/helpers/calculate-trade-ids';
 
 describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
+
 	it('should calculate trade ids for a Buy', () => {
 		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', {
 			'market1': {
@@ -35,7 +36,9 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 				}
 			}
 		}, 'taker1'), [ 3, 4 ], `Didn't return the expected tradeIDs`);
+	});
 
+	it('should return an empty array if the trade ids for a buy at that rate are not found', () => {
 		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', {
 			'market1': {
 				buy: {
@@ -69,6 +72,7 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 			}
 		}, 'taker1'), [ ], `Didn't return an empty array of tradeIDs as expected`);
 	});
+
 	it('should calculate trade ids for a Sell', () => {
 		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', {
 			'market1': {
@@ -102,7 +106,9 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 				}
 			}
 		}, 'taker1'), [ 1, 2 ], `Didn't return the expected tradeIDs`);
+	});
 
+	it('should return an empty array if the trade IDs for a sell at the rate passed in are not found', () => {
 		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', {
 			'market1': {
 				buy: {

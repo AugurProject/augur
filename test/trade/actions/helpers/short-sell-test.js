@@ -6,21 +6,15 @@ import { augur, abi, constants } from '../../../../src/services/augurjs';
 describe('modules/trade/actions/helpers/short-sell.js', () => {
 	proxyquire.noPreserveCache();
 	const mockAugur = { augur: { ...augur }, abi: { ...abi }, constants: { ...constants } };
-	const mockLoadBidAsks = { loadBidsAsks: () => {} };
-	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
-		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
-		cb();
-		return { type: 'LOAD_BIDS_ASKS' };
-	});
 
 	sinon.stub(mockAugur.augur, 'short_sell', (args) => {
 		const { max_amount, buyer_trade_id, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
-		onTradeHash({ data: 'data' });
-		onCommitSent({ data: 'data' });
+		onTradeHash('tradeHash1');
+		onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
 		if (mockAugur.augur.short_sell.callCount !== 3)onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 		if (mockAugur.augur.short_sell.callCount === 3) onCommitFailed({ error: 'error', message: 'error message' });
-		if (mockAugur.augur.short_sell.callCount !== 3) onNextBlock({ data: 'data' });
-		if (mockAugur.augur.short_sell.callCount !== 3) onTradeSent({ data: 'data' });
+		if (mockAugur.augur.short_sell.callCount !== 3) onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
+		if (mockAugur.augur.short_sell.callCount !== 3) onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
 		if (mockAugur.augur.short_sell.callCount === 1) onTradeSuccess({ sharesBought: '0', cashFromTrade: '10.00', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 		if (mockAugur.augur.short_sell.callCount === 2) onTradeFailed({ error: 'error', message: 'error message' });
 	});
@@ -29,7 +23,6 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 	const mockCB = sinon.stub();
 
 	const helper = proxyquire('../../../../src/modules/trade/actions/helpers/short-sell.js', {
-		'../../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
 		'../../../../services/augurjs': mockAugur
 	});
 
@@ -94,4 +87,45 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
 	});
 
+	it('should handle null inputs', () => {
+		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
+		helper.shortSell('testBinaryMarketID', '2', null, 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
+		assert(mockCB.calledWithExactly(null, {
+			remainingShares: abi.bignum(0),
+			filledShares: abi.bignum(0),
+			filledEth: abi.bignum(0),
+			tradingFees: abi.bignum(0),
+			gasFees: abi.bignum(0)
+		}), `Didn't call the callback with the expected response`);
+		assert(mockCBStatus.callCount === 0, `Called the status cb when it shouldn't have`);
+	});
+
+	it('should handle undefined inputs', () => {
+		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
+		helper.shortSell('testBinaryMarketID', '2', undefined, 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
+		assert(mockCB.calledWithExactly(null, {
+			remainingShares: abi.bignum(0),
+			filledShares: abi.bignum(0),
+			filledEth: abi.bignum(0),
+			tradingFees: abi.bignum(0),
+			gasFees: abi.bignum(0)
+		}), `Didn't call the callback with the expected response`);
+		assert(mockCBStatus.callCount === 0, `Called the status cb when it shouldn't have`);
+	});
+
+	it('should handle an empty array of tradeIDs', () => {
+		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [ ], mockCBStatus, mockCB);
+		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
+		assert(mockCB.calledWithExactly(null, {
+			remainingShares: abi.bignum(10),
+			filledShares: abi.bignum(0),
+			filledEth: abi.bignum(0),
+			tradingFees: abi.bignum(0),
+			gasFees: abi.bignum(0)
+		}), `Didn't call the callback with the expected response`);
+		assert(mockCBStatus.callCount === 0, `Called the status cb when it shouldn't have`);
+	});
 });
