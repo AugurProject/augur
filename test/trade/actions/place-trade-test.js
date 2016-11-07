@@ -321,7 +321,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Binary Market Place Trade Tests', () => {
 		it('should place a BUY trade for a binary market', () => {
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true }, {
 				type: 'buy',
 				data: {
@@ -421,7 +421,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.18133992268143956'
 				}
 			};
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'bid',
 				data: {
@@ -519,7 +519,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.099800399201596806' }
 			};
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [ {
 					type: 'ask',
 					data: {
@@ -597,7 +597,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a binary market', () => {
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			console.log(store.getActions());
 			assert.deepEqual(store.getActions(), [ {
 			 	type: 'ask',
@@ -763,7 +763,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.088941506235887648' }
 			};
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -864,7 +864,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.099800399201596806' }
 			};
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'short_ask',
 				data: {
@@ -962,7 +962,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			  gasFeesRealEth: '0.02791268',
 			  feePercent: '0.088941506235887648' }
 			};
-			store.dispatch(action.placeTrade('testBinaryMarketID'));
+			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [ {
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -1047,7 +1047,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Categorical Market Place Trade Tests', () => {
 		it('should place a BUY trade for a categorical market', () => {
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -1152,7 +1152,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.090834680880796836'
 				}
 			};
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
 				data: {
@@ -1254,7 +1254,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0499500499500499'
 				}
 			};
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
@@ -1334,7 +1334,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a categorical market', () => {
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
@@ -1505,7 +1505,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0445103412859142'
 				}
 			};
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -1610,7 +1610,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0499500499500499'
 				}
 			};
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
 				data: {
@@ -1712,7 +1712,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.0445103412859142'
 				}
 			};
-			store.dispatch(action.placeTrade('testCategoricalMarketID'));
+			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -1797,7 +1797,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
 	describe('Scalar Market Place Trade Tests', () => {
 		it('should place a BUY trade for a scalar market', () => {
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -1902,7 +1902,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '0.7747873703833158'
 				}
 			};
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
 				data: {
@@ -2004,7 +2004,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '25.891583452211126167'
 				}
 			};
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
@@ -2084,7 +2084,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a scalar market', () => {
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
 				data: {
@@ -2255,7 +2255,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '22.448646886208020204'
 				}
 			};
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
@@ -2360,7 +2360,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '25.891583452211126167'
 				}
 			};
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
 				data: {
@@ -2462,7 +2462,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					feePercent: '22.448646886208020204'
 				}
 			};
-			store.dispatch(action.placeTrade('testScalarMarketID'));
+			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
