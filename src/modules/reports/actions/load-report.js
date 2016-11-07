@@ -16,8 +16,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
 					salt: null,
 					isUnethical: false,
 					isRevealed: true,
-					isCommitted: true,
-					isSubmitted: true
+					isCommitted: true
 				}));
 				return callback(null);
 			}
@@ -32,8 +31,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
 						isUnethical: false,
 						reportHash: null,
 						isRevealed: false,
-						isCommitted: false,
-						isSubmitted: false
+						isCommitted: false
 					}));
 					return callback(null);
 				}
@@ -47,8 +45,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
 						reportHash,
 						isUnethical: false,
 						isRevealed: false,
-						isCommitted: true,
-						isSubmitted: true
+						isCommitted: true
 					}));
 					callback(null);
 				});
