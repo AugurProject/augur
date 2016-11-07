@@ -18,7 +18,7 @@ export function processAsk(transactionID, marketID, outcomeID, numShares, limitP
 			console.error('processAsk has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
-				message: `There was an issue processesing the ask trade.`
+				message: 'There was an issue processesing the ask trade.'
 			}));
 		}
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
