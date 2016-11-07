@@ -118,7 +118,8 @@ const Routes = (p) => {
 				favoriteMarkets: p.favoriteMarkets,
 				pagination: p.pagination,
 				filterSort: p.filterSort,
-				keywords: p.keywords
+				keywords: p.keywords,
+				branch: p.branch
 			};
 
 			return (
