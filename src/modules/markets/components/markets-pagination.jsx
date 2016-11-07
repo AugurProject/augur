@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '../../link/components/link';
+import Link from 'modules/link/components/link';
 
 const MarketsPagination = p => (
 	<div className="markets-pagination">

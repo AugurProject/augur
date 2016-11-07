@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
-import ValueDate from '../../../modules/common/components/value-date';
+import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDate from 'modules/common/components/value-date';
 
 const Market = p => (
 	<div className="portfolio-row">

@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-import ValueDenomination from '../../common/components/value-denomination';
+
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const OpenOrder = p => (
 	<tr className={classnames('open-order', { 'is-disabled': p.status === p.cancellationStatuses.CANCELLED, first: p.isFirst })}>

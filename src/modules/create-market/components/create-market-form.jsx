@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import Form1 from './create-market-form-1';
-import Form2 from './create-market-form-2';
-import Form3 from './create-market-form-3';
-import Form4 from './create-market-form-4';
-import Form5 from './create-market-form-5';
+import Form1 from 'modules/create-market/components/create-market-form-1';
+import Form2 from 'modules/create-market/components/create-market-form-2';
+import Form3 from 'modules/create-market/components/create-market-form-3';
+import Form4 from 'modules/create-market/components/create-market-form-4';
+import Form5 from 'modules/create-market/components/create-market-form-5';
 
 const CreateMarketForm = (p) => {
 	let form;
@@ -28,9 +28,9 @@ const CreateMarketForm = (p) => {
 	}
 
 	return (
-		<section className={p.className}>
+		<article className={p.className}>
 			{form}
-		</section>
+		</article>
 	);
 };
 

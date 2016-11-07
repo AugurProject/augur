@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
-import TabNavigation from '../../../modules/common/components/tab-navigation';
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/views';
-import Positions from '../../../modules/portfolio/components/positions';
-import Markets from '../../../modules/portfolio/components/markets';
-import Reports from '../../../modules/portfolio/components/reports';
+
+import TabNavigation from 'modules/common/components/tab-navigation';
+import Positions from 'modules/portfolio/components/positions';
+import Markets from 'modules/portfolio/components/markets';
+import Reports from 'modules/portfolio/components/reports';
+
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 const PortfolioView = (p) => {
 	let node;
@@ -20,9 +22,8 @@ const PortfolioView = (p) => {
 			node = <Reports {...p.reports} />;
 			break;
 	}
-
 	return (
-		<section className="page portfolio">
+		<section id="portfolio_view" >
 			<header className="page-header portfolio-header">
 				{!!p.navItems && !!p.navItems.length &&
 					<TabNavigation

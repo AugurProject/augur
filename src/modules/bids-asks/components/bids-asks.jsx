@@ -1,5 +1,5 @@
 import React from 'react';
-import OrderBook from './order-book';
+import OrderBook from 'modules/bids-asks/components/order-book';
 
 const BidsAsks = p => (
 	<div className="bids-asks">

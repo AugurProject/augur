@@ -1,6 +1,6 @@
 import React from 'react';
-import Market from '../../../modules/my-markets/components/my-market';
-import Link from '../../link/components/link';
+import Market from 'modules/my-markets/components/my-market';
+import Link from 'modules/link/components/link';
 
 const PortfolioMarkets = p => (
 	<div>
@@ -9,9 +9,9 @@ const PortfolioMarkets = p => (
 				<div className="">
 					<span className="description">{market.description}</span>
 					{!!market &&
-						<section className="portfolio-list">
+						<article className="portfolio-list">
 							<Market {...market} />
-						</section>
+						</article>
 					}
 				</div>
 			</Link>

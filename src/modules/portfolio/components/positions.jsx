@@ -1,7 +1,7 @@
 import React from 'react';
-import Positions from '../../../modules/my-positions/components/my-positions';
-import PositionsMarketOverview from '../../my-positions/components/my-positions-market-overview';
-import Link from '../../link/components/link';
+import Positions from 'modules/my-positions/components/my-positions';
+import PositionsMarketOverview from 'modules/my-positions/components/my-positions-market-overview';
+import Link from 'modules/link/components/link';
 
 const PortfolioPositions = p => (
 	<div className="positions-content" >

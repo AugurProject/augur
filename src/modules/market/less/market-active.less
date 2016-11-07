@@ -1,0 +1,21 @@
+.market-active {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+
+	@media @breakpoint-1 {
+		.market-group:last-child .outcome-trade {
+			display: none;
+		}
+
+		.market-group {
+			flex-direction: column;
+		}
+	}
+
+	@media @breakpoint-2, @breakpoint-3 {
+		.market-group:first-child .outcome-trade {
+			display: none;
+		}
+	}
+}

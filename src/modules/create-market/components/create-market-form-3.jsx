@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
-import InputList from '../../common/components/input-list';
-import FormButtons from '../../create-market/components/create-market-form-buttons';
-import Input from '../../common/components/input';
+import InputList from 'modules/common/components/input-list';
+import FormButtons from 'modules/create-market/components/create-market-form-buttons';
+import Input from 'modules/common/components/input';
 
 const CreateMarketForm4 = p => (
 	<div className="step-3">

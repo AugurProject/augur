@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
-import MarketsHeaders from '../../markets/components/markets-headers';
-import MarketsList from '../../markets/components/markets-list';
-import Branch from '../../branch/components/branch';
+
+import MarketsHeaders from 'modules/markets/components/markets-headers';
+import MarketsList from 'modules/markets/components/markets-list';
+import Branch from 'modules/branch/components/branch';
 
 const MarketsView = p => (
-	<section className={p.className}>
+	<section id="markets_view">
 		{!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
 			<Branch {...p.branch} />
 		}

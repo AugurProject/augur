@@ -1,5 +1,5 @@
-import { randomNum } from '../utils/random-number';
-import makeNumber from '../utils/make-number';
+import { randomNum } from 'utils/random-number';
+import makeNumber from 'utils/make-number';
 
 export default [
 	{

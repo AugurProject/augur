@@ -33,7 +33,7 @@ export default class Link extends Component {
 	};
 
 	render() {
-		const p = Object.keys(this.props).reduce((prev, key) => { // Strips on invalid attrs for `a` tag
+		const p = Object.keys(this.props).reduce((prev, key) => { // Strips certain invalid attrs for `a` tag
 			if (key !== 'text') {
 				return {
 					...prev,
@@ -47,7 +47,7 @@ export default class Link extends Component {
 			<a
 				{...p}
 				href={p.href}
-				className={`link ${p.className}`}
+				className={`link ${p.className || ''}`}
 				onClick={this.handleClick}
 			>
 				{p.children}

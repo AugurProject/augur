@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import Checkbox from '../../common/components/checkbox';
-import { SCALAR } from '../../markets/constants/market-types';
+
+import Checkbox from 'modules/common/components/checkbox';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 export default class ReportForm extends Component {
 	// TODO -- Prop Validations
@@ -93,7 +94,7 @@ export default class ReportForm extends Component {
 		}
 
 		return (
-			<section className={classnames('report-form', { reported: s.isReported })}>
+			<article className={classnames('report-form', { reported: s.isReported })}>
 				<div className="outcome-options">
 					<h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
 					{outcomeOptions}
@@ -146,7 +147,7 @@ export default class ReportForm extends Component {
 						Report Again
 					</button>
 				}
-			</section>
+			</article>
 		);
 	}
 }

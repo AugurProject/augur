@@ -1,6 +1,6 @@
 import React from 'react';
-import MarketPreview from '../../market/components/market-preview';
-import MarketsPagination from '../../markets/components/markets-pagination';
+import MarketPreview from 'modules/market/components/market-preview';
+import MarketsPagination from 'modules/markets/components/markets-pagination';
 
 const MarketsList = p => (
 	<article className="markets-list">

@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
-import ValueDate from '../../../modules/common/components/value-date';
+
+import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDate from 'modules/common/components/value-date';
 
 const Report = p => (
 	<div className="portfolio-row">

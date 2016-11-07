@@ -1,5 +1,5 @@
 import React from 'react';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 const CreateMarketForm1 = p => (
 	<div className="step-1">

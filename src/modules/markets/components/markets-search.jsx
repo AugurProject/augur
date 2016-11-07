@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Input from '../../common/components/input';
+import Input from 'modules/common/components/input';
 
 const MarketsSearch = p => (
 	<article className={`search-input ${p.className}`} >

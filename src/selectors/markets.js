@@ -1,12 +1,12 @@
-import makeNumber from '../utils/make-number';
-import { randomNum } from '../utils/random-number';
-import makeDate from '../utils/make-date';
-import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
-import selectReportableOutcomes from '../selectors/reportable-outcomes';
+import makeNumber from 'utils/make-number';
+import { randomNum } from 'utils/random-number';
+import makeDate from 'utils/make-date';
+import selectOrderBook from 'selectors/bids-asks/select-bids-asks';
+import selectReportableOutcomes from 'selectors/reportable-outcomes';
 
-import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
-import { M } from '../modules/site/constants/views';
+import { M } from 'modules/app/constants/views';
 
 module.exports = makeMarkets();
 
@@ -28,14 +28,16 @@ function makeMarkets(numMarkets = 10) {
 	return markets;
 
 	function makeMarket(index) {
-		const id = index.toString();
+		let id = index.toString();
+		id += 'xyz';
 		const d = new Date('2017/12/12');
 		const m = {
 			id,
 			author: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 			resolution: index % 3 === 0 ? 'generic' : 'https://www.augur.net',
 			extraInfo: 'some extraInfo for this market',
-			type: types[randomInt(0, types.length - 1)],
+			// type: types[randomInt(0, types.length - 1)],
+			type: types[2],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
 			endDate: makeDate(d),
 			creationTime: makeDate(new Date(14706977556)),
@@ -67,9 +69,11 @@ function makeMarkets(numMarkets = 10) {
 
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
+		console.log('index -- ', index);
+
 		// trade summary
 		m.tradeSummary = {
-			hasUserEnoughFunds: index !== 1,
+			hasUserEnoughFunds: true,
 			totalGas: makeNumber(0, ' ETH'),
 			tradeOrders: []
 		};
@@ -273,6 +277,7 @@ function makeMarkets(numMarkets = 10) {
 						tradeSummary: {},
 						updateTradeOrder: (shares, limitPrice, side) => {
 							console.log('update trade order:', shares, limitPrice, side);
+
 							const outcome = {
 								...m.outcomes.find(outcome => outcome.id === outcomeID)
 							};
@@ -315,18 +320,24 @@ function makeMarkets(numMarkets = 10) {
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
 									ether: makeNumber(outcome.trade.totalCost.value - gas, ' ETH'),
 									data: {
+										outcomeID: outcome.id,
 										gasFees: makeNumber(gas, ' ETH'),
 										marketType: m.type,
 										outcomeName: outcome.name,
 										marketDescription: m.description,
 										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, ' ETH'),
-									}
+									},
+									tradingFees: makeNumber(randomNum()),
+									feePercent: makeNumber(randomNum()),
+									gasFees: makeNumber(randomNum()),
+									totalCost: makeNumber(randomNum())
 								});
 
 								return p;
 							}, { totalGas: 0, tradeOrders: [] });
 
 							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
+							m.tradeSummary.hasUserEnoughFunds = true;
 
 							require('../selectors').update({
 								markets: markets.map((currentMarket) => {

@@ -1,5 +1,9 @@
 .input {
-	display: inline-block;
+	.border(true);
+
+	input {
+		.border(false);
+	}
 
 	&.clearable {
 		.box {
@@ -18,7 +22,7 @@
 		background: transparent;
 		border: 0;
 		bottom: 0;
-		color: @color-border-darker;
+		color: @color-text-dark;
 		display: inline-block;
 		font-family: 'Font Awesome';
 		font-size: inherit;

@@ -1,56 +1,13 @@
 // Core
-@import './modules/common/less/reset';
-@import './modules/common/less/typography';
-@import './modules/common/less/responsive';
-@import './modules/common/less/colors';
-@import './modules/common/less/animations';
-@import './modules/common/less/borders';
-@import './modules/common/less/arrangement';
-@import './modules/common/less/layout';
-@import './modules/common/less/common';
+@import (less) '../node_modules/normalize.css/normalize.css';
+@import './modules/app/less/typography';
+@import './modules/app/less/responsive';
+@import './modules/app/less/colors';
+@import './modules/app/less/animations';
+@import './modules/app/less/borders';
+@import './modules/app/less/arrangement';
+@import './modules/app/less/layout';
+@import './modules/app/less/common';
 
-// Shared Components
-@import './modules/site/less/site-header';
-@import './modules/site/less/site-footer';
-@import './modules/site/less/side-bar';
-@import './modules/common/less/view-header';
-@import './modules/common/less/buttons';
-@import './modules/common/less/panel-sideways';
-@import './modules/common/less/page';
-@import './modules/common/less/input';
-@import './modules/common/less/checkbox';
-@import './modules/common/less/value-denomination';
-@import './modules/common/less/datepicker';
-@import './modules/common/less/dropdown';
-@import './modules/markets/less/markets-search';
-@import './modules/common/less/tab-navigation';
-@import './modules/common/less/core-stats';
-
-// Components
-@import './modules/auth/less/auth';
-@import './modules/account/less/account';
-@import './modules/markets/less/markets-pagination';
-@import './modules/markets/less/markets-filter-sort';
-@import './modules/markets/less/markets-tags';
-@import './modules/market/less/market';
-@import './modules/market/less/market-preview';
-@import './modules/market/less/market-outcomes';
-@import './modules/market/less/market-basics';
-@import './modules/market/less/basics-advanced';
-@import './modules/create-market/less/create-market';
-@import './modules/transactions/less/transactions';
-@import './modules/trade/less/trade-panel';
-@import './modules/trade/less/trade-builder';
-@import './modules/trade/less/trade-summary';
-@import './modules/bids-asks/less/order-book';
-@import './modules/bids-asks/less/bids-asks';
-@import './modules/reports/less/report-form';
-@import './modules/reports/less/report-panel';
-@import './modules/open-orders/less/open-order';
-@import './modules/portfolio/less/portfolio-page';
-@import './modules/my-positions/less/my-positions';
-@import './modules/my-markets/less/my-markets';
-@import './modules/my-reports/less/my-reports';
-@import './modules/login-message/less/login-message';
-@import './modules/chat/less/chat';
-@import './modules/branch/less/branch';
+// Module Styles
+@import './modules/**/less/*';

@@ -1,0 +1,108 @@
+// LAYOUT
+// parent level structural styling
+// These classes may also have presentational styling housed in separate stylesheets
+
+html {
+	height: 100vh;
+	overflow-x: hidden;
+	width: 100vw;
+}
+
+body,
+#app,
+main,
+#app_container {
+	height: 100%;
+}
+
+.contained {
+	margin: 0 auto;
+	max-width: @max-app-width;
+	overflow-x: hidden;
+}
+
+#app_container {
+	display: flex;
+	flex-direction: column;
+
+	#app_header {
+		position: fixed;
+		width: 100vw;
+		z-index: @above-all-content;
+
+		.site-header .site-nav {
+
+			.contained();
+
+			padding: 0 1em;
+		}
+
+		.sub-header {
+
+			.contained();
+
+			display: flex;
+			overflow-x: visible; // Allows for the display of the box shadow
+
+			.core-stats-bumper {
+				flex: 1;
+			}
+
+			.core-stats {
+				flex: 4;
+			}
+		}
+	}
+
+	#app_views {
+		display: flex;
+		flex: 1 0 auto;
+		flex-direction: column;
+		width: 100vw;
+
+		.site-header {
+			visibility: hidden;
+		}
+
+		#app_view_container {
+
+			.contained();
+
+			display: flex;
+			flex: 1;
+			width: 100%;
+
+			#side_bar {
+				display: flex;
+				flex: 1;
+			}
+
+			#app_view {
+				display: flex;
+				flex: 4;
+				flex-direction: column;
+
+				.sub-header {
+					visibility: hidden;
+				}
+			}
+		}
+	}
+
+	footer {
+		flex: none;
+	}
+}
+
+section {
+	display: flex;
+	flex-direction: column;
+	margin: 2rem 6rem 0;
+
+	.view-header {
+		align-items: center;
+		display: flex;
+		flex: 1;
+		padding: 1.5em 0;
+	}
+}

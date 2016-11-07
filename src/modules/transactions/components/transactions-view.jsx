@@ -1,8 +1,9 @@
 import React from 'react';
-import Transactions from '../../transactions/components/transactions';
+
+import Transactions from 'modules/transactions/components/transactions';
 
 const TransactionsPage = p => (
-	<main className="page transactions">
+	<section id="transactions_view">
 		<header className="page-header">
 			<span className="big-line">{p.transactionsTotals.title}</span>
 		</header>
@@ -13,7 +14,7 @@ const TransactionsPage = p => (
 				transactions={p.transactions}
 			/>
 		</div>
-	</main>
+	</section>
 );
 
 TransactionsPage.propTypes = {

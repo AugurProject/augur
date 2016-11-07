@@ -38,6 +38,11 @@ import marketDataUpdater from '../test/assertions/market-data-updater';
 import marketDataAge from '../test/assertions/market-data-age';
 import filterSort from '../test/assertions/filter-sort';
 import coreStats from '../test/assertions/core-stats';
+import marketDataNavItems from '../test/assertions/market-data-nav-items';
+import settings from '../test/assertions/settings';
+import chat from '../test/assertions/chat';
+import marketUserDataNavItems from '../test/assertions/market-user-data-nav-items';
+import scalarShareDenomination from '../test/assertions/scalar-share-denomination';
 
 export default {
 	activeView,
@@ -79,5 +84,10 @@ export default {
 	marketDataUpdater,
 	marketDataAge,
 	filterSort,
-	coreStats
+	coreStats,
+	marketDataNavItems,
+	settings,
+	chat,
+	marketUserDataNavItems,
+	scalarShareDenomination
 };

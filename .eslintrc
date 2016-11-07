@@ -12,8 +12,8 @@
 	"plugins": [
 		"react"
 	],
-	"rules": { // 0 = disabled, 1 = warn, 2 = error
-		// Disabled
+	"rules": { # 0 = disabled, 1 = warn, 2 = error
+		# Disabled
 		"comma-dangle": 0,
 		"no-eq-null": 0,
 		"no-console": 0,
@@ -27,7 +27,7 @@
 		"react/no-string-refs": 0, // NOTE -- Temporarily disabled -- utilization of string refs should be refactored to utilize state
 		"react/no-unused-prop-types": 0, // NOTE -- Temporarily disabled -- all passed props should be specific, utilized, and verified
 		"react/forbid-prop-types": 0, // NOTE -- TODO: Temporarily disabled...all props need to be specific + valid + will remove the necessity for separate 'shape' tests once merged into Augur
-		// Errors
+		# Errors
 		"eqeqeq": [2, "allow-null"],
 		"indent": [2, "tab", { "SwitchCase": 1 }],
 		"no-unused-expressions": [2, { "allowShortCircuit": true }],
@@ -39,5 +39,20 @@
 		"no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
 		"no-useless-rename": 2,
 		"quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true}]
+	},
+	"settings": {
+		"import/resolver": {
+			"node": {
+				extensions: [
+					"",
+					".js",
+					".jsx"
+				],
+				"moduleDirectory": [
+					"node_modules",
+					"src" # prevents linting issues w/ aliased paths
+				]
+			}
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import makeNumber from '../../utils/make-number';
+import makeNumber from 'utils/make-number';
 
 function selectOrderBook() {
 	return {

@@ -1,7 +1,7 @@
 import React from 'react';
-import MarketItem from '../../market/components/market-preview';
-import FormButtons from '../../create-market/components/create-market-form-buttons';
-import ValueDenomination from '../../common/components/value-denomination';
+import MarketItem from 'modules/market/components/market-preview';
+import FormButtons from 'modules/create-market/components/create-market-form-buttons';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 const CreateMarketForm5 = p => (
 	<div className="step-5">

@@ -1,63 +1,42 @@
-//.market {
-//	.page-content {
-//		color: @color-dark-normal;
-//		font-size: 1.7vmin;
-//		//margin-top: @site-header-height;
-//
-//		.contained {
-//			background: white;
-//		}
-//
-//		.basics,
-//		.market-info {
-//			background: @color-dark-hover;
-//			color: @color-light-normal;
-//			padding-bottom: 0;
-//
-//			.description {
-//				clear: both;
-//				color: @color-light-normal;
-//				font-size: 4vmin;
-//				line-height: 5vmin;
-//			}
-//
-//			.properties {
-//				color: @color-light-hover;
-//			}
-//		}
-//
-//		.market-info {
-//			font-size: 1.2rem;
-//			line-height: 1em;
-//			padding-top: 0;
-//
-//			.property {
-//				display: inline-block;
-//				margin: 0.5rem 2rem 0 0;
-//
-//				.property-value {
-//					font-weight: 900;
-//					margin-left: 0.5rem;
-//				}
-//			}
-//		}
-//
-//		.market-section-header {
-//			border-bottom: 1px solid @color-border;
-//			font-size: 1.6em;
-//			margin-bottom: 2vmin;
-//			padding: 4vmin 6vmin 2vmin;
-//			text-transform: uppercase;
-//
-//			> * {
-//				margin-right: 0.6em;
-//			}
-//		}
-//	}
-//
-//	.updater {
-//		.button {
-//			margin-left: 6px;
-//		}
-//	}
-//}
+#market_view {
+	margin: 0;
+}
+
+.market-group {
+	display: flex;
+
+	& > article {
+
+		.border(true);
+
+		background-color: @color-white;
+		display: flex;
+		flex-direction: column;
+
+		h3 {
+			margin-left: 1em;
+		}
+
+		&:first-child {
+			flex: 3;
+			margin: 1rem 0.5rem 0.5rem 1rem;
+
+			& + article {
+				flex: 1;
+				margin: 1rem 1rem 0.5rem 0.5rem;
+			}
+		}
+	}
+
+	&:last-child {
+		& > article {
+			&:first-child {
+				margin: 0.5rem 0.5rem 0.5rem 1rem;
+
+				& + article {
+					margin: 0.5rem 1rem 0.5rem 0.5rem;
+				}
+			}
+		}
+	}
+}

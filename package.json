@@ -19,14 +19,14 @@
     "build": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
     "lint": "clear; echo Linting... && eslint --ext .jsx,.js src && stylelint '**/*.less' && echo Linting Complete!",
     "lint:watch": "npm run lint -- --watch",
-    "test": "NODE_ENV=test mocha",
+    "test": "NODE_ENV=test NODE_PATH=./src mocha",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=development npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push --follow-tags && npm publish",
     "deploy:demo": "firebase deploy -f augur-ui",
-    "coverage": "NODE_ENV=test istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --compilers js:babel-register && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "coverage": "NODE_ENV=test NODE_PATH=./src istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --compilers js:babel-register && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "______": "",
     "build:all": "npm run -s clean:build && npm run -s clean:lib && (npm run -s build:css & npm run -s build:assets & npm run -s build:assertions & npm run -s build:js) && npm run -s build:finish",
     "build:assets": "cp -R ./src/assets/. ./build/assets && echo ---------ASSETS---------`date +%r`",
-    "build:css": "lessc  $npm_package_config_less_entry_file | postcss --use autoprefixer | cleancss --s0 > ./build/styles.css | sed -e 's~less~css~' && echo ---------CSS------------`date +%r`",
+    "build:css": "lessc --glob $npm_package_config_less_entry_file | postcss --use autoprefixer | cleancss --s0 > ./build/styles.css | sed -e 's~less~css~' && echo ---------CSS------------`date +%r`",
     "build:js": "npm run -s build:js:browserify | npm run -s partial:uglify > ./build/components.jsx && echo ---------JS-------------`date +%r`",
     "build:js:browserify": "browserify $npm_package_config_js_entry_file_build --extension=.js --extension=.jsx --detectGlobals false --standalone augur-react-components -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] | derequire",
     "build:assertions": "npm run -s build:assertions:do > ./lib/assertions.js && echo ---------ASSERTIONS-----`date +%r`",
@@ -37,7 +37,7 @@
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s watch:assets:do",
     "watch:assets:do": "cp -R ./src/assets/. ./demo/assets && echo ---------ASSETS---------`date +%r`",
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s watch:css:do",
-    "watch:css:do": "lessc $npm_package_config_less_entry_file | postcss --use autoprefixer > ./demo/styles.css && echo ---------CSS------------`date +%r`",
+    "watch:css:do": "lessc --glob $npm_package_config_less_entry_file | postcss --use autoprefixer > ./demo/styles.css && echo ---------CSS------------`date +%r`",
     "watch:js": "watchify $npm_package_config_js_entry_file_demo --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./demo/build.js.map > ./demo/build.js && echo ---------WATCHIFY--------`date +%r`'",
     "watch:html": "onchange './src/index.html' -i -- npm run -s watch:html:do",
     "watch:html:do": "cat ./src/index.html > ./demo/index.html && echo ---------HTML-----------`date +%r`",
@@ -59,6 +59,7 @@
     "react-tooltip": "3.2.1"
   },
   "devDependencies": {
+    "aliasify": "2.0.0",
     "augur-ui-webserver": "1.1.0",
     "autoprefixer": "6.4.1",
     "babel-eslint": "6.1.2",
@@ -75,6 +76,7 @@
     "envify": "3.4.1",
     "eslint": "3.8.1",
     "eslint-config-airbnb": "12.0.0",
+    "eslint-import-resolver-node": "^0.2.3",
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-jsx-a11y": "2.2.2",
     "eslint-plugin-react": "6.3.0",
@@ -83,8 +85,10 @@
     "inline-source-cli": "1.1.1",
     "istanbul": "1.0.0-alpha.2",
     "less": "2.7.1",
+    "less-plugin-glob": "1.1.1",
     "mocha": "3.0.0",
     "mocha-lcov-reporter": "1.2.0",
+    "normalize.css": "5.0.0",
     "onchange": "2.5.0",
     "postcss-cli": "2.6.0",
     "shared-git-hooks": "1.2.1",
@@ -97,5 +101,18 @@
     "js_entry_file_build": "./src/components.jsx",
     "js_entry_file_demo": "./src/index.js",
     "less_entry_file": "./src/styles.less"
+  },
+  "browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+  "aliasify": {
+    "aliases": {
+      "assets": "./src/assets",
+      "modules": "./src/modules",
+      "selectors": "./src/selectors",
+      "utils": "./src/utils"
+    }
   }
 }

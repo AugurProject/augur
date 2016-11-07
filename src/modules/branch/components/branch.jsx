@@ -3,7 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import { Line } from 'rc-progress';
 
 const Branch = p => (
-	<section className="branch-info">
+	<article className="branch-info">
 		<Line
 			percent={p.currentPeriodProgress}
 			strokeWidth="1"
@@ -33,7 +33,7 @@ const Branch = p => (
 				Branch ID: {p.id}
 			</span>
 		</ReactTooltip>
-	</section>
+	</article>
 );
 
 Branch.propTypes = {

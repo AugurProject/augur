@@ -1,0 +1,40 @@
+// RESPONSIVE
+// These are determined by the content being displayed NOT the device displaying the content.
+// This allows for the most optimal presentation regardless of the device.
+
+// 	Maximum app width
+// 	.contained elements will max at this width, elements without that style will flow to full window width
+@max-app-width: 1800px;
+
+// 	Break Points
+// 	The breakpoints encompass:
+// 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur
+// 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps
+
+// 	STEP 1
+// 	Smallest layout @ < 600px (Default)
+//		Steps/Sub-Steps
+@step-1: 600px;
+//		Rules
+@breakpoint-1: ~"all and (max-width: @{step-1})";
+
+//	STEP 2
+// 	Medium layout @ > 600px && <= 1200px
+//		Steps & Sub-Steps
+@step-2: 1200px;
+//		Rules
+@breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
+
+//	STEP 3
+// 	Full layout @ > 1200px
+//		Steps & Sub-Steps
+@step-3: 1201px;
+//		Rules
+@breakpoint-3: ~"all and (min-width: @{step-3})";
+
+// HISTORICAL
+// TODO -- remove
+@media-mobile-width: 550px;
+@media-small-width: 770px;
+@media-large-width: 1250px;
+@media-small-height: 450px;

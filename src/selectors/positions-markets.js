@@ -1,6 +1,6 @@
-import makeNumber from '../utils/make-number';
-import { randomNum } from '../../src/utils/random-number';
-import { M } from '../modules/site/constants/views';
+import makeNumber from 'utils/make-number';
+import { randomNum } from 'utils/random-number';
+import { M } from 'modules/app/constants/views';
 
 export default [
 	{

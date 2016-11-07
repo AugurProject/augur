@@ -1,18 +1,19 @@
 import React from 'react';
-import DropDown from '../../common/components/dropdown';
-import MarketsSearch from '../../markets/components/markets-search';
+
+import Dropdown from 'modules/common/components/dropdown';
+import MarketsSearch from 'modules/markets/components/markets-search';
 
 const MarketsFilterSort = p => (
 	<article className={`markets-view-header ${p.className}`}>
 		<div className="view-header-group-1">
-			<DropDown
+			<Dropdown
 				default={p.selectedFilterSort.type}
 				options={p.types}
 				onChange={(type) => { p.onChange(type, null, null); }}
 
 			/>
 			<div className="companion-fields">
-				<DropDown
+				<Dropdown
 					className="companion-field"
 					default={p.selectedFilterSort.sort}
 					options={p.sorts}

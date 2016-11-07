@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import Input from '../../common/components/input';
+import Input from 'modules/common/components/input';
 
 export default class InputList extends Component {
 	// TODO -- Prop Validations

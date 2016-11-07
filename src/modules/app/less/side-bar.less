@@ -1,0 +1,42 @@
+// NOTE -- additional styles located in common/less/layout.less
+.side-bar {
+	background-color: @color-side-bar-background;
+	color: @color-text-light-muted;
+	flex: 1;
+
+	h3 {
+
+		.border(true, @border-bottom);
+		.font-weight-light();
+		.font-size-medium();
+
+		color: @color-text-light;
+		margin: 0 2rem;
+		padding: 1rem 0;
+	}
+
+	.tags {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		padding: 0.5rem 0;
+
+		.null-state {
+			align-self: center;
+			position: fixed; // Simply for the case where tags are failing to load, scrolling won't cause this to go out of view
+		}
+
+		.checkbox.tag {
+
+			.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+
+			padding: 1em 2rem;
+			text-align: left;
+
+			&:hover {
+				background-color: @color-nav-background-active;
+				color: @color-text-light;
+			}
+		}
+	}
+}

@@ -1,8 +1,8 @@
 import React from 'react';
-import Transaction from './transaction';
+import Transaction from 'modules/transactions/components/transaction';
 
 const Transactions = p => (
-	<section className={p.className}>
+	<article className={p.className}>
 		<div className="transactions-container">
 			{(p.transactions || []).map((transaction, i) =>
 				<Transaction
@@ -17,7 +17,7 @@ const Transactions = p => (
 				{"continue trading while transactions are running, just don't close the browser before they're done!"}
 			</span>
 		}
-	</section>
+	</article>
 );
 
 // TODO -- prop validations

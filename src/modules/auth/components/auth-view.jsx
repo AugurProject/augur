@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import AuthForm from '../../auth/components/auth-form';
-import Link from '../../link/components/link';
+import AuthForm from 'modules/auth/components/auth-form';
+import Link from 'modules/link/components/link';
 
 class AuthPage extends React.Component {
 	componentDidMount() {
@@ -11,7 +11,7 @@ class AuthPage extends React.Component {
 	render() {
 		const p = this.props;
 		return (
-			<main className="page auth">
+			<section id="auth_view">
 				<header className="page-header">
 					<span className="big-line">Augur is a completely decentralized system</span> including user accounts.
 					Your credentials never leave the browser, and you are responsible for keeping them safe.
@@ -31,7 +31,7 @@ class AuthPage extends React.Component {
 					&nbsp;to create an encrypted and backed up account using a simple username and password.
 				</header>
 				<AuthForm className="auth-form" {...p.authForm} />
-			</main>
+			</section>
 		);
 	}
 }

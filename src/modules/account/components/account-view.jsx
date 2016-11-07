@@ -1,9 +1,10 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-import Link from '../../link/components/link';
-import Input from '../../common/components/input';
-import Checkbox from '../../common/components/checkbox';
+
+import Link from 'modules/link/components/link';
+import Input from 'modules/common/components/input';
+import Checkbox from 'modules/common/components/checkbox';
 
 export default class AccountPage extends Component {
 	// TODO -- Prop Validations
@@ -63,8 +64,8 @@ export default class AccountPage extends Component {
 		const s = this.state;
 
 		return (
-			<main className="page account">
-				<section className="page-content">
+			<section id="account_view">
+				<article className="page-content">
 					{p.authLink &&
 						<Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
 					}
@@ -270,8 +271,8 @@ export default class AccountPage extends Component {
 					<ReactTooltip id="recipient-address-tooltip" type="light" effect="solid" place="top">
 						<span className="tooltip-text">Recipient&#39;s Ethereum address</span>
 					</ReactTooltip>
-				</section>
-			</main>
+				</article>
+			</section>
 		);
 	}
 }

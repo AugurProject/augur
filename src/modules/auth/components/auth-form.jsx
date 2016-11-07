@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
-import Link from '../../link/components/link';
-import Checkbox from '../../common/components/checkbox';
+import Link from 'modules/link/components/link';
+import Checkbox from 'modules/common/components/checkbox';
 
 export default class AuthForm extends Component {
 	static propTypes = {
