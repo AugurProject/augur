@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
-import { BUY } from '../../trade/constants/types';
+import { BUY, SELL } from '../../trade/constants/types';
 import { ZERO, TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
@@ -20,31 +20,37 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
 			return;
 		}
-		// If either field is cleared, reset outcomeTradeInProgress while preserving the companion field's value
-		if (numShares === '' && typeof limitPrice === 'undefined') {
+
+		// if new side not provided, use old side
+		const cleanSide = side || outcomeTradeInProgress.side;
+
+		if ((numShares === '' || parseFloat(numShares) === 0) && limitPrice === null) { // numShares cleared
 			return dispatch({
 				type: UPDATE_TRADE_IN_PROGRESS, data: {
 					marketID,
 					outcomeID,
 					details: {
+						side: cleanSide,
+						numShares: '',
 						limitPrice: outcomeTradeInProgress.limitPrice
-					}
-				}
-			});
-		} else if (limitPrice === '' || (parseFloat(limitPrice) === 0 && market.type !== SCALAR) && typeof numShares === 'undefined') {
-			return dispatch({
-				type: UPDATE_TRADE_IN_PROGRESS, data: {
-					marketID,
-					outcomeID,
-					details: {
-						numShares: outcomeTradeInProgress.numShares,
 					}
 				}
 			});
 		}
 
-		// if new side not provided, use old side
-		const cleanSide = side || outcomeTradeInProgress.side;
+		if ((limitPrice === '' || (parseFloat(limitPrice) === 0 && market.type !== SCALAR)) && numShares === null) { // limitPrice cleared
+			return dispatch({
+				type: UPDATE_TRADE_IN_PROGRESS, data: {
+					marketID,
+					outcomeID,
+					details: {
+						side: cleanSide,
+						limitPrice: '',
+						numShares: outcomeTradeInProgress.numShares,
+					}
+				}
+			});
+		}
 
 		// find top order to default limit price to
 		const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
@@ -63,8 +69,26 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// clean num shares
 		const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || '0';
 
-		// if shares exist, but no limit price, use top order
-		let cleanLimitPrice = limitPrice && bignumLimit.toFixed() === '0' ? '0' : limitPrice && bignumLimit.toFixed() || outcomeTradeInProgress.limitPrice;
+		// if current trade order limitPrice is equal to the best price, make sure it's equal to that, otherwise, but what the user has entered
+		let cleanLimitPrice;
+		const topAskPrice = ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue;
+		const topBidPrice = ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue;
+
+		if (limitPrice && bignumLimit.toFixed() === '0') {
+			cleanLimitPrice = '0';
+		} else {
+			if (limitPrice && bignumLimit.toFixed()) {
+				cleanLimitPrice = bignumLimit.toFixed();
+			} else {
+				if (cleanSide === BUY && outcomeTradeInProgress.limitPrice === topBidPrice) {
+					cleanLimitPrice = topAskPrice;
+				} else if (cleanSide === SELL && outcomeTradeInProgress.limitPrice === topAskPrice) {
+					cleanLimitPrice = topBidPrice;
+				} else {
+					cleanLimitPrice = outcomeTradeInProgress.limitPrice;
+				}
+			}
+		}
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== '0') {
 			cleanLimitPrice = topOrderPrice;
