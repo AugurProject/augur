@@ -1,6 +1,7 @@
 import React from 'react';
 
 import MarketPositionsRow from 'modules/market/components/market-positions-row';
+import NullStateMessage from 'modules/common/components/null-state-message';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
 
@@ -8,11 +9,12 @@ import getValue from 'utils/get-value';
 
 const MarketPositions = (p) => {
 	const outcomePositions = getValue(p, 'market.myPositionOutcomes');
+	const nullMessage = 'No Current Positions';
 
 	return (
 		<article className="market-positions">
 			{!outcomePositions ?
-				<span className="null-state-message">No Market Positions</span> :
+				<NullStateMessage message={nullMessage} /> :
 				<div>
 					<div className="market-positions-header">
 						<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
