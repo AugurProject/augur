@@ -350,27 +350,31 @@ function makeMarkets(numMarkets = 10) {
 						}
 					},
 					topBid: {
-						price: orderBook.bids[0].price,
-						shares: orderBook.bids[0].shares
+						// price: orderBook.bids[0].price,
+						// shares: orderBook.bids[0].shares
 					},
 					topAsk: {
-						price: orderBook.asks[0].price,
-						shares: orderBook.asks[0].shares
+						// price: orderBook.asks[0].price,
+						// shares: orderBook.asks[0].shares
 					},
 					orderBook
 				};
 
-				outcome.userOpenOrders = marketIndex === 5 ? [] : [...new Array(randomInt(1, 6)).keys()].map(index => (
-					{
-						id: `${m.id}${outcome.id}order${index}`,
-						type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
-						marketID: m.id,
-						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), ' ETH'),
-						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
-						outcome: outcomeID,
-						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-					}
-				));
+
+
+				// outcome.userOpenOrders = marketIndex === 5 ? [] : [...new Array(randomInt(1, 6)).keys()].map(index => (
+				// 	{
+				// 		id: `${m.id}${outcome.id}order${index}`,
+				// 		type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
+				// 		marketID: m.id,
+				// 		avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), ' ETH'),
+				// 		unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
+				// 		outcome: outcomeID,
+				// 		owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+				// 	}
+				// ));
+
+
 
 				return outcome;
 
