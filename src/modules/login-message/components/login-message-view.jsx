@@ -53,8 +53,26 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 7, 2016</h3>
+			<ol>
+				<li>
+					Fixed the claim-proceeds action, which is the final bet-payout mechanism once markets are successfully reported on and closed.  This action was incorrectly firing claimMarketProceeds calls for some markets that were not yet closed.
+				</li>
+				<li>
+					Added updateAssets and refreshMarkets calls after claim-proceeds completes successfully.
+				</li>
+				<li>
+					Reordered checkPeriod callback sequences to allow for full reporter catch-up even if their REP redistribution is behind by multiple periods.  Also added an extra check for REP redistribution to the submitReportHash onSuccess callback, which should short-circuit failing submitReportHash loops, if they are caused by not being caught up on penalizations/redistributions.
+				</li>
+			</ol>
 			<h3>November 6, 2016</h3>
 			<ol>
+				<li>
+					Reports from previous periods are now properly cleared from your pending reports.
+				</li>
+				<li>
+					Refactored commit-report and its associated methods, and rewrote / greatly expanded the commit-report test suite.
+				</li>
 				<li>
 					Added a message to markets that have been reported on and closed out: &quot;This market is closed. Reported outcome: X&quot;
 				</li>
