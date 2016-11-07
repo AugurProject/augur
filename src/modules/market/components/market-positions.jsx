@@ -11,23 +11,28 @@ const MarketPositions = (p) => {
 
 	return (
 		<article className="market-positions">
-			<div className="market-positions-header">
-				<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
-				<span>Shares</span>
-				<span>Avg Price</span>
-				<span>Last Price</span>
-				<span>Realized P/L</span>
-				<span>Unrealized P/L</span>
-				<span>Total P/L</span>
-			</div>
-			{(outcomePositions || []).map(outcome =>
-				<MarketPositionsRow
-					key={outcome.id}
-					marketType={p.marketType}
-					outcome={outcome}
-					selectedShareDenomination={p.selectedShareDenomination}
-				/>
-			)}
+			{!outcomePositions ?
+				<span className="null-state-message">No Market Positions</span> :
+				<div>
+					<div className="market-positions-header">
+						<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
+						<span>Shares</span>
+						<span>Avg Price</span>
+						<span>Last Price</span>
+						<span>Realized P/L</span>
+						<span>Unrealized P/L</span>
+						<span>Total P/L</span>
+					</div>
+					{(outcomePositions || []).map(outcome =>
+						<MarketPositionsRow
+							key={outcome.id}
+							marketType={p.marketType}
+							outcome={outcome}
+							selectedShareDenomination={p.selectedShareDenomination}
+						/>
+					)}
+				</div>
+			}
 		</article>
 	);
 };
