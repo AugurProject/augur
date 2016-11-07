@@ -27,6 +27,10 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 		console.log('remainingShares:', res.remainingShares.toFixed());
 		console.log('sharesPurchased:', bnSharesPurchased.toFixed());
 		console.log('balance:', bnCashBalance.toFixed());
+		console.log(!matchingTradeIDs.length);
+		console.log((res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)));
+		console.log((bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) );
+		console.log((bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero)));
 		return !matchingTradeIDs.length ||
 			(res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
 			(bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||

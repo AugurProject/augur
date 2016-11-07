@@ -10,7 +10,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
-	testState.orderBooks = {
+	const testOrderBooks = {
 		'testBinaryMarketID': {
 			buy: {
 				'orderID1': {
@@ -278,6 +278,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			}
 		}
 	};
+	testState.orderBooks = testOrderBooks;
 	const store = mockStore(testState);
 	const mockAugur = { augur: { ...augur }, abi: { ...abi }, constants: { ...constants } };
 	const mockLoadBidAsks = { loadBidsAsks: () => {} };
@@ -497,23 +498,6 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
 		});
 
-		it('should not call trade when given a negative numShares input', () => {
-			helper.trade('testBinaryMarketID', '2', '-10', '0', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
-
-			assert(mockCB.calledWithExactly(null, {
-			  remainingEth: abi.bignum("0"),
-			  remainingShares: abi.bignum("-10"),
-			  filledShares: abi.bignum("0"),
-			  filledEth: abi.bignum("0"),
-			  tradingFees: abi.bignum("0"),
-			  gasFees: abi.bignum("0")
-			}), `Didn't cancel the trade and return the expected trade object.`);
-
-			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
-
-			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
-		});
-
 		it('should not call trade when given 0 as an input for both shares and remainingEth', () => {
 			helper.trade('testBinaryMarketID', '2', '0', '0', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
 
@@ -636,6 +620,9 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(mockCBStatus.callCount, 10, `Didn't call status callback 10 times as expected`);
 			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
 			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' } ], `Didn't dispatch a load_bids_asks action twice as expected`);
+
+			// reset the orderbook to a smaller set of orderBooks
+			store.getState().orderBooks = testOrderBooks;
 		});
 	});
 
@@ -645,12 +632,6 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		sinon.stub(mockAugurSell.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
 			console.log('getParticipantSharesPurchasedcc:', mockAugurSell.augur.getParticipantSharesPurchased.callCount);
 			switch (mockAugurSell.augur.getParticipantSharesPurchased.callCount) {
-			// case 0:
-			// 	cb('5');
-			// 	break;
-			// case 1:
-			// 	cb('5');
-			// 	break;
 			default:
 				cb('10');
 				break;
@@ -692,7 +673,6 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			return;
 			// onCommitFailed({ error: 'error', message: 'error message' });
 			// onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
-
 			// onTradeFailed({ error: 'error', message: 'error message' });
 		});
 
@@ -735,6 +715,33 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
 			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
 			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
+		});
+
+		it('should not call trade when given a negative numShares input', () => {
+			helper.trade('testBinaryMarketID', '2', '-10', '0', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCB.calledWithExactly(null, {
+			  remainingEth: abi.bignum("0"),
+			  remainingShares: abi.bignum("-10"),
+			  filledShares: abi.bignum("0"),
+			  filledEth: abi.bignum("0"),
+			  tradingFees: abi.bignum("0"),
+			  gasFees: abi.bignum("0")
+			}), `Didn't cancel the trade and return the expected trade object.`);
+
+			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
+
+			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
+		});
+
+		it.skip('should handle a trade that sends in both numShares and remainingEth', () => {
+			// not sure how this should be handled yet...
+			helper.trade('testBinaryMarketID', '2', '10', '20.02', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
+
+			console.log(mockCBStatus.callCount);
+			console.log(mockCB.callCount);
+
+			console.log(store.getActions());
 		});
 	});
 });
