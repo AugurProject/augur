@@ -49,12 +49,12 @@ export function syncBranch(callback) {
 				const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
 				const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
 				const { loginAccount } = getState();
-				if (loginAccount.id) dispatch(claimProceeds());
+				if (loginAccount.address) dispatch(claimProceeds());
 
 				// if not logged in, can't increment period
 				// if report period is caught up and we're not in a new
 				// report phase, callback and exit
-				if (!loginAccount.id || (isCaughtUpReportPeriod && !isChangedReportPhase)) {
+				if (!loginAccount.address || (isCaughtUpReportPeriod && !isChangedReportPhase)) {
 					if (callback) return callback(null, reportPeriod);
 
 				// check if period needs to be incremented / penalizeWrong
