@@ -206,6 +206,7 @@ module.exports = {
                                     // });
                                 },
                                 onFailed: function (err) {
+                                    if (err.error === "-5") return next(null, penalizePeriod);
                                     console.error(" - penalizeWrong error:", err);
                                     nextEvent(err);
                                 }

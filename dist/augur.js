@@ -43921,7 +43921,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.11";
+    this.version = "3.0.12";
 
     this.options = {
         debug: {
@@ -47141,6 +47141,7 @@ module.exports = {
                                     // });
                                 },
                                 onFailed: function (err) {
+                                    if (err.error === "-5") return next(null, penalizePeriod);
                                     console.error(" - penalizeWrong error:", err);
                                     nextEvent(err);
                                 }
