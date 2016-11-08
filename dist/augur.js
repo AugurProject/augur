@@ -21320,7 +21320,7 @@ module.exports={
         "CloseMarket": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CollectFees": "0x9ce7d44719e0d12b5aba76b80fcb7c1b2e7770fd", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
         "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
@@ -21332,10 +21332,10 @@ module.exports={
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
         "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Forking": "0xf55b1d5cf3327f2754dc1852f42e4cd2ab213273", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "MakeReports": "0x0bda011e4c0c908608735b4b193e16072f9c32be", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
@@ -21343,9 +21343,9 @@ module.exports={
         "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "RoundTwo": "0x81927ea753cd8001e7c91dc197c4de96b02b9cc6", 
+        "RoundTwoPenalize": "0x02b21f6f7a4393e7eb54ef41ea709069d539868a", 
+        "SendReputation": "0xb1bb94797e60a5bde1d17d2aa9bc942c55d6a67e", 
         "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
         "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
@@ -43922,7 +43922,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.13";
+    this.version = "3.0.15";
 
     this.options = {
         debug: {
@@ -44602,28 +44602,33 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
-        var prepare = function (res, cb) {
-            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                return cb(res);
-            }
-            self.Branches.getVotePeriod(branch, function (period) {
-                self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                    if (feesCollected !== "1") {
-                        res.callReturn = "2";
-                        return cb(res);
-                    }
-                    self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                        if (parseInt(afterRep, 10) <= 1) {
+        this.rpc.getGasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
+            console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            return self.transact(tx, onSent, utils.compose(function (res, cb) {
+                console.log("collectFees success:", JSON.stringify(res, null, 2));
+                if (res && (res.callReturn === "1" || res.callReturn === "2")) {
+                    return cb(res);
+                }
+                self.Branches.getVotePeriod(branch, function (period) {
+                    self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                        if (feesCollected !== "1") {
                             res.callReturn = "2";
                             return cb(res);
                         }
-                        res.callReturn = "1";
-                        return cb(res);
+                        self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                            if (parseInt(afterRep, 10) <= 1) {
+                                res.callReturn = "2";
+                                return cb(res);
+                            }
+                            res.callReturn = "1";
+                            return cb(res);
+                        });
                     });
                 });
-            });
-        };
-        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+            }, onSuccess), onFailed);
+        });
     }
 };
 
@@ -47036,95 +47041,42 @@ module.exports = {
                 console.log(" - penalizedUpTo:", lastPeriodPenalized);
                 if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
                     console.log(" *** Penalizations caught up! *** ");
-                    return next(null);
-                }
-                var penalizePeriod = lastPeriodPenalized + 1;
-                self.getEvents(branch, penalizePeriod, function (events) {
-                    console.log(" - Events in vote period", penalizePeriod + ":", events);
-                    if (!events || events.constructor !== Array || !events.length) {
-                        // if > first period, then call penalizeWrong(branch, 0)
-                        console.log("No events found for period", penalizePeriod);
-                        console.log("Calling penalizeWrong(branch, 0)...");
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                if (r.callReturn !== "-8") return next(null, penalizePeriod);
-                                if (self.getCurrentPeriodProgress(periodLength) > 50) {
-                                    console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
-                                    console.log(" - collectFees params:", {
-                                        branch: branch,
-                                        sender: sender,
-                                        periodLength: periodLength
-                                    });
-                                    return self.collectFees({
-                                        branch: branch,
-                                        sender: sender,
-                                        periodLength: periodLength,
-                                        onSent: function (r) {
-                                            console.log(" - collectFees sent:", r);
-                                        },
-                                        onSuccess: function (r) {
-                                            console.log(" - collectFees success:", r.callReturn);
-                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error(" - collectFees error:", e);
-                                            next(e);
-                                        }
-                                    });
-                                } else {
-                                    console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
-                                    console.log(" - setPenalizedUpTo params:", {
-                                        branch: branch,
-                                        sender: sender,
-                                        period: penalizePeriod
-                                    });
-                                    // BAD BAD BAD
-                                    // TODO stop the badness
-                                    self.setPenalizedUpTo({
-                                        branch: branch,
-                                        sender: sender,
-                                        period: penalizePeriod,
-                                        onSent: function (r) {
-                                            console.log(" - setPenalizedUpTo sent:", r);
-                                        },
-                                        onSuccess: function (r) {
-                                            console.log(" - setPenalizedUpTo success:", r.callReturn);
-                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error(" - setPenalizedUpTo error:", e);
-                                            next(e);
-                                        }
-                                    });
-                                }
-                                // return next({
-                                //     "-8": "needed to collect fees last period which sets the before/after rep"
-                                // });
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(err);
-                            }
-                        });
-                    } else {
-                        console.log("Events found for period " + penalizePeriod + ", looping through...");
-                        async.eachSeries(events, function (event, nextEvent) {
-                            console.log(" - penalizeWrong:", event);
+                    next(null);
+                } else if (lastPeriodPenalized < votePeriod - 2) {
+                    console.log(" -", votePeriod - 1 - lastPeriodPenalized, "periods behind, catching up...");
+                    self.penalizationCatchup({
+                        branch: branch,
+                        sender: sender,
+                        onSent: function (r) {
+                            console.log(" - penalizationCatchup sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            console.log(" - penalizationCatchup success:", r.callReturn);
+                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                        },
+                        onFailed: function (e) {
+                            console.error(" - penalizationCatchup failed:", e);
+                            next(e);
+                        }
+                    });
+                } else {
+                    var penalizePeriod = lastPeriodPenalized + 1;
+                    self.getEvents(branch, penalizePeriod, function (events) {
+                        console.log(" - Events in vote period", penalizePeriod + ":", events);
+                        if (!events || events.constructor !== Array || !events.length) {
+                            // if > first period, then call penalizeWrong(branch, 0)
+                            console.log("No events found for period", penalizePeriod);
+                            console.log("Calling penalizeWrong(branch, 0)...");
                             self.penalizeWrong({
                                 branch: branch,
-                                event: event,
-                                onSent: utils.noop,
+                                event: 0,
+                                onSent: function (r) {
+                                    console.log("penalizeWrong sent:", r);
+                                },
                                 onSuccess: function (r) {
-                                    console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                    if (r.callReturn !== "-8") return nextEvent();
+                                    console.log("penalizeWrong(branch, 0) success:", r);
+                                    if (r.callReturn !== "-8") return next(null, penalizePeriod);
                                     if (self.getCurrentPeriodProgress(periodLength) > 50) {
                                         console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
                                         console.log(" - collectFees params:", {
@@ -47146,73 +47098,217 @@ module.exports = {
                                             },
                                             onFailed: function (e) {
                                                 console.error(" - collectFees error:", e);
-                                                nextEvent(e);
+                                                if (e.error === "-5") {
+                                                    self.penalizationCatchup({
+                                                        branch: branch,
+                                                        sender: sender,
+                                                        onSent: function (r) {
+                                                            console.log(" - penalizationCatchup sent:", r);
+                                                        },
+                                                        onSuccess: function (r) {
+                                                            console.log(" - penalizationCatchup success:", r.callReturn);
+                                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                                        },
+                                                        onFailed: function (e) {
+                                                            console.error(" - penalizationCatchup failed:", e);
+                                                            next(e);
+                                                        }
+                                                    });
+                                                } else {
+                                                    next(e);
+                                                }
                                             }
                                         });
-                                    } else {
-                                        console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
-                                        console.log(" - setPenalizedUpTo params:", {
+                                    }
+                                    // else {
+                                    //     console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
+                                    //     console.log(" - setPenalizedUpTo params:", {
+                                    //         branch: branch,
+                                    //         sender: sender,
+                                    //         period: penalizePeriod
+                                    //     });
+                                    //     // BAD BAD BAD
+                                    //     // TODO stop the badness
+                                    //     self.setPenalizedUpTo({
+                                    //         branch: branch,
+                                    //         sender: sender,
+                                    //         period: penalizePeriod,
+                                    //         onSent: function (r) {
+                                    //             console.log(" - setPenalizedUpTo sent:", r);
+                                    //         },
+                                    //         onSuccess: function (r) {
+                                    //             console.log(" - setPenalizedUpTo success:", r.callReturn);
+                                    //             console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                    //             checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                    //         },
+                                    //         onFailed: function (e) {
+                                    //             console.error(" - setPenalizedUpTo error:", e);
+                                    //             next(e);
+                                    //         }
+                                    //     });
+                                    // }
+                                    // return next({
+                                    //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                    // });
+                                    self.penalizationCatchup({
+                                        branch: branch,
+                                        sender: sender,
+                                        onSent: function (r) {
+                                            console.log(" - penalizationCatchup sent:", r);
+                                        },
+                                        onSuccess: function (r) {
+                                            console.log(" - penalizationCatchup success:", r.callReturn);
+                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                        },
+                                        onFailed: function (e) {
+                                            console.error(" - penalizationCatchup failed:", e);
+                                            next(e);
+                                        }
+                                    });
+                                },
+                                onFailed: function (err) {
+                                    console.error("penalizeWrong(branch, 0) error:", err);
+                                    next(err);
+                                }
+                            });
+                        } else {
+                            console.log("Events found for period " + penalizePeriod + ", looping through...");
+                            async.eachSeries(events, function (event, nextEvent) {
+                                console.log(" - penalizeWrong:", event);
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: event,
+                                    onSent: utils.noop,
+                                    onSuccess: function (r) {
+                                        console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                        if (r.callReturn !== "-8") return nextEvent();
+                                        if (self.getCurrentPeriodProgress(periodLength) > 50) {
+                                            console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
+                                            console.log(" - collectFees params:", {
+                                                branch: branch,
+                                                sender: sender,
+                                                periodLength: periodLength
+                                            });
+                                            return self.collectFees({
+                                                branch: branch,
+                                                sender: sender,
+                                                periodLength: periodLength,
+                                                onSent: function (r) {
+                                                    console.log(" - collectFees sent:", r);
+                                                },
+                                                onSuccess: function (r) {
+                                                    console.log(" - collectFees success:", r.callReturn);
+                                                    console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                    checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                                },
+                                                onFailed: function (e) {
+                                                    console.error(" - collectFees error:", e);
+                                                    if (e.error === "-5") {
+                                                        self.penalizationCatchup({
+                                                            branch: branch,
+                                                            sender: sender,
+                                                            onSent: function (r) {
+                                                                console.log(" - penalizationCatchup sent:", r);
+                                                            },
+                                                            onSuccess: function (r) {
+                                                                console.log(" - penalizationCatchup success:", r.callReturn);
+                                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                                            },
+                                                            onFailed: function (e) {
+                                                                console.error(" - penalizationCatchup failed:", e);
+                                                                next(e);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        nextEvent(e);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        // else {
+                                        //     console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
+                                        //     console.log(" - setPenalizedUpTo params:", {
+                                        //         branch: branch,
+                                        //         sender: sender,
+                                        //         period: penalizePeriod
+                                        //     });
+                                        //     // BAD BAD BAD
+                                        //     // TODO stop the badness
+                                        //     self.setPenalizedUpTo({
+                                        //         branch: branch,
+                                        //         sender: sender,
+                                        //         period: penalizePeriod,
+                                        //         onSent: function (r) {
+                                        //             console.log(" - setPenalizedUpTo sent:", r);
+                                        //         },
+                                        //         onSuccess: function (r) {
+                                        //             console.log(" - setPenalizedUpTo success:", r.callReturn);
+                                        //             console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                        //             checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                        //         },
+                                        //         onFailed: function (e) {
+                                        //             console.error(" - setPenalizedUpTo error:", e);
+                                        //             nextEvent(e);
+                                        //         }
+                                        //     });
+                                        // }
+                                        self.penalizationCatchup({
                                             branch: branch,
                                             sender: sender,
-                                            period: penalizePeriod
-                                        });
-                                        // BAD BAD BAD
-                                        // TODO stop the badness
-                                        self.setPenalizedUpTo({
-                                            branch: branch,
-                                            sender: sender,
-                                            period: penalizePeriod,
                                             onSent: function (r) {
-                                                console.log(" - setPenalizedUpTo sent:", r);
+                                                console.log(" - penalizationCatchup sent:", r);
                                             },
                                             onSuccess: function (r) {
-                                                console.log(" - setPenalizedUpTo success:", r.callReturn);
+                                                console.log(" - penalizationCatchup success:", r.callReturn);
                                                 console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
                                                 checkPenalizeWrong(branch, periodLength, votePeriod, next);
                                             },
                                             onFailed: function (e) {
-                                                console.error(" - setPenalizedUpTo error:", e);
+                                                console.error(" - penalizationCatchup failed:", e);
                                                 nextEvent(e);
                                             }
                                         });
+                                        // return nextEvent({
+                                        //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                        // });
+                                        // console.log(" - closing extra markets");
+                                        // self.getMarkets(event, function (markets) {
+                                        //     if (!markets) return nextEvent("no markets found for " + event);
+                                        //     if (markets && markets.error) return nextEvent(markets);
+                                        //     if (markets.length <= 1) return nextEvent();
+                                        //     async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                        //         self.closeMarket({
+                                        //             branch: branch,
+                                        //             market: market,
+                                        //             sender: sender,
+                                        //             onSent: function (res) {
+                                        //                 console.log("closeMarket", market, res);
+                                        //             },
+                                        //             onSuccess: function (res) {
+                                        //                 console.log("closeMarket success", market, res.callReturn);
+                                        //                 nextMarket();
+                                        //             },
+                                        //             onFailed: nextMarket
+                                        //         });
+                                        //     }, nextEvent);
+                                        // });
+                                    },
+                                    onFailed: function (err) {
+                                        if (err.error === "-5") return next(null, penalizePeriod);
+                                        console.error(" - penalizeWrong error:", err);
+                                        nextEvent(err);
                                     }
-                                    // return nextEvent({
-                                    //     "-8": "needed to collect fees last period which sets the before/after rep"
-                                    // });
-                                    // console.log(" - closing extra markets");
-                                    // self.getMarkets(event, function (markets) {
-                                    //     if (!markets) return nextEvent("no markets found for " + event);
-                                    //     if (markets && markets.error) return nextEvent(markets);
-                                    //     if (markets.length <= 1) return nextEvent();
-                                    //     async.eachSeries(markets.slice(1), function (market, nextMarket) {
-                                    //         self.closeMarket({
-                                    //             branch: branch,
-                                    //             market: market,
-                                    //             sender: sender,
-                                    //             onSent: function (res) {
-                                    //                 console.log("closeMarket", market, res);
-                                    //             },
-                                    //             onSuccess: function (res) {
-                                    //                 console.log("closeMarket success", market, res.callReturn);
-                                    //                 nextMarket();
-                                    //             },
-                                    //             onFailed: nextMarket
-                                    //         });
-                                    //     }, nextEvent);
-                                    // });
-                                },
-                                onFailed: function (err) {
-                                    if (err.error === "-5") return next(null, penalizePeriod);
-                                    console.error(" - penalizeWrong error:", err);
-                                    nextEvent(err);
-                                }
+                                });
+                            }, function (e) {
+                                if (e) return next(e);
+                                next(null, penalizePeriod);
                             });
-                        }, function (e) {
-                            if (e) return next(e);
-                            next(null, penalizePeriod);
-                        });
-                    }
-                });
+                        }
+                    });
+                }
             });
         }
 

@@ -92,8 +92,8 @@ module.exports = {
                 if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
                     console.log(" *** Penalizations caught up! *** ");
                     next(null);
-                } else if (lastPeriodPenalized < votePeriod - 1) {
-                    console.log(" - ", votePeriod - 1 - lastPeriodPenalized, "periods behind, catching up...");
+                } else if (lastPeriodPenalized < votePeriod - 2) {
+                    console.log(" -", votePeriod - 1 - lastPeriodPenalized, "periods behind, catching up...");
                     self.penalizationCatchup({
                         branch: branch,
                         sender: sender,
@@ -148,7 +148,26 @@ module.exports = {
                                             },
                                             onFailed: function (e) {
                                                 console.error(" - collectFees error:", e);
-                                                next(e);
+                                                if (e.error === "-5") {
+                                                    self.penalizationCatchup({
+                                                        branch: branch,
+                                                        sender: sender,
+                                                        onSent: function (r) {
+                                                            console.log(" - penalizationCatchup sent:", r);
+                                                        },
+                                                        onSuccess: function (r) {
+                                                            console.log(" - penalizationCatchup success:", r.callReturn);
+                                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                                        },
+                                                        onFailed: function (e) {
+                                                            console.error(" - penalizationCatchup failed:", e);
+                                                            next(e);
+                                                        }
+                                                    });
+                                                } else {
+                                                    next(e);
+                                                }
                                             }
                                         });
                                     }
@@ -179,8 +198,24 @@ module.exports = {
                                     //         }
                                     //     });
                                     // }
-                                    return next({
-                                        "-8": "needed to collect fees last period which sets the before/after rep"
+                                    // return next({
+                                    //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                    // });
+                                    self.penalizationCatchup({
+                                        branch: branch,
+                                        sender: sender,
+                                        onSent: function (r) {
+                                            console.log(" - penalizationCatchup sent:", r);
+                                        },
+                                        onSuccess: function (r) {
+                                            console.log(" - penalizationCatchup success:", r.callReturn);
+                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                        },
+                                        onFailed: function (e) {
+                                            console.error(" - penalizationCatchup failed:", e);
+                                            next(e);
+                                        }
                                     });
                                 },
                                 onFailed: function (err) {
@@ -220,7 +255,26 @@ module.exports = {
                                                 },
                                                 onFailed: function (e) {
                                                     console.error(" - collectFees error:", e);
-                                                    nextEvent(e);
+                                                    if (e.error === "-5") {
+                                                        self.penalizationCatchup({
+                                                            branch: branch,
+                                                            sender: sender,
+                                                            onSent: function (r) {
+                                                                console.log(" - penalizationCatchup sent:", r);
+                                                            },
+                                                            onSuccess: function (r) {
+                                                                console.log(" - penalizationCatchup success:", r.callReturn);
+                                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                                            },
+                                                            onFailed: function (e) {
+                                                                console.error(" - penalizationCatchup failed:", e);
+                                                                next(e);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        nextEvent(e);
+                                                    }
                                                 }
                                             });
                                         }
@@ -251,9 +305,25 @@ module.exports = {
                                         //         }
                                         //     });
                                         // }
-                                        return nextEvent({
-                                            "-8": "needed to collect fees last period which sets the before/after rep"
+                                        self.penalizationCatchup({
+                                            branch: branch,
+                                            sender: sender,
+                                            onSent: function (r) {
+                                                console.log(" - penalizationCatchup sent:", r);
+                                            },
+                                            onSuccess: function (r) {
+                                                console.log(" - penalizationCatchup success:", r.callReturn);
+                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
+                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
+                                            },
+                                            onFailed: function (e) {
+                                                console.error(" - penalizationCatchup failed:", e);
+                                                nextEvent(e);
+                                            }
                                         });
+                                        // return nextEvent({
+                                        //     "-8": "needed to collect fees last period which sets the before/after rep"
+                                        // });
                                         // console.log(" - closing extra markets");
                                         // self.getMarkets(event, function (markets) {
                                         //     if (!markets) return nextEvent("no markets found for " + event);
