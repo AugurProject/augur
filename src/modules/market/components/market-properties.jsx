@@ -92,6 +92,29 @@ const MarketProperties = p => (
 				</span>
 			</ReactTooltip>
 		</li>
+		{p.numPendingReports && p.isPendingReport &&
+			<li className="property pending-reports">
+				<a
+					data-tip
+					data-for={`${p.id}-pending-reports-tooltip`}
+					data-event="click focus"
+				>
+					<span className="property-label">Pending Reports:</span>
+					<span> <strong>{p.numPendingReports}</strong></span>
+				</a>
+				<ReactTooltip
+					id={`${p.id}-pending-reports-tooltip`}
+					type="light"
+					effect="solid"
+					place="top"
+					globalEventOff="click"
+				>
+					<span className="tooltip-text">
+						{p.numPendingReports} reports submitted on this market thus far
+					</span>
+				</ReactTooltip>
+			</li>
+		}
 	</ul>
 );
 

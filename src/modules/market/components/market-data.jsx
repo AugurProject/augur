@@ -8,8 +8,6 @@ import MarketDetails from 'modules/market/components/market-details';
 
 import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
 
-import getValue from 'utils/get-value';
-
 export default class MarketData extends Component {
 	constructor(props) {
 		super(props);

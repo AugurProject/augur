@@ -39,11 +39,13 @@ export default class ReportPanel extends Component {
 					updateSelectedNav={this.updateSelectedNav}
 				/>
 				{s.selectedNav === MARKET_REPORTING_NAV_REPORT &&
-					<ReportForm
-						{...market}
-						isReported={market.isReported || market.isReportSubmitted}
-						onClickSubmit={market.onSubmitReport}
-					/>
+					<div>
+						<ReportForm
+							{...market}
+							isReported={market.isReported || market.isReportSubmitted}
+							onClickSubmit={market.onSubmitReport}
+						/>
+					</div>
 				}
 				{s.selectedNav === MARKET_REPORTING_NAV_DETAILS &&
 					<MarketDetails {...market} />
