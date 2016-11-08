@@ -59,6 +59,9 @@ const LoginMessagePage = p => (
 					Reskinned the trade (market detail) page.  There are a few minor bugs remaining but the trade page is fully functional and has an immensely improved look-and-feel!
 				</li>
 				<li>
+					Fixed event description display for reveal-reports transactions.
+				</li>
+				<li>
 					Fixed the claim-proceeds action, which is the final bet-payout mechanism once markets are successfully reported on and closed.  This action was incorrectly firing claimMarketProceeds calls for some markets that were not yet closed.
 				</li>
 				<li>
