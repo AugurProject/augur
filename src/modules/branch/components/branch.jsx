@@ -25,7 +25,7 @@ const Branch = p => (
 		<ReactTooltip
 			id="branch-id-tooltip"
 			type="light"
-			effect="solid"
+			effect="float"
 			place="top"
 			globalEventOff="click"
 		>
