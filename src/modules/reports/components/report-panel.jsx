@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import MarketHeader from 'modules/market/components/market-header';
 import ComponentNav from 'modules/common/components/component-nav';
 import ReportForm from 'modules/reports/components/report-form';
 import MarketDetails from 'modules/market/components/market-details';
@@ -31,7 +32,7 @@ export default class ReportPanel extends Component {
 
 		return (
 			<article className="report-panel" >
-				<h3>{market.description}</h3>
+				<MarketHeader {...market} />
 				<ComponentNav
 					navItems={p.marketReportingNavItems}
 					selectedNav={s.selectedNav}
