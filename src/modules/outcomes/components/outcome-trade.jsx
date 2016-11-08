@@ -47,7 +47,7 @@ export default class OutcomeTrade extends Component {
 
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		if (trade && trade.updateTradeOrder) {
-			trade.updateTradeOrder(undefined, undefined, selectedNav);
+			trade.updateTradeOrder(null, null, selectedNav);
 		}
 	}
 
@@ -55,7 +55,7 @@ export default class OutcomeTrade extends Component {
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		const valueDenominated = denominateShares(value, this.props.selectedShareDenomination, SHARE);
 
-		trade.updateTradeOrder(valueDenominated, undefined, trade.side);
+		trade.updateTradeOrder(valueDenominated, null, trade.side);
 	}
 
 	render() {
@@ -100,7 +100,7 @@ export default class OutcomeTrade extends Component {
 								placeholder="Price"
 								type="number"
 								value={trade.limitPrice}
-								onChange={(value) => { trade.updateTradeOrder(undefined, value, trade.side); }}
+								onChange={(value) => { trade.updateTradeOrder(null, value, trade.side); }}
 							/>
 						</div>
 					</div>
