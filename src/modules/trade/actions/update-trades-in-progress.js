@@ -71,8 +71,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		// if current trade order limitPrice is equal to the best price, make sure it's equal to that, otherwise, but what the user has entered
 		let cleanLimitPrice;
-		const topAskPrice = ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue;
-		const topBidPrice = ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue;
+		const topAskPrice = ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
+		const topBidPrice = ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
 		if (limitPrice && bignumLimit.toFixed() === '0') {
 			cleanLimitPrice = '0';
