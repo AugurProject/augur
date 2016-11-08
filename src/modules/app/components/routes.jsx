@@ -101,7 +101,8 @@ const Routes = (p) => {
 				marketDataUpdater: p.marketDataUpdater,
 				numPendingReports: p.marketsTotals.numPendingReports,
 				isTradeCommitLocked: p.tradeCommitLock.isLocked,
-				scalarShareDenomination: p.scalarShareDenomination
+				scalarShareDenomination: p.scalarShareDenomination,
+				marketReportingNavItems: p.marketReportingNavItems
 			};
 
 			return (

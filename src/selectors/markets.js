@@ -47,7 +47,8 @@ function makeMarkets(numMarkets = 10) {
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: randomInt(0, 100) > 5,
-			isPendingReport: index > 0 && index % 4 === 0,
+			// isPendingReport: index > 0 && index % 4 === 0,
+			isPendingReport: true,
 			marketLink: {
 				href: `/?m=${id}`,
 				text: 'Trade',

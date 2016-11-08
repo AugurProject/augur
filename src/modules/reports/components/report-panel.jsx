@@ -1,32 +1,53 @@
-import React from 'react';
-import classnames from 'classnames';
+import React, { Component } from 'react';
 
+import ComponentNav from 'modules/common/components/component-nav';
 import ReportForm from 'modules/reports/components/report-form';
+import MarketDetails from 'modules/market/components/market-details';
 
-const ReportPanel = p => (
-	<article className={classnames('report-panel', p.className)}>
-		<span className="num-total-reports">{p.numPendingReports}</span>
-		<ReportForm
-			{...p}
-			isReported={p.isReported || p.isReportSubmitted}
-			onClickSubmit={p.onSubmitReport}
-		/>
-	</article>
-);
+import { MARKET_REPORTING_NAV_REPORT, MARKET_REPORTING_NAV_DETAILS } from 'modules/app/constants/views';
 
-ReportPanel.propTypes = {
-	type: React.PropTypes.string,
-	minValue: React.PropTypes.string,
-	maxValue: React.PropTypes.string,
-	className: React.PropTypes.string,
-	numPendingReports: React.PropTypes.number,
-	outcomes: React.PropTypes.array,
-	reportedOutcomeID: React.PropTypes.any,
-	isIndeterminate: React.PropTypes.bool,
-	isUnethical: React.PropTypes.bool,
-	isReported: React.PropTypes.bool,
-	isReportSubmitted: React.PropTypes.bool,
-	onSubmitReport: React.PropTypes.func
-};
+import getValue from 'utils/get-value';
 
-export default ReportPanel;
+export default class ReportPanel extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			selectedNav: MARKET_REPORTING_NAV_REPORT
+		};
+
+		this.updateSelectedNav = this.updateSelectedNav.bind(this);
+	}
+
+	updateSelectedNav(selectedNav) {
+		this.setState({ selectedNav });
+	}
+
+	render() {
+		const p = this.props;
+		const s = this.state;
+
+		const market = getValue(p, 'market');
+
+		return (
+			<article className="report-panel" >
+				<h3>{market.description}</h3>
+				<ComponentNav
+					navItems={p.marketReportingNavItems}
+					selectedNav={s.selectedNav}
+					updateSelectedNav={this.updateSelectedNav}
+				/>
+				{s.selectedNav === MARKET_REPORTING_NAV_REPORT &&
+					<ReportForm
+						{...market}
+						isReported={market.isReported || market.isReportSubmitted}
+						onClickSubmit={market.onSubmitReport}
+					/>
+				}
+				{s.selectedNav === MARKET_REPORTING_NAV_DETAILS &&
+					<MarketDetails {...market} />
+				}
+			</article>
+		);
+	}
+}
