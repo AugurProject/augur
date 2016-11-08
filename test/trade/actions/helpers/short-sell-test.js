@@ -53,7 +53,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		}), `Didn't call cbStatus with a filled status`);
 
 		assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
-		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 1 time as expected`);
 	});
 
 	it('should handle a short sell with a failed trade', () => {
@@ -72,7 +72,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 
 		assert.deepEqual(mockCBStatus.callCount, 4, `Didn't call status callback 5 times as expected`);
-		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 1 time as expected`);
 	});
 
 	it('should handle a short sell with a commit failure', () => {
@@ -84,12 +84,13 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		assert(mockCB.calledWithExactly({ error: 'error', message: 'error message' }), `Didn't calle cb with an error status`);
 
 		assert.deepEqual(mockCBStatus.callCount, 2, `Didn't call status callback 5 times as expected`);
-		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+		assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 1 time as expected`);
 	});
 
 	it('should handle null inputs', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
 		helper.shortSell('testBinaryMarketID', '2', null, 'taker1', () => [3, 4], mockCBStatus, mockCB);
+		console.log(mockCB.callCount);
 		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
 		assert(mockCB.calledWithExactly(null, {
 			remainingShares: abi.bignum(0),
