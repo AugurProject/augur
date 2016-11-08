@@ -7,7 +7,7 @@ export function collectFees() {
 		if (branch.isReportRevealPhase) {
 			augur.collectFees({
 				branch: branch.id,
-				sender: loginAccount.id,
+				sender: loginAccount.address,
 				periodLength: branch.periodLength,
 				onSent: (res) => {
 					console.log('collectFees sent:', res);

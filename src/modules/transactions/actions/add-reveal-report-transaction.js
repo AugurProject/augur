@@ -16,13 +16,16 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 			} else {
 				outcome = outcomesData ? outcomesData[reportedOutcomeID] : {};
 			}
+			const description = eventDescription && eventDescription.length ?
+				eventDescription.split('~|>')[0] :
+				getState().marketsData[marketID].description;
 			const transaction = {
 				type: REVEAL_REPORT,
 				data: {
 					event: eventID,
 					marketID,
 					outcome,
-					description: eventDescription || getState().marketsData[marketID].description,
+					description,
 					reportedOutcomeID,
 					isUnethical,
 					isScalar,

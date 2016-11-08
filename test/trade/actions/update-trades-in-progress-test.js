@@ -198,14 +198,33 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		});
 
 		it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
+			// marketID, outcomeID, side, numShares, limitPrice, maxCost
 			store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0', undefined));
+			console.log(store.getActions()[0].data.details);
 			assert.deepEqual(store.getActions()[0], {
 				type: 'UPDATE_TRADE_IN_PROGRESS',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					details: {
-						numShares: '10'
+						side: 'buy',
+						numShares: '10',
+						limitPrice: '0',
+						totalFee: '0',
+						totalCost: '0',
+						tradeActions: [ {
+							action: 'BID',
+							avgPrice: '0',
+							costEth: '0',
+							feeEth: '0',
+							feePercent: '0',
+							gasEth: '0.01450404',
+							noFeePrice: '0',
+							shares: '10'
+						} ],
+						tradingFeesEth: '0',
+						gasFeesRealEth: '0.01450404',
+						feePercent: 'NaN'
 					}
 				}
 			},`Didn't produce the expected tradeDetails object`);
@@ -474,7 +493,24 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					details: {
-						numShares: '10'
+						side: 'buy',
+						numShares: '10',
+						limitPrice: '0',
+						totalFee: '0',
+						totalCost: '0',
+						tradeActions: [ {
+							action: 'BID',
+							avgPrice: '0',
+							costEth: '0',
+							feeEth: '0',
+							feePercent: '0',
+							gasEth: '0.01450404',
+							noFeePrice: '0',
+							shares: '10'
+						} ],
+						tradingFeesEth: '0',
+						gasFeesRealEth: '0.01450404',
+						feePercent: 'NaN'
 					}
 				}
 			},`Didn't produce the expected tradeDetails object`);
