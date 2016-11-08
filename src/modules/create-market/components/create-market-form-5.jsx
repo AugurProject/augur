@@ -1,12 +1,12 @@
 import React from 'react';
-import MarketItem from 'modules/market/components/market-preview';
+import MarketPreview from 'modules/market/components/market-preview';
 import FormButtons from 'modules/create-market/components/create-market-form-buttons';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 const CreateMarketForm5 = p => (
 	<div className="step-5">
 		<h1>Review and submit your new market</h1>
-		<MarketItem {...p} />
+		<MarketPreview {...p} />
 		<ValueDenomination className="market-creation-fee" {...p.marketCreationFee} prefix="Market creation fee:" />
 		<br />
 		<ValueDenomination className="gas-fees" {...p.gasFees} prefix="Gas cost:" />
