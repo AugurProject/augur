@@ -210,6 +210,46 @@ describe("Report encryption/decryption", function () {
     });
     test({
         report: makeReports.fixReport(1),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbeff305f7212bed1d"
+    });
+    test({
+        report: makeReports.fixReport("0x1"),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbeff305f7212bed1d"
+    });
+    test({
+        report: makeReports.fixReport("1"),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbeff305f7212bed1d"
+    });
+    test({
+        report: makeReports.fixReport(0),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbe213b344864fed1d"
+    });
+    test({
+        report: makeReports.fixReport("0x0"),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbe213b344864fed1d"
+    });
+    test({
+        report: makeReports.fixReport("0"),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbe213b344864fed1d"
+    });
+    test({
+        report: makeReports.fixReport("1.5", true),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbf6c2a149fd59ed1c"
+    });
+    test({
+        report: makeReports.fixReport("1.5", true, true),
+        key: "0x1",
+        encryptedReport: "0x774988b91e31a2a9b745e7e923306eadc37244bc4de3eebbf6c2a149fd59ed1d"
+    });
+    test({
+        report: makeReports.fixReport(1),
         key: "0x68e4593db968928abbdfe5746809c02b7527bdf110cbbe16ae1defa081cc6a3c",
         salt: "0xa4a71c2a3adb18bdfa964288e9b473199a7b69a79b040affa9df8690dee32ced",
         encryptedReport: "0xd8030298d9e1083080840df4fbcb98daacbfdc0b9af5f27ec57ca16afb271443"
