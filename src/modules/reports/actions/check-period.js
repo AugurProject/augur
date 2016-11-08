@@ -16,7 +16,7 @@ const tracker = {
 export function checkPeriod(unlock, cb) {
 	return (dispatch, getState) => {
 		const { loginAccount, branch } = getState();
-		if (branch.id && loginAccount.id && loginAccount.rep) {
+		if (branch.id && loginAccount.address && loginAccount.rep !== '0') {
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
 			if (unlock || currentPeriod > tracker.notSoCurrentPeriod) {
 				tracker.feesCollected = false;
@@ -28,7 +28,7 @@ export function checkPeriod(unlock, cb) {
 			console.debug('checkPeriodLock:', tracker.checkPeriodLock);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
-				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
+				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
 					console.log('checkPeriod complete:', err, reportPeriod);
 					if (err) {
 						tracker.checkPeriodLock = false;
