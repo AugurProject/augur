@@ -28,16 +28,14 @@ export function initAugur() {
 					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
-						dispatch(reportingTestSetup());
+						dispatch(reportingTestSetup(env.branchID));
 					} else {
-						dispatch(loadBranch(BRANCH_ID));
-
+						dispatch(loadBranch(env.branchID || BRANCH_ID));
 						const { loginAccount, loginMessage } = getState();
 						if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
 							const { links } = require('../../../selectors');
 							links.loginMessageLink.onClick();
 						}
-
 						dispatch(initTimer());
 					}
 				});

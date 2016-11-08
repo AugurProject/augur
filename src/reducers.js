@@ -28,6 +28,7 @@ import accountPositions from './modules/my-positions/reducers/account-positions'
 import completeSetsBought from './modules/my-positions/reducers/complete-sets-bought';
 import netEffectiveTrades from './modules/my-positions/reducers/net-effective-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
+import scalarMarketsShareDenomination from './modules/market/reducers/scalar-markets-share-denomination';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
@@ -95,6 +96,7 @@ module.exports = {
 	completeSetsBought,
 	netEffectiveTrades,
 	transactionsData,
+	scalarMarketsShareDenomination,
 
 	settings,
 	chatMessages,

@@ -32,6 +32,10 @@ import createMarketForm from './modules/create-market/selectors/create-market-fo
 import coreStats from './modules/auth/selectors/core-stats';
 import settings from './modules/auth/selectors/account-settings';
 import chat from './modules/chat/selectors/chat-messages';
+import branch from './modules/app/selectors/branch';
+import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
+import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
+import scalarShareDenomination from './modules/market/selectors/scalar-share-denomination';
 
 const selectors = {
 	activeView,
@@ -67,7 +71,11 @@ const selectors = {
 	tradeCommitLock,
 	coreStats,
 	settings,
-	chat
+	chat,
+	branch,
+	marketDataNavItems,
+	marketUserDataNavItems,
+	scalarShareDenomination
 };
 
 module.exports = {};

@@ -1,71 +1,51 @@
 import async from 'async';
 import { augur } from '../../../services/augurjs';
-import { updateReports } from '../../reports/actions/update-reports';
-
-function decryptReport(loginAccount, branchID, period, eventID, report, callback) {
-	if (!loginAccount.derivedKey) return callback(null, report);
-	augur.getAndDecryptReport(branchID, period, loginAccount.id, eventID, {
-		derivedKey: loginAccount.derivedKey,
-		salt: loginAccount.keystore.crypto.kdfparams.salt
-	}, (plaintext) => {
-		if (!plaintext) return callback('getAndDecryptReport failed');
-		if (!plaintext.report || plaintext.error) {
-			return callback(plaintext);
-		}
-		report.reportedOutcomeID = plaintext.report;
-		report.salt = plaintext.salt;
-		callback(null, report);
-	});
-}
+import { loadReport } from '../../reports/actions/load-report';
+import { loadReportDescriptors } from '../../reports/actions/load-report-descriptors';
+import { updateMarketsData } from '../../markets/actions/update-markets-data';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 export function loadReports(callback) {
 	return (dispatch, getState) => {
-		const { loginAccount, blockchain, branch, reports } = getState();
-		if (!loginAccount || !loginAccount.id || !branch.id || !blockchain.reportPeriod) {
+		const { loginAccount, branch, reports } = getState();
+		if (!loginAccount || !loginAccount.address || !branch.id || !branch.reportPeriod) {
 			return;
 		}
-		const period = blockchain.reportPeriod;
-		const account = loginAccount.id;
+		const period = branch.reportPeriod;
+		const account = loginAccount.address;
 		const branchID = branch.id;
 		console.log('calling getEventsToReportOn:', branchID, period, account);
+		const marketIDs = [];
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
 			console.log('eventsToReportOn:', eventsToReportOn);
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
-				if (!reports[branchID]) reports[branchID] = {};
 				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
-				const report = reports[branchID][eventID] || { eventID };
-				console.log('report for', eventID, report);
-				if (report.reportedOutcomeID && report.salt) {
-					console.debug('Event', eventID, 'is good-to-go!');
-					return nextEvent();
-				}
-				if (report.reportHash) {
-					decryptReport(loginAccount, branchID, period, eventID, report, (err, decryptedReport) => {
-						if (err) return nextEvent(err);
-						reports[branchID][eventID] = decryptedReport;
-						nextEvent();
-					});
-				} else {
-					augur.getReportHash(branchID, period, account, eventID, (reportHash) => {
-						console.log('augur.getReportHash:', reportHash);
-						if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
-							report.reportHash = null;
-							reports[branchID][eventID] = report;
-							return nextEvent();
-						}
-						report.reportHash = reportHash;
-						decryptReport(loginAccount, branchID, period, eventID, report, (err, decryptedReport) => {
-							if (err) return nextEvent(err);
-							reports[branchID][eventID] = decryptedReport;
-							nextEvent();
-						});
-					});
-				}
+				augur.getMarket(eventID, 0, (marketID) => {
+					marketIDs.push(marketID);
+					dispatch(updateMarketsData({ [marketID]: { eventID } }));
+					if (reports[branchID] && reports[branchID][eventID] && reports[branchID][eventID].isRevealed) {
+						console.debug('Event', eventID, 'already revealed');
+						return nextEvent();
+					}
+					dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
+				});
 			}, (err) => {
-				if (err) return callback && callback(err);
-				console.debug('updated reports:', reports);
-				dispatch(updateReports(reports));
-				return callback && callback(null);
+				if (err) {
+					if (callback) callback(err);
+				} else {
+					if (!marketIDs.length) {
+						if (callback) callback(null, marketIDs);
+					} else {
+						dispatch(loadMarketsInfo(marketIDs, () => {
+							dispatch(loadReportDescriptors((e) => {
+								if (callback) {
+									if (e) return callback(e);
+									callback(null, marketIDs);
+								}
+							}));
+						}));
+					}
+				}
 			});
 		});
 	};

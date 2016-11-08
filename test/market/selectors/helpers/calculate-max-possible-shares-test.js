@@ -38,7 +38,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.44',
 					fullPrecisionPrice: '0.44',
 					type: 'buy'
@@ -69,7 +69,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'buy'
@@ -80,7 +80,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'buy'
@@ -111,7 +111,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'buy'
@@ -122,7 +122,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'buy'
@@ -153,7 +153,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'buy'
@@ -164,7 +164,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'buy'
@@ -196,7 +196,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'sell'
@@ -207,7 +207,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'sell'
@@ -238,7 +238,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'sell'
@@ -249,7 +249,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'sell'
@@ -280,7 +280,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order2',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.2',
 					fullPrecisionPrice: '0.2',
 					type: 'sell'
@@ -291,7 +291,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 					id: 'order3',
 					market: 'testMarketID',
 					outcome: '2',
-					owner: '0xtest123',
+					owner: '0x0000000000000000000000000000000000000001',
 					price: '0.3',
 					fullPrecisionPrice: '0.3',
 					type: 'sell'

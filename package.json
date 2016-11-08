@@ -17,7 +17,7 @@
     "start": "node app.js",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all; mv ./build/index-2.0.0.html ./build/index.html; cp ./src/sitemap.xml ./build/",
     "build:dev": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=development npm run -s build:all",
-    "test": "clear; NODE_ENV=test mocha",
+    "test": "clear; NODE_ENV=test NODE_PATH=./src mocha",
     "test:watch": "clear; npm test -- --watch",
     "lint": "echo begin linting... && eslint src/*.js src/services/* src/utils/* src/modules/* && echo linting complete.",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
@@ -60,22 +60,22 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.0.10",
     "async": "1.5.2",
-    "augur-ui-react-components": "3.5.18",
-    "augur.js": "3.0.0",
+    "augur-ui-react-components": "3.6.1",
+    "augur.js": "3.0.13",
     "bignumber.js": "2.3.0",
     "express": "^4.14.0",
     "helmet": "^2.3.0",
     "memoizerific": "1.8.4",
+    "moment": "2.14.1",
     "prerender-node": "^2.4.0",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1",
-    "express": "^4.14.0",
-    "helmet": "^2.3.0",
-    "prerender-node": "^2.4.0",
-    "rimraf": "2.5.4"
+    "rimraf": "2.5.4",
+    "secure-random": "1.1.1"
   },
   "devDependencies": {
+    "aliasify": "^2.0.0",
+    "augur-ui-webserver": "1.1.0",
     "babel-eslint": "6.1.2",
     "babel-plugin-transform-remove-console": "6.8.0",
     "babel-preset-es2015": "6.9.0",
@@ -126,5 +126,18 @@
     "js_entry_file": "./src/index.js",
     "less_entry_files": "./src/less/*.less",
     "assets_folder": "./node_modules/augur-ui-react-components/build/assets/**"
+  },
+	"browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+	"aliasify": {
+    "aliases": {
+      "assets": "./src/assets",
+      "modules": "./src/modules",
+      "services": "./src/services",
+      "utils": "./src/utils"
+    }
   }
 }

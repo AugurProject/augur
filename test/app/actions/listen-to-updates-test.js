@@ -22,7 +22,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			bignum: () => {}
 		}
 	};
-	let mockUpBlockchain = {};
+	let mockUpdateBlockchain = {};
+	let mockUpdateBranch = {};
 	let mockUpdateAssets = {};
 	let mockOutcomePrice = {};
 	let mockLoadBidsAsks = {};
@@ -33,8 +34,14 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockUpdateAssets.updateAssets = sinon.stub().returns({
 		type: 'UPDATE_ASSETS'
 	});
-	mockUpBlockchain.updateBlockchain = sinon.stub().returns({
-		type: 'UPDATE_BLOCKCHAIN'
+	mockUpdateBlockchain.syncBlockchain = sinon.stub().returns({
+		type: 'SYNC_BLOCKCHAIN'
+	});
+	mockUpdateBranch.syncBranch = sinon.stub().returns({
+		type: 'SYNC_BRANCH'
+	});
+	mockUpdateBranch.updateBranch = sinon.stub().returns({
+		type: 'UPDATE_BRANCH'
 	});
 	mockOutcomePrice.updateOutcomePrice = sinon.stub().returns({
 		type: 'UPDATE_OUTCOME_PRICE'
@@ -70,7 +77,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
 	action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../app/actions/update-blockchain': mockUpBlockchain,
+		'../../app/actions/update-branch': mockUpdateBranch,
+		'../../app/actions/update-blockchain': mockUpdateBlockchain,
 		'../../auth/actions/update-assets': mockUpdateAssets,
 		'../../markets/actions/update-outcome-price': mockOutcomePrice,
 		'../../markets/actions/load-markets-info': mockLoadMarketsInfo,
@@ -91,7 +99,9 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		out = [{
 			type: 'UPDATE_ASSETS'
 		}, {
-			type: 'UPDATE_BLOCKCHAIN'
+			type: 'SYNC_BLOCKCHAIN'
+		}, {
+			type: 'SYNC_BRANCH'
 		}, {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
@@ -106,7 +116,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		}];
 
 		assert(mockAugurJS.augur.filters.listen.calledOnce, `Didn't call AugurJS.augur.filters.listen() exactly 1 time as expected`);
-		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() once as expected`);
+		assert(mockUpdateBranch.syncBranch.calledOnce, `Didn't call syncBranch() once as expected`);
+		assert(mockUpdateBlockchain.syncBlockchain.calledOnce, `Didn't call syncBlockchain() once as expected`);
 		assert(mockUpdateAssets.updateAssets.calledOnce, `Didn't call updateAssets() once as expected`);
 		assert(mockOutcomePrice.updateOutcomePrice.calledOnce, `Didn't call updateOutcomePrice() once as expected`);
 		assert(mockLoadMarketsInfo.loadMarketsInfo.calledThrice, `Didn't call loadMarketsInfo() three times as expected`);

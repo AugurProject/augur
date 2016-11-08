@@ -14,7 +14,7 @@ describe('modules/reports/actions/check-period.js', () => {
 	let store, action;
 	let state = Object.assign({}, testState, {
 		blockchain: {...testState.blockchain,
-			isReportConfirmationPhase: false
+			isReportRevealPhase: false
 		},
 		loginAccount: {...testState.loginAccount,
 			rep: 100

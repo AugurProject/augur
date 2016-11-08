@@ -37,7 +37,9 @@ export function loadAccountTrades(marketID, cb) {
 				})
 			}, (err, data) => {
 				if (err) return console.error('loadAccountTrades error:', err);
-				console.log('loadAccountTrades data:', data);
+				if (augur.options.debug.trading) {
+					console.log('loadAccountTrades data:', data);
+				}
 				dispatch(sellCompleteSets(marketID, cb));
 			});
 		} else {

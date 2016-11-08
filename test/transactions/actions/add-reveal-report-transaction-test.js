@@ -13,6 +13,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 	const store = mockStore(Object.assign({}, testState));
 	const p = {
 		eventID: 'testEventID',
+		marketID: 'testMarketID',
 		reportedOutcomeID: '2',
 		salt: '0x1337',
 		isUnethical: false,
@@ -91,6 +92,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 					},
 					reportedOutcomeID: '2',
 					isUnethical: false,
+					marketID: 'testMarketID',
 					isScalar: false,
 					isIndeterminate: false
 				},
@@ -106,7 +108,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 				}
 			}
 		}];
-		store.dispatch(action.addRevealReportTransaction(p.eventID, p.reportedOutcomeID, p.salt, p.isUnethical, p.isScalar, p.isIndeterminate));
+		store.dispatch(action.addRevealReportTransaction(p.eventID, p.marketID, p.reportedOutcomeID, p.salt, p.isUnethical, p.isScalar, p.isIndeterminate));
 		const actual = store.getActions();
 		assert.isFunction(actual[0].data.action);
 		delete actual[0].data.action;

@@ -39,10 +39,6 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 		store.clearActions()
 	});
 
-	afterEach(() => {
-		store.clearActions()
-	});
-
 	it(`should add a Buy Trade Transaction`, () => {
 		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'marketType', 'Some Market Description', 'anOutcomeName', 5, 10, 50, 3, 2, 1));
 		const actual = store.getActions();

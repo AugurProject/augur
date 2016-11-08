@@ -12,6 +12,7 @@ export const SELL_COMPLETE_SETS = 'sell_complete_sets';
 export const CREATE_MARKET = 'create_market';
 export const COMMIT_REPORT = 'commit_report';
 export const REVEAL_REPORT = 'reveal_report';
+export const PENALIZE_WRONG = 'penalize_wrong';
 export const GENERATE_ORDER_BOOK = 'generate_order_book';
 
 export const REGISTER_ACCOUNT = 'register_account';

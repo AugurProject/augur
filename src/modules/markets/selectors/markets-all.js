@@ -3,15 +3,15 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import store from '../../../store';
 
-import { assembleMarket } from '../../market/selectors/market';
+import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -20,11 +20,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 		if (!marketID || !marketsData[marketID]) {
 			return {};
 		}
-
 		const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
-		const branchReports = reports[marketsData[marketID].branchId];
-		const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
-
 		return assembleMarket(
 			marketID,
 			marketsData[marketID],
@@ -34,7 +30,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			!!favorites[marketID],
 			outcomesData[marketID],
 
-			marketReport,
+			selectMarketReport(marketID, reports[marketsData[marketID].branchId]),
 			(accountPositions || {})[marketID],
 			(netEffectiveTrades || {})[marketID],
 			(accountTrades || {})[marketID],
@@ -44,7 +40,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			endDate.getFullYear(),
 			endDate.getMonth(),
 			endDate.getDate(),
-			blockchain && blockchain.isReportConfirmationPhase,
+			branch && branch.isReportRevealPhase,
 			orderBooks[marketID],
 			orderCancellation,
 			(smallestPositions || {})[marketID],

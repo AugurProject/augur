@@ -38,10 +38,6 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 		store.clearActions();
 	});
 
-	afterEach(() => {
-		store.clearActions();
-	});
-
 	it(`should add and make a report transaction`, () => {
 		let market = {
 			id: 'testMarket',
@@ -67,6 +63,7 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 				ether: 5,
 				data: {
 					market,
+					marketID: 'testMarket',
 					outcome: [{
 						id: 'test1'
 					}, {
@@ -75,18 +72,17 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 					description: 'the best market ever',
 					reportedOutcomeID: 'test1',
 					isUnethical: false,
-					isIndeterminate: false,
-					gasFees: {
-						denomination: ' real ETH',
-						formatted: '0.0627',
-						formattedValue: 0.0627,
-						full: '0.0627 real ETH',
-						minimized: '0.0627',
-						rounded: '0.0627',
-						roundedValue: 0.0627,
-						value: 0.0627
-					}
-
+					isIndeterminate: false
+				},
+				gasFees: {
+					denomination: ' real ETH (estimated)',
+					formatted: '0.0627',
+					formattedValue: 0.0627,
+					full: '0.0627 real ETH (estimated)',
+					minimized: '0.0627',
+					rounded: '0.0627',
+					roundedValue: 0.0627,
+					value: 0.0627
 				},
 				action: store.getActions()[0].data.action
 			}

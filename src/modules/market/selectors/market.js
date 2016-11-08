@@ -13,7 +13,7 @@ run any more than it has to.
 
 To achieve that, we pass in the minimum number of the shallowest arguments possible.
 For example, instead of passing in the entire `favorites` collection and letting the
-function find the one it needs for the market, we instead find the specific fvorite
+function find the one it needs for the market, we instead find the specific favorite
 for that market in advance, and only pass in a boolean: `!!favorites[marketID]`
 That way the market only gets re-assembled when that specific favorite changes.
 
@@ -61,16 +61,26 @@ export default function () {
 	return selectMarket(selectedMarketID);
 }
 
+export const selectMarketReport = (marketID, branchReports) => {
+	if (marketID && branchReports) {
+		const branchReportsEventIDs = Object.keys(branchReports);
+		const numBranchReports = branchReportsEventIDs.length;
+		for (let i = 0; i < numBranchReports; ++i) {
+			if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+				return branchReports[branchReportsEventIDs[i]];
+			}
+		}
+	}
+};
+
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
 	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
-	const branchReports = reports[branch.id || BRANCH_ID];
-	const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 	return assembleMarket(
 		marketID,
@@ -81,7 +91,7 @@ export const selectMarket = (marketID) => {
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		marketReport,
+		selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
 		(accountPositions || {})[marketID],
 		(netEffectiveTrades || {})[marketID],
 		(accountTrades || {})[marketID],
@@ -92,7 +102,7 @@ export const selectMarket = (marketID) => {
 		endDate.getMonth(),
 		endDate.getDate(),
 
-		blockchain && !!blockchain.isReportConfirmationPhase,
+		branch && !!branch.isReportRevealPhase,
 
 		orderBooks[marketID],
 		orderCancellation,
@@ -125,7 +135,7 @@ export function assembleMarket(
 		endDateYear,
 		endDateMonth,
 		endDateDay,
-		isReportConfirmationPhase,
+		isReportRevealPhase,
 		orderBooks,
 		orderCancellation,
 		smallestPosition,
@@ -148,7 +158,7 @@ export function assembleMarket(
 			endDateYear,
 			endDateMonth,
 			endDateDay,
-			isReportConfirmationPhase,
+			isReportRevealPhase,
 			orderBooks,
 			orderCancellation,
 			smallestPosition,
@@ -196,15 +206,15 @@ export function assembleMarket(
 			market.volume = formatShares(marketData.volume, { positiveSign: false });
 
 			market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase; // account is required to report on this unreported market during reporting phase
 			market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
 			market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
-			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
+			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
 			market.isMissedOrReported = market.isMissedReport || market.isReported;
 
 			market.marketLink = selectMarketLink(market, dispatch);
 			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-			market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
+			market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
 			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);

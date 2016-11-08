@@ -3,8 +3,8 @@ import { updateAssets } from '../../auth/actions/update-assets';
 
 export function collectFees() {
 	return (dispatch, getState) => {
-		const { blockchain, branch, loginAccount } = getState();
-		if (blockchain.isReportConfirmationPhase) {
+		const { branch, loginAccount } = getState();
+		if (branch.isReportRevealPhase) {
 			augur.collectFees({
 				branch: branch.id,
 				sender: loginAccount.id,
