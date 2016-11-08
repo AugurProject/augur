@@ -1,10 +1,7 @@
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 
 import MarketProperties from 'modules/market/components/market-properties';
-import ValueDenomination from 'modules/common/components/value-denomination';
-import ValueDate from 'modules/common/components/value-date';
 import Link from 'modules/link/components/link';
 
 const MarketBasics = p => (
