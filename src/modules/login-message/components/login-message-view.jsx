@@ -53,6 +53,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 8, 2016</h3>
+			<ol>
+				<li>
+					Added penalizationCatchup to checkPeriod callback sequence for users who are multiple reporting cycles behind.
+				</li>
+				<li>
+					Added a constant (all-ones) initialization vector to the encryptReport and decryptReport middleware functions if a salt argument is not supplied.  Although the report needs to be encrypted with its salt, the (separately) encrypted salt does not need its own random salt.
+				</li>
+				<li>
+					Removed refund macro from collectFees contract, since the transaction value must be accessed (and is expected to be non-zero) in the body of the method.
+				</li>
+				<li>
+					Fixed sufficient value check in collectFees contract.
+				</li>
+				<li>
+					Automatically add (500K wei)*gasPrice of value to the collectFees transaction payload in augur.js.
+				</li>
+				<li>
+					Fixed final report market page link in next-report-page.
+				</li>
+				<li>
+					Fixed REP balance comparison at the beginning of check-period.
+				</li>
+			</ol>
 			<h3>November 7, 2016</h3>
 			<ol>
 				<li>
