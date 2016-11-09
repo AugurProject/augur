@@ -43,7 +43,7 @@ export default class ReportPanel extends Component {
 						<ReportForm
 							{...market}
 							isReported={market.isReported || market.isReportSubmitted}
-							onClickSubmit={market.onSubmitReport}
+							onClickSubmit={market.report.onSubmitReport}
 						/>
 					</div>
 				}
