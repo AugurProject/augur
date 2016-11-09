@@ -13,26 +13,20 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		it(t.description, () => {
 			const store = mockStore(t.state);
 			const Links = {
-				selectMarketLink: () => {},
-				selectMarketsLink: () => {}
+				selectMarketLink: () => {}
 			};
 			const Market = {
 				selectMarketFromEventID: () => {}
 			};
+			const Selectors = t.selectors;
 			const action = proxyquire('../../../src/modules/reports/actions/next-report-page.js', {
 				'../../link/selectors/links': Links,
-				'../../market/selectors/market': Market
+				'../../market/selectors/market': Market,
+				'../../../selectors': Selectors
 			});
-			sinon.stub(Links, 'selectMarketLink', (market, dispatch) => {
-				return {
-					onClick: () => dispatch({ type: 'UPDATE_URL', market })
-				};
-			});
-			sinon.stub(Links, 'selectMarketsLink', (dispatch) => {
-				return {
-					onClick: () => dispatch({ type: 'UPDATE_URL', href: '/' })
-				};
-			});
+			sinon.stub(Links, 'selectMarketLink', (market, dispatch) => (
+				{ onClick: () => dispatch({ type: 'UPDATE_URL', market }) }
+			));
 			sinon.stub(Market, 'selectMarketFromEventID', (eventID) => {
 				const marketID = Object.keys(t.state.marketsData).find(marketID =>
 					t.state.marketsData[marketID].eventID === eventID);
@@ -40,6 +34,9 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 					id: marketID,
 					...t.state.marketsData[marketID]
 				};
+			});
+			sinon.stub(Selectors.links.marketsLink, 'onClick', () => {
+				store.dispatch({ type: 'UPDATE_URL', href: '/' });
 			});
 			store.dispatch(action.nextReportPage());
 			t.assertions(store.getActions());
@@ -76,6 +73,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 						isCommitted: false,
 						isRevealed: false
 					}
+				}
+			}
+		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
 				}
 			}
 		},
@@ -135,6 +139,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 						isCommitted: false,
 						isRevealed: false
 					}
+				}
+			}
+		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
 				}
 			}
 		},
@@ -202,6 +213,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 				}
 			}
 		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
+				}
+			}
+		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
 				type: 'UPDATE_URL',
@@ -263,6 +281,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 						isCommitted: false,
 						isRevealed: false
 					}
+				}
+			}
+		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
 				}
 			}
 		},
@@ -341,6 +366,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 						isCommitted: false,
 						isRevealed: false
 					}
+				}
+			}
+		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
 				}
 			}
 		},
@@ -424,6 +456,13 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 						isCommitted: false,
 						isRevealed: false
 					}
+				}
+			}
+		},
+		selectors: {
+			links: {
+				marketsLink: {
+					onClick: () => {}
 				}
 			}
 		},
