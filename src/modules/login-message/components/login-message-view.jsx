@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
 			<h3>November 8, 2016</h3>
 			<ol>
 				<li>
+					Fixed button-not-clickable bug in create market workflow.
+				</li>
+				<li>
 					Fixed report panel component and links.  Reporting should now work with the re-skinned market detail page!
 				</li>
 				<li>
