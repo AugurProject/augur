@@ -49,13 +49,16 @@ const MarketBasics = p => (
 			</div>
 		</div>
 
-		<Link
-			{...p.marketLink}
-			onClick={p.marketLink.onClick}
-			className="market-description"
-		>
-			{p.description}
-		</Link>
+		{p.marketLink ?
+			<Link
+				{...p.marketLink}
+				onClick={p.marketLink.onClick}
+				className="market-description"
+			>
+				{p.description}
+			</Link> :
+			<span className="market-description">{p.description}</span>
+		}
 
 		<MarketProperties {...p} />
 	</article>
