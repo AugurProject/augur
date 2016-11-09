@@ -54,7 +54,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
 	}
 
-	o.onSubmit = () => dispatch(submitNewMarket(o));
+	o.onSubmit = () => { dispatch(submitNewMarket(o)); };
 
 	return o;
 };

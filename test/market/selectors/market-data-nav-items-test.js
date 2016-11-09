@@ -9,8 +9,6 @@ import selector from 'modules/market/selectors/market-data-nav-items';
 describe('modules/market/selectors/market-data-nav-items.js', () => {
 	const actual = selector();
 
-	console.log('actual -- ', actual);
-
 	const expected = {
 		[MARKET_DATA_NAV_OUTCOMES]: {
 			label: 'Outcomes'

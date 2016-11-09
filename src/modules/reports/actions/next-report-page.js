@@ -1,4 +1,3 @@
-import { updateURL } from '../../link/actions/update-url';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import { selectMarketLink } from '../../link/selectors/links';
 
@@ -7,18 +6,15 @@ export function nextReportPage() {
 		const { links } = require('../../../selectors');
 		const { branch, reports } = getState();
 		const branchReports = reports[branch.id];
-		if (branchReports) {
-			const nextPendingReportEventID = Reflect.ownKeys(branchReports).find(
-				(eventID) => !branchReports[eventID].reportHash
-			);
-			const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
-			if (nextPendingReportMarket && nextPendingReportMarket.id) {
-				selectMarketLink(nextPendingReportMarket, dispatch).onClick();
-			} else {
-				dispatch(updateURL(links.marketsLink.href));
-			}
-		} else {
-			dispatch(updateURL(links.marketsLink.href));
+		if (!branchReports) return links.marketsLink.onClick();
+		const nextPendingReportEventID = Reflect.ownKeys(branchReports).find(
+			(eventID) => !branchReports[eventID].reportHash
+		);
+		if (!nextPendingReportEventID) return links.marketsLink.onClick();
+		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
+		if (!nextPendingReportMarket || !nextPendingReportMarket.id) {
+			return links.marketsLink.onClick();
 		}
+		selectMarketLink(nextPendingReportMarket, dispatch).onClick();
 	};
 }
