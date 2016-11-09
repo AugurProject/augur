@@ -2,9 +2,9 @@ import { assert } from 'chai';
 
 import assertions from 'augur-ui-react-components/lib/assertions';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from '../../../src/modules/app/constants/views';
 
-import selector from 'modules/market/selectors/market-data-nav-items';
+import selector from '../../../src/modules/market/selectors/market-data-nav-items';
 
 describe('modules/market/selectors/market-data-nav-items.js', () => {
 	const actual = selector();

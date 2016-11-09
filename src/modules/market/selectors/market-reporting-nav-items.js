@@ -1,4 +1,4 @@
-import { MARKET_REPORTING_NAV_REPORT, MARKET_REPORTING_NAV_DETAILS } from 'modules/app/constants/views';
+import { MARKET_REPORTING_NAV_REPORT, MARKET_REPORTING_NAV_DETAILS } from '../../app/constants/views';
 
 export default function () {
 	return {

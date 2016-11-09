@@ -33,10 +33,10 @@ import coreStats from './modules/auth/selectors/core-stats';
 import settings from './modules/auth/selectors/account-settings';
 import chat from './modules/chat/selectors/chat-messages';
 import branch from './modules/app/selectors/branch';
-import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
-import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
-import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
-import marketReportingNavItems from 'modules/market/selectors/market-reporting-nav-items';
+import marketDataNavItems from './modules/market/selectors/market-data-nav-items';
+import marketUserDataNavItems from './modules/market/selectors/market-user-data-nav-items';
+import scalarShareDenomination from './modules/market/selectors/scalar-share-denomination';
+import marketReportingNavItems from './modules/market/selectors/market-reporting-nav-items';
 
 const selectors = {
 	activeView,
