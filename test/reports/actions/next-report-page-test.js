@@ -19,14 +19,10 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 				selectMarketFromEventID: () => {}
 			};
 			const Selectors = t.selectors;
-			const UpdateURL = {
-				updateURL: () => {}
-			};
 			const action = proxyquire('../../../src/modules/reports/actions/next-report-page.js', {
 				'../../link/selectors/links': Links,
 				'../../market/selectors/market': Market,
-				'../../../selectors': Selectors,
-				'../../link/actions/update-url': UpdateURL
+				'../../../selectors': Selectors
 			});
 			sinon.stub(Links, 'selectMarketLink', (market, dispatch) => (
 				{ onClick: () => dispatch({ type: 'UPDATE_URL', market }) }
@@ -39,9 +35,9 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 					...t.state.marketsData[marketID]
 				};
 			});
-			sinon.stub(UpdateURL, 'updateURL', (url) => (
-				{ type: 'UPDATE_URL', href: url }
-			));
+			sinon.stub(Selectors.links.marketsLink, 'onClick', () => {
+				store.dispatch({ type: 'UPDATE_URL', href: '/' });
+			});
 			store.dispatch(action.nextReportPage());
 			t.assertions(store.getActions());
 			store.clearActions();
@@ -83,7 +79,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
@@ -149,7 +145,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
@@ -220,7 +216,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
@@ -291,7 +287,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
@@ -376,7 +372,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
@@ -466,7 +462,7 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
 		selectors: {
 			links: {
 				marketsLink: {
-					href: '/'
+					onClick: () => {}
 				}
 			}
 		},
