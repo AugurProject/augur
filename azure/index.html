@@ -23,16 +23,21 @@
 </head>
 <body>
 	<div id="app"><div id="splash"><span id="splash-text"></span></div></div>
+	<button id="uservoice-button" style="position:fixed;bottom:0;left:5%;font-size:14px;background:#2C2C2C;color:#FFFFFF;padding:10px 20px;border-radius:5px 5px 0 0;font-weight:400;z-index:100;visibility:visible !important;cursor:pointer;margin:0;">Feedback</button>
 	<script type="text/javascript">
-	    window.doorbellOptions = {
-	        appKey: 'oUA3fjlc5PyMSUDPZ0UieGm1Plbse3U9gX2TToTMmyzoyNBCjzIND5qHWcxTBa6S'
-	    };
-	    (function(w, d, t) {
-	        var hasLoaded = false;
-	        function l() { if (hasLoaded) { return; } hasLoaded = true; window.doorbellOptions.windowLoaded = true; var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/4290?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g); }
-	        if (w.attachEvent) { w.attachEvent('onload', l); } else if (w.addEventListener) { w.addEventListener('load', l, false); } else { l(); }
-	        if (d.readyState == 'complete') { l(); }
-	    }(window, document, 'script'));
+	 UserVoice=window.UserVoice||[],function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://widget.uservoice.com/CDL6e6K1fQciGvhFmwEUg.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();
+	 UserVoice.push(['addTrigger', '#uservoice-button', {
+	 	mode: 'smartvote',
+	 	trigger_style: 'tab',
+	 	trigger_position: 'left',
+	 	strings: {
+	 		post_suggestion_title: 'Have an idea for Augur?',
+	 		post_suggestion_body: 'Submit your thoughts to have the community join in!',
+	 		post_suggestion_message_placeholder: 'Functionality improvements, new feature requests, etc.',
+	 		contact_menu_label: 'Want to send the team a message?',
+	 		contact_message_placeholder: 'Need help, have a question, or need to contact the team? Let us know here.'
+	 	}
+	 }]);
 	</script>
 </body>
 </html>
