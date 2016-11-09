@@ -53,43 +53,45 @@ export default class ReportForm extends Component {
 		let outcomeOptions;
 		if (p.type === SCALAR) {
 			outcomeOptions = (
-				<div>
+				<div className="reportable-outcomes">
 					<label
 						key="scalar-outcome"
+						className="outcome-option"
 						htmlFor="outcome-scalar-input"
 					>
 						<input
 							type="text"
-							className="outcome-scalar-input"
+							className="outcome-option-input"
 							name="outcome-scalar-input"
 							value={s.reportedOutcomeID}
 							disabled={s.isReported || s.isIndeterminate}
 							onChange={this.handleOutcomeChange}
 						/>
 					</label>
-					<p>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</p>
 				</div>
 			);
 		} else {
 			outcomeOptions = (
-				(p.reportableOutcomes || []).map(outcome => (
-					<label
-						key={outcome.id}
-						className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}
-						htmlFor="outcome-option-radio"
-					>
-						<input
-							type="radio"
-							className="outcome-option-radio"
-							name="outcome-option-radio"
-							value={outcome.id}
-							checked={s.reportedOutcomeID === outcome.id}
-							disabled={s.isReported || s.isIndeterminate}
-							onChange={this.handleOutcomeChange}
-						/>
-						{outcome.name}
-					</label>
-				))
+				<div className="reportable-outcomes">
+					{(p.reportableOutcomes || []).map(outcome => (
+						<label
+							key={outcome.id}
+							className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}
+							htmlFor="outcome-option-radio"
+						>
+							<input
+								type="radio"
+								className="outcome-option-radio"
+								name="outcome-option-radio"
+								value={outcome.id}
+								checked={s.reportedOutcomeID === outcome.id}
+								disabled={s.isReported || s.isIndeterminate}
+								onChange={this.handleOutcomeChange}
+							/>
+							{outcome.name}
+						</label>
+					))}
+				</div>
 			);
 		}
 
@@ -97,11 +99,17 @@ export default class ReportForm extends Component {
 			<article className={classnames('report-form', { reported: s.isReported })}>
 				<div className="outcome-options">
 					<h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
+					{p.type === SCALAR &&
+						<span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</span>
+					}
 					{outcomeOptions}
 				</div>
 
 				<div className="indeterminate">
 					<h4>Is this question indeterminate?</h4>
+					<span className="indeterminate-message">
+						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
+					</span>
 
 					<Checkbox
 						className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
@@ -109,14 +117,13 @@ export default class ReportForm extends Component {
 						isChecked={!!s.isIndeterminate}
 						onClick={(!s.isReported && (() => this.setState({ isIndeterminate: !s.isIndeterminate }))) || null}
 					/>
-
-					<span className="indeterminate-message">
-						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
-					</span>
 				</div>
 
 				<div className="unethical">
 					<h4>Is this question unethical?</h4>
+					<span className="unethical-message">
+						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
+					</span>
 
 					<Checkbox
 						className={classnames('unethical-checkbox', { disabled: s.isReported })}
@@ -124,29 +131,27 @@ export default class ReportForm extends Component {
 						isChecked={!!s.isUnethical}
 						onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || null}
 					/>
-
-					<span className="unethical-message">
-						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
-					</span>
 				</div>
 
-				{!s.isReported &&
-					<button
-						className="button report"
-						disabled={!s.reportedOutcomeID}
-						onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || null}
-					>
-						Submit Report
-					</button>
-				}
-				{s.isReported &&
-					<button
-						className="button report-again"
-						onClick={() => this.setState({ isReported: false })}
-					>
-						Report Again
-					</button>
-				}
+				<div className="report-actions">
+					{!s.isReported &&
+						<button
+							className="button report"
+							disabled={!s.reportedOutcomeID}
+							onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || null}
+						>
+							Submit Report
+						</button>
+					}
+					{s.isReported &&
+						<button
+							className="button report-again"
+							onClick={() => this.setState({ isReported: false })}
+						>
+							Report Again
+						</button>
+					}
+				</div>
 			</article>
 		);
 	}

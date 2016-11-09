@@ -1,80 +1,37 @@
 .report-form {
-	background: white;
-	color: @color-dark-normal;
-	font-size: 1.4rem;
+	display: flex;
+	flex-direction: column;
+	margin: 1em;
 
-	&.reported {
-		background: @color-danger-normal;
-		color: white;
+	& > div {
+		display: flex;
+		flex-direction: column;
+
+		&:not(:first-child) {
+			margin: 1em 0;
+		}
 	}
 
-	.num-total-reports {
-		border: 4px solid @color-danger-normal;
-		border-radius: 1px;
-		display: inline-block;
-		font-size: 4vmin;
-		line-height: 1em;
-		padding: 1vmin;
-		position: absolute;
-		right: 4vmin;
-		top: 4vmin;
-	}
+	.reportable-outcomes {
+		display: flex;
+		flex-direction: column;
+		margin-top: 1em;
 
-	h4 {
-		font-size: 2rem;
-		font-weight: 700;
-		padding: 0 0 1rem;
-	}
-
-	.outcome-options {
 		.outcome-option {
-			display: table;
-			margin: 1rem;
+			margin: 0.25em;
 
-			> * {
-				margin-right: 0.5em;
-				vertical-align: middle;
+			.outcome-option-radio {
+				margin-right: 1em;
 			}
 		}
 	}
 
-	.indeterminate {
-		margin-top: 3rem;
-
-		.indeterminate-checkbox {
-			display: inline-block;
-			margin: 1rem;
-		}
-
-		.indeterminate-message {
-			display: block;
-			font-size: 0.9em;
-			font-style: italic;
-			margin: 1rem 2.5rem;
-			max-width: 55rem;
-		}
+	.checkbox {
+		margin-top: 1em;
 	}
 
-	.unethical {
-		margin-top: 3rem;
-
-		.unethical-checkbox {
-			display: inline-block;
-			margin: 1rem;
-		}
-
-		.unethical-message {
-			display: block;
-			font-size: 0.9em;
-			font-style: italic;
-			margin: 1rem 2.5rem;
-			max-width: 55rem;
-		}
-	}
-
-	.button {
-		font-size: 1.3rem;
-		font-weight: 700;
-		margin: 2em 0;
+	.report-actions {
+		flex-direction: row;
+		margin-bottom: 0;
 	}
 }

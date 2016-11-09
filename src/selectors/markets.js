@@ -28,8 +28,7 @@ function makeMarkets(numMarkets = 10) {
 	return markets;
 
 	function makeMarket(index) {
-		let id = index.toString();
-		id += 'xyz';
+		const id = index.toString();
 		const d = new Date('2017/12/12');
 		const m = {
 			id,
@@ -37,7 +36,7 @@ function makeMarkets(numMarkets = 10) {
 			resolution: index % 3 === 0 ? 'generic' : 'https://www.augur.net',
 			extraInfo: 'some extraInfo for this market',
 			// type: types[randomInt(0, types.length - 1)],
-			type: types[2],
+			type: types[1],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
 			endDate: makeDate(d),
 			creationTime: makeDate(new Date(14706977556)),
@@ -47,7 +46,9 @@ function makeMarkets(numMarkets = 10) {
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: randomInt(0, 100) > 5,
-			isPendingReport: index > 0 && index % 4 === 0,
+			numPendingReports: 10,
+			// isPendingReport: index > 0 && index % 4 === 0,
+			isPendingReport: true,
 			marketLink: {
 				href: `/?m=${id}`,
 				text: 'Trade',
