@@ -3646,4 +3646,147 @@ describe('modules/trade/actions/process-sell.js', () => {
 			}
 		], `Didn't produce the expected actions and calculations`);
 	});
+
+	it('should gracefully handle transactionID passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell(undefined, 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [], `Dispatched actions when it shouldn't have given a undefined transactionID`);
+
+		store.dispatch(action.processSell(null, 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [], `Dispatched actions when it shouldn't have given a null transactionID`);
+
+	});
+
+	it('should gracefully handle marketID passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', undefined, '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null marketID`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', null, '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null marketID`);
+	});
+
+	it('should gracefully handle outcomeID passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', undefined, '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', null, '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
+	});
+
+	it('should gracefully handle numShares passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', undefined, '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'invalid limit price "0.5" or shares "undefined"' } } ], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', null, '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'invalid limit price "0.5" or shares "null"' } } ], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
+	});
+
+	it('should gracefully handle limitPrice passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', undefined, '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'invalid limit price "undefined" or shares "10"' } } ], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', null, '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'invalid limit price "null" or shares "10"' } } ], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
+	});
+
+	it('should gracefully handle totalEthWithFee passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', undefined, '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', null, '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
+	});
+
+	it('should gracefully handle tradingFeesEth passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', undefined, '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', null, '0.02791268'));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
+	});
+
+	it('should gracefully handle gasFeesRealEth passed as null or undefined', () => {
+		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', undefined));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a undefined gasFeesRealEth`);
+
+		store.clearActions();
+
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', null));
+		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
+    transactionID: 'trans1',
+    data:
+     { status: 'failed',
+       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null gasFeesRealEth`);
+	});
 });

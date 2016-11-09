@@ -14,10 +14,18 @@ import { addShortSellTransaction } from '../../transactions/actions/add-short-se
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
+		if (!transactionID) return console.error('processSell has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
+			}));
+		}
+		if (!marketID || !outcomeID || !totalEthWithFee || !tradingFeesEth || !gasFeesRealEth) {
+			console.error('processSell has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: 'There was an issue processesing the Sell trade.'
 			}));
 		}
 		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
