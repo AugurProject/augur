@@ -56,6 +56,12 @@ const LoginMessagePage = p => (
 			<h3>November 8, 2016</h3>
 			<ol>
 				<li>
+					Fixed report panel component and links.  Reporting should now work with the re-skinned market detail page!
+				</li>
+				<li>
+					The Feedback tab now sends user feedback to UserVoice, instead of Doorbell.io.
+				</li>
+				<li>
 					Added penalizationCatchup to checkPeriod callback sequence for users who are multiple reporting cycles behind.
 				</li>
 				<li>
