@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import MarketsView from 'modules/markets/components/markets-view';
 import MarketView from 'modules/market/components/market-view';
@@ -13,122 +13,128 @@ import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, L
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
 import getValue from 'utils/get-value';
+import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
-const Routes = (p) => {
-	let viewProps = null;
+export default class Routes extends Component {
+	constructor(props) {
+		super(props);
 
-	switch (p.activeView) {
-		case REGISTER:
-		case LOGIN:
-		case IMPORT:
-		case LOGOUT: {
-			viewProps = {
-				authForm: p.authForm
-			};
+		this.state = {
+			viewProps: null,
+			viewComponent: null,
+			logged: getValue(this.props, 'loginAccount.address')
+		};
 
-			return (
-				<AuthView {...viewProps} />
-			);
-		}
-		case ACCOUNT: {
-			viewProps = {
-				loginMessageLink: p.links.loginMessageLink,
-				account: p.loginAccount,
-				settings: p.settings,
-				onUpdateSettings: p.loginAccount.onUpdateAccountSettings,
-				onChangePass: p.loginAccount.onChangePass,
-				authLink: (p.links && p.links.authLink) || null,
-				onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
-			};
-
-			return (
-				<AccountView {...viewProps} />
-			);
-		}
-		case TRANSACTIONS: {
-			viewProps = {
-				transactions: p.transactions,
-				transactionsTotals: p.transactionsTotals
-			};
-
-			return (
-				<TransactionsView {...viewProps} />
-			);
-		}
-		case MY_POSITIONS:
-		case MY_MARKETS:
-		case MY_REPORTS: {
-			viewProps = {
-				activeView: p.activeView,
-				settings: p.settings,
-				branch: p.branch,
-				...p.portfolio
-			};
-
-			return (
-				<PortfolioView {...viewProps} />
-			);
-		}
-		case LOGIN_MESSAGE: {
-			viewProps = {
-				marketsLink: (p.links && p.links.marketsLink) || null
-			};
-
-			return (
-				<LoginMessageView {...viewProps} />
-			);
-		}
-		case MAKE: {
-			viewProps = {
-				createMarketForm: p.createMarketForm
-			};
-
-			return (
-				<CreateMarketView {...viewProps} />
-			);
-		}
-		case M: {
-			const logged = getValue(p, 'loginAccount.address');
-
-			viewProps = {
-				logged,
-				market: p.market,
-				settings: p.settings,
-				marketDataNavItems: p.marketDataNavItems,
-				marketUserDataNavItems: p.marketUserDataNavItems,
-				marketDataAge: p.marketDataAge,
-				selectedOutcome: p.selectedOutcome,
-				orderCancellation: p.orderCancellation,
-				marketDataUpdater: p.marketDataUpdater,
-				numPendingReports: p.marketsTotals.numPendingReports,
-				isTradeCommitLocked: p.tradeCommitLock.isLocked,
-				scalarShareDenomination: p.scalarShareDenomination,
-				marketReportingNavItems: p.marketReportingNavItems
-			};
-
-			return (
-				<MarketView {...viewProps} />
-			);
-		}
-		default: {
-			viewProps = {
-				sideBarAllowed: true,
-				loginAccount: p.loginAccount,
-				createMarketLink: (p.links || {}).createMarketLink,
-				markets: p.markets,
-				marketsHeader: p.marketsHeader,
-				favoriteMarkets: p.favoriteMarkets,
-				pagination: p.pagination,
-				filterSort: p.filterSort,
-				keywords: p.keywords,
-				branch: p.branch
-			};
-
-			return (
-				<MarketsView {...viewProps} />
-			);
-		}
+		this.shouldComponentUpdate = shouldComponentUpdateOnStateChangeOnly;
 	}
-};
 
-export default Routes;
+	componentWillReceiveProps(nextProps) {
+		let viewProps;
+		let viewComponent;
+
+		switch (nextProps.activeView) {
+			case REGISTER:
+			case LOGIN:
+			case IMPORT:
+			case LOGOUT:
+				viewProps = {
+					authForm: nextProps.authForm
+				};
+				viewComponent = <AuthView {...viewProps} />;
+				break;
+			case ACCOUNT:
+				viewProps = {
+					loginMessageLink: nextProps.links.loginMessageLink,
+					account: nextProps.loginAccount,
+					settings: nextProps.settings,
+					onUpdateSettings: nextProps.loginAccount.onUpdateAccountSettings,
+					onChangePass: nextProps.loginAccount.onChangePass,
+					authLink: (nextProps.links && nextProps.links.authLink) || null,
+					onAirbitzManageAccount: nextProps.loginAccount.onAirbitzManageAccount
+				};
+				viewComponent = <AccountView {...viewProps} />;
+				break;
+			case TRANSACTIONS:
+				viewProps = {
+					transactions: nextProps.transactions,
+					transactionsTotals: nextProps.transactionsTotals
+				};
+				viewComponent =	<TransactionsView {...viewProps} />;
+				break;
+			case MY_POSITIONS:
+			case MY_MARKETS:
+			case MY_REPORTS: {
+				viewProps = {
+					activeView: nextProps.activeView,
+					settings: nextProps.settings,
+					branch: nextProps.branch,
+					...nextProps.portfolio
+				};
+				viewComponent = <PortfolioView {...viewProps} />;
+				break;
+			}
+			case LOGIN_MESSAGE: {
+				viewProps = {
+					marketsLink: (nextProps.links && nextProps.links.marketsLink) || null
+				};
+				viewComponent = <LoginMessageView {...viewProps} />;
+				break;
+			}
+			case MAKE: {
+				viewProps = {
+					createMarketForm: nextProps.createMarketForm
+				};
+				viewComponent = <CreateMarketView {...viewProps} />;
+				break;
+			}
+			case M: {
+				viewProps = {
+					logged: this.state.logged,
+					market: nextProps.market,
+					settings: nextProps.settings,
+					marketDataNavItems: nextProps.marketDataNavItems,
+					marketUserDataNavItems: nextProps.marketUserDataNavItems,
+					marketDataAge: nextProps.marketDataAge,
+					selectedOutcome: nextProps.selectedOutcome,
+					orderCancellation: nextProps.orderCancellation,
+					marketDataUpdater: nextProps.marketDataUpdater,
+					numPendingReports: nextProps.marketsTotals.numPendingReports,
+					isTradeCommitLocked: nextProps.tradeCommitLock.isLocked,
+					scalarShareDenomination: nextProps.scalarShareDenomination,
+					marketReportingNavItems: nextProps.marketReportingNavItems
+				};
+				viewComponent = <MarketView {...viewProps} />;
+				break;
+			}
+			default: {
+				viewProps = {
+					isSideBarAllowed: true,
+					loginAccount: nextProps.loginAccount,
+					createMarketLink: (nextProps.links || {}).createMarketLink,
+					markets: nextProps.markets,
+					marketsHeader: nextProps.marketsHeader,
+					favoriteMarkets: nextProps.favoriteMarkets,
+					pagination: nextProps.pagination,
+					filterSort: nextProps.filterSort,
+					keywords: nextProps.keywords,
+					branch: nextProps.branch
+				};
+				viewComponent = <MarketsView {...viewProps} />;
+			}
+		}
+
+		if (viewProps.isSideBarAllowed) {
+			nextProps.setSidebarAllowed(true);
+		} else {
+			nextProps.setSidebarAllowed(false);
+		}
+
+		this.setState({ viewProps, viewComponent });
+	}
+
+	render() {
+		const s = this.state;
+
+		return <div>{s.viewComponent}</div>;
+	}
+}

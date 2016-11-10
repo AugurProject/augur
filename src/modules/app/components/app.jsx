@@ -24,38 +24,29 @@ class AppComponent extends Component {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,
 			isChatCollapsed: true,
-			doScrollTop: false
+			doScrollTop: false,
+			currentRoute: null
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-		this.shouldDisplaySideBar = this.shouldDisplaySideBar.bind(this);
 		this.toggleChat = this.toggleChat.bind(this);
-	}
-
-	componentDidMount() {
-		this.shouldDisplaySideBar();
+		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
 	}
 
 	componentDidUpdate() {
 		handleScrollTop(this.props.url);
-		this.shouldDisplaySideBar();
 	}
 
-	shouldDisplaySideBar() {
-		const currentRoute = Routes(this.props); // eslint-disable-line new-cap
-
-		if (currentRoute.props.sideBarAllowed) {
-			this.setState({ isSideBarAllowed: true });
-		} else {
-			this.setState({ isSideBarAllowed: false });
-		}
+	// Sidebar display related methods
+	setSidebarAllowed(isSideBarAllowed) {
+		this.setState({ isSideBarAllowed });
 	}
-
 	toggleSideBar() {
 		this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
 	}
 
+	// chat display
 	toggleChat() {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
@@ -121,7 +112,10 @@ class AppComponent extends Component {
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>
-									<Routes {...p} />
+									<Routes
+										{...p}
+										setSidebarAllowed={this.setSidebarAllowed}
+									/>
 								</div>
 							</div>
 						</div>
