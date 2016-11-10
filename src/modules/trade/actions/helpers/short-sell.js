@@ -5,7 +5,7 @@ import { SUCCESS } from '../../../transactions/constants/statuses';
 
 export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
-		remainingShares: abi.bignum(numShares),
+		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
 		filledEth: ZERO,
 		tradingFees: ZERO,
@@ -13,7 +13,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 	};
 	const matchingIDs = getTradeIDs();
 	console.log('matching trade IDs:', matchingIDs);
-	if (!matchingIDs.length) return cb(null, res);
+	if (!matchingIDs.length || res.remainingShares === ZERO) return cb(null, res);
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
 		augur.short_sell({
 			max_amount: res.remainingShares.toFixed(),
