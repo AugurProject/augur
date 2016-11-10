@@ -129,7 +129,8 @@ export default class OutcomeTrade extends Component {
 }
 
 OutcomeTrade.propTypes = {
-	selectedShareDenomination: PropTypes.string
+	selectedShareDenomination: PropTypes.string,
+	updateSelectedTradeSide: PropTypes.function
 };
 
 function denominateShares(shares, fromDenomination, toDenomination) {
