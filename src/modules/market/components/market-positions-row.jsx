@@ -14,7 +14,7 @@ const MarketPositionsRow = (p) => {
 	const outcomeName = getValue(p, 'outcome.name');
 	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
 	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
-	const lastPrice = getValue(p, 'outcome.position.lastPrice.formatted');
+	const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
 	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
 	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
 	const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
