@@ -9,9 +9,7 @@ export function collectFees() {
 				branch: branch.id,
 				sender: loginAccount.address,
 				periodLength: branch.periodLength,
-				onSent: (res) => {
-					console.log('collectFees sent:', res);
-				},
+				onSent: () => {},
 				onSuccess: (res) => {
 					console.log('collectFees success:', res.callReturn);
 					dispatch(updateAssets());
