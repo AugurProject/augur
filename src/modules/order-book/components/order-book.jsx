@@ -10,7 +10,7 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 // Bids + Asks are rendered into individual row components -- flexbox is utilized for side-by-side layout
 const OrderBook = p => (
 	<article className="order-book">
-		{!p.marketType === SCALAR ?
+		{p.marketType !== SCALAR ?
 			<h3>Order Book <EmDash /> {p.outcome.name}</h3> :
 			<h3>Order Book</h3>
 		}

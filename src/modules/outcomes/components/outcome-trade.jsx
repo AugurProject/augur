@@ -70,7 +70,7 @@ export default class OutcomeTrade extends Component {
 
 		return (
 			<article className="outcome-trade">
-				{!p.marketType === SCALAR ?
+				{p.marketType !== SCALAR ?
 					<h3>Create Order <EmDash /> {name && name}</h3> :
 					<h3>Create Order</h3>
 				}
