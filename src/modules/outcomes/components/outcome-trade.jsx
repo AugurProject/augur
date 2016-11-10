@@ -93,6 +93,7 @@ export default class OutcomeTrade extends Component {
 								value={s.sharesDenominated}
 								min="0"
 								max={s.maxSharesDenominated}
+								step="0.1"
 								onChange={(value) => { this.handleSharesInput(value); }}
 							/>
 							<span>@</span>
@@ -100,6 +101,8 @@ export default class OutcomeTrade extends Component {
 								placeholder="Price"
 								type="number"
 								value={trade.limitPrice}
+								step="0.1"
+								max={p.maxValue}
 								onChange={(value) => { trade.updateTradeOrder(null, value, trade.side); }}
 							/>
 						</div>
