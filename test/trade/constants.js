@@ -2,6 +2,8 @@ import { assert } from 'chai';
 export { BINARY, SCALAR, CATEGORICAL } from '../../src/modules/markets/constants/market-types';
 export { BUY, SELL } from '../../src/modules/trade/constants/types';
 export { BID, ASK } from '../../src/modules/bids-asks/constants/bids-asks-types';
+import { formatPercent, formatShares, formatEther, formatRealEther } from '../../src/utils/format-number';
+import { abi } from '../../src/services/augurjs';
 
 export const tradeTestState = {
 	loginAccount: {
@@ -202,6 +204,379 @@ export const tradeTestState = {
 			}
 		}
 	},
+};
+
+export const tradeConstOrderBooks = {
+	testBinaryMarketID: {
+		buy: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '0.45',
+				numShares: '10',
+				outcome: '2',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '0.45',
+				numShares: '5',
+				outcome: '2',
+				owner: 'owner2'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '0.45',
+				numShares: '3',
+				outcome: '2',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '0.44',
+				numShares: '10',
+				outcome: '2',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '0.46',
+				numShares: '15',
+				outcome: '2',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '0.43',
+				numShares: '5',
+				outcome: '2',
+				owner: 'owner6'
+			}
+		},
+		sell: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '0.4',
+				numShares: '10',
+				outcome: '2',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '0.4',
+				numShares: '5',
+				outcome: '2',
+				owner: 'owner2'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '0.4',
+				numShares: '10',
+				outcome: '2',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '0.39',
+				numShares: '3',
+				outcome: '2',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '0.41',
+				numShares: '15',
+				outcome: '2',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '0.415',
+				numShares: '20',
+				outcome: '2',
+				owner: 'owner6'
+			}
+		}
+	},
+	testCategoricalMarketID: {
+		buy: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '0.45',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '0.45',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '0.45',
+				numShares: '3',
+				outcome: '1',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '0.44',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '0.46',
+				numShares: '15',
+				outcome: '1',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '0.43',
+				numShares: '5',
+				outcome: '1',
+				owner: 'owner6'
+			}
+		},
+		sell: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '0.4',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '0.4',
+				numShares: '5',
+				outcome: '1',
+				owner: 'owner2'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '0.4',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '0.39',
+				numShares: '3',
+				outcome: '1',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '0.41',
+				numShares: '15',
+				outcome: '1',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '0.415',
+				numShares: '20',
+				outcome: '1',
+				owner: 'owner6'
+			}
+		}
+	},
+	testScalarMarketID: {
+		buy: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '45',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '45',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '45',
+				numShares: '3',
+				outcome: '1',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '44',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '46',
+				numShares: '15',
+				outcome: '1',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '43',
+				numShares: '5',
+				outcome: '1',
+				owner: 'owner6'
+			}
+		},
+		sell: {
+			'orderID1': {
+				id: 'orderID1',
+				price: '40',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner1'
+			},
+			'orderID2': {
+				id: 'orderID2',
+				price: '40',
+				numShares: '5',
+				outcome: '1',
+				owner: 'owner2'
+			},
+			'orderID3': {
+				id: 'orderID3',
+				price: '40',
+				numShares: '10',
+				outcome: '1',
+				owner: 'owner3'
+			},
+			'orderID4': {
+				id: 'orderID4',
+				price: '39',
+				numShares: '3',
+				outcome: '1',
+				owner: 'owner4'
+			},
+			'orderID5': {
+				id: 'orderID5',
+				price: '41',
+				numShares: '15',
+				outcome: '1',
+				owner: 'owner5'
+			},
+			'orderID6': {
+				id: 'orderID6',
+				price: '415',
+				numShares: '20',
+				outcome: '1',
+				owner: 'owner6'
+			}
+		}
+	}
+};
+
+export const stubAddBidTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
+	const transaction = {
+		type: 'bid',
+		data: {
+			marketID,
+			outcomeID,
+			marketType,
+			marketDescription,
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
+	};
+	return transaction;
+};
+
+export const stubAddTradeTransaction = (tradeType, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
+	const transaction = {
+		type: tradeType,
+		data: {
+			marketID,
+			outcomeID,
+			marketType,
+			marketDescription,
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
+	};
+	return transaction;
+};
+
+export const stubAddAskTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
+	const transaction = {
+		type: 'ask',
+		data: {
+			marketID,
+			outcomeID,
+			marketType,
+			marketDescription,
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
+	};
+	return transaction;
+};
+
+export const stubAddShortAskTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
+	const transaction = {
+		type: 'short_ask',
+		data: {
+			marketID,
+			outcomeID,
+			marketType,
+			marketDescription,
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
+	};
+	return transaction;
+};
+
+export const stubAddShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
+	const transaction = {
+		type: 'short_sell',
+		data: {
+			marketID,
+			outcomeID,
+			marketType,
+			marketDescription,
+			outcomeName
+		},
+		numShares: formatShares(numShares),
+		noFeePrice: formatEther(limitPrice),
+		avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
+		tradingFees: formatEther(tradingFeesEth),
+		feePercent: formatPercent(feePercent),
+		gasFees: formatRealEther(gasFeesRealEth)
+	};
+	return transaction;
+};
+
+export const stubUpdateExistingTransaction = (transactionID, data) => {
+	return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
 };
 
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {

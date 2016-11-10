@@ -2,105 +2,14 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubUpdateExistingTransaction } from '../constants';
 import { augur } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-short-ask.js', () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
-	testState.orderBooks = {
-		'testBinaryMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testCategoricalMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testScalarMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		}
-	};
+	testState.orderBooks = tradeConstOrderBooks;
 	const store = mockStore(testState);
 	const mockAugurJS = { augur: {...augur} };
 	sinon.stub(mockAugurJS.augur, 'shortAsk', (arg) => {
@@ -114,9 +23,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 		onFailed({ error: 0, message: 'error message!' });
 	});
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
-	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
-	});
+	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
 	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);

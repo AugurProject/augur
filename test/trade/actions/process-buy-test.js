@@ -2,106 +2,14 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState } from '../constants';
-import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../src/utils/format-number';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
-	testState.orderBooks = {
-		'testBinaryMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testCategoricalMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testScalarMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		}
-	};
+	testState.orderBooks = tradeConstOrderBooks;
 	const store = mockStore(testState);
 	const mockTrade = { trade: () => {} };
 	sinon.stub(mockTrade, 'trade', (...args) => {
@@ -166,29 +74,11 @@ describe('modules/trade/actions/process-buy.js', () => {
 		}
 	});
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
-	sinon.stub(mockAddBidTransaction, 'addBidTransaction', (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-		const transaction = {
-			type: 'bid',
-			data: {
-				marketID,
-				outcomeID,
-				marketType,
-				marketDescription,
-				outcomeName
-			},
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		};
-		return transaction;
-	});
+	sinon.stub(mockAddBidTransaction, 'addBidTransaction', stubAddBidTransaction);
+
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
-	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
-	});
+	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
+
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
 	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
 		args[1]();
@@ -3444,61 +3334,46 @@ describe('modules/trade/actions/process-buy.js', () => {
 		assert.deepEqual(store.getActions(), [], `Dispatched an action when no action should have been dispatched.`);
 	});
 
+	const expectedSimpleFail = [{
+		type: 'UPDATE_EXISTING_TRANSACTION',
+		transactionID: 'trans1',
+		data: {
+			status: 'failed',
+			message: 'There was an issue processesing the buy trade.'
+		}
+	}];
+
 	it('should handle a marketID of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', undefined, '2', '10', '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a undefined marketID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a undefined marketID`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', null, '2', '10', '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a null marketID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a null marketID`);
 	});
 
 	it('should handle a outcomeID of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', undefined, '10', '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a undefined outcomeID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a undefined outcomeID`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', null, '10', '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a null outcomeID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a null outcomeID`);
 	});
 
 	it('should handle a numShares of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', undefined, '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a undefined numShares`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a undefined numShares`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', null, '0.5', '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a null numShares`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a null numShares`);
 	});
 
 	it('should handle a limitPrice of undefined or null', () => {
@@ -3542,38 +3417,22 @@ describe('modules/trade/actions/process-buy.js', () => {
 	it('should handle a tradingFeesEth of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', '5.01', undefined, '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a undefined tradingFeesEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a undefined tradingFeesEth`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', '5.01', null, '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a null tradingFeesEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a null tradingFeesEth`);
 	});
 
 	it('should handle a gasFeesRealEth of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', '5.01', '0.01', undefined));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a undefined gasFeesRealEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a undefined gasFeesRealEth`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', '5.01', '0.01', null));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the buy trade.' } } ], `Didn't fail out as expected given a null gasFeesRealEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Didn't fail out as expected given a null gasFeesRealEth`);
 	});
 });

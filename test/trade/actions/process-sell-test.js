@@ -2,106 +2,14 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState } from '../constants';
-import { formatPercent, formatShares, formatEther, formatRealEther } from '../../../src/utils/format-number';
+import { tradeTestState, tradeConstOrderBooks, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubUpdateExistingTransaction } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-sell.js', () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
-	testState.orderBooks = {
-		'testBinaryMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '2',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '2',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '2',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '2',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testCategoricalMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '0.45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '0.4',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		},
-		'testScalarMarketID': {
-			buy: {
-				'order1': {
-					id: 1,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order2': {
-					id: 2,
-					price: '45',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			},
-			sell: {
-				'order3': {
-					id: 3,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				},
-				'order4': {
-					id: 4,
-					price: '40',
-					outcome: '1',
-					owner: 'owner1'
-				}
-			}
-		}
-	};
+	testState.orderBooks = tradeConstOrderBooks;
 	const store = mockStore(testState);
 	const mockTrade = { trade: () => {} };
 	sinon.stub(mockTrade, 'trade', (...args) => {
@@ -440,74 +348,22 @@ describe('modules/trade/actions/process-sell.js', () => {
 		}
 	});
 	const mockAddAskTransaction = { addAskTransaction: () => {} };
-	sinon.stub(mockAddAskTransaction, 'addAskTransaction', (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-		const transaction = {
-			type: 'ask',
-			data: {
-				marketID,
-				outcomeID,
-				marketType,
-				marketDescription,
-				outcomeName
-			},
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		};
-		return transaction;
-	});
+	sinon.stub(mockAddAskTransaction, 'addAskTransaction', stubAddAskTransaction);
+
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
-	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
-	});
+	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
+
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
 	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
 		args[1]();
 		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
 	});
 	const mockAddShortAskTransaction = { addShortAskTransaction: () => {} };
-	sinon.stub(mockAddShortAskTransaction, 'addShortAskTransaction', (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-		const transaction = {
-			type: 'short_ask',
-			data: {
-				marketID,
-				outcomeID,
-				marketType,
-				marketDescription,
-				outcomeName
-			},
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		};
-		return transaction;
-	});
+	sinon.stub(mockAddShortAskTransaction, 'addShortAskTransaction', stubAddShortAskTransaction);
+
 	const mockAddShortSellTransaction = { addShortSellTransaction: () => {} };
-	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-		const transaction = {
-			type: 'short_sell',
-			data: {
-				marketID,
-				outcomeID,
-				marketType,
-				marketDescription,
-				outcomeName
-			},
-			numShares: formatShares(numShares),
-			noFeePrice: formatEther(limitPrice),
-			avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-			tradingFees: formatEther(tradingFeesEth),
-			feePercent: formatPercent(feePercent),
-			gasFees: formatRealEther(gasFeesRealEth)
-		};
-		return transaction;
-	});
+	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', stubAddShortSellTransaction);
+
 	const mockAugur = { augur: { getParticipantSharesPurchased: () => {} } };
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
 		console.log('getPartSharesPur cc:', mockAugur.augur.getParticipantSharesPurchased.callCount);

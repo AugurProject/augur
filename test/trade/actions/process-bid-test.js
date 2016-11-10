@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState } from '../constants';
+import { tradeTestState, stubUpdateExistingTransaction } from '../constants';
 
 describe('modules/trade/actions/process-bid.js', () => {
 	proxyquire.noPreserveCache();
@@ -26,9 +26,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		return { type: 'LOAD_BIDS_ASKS' };
 	})
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
-	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', (transactionID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
-	});
+	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
 	const action = proxyquire('../../../src/modules/trade/actions/process-bid.js', {
 		'../../../services/augurjs': mockAugur,
