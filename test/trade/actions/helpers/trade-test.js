@@ -465,7 +465,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
 		});
 
-		it('shouldn\'t call augur.trade on a buy trade when no tradeIDs are returned', () => {
+		it('should not call augur.trade on a buy trade when no tradeIDs are returned', () => {
 			helper.trade('testBinaryMarketID', '2', '0', '10.01', 'taker1', () => [], store.dispatch, mockCBStatus, mockCB);
 			assert(mockCB.calledWithExactly(null, {
 			  remainingEth: abi.bignum("10.01"),
@@ -481,7 +481,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
 		});
 
-		it('should not call trade when given a negative raminingEth input', () => {
+		it('should not call trade when given a negative remainingEth input', () => {
 			helper.trade('testBinaryMarketID', '2', '0', '-10.01', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
 
 			assert(mockCB.calledWithExactly(null, {

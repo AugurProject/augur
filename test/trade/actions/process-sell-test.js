@@ -106,10 +106,13 @@ describe('modules/trade/actions/process-sell.js', () => {
 	const mockTrade = { trade: () => {} };
 	sinon.stub(mockTrade, 'trade', (...args) => {
 		args[5]();
+		console.log('trade cc:', mockTrade.trade.callCount);
 		switch (args[0]) {
 		case 'testBinaryMarketID':
 			switch (mockTrade.trade.callCount) {
 				case 1:
+				case 2:
+				case 3:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -129,7 +132,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('0')
 					});
 					break;
-				case 2:
+				case 4:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -149,7 +152,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('5')
 					});
 					break;
-				case 3:
+				case 5:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -169,7 +172,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('15')
 					});
 					break;
-				case 4:
+				case 6:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -189,7 +192,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('20')
 					});
 					break;
-				case 5:
+				case 7:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -217,6 +220,8 @@ describe('modules/trade/actions/process-sell.js', () => {
 		case 'testCategoricalMarketID':
 			switch (mockTrade.trade.callCount) {
 			case 1:
+			case 2:
+			case 3:
 				args[7]({
 					status: 'success',
 					hash: 'testhash',
@@ -236,7 +241,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					gasFees: abi.bignum('0.02791268')
 				});
 				break;
-			case 2:
+			case 4:
 				args[7]({
 					status: 'success',
 					hash: 'testhash',
@@ -256,7 +261,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					remainingShares: abi.bignum('5')
 				});
 				break;
-			case 3:
+			case 5:
 				args[7]({
 					status: 'success',
 					hash: 'testhash',
@@ -276,7 +281,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					remainingShares: abi.bignum('15')
 				});
 				break;
-			case 4:
+			case 6:
 				args[7]({
 					status: 'success',
 					hash: 'testhash',
@@ -296,7 +301,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					remainingShares: abi.bignum('20')
 				});
 				break;
-			case 5:
+			case 7:
 				args[7]({
 					status: 'success',
 					hash: 'testhash',
@@ -324,6 +329,8 @@ describe('modules/trade/actions/process-sell.js', () => {
 		case 'testScalarMarketID':
 			switch (mockTrade.trade.callCount) {
 				case 1:
+				case 2:
+				case 3:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -343,7 +350,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						gasFees: abi.bignum('0.02791268')
 					});
 					break;
-				case 2:
+				case 4:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -363,7 +370,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('5')
 					});
 					break;
-				case 3:
+				case 5:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -383,7 +390,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						remainingShares: abi.bignum('15'),
 					});
 					break;
-				case 4:
+				case 6:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -403,7 +410,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 						gasFees: abi.bignum('0.02791268')
 					});
 					break;
-				case 5:
+				case 7:
 					args[7]({
 						status: 'success',
 						hash: 'testhash',
@@ -503,6 +510,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 	});
 	const mockAugur = { augur: { getParticipantSharesPurchased: () => {} } };
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
+		console.log('getPartSharesPur cc:', mockAugur.augur.getParticipantSharesPurchased.callCount);
 		switch (mockAugur.augur.getParticipantSharesPurchased.callCount) {
 			case 1:
 				cb('15');
@@ -540,147 +548,159 @@ describe('modules/trade/actions/process-sell.js', () => {
 	afterEach(() => {
 		store.clearActions();
 		// reset the trade/getParticipantSharesPurchased functions to prep for the next type of market tests...
-		if (mockTrade.trade.callCount === 5)
+		if (mockTrade.trade.callCount === 7)
 			mockTrade.trade.reset();
 		if (mockAugur.augur.getParticipantSharesPurchased.callCount === 4)
 			mockAugur.augur.getParticipantSharesPurchased.reset();
 	});
 
-	it('should process a sell order for a binary market where all shares are sold', () => {
-		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans1',
-				data: {
-					status: 'starting...',
-					message: 'selling 10 shares for -1.0010 ETH (estimated)/share',
-					totalReturn: {
-						value: -10.01,
-						formattedValue: -10.01,
-						formatted: '-10.0100',
-						roundedValue: -10.01,
-						rounded: '-10.0100',
-						minimized: '-10.01',
-						denomination: ' ETH (estimated)',
-						full: '-10.0100 ETH (estimated)'
-					},
-					tradingFees: {
-						value: 0.01,
-						formattedValue: 0.01,
-						formatted: '0.0100',
-						roundedValue: 0.01,
-						rounded: '0.0100',
-						minimized: '0.01',
-						denomination: ' ETH (estimated)',
-						full: '0.0100 ETH (estimated)'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH (estimated)',
-						full: '0.0279 real ETH (estimated)'
-					}
+	const binaryExpectedOutput1 = [
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'starting...',
+				message: 'selling 10 shares for -1.0010 ETH (estimated)/share',
+				totalReturn: {
+					value: -10.01,
+					formattedValue: -10.01,
+					formatted: '-10.0100',
+					roundedValue: -10.01,
+					rounded: '-10.0100',
+					minimized: '-10.01',
+					denomination: ' ETH (estimated)',
+					full: '-10.0100 ETH (estimated)'
+				},
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH (estimated)',
+					full: '0.0100 ETH (estimated)'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH (estimated)',
+					full: '0.0279 real ETH (estimated)'
 				}
-			}, {
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans1',
-				data: {
-					status: 'success sell',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: {
-						value: 0.01,
-						formattedValue: 0.01,
-						formatted: '0.0100',
-						roundedValue: 0.01,
-						rounded: '0.0100',
-						minimized: '0.01',
-						denomination: ' ETH',
-						full: '0.0100 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					},
-					message: 'sold 10 of 10 shares for 1.0000 ETH/share',
-					totalReturn: {
-						value: 10,
-						formattedValue: 10,
-						formatted: '10.0000',
-						roundedValue: 10,
-						rounded: '10.0000',
-						minimized: '10',
-						denomination: ' ETH',
-						full: '10.0000 ETH'
-					}
-				}
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans1',
-				data: { status: 'failed', message: 'this error is a test.' }
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans1',
-				data: {
-					status: 'updating position',
-					message: 'sold 10 shares for 1.0000 ETH/share',
-					totalReturn: {
-						value: 10,
-						formattedValue: 10,
-						formatted: '10.0000',
-						roundedValue: 10,
-						rounded: '10.0000',
-						minimized: '10',
-						denomination: ' ETH',
-						full: '10.0000 ETH'
-					},
-					tradingFees: {
-						value: 0.01,
-						formattedValue: 0.01,
-						formatted: '0.0100',
-						roundedValue: 0.01,
-						rounded: '0.0100',
-						minimized: '0.01',
-						denomination: ' ETH',
-						full: '0.0100 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					}
-				}
-			}, {
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans1',
-				data: { status: 'success' }
-			},
- 			{ type: 'LOAD_BIDS_ASKS' },
-			{
-				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: 'testBinaryMarketID'
 			}
-		], `Didn't produce the expected actions and perform the expected calculations`);
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'success sell',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH',
+					full: '0.0100 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				},
+				message: 'sold 10 of 10 shares for 1.0000 ETH/share',
+				totalReturn: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.0000',
+					roundedValue: 10,
+					rounded: '10.0000',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.0000 ETH'
+				}
+			}
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: { status: 'failed', message: 'this error is a test.' }
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'updating position',
+				message: 'sold 10 shares for 1.0000 ETH/share',
+				totalReturn: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.0000',
+					roundedValue: 10,
+					rounded: '10.0000',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.0000 ETH'
+				},
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH',
+					full: '0.0100 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: { status: 'success' }
+		},
+		{ type: 'LOAD_BIDS_ASKS' },
+		{
+			type: 'LOAD_ACCOUNT_TRADES',
+			marketID: 'testBinaryMarketID'
+		}
+	];
+
+	it('should process a sell order for a binary market where all shares are sold with String inputs', () => {
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
+		assert.deepEqual(store.getActions(), binaryExpectedOutput1, `Didn't produce the expected actions and perform the expected calculations`);
+	});
+
+	it('should handle a sell order for a binary market where all shares are sold with JS Number inputs', () => {
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', 10, 0.5, -10.01, 0.01, 0.02791268));
+		assert.deepEqual(store.getActions(), binaryExpectedOutput1, `Didn't produce the expected actions and perform the expected calculations`);
+	});
+
+	it('should handle a sell order for a binary market where all shares are sold with BigNumber inputs', () => {
+		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', abi.bignum('10'), abi.bignum('0.5'), abi.bignum('-10.01'), abi.bignum('0.01'), abi.bignum('0.02791268')));
+		assert.deepEqual(store.getActions(), binaryExpectedOutput1, `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
 	it('should process a sell order for a binary market where only some shares are filled, ask for the rest', () => {
@@ -1585,141 +1605,153 @@ describe('modules/trade/actions/process-sell.js', () => {
 		], `Didn't produce the expected actions and perform the expected calculations`);
 	});
 
+	const categoricalExpectedOutput1 = [
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+			data: {
+				status: 'starting...',
+				message: 'selling 10 shares for -1.0005 ETH (estimated)/share',
+				totalReturn: {
+					value: -10.005,
+					formattedValue: -10.005,
+					formatted: '-10.0050',
+					roundedValue: -10.005,
+					rounded: '-10.0050',
+					minimized: '-10.005',
+					denomination: ' ETH (estimated)',
+					full: '-10.0050 ETH (estimated)'
+				},
+				tradingFees: {
+					value: 0.004999999999999995,
+					formattedValue: 0.005,
+					formatted: '0.0050',
+					roundedValue: 0.005,
+					rounded: '0.0050',
+					minimized: '0.005',
+					denomination: ' ETH (estimated)',
+					full: '0.0050 ETH (estimated)'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH (estimated)',
+					full: '0.0279 real ETH (estimated)'
+				}
+			}
+		},{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+			data: {
+				status: 'success sell',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: {
+					value: 0.004999999999999995,
+					formattedValue: 0.005,
+					formatted: '0.0050',
+					roundedValue: 0.005,
+					rounded: '0.0050',
+					minimized: '0.005',
+					denomination: ' ETH',
+					full: '0.0050 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				},
+				message: 'sold 10 of 10 shares for 1.0000 ETH/share',
+				totalReturn: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.0000',
+					roundedValue: 10,
+					rounded: '10.0000',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.0000 ETH'
+				}
+			}
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+			data: { status: 'failed', message: 'this error is a test.' }
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+			data: {
+				status: 'updating position',
+				message: 'sold 10 shares for 1.0000 ETH/share',
+				totalReturn: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.0000',
+					roundedValue: 10,
+					rounded: '10.0000',
+					minimized: '10',
+					denomination: ' ETH',
+					full: '10.0000 ETH'
+				},
+				tradingFees: {
+					value: 0.004999999999999995,
+					formattedValue: 0.005,
+					formatted: '0.0050',
+					roundedValue: 0.005,
+					rounded: '0.0050',
+					minimized: '0.005',
+					denomination: ' ETH',
+					full: '0.0050 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+			data: { status: 'success' }
+		},
+		{ type: 'LOAD_BIDS_ASKS' },
+		{
+			type: 'LOAD_ACCOUNT_TRADES',
+			marketID: 'testCategoricalMarketID'
+		}
+	];
+
 	it('should process a sell order for a categorical market where all shares are sold', () => {
 		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', '10', '0.5', '-10.004999999999999995', '0.004999999999999995', '0.02791268'));
-		assert.deepEqual(store.getActions(), [
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans2',
-				data: {
-					status: 'starting...',
-					message: 'selling 10 shares for -1.0005 ETH (estimated)/share',
-					totalReturn: {
-						value: -10.005,
-						formattedValue: -10.005,
-						formatted: '-10.0050',
-						roundedValue: -10.005,
-						rounded: '-10.0050',
-						minimized: '-10.005',
-						denomination: ' ETH (estimated)',
-						full: '-10.0050 ETH (estimated)'
-					},
-					tradingFees: {
-						value: 0.004999999999999995,
-						formattedValue: 0.005,
-						formatted: '0.0050',
-						roundedValue: 0.005,
-						rounded: '0.0050',
-						minimized: '0.005',
-						denomination: ' ETH (estimated)',
-						full: '0.0050 ETH (estimated)'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH (estimated)',
-						full: '0.0279 real ETH (estimated)'
-					}
-				}
-			},{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans2',
-				data: {
-					status: 'success sell',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: {
-						value: 0.004999999999999995,
-						formattedValue: 0.005,
-						formatted: '0.0050',
-						roundedValue: 0.005,
-						rounded: '0.0050',
-						minimized: '0.005',
-						denomination: ' ETH',
-						full: '0.0050 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					},
-					message: 'sold 10 of 10 shares for 1.0000 ETH/share',
-					totalReturn: {
-						value: 10,
-						formattedValue: 10,
-						formatted: '10.0000',
-						roundedValue: 10,
-						rounded: '10.0000',
-						minimized: '10',
-						denomination: ' ETH',
-						full: '10.0000 ETH'
-					}
-				}
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans2',
-				data: { status: 'failed', message: 'this error is a test.' }
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans2',
-				data: {
-					status: 'updating position',
-					message: 'sold 10 shares for 1.0000 ETH/share',
-					totalReturn: {
-						value: 10,
-						formattedValue: 10,
-						formatted: '10.0000',
-						roundedValue: 10,
-						rounded: '10.0000',
-						minimized: '10',
-						denomination: ' ETH',
-						full: '10.0000 ETH'
-					},
-					tradingFees: {
-						value: 0.004999999999999995,
-						formattedValue: 0.005,
-						formatted: '0.0050',
-						roundedValue: 0.005,
-						rounded: '0.0050',
-						minimized: '0.005',
-						denomination: ' ETH',
-						full: '0.0050 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					}
-				}
-			}, {
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans2',
-				data: { status: 'success' }
-			},
-			{ type: 'LOAD_BIDS_ASKS' },
- 			{
-				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: 'testCategoricalMarketID'
-			}
-		], `Didn't produce the expected actions and calculations`);
+		assert.deepEqual(store.getActions(), categoricalExpectedOutput1, `Didn't produce the expected actions and calculations`);
+	});
+
+	it('should handle a sell order for a categorical market where all shares are sold with JS Number inputs', () => {
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', 10, 0.5, -10.004999999999999995, 0.004999999999999995, 0.02791268));
+		assert.deepEqual(store.getActions(), categoricalExpectedOutput1, `Didn't produce the expected actions and calculations`);
+	});
+
+	it('should handle a sell order for a categorical market where all shares are sold with BigNumber inputs', () => {
+		store.dispatch(action.processSell('trans2', 'testCategoricalMarketID', '1', abi.bignum('10'), abi.bignum('0.5'), abi.bignum('-10.004999999999999995'), abi.bignum('0.004999999999999995'), abi.bignum('0.02791268')));
+		assert.deepEqual(store.getActions(), categoricalExpectedOutput1, `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a categorical market where only some shares are filled, ask for the rest.', () => {
@@ -2611,144 +2643,156 @@ describe('modules/trade/actions/process-sell.js', () => {
 		], `Didn't produce the expected actions or calculations`);
 	});
 
+	const scalarExpectedOutput1 = [
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans3',
+			data: {
+				status: 'starting...',
+				message: 'selling 10 shares for -1.5370 ETH (estimated)/share',
+				totalReturn: {
+					value: -15.3698224852071,
+					formattedValue: -15.3698,
+					formatted: '-15.3698',
+					roundedValue: -15.3698,
+					rounded: '-15.3698',
+					minimized: '-15.3698',
+					denomination: ' ETH (estimated)',
+					full: '-15.3698 ETH (estimated)'
+				},
+				tradingFees: {
+					value: 5.3698224852071,
+					formattedValue: 5.3698,
+					formatted: '5.3698',
+					roundedValue: 5.3698,
+					rounded: '5.3698',
+					minimized: '5.3698',
+					denomination: ' ETH (estimated)',
+					full: '5.3698 ETH (estimated)'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH (estimated)',
+					full: '0.0279 real ETH (estimated)'
+				}
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans3',
+			data: {
+				status: 'success sell',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: {
+					value: 5.3698224852071,
+					formattedValue: 5.3698,
+					formatted: '5.3698',
+					roundedValue: 5.3698,
+					rounded: '5.3698',
+					minimized: '5.3698',
+					denomination: ' ETH',
+					full: '5.3698 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				},
+				message: 'sold 10 of 10 shares for 0.6506 ETH/share',
+				totalReturn: {
+					value: 15.3698224852071,
+					formattedValue: 15.3698,
+					formatted: '15.3698',
+					roundedValue: 15.3698,
+					rounded: '15.3698',
+					minimized: '15.3698',
+					denomination: ' ETH',
+					full: '15.3698 ETH'
+				}
+			}
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false},
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans3',
+			data: {
+				status: 'failed',
+				message: 'this error is a test.'
+			}
+		},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+		{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans3',
+			data: {
+				status: 'updating position',
+				message: 'sold 10 shares for 1.5370 ETH/share',
+				totalReturn: {
+					value: 15.3698224852071,
+					formattedValue: 15.3698,
+					formatted: '15.3698',
+					roundedValue: 15.3698,
+					rounded: '15.3698',
+					minimized: '15.3698',
+					denomination: ' ETH',
+					full: '15.3698 ETH'
+				},
+				tradingFees: {
+					value: 5.3698224852071,
+					formattedValue: 5.3698,
+					formatted: '5.3698',
+					roundedValue: 5.3698,
+					rounded: '5.3698',
+					minimized: '5.3698',
+					denomination: ' ETH',
+					full: '5.3698 ETH'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
+			}
+		}, {
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans3',
+			data: { status: 'success' }
+		},
+		{ type: 'LOAD_BIDS_ASKS' },
+		{
+			type: 'LOAD_ACCOUNT_TRADES',
+			marketID: 'testScalarMarketID'
+		}
+	];
+
 	it('should process a sell order for a scalar market where all shares are sold', () => {
 		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', '10', '55', '-15.36982248520710025', '5.36982248520710025', '0.02791268'));
-		assert.deepEqual(store.getActions(), [
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans3',
-				data: {
-					status: 'starting...',
-					message: 'selling 10 shares for -1.5370 ETH (estimated)/share',
-					totalReturn: {
-						value: -15.3698224852071,
-						formattedValue: -15.3698,
-						formatted: '-15.3698',
-						roundedValue: -15.3698,
-						rounded: '-15.3698',
-						minimized: '-15.3698',
-						denomination: ' ETH (estimated)',
-						full: '-15.3698 ETH (estimated)'
-					},
-					tradingFees: {
-						value: 5.3698224852071,
-						formattedValue: 5.3698,
-						formatted: '5.3698',
-						roundedValue: 5.3698,
-						rounded: '5.3698',
-						minimized: '5.3698',
-						denomination: ' ETH (estimated)',
-						full: '5.3698 ETH (estimated)'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH (estimated)',
-						full: '0.0279 real ETH (estimated)'
-					}
-				}
-			}, {
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans3',
-				data: {
-					status: 'success sell',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: {
-						value: 5.3698224852071,
-						formattedValue: 5.3698,
-						formatted: '5.3698',
-						roundedValue: 5.3698,
-						rounded: '5.3698',
-						minimized: '5.3698',
-						denomination: ' ETH',
-						full: '5.3698 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					},
-					message: 'sold 10 of 10 shares for 0.6506 ETH/share',
-					totalReturn: {
-						value: 15.3698224852071,
-						formattedValue: 15.3698,
-						formatted: '15.3698',
-						roundedValue: 15.3698,
-						rounded: '15.3698',
-						minimized: '15.3698',
-						denomination: ' ETH',
-						full: '15.3698 ETH'
-					}
-				}
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false},
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans3',
-				data: {
-					status: 'failed',
-					message: 'this error is a test.'
-				}
-			},
-			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-			{
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans3',
-				data: {
-					status: 'updating position',
-					message: 'sold 10 shares for 1.5370 ETH/share',
-					totalReturn: {
-						value: 15.3698224852071,
-						formattedValue: 15.3698,
-						formatted: '15.3698',
-						roundedValue: 15.3698,
-						rounded: '15.3698',
-						minimized: '15.3698',
-						denomination: ' ETH',
-						full: '15.3698 ETH'
-					},
-					tradingFees: {
-						value: 5.3698224852071,
-						formattedValue: 5.3698,
-						formatted: '5.3698',
-						roundedValue: 5.3698,
-						rounded: '5.3698',
-						minimized: '5.3698',
-						denomination: ' ETH',
-						full: '5.3698 ETH'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					}
-				}
-			}, {
-				type: 'UPDATE_EXISTING_TRANSACTION',
-				transactionID: 'trans3',
-				data: { status: 'success' }
-			},
-			{ type: 'LOAD_BIDS_ASKS' },
- 			{
-				type: 'LOAD_ACCOUNT_TRADES',
-				marketID: 'testScalarMarketID'
-			}
-		], `Didn't produce the expected actions and calculations`);
+		assert.deepEqual(store.getActions(), scalarExpectedOutput1, `Didn't produce the expected actions and calculations`);
+	});
+
+	it('should handle a sell order for a scalar market where all shares are sold with JS Number inputs', () => {
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', 10, 55, -15.36982248520710025, 5.36982248520710025, 0.02791268));
+		assert.deepEqual(store.getActions(), scalarExpectedOutput1, `Didn't produce the expected actions and calculations`);
+	});
+
+	it('should handle a sell order for a scalar market where all shares are sold with BigNumber inputs', () => {
+		store.dispatch(action.processSell('trans3', 'testScalarMarketID', '1', abi.bignum('10'), abi.bignum('55'), abi.bignum('-15.36982248520710025'), abi.bignum('5.36982248520710025'), abi.bignum('0.02791268')));
+		assert.deepEqual(store.getActions(), scalarExpectedOutput1, `Didn't produce the expected actions and calculations`);
 	});
 
 	it('should process a sell order for a scalar market where only some shares are filled, ask for the rest.', () => {
@@ -3647,6 +3691,15 @@ describe('modules/trade/actions/process-sell.js', () => {
 		], `Didn't produce the expected actions and calculations`);
 	});
 
+	const expectedSimpleFail = [{
+		type: 'UPDATE_EXISTING_TRANSACTION',
+		transactionID: 'trans1',
+		data: {
+			status: 'failed',
+			message: 'There was an issue processesing the Sell trade.'
+		}
+	}];
+
 	it('should gracefully handle transactionID passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell(undefined, 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
@@ -3660,39 +3713,23 @@ describe('modules/trade/actions/process-sell.js', () => {
 	it('should gracefully handle marketID passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', undefined, '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null marketID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null marketID`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', null, '2', '10', '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null marketID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null marketID`);
 	});
 
 	it('should gracefully handle outcomeID passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', undefined, '10', '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', null, '10', '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null outcomeID`);
 	});
 
 	it('should gracefully handle numShares passed as null or undefined', () => {
@@ -3736,57 +3773,33 @@ describe('modules/trade/actions/process-sell.js', () => {
 	it('should gracefully handle totalEthWithFee passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', undefined, '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', null, '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null totalEthWithFee`);
 	});
 
 	it('should gracefully handle tradingFeesEth passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', undefined, '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', null, '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null tradingFeesEth`);
 	});
 
 	it('should gracefully handle gasFeesRealEth passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', undefined));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a undefined gasFeesRealEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a undefined gasFeesRealEth`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', '0.5', '-10.01', '0.01', null));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'There was an issue processesing the Sell trade.' } } ], `Dispatched unexpected actions when it shouldn't have given a null gasFeesRealEth`);
+		assert.deepEqual(store.getActions(), expectedSimpleFail, `Dispatched unexpected actions when it shouldn't have given a null gasFeesRealEth`);
 	});
 });
