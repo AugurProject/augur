@@ -47,8 +47,8 @@ function makeMarkets(numMarkets = 10) {
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: randomInt(0, 100) > 5,
 			numPendingReports: 10,
-			// isPendingReport: index > 0 && index % 4 === 0,
-			isPendingReport: true,
+			isPendingReport: index > 0 && index % 4 === 0,
+			// isOpen: false,
 			marketLink: {
 				href: `/?m=${id}`,
 				text: 'Trade',
@@ -56,6 +56,13 @@ function makeMarkets(numMarkets = 10) {
 				onClick: () => require('../selectors').update({ activeView: M, market: m, url: `/?m=${id}` })
 			},
 			onClickToggleFavorite: () => {}
+		};
+
+		// result
+		m.result = {
+			outcomeID: '1',
+			outcomeName: 'Testing',
+			proportionCorrect: makeNumber(1)
 		};
 
 		// tags
