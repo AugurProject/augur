@@ -6,6 +6,8 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
+import { BID } from 'modules/transactions/constants/types';
+
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
 	const nullMessage = 'No Orders';
@@ -24,8 +26,8 @@ const OrderBookRowSide = (p) => {
 								key={i}
 								className="order-book-side-row not-selectable"
 							>
-								<ValueDenomination formatted={shares} />
-								<ValueDenomination formatted={price} />
+								<ValueDenomination formatted={p.type === BID ? shares : price} />
+								<ValueDenomination formatted={p.type === BID ? price : shares} />
 							</div>
 						);
 					})}
