@@ -9,6 +9,8 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	sinon.stub(mockAugur.augur, 'short_sell', (args) => {
 		const { max_amount, buyer_trade_id, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
+		console.log('mock short_sell called');
+		console.log(args);
 		onTradeHash('tradeHash1');
 		onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
 		if (mockAugur.augur.short_sell.callCount !== 3)onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
@@ -90,7 +92,6 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 	it('should handle null inputs', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
 		helper.shortSell('testBinaryMarketID', '2', null, 'taker1', () => [3, 4], mockCBStatus, mockCB);
-		console.log(mockCB.callCount);
 		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
 		assert(mockCB.calledWithExactly(null, {
 			remainingShares: abi.bignum(0),

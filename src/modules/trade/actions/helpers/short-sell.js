@@ -5,7 +5,7 @@ import { SUCCESS } from '../../../transactions/constants/statuses';
 
 export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
-		remainingShares: abi.bignum(numShares || ZERO),
+		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
 		filledEth: ZERO,
 		tradingFees: ZERO,
