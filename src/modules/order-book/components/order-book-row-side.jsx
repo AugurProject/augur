@@ -6,14 +6,16 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
+import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 import { BID } from 'modules/transactions/constants/types';
 
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
 	const nullMessage = 'No Orders';
+	const shouldHighlight = (p.type === BID && p.selectedTradeSide === SELL) || (p.type !== BID && p.selectedTradeSide === BUY);
 
 	return (
-		<article className="order-book-row-side">
+		<article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
 			{!orders || !orders.length ?
 				<NullStateMessage message={nullMessage} /> :
 				<div>

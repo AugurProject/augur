@@ -10,10 +10,12 @@ const OrderBookRows = p => (
 			type={BID}
 			orders={p.bids}
 			selectedShareDenomination={p.selectedShareDenomination}
+			selectedTradeSide={p.selectedTradeSide}
 		/>
 		<OrderBookRowSide
 			orders={p.asks}
 			selectedShareDenomination={p.selectedShareDenomination}
+			selectedTradeSide={p.selectedTradeSide}
 		/>
 	</article>
 );

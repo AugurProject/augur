@@ -18,6 +18,7 @@ const OrderBook = p => (
 		<OrderBookRows
 			bids={p.outcome.orderBook.bids}
 			asks={p.outcome.orderBook.asks}
+			selectedTradeSide={p.selectedTradeSide}
 			selectedShareDenomination={p.selectedShareDenomination}
 		/>
 	</article>

@@ -44,6 +44,8 @@ export default class OutcomeTrade extends Component {
 
 	updateSelectedNav(selectedNav) {
 		this.setState({ selectedNav });
+		console.log('this -- ', this);
+		this.props.updateSelectedTradeSide(selectedNav);
 
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		if (trade && trade.updateTradeOrder) {
