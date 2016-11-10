@@ -56,10 +56,13 @@ const LoginMessagePage = p => (
 			<h3>November 10, 2016</h3>
 			<ol>
 				<li>
+					Added the first big batch of trading unit tests for the main augur repository.
+				</li>
+				<li>
 					Your reported outcome is now displayed in bright red text when you have committed, but not yet revealed, your report.  It displays a tooltip telling you that you must remember to log back in to reveal your report.  (After the report is revealed, the reported outcome text reverts to a normal color.)
 				</li>
 				<li>
-					Began refactoring the monolithic checkPeriod method in augur.ks.  Set up mocks and stubs for unit testing.
+					Began refactoring the monolithic checkPeriod method in augur.js.  Set up mocks and stubs for unit testing.
 				</li>
 			</ol>
 			<h3>November 9, 2016</h3>
