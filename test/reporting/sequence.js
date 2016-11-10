@@ -178,30 +178,14 @@ describe("Reporting sequence", function () {
                         }
                         assert.strictEqual(res.callReturn, "1");
                         assert.strictEqual(storedReportHash, reportHash);
-                        augur.penalizationCatchup({
-                            branch: branch,
-                            sender: sender,
-                            onSent: function (r) {
-                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup sent:"), r);
-                            },
-                            onSuccess: function (r) {
-                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup success:"), r);
-                                nextEvent();
-                            },
-                            onFailed: function (err) {
-                                console.log(chalk.white.dim(" - penalizationCatchup:"), chalk.cyan.dim(JSON.stringify(err)));
-                                assert.strictEqual(err.error, "-2");
-                                assert.strictEqual(err.message, augur.errors.penalizationCatchup["-2"]);
-                                nextEvent();
-                            }
-                        });
+                        nextEvent();
                     },
                     onFailed: nextEvent
                 });
             }, done);
         });
     });
-    
+
     describe("Second period (phase 2)", function () {
         before("Wait for second half of second period", function (done) {
             this.timeout(tools.TIMEOUT*100);

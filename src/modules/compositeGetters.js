@@ -242,7 +242,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees;
+        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
         }
@@ -254,6 +254,16 @@ module.exports = {
             shift = totalLen + 1;
             marketID = abi.format_int256(marketsArray[shift]);
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+            minValue = abi.unfix(abi.hex(marketsArray[shift + 11], true), "string");
+            maxValue = abi.unfix(abi.hex(marketsArray[shift + 12], true), "string");
+            numOutcomes = parseInt(marketsArray[shift + 13], 16);
+            if (numOutcomes !== 2) {
+                type = "categorical";
+            } else if (minValue === "1" && maxValue === "2") {
+                type = "binary";
+            } else {
+                type = "scalar";
+            }
             marketsInfo[marketID] = {
                 sortOrder: i,
                 branchId: branch,
@@ -269,7 +279,12 @@ module.exports = {
                     this.decodeTag(marketsArray[shift + 7])
                 ],
                 endDate: parseInt(marketsArray[shift + 8], 16),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
+                eventID: marketsArray[shift + 10],
+                minValue: minValue,
+                maxValue: maxValue,
+                numOutcomes: numOutcomes,
+                type: type,
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 14, shift + len - 1))
             };
             totalLen += len;
         }

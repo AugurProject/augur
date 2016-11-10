@@ -231,7 +231,7 @@ module.exports = {
             // event type: binary, categorical, or scalar
             if (event.numOutcomes !== 2) {
                 event.type = "categorical";
-            } else if (event.minValue === '1' && event.maxValue === '2') {
+            } else if (event.minValue === "1" && event.maxValue === "2") {
                 event.type = "binary";
             } else {
                 event.type = "scalar";
