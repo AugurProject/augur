@@ -11,22 +11,38 @@ const Report = p => (
 				<span className="report-main-group-title">outcome: </span>
 				<span className="report-main-group-title-outcome">
 					{p.outcome ?
-						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span> :
-						'-'
+						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span> : '-'
 					}
 				</span>
 			</div>
 			<div className="portfolio-pair">
 				<span className="report-main-group-title">reported: </span>
 				<span className="report-main-group-title-outcome">
-					{p.reported}
-					{!!p.outcome && p.isReportEqual ?
+					{!!p.isCommitted && !p.isRevealed &&
+						<span
+							className="report-committed"
+							data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
+						>
+							{p.reported}
+						</span>
+					}
+					{!!p.isRevealed &&
+						<span className="report-revealed">
+							{p.reported}
+						</span>
+					}
+					{!p.isRevealed && !p.isCommitted &&
+						<span>{p.reported}</span>
+					}
+					{!!p.outcome && p.isReportEqual &&
 						<span
 							className="fa report-equal"
 							data-tip="Your report matches the consensus outcome"
 						>
 							&#xf058;
-						</span> :
+						</span>
+					}
+					{!!p.outcome && !p.isReportEqual &&
 						<span
 							className="fa report-unequal"
 							data-tip="Your report does not match the consensus outcome"
@@ -34,10 +50,32 @@ const Report = p => (
 							&#xf057;
 						</span>
 					}
+					{!!p.isUnethical &&
+						<span
+							className="fa report-unethical"
+							data-tip="You reported that this market is unethical"
+						>
+							&#xf165;
+						</span>
+					}
+				</span>
+			</div>
+			<div className="portfolio-pair">
+				<span className="report-main-group-title">cycle: </span>
+				<span className="report-main-group-title-outcome">
+					{p.period ?
+						<span
+							data-tip={`${p.branch.currentPeriod - p.period} reporting cycles ago`}
+						>
+							{p.period}
+						</span> :
+						'-'
+					}
 				</span>
 			</div>
 		</div>
 		<div className="portfolio-group">
+			{/*
 			<div className="portfolio-pair">
 				<span className="title">fees gain/loss</span>
 				<ValueDenomination
@@ -45,6 +83,7 @@ const Report = p => (
 					{...p.feesEarned}
 				/>
 			</div>
+			*/}
 			<div className="portfolio-pair">
 				<span className="title">rep gain/loss</span>
 				<ValueDenomination

@@ -61,6 +61,7 @@ const Routes = (p) => {
 			viewProps = {
 				activeView: p.activeView,
 				settings: p.settings,
+				branch: p.branch,
 				...p.portfolio
 			};
 

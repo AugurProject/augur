@@ -8,6 +8,10 @@
 		.report-main-group-title-outcome {
 			text-transform: none;
 
+			.report-committed {
+				color: @color-negative;
+			}
+
 			.fa {
 				font-family: 'Font Awesome';
 				padding: 0 0.4rem;
@@ -17,6 +21,10 @@
 				}
 
 				&.report-unequal {
+					color: @color-negative;
+				}
+
+				&.report-unethical {
 					color: @color-negative;
 				}
 			}

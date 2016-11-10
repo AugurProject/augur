@@ -19,7 +19,7 @@ const PortfolioView = (p) => {
 			node = <Markets {...p.markets} />;
 			break;
 		case MY_REPORTS:
-			node = <Reports {...p.reports} />;
+			node = <Reports {...p.reports} branch={p.branch} />;
 			break;
 	}
 	return (

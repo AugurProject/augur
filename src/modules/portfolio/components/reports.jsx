@@ -7,8 +7,8 @@ import Link from 'modules/link/components/link';
 const PortfolioReports = p => (
 	<div>
 		{!!p.reports && !!p.reports.length && p.reports.map(market => (
-			<Link key={market.id} {...market.marketLink} >
-				<div key={market.id}>
+			<Link key={`${market.marketId}`} {...market.marketLink} >
+				<div key={market.marketId}>
 					<span className="description">
 						{market.description}
 						{market.isChallenged &&
@@ -30,7 +30,7 @@ const PortfolioReports = p => (
 					</span>
 					{!!market &&
 						<article className="portfolio-list">
-							<Report {...market} />
+							<Report {...market} branch={p.branch} />
 						</article>
 					}
 				</div>
