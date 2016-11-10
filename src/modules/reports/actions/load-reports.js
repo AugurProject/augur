@@ -14,7 +14,6 @@ export function loadReports(callback) {
 		const period = branch.reportPeriod;
 		const account = loginAccount.address;
 		const branchID = branch.id;
-		console.log('calling getEventsToReportOn:', branchID, period, account);
 		const marketIDs = [];
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
 			console.log('eventsToReportOn:', eventsToReportOn);
@@ -24,7 +23,6 @@ export function loadReports(callback) {
 					marketIDs.push(marketID);
 					dispatch(updateMarketsData({ [marketID]: { eventID } }));
 					if (reports[branchID] && reports[branchID][eventID] && reports[branchID][eventID].isRevealed) {
-						console.debug('Event', eventID, 'already revealed');
 						return nextEvent();
 					}
 					dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
