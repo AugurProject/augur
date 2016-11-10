@@ -6,7 +6,7 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketProperties = p => (
 	<ul className="market-properties">
-		{!!p.endDate &&
+		{p.endDate &&
 			<li className="property end-date">
 				<a
 					data-tip
