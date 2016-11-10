@@ -13,7 +13,7 @@ const MarketProperties = p => (
 					data-for={`${p.id}-end-date-tooltip`}
 					data-event="click focus"
 				>
-					<span className="property-label">{p.endDateLabel || 'End Date'}:</span>
+					<span className="property-label">{(p.isOpen && !p.isPendingReport ? (p.endDateLabel || 'End Date') : 'Ended')}:</span>
 					<ValueDate className="property-value" {...p.endDate} />
 				</a>
 				<ReactTooltip

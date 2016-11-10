@@ -11,7 +11,7 @@ const MarketDetails = p => (
 					<span className="property-value">{p.author}</span>
 				</li>
 			}
-			{p.outstandingShares != null &&
+			{p.isOpen && p.outstandingShares != null &&
 				<li className="property outstanding-shares">
 					<span className="property-label">outstanding shares</span>
 					<ValueDenomination className="property-value" {...p.outstandingShares} />
