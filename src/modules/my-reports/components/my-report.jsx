@@ -20,7 +20,7 @@ const Report = p => (
 				<span className="report-main-group-title">reported: </span>
 				<span className="report-main-group-title-outcome">
 					{p.reported}
-					{p.isReportEqual ?
+					{!!p.outcome && p.isReportEqual ?
 						<span
 							className="fa report-equal"
 							data-tip="Your report matches the consensus outcome"
