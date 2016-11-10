@@ -58,7 +58,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "airbitz-core-js-ui": "0.0.10",
+    "airbitz-core-js-ui": "0.0.11",
     "async": "1.5.2",
     "augur-ui-react-components": "3.6.10",
     "augur.js": "3.0.16",
