@@ -240,7 +240,7 @@ export function assembleMarket(
 					lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
 				};
 
-				if (market.type === 'scalar') {
+				if (market.isScalar) {
 					// note: not actually a percent
 					if (outcome.lastPrice.value) {
 						outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {

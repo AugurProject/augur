@@ -37,12 +37,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 	return Object.keys(newMarketsData).reduce((p, marketID) => {
 		const marketData = newMarketsData[marketID];
 
-		if (!marketData.type) {
-			return p;
-		}
-
-		if (!marketData.outcomes || !marketData.outcomes.length) {
-			console.warn('Market does not have outcomes:', marketID, marketData);
+		if (!marketData.type || !marketData.outcomes || !marketData.outcomes.length) {
 			return p;
 		}
 
