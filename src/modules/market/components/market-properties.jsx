@@ -11,15 +11,15 @@ import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketProperties = (p) => {
 	const shareVolume = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
-	const shareLabel = () => {
+	const shareDenomination = () => {
 		switch (p.selectedShareDenomination) {
 			case (MICRO_SHARE):
-				return `μShares`;
+				return p.shareDenominations.find(denomination => denomination.value === MICRO_SHARE).label;
 			case (MILLI_SHARE):
-				return `mShares`;
+				return p.shareDenominations.find(denomination => denomination.value === MILLI_SHARE).label;
 			default:
 			case (SHARE):
-				return 'shares';
+				return p.shareDenominations.find(denomination => denomination.value === SHARE).label;
 		}
 	};
 
@@ -98,7 +98,7 @@ const MarketProperties = (p) => {
 						data-event="click focus"
 					>
 						<span className="property-label">Volume:</span>
-						<ValueDenomination className="property-value" formatted={shareVolume} denomination={shareLabel()} />
+						<ValueDenomination className="property-value" formatted={shareVolume} denomination={shareDenomination()} />
 					</a>
 					<ReactTooltip
 						id={`${p.id}-volume-tooltip`}

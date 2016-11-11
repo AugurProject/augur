@@ -54,7 +54,11 @@ export default class MarketData extends Component {
 					<MarketChart series={p.market.priceTimeSeries} />
 				}
 				{s.selectedNav === MARKET_DATA_NAV_DETAILS &&
-					<MarketDetails {...p.market} />
+					<MarketDetails
+						{...p.market}
+						selectedShareDenomination={p.selectedShareDenomination}
+						shareDenominations={p.shareDenominations}
+					/>
 				}
 			</article>
 		);
