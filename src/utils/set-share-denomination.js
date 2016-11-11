@@ -18,12 +18,17 @@ function setShareDenomination(value, denomination) {
 	}
 }
 
-function formatValue(value, amount) { // BIG assumption here re: amount is that the formatted value is always displayed out to hundreths
+function formatValue(value, amount) {
 	const valueArray = value.split('');
 
 	// remove dot
 	const dotIndex = valueArray.indexOf('.');
-	valueArray.splice(dotIndex, 1);
+	let zeroPadAmount = amount;
+	if (dotIndex !== -1) {
+		valueArray.splice(dotIndex, 1);
+	} else {
+		zeroPadAmount += 2;
+	}
 
 	// Strip leading 0's
 	let firstPositiveValue = 0;
@@ -40,11 +45,11 @@ function formatValue(value, amount) { // BIG assumption here re: amount is that 
 	}
 
 	// Append 0's
-	for (let i = 0; i < amount; i++) {
+	for (let i = 0; i < zeroPadAmount; i++) {
 		valueArray.push('0');
 	}
 
-	return valueArray.join(''); // return joined string
+	return valueArray.join('').replace(/\B(?=(\d{3})+(?!\d))/g, ','); // return joined string w/ comma separating thousands, BIG assumption here is that we're always rounding to TWO decimal places
 }
 
 export default setShareDenomination;
