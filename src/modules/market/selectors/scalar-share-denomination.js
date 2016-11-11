@@ -15,15 +15,15 @@ export default function () {
 
 const denominations = [
 	{
-		label: 'Share',
+		label: 'Shares',
 		value: SHARE
 	},
 	{
-		label: 'mShare',
+		label: 'mShares',
 		value: MILLI_SHARE
 	},
 	{
-		label: 'μShare',
+		label: 'μShares',
 		value: MICRO_SHARE
 	}
 ];
