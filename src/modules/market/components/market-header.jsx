@@ -16,7 +16,7 @@ const MarketDataHeader = p => (
 				<Dropdown
 					default={p.selectedShareDenomination}
 					options={p.shareDenominations}
-					onChange={(denomination) => { p.updateSelectedShareDenomination(p.marketID, denomination); }}
+					onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination); }}
 				/>
 			}
 		</div>
