@@ -13,6 +13,7 @@ const CreateMarketPage = p => (
 			<CreateMarketForm
 				className="create-market-content"
 				{...p.createMarketForm}
+				scalarShareDenomination={p.scalarShareDenomination}
 			/>
 		</div>
 	</section>

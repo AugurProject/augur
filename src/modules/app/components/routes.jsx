@@ -90,7 +90,8 @@ export default class Routes extends Component {
 			}
 			case MAKE: {
 				viewProps = {
-					createMarketForm: p.createMarketForm
+					createMarketForm: p.createMarketForm,
+					scalarShareDenomination: p.scalarShareDenomination
 				};
 				viewComponent = <CreateMarketView {...viewProps} />;
 				break;
