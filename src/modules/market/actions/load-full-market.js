@@ -3,6 +3,7 @@ import { loadPriceHistory } from '../../market/actions/load-price-history';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateMarketDataTimestamp } from '../../market/actions/update-market-data-timestamp';
+import { loadMarketResult } from '../../market/actions/load-market-result';
 
 export const MARKET_DATA_LOADING = 'MARKET_DATA_LOADING';
 
@@ -13,6 +14,7 @@ export function loadFullMarket(marketID) {
 		// load price history, and other non-basic market details here, dispatching
 		// the necessary actions to save each part in relevant state
 		const loadDetails = () => {
+			dispatch(loadMarketResult(marketID));
 			dispatch(loadBidsAsks(marketID, () => {
 				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(loadPriceHistory(marketID));

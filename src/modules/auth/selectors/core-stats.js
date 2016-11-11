@@ -1,7 +1,7 @@
 import memoizerific from 'memoizerific';
 
 import store from '../../../store';
-import get from '../../../utils/get';
+import getValue from '../../../utils/get-value';
 import { augur, abi } from '../../../services/augurjs';
 import { dateToBlock } from '../../../utils/date-to-block-to-date';
 import { formatEther } from '../../../utils/format-number';
@@ -28,7 +28,7 @@ export function selectCoreStats() {
 	// const totalAvailableEth = formatEther(0);
 
 	// Group 3
-	const totalPL = get(loginAccountPositions, 'summary.totalNet');
+	const totalPL = getValue(loginAccountPositions, 'summary.totalNet');
 	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
 	const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
 

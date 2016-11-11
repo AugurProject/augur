@@ -313,6 +313,17 @@ export function assembleMarket(
 
 			market.myMarketSummary = selectMyMarket(market)[0];
 
+			// Update the `result` object
+			if (market.result) {
+				if (market.result.outcomeID) {
+					market.result.outcomeName = market.outcomes.find(outcome => outcome.id === market.result.outcomeID).name;
+				}
+
+				if (market.result.proportionCorrect) {
+					market.result.proportionCorrect = formatPercent(market.result.proportionCorrect);
+				}
+			}
+
 			return market;
 		});
 	}
