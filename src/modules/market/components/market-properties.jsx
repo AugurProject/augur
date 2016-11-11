@@ -6,14 +6,14 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketProperties = p => (
 	<ul className="market-properties">
-		{!!p.endDate &&
+		{p.endDate &&
 			<li className="property end-date">
 				<a
 					data-tip
 					data-for={`${p.id}-end-date-tooltip`}
 					data-event="click focus"
 				>
-					<span className="property-label">{p.endDateLabel || 'End Date'}:</span>
+					<span className="property-label">{(p.isOpen && !p.isPendingReport ? (p.endDateLabel || 'End Date') : 'Ended')}:</span>
 					<ValueDate className="property-value" {...p.endDate} />
 				</a>
 				<ReactTooltip

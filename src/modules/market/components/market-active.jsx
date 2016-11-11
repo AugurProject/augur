@@ -15,10 +15,12 @@ export default class MarketActive extends Component {
 		super(props);
 
 		this.state = {
-			selectedOutcome: this.props.market.outcomes[0]
+			selectedOutcome: this.props.market.outcomes[0],
+			selectedTradeSide: null
 		};
 
 		this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
+		this.updateSelectedTradeSide = this.updateSelectedTradeSide.bind(this);
 		this.determineDefaultShareDenomination = this.determineDefaultShareDenomination.bind(this);
 	}
 
@@ -41,6 +43,10 @@ export default class MarketActive extends Component {
 
 	updateSelectedOutcome(selectedOutcome) {
 		this.setState({ selectedOutcome });
+	}
+
+	updateSelectedTradeSide(selectedTradeSide) {
+		this.setState({ selectedTradeSide });
 	}
 
 	// NOTE -- only called if a market is of type SCALAR from `componentWillMount`
@@ -90,6 +96,7 @@ export default class MarketActive extends Component {
 					<OrderBook
 						marketType={marketType}
 						outcome={s.selectedOutcome}
+						selectedTradeSide={s.selectedTradeSide}
 						selectedShareDenomination={selectedShareDenomination}
 					/>
 					{p.logged &&
@@ -99,6 +106,7 @@ export default class MarketActive extends Component {
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
 							selectedShareDenomination={selectedShareDenomination}
+							updateSelectedTradeSide={this.updateSelectedTradeSide}
 						/>
 					}
 				</div>
@@ -116,6 +124,7 @@ export default class MarketActive extends Component {
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
 							selectedShareDenomination={selectedShareDenomination}
+							updateSelectedTradeSide={this.updateSelectedTradeSide}
 						/>
 					</div>
 				}

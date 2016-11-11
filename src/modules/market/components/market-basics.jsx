@@ -32,20 +32,6 @@ const MarketBasics = p => (
 						{p.isFavorite ? <i></i> : <i></i>}
 					</button>
 				}
-
-				{p.isUpdaterVisible &&
-					<div className="updater">
-						Market data loaded {p.marketDataAge.lastUpdatedBefore}
-						<button
-							className="button"
-							disabled={p.marketDataAge.isMarketDataLoading}
-							data-tip={p.marketDataAge.isMarketDataLoading ? 'Loading' : 'Reload market data'}
-							onClick={() => p.updateData(p.id)}
-						>
-							Reload
-						</button>
-					</div>
-				}
 			</div>
 		</div>
 

@@ -17,8 +17,8 @@ const MarketView = (p) => {
 	return (
 		<section id="market_view">
 			{!isAvailable && <NullStateMessage message={nullMessage} />}
-			{isAvailable && isPendingReport && <MarketReporting {...p} />}
 			{isAvailable && isOpen && !isPendingReport && <MarketActive {...p} />}
+			{isAvailable && isPendingReport && <MarketReporting {...p} />}
 			{isAvailable && !isOpen && !isPendingReport && <MarketReported {...p} />}
 		</section>
 	);

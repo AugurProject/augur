@@ -44,6 +44,8 @@ export default class OutcomeTrade extends Component {
 
 	updateSelectedNav(selectedNav) {
 		this.setState({ selectedNav });
+		console.log('this -- ', this);
+		this.props.updateSelectedTradeSide(selectedNav);
 
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		if (trade && trade.updateTradeOrder) {
@@ -70,7 +72,7 @@ export default class OutcomeTrade extends Component {
 
 		return (
 			<article className="outcome-trade">
-				{!p.marketType === SCALAR ?
+				{p.marketType !== SCALAR ?
 					<h3>Create Order <EmDash /> {name && name}</h3> :
 					<h3>Create Order</h3>
 				}
@@ -93,6 +95,7 @@ export default class OutcomeTrade extends Component {
 								value={s.sharesDenominated}
 								min="0"
 								max={s.maxSharesDenominated}
+								step="0.1"
 								onChange={(value) => { this.handleSharesInput(value); }}
 							/>
 							<span>@</span>
@@ -100,6 +103,8 @@ export default class OutcomeTrade extends Component {
 								placeholder="Price"
 								type="number"
 								value={trade.limitPrice}
+								step="0.1"
+								max={p.maxValue}
 								onChange={(value) => { trade.updateTradeOrder(null, value, trade.side); }}
 							/>
 						</div>
@@ -124,7 +129,8 @@ export default class OutcomeTrade extends Component {
 }
 
 OutcomeTrade.propTypes = {
-	selectedShareDenomination: PropTypes.string
+	selectedShareDenomination: PropTypes.string,
+	updateSelectedTradeSide: PropTypes.function
 };
 
 function denominateShares(shares, fromDenomination, toDenomination) {
