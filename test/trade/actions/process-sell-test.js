@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-sell.js', () => {
@@ -354,10 +354,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
-		args[1]();
-		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockAddShortAskTransaction = { addShortAskTransaction: () => {} };
 	sinon.stub(mockAddShortAskTransaction, 'addShortAskTransaction', stubAddShortAskTransaction);
 
@@ -384,7 +381,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
 		cb(undefined, store.getState().orderBooks[marketID]);
 		return { type: 'LOAD_BIDS_ASKS' };
-	})
+	});
 
 	const action = proxyquire('../../../src/modules/trade/actions/process-sell.js', {
 		'../../../services/augurjs': mockAugur,

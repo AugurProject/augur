@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddShortAskTransaction, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddShortAskTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-short-sell.js', () => {
@@ -21,11 +21,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		return { type: 'LOAD_BIDS_ASKS' };
 	});
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (marketID, cb) => {
-		assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
-		cb(undefined, store.getState().orderBooks[marketID]);
-		return { type: 'LOAD_ACCOUNT_TRADES' };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockAddShortAskTransaction = { addShortAskTransaction: () => {} };
 	sinon.stub(mockAddShortAskTransaction, 'addShortAskTransaction', stubAddShortAskTransaction);
 
@@ -260,7 +256,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			 	transactionID: 'trans1',
 			 	data: { status: 'success' } },
 		 	{ type: 'LOAD_BIDS_ASKS' },
-		 	{ type: 'LOAD_ACCOUNT_TRADES' }
+		 	{ type: 'LOAD_ACCOUNT_TRADES', marketID: 'testBinaryMarketID' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 	it('should process an short sell order for a categorical market', () => {
@@ -442,7 +438,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		    transactionID: 'trans2',
 		    data: { status: 'success' } },
 		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'LOAD_ACCOUNT_TRADES' }
+		  { type: 'LOAD_ACCOUNT_TRADES', marketID: 'testCategoricalMarketID' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 	it('should process an short sell order for a scalar market', () => {
@@ -633,7 +629,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		    transactionID: 'trans3',
 		    data: { status: 'success' } },
 		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'LOAD_ACCOUNT_TRADES' }
+		  { type: 'LOAD_ACCOUNT_TRADES', marketID: 'testScalarMarketID' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 });

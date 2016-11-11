@@ -24,7 +24,7 @@ describe('modules/trade/actions/process-ask.js', () => {
 	const mockLoadBidAsks = { loadBidsAsks: () => {} };
 	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
-		cb();
+		cb(undefined, store.getState().orderBooks[marketID]);
 		return { type: 'LOAD_BIDS_ASKS' };
 	});
 

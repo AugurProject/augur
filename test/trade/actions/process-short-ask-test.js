@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
 import { augur } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-short-ask.js', () => {
@@ -25,11 +25,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (marketID, cb) => {
-		assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
-		cb(undefined, store.getState().orderBooks[marketID]);
-		return { type: 'LOAD_ACCOUNT_TRADES' };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockLoadBidAsks = { loadBidsAsks: () => {} };
 	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
@@ -146,7 +142,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 		  { type: 'UPDATE_EXISTING_TRANSACTION',
 		    transactionID: 'trans1',
 		    data: { status: 'success' } },
-		  { type: 'LOAD_ACCOUNT_TRADES' },
+		  { type: 'LOAD_ACCOUNT_TRADES', marketID: 'testBinaryMarketID' },
 		  { type: 'LOAD_BIDS_ASKS' },
 		  { type: 'UPDATE_EXISTING_TRANSACTION',
 		    transactionID: 'trans1',
@@ -252,7 +248,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 				transactionID: 'trans2',
 				data: { status: 'success' }
 			},
-			{ type: 'LOAD_ACCOUNT_TRADES' },
+			{ type: 'LOAD_ACCOUNT_TRADES', marketID: 'testCategoricalMarketID' },
 			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -360,7 +356,7 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 			transactionID: 'trans3',
 			data: { status: 'success' }
 		},
-		{ type: 'LOAD_ACCOUNT_TRADES' },
+		{ type: 'LOAD_ACCOUNT_TRADES', marketID: 'testScalarMarketID' },
 		{ type: 'LOAD_BIDS_ASKS' },
 		{
 			type: 'UPDATE_EXISTING_TRANSACTION',

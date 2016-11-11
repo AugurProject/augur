@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
@@ -80,10 +80,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
-		args[1]();
-		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockLoadBidAsks = { loadBidsAsks: () => {} };
 	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);

@@ -579,6 +579,14 @@ export const stubUpdateExistingTransaction = (transactionID, data) => {
 	return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
 };
 
+export const stubLoadAccountTrades = (marketID, cb) => {
+	assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
+	// originally some of my tests returned the order books but it turns out this isn't required, left this here just incase...
+	// cb(undefined, store.getState().orderBooks[marketID]);
+	cb();
+	return { type: 'LOAD_ACCOUNT_TRADES', marketID };
+};
+
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
 	const Data = UpdateTradesInProgressAction.data;
 	const tradeDetails = Data.details;
