@@ -21,43 +21,51 @@ export default class Routes extends Component {
 
 		this.state = {
 			viewProps: null,
-			viewComponent: null,
-			logged: getValue(this.props, 'loginAccount.address')
+			viewComponent: null
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdateOnStateChangeOnly;
+		this.handleRouting = this.handleRouting.bind(this);
+	}
+
+	componentWillMount() {
+		this.handleRouting(this.props);
 	}
 
 	componentWillReceiveProps(nextProps) {
+		this.handleRouting(nextProps);
+	}
+
+	handleRouting(p) {
 		let viewProps;
 		let viewComponent;
 
-		switch (nextProps.activeView) {
+		switch (p.activeView) {
 			case REGISTER:
 			case LOGIN:
 			case IMPORT:
 			case LOGOUT:
 				viewProps = {
-					authForm: nextProps.authForm
+					authForm: p.authForm
 				};
 				viewComponent = <AuthView {...viewProps} />;
 				break;
 			case ACCOUNT:
 				viewProps = {
-					loginMessageLink: nextProps.links.loginMessageLink,
-					account: nextProps.loginAccount,
-					settings: nextProps.settings,
-					onUpdateSettings: nextProps.loginAccount.onUpdateAccountSettings,
-					onChangePass: nextProps.loginAccount.onChangePass,
-					authLink: (nextProps.links && nextProps.links.authLink) || null,
-					onAirbitzManageAccount: nextProps.loginAccount.onAirbitzManageAccount
+					loginMessageLink: p.links.loginMessageLink,
+					account: p.loginAccount,
+					settings: p.settings,
+					onUpdateSettings: p.loginAccount.onUpdateAccountSettings,
+					onChangePass: p.loginAccount.onChangePass,
+					authLink: (p.links && p.links.authLink) || null,
+					onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
 				};
 				viewComponent = <AccountView {...viewProps} />;
 				break;
 			case TRANSACTIONS:
 				viewProps = {
-					transactions: nextProps.transactions,
-					transactionsTotals: nextProps.transactionsTotals
+					transactions: p.transactions,
+					transactionsTotals: p.transactionsTotals
 				};
 				viewComponent =	<TransactionsView {...viewProps} />;
 				break;
@@ -65,43 +73,43 @@ export default class Routes extends Component {
 			case MY_MARKETS:
 			case MY_REPORTS: {
 				viewProps = {
-					activeView: nextProps.activeView,
-					settings: nextProps.settings,
-					branch: nextProps.branch,
-					...nextProps.portfolio
+					activeView: p.activeView,
+					settings: p.settings,
+					branch: p.branch,
+					...p.portfolio
 				};
 				viewComponent = <PortfolioView {...viewProps} />;
 				break;
 			}
 			case LOGIN_MESSAGE: {
 				viewProps = {
-					marketsLink: (nextProps.links && nextProps.links.marketsLink) || null
+					marketsLink: (p.links && p.links.marketsLink) || null
 				};
 				viewComponent = <LoginMessageView {...viewProps} />;
 				break;
 			}
 			case MAKE: {
 				viewProps = {
-					createMarketForm: nextProps.createMarketForm
+					createMarketForm: p.createMarketForm
 				};
 				viewComponent = <CreateMarketView {...viewProps} />;
 				break;
 			}
 			case M: {
 				viewProps = {
-					logged: this.state.logged,
-					market: nextProps.market,
-					settings: nextProps.settings,
-					marketDataNavItems: nextProps.marketDataNavItems,
-					marketUserDataNavItems: nextProps.marketUserDataNavItems,
-					marketDataAge: nextProps.marketDataAge,
-					selectedOutcome: nextProps.selectedOutcome,
-					orderCancellation: nextProps.orderCancellation,
-					marketDataUpdater: nextProps.marketDataUpdater,
-					numPendingReports: nextProps.marketsTotals.numPendingReports,
-					isTradeCommitLocked: nextProps.tradeCommitLock.isLocked,
-					scalarShareDenomination: nextProps.scalarShareDenomination,
-					marketReportingNavItems: nextProps.marketReportingNavItems
+					logged: getValue(p, 'loginAccount.address'),
+					market: p.market,
+					settings: p.settings,
+					marketDataNavItems: p.marketDataNavItems,
+					marketUserDataNavItems: p.marketUserDataNavItems,
+					marketDataAge: p.marketDataAge,
+					selectedOutcome: p.selectedOutcome,
+					orderCancellation: p.orderCancellation,
+					marketDataUpdater: p.marketDataUpdater,
+					numPendingReports: p.marketsTotals.numPendingReports,
+					isTradeCommitLocked: p.tradeCommitLock.isLocked,
+					scalarShareDenomination: p.scalarShareDenomination,
+					marketReportingNavItems: p.marketReportingNavItems
 				};
 				viewComponent = <MarketView {...viewProps} />;
 				break;
@@ -109,24 +117,24 @@ export default class Routes extends Component {
 			default: {
 				viewProps = {
 					isSideBarAllowed: true,
-					loginAccount: nextProps.loginAccount,
-					createMarketLink: (nextProps.links || {}).createMarketLink,
-					markets: nextProps.markets,
-					marketsHeader: nextProps.marketsHeader,
-					favoriteMarkets: nextProps.favoriteMarkets,
-					pagination: nextProps.pagination,
-					filterSort: nextProps.filterSort,
-					keywords: nextProps.keywords,
-					branch: nextProps.branch
+					loginAccount: p.loginAccount,
+					createMarketLink: (p.links || {}).createMarketLink,
+					markets: p.markets,
+					marketsHeader: p.marketsHeader,
+					favoriteMarkets: p.favoriteMarkets,
+					pagination: p.pagination,
+					filterSort: p.filterSort,
+					keywords: p.keywords,
+					branch: p.branch
 				};
 				viewComponent = <MarketsView {...viewProps} />;
 			}
 		}
 
 		if (viewProps.isSideBarAllowed) {
-			nextProps.setSidebarAllowed(true);
+			p.setSidebarAllowed(true);
 		} else {
-			nextProps.setSidebarAllowed(false);
+			p.setSidebarAllowed(false);
 		}
 
 		this.setState({ viewProps, viewComponent });
