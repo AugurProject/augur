@@ -126,7 +126,8 @@ export default class Routes extends Component {
 					pagination: p.pagination,
 					filterSort: p.filterSort,
 					keywords: p.keywords,
-					branch: p.branch
+					branch: p.branch,
+					scalarShareDenomination: p.scalarShareDenomination,
 				};
 				viewComponent = <MarketsView {...viewProps} />;
 			}

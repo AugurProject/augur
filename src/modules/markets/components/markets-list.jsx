@@ -15,7 +15,7 @@ const MarketsList = p => (
 					key={market.id}
 					loginAccount={p.loginAccount}
 					{...market}
-					selectedShareDenominatio={selectedShareDenomination}
+					selectedShareDenomination={selectedShareDenomination}
 					shareDenominations={shareDenominations}
 				/>
 			);
