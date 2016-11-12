@@ -23,16 +23,16 @@ const Report = p => (
 							className="report-committed"
 							data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
 						>
-							{p.reported}
+							{p.reported || '-'}
 						</span>
 					}
 					{!!p.isRevealed &&
 						<span className="report-revealed">
-							{p.reported}
+							{p.reported || '-'}
 						</span>
 					}
 					{!p.isRevealed && !p.isCommitted &&
-						<span>{p.reported}</span>
+						<span>{p.reported || '-'}</span>
 					}
 					{!!p.outcome && p.isReportEqual &&
 						<span

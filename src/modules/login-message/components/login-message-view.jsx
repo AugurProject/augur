@@ -53,6 +53,36 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 12, 2016</h3>
+			<ol>
+				<li>
+					Added rescaling logic for categorical and scalar reports to augur.js fixReport and (new) unfixReport methods, and updated event / report loaders in UI accordingly.
+				</li>
+				<li>
+					Full reset of network 9000 (test chain) contracts.
+				</li>
+			</ol>
+			<h3>November 11, 2016</h3>
+			<ol>
+				<li>
+					Merged augur-core develop into master branch.
+				</li>
+				<li>
+					Changed tick size to tenths on trade page.
+				</li>
+				<li>
+					Added highlighting of the matching side of the order book when user clicks buy/sell.
+				</li>
+				<li>
+					Fixed abnormally high CPU utilization on markets listing page.
+				</li>
+				<li>
+					The trade page for scalar markets now properly displays the unit selection drop-down menu.  The share amounts on the page are updated automatically when a new unit is chosen.
+				</li>
+				<li>
+					Fixed scalar market labels (no longer improperly labeled as categorical markets).
+				</li>
+			</ol>
 			<h3>November 10, 2016</h3>
 			<ol>
 				<li>
