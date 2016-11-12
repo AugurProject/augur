@@ -26,6 +26,29 @@ module.exports = {
         ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
     },
 
+    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
+        var self = this;
+        if (branch.constructor === Object) {
+            period = branch.period;
+            event = branch.event;
+            sender = branch.sender;
+            minValue = branch.minValue;
+            maxValue = branch.maxValue;
+            type = branch.type;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+            if (!rawReport || rawReport.error) {
+                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+            }
+            if (!parseInt(rawReport, 16)) return callback("0");
+            var report = self.unfixReport(rawReport, minValue, maxValue, type);
+            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            callback(report);
+        });
+    },
+
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
         var self = this;
@@ -314,29 +337,29 @@ module.exports = {
     },
 
     penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
-        console.log("checking penalties for period", periodToCheck);
         var self = this;
-        this.getEvents(branch, periodToCheck, function (events) {
-            console.log(" - Events in vote period", periodToCheck + ":", events);
-            if (!events || events.constructor !== Array || !events.length) {
-                // if > first period, then call penalizeWrong(branch, 0)
-                console.log("No events found for period", periodToCheck);
-                self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-                    lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                    console.log("Last period penalized:", lastPeriodPenalized, periodToCheck);
-                    if (lastPeriodPenalized === 0 || lastPeriodPenalized === periodToCheck - 1) {
-                        console.log("Penalizations caught up!");
-                        return callback(null);
-                    }
-                    console.log("Calling penalizeWrong(branch, 0)...");
+        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+            lastPeriodPenalized = parseInt(lastPeriodPenalized);
+            console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+            console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
+                console.log("[penaltyCatchUp] Penalties caught up!");
+                return callback(null);
+            }
+            self.getEvents(branch, periodToCheck, function (events) {
+                console.log("[penaltyCatchUp] Events in vote period", periodToCheck + ":", events);
+                if (!events || events.constructor !== Array || !events.length) {
+                    console.log("[penaltyCatchUp] No events found for period", periodToCheck);
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    console.log("[penaltyCatchUp] Calling penalizeWrong(branch, 0)...");
                     self.penalizeWrong({
                         branch: branch,
                         event: 0,
                         onSent: function (r) {
-                            console.log("penalizeWrong sent:", r);
+                            console.log("[penaltyCatchUp] penalizeWrong sent:", r);
                         },
                         onSuccess: function (r) {
-                            console.log("penalizeWrong(branch, 0) success:", r);
+                            console.log("[penaltyCatchUp] penalizeWrong(branch, 0) success:", r);
                             console.log(abi.bignum(r.callReturn, "string", true));
                             callback(null, events);
                         },
@@ -345,29 +368,37 @@ module.exports = {
                             callback(err);
                         }
                     });
-                });
-            } else {
-                console.log("Events found for period " + periodToCheck + ", looping through...");
-                async.eachSeries(events, function (event, nextEvent) {
-                    console.log(" - penalizeWrong:", event);
-                    self.penalizeWrong({
-                        branch: branch,
-                        event: event,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            self.closeExtraMarkets(branch, event, sender, nextEvent);
-                        },
-                        onFailed: function (err) {
-                            console.error(" - penalizeWrong error:", err);
-                            nextEvent(err);
-                        }
+                } else {
+                    console.log("[penaltyCatchUp] Events found for period " + periodToCheck + ", looping through...");
+                    async.eachSeries(events, function (event, nextEvent) {
+                        console.log("[penaltyCatchUp] penalizeWrong:", event);
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: event,
+                            onSent: utils.noop,
+                            onSuccess: function (r) {
+                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                self.getNumMarkets(event, function (numMarkets) {
+                                    if (!numMarkets || numMarkets.error) {
+                                        return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                    }
+                                    if (parseInt(numMarkets) === 1) {
+                                        return nextEvent(null);
+                                    }
+                                    self.closeExtraMarkets(branch, event, sender, nextEvent);
+                                });
+                            },
+                            onFailed: function (err) {
+                                console.error(" - penalizeWrong error:", err);
+                                nextEvent(err);
+                            }
+                        });
+                    }, function (e) {
+                        if (e) return callback(e);
+                        callback(null, events);
                     });
-                }, function (e) {
-                    if (e) return callback(e);
-                    callback(null, events);
-                });
-            }
+                }
+            });
         });
     },
 
@@ -426,7 +457,7 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("\nreportingTools.checkTime:");
+            console.log("\nreporting.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
             console.log(" - Target period:    ", expPeriod + periodGap);

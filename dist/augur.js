@@ -18491,7 +18491,7 @@ module.exports={
           "event"
         ], 
         "method": "getNumMarkets", 
-        "returns": "int256", 
+        "returns": "number", 
         "signature": [
           "int256"
         ]
@@ -19215,7 +19215,7 @@ module.exports={
           "sender"
         ], 
         "method": "getReport", 
-        "returns": "unfix", 
+        "returns": "int256", 
         "signature": [
           "int256", 
           "int256", 
@@ -43934,14 +43934,14 @@ var modules = [
     require("./modules/whitelist"),
     require("./modules/logs"),
     require("./modules/abacus"),
-    require("./modules/reportingTools"),
+    require("./modules/reporting"),
     require("./modules/tradingActions"),
     require("./modules/positions"),
     require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "3.0.17";
+    this.version = "3.0.18";
 
     this.options = {
         debug: {
@@ -43993,7 +43993,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":263,"./accounts":233,"./augurNode":234,"./batch":235,"./chat":236,"./constants":237,"./filters":238,"./generateOrderBook":239,"./modules/abacus":241,"./modules/buyAndSellShares":242,"./modules/cash":243,"./modules/collectFees":244,"./modules/compositeGetters":245,"./modules/connect":246,"./modules/createBranch":247,"./modules/createMarket":248,"./modules/events":249,"./modules/logs":250,"./modules/makeReports":251,"./modules/markets":252,"./modules/positions":253,"./modules/register":254,"./modules/reportingTools":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/tradingActions":258,"./modules/transact":259,"./modules/whitelist":260,"./utilities":261,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":266}],241:[function(require,module,exports){
+},{"../test/tools":263,"./accounts":233,"./augurNode":234,"./batch":235,"./chat":236,"./constants":237,"./filters":238,"./generateOrderBook":239,"./modules/abacus":241,"./modules/buyAndSellShares":242,"./modules/cash":243,"./modules/collectFees":244,"./modules/compositeGetters":245,"./modules/connect":246,"./modules/createBranch":247,"./modules/createMarket":248,"./modules/events":249,"./modules/logs":250,"./modules/makeReports":251,"./modules/markets":252,"./modules/positions":253,"./modules/register":254,"./modules/reporting":255,"./modules/sendReputation":256,"./modules/trade":257,"./modules/tradingActions":258,"./modules/transact":259,"./modules/whitelist":260,"./utilities":261,"_process":192,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":266}],241:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -46153,29 +46153,6 @@ module.exports = {
         return {report: report.toFixed(), isIndeterminate: false};
     },
 
-    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
-        var self = this;
-        if (branch.constructor === Object) {
-            period = branch.period;
-            event = branch.event;
-            sender = branch.sender;
-            minValue = branch.minValue;
-            maxValue = branch.maxValue;
-            type = branch.type;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
-            if (!rawReport || rawReport.error) {
-                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
-            }
-            if (!parseInt(rawReport, 16)) return callback("0");
-            var report = self.unfixReport(rawReport, minValue, maxValue, type);
-            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
-            callback(report);
-        });
-    },
-
     // report in fixed-point
     makeHash: function (salt, report, event, from) {
         return utils.sha3([from || this.from, abi.hex(salt), report, event]);
@@ -47071,6 +47048,29 @@ module.exports = {
         ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
     },
 
+    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
+        var self = this;
+        if (branch.constructor === Object) {
+            period = branch.period;
+            event = branch.event;
+            sender = branch.sender;
+            minValue = branch.minValue;
+            maxValue = branch.maxValue;
+            type = branch.type;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+            if (!rawReport || rawReport.error) {
+                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+            }
+            if (!parseInt(rawReport, 16)) return callback("0");
+            var report = self.unfixReport(rawReport, minValue, maxValue, type);
+            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            callback(report);
+        });
+    },
+
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
         var self = this;
@@ -47359,29 +47359,29 @@ module.exports = {
     },
 
     penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
-        console.log("checking penalties for period", periodToCheck);
         var self = this;
-        this.getEvents(branch, periodToCheck, function (events) {
-            console.log(" - Events in vote period", periodToCheck + ":", events);
-            if (!events || events.constructor !== Array || !events.length) {
-                // if > first period, then call penalizeWrong(branch, 0)
-                console.log("No events found for period", periodToCheck);
-                self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-                    lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                    console.log("Last period penalized:", lastPeriodPenalized, periodToCheck);
-                    if (lastPeriodPenalized === 0 || lastPeriodPenalized === periodToCheck - 1) {
-                        console.log("Penalizations caught up!");
-                        return callback(null);
-                    }
-                    console.log("Calling penalizeWrong(branch, 0)...");
+        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+            lastPeriodPenalized = parseInt(lastPeriodPenalized);
+            console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+            console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
+                console.log("[penaltyCatchUp] Penalties caught up!");
+                return callback(null);
+            }
+            self.getEvents(branch, periodToCheck, function (events) {
+                console.log("[penaltyCatchUp] Events in vote period", periodToCheck + ":", events);
+                if (!events || events.constructor !== Array || !events.length) {
+                    console.log("[penaltyCatchUp] No events found for period", periodToCheck);
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    console.log("[penaltyCatchUp] Calling penalizeWrong(branch, 0)...");
                     self.penalizeWrong({
                         branch: branch,
                         event: 0,
                         onSent: function (r) {
-                            console.log("penalizeWrong sent:", r);
+                            console.log("[penaltyCatchUp] penalizeWrong sent:", r);
                         },
                         onSuccess: function (r) {
-                            console.log("penalizeWrong(branch, 0) success:", r);
+                            console.log("[penaltyCatchUp] penalizeWrong(branch, 0) success:", r);
                             console.log(abi.bignum(r.callReturn, "string", true));
                             callback(null, events);
                         },
@@ -47390,29 +47390,37 @@ module.exports = {
                             callback(err);
                         }
                     });
-                });
-            } else {
-                console.log("Events found for period " + periodToCheck + ", looping through...");
-                async.eachSeries(events, function (event, nextEvent) {
-                    console.log(" - penalizeWrong:", event);
-                    self.penalizeWrong({
-                        branch: branch,
-                        event: event,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            self.closeExtraMarkets(branch, event, sender, nextEvent);
-                        },
-                        onFailed: function (err) {
-                            console.error(" - penalizeWrong error:", err);
-                            nextEvent(err);
-                        }
+                } else {
+                    console.log("[penaltyCatchUp] Events found for period " + periodToCheck + ", looping through...");
+                    async.eachSeries(events, function (event, nextEvent) {
+                        console.log("[penaltyCatchUp] penalizeWrong:", event);
+                        self.penalizeWrong({
+                            branch: branch,
+                            event: event,
+                            onSent: utils.noop,
+                            onSuccess: function (r) {
+                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                self.getNumMarkets(event, function (numMarkets) {
+                                    if (!numMarkets || numMarkets.error) {
+                                        return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                    }
+                                    if (parseInt(numMarkets) === 1) {
+                                        return nextEvent(null);
+                                    }
+                                    self.closeExtraMarkets(branch, event, sender, nextEvent);
+                                });
+                            },
+                            onFailed: function (err) {
+                                console.error(" - penalizeWrong error:", err);
+                                nextEvent(err);
+                            }
+                        });
+                    }, function (e) {
+                        if (e) return callback(e);
+                        callback(null, events);
                     });
-                }, function (e) {
-                    if (e) return callback(e);
-                    callback(null, events);
-                });
-            }
+                }
+            });
         });
     },
 
@@ -47471,7 +47479,7 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("\nreportingTools.checkTime:");
+            console.log("\nreporting.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
             console.log(" - Target period:    ", expPeriod + periodGap);
@@ -48559,7 +48567,7 @@ try {
 }
 var constants = require("../src/constants");
 var utils = require("../src/utilities");
-var reptools = require("../src/modules/reportingTools");
+var reptools = require("../src/modules/reporting");
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
@@ -49224,7 +49232,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":237,"../src/modules/reportingTools":255,"../src/utilities":261,"./madlibs":262,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],264:[function(require,module,exports){
+},{"../src/constants":237,"../src/modules/reporting":255,"../src/utilities":261,"./madlibs":262,"_process":192,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":189}],264:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)

@@ -19,7 +19,7 @@ try {
 }
 var constants = require("../src/constants");
 var utils = require("../src/utilities");
-var reptools = require("../src/modules/reportingTools");
+var reptools = require("../src/modules/reporting");
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,

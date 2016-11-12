@@ -69,29 +69,6 @@ module.exports = {
         return {report: report.toFixed(), isIndeterminate: false};
     },
 
-    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
-        var self = this;
-        if (branch.constructor === Object) {
-            period = branch.period;
-            event = branch.event;
-            sender = branch.sender;
-            minValue = branch.minValue;
-            maxValue = branch.maxValue;
-            type = branch.type;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
-            if (!rawReport || rawReport.error) {
-                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
-            }
-            if (!parseInt(rawReport, 16)) return callback("0");
-            var report = self.unfixReport(rawReport, minValue, maxValue, type);
-            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
-            callback(report);
-        });
-    },
-
     // report in fixed-point
     makeHash: function (salt, report, event, from) {
         return utils.sha3([from || this.from, abi.hex(salt), report, event]);

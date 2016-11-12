@@ -9,14 +9,14 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var reportingTools = require("../../src/modules/reportingTools");
+var reporting = require("../../src/modules/reporting");
 var makeReports = require("../../src/modules/makeReports");
 var augur;
 
 describe("hashSenderPlusEvent", function () {
     var test = function (t) {
         it(JSON.stringify(t), function () {
-            assert.strictEqual(abi.hex(reportingTools.hashSenderPlusEvent(t.sender, t.event)), t.expected);
+            assert.strictEqual(abi.hex(reporting.hashSenderPlusEvent(t.sender, t.event)), t.expected);
         });
     };
     test({

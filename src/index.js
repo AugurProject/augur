@@ -31,14 +31,14 @@ var modules = [
     require("./modules/whitelist"),
     require("./modules/logs"),
     require("./modules/abacus"),
-    require("./modules/reportingTools"),
+    require("./modules/reporting"),
     require("./modules/tradingActions"),
     require("./modules/positions"),
     require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "3.0.17";
+    this.version = "3.0.18";
 
     this.options = {
         debug: {
