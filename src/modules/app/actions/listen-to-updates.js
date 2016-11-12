@@ -85,29 +85,41 @@ export function listenToUpdates() {
 			},
 
 			deposit: (msg) => {
-				if (msg) console.log('deposit:', msg);
+				if (msg) {
+					console.debug('deposit:', msg);
+					dispatch(updateAssets());
+				}
 			},
 
 			withdraw: (msg) => {
-				if (msg) console.log('withdraw:', msg);
+				if (msg) {
+					console.debug('withdraw:', msg);
+					dispatch(updateAssets());
+				}
 			},
 
-			// // Reporter penalization (debugging-only?)
-			// penalize: (msg) => {
-			// 	console.debug('penalize:', msg);
-			// 	// dispatch(updateAssets());
-			// },
+			// Reporter penalization (debugging-only)
+			penalize: (msg) => {
+				if (msg) {
+					console.debug('penalize:', msg);
+					dispatch(updateAssets());
+				}
+			},
 
-			// // Reputation transfer
-			// Transfer: (msg) => {
-			// 	console.debug('Transfer:', msg);
-			// 	// dispatch(updateAssets());
-			// },
+			// Reputation transfer
+			Transfer: (msg) => {
+				if (msg) {
+					console.debug('Transfer:', msg);
+					dispatch(updateAssets());
+				}
+			},
 
-			// Approval: (msg) => {
-			// 	console.debug('Approval:', msg);
-			// 	// dispatch(updateAssets());
-			// }
+			Approval: (msg) => {
+				if (msg) {
+					console.debug('Approval:', msg);
+					dispatch(updateAssets());
+				}
+			}
 		}, (filters) => console.log('### Listening to filters:', filters));
 	};
 }
