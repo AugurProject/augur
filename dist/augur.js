@@ -21335,9 +21335,9 @@ module.exports={
         "CloseMarket": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "CollectFees": "0x9ce7d44719e0d12b5aba76b80fcb7c1b2e7770fd", 
+        "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x53f3c6eebb33db6cdaf3a1222045b79b29950add", 
+        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
@@ -21347,10 +21347,10 @@ module.exports={
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
         "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0xf55b1d5cf3327f2754dc1852f42e4cd2ab213273", 
+        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0x0bda011e4c0c908608735b4b193e16072f9c32be", 
+        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
@@ -21358,9 +21358,9 @@ module.exports={
         "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0x81927ea753cd8001e7c91dc197c4de96b02b9cc6", 
-        "RoundTwoPenalize": "0x02b21f6f7a4393e7eb54ef41ea709069d539868a", 
-        "SendReputation": "0xb1bb94797e60a5bde1d17d2aa9bc942c55d6a67e", 
+        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
         "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
         "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
@@ -21676,6 +21676,10 @@ module.exports={
     "TRADE_NOT_FOUND": {
         "error": 712,
         "message": "trade not found"
+    },
+    "REPORT_NOT_FOUND": {
+        "error": 812,
+        "message": "report not found"
     }
 }
 
@@ -43937,7 +43941,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.16";
+    this.version = "3.0.17";
 
     this.options = {
         debug: {
@@ -44888,6 +44892,7 @@ module.exports = {
         }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs, account || 0];
+        this.rpc.debug.tx=true;
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
@@ -46094,15 +46099,24 @@ var constants = require("../constants");
 module.exports = {
 
     // rules: http://docs.augur.net/#reporting-outcomes
-    fixReport: function (report, isScalar, isIndeterminate) {
-        var fixedReport;
+    fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
+        var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
             fixedReport = constants.INDETERMINATE;
         } else {
-            if (isScalar && report === "0") {
-                fixedReport = "0x1";
-            } else {
+            if (type === "binary") {
                 fixedReport = abi.fix(report, "hex");
+            } else {
+                // y = (x - min)/(max - min)
+                bnMinValue = abi.bignum(minValue);
+                rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(
+                    abi.bignum(maxValue).minus(bnMinValue)
+                );
+                if (rescaledReport.eq(constants.ZERO)) {
+                    fixedReport = "0x1";
+                } else {
+                    fixedReport = abi.fix(rescaledReport, "hex");
+                }
             }
 
             // if report is equal to fix(1.5) but is not indeterminate,
@@ -46112,6 +46126,54 @@ module.exports = {
             }
         }
         return fixedReport;
+    },
+
+    unfixReport: function (fixedReport, minValue, maxValue, type) {
+        var report, bnMinValue;
+        if (fixedReport === constants.INDETERMINATE) {
+            return {report: "1.5", isIndeterminate: true};
+        } else if (fixedReport === constants.INDETERMINATE_PLUS_ONE) {
+            return {report: "1.5", isIndeterminate: false};
+        }
+        if (type === "binary") {
+            report = abi.unfix(fixedReport);
+        } else {
+            if (abi.bignum(fixedReport).eq(abi.bignum(1))) {
+                fixedReport = "0";
+            }
+            // x = (max - min)*y + min
+            bnMinValue = abi.bignum(minValue);
+            report = abi.unfix(fixedReport).times(
+                abi.bignum(maxValue).minus(bnMinValue)
+            ).plus(bnMinValue);
+        }
+        if (type !== "scalar") {
+            report = report.round();
+        }
+        return {report: report.toFixed(), isIndeterminate: false};
+    },
+
+    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
+        var self = this;
+        if (branch.constructor === Object) {
+            period = branch.period;
+            event = branch.event;
+            sender = branch.sender;
+            minValue = branch.minValue;
+            maxValue = branch.maxValue;
+            type = branch.type;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+            if (!rawReport || rawReport.error) {
+                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+            }
+            if (!parseInt(rawReport, 16)) return callback("0");
+            var report = self.unfixReport(rawReport, minValue, maxValue, type);
+            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            callback(report);
+        });
     },
 
     // report in fixed-point
@@ -46238,12 +46300,14 @@ module.exports = {
         }, onFailed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed) {
+    submitReport: function (event, salt, report, ethics, minValue, maxValue, isBinary, isIndeterminate, onSent, onSuccess, onFailed) {
         if (event.constructor === Object) {
             salt = event.salt;
             report = event.report;
             ethics = event.ethics;
-            isScalar = event.isScalar;
+            minValue = event.minValue;
+            maxValue = event.maxValue;
+            isBinary = event.isBinary;
             isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
@@ -46253,11 +46317,12 @@ module.exports = {
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
-            this.fixReport(report, isScalar, isIndeterminate),
+            this.fixReport(report, minValue, maxValue, isBinary, isIndeterminate),
             ethics,
             onSent,
             onSuccess,
-            onFailed);
+            onFailed
+        );
     }
 };
 

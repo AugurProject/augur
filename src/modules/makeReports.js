@@ -15,15 +15,24 @@ var constants = require("../constants");
 module.exports = {
 
     // rules: http://docs.augur.net/#reporting-outcomes
-    fixReport: function (report, isScalar, isIndeterminate) {
-        var fixedReport;
+    fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
+        var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
             fixedReport = constants.INDETERMINATE;
         } else {
-            if (isScalar && report === "0") {
-                fixedReport = "0x1";
-            } else {
+            if (type === "binary") {
                 fixedReport = abi.fix(report, "hex");
+            } else {
+                // y = (x - min)/(max - min)
+                bnMinValue = abi.bignum(minValue);
+                rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(
+                    abi.bignum(maxValue).minus(bnMinValue)
+                );
+                if (rescaledReport.eq(constants.ZERO)) {
+                    fixedReport = "0x1";
+                } else {
+                    fixedReport = abi.fix(rescaledReport, "hex");
+                }
             }
 
             // if report is equal to fix(1.5) but is not indeterminate,
@@ -33,6 +42,54 @@ module.exports = {
             }
         }
         return fixedReport;
+    },
+
+    unfixReport: function (fixedReport, minValue, maxValue, type) {
+        var report, bnMinValue;
+        if (fixedReport === constants.INDETERMINATE) {
+            return {report: "1.5", isIndeterminate: true};
+        } else if (fixedReport === constants.INDETERMINATE_PLUS_ONE) {
+            return {report: "1.5", isIndeterminate: false};
+        }
+        if (type === "binary") {
+            report = abi.unfix(fixedReport);
+        } else {
+            if (abi.bignum(fixedReport).eq(abi.bignum(1))) {
+                fixedReport = "0";
+            }
+            // x = (max - min)*y + min
+            bnMinValue = abi.bignum(minValue);
+            report = abi.unfix(fixedReport).times(
+                abi.bignum(maxValue).minus(bnMinValue)
+            ).plus(bnMinValue);
+        }
+        if (type !== "scalar") {
+            report = report.round();
+        }
+        return {report: report.toFixed(), isIndeterminate: false};
+    },
+
+    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
+        var self = this;
+        if (branch.constructor === Object) {
+            period = branch.period;
+            event = branch.event;
+            sender = branch.sender;
+            minValue = branch.minValue;
+            maxValue = branch.maxValue;
+            type = branch.type;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+            if (!rawReport || rawReport.error) {
+                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+            }
+            if (!parseInt(rawReport, 16)) return callback("0");
+            var report = self.unfixReport(rawReport, minValue, maxValue, type);
+            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            callback(report);
+        });
     },
 
     // report in fixed-point
@@ -159,12 +216,14 @@ module.exports = {
         }, onFailed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed) {
+    submitReport: function (event, salt, report, ethics, minValue, maxValue, isBinary, isIndeterminate, onSent, onSuccess, onFailed) {
         if (event.constructor === Object) {
             salt = event.salt;
             report = event.report;
             ethics = event.ethics;
-            isScalar = event.isScalar;
+            minValue = event.minValue;
+            maxValue = event.maxValue;
+            isBinary = event.isBinary;
             isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
@@ -174,10 +233,11 @@ module.exports = {
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
-            this.fixReport(report, isScalar, isIndeterminate),
+            this.fixReport(report, minValue, maxValue, isBinary, isIndeterminate),
             ethics,
             onSent,
             onSuccess,
-            onFailed);
+            onFailed
+        );
     }
 };
