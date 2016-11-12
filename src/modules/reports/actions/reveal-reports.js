@@ -21,12 +21,15 @@ export function revealReports() {
 					});
 				if (revealableReports && revealableReports.length && loginAccount.id) {
 					async.eachSeries(revealableReports, (report, nextReport) => {
-						console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.isUnethical, report.isScalar, report.isIndeterminate);
-						dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.isUnethical, report.isScalar, report.isIndeterminate, (e) => {
+						console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, report.isScalar, report.isUnethical, report.isIndeterminate);
+						dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, report.isScalar, report.isUnethical, report.isIndeterminate, (e) => {
 							if (e) return nextReport(e);
 							dispatch(updateReports({
 								[branch.id]: {
-									[report.eventID]: { ...report, isRevealed: true }
+									[report.eventID]: {
+										...report,
+										isRevealed: true
+									}
 								}
 							}));
 							nextReport();

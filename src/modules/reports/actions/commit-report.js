@@ -14,7 +14,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 		const { branch, loginAccount } = getState();
 		const isScalar = market.type === SCALAR;
 		const salt = bytesToHex(secureRandom(32));
-		const fixedReport = augur.fixReport(reportedOutcomeID, isScalar, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, isScalar, isIndeterminate);
 		const reportHash = augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address);
 		dispatch(updateReport(branch.id, market.eventID, {
 			eventID: market.eventID,
@@ -48,7 +48,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				message: 'Missing data'
 			}));
 		}
-		const fixedReport = augur.fixReport(reportedOutcomeID, report.isScalar, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, report.isScalar, isIndeterminate);
 		let encryptedReport = 0;
 		let encryptedSalt = 0;
 		if (loginAccount.derivedKey) {
