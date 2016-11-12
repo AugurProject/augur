@@ -20,6 +20,7 @@ const MarketsView = p => (
 			loginAccount={p.loginAccount}
 			markets={p.markets}
 			pagination={p.pagination}
+			scalarShareDenomination={p.scalarShareDenomination}
 		/>
 	</section>
 );

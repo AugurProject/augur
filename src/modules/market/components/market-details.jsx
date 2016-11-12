@@ -2,10 +2,26 @@ import React, { PropTypes } from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 
+import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations';
+
 import getValue from 'utils/get-value';
+import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketDetails = (p) => {
 	const outcomeName = getValue(p, 'result.outcomeName');
+
+	const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination);
+	const shareDenomination = () => {
+		switch (p.selectedShareDenomination) {
+			case (MICRO_SHARE):
+				return p.shareDenominations.find(denomination => denomination.value === MICRO_SHARE).label;
+			case (MILLI_SHARE):
+				return p.shareDenominations.find(denomination => denomination.value === MILLI_SHARE).label;
+			default:
+			case (SHARE):
+				return p.shareDenominations.find(denomination => denomination.value === SHARE).label;
+		}
+	};
 
 	return (
 		<div className="market-details">
@@ -25,7 +41,7 @@ const MarketDetails = (p) => {
 				{p.isOpen && p.outstandingShares != null &&
 					<li className="property outstanding-shares">
 						<span className="property-label">outstanding shares</span>
-						<ValueDenomination className="property-value" {...p.outstandingShares} />
+						<ValueDenomination className="property-value" formatted={outstandingShares} denomination={shareDenomination()} />
 					</li>
 				}
 				{p.extraInfo != null && p.extraInfo !== '' &&

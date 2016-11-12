@@ -17,7 +17,7 @@ export default class OutcomeTrade extends Component {
 		super(props);
 
 		this.state = {
-			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values
+			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
 			selectedNav: BUY,
 			shareInputPlaceholder: generateShareInputPlaceholder(this.props.selectedShareDenomination),
 			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
@@ -34,17 +34,22 @@ export default class OutcomeTrade extends Component {
 
 		if (newTrade !== oldTrade || this.props.selectedShareDenomination !== nextProps.selectedShareDenomination) {
 			this.setState({
-				timestamp: Date.now(),
 				shareInputPlaceholder: generateShareInputPlaceholder(nextProps.selectedShareDenomination),
 				maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
 				sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination)
 			});
 		}
+
+		const oldID = getValue(this.props, 'selectedOutcome.id');
+		const newID = getValue(nextProps, 'selectedOutcome.id');
+
+		if (oldID !== newID) {
+			this.setState({ timestamp: Date.now() }); // forces re-render of trade component via key value
+		}
 	}
 
 	updateSelectedNav(selectedNav) {
 		this.setState({ selectedNav });
-		console.log('this -- ', this);
 		this.props.updateSelectedTradeSide(selectedNav);
 
 		const trade = getValue(this.props, 'selectedOutcome.trade');

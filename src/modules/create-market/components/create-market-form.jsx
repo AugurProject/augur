@@ -5,8 +5,14 @@ import Form3 from 'modules/create-market/components/create-market-form-3';
 import Form4 from 'modules/create-market/components/create-market-form-4';
 import Form5 from 'modules/create-market/components/create-market-form-5';
 
+import { SHARE } from 'modules/market/constants/share-denominations';
+
+import getValue from 'utils/get-value';
+
 const CreateMarketForm = (p) => {
 	let form;
+
+	const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
 	switch (p.step) {
 		case 1:
@@ -23,7 +29,11 @@ const CreateMarketForm = (p) => {
 			form = <Form4 {...p} />;
 			break;
 		case 5:
-			form = <Form5 {...p} />;
+			form = (<Form5
+				{...p}
+				selectedShareDenomination={SHARE}
+				shareDenominations={shareDenominations}
+			/>);
 			break;
 	}
 
