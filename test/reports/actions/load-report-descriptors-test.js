@@ -64,7 +64,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'binary'
+					type: 'binary',
+					minValue: '1',
+					maxValue: '2'
 				}
 			},
 			reports: {
@@ -96,9 +98,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1',
 							salt: null,
+							minValue: '1',
+							maxValue: '2',
+							isCategorical: false,
+							isScalar: false,
 							isUnethical: false,
 							isIndeterminate: false,
-							isScalar: false,
 							isRevealed: false,
 							isCommitted: false
 						}
@@ -137,7 +142,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'categorical'
+					type: 'categorical',
+					minValue: '1',
+					maxValue: '2'
 				}
 			},
 			reports: {
@@ -169,9 +176,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1',
 							salt: null,
+							minValue: '1',
+							maxValue: '2',
+							isCategorical: true,
+							isScalar: false,
 							isUnethical: false,
 							isIndeterminate: false,
-							isScalar: false,
 							isRevealed: false,
 							isCommitted: false
 						}
@@ -210,7 +220,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'scalar'
+					type: 'scalar',
+					minValue: '5',
+					maxValue: '20'
 				}
 			},
 			reports: {
@@ -241,9 +253,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1.2345',
 							salt: null,
+							minValue: '5',
+							maxValue: '20',
+							isCategorical: false,
+							isScalar: true,
 							isUnethical: true,
 							isIndeterminate: false,
-							isScalar: true,
 							isRevealed: false,
 							isCommitted: false
 						}
@@ -282,7 +297,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'categorical'
+					type: 'categorical',
+					minValue: '1',
+					maxValue: '2'
 				}
 			},
 			reports: {
@@ -313,9 +330,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1.5',
 							salt: null,
+							minValue: '1',
+							maxValue: '2',
+							isCategorical: true,
+							isScalar: false,
 							isUnethical: false,
 							isIndeterminate: true,
-							isScalar: false,
 							isRevealed: false,
 							isCommitted: false
 						}
@@ -354,7 +374,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'scalar'
+					type: 'scalar',
+					minValue: '5',
+					maxValue: '20'
 				}
 			},
 			reports: {
@@ -386,9 +408,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1.500000000000000001',
 							salt: null,
+							minValue: '5',
+							maxValue: '20',
+							isCategorical: false,
+							isScalar: true,
 							isUnethical: false,
 							isIndeterminate: true,
-							isScalar: true,
 							isRevealed: false,
 							isCommitted: false,
 							isSubmitted: false
@@ -428,7 +453,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'categorical'
+					type: 'categorical',
+					minValue: '1',
+					maxValue: '2'
 				}
 			},
 			reports: {
@@ -460,9 +487,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '3',
 							salt: null,
+							minValue: '1',
+							maxValue: '2',
+							isCategorical: true,
+							isScalar: false,
 							isUnethical: true,
 							isIndeterminate: false,
-							isScalar: false,
 							isRevealed: false,
 							isCommitted: false,
 							isSubmitted: false
@@ -502,7 +532,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 			},
 			marketsData: {
 				'0xa1': {
-					type: 'scalar'
+					type: 'scalar',
+					minValue: '5',
+					maxValue: '20'
 				}
 			},
 			reports: {
@@ -534,9 +566,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportHash: null,
 							reportedOutcomeID: '1.2345',
 							salt: null,
+							minValue: '5',
+							maxValue: '20',
+							isCategorical: false,
+							isScalar: true,
 							isUnethical: true,
 							isIndeterminate: false,
-							isScalar: true,
 							isRevealed: false,
 							isCommitted: false,
 							isSubmitted: false

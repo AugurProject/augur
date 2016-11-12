@@ -16,8 +16,11 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 		marketID: 'testMarketID',
 		reportedOutcomeID: '2',
 		salt: '0x1337',
-		isUnethical: false,
+		minValue: '1',
+		maxValue: '2',
+		isCategorical: false,
 		isScalar: false,
+		isUnethical: false,
 		isIndeterminate: false
 	};
 	const mockAddTransactions = { addTransaction: () => {} };
@@ -108,7 +111,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 				}
 			}
 		}];
-		store.dispatch(action.addRevealReportTransaction(p.eventID, p.marketID, p.reportedOutcomeID, p.salt, p.isUnethical, p.isScalar, p.isIndeterminate));
+		store.dispatch(action.addRevealReportTransaction(p.eventID, p.marketID, p.reportedOutcomeID, p.salt, p.minValue, p.maxValue, p.isScalar, p.isUnethical, p.isIndeterminate));
 		const actual = store.getActions();
 		assert.isFunction(actual[0].data.action);
 		delete actual[0].data.action;
@@ -141,7 +144,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 		}, {
 			type: 'UPDATE_ASSETS'
 		}];
-		store.dispatch(action.processRevealReport(1, p.eventID, p.reportedOutcomeID, p.salt, p.isUnethical, p.isScalar, p.isIndeterminate, p.outcomeName));
+		store.dispatch(action.processRevealReport(1, p.eventID, p.reportedOutcomeID, p.salt, p.minValue, p.maxValue, p.isScalar, p.isUnethical, p.isIndeterminate, p.outcomeName));
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected actions`);
 		assert(mockAugurJS.augur.submitReport.calledOnce, `Didn't call submitReport once as expected`);
 	});
