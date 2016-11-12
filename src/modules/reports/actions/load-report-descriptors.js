@@ -1,6 +1,6 @@
 import async from 'async';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_SCALAR_OUTCOME_ID } from '../../markets/constants/market-outcomes';
+import { INDETERMINATE_OUTCOME_ID } from '../../markets/constants/market-outcomes';
 import { augur } from '../../../services/augurjs';
 import { updateReports } from '../../reports/actions/update-reports';
 
@@ -20,9 +20,7 @@ export function loadReportDescriptors(callback) {
 				branchReports[eventID] = report;
 				return nextReport();
 			}
-			report.isIndeterminate = report.isScalar ?
-				report.reportedOutcomeID === INDETERMINATE_SCALAR_OUTCOME_ID :
-				report.reportedOutcomeID === INDETERMINATE_OUTCOME_ID;
+			report.isIndeterminate = report.reportedOutcomeID === INDETERMINATE_OUTCOME_ID;
 			augur.getEthicReport(branch.id, branch.reportPeriod, eventID, loginAccount.address, (ethics) => {
 				// ethics values: 0=unethical, 1=ethical
 				report.isUnethical = ethics === '0';

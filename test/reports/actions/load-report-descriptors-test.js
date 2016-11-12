@@ -413,7 +413,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							isCategorical: false,
 							isScalar: true,
 							isUnethical: false,
-							isIndeterminate: true,
+							isIndeterminate: false,
 							isRevealed: false,
 							isCommitted: false,
 							isSubmitted: false

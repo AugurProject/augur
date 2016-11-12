@@ -2,7 +2,6 @@ import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { loadReport } from '../../reports/actions/load-report';
 import { loadReportDescriptors } from '../../reports/actions/load-report-descriptors';
-import { updateMarketsData } from '../../markets/actions/update-markets-data';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 export function loadReports(callback) {
@@ -21,11 +20,12 @@ export function loadReports(callback) {
 				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
 				augur.getMarket(eventID, 0, (marketID) => {
 					marketIDs.push(marketID);
-					dispatch(updateMarketsData({ [marketID]: { eventID } }));
-					if (reports[branchID] && reports[branchID][eventID] && reports[branchID][eventID].isRevealed) {
-						return nextEvent();
-					}
-					dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
+					dispatch(loadMarketsInfo([marketID], () => {
+						if (reports[branchID] && reports[branchID][eventID] && reports[branchID][eventID].isRevealed) {
+							return nextEvent();
+						}
+						dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
+					}));
 				});
 			}, (err) => {
 				if (err) {
@@ -34,13 +34,11 @@ export function loadReports(callback) {
 					if (!marketIDs.length) {
 						if (callback) callback(null, marketIDs);
 					} else {
-						dispatch(loadMarketsInfo(marketIDs, () => {
-							dispatch(loadReportDescriptors((e) => {
-								if (callback) {
-									if (e) return callback(e);
-									callback(null, marketIDs);
-								}
-							}));
+						dispatch(loadReportDescriptors((e) => {
+							if (callback) {
+								if (e) return callback(e);
+								callback(null, marketIDs);
+							}
 						}));
 					}
 				}

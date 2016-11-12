@@ -26,7 +26,7 @@ describe('modules/reports/actions/load-report.js', () => {
 				'../../../services/augurjs': AugurJS,
 				'../../reports/actions/decrypt-report': DecryptReport
 			});
-			sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, cb) => {
+			sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
 				cb(t.blockchain.reports[branchID][eventID]);
 			});
 			sinon.stub(AugurJS.augur, 'getReportHash', (branchID, period, account, eventID, cb) => {
@@ -60,6 +60,13 @@ describe('modules/reports/actions/load-report.js', () => {
 						salt: null,
 						isUnethical: false
 					}
+				}
+			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
 				}
 			},
 			reportHashes: {
@@ -96,6 +103,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				ether: '10000',
 				realEther: '2.5',
 				rep: '47'
+			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
 			},
 			reports: {}
 		},
@@ -168,6 +182,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				ether: '10000',
 				realEther: '2.5',
 				rep: '47'
+			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
 			},
 			reports: {
 				'0xb1': {
@@ -255,6 +276,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				realEther: '2.5',
 				rep: '47'
 			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
+			},
 			reports: {}
 		},
 		assertions: (actions) => {
@@ -327,6 +355,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				ether: '10000',
 				realEther: '2.5',
 				rep: '47'
+			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
 			},
 			reports: {
 				'0xb1': {
@@ -415,6 +450,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				realEther: '2.5',
 				rep: '47'
 			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
+			},
 			reports: {}
 		},
 		assertions: (actions) => {
@@ -488,6 +530,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				realEther: '2.5',
 				rep: '47'
 			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
+			},
 			reports: {}
 		},
 		assertions: (actions) => {
@@ -501,9 +550,9 @@ describe('modules/reports/actions/load-report.js', () => {
 							marketID: '0xa1',
 							isUnethical: false,
 							reportedOutcomeID: '1',
-							reportHash: null,
-							salt: null,
-							isRevealed: true,
+							reportHash: '0x1e',
+							salt: '0x7331',
+							isRevealed: false,
 							isCommitted: true
 						}
 					}
@@ -560,6 +609,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				realEther: '2.5',
 				rep: '47'
 			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
+			},
 			reports: {}
 		},
 		assertions: (actions) => {
@@ -572,10 +628,10 @@ describe('modules/reports/actions/load-report.js', () => {
 							period: 7,
 							marketID: '0xa1',
 							isUnethical: false,
-							reportedOutcomeID: '1',
-							reportHash: null,
+							reportedOutcomeID: null,
+							reportHash: '0x1e',
 							salt: null,
-							isRevealed: true,
+							isRevealed: false,
 							isCommitted: true
 						}
 					}
@@ -632,6 +688,13 @@ describe('modules/reports/actions/load-report.js', () => {
 				realEther: '2.5',
 				rep: '47'
 			},
+			marketsData: {
+				'0xa1': {
+					minValue: '1',
+					maxValue: '2',
+					type: 'binary'
+				}
+			},
 			reports: {}
 		},
 		assertions: (actions) => {
@@ -644,11 +707,11 @@ describe('modules/reports/actions/load-report.js', () => {
 							period: 7,
 							marketID: '0xa1',
 							isUnethical: false,
-							reportedOutcomeID: '1',
+							reportedOutcomeID: null,
 							reportHash: null,
 							salt: null,
-							isRevealed: true,
-							isCommitted: true
+							isRevealed: false,
+							isCommitted: false
 						}
 					}
 				}

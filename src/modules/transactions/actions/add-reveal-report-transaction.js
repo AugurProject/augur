@@ -1,4 +1,5 @@
 import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { REVEAL_REPORT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -6,10 +7,12 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { updateAssets } from '../../auth/actions/update-assets';
 import { augur } from '../../../services/augurjs';
 
-export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, isScalar, isUnethical, isIndeterminate, callback) {
+export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) {
 	return (dispatch, getState) => {
 		augur.getDescription(eventID, (eventDescription) => {
 			const outcomesData = getState().outcomesData[marketID];
+			const isScalar = type === SCALAR;
+			const isBinary = type === BINARY;
 			let outcome;
 			if (isScalar) {
 				outcome = outcomesData ? outcomesData[1] : {};
@@ -41,7 +44,7 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				salt,
 				minValue,
 				maxValue,
-				isScalar,
+				isBinary,
 				isUnethical,
 				isIndeterminate,
 				(outcome && outcome.name) ? outcome.name : reportedOutcomeID,
@@ -51,14 +54,16 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 	};
 }
 
-export function processRevealReport(transactionID, eventID, reportedOutcomeID, salt, minValue, maxValue, isScalar, isUnethical, isIndeterminate, outcomeName, callback) {
+export function processRevealReport(transactionID, eventID, reportedOutcomeID, salt, minValue, maxValue, isBinary, isUnethical, isIndeterminate, outcomeName, callback) {
 	return (dispatch, getState) => {
 		console.debug('submitReport:', {
 			event: eventID,
 			report: reportedOutcomeID,
 			salt,
 			ethics: Number(!isUnethical),
-			isScalar,
+			minValue,
+			maxValue,
+			isBinary,
 			isIndeterminate
 		});
 		augur.submitReport({
@@ -68,7 +73,7 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 			ethics: Number(!isUnethical),
 			minValue,
 			maxValue,
-			isScalar,
+			isBinary,
 			isIndeterminate,
 			onSent: (r) => {
 				console.debug('submitReport sent:', r);

@@ -25,7 +25,6 @@ export function checkPeriod(unlock, cb) {
 				tracker.checkPeriodLock = false;
 				dispatch(clearOldReports());
 			}
-			console.debug('checkPeriodLock:', tracker.checkPeriodLock);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
@@ -44,12 +43,10 @@ export function checkPeriod(unlock, cb) {
 						}
 						if (branch.isReportRevealPhase) {
 							if (!tracker.feesCollected) {
-								console.log('collecting fees');
 								dispatch(collectFees());
 								tracker.feesCollected = true;
 							}
 							if (!tracker.reportsRevealed) {
-								console.log('reveal reports');
 								dispatch(revealReports());
 								tracker.reportsRevealed = true;
 							}
