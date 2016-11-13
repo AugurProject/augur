@@ -73,7 +73,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	store = mockStore(state);
 
 	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
-	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, isBinary, isUnethical, isIndeterminate, callback) => {
+	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) => {
 		return (dispatch, getState) => {
 			callback(null);
 		};

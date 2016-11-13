@@ -1,5 +1,5 @@
 import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
-import { BINARY, SCALAR } from '../../markets/constants/market-types';
+import { SCALAR } from '../../markets/constants/market-types';
 import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { REVEAL_REPORT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -12,7 +12,6 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 		augur.getDescription(eventID, (eventDescription) => {
 			const outcomesData = getState().outcomesData[marketID];
 			const isScalar = type === SCALAR;
-			const isBinary = type === BINARY;
 			let outcome;
 			if (isScalar) {
 				outcome = outcomesData ? outcomesData[1] : {};
@@ -44,7 +43,7 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				salt,
 				minValue,
 				maxValue,
-				isBinary,
+				type,
 				isUnethical,
 				isIndeterminate,
 				(outcome && outcome.name) ? outcome.name : reportedOutcomeID,
@@ -54,7 +53,7 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 	};
 }
 
-export function processRevealReport(transactionID, eventID, reportedOutcomeID, salt, minValue, maxValue, isBinary, isUnethical, isIndeterminate, outcomeName, callback) {
+export function processRevealReport(transactionID, eventID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, outcomeName, callback) {
 	return (dispatch, getState) => {
 		console.debug('submitReport:', {
 			event: eventID,
@@ -63,7 +62,7 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 			ethics: Number(!isUnethical),
 			minValue,
 			maxValue,
-			isBinary,
+			type,
 			isIndeterminate
 		});
 		augur.submitReport({
@@ -73,7 +72,7 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 			ethics: Number(!isUnethical),
 			minValue,
 			maxValue,
-			isBinary,
+			type,
 			isIndeterminate,
 			onSent: (r) => {
 				console.debug('submitReport sent:', r);

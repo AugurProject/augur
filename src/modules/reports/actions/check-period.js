@@ -25,6 +25,7 @@ export function checkPeriod(unlock, cb) {
 				tracker.checkPeriodLock = false;
 				dispatch(clearOldReports());
 			}
+			console.log('checkPeriod tracker:', tracker);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {

@@ -59,6 +59,16 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		const outcomeName = report.isScalar ?
 			reportedOutcomeID :
 			(market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {}).name;
+		console.log('submitReportHash params:', {
+			event: eventID,
+			reportHash: report.reportHash,
+			encryptedReport,
+			encryptedSalt,
+			ethics: Number(!isUnethical),
+			branch: branchID,
+			period: report.reportPeriod,
+			periodLength: branch.periodLength
+		});
 		augur.submitReportHash({
 			event: eventID,
 			reportHash: report.reportHash,
