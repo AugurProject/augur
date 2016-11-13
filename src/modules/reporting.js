@@ -122,7 +122,7 @@ module.exports = {
                     console.log("[checkPeriod] penaltyCatchUp:", err, events);
                 }
                 if (err) return callback(err);
-                callback(null);
+                callback(null, votePeriod);
             });
         });
     },
@@ -178,7 +178,9 @@ module.exports = {
             // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
             // last period then call penalizationCatchup in order to allow submitReportHash to work.
             self.getFeesCollected(branch, sender, periodToCheck - 1, function (feesCollected) {
-                console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                }
                 if (parseInt(feesCollected) === 0) {
                     return self.penalizationCatchup({
                         branch: branch,
