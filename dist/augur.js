@@ -17992,6 +17992,7 @@ module.exports={
         ], 
         "method": "setBaseReportersLastPeriod", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18005,6 +18006,7 @@ module.exports={
         ], 
         "method": "setFeeFirst", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18019,6 +18021,7 @@ module.exports={
         ], 
         "method": "setFeesCollected", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18033,6 +18036,7 @@ module.exports={
         ], 
         "method": "setNotEnoughPenalized", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18048,6 +18052,7 @@ module.exports={
         ], 
         "method": "setPenalized", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18077,6 +18082,7 @@ module.exports={
           "balance"
         ], 
         "method": "setPeriodBalance", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18090,6 +18096,7 @@ module.exports={
         ], 
         "method": "setRefund", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18103,6 +18110,7 @@ module.exports={
         ], 
         "method": "setSlashed", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18257,6 +18265,7 @@ module.exports={
         ], 
         "method": "determineWinningOutcomes", 
         "returns": "int256[]", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -18270,6 +18279,7 @@ module.exports={
         ], 
         "method": "resolveBinary", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18288,6 +18298,7 @@ module.exports={
         ], 
         "method": "resolveCategoricalOrScalar", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18306,6 +18317,7 @@ module.exports={
         ], 
         "method": "addMarket", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18317,6 +18329,7 @@ module.exports={
         ], 
         "method": "addPast24", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -18471,7 +18484,7 @@ module.exports={
           "event"
         ], 
         "method": "getMaxValue", 
-        "returns": "number", 
+        "returns": "unfix", 
         "signature": [
           "int256"
         ]
@@ -18481,7 +18494,7 @@ module.exports={
           "event"
         ], 
         "method": "getMinValue", 
-        "returns": "number", 
+        "returns": "unfix", 
         "signature": [
           "int256"
         ]
@@ -18636,6 +18649,7 @@ module.exports={
         ], 
         "method": "setBond", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18648,6 +18662,7 @@ module.exports={
         ], 
         "method": "setBranch", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18660,6 +18675,7 @@ module.exports={
         ], 
         "method": "setEthics", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18672,6 +18688,7 @@ module.exports={
         ], 
         "method": "setEventPushedUp", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18684,6 +18701,7 @@ module.exports={
         ], 
         "method": "setExpiration", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18695,6 +18713,7 @@ module.exports={
         ], 
         "method": "setForkDone", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -18706,6 +18725,7 @@ module.exports={
         ], 
         "method": "setForkEthicality", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18718,6 +18738,7 @@ module.exports={
         ], 
         "method": "setForkOutcome", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18729,6 +18750,7 @@ module.exports={
         ], 
         "method": "setForked", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -18740,6 +18762,7 @@ module.exports={
         ], 
         "method": "setOriginalExpiration", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18765,6 +18788,7 @@ module.exports={
         ], 
         "method": "setRejected", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18777,6 +18801,7 @@ module.exports={
         ], 
         "method": "setThreshold", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18789,6 +18814,7 @@ module.exports={
         ], 
         "method": "setUncaughtOutcome", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18801,6 +18827,7 @@ module.exports={
         ], 
         "method": "setmode", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18834,6 +18861,7 @@ module.exports={
         ], 
         "method": "addRepEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18850,6 +18878,7 @@ module.exports={
         ], 
         "method": "addReportToEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18864,6 +18893,7 @@ module.exports={
         ], 
         "method": "addReportersPaidSoFar", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18876,6 +18906,7 @@ module.exports={
         ], 
         "method": "addRoundTwo", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -18890,6 +18921,7 @@ module.exports={
         ], 
         "method": "addToWeightOfReport", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18905,6 +18937,7 @@ module.exports={
         ], 
         "method": "adjustPeriodShareValueOutstanding", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -18919,6 +18952,7 @@ module.exports={
         ], 
         "method": "deleteEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19308,6 +19342,7 @@ module.exports={
         ], 
         "method": "moveEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19320,6 +19355,7 @@ module.exports={
         ], 
         "method": "refundCost", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19332,6 +19368,7 @@ module.exports={
         ], 
         "method": "removeEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19346,6 +19383,7 @@ module.exports={
         ], 
         "method": "setAfterRep", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19362,6 +19400,7 @@ module.exports={
         ], 
         "method": "setBeforeRep", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19377,6 +19416,7 @@ module.exports={
         ], 
         "method": "setCurrentMode", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19391,6 +19431,7 @@ module.exports={
         ], 
         "method": "setCurrentModeItems", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19409,6 +19450,7 @@ module.exports={
         ], 
         "method": "setEncryptedReport", 
         "returns": "number", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19429,6 +19471,7 @@ module.exports={
         ], 
         "method": "setEthicReport", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19445,6 +19488,7 @@ module.exports={
         ], 
         "method": "setEventRequired", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19460,6 +19504,7 @@ module.exports={
         ], 
         "method": "setLesserReportNum", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19473,6 +19518,7 @@ module.exports={
         ], 
         "method": "setNumEventsToReportOn", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -19486,6 +19532,7 @@ module.exports={
         ], 
         "method": "setNumReportsEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19502,6 +19549,7 @@ module.exports={
         ], 
         "method": "setPeriodDormantRep", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19518,6 +19566,7 @@ module.exports={
         ], 
         "method": "setPeriodRepConstant", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19535,6 +19584,7 @@ module.exports={
         ], 
         "method": "setReport", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19553,6 +19603,7 @@ module.exports={
         ], 
         "method": "setReportHash", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19575,6 +19626,7 @@ module.exports={
         ], 
         "method": "claimInitialRep", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19611,6 +19663,7 @@ module.exports={
         ], 
         "method": "penalizeOnForkedEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19646,6 +19699,7 @@ module.exports={
         ], 
         "method": "fork", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19658,6 +19712,7 @@ module.exports={
         ], 
         "method": "move_event", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -19669,6 +19724,7 @@ module.exports={
         ], 
         "method": "resolveForkEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19681,6 +19737,7 @@ module.exports={
         ], 
         "method": "resolveForkedEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19692,6 +19749,7 @@ module.exports={
         ], 
         "method": "resolve_fork", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -19883,6 +19941,7 @@ module.exports={
         ], 
         "method": "addFees", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19895,6 +19954,7 @@ module.exports={
         ], 
         "method": "addToMarketsHash", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -19908,6 +19968,7 @@ module.exports={
         ], 
         "method": "addTrade", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -20250,6 +20311,7 @@ module.exports={
         ], 
         "method": "initializeMarket", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256[]", 
@@ -20355,6 +20417,7 @@ module.exports={
         ], 
         "method": "setMakerFees", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -20368,6 +20431,7 @@ module.exports={
         ], 
         "method": "setPrice", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -20382,6 +20446,7 @@ module.exports={
         ], 
         "method": "setPushedForward", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -20395,6 +20460,7 @@ module.exports={
         ], 
         "method": "setTradingFee", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -20407,6 +20473,7 @@ module.exports={
         ], 
         "method": "setTradingPeriod", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -20419,6 +20486,7 @@ module.exports={
         ], 
         "method": "setWinningOutcomes", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256[]"
@@ -20832,7 +20900,7 @@ module.exports={
           "event"
         ], 
         "method": "getEventCanReportOn", 
-        "returns": "int256", 
+        "returns": "number", 
         "signature": [
           "int256", 
           "int256", 
@@ -20862,6 +20930,7 @@ module.exports={
         ], 
         "method": "setReportingThreshold", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256"
         ]
@@ -43941,15 +44010,16 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.0.18";
+    this.version = "3.1.0";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
-            trading: false      // trading-related debug logging
+            trading: false,     // trading-related debug logging
+            reporting: false    // reporting-related debug logging
         },
         loadZeroVolumeMarkets: true
     };
@@ -44892,7 +44962,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs, account || 0];
-        this.rpc.debug.tx=true;
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
@@ -46234,13 +46303,21 @@ module.exports = {
             encryptedSalt || 0,
             abi.fix(ethics, "hex")
         ];
+        if (this.options.debug.reporting) {
+            console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
+        }
         return this.transact(tx, onSent, function (res) {
+            if (self.options.debug.reporting) {
+                console.log('submitReportHash response:', JSON.stringify(res, null, 2));
+            }
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
                 return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
                     if (err) return onFailed(err);
                     self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-                        console.log('rep redistribution done:', repRedistributionDone);
+                        if (self.options.debug.reporting) {
+                            console.log('rep redistribution done:', repRedistributionDone);
+                        }
                         if (repRedistributionDone === "0") {
                             return onFailed("rep redistribution not done");
                         }
@@ -46277,24 +46354,34 @@ module.exports = {
         }, onFailed);
     },
 
-    submitReport: function (event, salt, report, ethics, minValue, maxValue, isBinary, isIndeterminate, onSent, onSuccess, onFailed) {
+    submitReport: function (event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
         if (event.constructor === Object) {
             salt = event.salt;
             report = event.report;
             ethics = event.ethics;
             minValue = event.minValue;
             maxValue = event.maxValue;
-            isBinary = event.isBinary;
+            type = event.type;
             isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
             event = event.event;
         }
+        if (this.options.debug.reporting) {
+            console.log('MakeReports.submitReport params:',
+                event,
+                abi.hex(salt),
+                this.fixReport(report, minValue, maxValue, type, isIndeterminate),
+                ethics,
+                onSent,
+                onSuccess,
+                onFailed);
+        }
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
-            this.fixReport(report, minValue, maxValue, isBinary, isIndeterminate),
+            this.fixReport(report, minValue, maxValue, type, isIndeterminate),
             ethics,
             onSent,
             onSuccess,
@@ -47066,7 +47153,9 @@ module.exports = {
             }
             if (!parseInt(rawReport, 16)) return callback("0");
             var report = self.unfixReport(rawReport, minValue, maxValue, type);
-            console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            if (self.options.debug.reporting) {
+                console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+            }
             callback(report);
         });
     },
@@ -47076,26 +47165,38 @@ module.exports = {
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
-            console.log('claimMarketsProceeds: getting winning outcomes for market:', market);
+            if (self.options.debug.reporting) {
+                console.log('claimMarketsProceeds: getting winning outcomes for market:', market);
+            }
             self.getWinningOutcomes(market, function (winningOutcomes) {
                 // market not yet resolved
-                console.log('got winning outcomes:', winningOutcomes);
+                if (self.options.debug.reporting) {
+                    console.log('got winning outcomes:', winningOutcomes);
+                }
                 if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
-                    console.log("market not yet resolved", market);
+                    if (self.options.debug.reporting) {
+                        console.log("market not yet resolved", market);
+                    }
                     return nextMarket();
                 }
-                console.log('claimProceeds:', {
-                    branch: branch,
-                    market: market
-                });
+                if (self.options.debug.reporting) {
+                    console.log('claimProceeds:', {
+                        branch: branch,
+                        market: market
+                    });
+                }
                 self.claimProceeds({
                     branch: branch,
                     market: market,
                     onSent: function (res) {
-                        console.log("claim proceeds sent:", market, res);
+                        if (self.options.debug.reporting) {
+                            console.log("claim proceeds sent:", market, res);
+                        }
                     },
                     onSuccess: function (res) {
-                        console.log("claim proceeds success:", market, res.callReturn);
+                        if (self.options.debug.reporting) {
+                            console.log("claim proceeds success:", market, res.callReturn);
+                        }
                         if (res.callReturn === "1") {
                             claimedMarkets.push(market);
                             return nextMarket();
@@ -47114,245 +47215,55 @@ module.exports = {
     // Increment vote period until vote period = current period - 1
     checkPeriod: function (branch, periodLength, sender, callback) {
         var self = this;
-
-        function incrementPeriod(branch, periodLength, next) {
-            self.incrementPeriodAfterReporting({
-                branch: branch,
-                onSent: function (r) {},
-                onSuccess: function (r) {
-                    console.log("Incremented period:", r.callReturn);
-                    self.getVotePeriod(branch, function (votePeriod) {
-                        next(null, votePeriod);
-                    });
-                },
-                onFailed: next
-            });
+        if (self.options.debug.reporting) {
+            console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength);
         }
-
-        function checkPenalizeWrong(branch, periodLength, votePeriod, next) {
-            console.log("checkPenalizeWrong", branch, periodLength, votePeriod);
-            self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-                lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                console.log(" - penalizedUpTo:", lastPeriodPenalized);
-                if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
-                    console.log(" *** Penalizations caught up! *** ");
-                    return next(null);
-                }
-                var penalizePeriod = lastPeriodPenalized + 1;
-                self.getEvents(branch, penalizePeriod, function (events) {
-                    console.log(" - Events in vote period", penalizePeriod + ":", events);
-                    if (!events || events.constructor !== Array || !events.length) {
-                        // if > first period, then call penalizeWrong(branch, 0)
-                        console.log("No events found for period", penalizePeriod);
-                        console.log("Calling penalizeWrong(branch, 0)...");
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                if (r.callReturn !== "-8") return next(null, penalizePeriod);
-                                if (self.getCurrentPeriodProgress(periodLength) > 50) {
-                                    console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
-                                    console.log(" - collectFees params:", {
-                                        branch: branch,
-                                        sender: sender,
-                                        periodLength: periodLength
-                                    });
-                                    return self.collectFees({
-                                        branch: branch,
-                                        sender: sender,
-                                        periodLength: periodLength,
-                                        onSent: function (r) {
-                                            console.log(" - collectFees sent:", r);
-                                        },
-                                        onSuccess: function (r) {
-                                            console.log(" - collectFees success:", r.callReturn);
-                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error(" - collectFees error:", e);
-                                            next(e);
-                                        }
-                                    });
-                                } else {
-                                    console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
-                                    console.log(" - setPenalizedUpTo params:", {
-                                        branch: branch,
-                                        sender: sender,
-                                        period: penalizePeriod
-                                    });
-                                    self.setPenalizedUpTo({
-                                        branch: branch,
-                                        sender: sender,
-                                        period: penalizePeriod,
-                                        onSent: function (r) {
-                                            console.log(" - setPenalizedUpTo sent:", r);
-                                        },
-                                        onSuccess: function (r) {
-                                            console.log(" - setPenalizedUpTo success:", r.callReturn);
-                                            console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                            checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error(" - setPenalizedUpTo error:", e);
-                                            next(e);
-                                        }
-                                    });
-                                }
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(err);
-                            }
-                        });
-                    } else {
-                        console.log("Events found for period " + penalizePeriod + ", looping through...");
-                        async.eachSeries(events, function (event, nextEvent) {
-                            console.log(" - penalizeWrong:", event);
-                            self.penalizeWrong({
-                                branch: branch,
-                                event: event,
-                                onSent: utils.noop,
-                                onSuccess: function (r) {
-                                    console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                    if (r.callReturn !== "-8") return nextEvent();
-                                    if (self.getCurrentPeriodProgress(periodLength) > 50) {
-                                        console.log(" - penalizeWrong -8 error code, collecting fees for last period...");
-                                        console.log(" - collectFees params:", {
-                                            branch: branch,
-                                            sender: sender,
-                                            periodLength: periodLength
-                                        });
-                                        return self.collectFees({
-                                            branch: branch,
-                                            sender: sender,
-                                            periodLength: periodLength,
-                                            onSent: function (r) {
-                                                console.log(" - collectFees sent:", r);
-                                            },
-                                            onSuccess: function (r) {
-                                                console.log(" - collectFees success:", r.callReturn);
-                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                            },
-                                            onFailed: function (e) {
-                                                console.error(" - collectFees error:", e);
-                                                nextEvent(e);
-                                            }
-                                        });
-                                    } else {
-                                        console.log(" - penalizeWrong -8 error code, calling setPenalizedUpTo");
-                                        console.log(" - setPenalizedUpTo params:", {
-                                            branch: branch,
-                                            sender: sender,
-                                            period: penalizePeriod
-                                        });
-                                        self.setPenalizedUpTo({
-                                            branch: branch,
-                                            sender: sender,
-                                            period: penalizePeriod,
-                                            onSent: function (r) {
-                                                console.log(" - setPenalizedUpTo sent:", r);
-                                            },
-                                            onSuccess: function (r) {
-                                                console.log(" - setPenalizedUpTo success:", r.callReturn);
-                                                console.log(" - retrying checkPenalizeWrong", branch, periodLength, votePeriod);
-                                                checkPenalizeWrong(branch, periodLength, votePeriod, next);
-                                            },
-                                            onFailed: function (e) {
-                                                console.error(" - setPenalizedUpTo error:", e);
-                                                nextEvent(e);
-                                            }
-                                        });
-                                    }
-                                },
-                                onFailed: function (err) {
-                                    if (err.error === "-5") return next(null, penalizePeriod);
-                                    console.error(" - penalizeWrong error:", err);
-                                    nextEvent(err);
-                                }
-                            });
-                        }, function (e) {
-                            if (e) return next(e);
-                            next(null, penalizePeriod);
-                        });
-                    }
-                });
-            });
-        }
-
-        function checkIncrementPeriod(branch, periodLength, next) {
-            console.log("calling getVotePeriod...", branch);
-            self.getVotePeriod(branch, function (votePeriod) {
-                console.log("votePeriod:", votePeriod);
-                if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
-                    console.log("votePeriod < currentPeriod - 1, calling increment period...");
-                    incrementPeriod(branch, periodLength, function (err, votePeriod) {
-                        if (err) return next(err);
-                        console.log("New vote period:", votePeriod);
-                        next(null, votePeriod);
-                    });
-                } else {
-                    console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
-                    next(null, votePeriod);
-                }
-            });
-        }
-
-        console.log("calling checkIncrementPeriod...", branch, periodLength);
-        checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
-            console.log("checkIncrementPeriod:", err, votePeriod);
+        this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
+            if (self.options.debug.reporting) {
+                console.log("[checkPeriod] periodCatchUp:", err, votePeriod);
+            }
             if (err) return callback(err);
-            console.log("calling checkPenalizeWrong...", branch, votePeriod);
-            checkPenalizeWrong(branch, periodLength, votePeriod, function (err, penalizedPeriod) {
-                console.log("checkPenalizeWrong:", err);
+            if (self.options.debug.reporting) {
+                console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
+            }
+            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, events) {
+                if (self.options.debug.reporting) {
+                    console.log("[checkPeriod] penaltyCatchUp:", err, events);
+                }
                 if (err) return callback(err);
-                if (penalizedPeriod === undefined) return callback(null, votePeriod);
-                console.log("penalized events in report period " + penalizedPeriod);
-                self.checkPeriod(branch, periodLength, sender, callback);
+                callback(null);
             });
         });
     },
 
-    // // Increment vote period until vote period = current period - 1
-    // checkPeriod: function (branch, periodLength, sender, callback) {
-    //     var self = this;
-    //     console.log("calling periodCatchUp...", branch, periodLength);
-    //     this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
-    //         console.log("periodCatchUp:", err, votePeriod);
-    //         if (err) return callback(err);
-    //         console.log("calling penaltyCatchUp...", branch, votePeriod - 1);
-    //         self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, events) {
-    //             console.log(" --------> penaltyCatchUp:", err, events);
-    //             if (err) return callback(err);
-    //             if (!events) return callback(null);
-    //             self.checkPeriod(branch, periodLength, sender, callback);
-    //         });
-    //     });
-    // },
-
     periodCatchUp: function (branch, periodLength, callback) {
-        console.log("calling getVotePeriod...", branch);
         var self = this;
-        this.getVotePeriod(branch, function (votePeriod) {
-            console.log("votePeriod:", votePeriod);
+        if (self.options.debug.reporting) {
+            console.log("calling getVotePeriod...", branch);
+        }
+        self.getVotePeriod(branch, function (votePeriod) {
+            if (self.options.debug.reporting) {
+                console.log("votePeriod:", votePeriod);
+            }
             if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
-                console.log("votePeriod < currentPeriod - 1, calling increment period...");
+                if (self.options.debug.reporting) {
+                    console.log("votePeriod < currentPeriod - 1, calling increment period...");
+                }
                 self.incrementPeriodAfterReporting({
                     branch: branch,
                     onSent: function (r) {},
                     onSuccess: function (r) {
-                        console.log("Incremented period:", r.callReturn);
+                        if (self.options.debug.reporting) {
+                            console.log("Incremented period:", r.callReturn);
+                        }
                         self.periodCatchUp(branch, periodLength, callback);
                     },
                     onFailed: callback
                 });
             } else {
-                console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
+                if (self.options.debug.reporting) {
+                    console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
+                }
                 callback(null, votePeriod);
             }
         });
@@ -47362,72 +47273,110 @@ module.exports = {
         var self = this;
         self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
             lastPeriodPenalized = parseInt(lastPeriodPenalized);
-            console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
-            console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+                console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            }
             if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
-                console.log("[penaltyCatchUp] Penalties caught up!");
+                if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] Penalties caught up!");
+                }
                 return callback(null);
             }
-            self.getEvents(branch, periodToCheck, function (events) {
-                console.log("[penaltyCatchUp] Events in vote period", periodToCheck + ":", events);
-                if (!events || events.constructor !== Array || !events.length) {
-                    console.log("[penaltyCatchUp] No events found for period", periodToCheck);
-                    // if > first period, then call penalizeWrong(branch, 0)
-                    console.log("[penaltyCatchUp] Calling penalizeWrong(branch, 0)...");
-                    self.penalizeWrong({
+            // If reported last period and called collectfees then call the penalization functions in
+            // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
+            // last period then call penalizationCatchup in order to allow submitReportHash to work.
+            self.getFeesCollected(branch, sender, periodToCheck - 1, function (feesCollected) {
+                console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                if (parseInt(feesCollected) === 0) {
+                    return self.penalizationCatchup({
                         branch: branch,
-                        event: 0,
-                        onSent: function (r) {
-                            console.log("[penaltyCatchUp] penalizeWrong sent:", r);
-                        },
+                        sender: sender,
+                        onSent: utils.noop,
                         onSuccess: function (r) {
-                            console.log("[penaltyCatchUp] penalizeWrong(branch, 0) success:", r);
-                            console.log(abi.bignum(r.callReturn, "string", true));
-                            callback(null, events);
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
+                            }
+                            callback(null);
                         },
-                        onFailed: function (err) {
-                            console.error("penalizeWrong(branch, 0) error:", err);
-                            callback(err);
+                        onFailed: function (e) {
+                            console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+                            callback(e);
                         }
                     });
-                } else {
-                    console.log("[penaltyCatchUp] Events found for period " + periodToCheck + ", looping through...");
-                    async.eachSeries(events, function (event, nextEvent) {
-                        console.log("[penaltyCatchUp] penalizeWrong:", event);
-                        self.penalizeWrong({
+                }
+                self.getEvents(branch, periodToCheck, function (events) {
+                    if (!events || events.constructor !== Array || !events.length) {
+                        if (self.options.debug.reporting) {
+                            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
+                        }
+                        return self.penalizeWrong({
                             branch: branch,
-                            event: event,
+                            event: 0,
                             onSent: utils.noop,
                             onSuccess: function (r) {
-                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                self.getNumMarkets(event, function (numMarkets) {
-                                    if (!numMarkets || numMarkets.error) {
-                                        return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
-                                    }
-                                    if (parseInt(numMarkets) === 1) {
-                                        return nextEvent(null);
-                                    }
-                                    self.closeExtraMarkets(branch, event, sender, nextEvent);
-                                });
+                                if (self.options.debug.reporting) {
+                                    console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
+                                }
+                                callback(null, events);
                             },
-                            onFailed: function (err) {
-                                console.error(" - penalizeWrong error:", err);
-                                nextEvent(err);
+                            onFailed: function (e) {
+                                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                                callback(e);
                             }
+                        });
+                    }
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                    }
+                    async.eachSeries(events, function (event, nextEvent) {
+                        self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                            }
+                            if (parseInt(canReportOn) === 0) return nextEvent(null);
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizeWrong:", event);
+                            }
+                            self.penalizeWrong({
+                                branch: branch,
+                                event: event,
+                                onSent: utils.noop,
+                                onSuccess: function (r) {
+                                    if (self.options.debug.reporting) {
+                                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                    }
+                                    self.getNumMarkets(event, function (numMarkets) {
+                                        if (!numMarkets || numMarkets.error) {
+                                            return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                        }
+                                        if (parseInt(numMarkets) === 1) {
+                                            return nextEvent(null);
+                                        }
+                                        self.closeExtraMarkets(branch, event, sender, nextEvent);
+                                    });
+                                },
+                                onFailed: function (e) {
+                                    console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                    nextEvent(e);
+                                }
+                            });
                         });
                     }, function (e) {
                         if (e) return callback(e);
                         callback(null, events);
                     });
-                }
+                });
             });
         });
     },
 
     closeExtraMarkets: function (branch, event, sender, callback) {
-        console.log("closing extra markets for event", event);
         var self = this;
-        this.getMarkets(event, function (markets) {
+        if (self.options.debug.reporting) {
+            console.log("[closeExtraMarkets] Closing extra markets for event", event);
+        }
+        self.getMarkets(event, function (markets) {
             if (!markets) return callback("no markets found for " + event);
             if (markets && markets.error) return callback(markets);
             if (markets.length <= 1) return callback(null);
@@ -47437,13 +47386,20 @@ module.exports = {
                     market: market,
                     sender: sender,
                     onSent: function (r) {
-                        console.log("closeMarket", market, r);
+                        if (self.options.debug.reporting) {
+                            console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                        }
                     },
                     onSuccess: function (r) {
-                        console.log("closeMarket success", market, r.callReturn);
-                        nextMarket();
+                        if (self.options.debug.reporting) {
+                            console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                        }
+                        nextMarket(null);
                     },
-                    onFailed: nextMarket
+                    onFailed: function (e) {
+                        console.error("[closeExtraMarkets] closeMarket failed:", market, e);
+                        nextMarket(e);
+                    }
                 });
             }, callback);
         });

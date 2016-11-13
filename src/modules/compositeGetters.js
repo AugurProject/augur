@@ -238,7 +238,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs, account || 0];
-        this.rpc.debug.tx=true;
         return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 

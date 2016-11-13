@@ -122,13 +122,9 @@ describe("Unit tests", function () {
                 }
             },
             assertions: function (sequence, startState, endState) {
-                console.log("sequence:", JSON.stringify(sequence, null, 4));
                 assert.deepEqual(sequence, [{
                     "method": "getVotePeriod",
                     "params": ["0xb1"]
-                }, {
-                    "method": "getCurrentPeriod",
-                    "params": [100]
                 }, {
                     "method": "getCurrentPeriod",
                     "params": [100]
@@ -189,9 +185,6 @@ describe("Unit tests", function () {
                 }, {
                     method: "getCurrentPeriod",
                     params: [100]
-                }, {
-                    method: "getCurrentPeriod",
-                    params: [100]
                 }]);
                 assert.deepEqual(startState.periodLength, endState.periodLength);
                 assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
@@ -237,7 +230,6 @@ describe("Unit tests", function () {
                 }
             },
             assertions: function (sequence, startState, endState) {
-                console.log("sequence:", JSON.stringify(sequence, null, 4));
                 assert.deepEqual(sequence, [{
                     method: "getVotePeriod",
                     params: ["0xb1"]
@@ -266,9 +258,6 @@ describe("Unit tests", function () {
                 }, {
                     method: "getCurrentPeriod",
                     params: [100]
-                }, {
-                    method: "getCurrentPeriod",
-                    params: [100]
                 }]);
                 assert.deepEqual(startState.periodLength, endState.periodLength);
                 assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
@@ -285,6 +274,9 @@ describe("Unit tests", function () {
         var test = function (t) {
             var getEvents = augur.getEvents;
             var getPenalizedUpTo = augur.getPenalizedUpTo;
+            var getEventCanReportOn = augur.getEventCanReportOn;
+            var getFeesCollected = augur.getFeesCollected;
+            var penalizationCatchup = augur.penalizationCatchup;
             var penalizeWrong = augur.penalizeWrong;
             var getNumMarkets = augur.getNumMarkets;
             var getMarkets = augur.getMarkets;
@@ -295,6 +287,9 @@ describe("Unit tests", function () {
             after(function () {
                 augur.getEvents = getEvents;
                 augur.getPenalizedUpTo = getPenalizedUpTo;
+                augur.getEventCanReportOn = getEventCanReportOn;
+                augur.getFeesCollected = getFeesCollected;
+                augur.penalizationCatchup = penalizationCatchup;
                 augur.penalizeWrong = penalizeWrong;
                 augur.getNumMarkets = getNumMarkets;
                 augur.getMarkets = getMarkets;
@@ -327,8 +322,36 @@ describe("Unit tests", function () {
                     callback(state.markets[eventID]);
                 };
                 augur.getPenalizedUpTo = function (branchID, sender, callback) {
-                    sequence.push({method: "getPenalizedUpTo", params: [branchID, sender]});
+                    sequence.push({
+                        method: "getPenalizedUpTo",
+                        params: [branchID, sender]
+                    });
                     callback(state.lastPeriodPenalized[branchID]);
+                };
+                augur.getFeesCollected = function (branch, sender, period, callback) {
+                    sequence.push({
+                        method: "getFeesCollected",
+                        params: [branch, sender, period]
+                    });
+                    callback(state.feesCollected[branch][period]);
+                };
+                augur.getEventCanReportOn = function (branch, period, sender, event, callback) {
+                    sequence.push({
+                        method: "getEventCanReportOn",
+                        params: [branch, period, sender, event]
+                    });
+                    callback("1");
+                };
+                augur.penalizationCatchup = function (o) {
+                    sequence.push({
+                        method: "penalizationCatchup",
+                        params: {
+                            branch: o.branch,
+                            sender: o.sender
+                        }
+                    });
+                    state.lastPeriodPenalized[o.branch] = t.state.reportPeriod[o.branch] - 1;
+                    o.onSuccess({callReturn: "1"});
                 };
                 augur.incrementPeriodAfterReporting = function (o) {
                     sequence.push({
@@ -393,6 +416,13 @@ describe("Unit tests", function () {
                 lastPeriodPenalized: {
                     "0xb1": 7
                 },
+                feesCollected: {
+                    "0xb1": {
+                        "7": "1",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "7": ["0x7e1", "0x7e2", "0x7e3"],
@@ -450,6 +480,14 @@ describe("Unit tests", function () {
                 lastPeriodPenalized: {
                     "0xb1": 6
                 },
+                feesCollected: {
+                    "0xb1": {
+                        "6": "1",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "6": ["0x6e1", "0x6e2", "0x6e3"],
@@ -483,38 +521,50 @@ describe("Unit tests", function () {
             },
             assertions: function (sequence, startState, endState) {
                 assert.deepEqual(sequence, [{
-                    "method": "getPenalizedUpTo",
-                    "params": ["0xb1", "0xb0b"]
+                    method: "getPenalizedUpTo",
+                    params: ["0xb1", "0xb0b"]
                 }, {
-                    "method": "getEvents",
-                    "params": ["0xb1", 7]
+                    method: "getFeesCollected",
+                    params: ["0xb1", "0xb0b", 6]
                 }, {
-                    "method": "penalizeWrong",
-                    "params": {
-                        "branch": "0xb1",
-                        "event": "0x7e1"
+                    method: "getEvents",
+                    params: ["0xb1", 7]
+                }, {
+                    method: "getEventCanReportOn",
+                    params: ["0xb1", 7, "0xb0b", "0x7e1"]
+                }, {
+                    method: "penalizeWrong",
+                    params: {
+                        branch: "0xb1",
+                        event: "0x7e1"
                     }
                 }, {
-                    "method": "getNumMarkets",
-                    "params": ["0x7e1"]
+                    method: "getNumMarkets",
+                    params: ["0x7e1"]
                 }, {
-                    "method": "penalizeWrong",
-                    "params": {
-                        "branch": "0xb1",
-                        "event": "0x7e2"
+                    method: "getEventCanReportOn",
+                    params: ["0xb1", 7, "0xb0b", "0x7e2"]
+                }, {
+                    method: "penalizeWrong",
+                    params: {
+                        branch: "0xb1",
+                        event: "0x7e2"
                     }
                 }, {
-                    "method": "getNumMarkets",
-                    "params": ["0x7e2"]
+                    method: "getNumMarkets",
+                    params: ["0x7e2"]
                 }, {
-                    "method": "penalizeWrong",
-                    "params": {
-                        "branch": "0xb1",
-                        "event": "0x7e3"
+                    method: "getEventCanReportOn",
+                    params: ["0xb1", 7, "0xb0b", "0x7e3"]
+                }, {
+                    method: "penalizeWrong",
+                    params: {
+                        branch: "0xb1",
+                        event: "0x7e3"
                     }
                 }, {
-                    "method": "getNumMarkets",
-                    "params": ["0x7e3"]
+                    method: "getNumMarkets",
+                    params: ["0x7e3"]
                 }]);
                 assert.deepEqual(startState.periodLength, endState.periodLength);
                 assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
@@ -550,6 +600,14 @@ describe("Unit tests", function () {
                 lastPeriodPenalized: {
                     "0xb1": 6
                 },
+                feesCollected: {
+                    "0xb1": {
+                        "6": "1",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "6": ["0x6e1", "0x6e2", "0x6e3"],
@@ -583,19 +641,111 @@ describe("Unit tests", function () {
                     method: "getPenalizedUpTo",
                     params: ["0xb1", "0xb0b"]
                 }, {
+                    method: "getFeesCollected",
+                    params: ["0xb1", "0xb0b", 6]
+                }, {
                     method: "getEvents",
                     params: ["0xb1", 7]
                 }, {
                     method: "penalizeWrong",
                     params: {
-                        "branch": "0xb1",
-                        "event": 0
+                        branch: "0xb1",
+                        event: 0
                     }
                 }]);
                 assert.deepEqual(startState.periodLength, endState.periodLength);
                 assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
                 assert.deepEqual(startState.reportPeriod, endState.reportPeriod);
                 assert.strictEqual(startState.lastPeriodPenalized["0xb1"] + 1, endState.lastPeriodPenalized["0xb1"]);
+                assert.strictEqual(endState.lastPeriodPenalized["0xb1"], endState.reportPeriod["0xb1"] - 1);
+                assert.deepEqual(endState.penalized, startState.penalized);
+                assert.deepEqual(startState.events, endState.events);
+                assert.deepEqual(startState.markets, endState.markets);
+            }
+        });
+        test({
+            description: "penalties behind by 2, 3 events in each period -> call penalizeWrong once with events=0, increase last period penalized by 1",
+            params: {
+                branchID: "0xb1",
+                sender: "0xb0b",
+                periodToCheck: 7
+            },
+            state: {
+                periodLength: {
+                    "0xb1": 100
+                },
+                currentPeriod: {
+                    "0xb1": 9
+                },
+                reportPeriod: {
+                    "0xb1": 8
+                },
+                lastPeriodPenalized: {
+                    "0xb1": 5
+                },
+                feesCollected: {
+                    "0xb1": {
+                        "5": "1",
+                        "6": "0",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
+                penalized: {
+                    "0xb1": {
+                        "5": ["0x5e1", "0x5e2", "0x5e3"],
+                        "6": [],
+                        "7": [],
+                        "8": [],
+                        "9": []
+                    }
+                },
+                events: {
+                    "0xb1": {
+                        "5": ["0x5e1", "0x5e2", "0x5e3"],
+                        "6": ["0x6e1", "0x6e2", "0x6e3"],
+                        "7": ["0x7e1", "0x7e2", "0x7e3"],
+                        "8": ["0x8e1", "0x8e2", "0x8e3"],
+                        "9": ["0x9e1", "0x9e2", "0x9e3"]
+                    }
+                },
+                markets: {
+                    "0x5e1": ["0x5a1"],
+                    "0x5e2": ["0x5a2"],
+                    "0x5e3": ["0x5a3"],
+                    "0x6e1": ["0x6a1"],
+                    "0x6e2": ["0x6a2"],
+                    "0x6e3": ["0x6a3"],
+                    "0x7e1": ["0x7a1"],
+                    "0x7e2": ["0x7a2"],
+                    "0x7e3": ["0x7a3"],
+                    "0x8e1": ["0x8a1"],
+                    "0x8e2": ["0x8a2"],
+                    "0x8e3": ["0x8a3"],
+                    "0x9e1": ["0x9a1"],
+                    "0x9e2": ["0x9a2"],
+                    "0x9e3": ["0x9a3"]
+                }
+            },
+            assertions: function (sequence, startState, endState) {
+                assert.deepEqual(sequence, [{
+                    method: "getPenalizedUpTo",
+                    params: ["0xb1", "0xb0b"]
+                }, {
+                    method: "getFeesCollected",
+                    params: ["0xb1", "0xb0b", 6]
+                }, {
+                    method: "penalizationCatchup",
+                    params: {
+                        branch: "0xb1",
+                        sender: "0xb0b"
+                    }
+                }]);
+                assert.deepEqual(startState.periodLength, endState.periodLength);
+                assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
+                assert.deepEqual(startState.reportPeriod, endState.reportPeriod);
+                assert.strictEqual(startState.lastPeriodPenalized["0xb1"] + 2, endState.lastPeriodPenalized["0xb1"]);
                 assert.strictEqual(endState.lastPeriodPenalized["0xb1"], endState.reportPeriod["0xb1"] - 1);
                 assert.deepEqual(endState.penalized, startState.penalized);
                 assert.deepEqual(startState.events, endState.events);

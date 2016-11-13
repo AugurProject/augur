@@ -150,13 +150,21 @@ module.exports = {
             encryptedSalt || 0,
             abi.fix(ethics, "hex")
         ];
+        if (this.options.debug.reporting) {
+            console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
+        }
         return this.transact(tx, onSent, function (res) {
+            if (self.options.debug.reporting) {
+                console.log('submitReportHash response:', JSON.stringify(res, null, 2));
+            }
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
                 return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
                     if (err) return onFailed(err);
                     self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-                        console.log('rep redistribution done:', repRedistributionDone);
+                        if (self.options.debug.reporting) {
+                            console.log('rep redistribution done:', repRedistributionDone);
+                        }
                         if (repRedistributionDone === "0") {
                             return onFailed("rep redistribution not done");
                         }
@@ -193,24 +201,34 @@ module.exports = {
         }, onFailed);
     },
 
-    submitReport: function (event, salt, report, ethics, minValue, maxValue, isBinary, isIndeterminate, onSent, onSuccess, onFailed) {
+    submitReport: function (event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
         if (event.constructor === Object) {
             salt = event.salt;
             report = event.report;
             ethics = event.ethics;
             minValue = event.minValue;
             maxValue = event.maxValue;
-            isBinary = event.isBinary;
+            type = event.type;
             isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
             event = event.event;
         }
+        if (this.options.debug.reporting) {
+            console.log('MakeReports.submitReport params:',
+                event,
+                abi.hex(salt),
+                this.fixReport(report, minValue, maxValue, type, isIndeterminate),
+                ethics,
+                onSent,
+                onSuccess,
+                onFailed);
+        }
         return this.MakeReports.submitReport(
             event,
             abi.hex(salt),
-            this.fixReport(report, minValue, maxValue, isBinary, isIndeterminate),
+            this.fixReport(report, minValue, maxValue, type, isIndeterminate),
             ethics,
             onSent,
             onSuccess,

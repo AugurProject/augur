@@ -142,7 +142,7 @@ describe("Reporting sequence", function () {
             async.forEachOf(events, function (event, type, nextEvent) {
                 augur.getMinValue(event, function (minValue) {
                     augur.getMaxValue(event, function (maxValue) {
-                        var fixedReport = augur.fixReport(report, minValue, maxValue, type === "binary", false);
+                        var fixedReport = augur.fixReport(report, minValue, maxValue, type, false);
                         var reportHash = augur.makeHash(salt, fixedReport, event, sender);
                         if (DEBUG) {
                             printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
@@ -230,7 +230,7 @@ describe("Reporting sequence", function () {
                                     ethics: 1, // 1 = ethical
                                     minValue: minValue,
                                     maxValue: maxValue,
-                                    isBinary: type === "binary",
+                                    type: type,
                                     isIndeterminate: false
                                 });
                                 augur.submitReport({
@@ -240,28 +240,33 @@ describe("Reporting sequence", function () {
                                     ethics: 1, // 1 = ethical
                                     minValue: minValue,
                                     maxValue: maxValue,
-                                    isBinary: type === "binary",
+                                    type: type,
                                     isIndeterminate: false,
                                     onSent: function (res) {
                                         console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
                                     },
                                     onSuccess: function (res) {
-                                        var storedReport = augur.ExpiringEvents.getReport({
+                                        augur.getReport({
                                             branch: newBranchID,
                                             period: period,
                                             event: event,
-                                            sender: sender
+                                            sender: sender,
+                                            minValue: minValue,
+                                            maxValue: maxValue,
+                                            type: type,
+                                            callback: function (storedReport) {
+                                                if (DEBUG) {
+                                                    var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
+                                                    console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+                                                    printReportingStatus(event, "[" + type  + "] submitReport complete");
+                                                    console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+                                                }
+                                                assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
+                                                assert.strictEqual(parseInt(storedReport), report);
+                                                nextEvent();
+                                            }
                                         });
-                                        if (DEBUG) {
-                                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period-1);
-                                            console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                                            printReportingStatus(event, "[" + type  + "] submitReport complete");
-                                            console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                                            console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
-                                        }
-                                        assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                                        assert.strictEqual(parseInt(storedReport), report);
-                                        nextEvent();
                                     },
                                     onFailed: nextEvent
                                 });
