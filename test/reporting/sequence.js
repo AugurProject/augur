@@ -260,10 +260,11 @@ describe("Reporting sequence", function () {
                                                     console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
                                                     printReportingStatus(event, "[" + type  + "] submitReport complete");
                                                     console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+                                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport.report));
                                                 }
                                                 assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                                                assert.strictEqual(parseInt(storedReport), report);
+                                                assert.strictEqual(parseInt(storedReport.report), report);
+                                                assert.strictEqual(storedReport.isIndeterminate, false);
                                                 nextEvent();
                                             }
                                         });
