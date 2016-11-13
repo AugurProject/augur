@@ -22,6 +22,28 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 var today = new Date();
 
 var cannedMarkets = [{
+    description: "What will be the status of the U.S. electoral college on January 1, 2020?~|>Unchanged from 2016|Undermined but still in existence (e.g., National Popular Vote bill)|Formally abolished",
+    expDate: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 3,
+    numOutcomes: 3,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["elections", "US politics", "popular vote"],
+    extraInfo: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia).  It has been enacted into law in 11 states with 165 electoral votes, and will take effect when enacted by states with 105 more electoral votes. The bill has passed one chamber in 12 additional states with 96 electoral votes.   Most recently, the bill was passed by a bipartisan 40–16 vote in the Republican-controlled Arizona House, 28–18 in Republican-controlled Oklahoma Senate, 57–4 in Republican-controlled New York Senate, and 37–21 in Democratic-controlled Oregon House. http://www.nationalpopularvote.com",
+    resolution: ""
+}, {
+    description: "Will California secede from the United States before January 1, 2020?",
+    expDate: parseInt(new Date("1/1/2020").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.03",
+    makerFee: "0.01",
+    tags: ["Calexit", "California", "secession"],
+    extraInfo: "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
+    resolution: ""
+}, {
     description: "What will the maximum temperature be (in degrees Fahrenheit) on " + today.toLocaleDateString() + " at the San Francisco International Airport, as reported by Weather Underground?",
     expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
     minValue: -10,
@@ -32,17 +54,6 @@ var cannedMarkets = [{
     tags: ["weather", "temperature", "SFO"],
     extraInfo: "https://www.penny-arcade.com/comic/2001/12/12",
     resolution: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join('/') + "/DailyHistory.html"
-}, {
-    description: "Which candidate will be leading in the polls in the 2016 U.S. Presidential election at midnight PST " + midnightTomorrow.toDateString() + ", according to the RealClearPolitics 4-way polling average?~|>Clinton|Trump|Johnson|Stein",
-    expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
-    minValue: 1,
-    maxValue: 2,
-    numOutcomes: 4,
-    takerFee: "0.025",
-    makerFee: "0.005",
-    tags: ["politics", "US elections", "polling"],
-    extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-    resolution: "http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton_vs_johnson_vs_stein-5952.html"
 }, {
     description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
     expDate: parseInt(closingBell.getTime() / 1000, 10),
@@ -66,10 +77,32 @@ var cannedMarkets = [{
     extraInfo: "https://www.augur.net",
     resolution: "https://www.augur.net"
 }, {
-    description: "Who will win the University of Georgia vs. University of Florida football game in 2016?~|>Georgia|Florida|Vanderbilt",
-    expDate: parseInt(new Date("10/30/2016").getTime() / 1000, 10),
+    description: "Will Augur's live release happen by the end of February, 2017?",
+    expDate: parseInt(new Date("3/1/2017").getTime() / 1000, 10),
     minValue: 1,
     maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.03",
+    makerFee: "0.01",
+    tags: ["Augur", "release date", "Ethereum"],
+    extraInfo: "https://www.augur.net",
+    resolution: "https://www.augur.net"
+}, {
+    description: "Will Augur's live release happen by the end of June, 2017?",
+    expDate: parseInt(new Date("7/1/2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.03",
+    makerFee: "0.01",
+    tags: ["Augur", "release date", "Ethereum"],
+    extraInfo: "https://www.augur.net",
+    resolution: "https://www.augur.net"
+}, {
+    description: "Who will win the University of Georgia vs. University of Florida football game in 2017?~|>Georgia|Florida|Vanderbilt",
+    expDate: parseInt(new Date("10/30/2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 3,
     numOutcomes: 3,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -98,17 +131,6 @@ var cannedMarkets = [{
     tags: ["Augur", "Reputation", "REP"],
     extraInfo: "https://www.reddit.com/r/reptrader",
     resolution: "http://coinmarketcap.com"
-}, {
-    description: "Who will win the 2016 U.S. Presidential election?~|>Hillary Clinton|Donald Trump|Gary Johnson|Jill Stein|someone else",
-    expDate: parseInt(new Date("1/2/2017").getTime() / 1000, 10),
-    minValue: 1,
-    maxValue: 2,
-    numOutcomes: 5,
-    takerFee: "0.08",
-    makerFee: "0.0225",
-    tags: ["politics", "US elections", "president"],
-    extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-    resolution: ""
 }, {
     description: "Will Ethereum trade at $15 or higher by midnight EST on November 30, 2016?",
     expDate: parseInt(new Date("12/1/2016").getTime() / 1000, 10),
@@ -146,7 +168,7 @@ var cannedMarkets = [{
     description: "Which city will have the highest median single-family home price for September 2017?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
     expDate: parseInt(new Date("10-2-2017").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 8,
     numOutcomes: 8,
     takerFee: "0.03",
     makerFee: "0.005",
@@ -217,7 +239,7 @@ var cannedMarkets = [{
     description: "What will be the number one killer in the United States by January 1, 2025?~|>cancer|heart attacks|infectious diseases|starvation|lava|other",
     expDate: parseInt(new Date("1-2-2025").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 6,
     numOutcomes: 6,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -228,7 +250,7 @@ var cannedMarkets = [{
     description: "Who will win the NFL Rookie of the year Award?~|>Carson Wentz|Dak Prescott|Ezekiel Elliott|Will Fuller|Field (Anyone else)",
     expDate: parseInt(new Date("2-5-2017").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 5,
     numOutcomes: 5,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -295,7 +317,7 @@ var cannedMarkets = [{
     description: "Who will win the NFC East Conference?~|>Cowboys|Redskins|Eagles|Giants",
     expDate: parseInt(new Date("1-8-2017").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 4,
     numOutcomes: 4,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -352,7 +374,7 @@ var cannedMarkets = [{
     description: "Who will win the MLB World Series?~|>Indians|Blue Jays|Dodgers|Cubs",
     expDate: parseInt(new Date("11-5-2016").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 4,
     numOutcomes: 4,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -409,7 +431,7 @@ var cannedMarkets = [{
     description: "Who will win the PGA Tournament of Champions?~|>Jason Day|Jordan Spieth|Dustin Johnson|Rory Mcllroy|Henrik Stenson|Field",
     expDate: parseInt(new Date("1-10-2017").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 6,
     numOutcomes: 6,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -486,7 +508,7 @@ var cannedMarkets = [{
     description: "How many strokes will the winner of the PGA Tournament of Champions win by?~|>0 - will be decided by playoff|1|2|3|4|5 or more",
     expDate: parseInt(new Date("1-10-2017").getTime() / 1000, 10),
     minValue: 1,
-    maxValue: 2,
+    maxValue: 6,
     numOutcomes: 6,
     takerFee: "0.02",
     makerFee: "0.01",
@@ -600,51 +622,6 @@ var cannedMarkets = [{
                 {shares: "200", price: "0.6"}
             ],
             "1": []
-        }
-    }
-}, {
-    description: "Who will win the popular vote in the 2016 Presidential Election?~|>Hillary Clinton|Donald Trump|other",
-    expDate: parseInt(new Date("11-10-2016").getTime() / 1000, 10),
-    minValue: 1,
-    maxValue: 2,
-    numOutcomes: 3,
-    takerFee: "0.02",
-    makerFee: "0.01",
-    tags: ["US politics", "elections", "President"],
-    extraInfo: "",
-    resolution: "realclearpolitics.com",
-    orderBook: {
-        buy: {
-            "1": [
-                {shares: "100", price: "0.48"},
-                {shares: "50", price: "0.45"},
-                {shares: "200", price: "0.42"}
-            ],
-            "2": [
-                {shares: "150", price: "0.44"},
-                {shares: "200", price: "0.4"},
-                {shares: "200", price: "0.36"}
-            ],
-            "3": [
-                {shares: "100", price: "0.02"},
-                {shares: "100", price: "0.01"}
-            ]
-        },
-        sell: {
-            "1": [
-                {shares: "100", price: "0.52"},
-                {shares: "200", price: "0.56"},
-                {shares: "250", price: "0.6"}
-            ],
-            "2": [
-                {shares: "100", price: "0.49"},
-                {shares: "100", price: "0.53"},
-                {shares: "200", price: "0.56"}
-            ],
-            "3": [
-                {shares: "100", price: "0.05"},
-                {shares: "500", price: "0.1"}
-            ]
         }
     }
 }, {

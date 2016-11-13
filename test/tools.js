@@ -275,7 +275,7 @@ module.exports = {
                     description: description + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
                     expDate: expDate,
                     minValue: 1,
-                    maxValue: 2,
+                    maxValue: numCategories,
                     numOutcomes: numCategories,
                     resolution: resolution,
                     takerFee: takerFee,

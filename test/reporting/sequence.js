@@ -54,7 +54,11 @@ describe("Reporting sequence", function () {
     unlockable = augur.rpc.accounts();
     description = madlibs.adjective() + " " + madlibs.noun();
     periodLength = 900;
-    report = 1;
+    report = {
+        binary: 2,
+        categorical: 3,
+        scalar: 9
+    };
     salt = "1337";
     markets = {};
     events = {};
@@ -142,11 +146,15 @@ describe("Reporting sequence", function () {
             async.forEachOf(events, function (event, type, nextEvent) {
                 augur.getMinValue(event, function (minValue) {
                     augur.getMaxValue(event, function (maxValue) {
-                        var fixedReport = augur.fixReport(report, minValue, maxValue, type, false);
+                        var fixedReport = augur.fixReport(report[type], minValue, maxValue, type, false);
                         var reportHash = augur.makeHash(salt, fixedReport, event, sender);
                         if (DEBUG) {
                             printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
-                            console.log(chalk.white.dim("Submitting report hash:"), chalk.green(reportHash));
+                            console.log(chalk.white.dim("Min value:"), chalk.cyan(minValue));
+                            console.log(chalk.white.dim("Max value:"), chalk.cyan(maxValue));
+                            console.log(chalk.white.dim("Report:"), chalk.cyan(report[type]));
+                            console.log(chalk.white.dim("Fixed-point report:"), chalk.cyan(fixedReport));
+                            console.log(chalk.white.dim("Report hash:"), chalk.green(reportHash));
                         }
                         assert.include(eventsToReportOn, event);
                         if (DEBUG) {
@@ -154,6 +162,16 @@ describe("Reporting sequence", function () {
                             var lesserReportNum = augur.ExpiringEvents.getLesserReportNum(branch, period, event);
                             console.log(chalk.white.dim("Period Rep constant:"), chalk.cyan(periodRepConstant));
                             console.log(chalk.white.dim("Lesser report num:  "), chalk.cyan(lesserReportNum));
+                            console.log("submitReportHash:", {
+                                event: event,
+                                reportHash: reportHash,
+                                encryptedReport: 0,
+                                encryptedSalt: 0,
+                                branch: branch,
+                                period: period,
+                                periodLength: periodLength,
+                                ethics: 1
+                            });
                         }
                         augur.submitReportHash({
                             event: event,
@@ -223,20 +241,22 @@ describe("Reporting sequence", function () {
                         if (res && res.error) return nextEvent(res);
                         augur.getMinValue(event, function (minValue) {
                             augur.getMaxValue(event, function (maxValue) {
-                                console.log("submitting report:", {
-                                    event: event,
-                                    salt: salt,
-                                    report: report,
-                                    ethics: 1, // 1 = ethical
-                                    minValue: minValue,
-                                    maxValue: maxValue,
-                                    type: type,
-                                    isIndeterminate: false
-                                });
+                                if (DEBUG) {
+                                    console.log("submitReport:", {
+                                        event: event,
+                                        salt: salt,
+                                        report: report[type],
+                                        ethics: 1, // 1 = ethical
+                                        minValue: minValue,
+                                        maxValue: maxValue,
+                                        type: type,
+                                        isIndeterminate: false
+                                    });
+                                }
                                 augur.submitReport({
                                     event: event,
                                     salt: salt,
-                                    report: report,
+                                    report: report[type],
                                     ethics: 1, // 1 = ethical
                                     minValue: minValue,
                                     maxValue: maxValue,
@@ -246,6 +266,17 @@ describe("Reporting sequence", function () {
                                         console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
                                     },
                                     onSuccess: function (res) {
+                                        if (DEBUG) {
+                                            console.log("getReport:", {
+                                                branch: newBranchID,
+                                                period: period,
+                                                event: event,
+                                                sender: sender,
+                                                minValue: minValue,
+                                                maxValue: maxValue,
+                                                type: type
+                                            });
+                                        }
                                         augur.getReport({
                                             branch: newBranchID,
                                             period: period,
@@ -261,9 +292,10 @@ describe("Reporting sequence", function () {
                                                     printReportingStatus(event, "[" + type  + "] submitReport complete");
                                                     console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
                                                     console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport.report));
+                                                    console.log(chalk.white.dim(" - Expected report:      "), chalk.cyan(report[type]));
                                                 }
                                                 assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                                                assert.strictEqual(parseInt(storedReport.report), report);
+                                                assert.strictEqual(parseInt(storedReport.report), report[type]);
                                                 assert.strictEqual(storedReport.isIndeterminate, false);
                                                 nextEvent();
                                             }
@@ -337,16 +369,18 @@ describe("Reporting sequence", function () {
                                     if (DEBUG) {
                                         console.log("winningOutcomes:", winningOutcomes);
                                         console.log("event", event, "outcome:", eventOutcome);
+                                        console.log("expected outcome:", report[type]);
                                     }
                                     assert(parseInt(winningOutcomes[0]) !== 0);
                                     assert(parseInt(eventOutcome) !== 0);
+                                    assert.strictEqual(Math.round(parseFloat(eventOutcome)), report[type]);
+                                    // should these be equal?
+                                    // assert.strictEqual(parseInt(winningOutcomes[0]), report[type]);
                                     augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
                                         if (res && res.error) return nextEvent(res);
                                         var claimable = [markets.binary, markets.categorical, markets.scalar];
                                         augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
                                             assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
-                                            console.log("claimable:", claimable);
-                                            console.log("claimed:  ", claimed);
                                             assert.sameMembers(claimable, claimed);
                                             nextEvent();
                                         });

@@ -19142,7 +19142,7 @@ module.exports={
           "sender"
         ], 
         "method": "getNumReportsActual", 
-        "returns": "int256", 
+        "returns": "number", 
         "signature": [
           "int256", 
           "int256", 
@@ -44010,11 +44010,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.1";
+    this.version = "3.1.2";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -44687,16 +44687,22 @@ module.exports = {
             branch = branch.branch;
         }
         if (this.getCurrentPeriodProgress(periodLength) < 50) {
-            return onFailed({"-2": "needs to be second half of reporting period to claim rep"});
+            return onFailed({
+                "-2": "needs to be second half of reporting period to claim rep"
+            });
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            if (self.options.debug.reporting) {
+                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            }
             return self.transact(tx, onSent, utils.compose(function (res, cb) {
-                console.log("collectFees success:", JSON.stringify(res, null, 2));
+                if (self.options.debug.reporting) {
+                    console.log("collectFees success:", JSON.stringify(res, null, 2));
+                }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -47287,86 +47293,106 @@ module.exports = {
             // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
             // last period then call penalizationCatchup in order to allow submitReportHash to work.
             self.getFeesCollected(branch, sender, periodToCheck - 1, function (feesCollected) {
-                if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                if (!feesCollected || feesCollected.error) {
+                    return callback(feesCollected || "couldn't get fees collected");
                 }
-                if (parseInt(feesCollected) === 0) {
-                    return self.penalizationCatchup({
-                        branch: branch,
-                        sender: sender,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
-                            }
-                            callback(null);
-                        },
-                        onFailed: function (e) {
-                            console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
-                            callback(e);
-                        }
-                    });
-                }
-                self.getEvents(branch, periodToCheck, function (events) {
-                    if (!events || events.constructor !== Array || !events.length) {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-                        }
-                        return self.penalizeWrong({
+                self.getNumReportsActual(branch, periodToCheck - 1, sender, function (numReportsActual) {
+                    if (!numReportsActual || numReportsActual.error) {
+                        return callback(numReportsActual || "couldn't get num previous period reports");
+                    }
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                        console.log("[penaltyCatchUp] numReportsActual:", numReportsActual);
+                    }
+                    if (parseInt(feesCollected) === 0 || parseInt(numReportsActual) === 0) {
+                        return self.penalizationCatchup({
                             branch: branch,
-                            event: 0,
+                            sender: sender,
                             onSent: utils.noop,
                             onSuccess: function (r) {
                                 if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
+                                    console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
                                 }
-                                callback(null, events);
+                                callback(null);
                             },
                             onFailed: function (e) {
-                                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                                console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+                                if (e.error === -32000) {
+                                    return callback(null);
+                                }
                                 callback(e);
                             }
                         });
                     }
-                    if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
-                    }
-                    async.eachSeries(events, function (event, nextEvent) {
-                        self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                    self.getEvents(branch, periodToCheck, function (events) {
+                        if (!events || events.constructor !== Array || !events.length) {
                             if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                                console.log("[penaltyCatchUp] No events found in period", periodToCheck);
                             }
-                            if (parseInt(canReportOn) === 0) return nextEvent(null);
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] penalizeWrong:", event);
-                            }
-                            self.penalizeWrong({
+                            return self.penalizeWrong({
                                 branch: branch,
-                                event: event,
+                                event: 0,
                                 onSent: utils.noop,
                                 onSuccess: function (r) {
                                     if (self.options.debug.reporting) {
-                                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                        console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                                     }
-                                    self.getNumMarkets(event, function (numMarkets) {
-                                        if (!numMarkets || numMarkets.error) {
-                                            return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
-                                        }
-                                        if (parseInt(numMarkets) === 1) {
-                                            return nextEvent(null);
-                                        }
-                                        self.closeExtraMarkets(branch, event, sender, nextEvent);
-                                    });
+                                    callback(null, events);
                                 },
                                 onFailed: function (e) {
-                                    console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                    nextEvent(e);
+                                    console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                                    callback(null, events);
+                                    // if (e.error === -32000) {
+                                    //     return callback(null, events);
+                                    // }
+                                    // callback(e);
                                 }
                             });
+                        }
+                        if (self.options.debug.reporting) {
+                            console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                        }
+                        async.eachSeries(events, function (event, nextEvent) {
+                            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                                if (self.options.debug.reporting) {
+                                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                                }
+                                if (parseInt(canReportOn) === 0) return nextEvent(null);
+                                if (self.options.debug.reporting) {
+                                    console.log("[penaltyCatchUp] penalizeWrong:", event);
+                                }
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: event,
+                                    onSent: utils.noop,
+                                    onSuccess: function (r) {
+                                        if (self.options.debug.reporting) {
+                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                        }
+                                        self.getNumMarkets(event, function (numMarkets) {
+                                            if (!numMarkets || numMarkets.error) {
+                                                return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                            }
+                                            if (parseInt(numMarkets) === 1) {
+                                                return nextEvent(null);
+                                            }
+                                            self.closeExtraMarkets(branch, event, sender, nextEvent);
+                                        });
+                                    },
+                                    onFailed: function (e) {
+                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                        nextEvent(null);
+                                        // if (e.error === -32000) {
+                                        //     return nextEvent(null);
+                                        // }
+                                        // nextEvent(e);
+                                    }
+                                });
+                            });
+                        }, function (e) {
+                            if (e) return callback(e);
+                            callback(null, events);
                         });
-                    }, function (e) {
-                        if (e) return callback(e);
-                        callback(null, events);
                     });
                 });
             });
@@ -48781,7 +48807,7 @@ module.exports = {
                     description: description + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
                     expDate: expDate,
                     minValue: 1,
-                    maxValue: 2,
+                    maxValue: numCategories,
                     numOutcomes: numCategories,
                     resolution: resolution,
                     takerFee: takerFee,

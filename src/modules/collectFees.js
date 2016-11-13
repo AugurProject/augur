@@ -23,16 +23,22 @@ module.exports = {
             branch = branch.branch;
         }
         if (this.getCurrentPeriodProgress(periodLength) < 50) {
-            return onFailed({"-2": "needs to be second half of reporting period to claim rep"});
+            return onFailed({
+                "-2": "needs to be second half of reporting period to claim rep"
+            });
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            if (self.options.debug.reporting) {
+                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            }
             return self.transact(tx, onSent, utils.compose(function (res, cb) {
-                console.log("collectFees success:", JSON.stringify(res, null, 2));
+                if (self.options.debug.reporting) {
+                    console.log("collectFees success:", JSON.stringify(res, null, 2));
+                }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }

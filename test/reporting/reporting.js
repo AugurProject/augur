@@ -270,12 +270,12 @@ describe("Unit tests", function () {
     });
 
     describe("penaltyCatchUp", function () {
-
         var test = function (t) {
             var getEvents = augur.getEvents;
             var getPenalizedUpTo = augur.getPenalizedUpTo;
             var getEventCanReportOn = augur.getEventCanReportOn;
             var getFeesCollected = augur.getFeesCollected;
+            var getNumReportsActual = augur.getNumReportsActual;
             var penalizationCatchup = augur.penalizationCatchup;
             var penalizeWrong = augur.penalizeWrong;
             var getNumMarkets = augur.getNumMarkets;
@@ -289,6 +289,7 @@ describe("Unit tests", function () {
                 augur.getPenalizedUpTo = getPenalizedUpTo;
                 augur.getEventCanReportOn = getEventCanReportOn;
                 augur.getFeesCollected = getFeesCollected;
+                augur.getNumReportsActual = getNumReportsActual;
                 augur.penalizationCatchup = penalizationCatchup;
                 augur.penalizeWrong = penalizeWrong;
                 augur.getNumMarkets = getNumMarkets;
@@ -327,6 +328,13 @@ describe("Unit tests", function () {
                         params: [branchID, sender]
                     });
                     callback(state.lastPeriodPenalized[branchID]);
+                };
+                augur.getNumReportsActual = function (branch, period, sender, callback) {
+                    sequence.push({
+                        method: "getNumReportsActual",
+                        params: [branch, period, sender]
+                    });
+                    callback(state.penalized[branch][period].length.toString());
                 };
                 augur.getFeesCollected = function (branch, sender, period, callback) {
                     sequence.push({
@@ -423,6 +431,13 @@ describe("Unit tests", function () {
                         "9": "0"
                     }
                 },
+                numReportsActual: {
+                    "0xb1": {
+                        "7": "3",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "7": ["0x7e1", "0x7e2", "0x7e3"],
@@ -488,6 +503,14 @@ describe("Unit tests", function () {
                         "9": "0"
                     }
                 },
+                numReportsActual: {
+                    "0xb1": {
+                        "6": "3",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "6": ["0x6e1", "0x6e2", "0x6e3"],
@@ -526,6 +549,9 @@ describe("Unit tests", function () {
                 }, {
                     method: "getFeesCollected",
                     params: ["0xb1", "0xb0b", 6]
+                }, {
+                    method: "getNumReportsActual",
+                    params: ["0xb1", 6, "0xb0b"]
                 }, {
                     method: "getEvents",
                     params: ["0xb1", 7]
@@ -608,6 +634,14 @@ describe("Unit tests", function () {
                         "9": "0"
                     }
                 },
+                numReportsActual: {
+                    "0xb1": {
+                        "6": "3",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "6": ["0x6e1", "0x6e2", "0x6e3"],
@@ -643,6 +677,9 @@ describe("Unit tests", function () {
                 }, {
                     method: "getFeesCollected",
                     params: ["0xb1", "0xb0b", 6]
+                }, {
+                    method: "getNumReportsActual",
+                    params: ["0xb1", 6, "0xb0b"]
                 }, {
                     method: "getEvents",
                     params: ["0xb1", 7]
@@ -692,6 +729,15 @@ describe("Unit tests", function () {
                         "9": "0"
                     }
                 },
+                numReportsActual: {
+                    "0xb1": {
+                        "5": "3",
+                        "6": "3",
+                        "7": "0",
+                        "8": "0",
+                        "9": "0"
+                    }
+                },
                 penalized: {
                     "0xb1": {
                         "5": ["0x5e1", "0x5e2", "0x5e3"],
@@ -735,6 +781,9 @@ describe("Unit tests", function () {
                 }, {
                     method: "getFeesCollected",
                     params: ["0xb1", "0xb0b", 6]
+                }, {
+                    method: "getNumReportsActual",
+                    params: ["0xb1", 6, "0xb0b"]
                 }, {
                     method: "penalizationCatchup",
                     params: {
