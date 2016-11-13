@@ -144,7 +144,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				'0xa1': {
 					type: 'categorical',
 					minValue: '1',
-					maxValue: '2'
+					maxValue: '5'
 				}
 			},
 			reports: {
@@ -177,7 +177,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportedOutcomeID: '1',
 							salt: null,
 							minValue: '1',
-							maxValue: '2',
+							maxValue: '5',
 							isCategorical: true,
 							isScalar: false,
 							isUnethical: false,
@@ -299,7 +299,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				'0xa1': {
 					type: 'categorical',
 					minValue: '1',
-					maxValue: '2'
+					maxValue: '5'
 				}
 			},
 			reports: {
@@ -331,7 +331,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportedOutcomeID: '1.5',
 							salt: null,
 							minValue: '1',
-							maxValue: '2',
+							maxValue: '5',
 							isCategorical: true,
 							isScalar: false,
 							isUnethical: false,
@@ -455,7 +455,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				'0xa1': {
 					type: 'categorical',
 					minValue: '1',
-					maxValue: '2'
+					maxValue: '5'
 				}
 			},
 			reports: {
@@ -488,7 +488,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 							reportedOutcomeID: '3',
 							salt: null,
 							minValue: '1',
-							maxValue: '2',
+							maxValue: '5',
 							isCategorical: true,
 							isScalar: false,
 							isUnethical: true,

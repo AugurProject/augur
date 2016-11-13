@@ -32,7 +32,7 @@ export function createMarket(transactionID, newMarket) {
 			newMarket.numOutcomes = 2;
 		} else if (newMarket.type === CATEGORICAL) {
 			newMarket.minValue = 1;
-			newMarket.maxValue = 2;
+			newMarket.maxValue = newMarket.outcomes.length;
 			newMarket.numOutcomes = newMarket.outcomes.length;
 			newMarket.formattedDescription = newMarket.description + CATEGORICAL_OUTCOMES_SEPARATOR + newMarket.outcomes.map(outcome => outcome.name).join(CATEGORICAL_OUTCOME_SEPARATOR);
 		} else {
