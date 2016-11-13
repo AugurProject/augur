@@ -12,6 +12,8 @@ import setShareDenomination from 'utils/set-share-denomination';
 const MarketProperties = (p) => {
 	const shareVolume = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
 	const shareDenomination = () => {
+		// TODO be less hackish (sorry sprinkle)
+		if (!p.shareDenominations) return 'Shares';
 		switch (p.selectedShareDenomination) {
 			case (MICRO_SHARE):
 				return p.shareDenominations.find(denomination => denomination.value === MICRO_SHARE).label;

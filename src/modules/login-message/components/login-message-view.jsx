@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 13, 2016</h3>
+			<ol>
+				<li>
+					Finished refactoring and thoroughly unit testing reporting timing methods (checkPeriod et al) in augur.js.
+				</li>
+				<li>
+					Fixed/updated augur.js reporting-sequence integration tests to work properly with the refactored reporting tools.
+				</li>
+				<li>
+					Fixed error on Reporting detail page.
+				</li>
+			</ol>
 			<h3>November 12, 2016</h3>
 			<ol>
 				<li>
