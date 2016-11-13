@@ -138,6 +138,6 @@ MarketActive.propTypes = {
 		outcomes: PropTypes.array
 	}),
 	scalarShareDenomination: PropTypes.shape({
-		updateSelectedShareDenomination: PropTypes.function
+		updateSelectedShareDenomination: PropTypes.func
 	})
 };

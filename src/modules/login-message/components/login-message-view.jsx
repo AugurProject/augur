@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
 				<li>
 					Fixed error on Reporting detail page.
 				</li>
+				<li>
+					Fixed warning on trade (market detail) page.
+				</li>
 			</ol>
 			<h3>November 12, 2016</h3>
 			<ol>
