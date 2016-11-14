@@ -43,17 +43,32 @@ export function checkPeriod(unlock, cb) {
 							return cb && cb(err);
 						}
 						if (branch.isReportRevealPhase) {
-							if (!tracker.feesCollected) {
-								dispatch(collectFees());
-								tracker.feesCollected = true;
-							}
 							if (!tracker.reportsRevealed) {
-								dispatch(revealReports());
 								tracker.reportsRevealed = true;
+								dispatch(revealReports((err) => {
+									console.log('revealReports complete:', err);
+									if (err) {
+										tracker.reportsRevealed = false;
+										tracker.checkPeriodLock = false;
+										return console.error('revealReports:', err);
+									}
+									if (!tracker.feesCollected) {
+										tracker.feesCollected = true;
+										dispatch(collectFees((err) => {
+											console.log('collectFees complete:', err);
+											tracker.checkPeriodLock = false;
+											if (err) {
+												tracker.reportsRevealed = false;
+												return console.error('revealReports:', err);
+											}
+										}));
+									}
+								}));
 							}
+						} else {
+							tracker.checkPeriodLock = false;
 						}
-						tracker.checkPeriodLock = false;
-						return cb && cb(null, reportPeriod);
+						cb && cb(null);
 					}));
 				});
 			}

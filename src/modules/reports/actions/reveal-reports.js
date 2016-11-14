@@ -2,8 +2,9 @@ import async from 'async';
 import { updateReports } from '../../reports/actions/update-reports';
 import { addRevealReportTransaction } from '../../transactions/actions/add-reveal-report-transaction';
 
-export function revealReports() {
+export function revealReports(cb) {
 	return (dispatch, getState) => {
+		const callback = cb || ((e) => console.log('revealReports:', e));
 		const { branch, loginAccount, reports } = getState();
 		// Make sure that:
 		//  - branch is in the second half of its reporting period
@@ -21,8 +22,16 @@ export function revealReports() {
 					});
 				if (revealableReports && revealableReports.length && loginAccount.id) {
 					async.eachSeries(revealableReports, (report, nextReport) => {
-						console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, report.isScalar, report.isUnethical, report.isIndeterminate);
-						dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, report.isScalar, report.isUnethical, report.isIndeterminate, (e) => {
+						let type;
+						if (report.isScalar) {
+							type = 'scalar';
+						} else if (report.isCategorical) {
+							type = 'categorical';
+						} else {
+							type = 'binary';
+						}
+						console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, type, report.isUnethical, report.isIndeterminate);
+						dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, type, report.isUnethical, report.isIndeterminate, (e) => {
 							if (e) return nextReport(e);
 							dispatch(updateReports({
 								[branch.id]: {
@@ -35,7 +44,8 @@ export function revealReports() {
 							nextReport();
 						}));
 					}, (e) => {
-						if (e) return console.error('revealReports:', e);
+						if (e) return callback(e);
+						callback(null);
 					});
 				}
 			}
