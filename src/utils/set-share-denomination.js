@@ -34,8 +34,8 @@ function formatValue(value, amount) {
 		zeroPadAmount += 2;
 	}
 
-	// Strip leading 0's
-	let firstPositiveValue = 0;
+	// Strip leading 0's OR returns original value if no values are positive
+	let firstPositiveValue = -1;
 	valueArray.some((value, i) => {
 		if (parseInt(value, 10)) {
 			firstPositiveValue = i;
@@ -44,8 +44,10 @@ function formatValue(value, amount) {
 
 		return false;
 	});
-	if (firstPositiveValue) {
+	if (firstPositiveValue !== -1) {
 		valueArray.splice(0, firstPositiveValue);
+	} else {
+		return value; // Returns original value
 	}
 
 	// Strip Commas (added back in at the end)
