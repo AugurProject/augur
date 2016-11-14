@@ -10,7 +10,9 @@ import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketProperties = (p) => {
-	const shareVolume = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
+	const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
+	const shareVolumeFormatted = getValue(p, 'volume.formatted');
+
 	const shareDenomination = () => {
 		// TODO be less hackish (sorry sprinkle)
 		if (!p.shareDenominations) return 'Shares';
@@ -92,7 +94,7 @@ const MarketProperties = (p) => {
 					</span>
 				</ReactTooltip>
 			</li>
-			{shareVolume &&
+			{shareVolumeRounded &&
 				<li className="property volume">
 					<a
 						data-tip
@@ -100,7 +102,7 @@ const MarketProperties = (p) => {
 						data-event="click focus"
 					>
 						<span className="property-label">Volume:</span>
-						<ValueDenomination className="property-value" formatted={shareVolume} denomination={shareDenomination()} />
+						<ValueDenomination className="property-value" formatted={shareVolumeRounded} denomination={shareDenomination()} />
 					</a>
 					<ReactTooltip
 						id={`${p.id}-volume-tooltip`}
@@ -110,7 +112,7 @@ const MarketProperties = (p) => {
 						globalEventOff="click"
 					>
 						<span className="tooltip-text">
-							{shareVolume} total {p.volume.denomination} traded
+							{shareVolumeFormatted} total {p.volume.denomination} traded
 						</span>
 					</ReactTooltip>
 				</li>
