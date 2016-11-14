@@ -10,6 +10,7 @@ var abi = require("augur-abi");
 var tools = require("../tools");
 
 describe("Integration tests", function () {
+    if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var amount = "1";
