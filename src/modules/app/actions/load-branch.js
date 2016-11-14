@@ -25,7 +25,8 @@ export function loadBranch(branchID) {
 			}
 
 			dispatch(syncBlockchain());
-			dispatch(syncBranch((err, reportPeriod) => {
+			dispatch(syncBranch((err) => {
+				if (err) return console.error('syncBranch:', err);
 				dispatch(listenToUpdates());
 			}));
 		});

@@ -5,7 +5,7 @@ import { selectMarket } from '../../market/selectors/market';
 export function loadBidsAsks(marketID, cb) {
 	return (dispatch, getState) => {
 		const market = selectMarket(marketID);
-		var scalarMinMax = {};
+		const scalarMinMax = {};
 		if (market.type === 'scalar') {
 			scalarMinMax.minValue = market.minValue;
 			scalarMinMax.maxValue = market.maxValue;

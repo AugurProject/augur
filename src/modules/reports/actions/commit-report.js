@@ -2,7 +2,7 @@ import secureRandom from 'secure-random';
 import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
-import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -14,7 +14,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 		const { branch, loginAccount } = getState();
 		const isScalar = market.type === SCALAR;
 		const salt = bytesToHex(secureRandom(32));
-		const fixedReport = augur.fixReport(reportedOutcomeID, isScalar, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
 		const reportHash = augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address);
 		dispatch(updateReport(branch.id, market.eventID, {
 			eventID: market.eventID,
@@ -48,7 +48,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				message: 'Missing data'
 			}));
 		}
-		const fixedReport = augur.fixReport(reportedOutcomeID, report.isScalar, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type === BINARY, isIndeterminate);
 		let encryptedReport = 0;
 		let encryptedSalt = 0;
 		if (loginAccount.derivedKey) {
@@ -59,6 +59,16 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		const outcomeName = report.isScalar ?
 			reportedOutcomeID :
 			(market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {}).name;
+		console.log('submitReportHash params:', {
+			event: eventID,
+			reportHash: report.reportHash,
+			encryptedReport,
+			encryptedSalt,
+			ethics: Number(!isUnethical),
+			branch: branchID,
+			period: report.reportPeriod,
+			periodLength: branch.periodLength
+		});
 		augur.submitReportHash({
 			event: eventID,
 			reportHash: report.reportHash,

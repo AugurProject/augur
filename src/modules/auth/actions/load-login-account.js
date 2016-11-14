@@ -80,7 +80,6 @@ export function loadLoginAccountLocalStorage(accountID) {
 			dispatch(updateTransactionsData(localState.transactionsData));
 		}
 		if (localState.settings) {
-			console.log('localState.settings:', localState.settings);
 			dispatch(updateAccountSettings(localState.settings));
 		}
 

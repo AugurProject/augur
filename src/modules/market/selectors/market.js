@@ -240,7 +240,7 @@ export function assembleMarket(
 					lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
 				};
 
-				if (market.type === 'scalar') {
+				if (market.isScalar) {
 					// note: not actually a percent
 					if (outcome.lastPrice.value) {
 						outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
@@ -312,6 +312,17 @@ export function assembleMarket(
 			}
 
 			market.myMarketSummary = selectMyMarket(market)[0];
+
+			// Update the `result` object
+			if (market.result) {
+				if (market.result.outcomeID) {
+					market.result.outcomeName = market.outcomes.find(outcome => outcome.id === market.result.outcomeID).name;
+				}
+
+				if (market.result.proportionCorrect) {
+					market.result.proportionCorrect = formatPercent(market.result.proportionCorrect);
+				}
+			}
 
 			return market;
 		});

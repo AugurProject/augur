@@ -11,10 +11,18 @@ import { addBidTransaction } from '../../transactions/actions/add-bid-transactio
 
 export function processBuy(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
+		if (!transactionID) return console.error('processBuy has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 		if (!limitPrice || !totalEthWithFee) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
+			}));
+		}
+		if (!marketID || !outcomeID || !totalEthWithFee || !numShares || !tradingFeesEth || !gasFeesRealEth) {
+			console.error('processBuy has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: 'There was an issue processesing the buy trade.'
 			}));
 		}
 		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));

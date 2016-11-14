@@ -7,10 +7,18 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
-		if ((!limitPrice) || !totalEthWithFee) {
+		if (!transactionID) return console.error('processBid has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+		if (!limitPrice || !totalEthWithFee) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"`
+			}));
+		}
+		if (!marketID || !outcomeID || !totalEthWithFee || !tradingFeesEth || !gasFeesRealEth || !numShares) {
+			console.error('processAsk has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: 'There was an issue processesing the bid trade.'
 			}));
 		}
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));

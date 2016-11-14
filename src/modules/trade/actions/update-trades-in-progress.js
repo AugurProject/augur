@@ -58,7 +58,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			abi.bignum(market.maxValue)
 				.plus(abi.bignum(market.minValue))
 				.dividedBy(TWO)
-				.toNumber() :
+				.toFixed() :
 			'0.5';
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :

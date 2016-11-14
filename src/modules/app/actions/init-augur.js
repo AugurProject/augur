@@ -1,4 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
+// fixes Reflect not being recognized in test or node 4.2
+require('core-js/es6/reflect');
 
 import { BRANCH_ID } from '../../app/constants/network';
 
