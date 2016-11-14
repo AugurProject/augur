@@ -11,7 +11,7 @@ export function decryptReport(loginAccount, branchID, period, eventID, callback)
 			return callback(plaintext);
 		}
 		callback(null, {
-			reportedOutcomeID: plaintext.report === '0' ? null : plaintext.report,
+			reportedOutcomeID: !parseInt(plaintext.report, 16) ? null : plaintext.report,
 			salt: parseInt(plaintext.salt, 16) === 0 ? null : plaintext.salt,
 			isUnethical: parseInt(plaintext.ethics, 16) === 0
 		});

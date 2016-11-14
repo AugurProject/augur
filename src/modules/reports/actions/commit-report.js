@@ -14,7 +14,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 		const { branch, loginAccount } = getState();
 		const isScalar = market.type === SCALAR;
 		const salt = bytesToHex(secureRandom(32));
-		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type === BINARY, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
 		const reportHash = augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address);
 		dispatch(updateReport(branch.id, market.eventID, {
 			eventID: market.eventID,

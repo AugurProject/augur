@@ -28,10 +28,7 @@ export function listenToUpdates() {
 			block: (blockHash) => {
 				dispatch(updateAssets());
 				dispatch(syncBlockchain());
-				dispatch(syncBranch((err, reportPeriod) => {
-					if (err) return console.error('syncBranch:', err);
-					// console.debug('syncBranch complete:', reportPeriod);
-				}));
+				dispatch(syncBranch());
 			},
 
 			// trade filled: { market, outcome (id), price }
