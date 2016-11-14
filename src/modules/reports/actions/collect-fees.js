@@ -1,8 +1,9 @@
 import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 
-export function collectFees() {
+export function collectFees(cb) {
 	return (dispatch, getState) => {
+		const callback = cb || ((e) => console.log('collectFees:', e));
 		const { branch, loginAccount } = getState();
 		if (branch.isReportRevealPhase) {
 			augur.collectFees({
@@ -13,10 +14,14 @@ export function collectFees() {
 				onSuccess: (res) => {
 					console.log('collectFees success:', res.callReturn);
 					dispatch(updateAssets());
+					callback(null);
 				},
 				onFailed: (err) => {
-					if (err.error === '-1') return console.info('collectFees:', err.message);
-					console.error('collectFees failed:', err);
+					if (err.error === '-1') {
+						console.info('collectFees:', err.message);
+						return callback(null);
+					}
+					callback(err);
 				}
 			});
 		}

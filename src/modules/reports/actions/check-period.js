@@ -25,7 +25,7 @@ export function checkPeriod(unlock, cb) {
 				tracker.checkPeriodLock = false;
 				dispatch(clearOldReports());
 			}
-			console.debug('checkPeriodLock:', tracker.checkPeriodLock);
+			console.log('checkPeriod tracker:', tracker);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
@@ -43,19 +43,32 @@ export function checkPeriod(unlock, cb) {
 							return cb && cb(err);
 						}
 						if (branch.isReportRevealPhase) {
-							if (!tracker.feesCollected) {
-								console.log('collecting fees');
-								dispatch(collectFees());
-								tracker.feesCollected = true;
-							}
 							if (!tracker.reportsRevealed) {
-								console.log('reveal reports');
-								dispatch(revealReports());
 								tracker.reportsRevealed = true;
+								dispatch(revealReports((err) => {
+									console.log('revealReports complete:', err);
+									if (err) {
+										tracker.reportsRevealed = false;
+										tracker.checkPeriodLock = false;
+										return console.error('revealReports:', err);
+									}
+									if (!tracker.feesCollected) {
+										tracker.feesCollected = true;
+										dispatch(collectFees((err) => {
+											console.log('collectFees complete:', err);
+											tracker.checkPeriodLock = false;
+											if (err) {
+												tracker.reportsRevealed = false;
+												return console.error('revealReports:', err);
+											}
+										}));
+									}
+								}));
 							}
+						} else {
+							tracker.checkPeriodLock = false;
 						}
-						tracker.checkPeriodLock = false;
-						return cb && cb(null, reportPeriod);
+						cb && cb(null);
 					}));
 				});
 			}
