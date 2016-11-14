@@ -104,7 +104,7 @@ module.exports = {
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
         return {
             salt: salt,
-            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string"),
+            report: this.decryptReport(arr[0], secret.derivedKey, salt),
             ethics: (arr.length >= 2) ? arr[2] : false
         };
     },
@@ -220,10 +220,7 @@ module.exports = {
                 event,
                 abi.hex(salt),
                 this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-                ethics,
-                onSent,
-                onSuccess,
-                onFailed);
+                ethics);
         }
         return this.MakeReports.submitReport(
             event,

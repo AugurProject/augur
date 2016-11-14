@@ -21359,42 +21359,42 @@ module.exports={
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
     }, 
     "2": {
-        "Backstops": "0xcc3431c4f6f003895e0bd4dd43d852db04c527a5", 
-        "Branches": "0x10bca25eb720f16e8a65fc5e578409a9559aab0a", 
-        "BuyAndSellShares": "0x4bab72c5cb18888ba4b4709eb3c716b3fbfa5495", 
-        "Cash": "0x371ecabac43eb2954193b5fb1733b8513420244f", 
-        "CloseMarket": "0x15dfd9d04a2dd1a2522dbe8cc740b385eb8e6012", 
-        "CloseMarketOne": "0xe070b7a73591dd21a51a1fd9f36657e1d2ce245f", 
-        "CloseMarketTwo": "0xaa8f7958caafd0170e54053586d61b3cf8c2c5d6", 
-        "CollectFees": "0x5644a2523dfc5f0c539fc6e79a8459a908f37f25", 
-        "CompleteSets": "0x51955852947e7767430d9a829da1889b0b504778", 
-        "CompositeGetters": "0x642762f5c756c5cfa664cfd47c64ecb8ea58a00d", 
-        "Consensus": "0x6585ba3513d819baf7dac896aa1762733ac05646", 
-        "ConsensusData": "0xe643aef356d6532faf1208a3540f593d45c80663", 
-        "CreateBranch": "0xae7e8c70455584b033055b1d2dd386129a94dc7a", 
-        "CreateMarket": "0x6aa0b237536ab1561ea0946c29b25cd3b3203376", 
-        "EventResolution": "0xddf4bb1205f4e2dfc28ad606bcc3e7298312bc3b", 
-        "Events": "0xf20ccb18bc1532b25a4447d2588821ce7a94d9bf", 
-        "ExpiringEvents": "0x622eb55a5e8bfad07a9ba2bc7f755c1f1126e5f8", 
-        "Faucets": "0xee8e9890b74ee9d347a181cb765880af23a54c22", 
-        "ForkPenalize": "0x0e162984de4a70b62bbbfe87fd70f4426a21a4dd", 
-        "Forking": "0x55aba3e9a3443ff5b1eba1e1c90612bf28f5f59c", 
-        "FxpFunctions": "0x8514edfce7c5521162bb124a5bca43ac09eafb4f", 
-        "Info": "0x1c05796b838d4a9ae18f3a62d790773dc33a33d4", 
-        "MakeReports": "0xe3f0fabf9f76990140e2184c96630ac9408f89a5", 
-        "Markets": "0x60a643d9cc6df58329298d1f605964d881ef1103", 
-        "PenalizationCatchup": "0x5c8e4bd82833f598e695d094cbe6da8d2717a4a1", 
-        "PenalizeNotEnoughReports": "0x5df2bb6c826b0cd9b45538e70407b9f7a00b0f42", 
-        "ProportionCorrect": "0x2ba5c1e9e243d08369ced46294a16f25176c6ad7", 
-        "Register": "0x7f68c52ba85d504174667ec2ef1ece65952b4276", 
-        "Reporting": "0x42eedfdea2024e5700f64a57e29320fc0acb09f5", 
-        "ReportingThreshold": "0x35a56b6e58b97130f93f70b13ccd975245524981", 
-        "RoundTwo": "0xcaf4b3a19150ca92caa512df2b74bbbbb017d963", 
-        "RoundTwoPenalize": "0xa2c015de5cbb67831827ec534d7798fc209628f0", 
-        "SendReputation": "0x7f192200fd2faa4a52e65cff01492b685f7cf8ea", 
-        "SlashRep": "0x85c31bdb80d10cbc3524859479f9909a72af4372", 
-        "Trade": "0x0a3230fed975360aee839dc31926083412797857", 
-        "Trades": "0x2ca098f843c135512d2d5fad62ec0ba789cb0e79"
+        "Backstops": "0x834860671a45fe012280d033562a776a8a08805a", 
+        "Branches": "0xe90849ffb16054eeddd6642f778930bc2ff2bf3a", 
+        "BuyAndSellShares": "0xbedc0bb47e72c2edea8045911edbf09431eb4e1e", 
+        "Cash": "0xe5b05e48ec47d5c425a70b34e4d8c58358930706", 
+        "CloseMarket": "0xfe5459beab20c7589fc471ce067c5e272a56dc70", 
+        "CloseMarketOne": "0xd6b478b7a344ab56910694fd0edc637d0d6addc6", 
+        "CloseMarketTwo": "0x358d9949ab745e3d3eaa3be2af8d565c8597e314", 
+        "CollectFees": "0xe0f5cfcab0fa108511ced049bef9f4c24e00aa30", 
+        "CompleteSets": "0xce17266227f265826e969044361c069160edcdcf", 
+        "CompositeGetters": "0x91df45aaf588406fd1ab75210d97773cf441af18", 
+        "Consensus": "0x398399173731f4f62766465b3420ef1e7f6770b1", 
+        "ConsensusData": "0xa3c1a5d46e18c4ef91bd0d89f162c370df2d5ccc", 
+        "CreateBranch": "0xe88e2c72bad237c53b295c40f58a1b5948a5fdea", 
+        "CreateMarket": "0x40b7e9c075a7efc7a2a6ddd8313d4fd387c500ef", 
+        "EventResolution": "0x16a47142d4c11f9fad7c9d9bd7d64e5a3c7c240d", 
+        "Events": "0xcbe2106e9671fda169a8e0edfd473a6569cc92d2", 
+        "ExpiringEvents": "0x655243cb1fba08d38ccf6d1da9eec304eae7793b", 
+        "Faucets": "0xca7930165944e724d15836b4da9ab896e21cf6b4", 
+        "ForkPenalize": "0x910da377b2cf2a20e7747125004131b34f62aae4", 
+        "Forking": "0x29d3f0edad7e0f224bb8e703fd397cdfe11a6504", 
+        "FxpFunctions": "0x57e78bbe2bd711b5695e2cb939297396981fc4d0", 
+        "Info": "0xfd7e2d82b2537dffc7d4bb63015cebced1fda72b", 
+        "MakeReports": "0x61040c9405f80b71337120ed8b0ab809f3a81450", 
+        "Markets": "0x870f3cd0be72ec951542dc86daed5054786ddea4", 
+        "PenalizationCatchup": "0xe31660a5bf3a5d7d778a6d1bebd5d45359845e2d", 
+        "PenalizeNotEnoughReports": "0x4fb29ccbacf2922157b31468dd10cb9dfd807f6f", 
+        "ProportionCorrect": "0x4a6e1f44db9877092edb49162200f234b549a7c6", 
+        "Register": "0x32c66f096831e3cc1aa4046b8e6b0fdfb976b97d", 
+        "Reporting": "0x04b86c7acaf4b017a7b6c0b13133905d9e0700e4", 
+        "ReportingThreshold": "0x0bd98eaf0aaac5bbcfb96538167248b77b9edc05", 
+        "RoundTwo": "0x25ff669a4a45c1a7955499289b044c98457d40ff", 
+        "RoundTwoPenalize": "0xd2aef68f80d12e79799a15f65542d3425ef93a11", 
+        "SendReputation": "0xea687d69847cc491f93211e93481e242e2a99389", 
+        "SlashRep": "0x6d7f05bcc83d9cb5f379973953d4386df9e188f6", 
+        "Trade": "0x89c2118b42a0b2cad778ce28f52aade51acebf40", 
+        "Trades": "0x631adb6122ab129ebdba6b344475149e480e4544"
     }, 
     "9000": {
         "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
@@ -44010,11 +44010,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.3";
+    this.version = "3.1.4";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -46263,7 +46263,7 @@ module.exports = {
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
         return {
             salt: salt,
-            report: abi.unfix(this.decryptReport(arr[0], secret.derivedKey, salt), "string"),
+            report: this.decryptReport(arr[0], secret.derivedKey, salt),
             ethics: (arr.length >= 2) ? arr[2] : false
         };
     },
@@ -46379,10 +46379,7 @@ module.exports = {
                 event,
                 abi.hex(salt),
                 this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-                ethics,
-                onSent,
-                onSuccess,
-                onFailed);
+                ethics);
         }
         return this.MakeReports.submitReport(
             event,
@@ -48534,7 +48531,6 @@ module.exports = {
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var assert = console.assert;
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var async = require("async");
@@ -48545,7 +48541,6 @@ try {
     path = require("path");
     madlibs = require("madlibs");
 } catch (exc) {
-    console.warn(exc);
     path = null;
     madlibs = require("./madlibs");
 }
@@ -48697,19 +48692,7 @@ module.exports = {
             onSuccess: function (res) {
                 var newBranchID = res.branchID;
                 if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                assert(augur.getCreator(newBranchID) === (augur.web.account.address || augur.from));
-                assert(augur.getDescription(newBranchID) === branchDescription);
                 var block = augur.rpc.getBlock(res.blockNumber);
-                assert(newBranchID === utils.sha3([
-                    res.from,
-                    abi.fix(47, "hex"),
-                    periodLength,
-                    block.timestamp,
-                    parentBranchID,
-                    abi.fix(tradingFee, "hex"),
-                    0,
-                    branchDescription
-                ]));
 
                 // get reputation on the new branch
                 if (augur.web.account.address) {
@@ -48729,12 +48712,8 @@ module.exports = {
                     }
                     augur.fundNewAccount({
                         branch: newBranchID,
-                        onSent: function (res) {
-                            assert(res.callReturn === "1");
-                        },
-                        onSuccess: function (res) {
-                            assert(res.callReturn === "1");
-                            assert(augur.getRepBalance(newBranchID, account) === "47");
+                        onSent: function () {},
+                        onSuccess: function () {
                             nextAccount();
                         },
                         onFailed: next
@@ -48799,7 +48778,6 @@ module.exports = {
             tags: tags,
             extraInfo: extraInfo,
             onSent: function (res) {
-                assert(res.callReturn === null);
 
                 // create a categorical market
                 augur.createSingleEventMarket({
@@ -48815,7 +48793,6 @@ module.exports = {
                     tags: tags,
                     extraInfo: extraInfo,
                     onSent: function (res) {
-                        assert(res.callReturn === null);
 
                         // create a scalar market
                         augur.createSingleEventMarket({
@@ -48830,12 +48807,9 @@ module.exports = {
                             makerFee: makerFee,
                             tags: tags,
                             extraInfo: extraInfo,
-                            onSent: function (res) {
-                                assert(res.callReturn === null);
-                            },
+                            onSent: function () {},
                             onSuccess: function (res) {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
-                                assert(res.callReturn !== null);
                                 markets.scalar = res.callReturn;
                                 if (self.is_created(markets)) callback(null, markets);
                             },
@@ -48847,7 +48821,6 @@ module.exports = {
                     },
                     onSuccess: function (res) {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
-                        assert(res.callReturn !== null);
                         markets.categorical = res.callReturn;
                         if (self.is_created(markets)) callback(null, markets);
                     },
@@ -48859,7 +48832,6 @@ module.exports = {
             },
             onSuccess: function (res) {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
-                assert(res.callReturn !== null);
                 markets.binary = res.callReturn;
                 if (self.is_created(markets)) callback(null, markets);
             },
@@ -48894,7 +48866,6 @@ module.exports = {
                     market: market,
                     amount: amountPerMarket,
                     onSent: function (r) {
-                        assert(r.callReturn === null);
                     },
                     onSuccess: function (r) {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
@@ -48903,11 +48874,8 @@ module.exports = {
                             price: "0.99",
                             market: market,
                             outcome: 1,
-                            onSent: function (r) {
-                                assert(r.callReturn === null);
-                            },
-                            onSuccess: function (r) {
-                                assert(r.callReturn !== null);
+                            onSent: function () {},
+                            onSuccess: function () {
                                 nextMarket(null);
                             },
                             onFailed: nextMarket
@@ -48917,7 +48885,6 @@ module.exports = {
                 });
             });
         }, function (err) {
-            assert(err === null, JSON.stringify(err));
             augur.useAccount(taker);
             var trades = [];
             async.forEachOf(markets, function (market, type, nextMarket) {
@@ -48934,14 +48901,11 @@ module.exports = {
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
                     nextTrade(thisTrade);
                 }, function (trade) {
-                    assert(trade !== null);
                     trades.push(trade);
                     nextMarket(null);
                 });
             }, function (err) {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
-                assert(err === null, JSON.stringify(err));
-                assert(trades.length === Object.keys(markets).length);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
                     augur.trade({
@@ -48953,15 +48917,10 @@ module.exports = {
                             if (self.DEBUG) {
                                 self.print_residual(periodLength, "Trade hash: " + tradeHash);
                             }
-                            assert(!tradeHash.error);
-                            assert(tradeHash.constructor === String);
                         },
-                        onCommitSent: function (r) {
-                            assert(r.callReturn === "1");
-                        },
+                        onCommitSent: function () {},
                         onCommitSuccess: function (r) {
                             if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
-                            assert(r.callReturn === "1");
                         },
                         onCommitFailed: function (e) {
                             if (clientSideAccount) {
@@ -48973,17 +48932,11 @@ module.exports = {
                         onNextBlock: function (block) {
                             if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
                         },
-                        onTradeSent: function (r) {
-                            assert(r.callReturn === null);
-                        },
+                        onTradeSent: function () {},
                         onTradeSuccess: function (r) {
                             if (self.DEBUG) {
                                 self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
                             }
-                            assert(r.constructor === Object);
-                            assert(!r.error);
-                            assert(r.unmatchedCash !== undefined);
-                            assert(r.unmatchedShares !== undefined);
                             if (clientSideAccount) {
                                 augur.web.account = clientSideAccount;
                             }
@@ -49015,10 +48968,7 @@ module.exports = {
             console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
             console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
         }
-        setTimeout(function () {
-            assert(augur.getCurrentPeriod(periodLength) === expirationPeriod + 1);
-            callback(null);
-        }, secondsToGo*1000);
+        setTimeout(function () { callback(null); }, secondsToGo*1000);
     },
 
     chunk32: function (string, stride, offset) {

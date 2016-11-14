@@ -374,17 +374,8 @@ describe("Reporting sequence", function () {
                                     assert(parseInt(winningOutcomes[0]) !== 0);
                                     assert(parseInt(eventOutcome) !== 0);
                                     assert.strictEqual(Math.round(parseFloat(eventOutcome)), report[type]);
-                                    // should these be equal?
                                     // assert.strictEqual(parseInt(winningOutcomes[0]), report[type]);
-                                    augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
-                                        if (res && res.error) return nextEvent(res);
-                                        var claimable = [markets.binary, markets.categorical, markets.scalar];
-                                        augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
-                                            assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
-                                            assert.sameMembers(claimable, claimed);
-                                            nextEvent();
-                                        });
-                                    });
+                                    nextEvent();
                                 },
                                 onFailed: function (err) {
                                     if (DEBUG) {
@@ -404,7 +395,20 @@ describe("Reporting sequence", function () {
                         }
                     });
                 });
-            }, done);
+            }, function (e) {
+                if (e) return done(e);
+                augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
+                    if (res && res.error) return done(new Error(tools.pp(res)));
+                    var claimable = [markets.binary, markets.categorical, markets.scalar];
+                    augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
+                        assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
+                        console.log('claimable:', claimable);
+                        console.log('claimed:', claimed);
+                        assert.sameMembers(claimable, claimed);
+                        done();
+                    });
+                });
+            });
         });
     });
 

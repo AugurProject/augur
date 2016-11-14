@@ -54,7 +54,11 @@ describe("Reporting sequence", function () {
     unlockable = augur.rpc.accounts();
     description = madlibs.adjective() + " " + madlibs.noun();
     periodLength = 900;
-    report = 1;
+    report = {
+        binary: 2,
+        categorical: 3,
+        scalar: 9
+    };
     salt = "1337";
     markets = {};
     events = {};
@@ -138,68 +142,69 @@ describe("Reporting sequence", function () {
                 console.log(chalk.white.dim("Reporter:"), chalk.green(sender));
             }
             async.forEachOf(events, function (event, type, nextEvent) {
-                var fixedReport = augur.fixReport(report, type === "scalar", false);
-                var reportHash = augur.makeHash(salt, fixedReport, event, sender);
-                if (DEBUG) {
-                    printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
-                    console.log(chalk.white.dim("Submitting report hash:"), chalk.green(reportHash));
-                }
-                assert.include(eventsToReportOn, event);
-                if (DEBUG) {
-                    var periodRepConstant = augur.ExpiringEvents.getPeriodRepConstant(branch, period, sender);
-                    var lesserReportNum = augur.ExpiringEvents.getLesserReportNum(branch, period, event);
-                    console.log(chalk.white.dim("Period Rep constant:"), chalk.cyan(periodRepConstant));
-                    console.log(chalk.white.dim("Lesser report num:  "), chalk.cyan(lesserReportNum));
-                }
-                augur.submitReportHash({
-                    event: event,
-                    reportHash: reportHash,
-                    encryptedReport: 0,
-                    encryptedSalt: 0,
-                    branch: branch,
-                    period: period,
-                    periodLength: periodLength,
-                    ethics: 1,
-                    onSent: function (res) {
-                    },
-                    onSuccess: function (res) {
-                        var storedReportHash = augur.ExpiringEvents.getReportHash({
-                            branch: branch,
-                            expDateIndex: period,
-                            reporter: sender,
-                            event: event
-                        });
+                augur.getMinValue(event, function (minValue) {
+                    augur.getMaxValue(event, function (maxValue) {
+                        var fixedReport = augur.fixReport(report[type], minValue, maxValue, type, false);
+                        var reportHash = augur.makeHash(salt, fixedReport, event, sender);
                         if (DEBUG) {
-                            console.log(chalk.white.dim("\nsubmitReportHash return value:"), chalk.cyan(res.callReturn));
-                            console.log(chalk.white.dim("Stored report hash:"), chalk.green(storedReportHash));
-                            printReportingStatus(event, "[" + type  + "] submitReportHash success");
+                            printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
+                            console.log(chalk.white.dim("Min value:"), chalk.cyan(minValue));
+                            console.log(chalk.white.dim("Max value:"), chalk.cyan(maxValue));
+                            console.log(chalk.white.dim("Report:"), chalk.cyan(report[type]));
+                            console.log(chalk.white.dim("Fixed-point report:"), chalk.cyan(fixedReport));
+                            console.log(chalk.white.dim("Report hash:"), chalk.green(reportHash));
                         }
-                        assert.strictEqual(res.callReturn, "1");
-                        assert.strictEqual(storedReportHash, reportHash);
-                        augur.penalizationCatchup({
+                        assert.include(eventsToReportOn, event);
+                        if (DEBUG) {
+                            var periodRepConstant = augur.ExpiringEvents.getPeriodRepConstant(branch, period, sender);
+                            var lesserReportNum = augur.ExpiringEvents.getLesserReportNum(branch, period, event);
+                            console.log(chalk.white.dim("Period Rep constant:"), chalk.cyan(periodRepConstant));
+                            console.log(chalk.white.dim("Lesser report num:  "), chalk.cyan(lesserReportNum));
+                            console.log("submitReportHash:", {
+                                event: event,
+                                reportHash: reportHash,
+                                encryptedReport: 0,
+                                encryptedSalt: 0,
+                                branch: branch,
+                                period: period,
+                                periodLength: periodLength,
+                                ethics: 1
+                            });
+                        }
+                        augur.submitReportHash({
+                            event: event,
+                            reportHash: reportHash,
+                            encryptedReport: 0,
+                            encryptedSalt: 0,
                             branch: branch,
-                            sender: sender,
-                            onSent: function (r) {
-                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup sent:"), r);
-                            },
-                            onSuccess: function (r) {
-                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup success:"), r);
+                            period: period,
+                            periodLength: periodLength,
+                            ethics: 1,
+                            onSent: function (res) {},
+                            onSuccess: function (res) {
+                                var storedReportHash = augur.ExpiringEvents.getReportHash({
+                                    branch: branch,
+                                    expDateIndex: period,
+                                    reporter: sender,
+                                    event: event
+                                });
+                                if (DEBUG) {
+                                    console.log(chalk.white.dim("\nsubmitReportHash return value:"), chalk.cyan(res.callReturn));
+                                    console.log(chalk.white.dim("Stored report hash:"), chalk.green(storedReportHash));
+                                    printReportingStatus(event, "[" + type  + "] submitReportHash success");
+                                }
+                                assert.strictEqual(res.callReturn, "1");
+                                assert.strictEqual(storedReportHash, reportHash);
                                 nextEvent();
                             },
-                            onFailed: function (err) {
-                                console.log(chalk.white.dim(" - penalizationCatchup:"), chalk.cyan.dim(JSON.stringify(err)));
-                                assert.strictEqual(err.error, "-2");
-                                assert.strictEqual(err.message, augur.errors.penalizationCatchup["-2"]);
-                                nextEvent();
-                            }
+                            onFailed: nextEvent
                         });
-                    },
-                    onFailed: nextEvent
+                    });
                 });
             }, done);
         });
     });
-    
+
     describe("Second period (phase 2)", function () {
         before("Wait for second half of second period", function (done) {
             this.timeout(tools.TIMEOUT*100);
@@ -232,35 +237,71 @@ describe("Reporting sequence", function () {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
                     augur.rpc.personal("unlockAccount", [sender, password], function (res) {
                         if (res && res.error) return nextEvent(res);
-                        augur.submitReport({
-                            event: event,
-                            salt: salt,
-                            report: report,
-                            ethics: 1, // 1 = ethical
-                            isScalar: type === "scalar",
-                            isIndeterminate: false,
-                            onSent: function (res) {
-                                console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
-                            },
-                            onSuccess: function (res) {
-                                var storedReport = augur.ExpiringEvents.getReport({
-                                    branch: newBranchID,
-                                    period: period,
-                                    event: event,
-                                    sender: sender
-                                });
+                        augur.getMinValue(event, function (minValue) {
+                            augur.getMaxValue(event, function (maxValue) {
                                 if (DEBUG) {
-                                    var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period-1);
-                                    console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                                    printReportingStatus(event, "[" + type  + "] submitReport complete");
-                                    console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+                                    console.log("submitReport:", {
+                                        event: event,
+                                        salt: salt,
+                                        report: report[type],
+                                        ethics: 1, // 1 = ethical
+                                        minValue: minValue,
+                                        maxValue: maxValue,
+                                        type: type,
+                                        isIndeterminate: false
+                                    });
                                 }
-                                assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                                assert.strictEqual(parseInt(storedReport), report);
-                                nextEvent();
-                            },
-                            onFailed: nextEvent
+                                augur.submitReport({
+                                    event: event,
+                                    salt: salt,
+                                    report: report[type],
+                                    ethics: 1, // 1 = ethical
+                                    minValue: minValue,
+                                    maxValue: maxValue,
+                                    type: type,
+                                    isIndeterminate: false,
+                                    onSent: function (res) {
+                                        console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+                                    },
+                                    onSuccess: function (res) {
+                                        if (DEBUG) {
+                                            console.log("getReport:", {
+                                                branch: newBranchID,
+                                                period: period,
+                                                event: event,
+                                                sender: sender,
+                                                minValue: minValue,
+                                                maxValue: maxValue,
+                                                type: type
+                                            });
+                                        }
+                                        augur.getReport({
+                                            branch: newBranchID,
+                                            period: period,
+                                            event: event,
+                                            sender: sender,
+                                            minValue: minValue,
+                                            maxValue: maxValue,
+                                            type: type,
+                                            callback: function (storedReport) {
+                                                if (DEBUG) {
+                                                    var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
+                                                    console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+                                                    printReportingStatus(event, "[" + type  + "] submitReport complete");
+                                                    console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport.report));
+                                                    console.log(chalk.white.dim(" - Expected report:      "), chalk.cyan(report[type]));
+                                                }
+                                                assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
+                                                assert.strictEqual(parseInt(storedReport.report), report[type]);
+                                                assert.strictEqual(storedReport.isIndeterminate, false);
+                                                nextEvent();
+                                            }
+                                        });
+                                    },
+                                    onFailed: nextEvent
+                                });
+                            });
                         });
                     });
                 }, done);
@@ -326,20 +367,13 @@ describe("Reporting sequence", function () {
                                     if (DEBUG) {
                                         console.log("winningOutcomes:", winningOutcomes);
                                         console.log("event", event, "outcome:", eventOutcome);
+                                        console.log("expected outcome:", report[type]);
                                     }
                                     assert(parseInt(winningOutcomes[0]) !== 0);
                                     assert(parseInt(eventOutcome) !== 0);
-                                    augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
-                                        if (res && res.error) return nextEvent(res);
-                                        var claimable = [markets.binary, markets.categorical, markets.scalar];
-                                        augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
-                                            assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
-                                            console.log("claimable:", claimable);
-                                            console.log("claimed:  ", claimed);
-                                            assert.sameMembers(claimable, claimed);
-                                            nextEvent();
-                                        });
-                                    });
+                                    assert.strictEqual(Math.round(parseFloat(eventOutcome)), report[type]);
+                                    // assert.strictEqual(parseInt(winningOutcomes[0]), report[type]);
+                                    nextEvent();
                                 },
                                 onFailed: function (err) {
                                     if (DEBUG) {
@@ -359,7 +393,20 @@ describe("Reporting sequence", function () {
                         }
                     });
                 });
-            }, done);
+            }, function (e) {
+                if (e) return done(e);
+                augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
+                    if (res && res.error) return done(new Error(tools.pp(res)));
+                    var claimable = [markets.binary, markets.categorical, markets.scalar];
+                    augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
+                        assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
+                        console.log('claimable:', claimable);
+                        console.log('claimed:', claimed);
+                        assert.sameMembers(claimable, claimed);
+                        done();
+                    });
+                });
+            });
         });
     });
 

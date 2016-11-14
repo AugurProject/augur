@@ -2,7 +2,6 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var assert = console.assert;
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var async = require("async");
@@ -13,7 +12,6 @@ try {
     path = require("path");
     madlibs = require("madlibs");
 } catch (exc) {
-    console.warn(exc);
     path = null;
     madlibs = require("./madlibs");
 }
@@ -165,19 +163,7 @@ module.exports = {
             onSuccess: function (res) {
                 var newBranchID = res.branchID;
                 if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                assert(augur.getCreator(newBranchID) === (augur.web.account.address || augur.from));
-                assert(augur.getDescription(newBranchID) === branchDescription);
                 var block = augur.rpc.getBlock(res.blockNumber);
-                assert(newBranchID === utils.sha3([
-                    res.from,
-                    abi.fix(47, "hex"),
-                    periodLength,
-                    block.timestamp,
-                    parentBranchID,
-                    abi.fix(tradingFee, "hex"),
-                    0,
-                    branchDescription
-                ]));
 
                 // get reputation on the new branch
                 if (augur.web.account.address) {
@@ -197,12 +183,8 @@ module.exports = {
                     }
                     augur.fundNewAccount({
                         branch: newBranchID,
-                        onSent: function (res) {
-                            assert(res.callReturn === "1");
-                        },
-                        onSuccess: function (res) {
-                            assert(res.callReturn === "1");
-                            assert(augur.getRepBalance(newBranchID, account) === "47");
+                        onSent: function () {},
+                        onSuccess: function () {
                             nextAccount();
                         },
                         onFailed: next
@@ -267,7 +249,6 @@ module.exports = {
             tags: tags,
             extraInfo: extraInfo,
             onSent: function (res) {
-                assert(res.callReturn === null);
 
                 // create a categorical market
                 augur.createSingleEventMarket({
@@ -283,7 +264,6 @@ module.exports = {
                     tags: tags,
                     extraInfo: extraInfo,
                     onSent: function (res) {
-                        assert(res.callReturn === null);
 
                         // create a scalar market
                         augur.createSingleEventMarket({
@@ -298,12 +278,9 @@ module.exports = {
                             makerFee: makerFee,
                             tags: tags,
                             extraInfo: extraInfo,
-                            onSent: function (res) {
-                                assert(res.callReturn === null);
-                            },
+                            onSent: function () {},
                             onSuccess: function (res) {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
-                                assert(res.callReturn !== null);
                                 markets.scalar = res.callReturn;
                                 if (self.is_created(markets)) callback(null, markets);
                             },
@@ -315,7 +292,6 @@ module.exports = {
                     },
                     onSuccess: function (res) {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
-                        assert(res.callReturn !== null);
                         markets.categorical = res.callReturn;
                         if (self.is_created(markets)) callback(null, markets);
                     },
@@ -327,7 +303,6 @@ module.exports = {
             },
             onSuccess: function (res) {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
-                assert(res.callReturn !== null);
                 markets.binary = res.callReturn;
                 if (self.is_created(markets)) callback(null, markets);
             },
@@ -362,7 +337,6 @@ module.exports = {
                     market: market,
                     amount: amountPerMarket,
                     onSent: function (r) {
-                        assert(r.callReturn === null);
                     },
                     onSuccess: function (r) {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
@@ -371,11 +345,8 @@ module.exports = {
                             price: "0.99",
                             market: market,
                             outcome: 1,
-                            onSent: function (r) {
-                                assert(r.callReturn === null);
-                            },
-                            onSuccess: function (r) {
-                                assert(r.callReturn !== null);
+                            onSent: function () {},
+                            onSuccess: function () {
                                 nextMarket(null);
                             },
                             onFailed: nextMarket
@@ -385,7 +356,6 @@ module.exports = {
                 });
             });
         }, function (err) {
-            assert(err === null, JSON.stringify(err));
             augur.useAccount(taker);
             var trades = [];
             async.forEachOf(markets, function (market, type, nextMarket) {
@@ -402,14 +372,11 @@ module.exports = {
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
                     nextTrade(thisTrade);
                 }, function (trade) {
-                    assert(trade !== null);
                     trades.push(trade);
                     nextMarket(null);
                 });
             }, function (err) {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
-                assert(err === null, JSON.stringify(err));
-                assert(trades.length === Object.keys(markets).length);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
                     augur.trade({
@@ -421,15 +388,10 @@ module.exports = {
                             if (self.DEBUG) {
                                 self.print_residual(periodLength, "Trade hash: " + tradeHash);
                             }
-                            assert(!tradeHash.error);
-                            assert(tradeHash.constructor === String);
                         },
-                        onCommitSent: function (r) {
-                            assert(r.callReturn === "1");
-                        },
+                        onCommitSent: function () {},
                         onCommitSuccess: function (r) {
                             if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
-                            assert(r.callReturn === "1");
                         },
                         onCommitFailed: function (e) {
                             if (clientSideAccount) {
@@ -441,17 +403,11 @@ module.exports = {
                         onNextBlock: function (block) {
                             if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
                         },
-                        onTradeSent: function (r) {
-                            assert(r.callReturn === null);
-                        },
+                        onTradeSent: function () {},
                         onTradeSuccess: function (r) {
                             if (self.DEBUG) {
                                 self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
                             }
-                            assert(r.constructor === Object);
-                            assert(!r.error);
-                            assert(r.unmatchedCash !== undefined);
-                            assert(r.unmatchedShares !== undefined);
                             if (clientSideAccount) {
                                 augur.web.account = clientSideAccount;
                             }
@@ -483,10 +439,7 @@ module.exports = {
             console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
             console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
         }
-        setTimeout(function () {
-            assert(augur.getCurrentPeriod(periodLength) === expirationPeriod + 1);
-            callback(null);
-        }, secondsToGo*1000);
+        setTimeout(function () { callback(null); }, secondsToGo*1000);
     },
 
     chunk32: function (string, stride, offset) {
