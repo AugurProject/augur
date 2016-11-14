@@ -164,7 +164,7 @@ const Transaction = (p) => {
 			}
 			const reportedOutcome = isScalar ?
 				p.data.reportedOutcomeID :
-				p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
+				p.data.outcome && p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>

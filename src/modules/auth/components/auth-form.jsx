@@ -113,6 +113,7 @@ export default class AuthForm extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
+		const submitDisabled = p.type === 'login' ? false : s.submitDisabled;
 
 		return (
 			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data" autoComplete>
@@ -215,7 +216,7 @@ export default class AuthForm extends Component {
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
 					type="submit"
 					value={p.submitButtonText}
-					disabled={s.submitDisabled}
+					disabled={submitDisabled}
 				/>
 				<Link
 					className={classnames('airbitz-button airbitz-button-bottom')}

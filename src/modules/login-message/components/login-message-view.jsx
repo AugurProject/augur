@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 14, 2016</h3>
+			<ol>
+				<li>
+					Fixed a bug causing some reports to throw hash-mismatching errors during the reveal-report action.
+				</li>
+				<li>
+					Failed reveal report actions now render correctly on the transactions page.
+				</li>
+				<li>
+					Fixed a bug that sometimes caused the login button to be incorrectly disabled.
+				</li>
+			</ol>
 			<h3>November 13, 2016</h3>
 			<ol>
 				<li>
