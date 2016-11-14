@@ -20,7 +20,7 @@ export default class OutcomeTrade extends Component {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
 			selectedNav: BUY,
 			shareInputPlaceholder: generateShareInputPlaceholder(this.props.selectedShareDenomination),
-			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)),
+			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
 			sharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
 		};
 
@@ -99,7 +99,6 @@ export default class OutcomeTrade extends Component {
 								type="number"
 								value={s.sharesDenominated}
 								min="0"
-								max={s.maxSharesDenominated}
 								step="0.1"
 								onChange={(value) => { this.handleSharesInput(value); }}
 							/>
@@ -143,6 +142,7 @@ function denominateShares(shares, fromDenomination, toDenomination) {
 		return shares;
 	}
 
+	// Determine numerical representation of from/to values for shares mutation calc
 	const options = [SHARE, MILLI_SHARE, MICRO_SHARE];
 	let fromValue = 0;
 	options.some((value, i) => {
@@ -164,10 +164,13 @@ function denominateShares(shares, fromDenomination, toDenomination) {
 		return false;
 	});
 
-	if (fromValue < toValue) {
+	if (fromValue === toValue) {
+		return shares;
+	} else	if (fromValue < toValue) {
 		return shares * Math.pow(1000, toValue - fromValue);
 	}
 
+	// fromValue > toValue
 	return shares / Math.pow(1000, Math.abs(toValue - fromValue));
 }
 
