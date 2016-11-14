@@ -314,6 +314,7 @@ export function assembleMarket(
 			market.myMarketSummary = selectMyMarket(market)[0];
 
 			// Update the `result` object
+			// This houses the reported outcome + the proportion correct of that outcome
 			if (market.result) {
 				if (market.result.outcomeID) {
 					market.result.outcomeName = market.outcomes.find(outcome => outcome.id === market.result.outcomeID).name;
