@@ -71,7 +71,6 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						transactionData.feePercent.value,
 						gasFeesRealEth));
 				}
-
 				// update user's position
 				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(loadBidsAsks(marketID, () => {

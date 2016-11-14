@@ -19,9 +19,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 					getMarket: () => {}
 				}
 			};
-			const LoadMarketsInfo = {
-				loadMarketsInfo: () => {}
-			};
 			const LoadReport = {
 				loadReport: () => {}
 			};
@@ -30,7 +27,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			};
 			const action = proxyquire('../../../src/modules/reports/actions/load-reports', {
 				'../../../services/augurjs': AugurJS,
-				'../../markets/actions/load-markets-info': LoadMarketsInfo,
 				'../../reports/actions/load-report': LoadReport,
 				'../../reports/actions/load-report-descriptors': LoadReportDescriptors
 			});
@@ -39,12 +35,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			});
 			sinon.stub(AugurJS.augur, 'getMarket', (eventID, index, cb) => {
 				cb(t.blockchain.eventToMarket[eventID]);
-			});
-			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_MARKETS_INFO' });
-					cb();
-				}
 			});
 			sinon.stub(LoadReport, 'loadReport', (branchID, period, eventID, marketID, cb) => {
 				return (dispatch, getState) => {
@@ -133,16 +123,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions, marketIDs) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf1': {
-						eventID: '0xe1'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
-			}, {
-				type: 'LOAD_MARKETS_INFO'
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
@@ -184,25 +165,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions, marketIDs) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf1': {
-						eventID: '0xe1'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
 			}, {
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf2': {
-						eventID: '0xe2'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
-			}, {
-				type: 'LOAD_MARKETS_INFO'
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
@@ -250,23 +215,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions, marketIDs) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf1': {
-						eventID: '0xe1'
-					}
-				}
-			}, {
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf2': {
-						eventID: '0xe2'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
-			}, {
-				type: 'LOAD_MARKETS_INFO'
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
@@ -312,25 +261,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions, marketIDs) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf1': {
-						eventID: '0xe1'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
 			}, {
-				type: 'UPDATE_MARKETS_DATA',
-				marketsData: {
-					'0xf2': {
-						eventID: '0xe2'
-					}
-				}
-			}, {
 				type: 'LOAD_REPORT'
-			}, {
-				type: 'LOAD_MARKETS_INFO'
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);

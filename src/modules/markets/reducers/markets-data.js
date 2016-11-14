@@ -46,7 +46,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		parseEvent(marketData);
 
 		// mark whether details have been loaded
-		marketData.isLoadedMarketInfo = !!marketData.type;
+		marketData.isLoadedMarketInfo = !!marketData.cumulativeScale;
 
 		// save market (without outcomes)
 		p[normalizedMarketID] = marketData;

@@ -22,8 +22,11 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 				period: 19,
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID1',
+				minValue: '1',
+				maxValue: '2',
 				isUnethical: false,
 				isIndeterminate: true,
+				isCategorical: false,
 				isScalar: false
 			},
 			test2: {
@@ -34,8 +37,11 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 				period: 19,
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID2',
+				minValue: '5',
+				maxValue: '20',
 				isUnethical: false,
 				isIndeterminate: false,
+				isCategorical: false,
 				isScalar: true
 			},
 			test3: {
@@ -46,8 +52,11 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 				period: 19,
 				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID3',
+				minValue: '1',
+				maxValue: '2',
 				isUnethical: true,
 				isIndeterminate: false,
+				isCategorical: false,
 				isScalar: false
 			}
 		}
@@ -64,7 +73,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	store = mockStore(state);
 
 	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
-	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, isUnethical, isScalar, isIndeterminate, callback) => {
+	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) => {
 		return (dispatch, getState) => {
 			callback(null);
 		};
@@ -83,7 +92,10 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			type: 'UPDATE_REPORTS',
 			reports: {
 				[testState.branch.id]: {
-					test1: { ...reports[testState.branch.id].test1, isRevealed: true }
+					test1: {
+						...reports[testState.branch.id].test1,
+						isRevealed: true
+					}
 				}
 			}
 		}];

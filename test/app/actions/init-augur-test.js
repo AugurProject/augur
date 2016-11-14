@@ -15,9 +15,16 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			loadBranch: () => {}
 		}
 	};
-	let mockLoadLoginAccount = {};
-	let mockLoadChatMessages = {};
-	let mockReportingTestSetup = {};
+	const mockLoadLoginAccount = {};
+	const mockReportingTestSetup = {};
+	const mockLoadChatMessages = { loadChatMessages: () => {} };
+	const mockLoadBranch = { loadBranch: () => {} };
+	const mockCurrentMessage = sinon.stub().returns(true);
+	const mockUserLogin = sinon.stub().returns(false);
+	const mockInitTimer = sinon.stub().returns({ type: 'INIT_TIMER' });
+
+	mockLoadBranch.loadBranch = sinon.stub().returns({ type: 'LOAD_BRANCH' });
+	mockLoadChatMessages.loadChatMessages = sinon.stub().returns({ type: 'LOAD_CHAT_MESSAGES' });
 
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
@@ -38,8 +45,12 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../auth/actions/load-login-account': mockLoadLoginAccount,
+		'../../reports/actions/reportingTestSetup': mockReportingTestSetup,
 		'../../chat/actions/load-chat-messages': mockLoadChatMessages,
-		'../../reports/actions/reportingTestSetup': mockReportingTestSetup
+		'../../app/actions/load-branch': mockLoadBranch,
+		'../../login-message/helpers/is-current-login-message-read': mockCurrentMessage,
+		'../../auth/helpers/is-user-logged-in': mockUserLogin,
+		'../../app/actions/init-timer': mockInitTimer
 	});
 
 	beforeEach(() => {
@@ -67,7 +78,9 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		}, {
 			type: 'LOAD_LOGIN_ACCOUNT'
 		}, {
-			type: 'CLEAR_MARKETS_DATA'
+			type: 'LOAD_BRANCH'
+		}, {
+			type: 'INIT_TIMER'
 		}];
 
 		store.dispatch(action.initAugur());

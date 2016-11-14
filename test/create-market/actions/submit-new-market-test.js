@@ -538,7 +538,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3'}
 				],
 				minValue: 1,
-				maxValue: 2,
+				maxValue: 3,
 				numOutcomes: 3
 			};
 
@@ -612,7 +612,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3'}
 				],
 				minValue: 1,
-				maxValue: 2,
+				maxValue: 3,
 				numOutcomes: 3
 			};
 

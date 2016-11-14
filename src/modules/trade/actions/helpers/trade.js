@@ -6,8 +6,9 @@ import { loadBidsAsks } from '../../../bids-asks/actions/load-bids-asks';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
-	const bnTotalEth = abi.bignum(totalEthWithFee);
-	const bnNumShares = abi.bignum(numShares);
+	// undefined/null arguments get zero'ed out to gracefully fail
+	const bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
+	const bnNumShares = abi.bignum(numShares) || ZERO;
 	const res = {
 		remainingEth: bnTotalEth,
 		remainingShares: bnNumShares,
