@@ -13,14 +13,15 @@
 		}
 	}
 
-	.augur-brand {
+	.augur-brand.link {
 		display: flex;
 		flex: 10;
 		justify-content: center;
-		padding: 0 1em;
+		padding: 0;
 
 		.augur-logo {
 			height: 2.5em;
+			padding: 1em 0;  // Dictates Header Height (others flex to fill)
 		}
 	}
 
@@ -30,50 +31,18 @@
 		flex-direction: column;
 		justify-content: center;
 		white-space: nowrap;
+
+		@media @breakpoint-2 {
+			padding: 0 1em;
+		}
 	}
 
-	// .nav-group {
-	// 	display: flex;
-	// 	flex: 1;
-	// 	justify-content: center;
-	//
-	// 	@media @breakpoint-2-1 {
-	// 		flex: 0;
-	// 	}
-	//
-	// 	&.left-navs {
-	// 		justify-content: flex-start;
-	// 	}
-	//
-	// 	&.right-navs {
-	// 		justify-content: flex-end;
-	// 	}
-	//
-	// 	&.left-navs,
-	// 	&.right-navs {
-	// 		flex: 2;
-	// 		vertical-align: middle;
-	// 	}
-	//
-	// 	.link {
-	// 		display: flex;
-	// 		flex-direction: column;
-	// 		justify-content: center;
-	//
-	// 		@media @breakpoint-2 {
-	// 			padding: 1.5em 1em;
-	// 		}
-	// 	}
-	//
-	//
-	// }
-
-	.link,
+	.app-nav-link,
 	button.unstyled {
 
 		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
 
-		padding: 1.5em 1.8em;
+		padding: 0 1.8em;
 
 		&:hover,
 		&:active {
