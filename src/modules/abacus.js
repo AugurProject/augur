@@ -168,7 +168,7 @@ module.exports = {
     },
 
     parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 7;
+        var EVENTS_FIELDS = 8;
         var OUTCOMES_FIELDS = 3;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
@@ -207,29 +207,32 @@ module.exports = {
                     this.decodeTag(rawInfo[11]),
                     this.decodeTag(rawInfo[12]),
                     this.decodeTag(rawInfo[13])
-                ],
-                winningOutcomes: []
+                ]
             };
             info.outcomes = new Array(info.numOutcomes);
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var outcome;
+            var outcome, proportionCorrect;
             if (parseInt(rawInfo[index + 2], 16) !== 0) {
                 outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
+            }
+            if (parseInt(rawInfo[index + 7], 16) !== 0) {
+                proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
             }
             var event = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
-                outcome: outcome,
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
                 isEthical: abi.unfix(abi.hex(rawInfo[index + 6], true), "number") || undefined
             };
+            info.reportedOutcome = outcome;
+            info.proportionCorrect = proportionCorrect;
 
             // event type: binary, categorical, or scalar
-            if (event.numOutcomes !== 2) {
+            if (event.numOutcomes > 2) {
                 event.type = "categorical";
             } else if (event.minValue === "1" && event.maxValue === "2") {
                 event.type = "binary";

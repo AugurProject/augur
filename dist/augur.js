@@ -21359,42 +21359,42 @@ module.exports={
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
     }, 
     "2": {
-        "Backstops": "0x834860671a45fe012280d033562a776a8a08805a", 
-        "Branches": "0xe90849ffb16054eeddd6642f778930bc2ff2bf3a", 
-        "BuyAndSellShares": "0xbedc0bb47e72c2edea8045911edbf09431eb4e1e", 
-        "Cash": "0xe5b05e48ec47d5c425a70b34e4d8c58358930706", 
-        "CloseMarket": "0xfe5459beab20c7589fc471ce067c5e272a56dc70", 
-        "CloseMarketOne": "0xd6b478b7a344ab56910694fd0edc637d0d6addc6", 
-        "CloseMarketTwo": "0x358d9949ab745e3d3eaa3be2af8d565c8597e314", 
-        "CollectFees": "0xe0f5cfcab0fa108511ced049bef9f4c24e00aa30", 
-        "CompleteSets": "0xce17266227f265826e969044361c069160edcdcf", 
-        "CompositeGetters": "0x91df45aaf588406fd1ab75210d97773cf441af18", 
-        "Consensus": "0x398399173731f4f62766465b3420ef1e7f6770b1", 
-        "ConsensusData": "0xa3c1a5d46e18c4ef91bd0d89f162c370df2d5ccc", 
-        "CreateBranch": "0xe88e2c72bad237c53b295c40f58a1b5948a5fdea", 
-        "CreateMarket": "0x40b7e9c075a7efc7a2a6ddd8313d4fd387c500ef", 
-        "EventResolution": "0x16a47142d4c11f9fad7c9d9bd7d64e5a3c7c240d", 
-        "Events": "0xcbe2106e9671fda169a8e0edfd473a6569cc92d2", 
-        "ExpiringEvents": "0x655243cb1fba08d38ccf6d1da9eec304eae7793b", 
-        "Faucets": "0xca7930165944e724d15836b4da9ab896e21cf6b4", 
-        "ForkPenalize": "0x910da377b2cf2a20e7747125004131b34f62aae4", 
-        "Forking": "0x29d3f0edad7e0f224bb8e703fd397cdfe11a6504", 
-        "FxpFunctions": "0x57e78bbe2bd711b5695e2cb939297396981fc4d0", 
-        "Info": "0xfd7e2d82b2537dffc7d4bb63015cebced1fda72b", 
-        "MakeReports": "0x61040c9405f80b71337120ed8b0ab809f3a81450", 
-        "Markets": "0x870f3cd0be72ec951542dc86daed5054786ddea4", 
-        "PenalizationCatchup": "0xe31660a5bf3a5d7d778a6d1bebd5d45359845e2d", 
-        "PenalizeNotEnoughReports": "0x4fb29ccbacf2922157b31468dd10cb9dfd807f6f", 
-        "ProportionCorrect": "0x4a6e1f44db9877092edb49162200f234b549a7c6", 
-        "Register": "0x32c66f096831e3cc1aa4046b8e6b0fdfb976b97d", 
-        "Reporting": "0x04b86c7acaf4b017a7b6c0b13133905d9e0700e4", 
-        "ReportingThreshold": "0x0bd98eaf0aaac5bbcfb96538167248b77b9edc05", 
-        "RoundTwo": "0x25ff669a4a45c1a7955499289b044c98457d40ff", 
-        "RoundTwoPenalize": "0xd2aef68f80d12e79799a15f65542d3425ef93a11", 
-        "SendReputation": "0xea687d69847cc491f93211e93481e242e2a99389", 
-        "SlashRep": "0x6d7f05bcc83d9cb5f379973953d4386df9e188f6", 
-        "Trade": "0x89c2118b42a0b2cad778ce28f52aade51acebf40", 
-        "Trades": "0x631adb6122ab129ebdba6b344475149e480e4544"
+        "Backstops": "0x581685136e23452647548822ec2574c5891ff04d", 
+        "Branches": "0xf6edcc9e739d5cb75cce91ed3935537471ff1cbf", 
+        "BuyAndSellShares": "0x6b2da196a3de5670f67f6d5a681f074bb66edabe", 
+        "Cash": "0x5a5639b55647d5ffab0aeb118fb7034179e76c6a", 
+        "CloseMarket": "0x003490ac955e8ca5f935fd89f05a03a9686bcc8d", 
+        "CloseMarketOne": "0x5454cdfa724e938806bd44e62108b30af3a11bbd", 
+        "CloseMarketTwo": "0xab2ace17427a27a8bdbcbc8e2f69cf9d94ee0055", 
+        "CollectFees": "0x24773e3dce2dc1a83596c65e1ab9e988c2128e19", 
+        "CompleteSets": "0xdf033ea7db4f1ba2e563763931a9e79eabbe8e7e", 
+        "CompositeGetters": "0x528735354da9b43fbe6d2b836abf116c7f5c7dbc", 
+        "Consensus": "0xb2f6bbb3e649922cc7320b25fe88992aa386da86", 
+        "ConsensusData": "0x482e3fdfd29813ffd559cbfc8522306175ff621a", 
+        "CreateBranch": "0x7c0a2b957f25412ef519babe0e982b9ca23791ac", 
+        "CreateMarket": "0x3128446f412428e3780e606b4c0d8631dfc63312", 
+        "EventResolution": "0xb27608136e0f9adc7d2c7dd9ca9b593ebe903cd3", 
+        "Events": "0xceec1c0625d66c3f3f8fb9480c16529a3e3da454", 
+        "ExpiringEvents": "0xb8785f645e34057c22648de4ad94c1ab5bb4eccf", 
+        "Faucets": "0xf9876c14b186895a4797e744d07ed96ed9674f80", 
+        "ForkPenalize": "0x8563045333ca0018d924bf16ec7058af12947d81", 
+        "Forking": "0x46060150d23e15295410174dfa7d90fa0ef80395", 
+        "FxpFunctions": "0x15518f956adf20e437cdc24d8a9decd65410672d", 
+        "Info": "0x105b58e959fc27a2234eddb953fa0955eea41a06", 
+        "MakeReports": "0xb8f742014ba01b1d4256394aebd358e877b3c24a", 
+        "Markets": "0xe551a4a60becbfc5b1c527c4f5069ccb483cb06c", 
+        "PenalizationCatchup": "0x56c1dd4aa9524ae288b99a16b7dd57d6419e5b33", 
+        "PenalizeNotEnoughReports": "0x29ab1464d26aee475b950af28c0f51feb5477798", 
+        "ProportionCorrect": "0xfa376dd5fe81fda69e114ba3b2ae27383b2ba616", 
+        "Register": "0xb08d310931c2dc2970868367481cca9c8b4ae33c", 
+        "Reporting": "0x8d2341d27ee5d4f17b3987e4b47fe863264fe13e", 
+        "ReportingThreshold": "0xb32ca8bc9d07e5f90dfff938d1895d021334dbff", 
+        "RoundTwo": "0x68f4267bf787736abcfa96c173b0a8b0689629f8", 
+        "RoundTwoPenalize": "0xcffb2f806504f703d90f75876675fdb2d7f8c1fe", 
+        "SendReputation": "0x16b0b8af7c2144714985e7194185074d2ec366f8", 
+        "SlashRep": "0x1c8f1bb2b8071303b62958056db177ae472c7411", 
+        "Trade": "0x5cd5f2b3bc32c45a25fc5790b2f2de76c3e70654", 
+        "Trades": "0x0755e286b808ae05029aecd6c4ea32d235eeee34"
     }, 
     "9000": {
         "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
@@ -43246,8 +43246,9 @@ module.exports = {
     PARALLEL_LIMIT: 5,
 
     // fixed-point indeterminate: 1.5 * 10^18
-    INDETERMINATE: "0x14d1120d7b160000",
-    INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",
+    BINARY_INDETERMINATE: "0x14d1120d7b160000",
+    CATEGORICAL_SCALAR_INDETERMINATE: "0x6f05b59d3b20000",
+    INDETERMINATE_PLUS_ONE: "0x6f05b59d3b20001",
 
     // default gas: 3.135M
     DEFAULT_GAS: 3135000,
@@ -44010,7 +44011,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.5";
+    this.version = "3.1.6";
 
     this.options = {
         debug: {
@@ -44235,7 +44236,7 @@ module.exports = {
     },
 
     parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 7;
+        var EVENTS_FIELDS = 8;
         var OUTCOMES_FIELDS = 3;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
@@ -44274,29 +44275,32 @@ module.exports = {
                     this.decodeTag(rawInfo[11]),
                     this.decodeTag(rawInfo[12]),
                     this.decodeTag(rawInfo[13])
-                ],
-                winningOutcomes: []
+                ]
             };
             info.outcomes = new Array(info.numOutcomes);
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var outcome;
+            var outcome, proportionCorrect;
             if (parseInt(rawInfo[index + 2], 16) !== 0) {
                 outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
+            }
+            if (parseInt(rawInfo[index + 7], 16) !== 0) {
+                proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
             }
             var event = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
-                outcome: outcome,
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
                 isEthical: abi.unfix(abi.hex(rawInfo[index + 6], true), "number") || undefined
             };
+            info.reportedOutcome = outcome;
+            info.proportionCorrect = proportionCorrect;
 
             // event type: binary, categorical, or scalar
-            if (event.numOutcomes !== 2) {
+            if (event.numOutcomes > 2) {
                 event.type = "categorical";
             } else if (event.minValue === "1" && event.maxValue === "2") {
                 event.type = "binary";
@@ -44972,7 +44976,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type;
+        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, reportedOutcome;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
         }
@@ -44987,7 +44991,9 @@ module.exports = {
             minValue = abi.unfix(abi.hex(marketsArray[shift + 11], true), "string");
             maxValue = abi.unfix(abi.hex(marketsArray[shift + 12], true), "string");
             numOutcomes = parseInt(marketsArray[shift + 13], 16);
-            if (numOutcomes !== 2) {
+            reportedOutcome = abi.unfix(abi.hex(marketsArray[shift + 14], true), "string");
+            if (!parseInt(reportedOutcome, 10)) reportedOutcome = undefined;
+            if (numOutcomes > 2) {
                 type = "categorical";
             } else if (minValue === "1" && maxValue === "2") {
                 type = "binary";
@@ -45014,7 +45020,8 @@ module.exports = {
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
                 type: type,
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 14, shift + len - 1))
+                reportedOutcome: reportedOutcome,
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
             };
             totalLen += len;
         }
@@ -46177,7 +46184,11 @@ module.exports = {
     fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
         var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
-            fixedReport = constants.INDETERMINATE;
+            if (type === "binary") {
+                fixedReport = constants.BINARY_INDETERMINATE;
+            } else {
+                fixedReport = constants.CATEGORICAL_SCALAR_INDETERMINATE;
+            }
         } else {
             if (type === "binary") {
                 fixedReport = abi.fix(report, "hex");
@@ -46194,9 +46205,9 @@ module.exports = {
                 }
             }
 
-            // if report is equal to fix(1.5) but is not indeterminate,
-            // then set report to fix(1.5) + 1
-            if (fixedReport === constants.INDETERMINATE) {
+            // if report is equal to fix(0.5) but is not indeterminate,
+            // then set report to fix(0.5) + 1
+            if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
                 fixedReport = constants.INDETERMINATE_PLUS_ONE;
             }
         }
@@ -46205,10 +46216,12 @@ module.exports = {
 
     unfixReport: function (fixedReport, minValue, maxValue, type) {
         var report, bnMinValue;
-        if (fixedReport === constants.INDETERMINATE) {
+        if (fixedReport === constants.BINARY_INDETERMINATE) {
             return {report: "1.5", isIndeterminate: true};
+        } else if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
+            return {report: "0.5", isIndeterminate: true};
         } else if (fixedReport === constants.INDETERMINATE_PLUS_ONE) {
-            return {report: "1.5", isIndeterminate: false};
+            return {report: "0.5", isIndeterminate: false};
         }
         if (type === "binary") {
             report = abi.unfix(fixedReport);

@@ -242,7 +242,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type;
+        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, reportedOutcome;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
         }
@@ -257,7 +257,9 @@ module.exports = {
             minValue = abi.unfix(abi.hex(marketsArray[shift + 11], true), "string");
             maxValue = abi.unfix(abi.hex(marketsArray[shift + 12], true), "string");
             numOutcomes = parseInt(marketsArray[shift + 13], 16);
-            if (numOutcomes !== 2) {
+            reportedOutcome = abi.unfix(abi.hex(marketsArray[shift + 14], true), "string");
+            if (!parseInt(reportedOutcome, 10)) reportedOutcome = undefined;
+            if (numOutcomes > 2) {
                 type = "categorical";
             } else if (minValue === "1" && maxValue === "2") {
                 type = "binary";
@@ -284,7 +286,8 @@ module.exports = {
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
                 type: type,
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 14, shift + len - 1))
+                reportedOutcome: reportedOutcome,
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
             };
             totalLen += len;
         }

@@ -18,7 +18,11 @@ module.exports = {
     fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
         var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
-            fixedReport = constants.INDETERMINATE;
+            if (type === "binary") {
+                fixedReport = constants.BINARY_INDETERMINATE;
+            } else {
+                fixedReport = constants.CATEGORICAL_SCALAR_INDETERMINATE;
+            }
         } else {
             if (type === "binary") {
                 fixedReport = abi.fix(report, "hex");
@@ -35,9 +39,9 @@ module.exports = {
                 }
             }
 
-            // if report is equal to fix(1.5) but is not indeterminate,
-            // then set report to fix(1.5) + 1
-            if (fixedReport === constants.INDETERMINATE) {
+            // if report is equal to fix(0.5) but is not indeterminate,
+            // then set report to fix(0.5) + 1
+            if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
                 fixedReport = constants.INDETERMINATE_PLUS_ONE;
             }
         }
@@ -46,10 +50,12 @@ module.exports = {
 
     unfixReport: function (fixedReport, minValue, maxValue, type) {
         var report, bnMinValue;
-        if (fixedReport === constants.INDETERMINATE) {
+        if (fixedReport === constants.BINARY_INDETERMINATE) {
             return {report: "1.5", isIndeterminate: true};
+        } else if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
+            return {report: "0.5", isIndeterminate: true};
         } else if (fixedReport === constants.INDETERMINATE_PLUS_ONE) {
-            return {report: "1.5", isIndeterminate: false};
+            return {report: "0.5", isIndeterminate: false};
         }
         if (type === "binary") {
             report = abi.unfix(fixedReport);
