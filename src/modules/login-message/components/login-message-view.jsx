@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 15, 2016</h3>
+			<ol>
+				<li>
+					Fixed market selector isExpired property calculation, distinguished it from isOpen.
+				</li>
+				<li>
+					Added result (reported outcome / proportion correct) object field to market(s) selectors.
+				</li>
+			</ol>
 			<h3>November 14, 2016</h3>
 			<ol>
 				<li>
@@ -60,6 +69,18 @@ const LoginMessagePage = p => (
 				</li>
 				<li>
 					Market preview tooltips now display non-truncated values for very large numbers.
+				</li>
+				<li>
+					Categorical outcomes are now correctly rounded to the nearest integer (on eventResolution contract).
+				</li>
+				<li>
+					Added check to make sure event is on the specified branch before penalizing (on consensus contract).  Resolves the edge case of penalization of a reporter who is otherwise caught up when there are no events in a period.
+				</li>
+				<li>
+					Added reporting proportion correct value to getMarketInfo array (on compositeGetters contract).
+				</li>
+				<li>
+					Added event outcome to getMarketsInfo (on compositeGetters contract).
 				</li>
 				<li>
 					Fixed a bug causing some reports to throw hash-mismatching errors during the reveal-report action.
