@@ -1,0 +1,97 @@
+.app-nav {
+	display: flex;
+	flex: 1;
+	justify-content: center;
+
+	&.nav-footer {
+		display: none;
+
+		@media @breakpoint-1, @breakpoint-2-2 {
+			display: flex;
+			flex: 1;
+			justify-content: center;
+		}
+	}
+
+	.nav-group {
+		display: flex;
+		flex: 1;
+		justify-content: center;
+
+		@media @breakpoint-2-1 {
+			flex: 0;
+		}
+
+		&.left-navs {
+			justify-content: flex-start;
+		}
+
+		&.right-navs {
+			justify-content: flex-end;
+		}
+
+		&.left-navs,
+		&.right-navs {
+			flex: 2;
+			vertical-align: middle;
+		}
+
+		.link {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
+			@media @breakpoint-2 {
+				padding: 1.5em 1em;
+			}
+		}
+
+		&.branding .link {
+			padding: 0 1em;
+
+			.augur-logo {
+				height: 2.5em;
+			}
+		}
+	}
+
+	.link,
+	button.unstyled {
+
+		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+
+		padding: 1.5em 1.8em;
+
+		&:hover,
+		&:active {
+			&:not(.augur-brand):not(button) {
+				background-color: @color-nav-background-active;
+				color: @color-text-light;
+				cursor: pointer;
+			}
+		}
+
+		&.active {
+
+			.font-weight-light();
+
+			background-color: @color-nav-background-active;
+			color: @color-text-light;
+		}
+
+		&.transactions {
+			&.working {
+				&:not(.active) {
+
+					.animation-flash-slow(@color-orange);
+
+					color: @color-text-light;
+				}
+			}
+
+			.link-text {
+				white-space: nowrap;
+			}
+		}
+	}
+}

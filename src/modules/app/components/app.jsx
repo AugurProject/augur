@@ -62,7 +62,8 @@ class AppComponent extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-		const siteHeaderProps = {
+
+		const navProps = {
 			isSideBarAllowed: s.isSideBarAllowed,
 			isSideBarCollapsed: s.isSideBarCollapsed,
 			toggleSideBar: () => { this.toggleSideBar(); },
@@ -82,6 +83,7 @@ class AppComponent extends Component {
 			myPositionsLink: (p.links && p.links.myPositionsLink) || undefined,
 			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
 		};
+
 		const sideBarProps = {
 			tags: p.tags,
 			loginAccount: p.loginAccount
@@ -96,7 +98,7 @@ class AppComponent extends Component {
 				{!!p &&
 					<div id="app_container" >
 						<div id="app_header">
-							<Header {...siteHeaderProps} />
+							<Header {...navProps} />
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
@@ -107,7 +109,7 @@ class AppComponent extends Component {
 							</div>
 						</div>
 						<div id="app_views" >
-							<Header {...siteHeaderProps} />
+							<Header {...navProps} />
 							<div id="app_view_container">
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div id="side_bar" >
@@ -136,7 +138,7 @@ class AppComponent extends Component {
 						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
 							Chat
 						</button>
-						<Footer />
+						<Footer {...navProps} />
 					</div>
 				}
 			</main>

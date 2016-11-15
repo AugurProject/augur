@@ -30,7 +30,7 @@ main,
 		width: 100vw;
 		z-index: @above-all-content;
 
-		.site-header .site-nav {
+		.site-header .app-nav {
 
 			.contained();
 
@@ -98,6 +98,10 @@ section {
 	display: flex;
 	flex-direction: column;
 	margin: 2rem 6rem 0;
+
+	@media @breakpoint-2-1 {
+		margin: 2rem 3rem 0;
+	}
 
 	.view-header {
 		align-items: center;
