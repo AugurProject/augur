@@ -30,7 +30,7 @@ function loginWithEthereumWallet(dispatch, airbitzAccount, ethereumWallet) {
 		dispatch(loadLoginAccountDependents((err, ether) => {
 			console.log('got:', err, ether);
 			if (err) return console.error('loadLoginAccountDependents:', err);
-			if (ether === 0) {
+			if (ether === '0') {
 				dispatch(addFundNewAccount(loginAccount.id));
 			}
 		}));
