@@ -17,7 +17,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	let state = Object.assign({}, testState, {
 		marketsData: {
 			test: {
-				endDate: new Date('01/01/3000'),
+				endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
 				outcomes: {
 					test: {}
 				},
@@ -27,7 +27,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 				}
 			},
 			test2: {
-				endDate: new Date('01/01/3000'),
+				endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
 				outcomes: {
 					test2: {}
 				},
@@ -37,7 +37,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 				}
 			},
 			test3: {
-				endDate: new Date('01/01/3000'),
+				endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
 				outcomes: {
 					test3: {}
 				},
@@ -89,7 +89,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		assembleMarket: () => {},
 		selectMarketReport: () => {}
 	};
-	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => {
+	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => {
 		return market;
 	});
 	sinon.stub(mockMarket, 'selectMarketReport', (marketID, branchReports) => {

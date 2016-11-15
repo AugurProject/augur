@@ -6,10 +6,10 @@ import { assembleMarket, selectMarketReport } from '../../market/selectors/marke
 export default function () {
 	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, new Date().getTime(), store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, currentTime, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -24,7 +24,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			marketsData[marketID],
 			priceHistory[marketID],
 			isMarketDataOpen(marketsData[marketID]),
-			isMarketDataExpired(marketsData[marketID], currentTime),
+			isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
 			!!favorites[marketID],
 			outcomesData[marketID],
