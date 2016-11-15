@@ -56,6 +56,12 @@ const LoginMessagePage = p => (
 			<h3>November 14, 2016</h3>
 			<ol>
 				<li>
+					Scalar market order books now display &quot;truncated&quot; share quantities for very large quantities of millishares and microshares.
+				</li>
+				<li>
+					Market preview tooltips now display non-truncated values for very large numbers.
+				</li>
+				<li>
 					Fixed a bug causing some reports to throw hash-mismatching errors during the reveal-report action.
 				</li>
 				<li>
