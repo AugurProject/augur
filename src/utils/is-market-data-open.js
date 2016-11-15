@@ -3,6 +3,9 @@ export function isMarketDataOpen(marketData) {
 }
 
 export function isMarketDataExpired(marketData, currentTime) {
+    if (!marketData || !marketData.endDate || !marketData.endDate.value || !currentTime) {
+        return false;
+    }
 	return marketData.endDate.value.getTime() < currentTime;
 }
 
