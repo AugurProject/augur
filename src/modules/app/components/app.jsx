@@ -37,6 +37,7 @@ class AppComponent extends Component {
 	componentDidMount() {
 		// Checks whether the app is currently in breakpoints 1 or 2 and will auto-hide the side-bar
 		if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
+			this.main.style.willChange = 'auto'; // reset
 			this.toggleSideBar();
 		}
 	}
