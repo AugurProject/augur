@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
 				<li>
 					Added result (reported outcome / proportion correct) object field to market(s) selectors.
 				</li>
+				<li>
+					For Airbitz logins, private keys are now stored in an Airbitz wallet instead of using the Airbitz dataKey as the Ethereum private key.  (This change only affects Airbitz accounts.)
+				</li>
 			</ol>
 			<h3>November 14, 2016</h3>
 			<ol>
