@@ -3,10 +3,10 @@ export function isMarketDataOpen(marketData) {
 }
 
 export function isMarketDataExpired(marketData, currentTime) {
-    if (!marketData || !marketData.endDate || !marketData.endDate.value || !currentTime) {
-        return false;
-    }
-	return marketData.endDate.value.getTime() < currentTime;
+	if (!marketData || !marketData.endDate || !currentTime) {
+		return false;
+	}
+	return marketData.endDate < parseInt(currentTime / 1000, 10);
 }
 
 export function isMarketDataPreviousReportPeriod(marketData, currentPeriod, periodLength) {
