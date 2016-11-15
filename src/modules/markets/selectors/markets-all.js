@@ -1,8 +1,6 @@
 import memoizerific from 'memoizerific';
-import { isMarketDataOpen } from '../../../utils/is-market-data-open';
-
 import store from '../../../store';
-
+import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
 import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
 
 export default function () {
@@ -26,6 +24,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			marketsData[marketID],
 			priceHistory[marketID],
 			isMarketDataOpen(marketsData[marketID]),
+			isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
 			!!favorites[marketID],
 			outcomesData[marketID],
