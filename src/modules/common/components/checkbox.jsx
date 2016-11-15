@@ -3,14 +3,16 @@ import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 
 const Checkbox = p => (
-	<span>
+	<article className="checkbox-container">
 		<button
 			className={classnames('checkbox unstyled', p.className, { checked: p.isChecked })}
 			type="button"
 			data-tip={p.title}
 			onClick={p.onClick}
 		>
-			<span className="checkbox-box" />
+			{p.isCheckboxVisible &&
+				<span className="checkbox-box" />
+			}
 			<span className="checkbox-label" tabIndex={p.tabIndex} >
 				{p.text}
 			</span>
@@ -21,7 +23,7 @@ const Checkbox = p => (
 			}
 		</button>
 		<ReactTooltip type="light" effect="solid" place="top" />
-	</span>
+	</article>
 );
 
 Checkbox.propTypes = {
@@ -31,7 +33,8 @@ Checkbox.propTypes = {
 	text2: PropTypes.string,
 	isChecked: PropTypes.bool,
 	tabIndex: PropTypes.number,
-	onClick: PropTypes.func
+	onClick: PropTypes.func,
+	isCheckboxVisible: PropTypes.bool
 };
 
 export default Checkbox;
