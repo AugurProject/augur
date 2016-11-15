@@ -12,7 +12,7 @@ const MarketDataHeader = p => (
 			<MarketProperties {...p} />
 		</div>
 		<div className="market-header-actions">
-			{p.type === SCALAR && !p.isPendingReport &&
+			{p.type === SCALAR && p.selectedShareDenomination && !p.isPendingReport &&
 				<Dropdown
 					default={p.selectedShareDenomination}
 					options={p.shareDenominations}

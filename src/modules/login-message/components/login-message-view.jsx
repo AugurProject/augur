@@ -53,6 +53,69 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 14, 2016</h3>
+			<ol>
+				<li>
+					Scalar market order books now display &quot;truncated&quot; share quantities for very large quantities of millishares and microshares.
+				</li>
+				<li>
+					Market preview tooltips now display non-truncated values for very large numbers.
+				</li>
+				<li>
+					Fixed a bug causing some reports to throw hash-mismatching errors during the reveal-report action.
+				</li>
+				<li>
+					Failed reveal report actions now render correctly on the transactions page.
+				</li>
+				<li>
+					Fixed a bug that sometimes caused the login button to be incorrectly disabled.
+				</li>
+			</ol>
+			<h3>November 13, 2016</h3>
+			<ol>
+				<li>
+					Finished refactoring and thoroughly unit testing reporting timing methods (checkPeriod et al) in augur.js.
+				</li>
+				<li>
+					Fixed/updated augur.js reporting-sequence integration tests to work properly with the refactored reporting tools.
+				</li>
+				<li>
+					Fixed error on Reporting detail page.
+				</li>
+				<li>
+					Fixed warning on trade (market detail) page.
+				</li>
+			</ol>
+			<h3>November 12, 2016</h3>
+			<ol>
+				<li>
+					Added rescaling logic for categorical and scalar reports to augur.js fixReport and (new) unfixReport methods, and updated event / report loaders in UI accordingly.
+				</li>
+				<li>
+					Full reset of network 9000 (test chain) contracts.
+				</li>
+			</ol>
+			<h3>November 11, 2016</h3>
+			<ol>
+				<li>
+					Merged augur-core develop into master branch.
+				</li>
+				<li>
+					Changed tick size to tenths on trade page.
+				</li>
+				<li>
+					Added highlighting of the matching side of the order book when user clicks buy/sell.
+				</li>
+				<li>
+					Fixed abnormally high CPU utilization on markets listing page.
+				</li>
+				<li>
+					The trade page for scalar markets now properly displays the unit selection drop-down menu.  The share amounts on the page are updated automatically when a new unit is chosen.
+				</li>
+				<li>
+					Fixed scalar market labels (no longer improperly labeled as categorical markets).
+				</li>
+			</ol>
 			<h3>November 10, 2016</h3>
 			<ol>
 				<li>
