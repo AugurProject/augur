@@ -295,13 +295,6 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 		it('should be able to handle a large amount of trade ids (100)', () => {
 			const tradeIDs = [];
 			for (let i = 1; i <= 100; i++) {
-				let order = {
-					id: 'orderID' + i,
-					price: (Math.random() * (.8 - .2) + .2) + '',
-					numShares: (Math.random() * (100 - 5) + 5) + '',
-					outcome: '2',
-					owner: 'owner' + i
-				};
 				tradeIDs.push('orderID' + i);
 			}
 			helper.trade('testBinaryMarketID', '2', '0', '200.02', '0xtaker1', () => tradeIDs, store.dispatch, mockCBStatus, mockCB);
@@ -460,6 +453,214 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert(mockCB.calledOnce, `the callback wasn't called 1 time only as expected`);
 
 			assert.deepEqual(store.getActions(), [], `Dispatched actions that shouldn't have dispatched.`);
+		});
+
+		it('should handle a sell trade with JS Numbers', () => {
+			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
+			helper.trade('testBinaryMarketID', '2', 10, 0, '0xtaker1', () => ['orderID1', 'orderID2', 'orderID3'], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+			assert(mockCBStatus.calledWith({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.01450404')
+			}), `Didn't send the right details`);
+			assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.01'),
+				gasFees: abi.bignum('0.02900808'),
+				filledShares: abi.bignum('10'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('0'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
+		});
+
+		it('should handle a sell trade with Big Number', () => {
+			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
+			helper.trade('testBinaryMarketID', '2', abi.bignum('10'), abi.bignum('0'), '0xtaker1', () => ['orderID1', 'orderID2', 'orderID3'], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+			assert(mockCBStatus.calledWith({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.01450404')
+			}), `Didn't send the right details`);
+			assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.01'),
+				gasFees: abi.bignum('0.02900808'),
+				filledShares: abi.bignum('10'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('0'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [ { type: 'LOAD_BIDS_ASKS' }], `Didn't dispatch a load_bids_asks action as expected`);
+		});
+
+		it('should handle a sell trade with no tradeIDs available', () => {
+			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
+			helper.trade('testBinaryMarketID', '2', '10', '0', '0xtaker1', () => [], store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCB.calledWithExactly(null, {
+			  remainingEth: ZERO,
+			  remainingShares: abi.bignum(10),
+			  filledShares: ZERO,
+			  filledEth: ZERO,
+			  tradingFees: ZERO,
+			  gasFees: ZERO
+			}), `Didn't call the callback with the expected values`);
+			assert.deepEqual(mockCBStatus.callCount, 0, `Called a cbStatus when it should have failed out.`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [], `Did dispatch actions when it shouldn't have`);
+		});
+
+		it('should handle a sell trade with 99 trade ids available', () => {
+			const tradeIDs = [];
+			for (let i = 1; i <= 99; i++) {
+				tradeIDs.push('orderID' + i);
+			}
+			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
+			helper.trade('testBinaryMarketID', '2', '30', '0', '0xtaker1', () => tradeIDs, store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+			assert(mockCBStatus.calledWith({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.01450404')
+			}), `Didn't send the right details`);
+			assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.01'),
+				gasFees: abi.bignum('0.02900808'),
+				filledShares: abi.bignum('10'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('20'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status 1`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.02'),
+				gasFees: abi.bignum('0.05801616'),
+				filledShares: abi.bignum('20'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('10'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.03'),
+				gasFees: abi.bignum('0.08702424'),
+				filledShares: abi.bignum('30'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('0'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+
+			assert.deepEqual(mockCBStatus.callCount, 15, `Called a cbStatus when it should have failed out.`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [{ type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }], `Did dispatch actions when it shouldn't have`);
+		});
+
+		it('should handle a sell trade with 4 trade ids available', () => {
+			const tradeIDs = [];
+			for (let i = 1; i <= 4; i++) {
+				tradeIDs.push('orderID' + i);
+			}
+
+			// marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb
+			helper.trade('testBinaryMarketID', '2', '40', '0', '0xtaker1', () => tradeIDs, store.dispatch, mockCBStatus, mockCB);
+
+			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
+			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
+			assert(mockCBStatus.calledWith({
+				status: 'sending',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				gasFees: abi.bignum('0.01450404')
+			}), `Didn't send the right details`);
+			assert(mockCBStatus.calledWithExactly({ status: 'filling' }), `Didn't called cbStatus with a filling status`);
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.01'),
+				gasFees: abi.bignum('0.02900808'),
+				filledShares: abi.bignum('10'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('30'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.02'),
+				gasFees: abi.bignum('0.05801616'),
+				filledShares: abi.bignum('20'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('20'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.03'),
+				gasFees: abi.bignum('0.08702424'),
+				filledShares: abi.bignum('30'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('10'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert(mockCBStatus.calledWith({
+				status: 'filled',
+				hash: 'testhash',
+				timestamp: 1500000000,
+				tradingFees: abi.bignum('0.04'),
+				gasFees: abi.bignum('0.11603232'),
+				filledShares: abi.bignum('40'),
+				filledEth: abi.bignum('0'),
+				remainingShares: abi.bignum('0'),
+				remainingEth: abi.bignum('0')
+			}), `Didn't call cbStatus with a filled status`);
+
+			assert.deepEqual(mockCBStatus.callCount, 20, `Called a cbStatus when it should have failed out.`);
+			assert.deepEqual(mockCB.callCount, 1, `Didn't call the callback 3 times as expected`);
+			assert.deepEqual(store.getActions(), [{ type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }], `Did dispatch actions when it shouldn't have`);
 		});
 
 		it.skip('should handle a trade that sends in both numShares and remainingEth', () => {
