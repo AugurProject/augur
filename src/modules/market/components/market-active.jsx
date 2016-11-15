@@ -57,9 +57,9 @@ export default class MarketActive extends Component {
 		if (!shareDenomination) {
 			const maxValue = getValue(this.props, 'market.maxValue');
 
-			if (maxValue >= 1000000) {
+			if (maxValue >= 10000000) {
 				this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MICRO_SHARE);
-			} else if (maxValue >= 1000) {
+			} else if (maxValue >= 10000) {
 				this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MILLI_SHARE);
 			} else {
 				this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, SHARE);
