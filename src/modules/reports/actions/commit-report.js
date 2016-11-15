@@ -2,7 +2,7 @@ import secureRandom from 'secure-random';
 import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -12,21 +12,19 @@ import { nextReportPage } from '../../reports/actions/next-report-page';
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
 		const { branch, loginAccount } = getState();
-		const isScalar = market.type === SCALAR;
 		const salt = bytesToHex(secureRandom(32));
 		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
-		const reportHash = augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address);
 		dispatch(updateReport(branch.id, market.eventID, {
 			eventID: market.eventID,
 			marketID: market.id,
 			period: branch.reportPeriod,
 			reportedOutcomeID,
 			isCategorical: market.type === CATEGORICAL,
-			isScalar,
+			isScalar: market.type === SCALAR,
 			isUnethical,
 			isIndeterminate,
 			salt,
-			reportHash,
+			reportHash: augur.makeHash(salt, fixedReport, market.eventID, loginAccount.address),
 			isCommitted: false,
 			isRevealed: false
 		}));
@@ -48,7 +46,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				message: 'Missing data'
 			}));
 		}
-		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type === BINARY, isIndeterminate);
+		const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
 		let encryptedReport = 0;
 		let encryptedSalt = 0;
 		if (loginAccount.derivedKey) {
