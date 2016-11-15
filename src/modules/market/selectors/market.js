@@ -24,11 +24,11 @@ This is true for all selectors, but especially important for this one.
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
-import { isMarketDataOpen } from '../../../utils/is-market-data-open';
+import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
 
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 import { abi, constants } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
@@ -87,6 +87,7 @@ export const selectMarket = (marketID) => {
 		marketsData[marketID],
 		priceHistory[marketID],
 		isMarketDataOpen(marketsData[marketID]),
+		isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
 		!!favorites[marketID],
 		outcomesData[marketID],
@@ -125,6 +126,7 @@ export function assembleMarket(
 		marketData,
 		marketPriceHistory,
 		isOpen,
+		isExpired,
 		isFavorite,
 		marketOutcomesData,
 		marketReport,
@@ -148,6 +150,7 @@ export function assembleMarket(
 			marketData,
 			marketPriceHistory,
 			isOpen,
+			isExpired,
 			isFavorite,
 			marketOutcomesData,
 			marketReport,
@@ -198,7 +201,7 @@ export function assembleMarket(
 			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
 			market.isOpen = isOpen;
-			market.isExpired = !isOpen;
+			market.isExpired = isExpired;
 			market.isFavorite = isFavorite;
 
 			market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
@@ -296,7 +299,10 @@ export function assembleMarket(
 			market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
 			market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
-			market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
+			const indeterminateOutcomeID = market.type === BINARY ?
+				BINARY_INDETERMINATE_OUTCOME_ID :
+				CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
+			market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
 
 			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
@@ -314,12 +320,13 @@ export function assembleMarket(
 			market.myMarketSummary = selectMyMarket(market)[0];
 
 			// Update the `result` object
-			if (market.result) {
+			// This houses the reported outcome + the proportion correct of that outcome
+			if (market.reportedOutcome) {
+				market.result = market.result || { outcomeID: market.reportedOutcome };
 				if (market.result.outcomeID) {
-					market.result.outcomeName = market.outcomes.find(outcome => outcome.id === market.result.outcomeID).name;
+					market.result.outcomeName = market.outcomes.find(outcome => outcome.id === market.reportedOutcome).name;
 				}
-
-				if (market.result.proportionCorrect) {
+				if (market.proportionCorrect) {
 					market.result.proportionCorrect = formatPercent(market.result.proportionCorrect);
 				}
 			}

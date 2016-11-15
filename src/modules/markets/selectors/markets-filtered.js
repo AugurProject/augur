@@ -10,11 +10,12 @@ export default function () {
 	return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags);
 }
 
-export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags) =>
-	markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags))
-);
+export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags) => {
+	const currentTime = new Date().getTime();
+	return markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, currentTime));
+});
 
-export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilterSort, selectedTags) => {
+export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, currentTime) => {
 
 	const selectedTagsList = Object.keys(selectedTags);
 	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList) && isOfType(market, selectedFilterSort.type) && isDisplayable(market);
@@ -34,12 +35,12 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 	function isOfType(market, type) {
 		switch (type) {
 		case (FILTER_TYPE_CLOSED):
-			return isMarketDataExpired(market);
+			return isMarketDataExpired(market, currentTime);
 		case (FILTER_TYPE_REPORTED):
-			return isMarketDataExpired(market) && !!market.reportedOutcome;
+			return isMarketDataExpired(market, currentTime) && !!market.result;
 		case (FILTER_TYPE_OPEN):
 		default:
-			return !isMarketDataExpired(market); // returns whether or not the endDate has occured
+			return !isMarketDataExpired(market, currentTime);
 		}
 	}
 
@@ -55,4 +56,4 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 			return true;
 		}
 	}
-});
+};
