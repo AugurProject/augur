@@ -1,17 +1,15 @@
 import memoizerific from 'memoizerific';
-import { isMarketDataOpen } from '../../../utils/is-market-data-open';
-
 import store from '../../../store';
-
+import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
 import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
 
 export default function () {
 	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
-	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, store.dispatch);
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, new Date().getTime(), store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount, currentTime, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -26,6 +24,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			marketsData[marketID],
 			priceHistory[marketID],
 			isMarketDataOpen(marketsData[marketID]),
+			isMarketDataExpired(marketsData[marketID], currentTime),
 
 			!!favorites[marketID],
 			outcomesData[marketID],
