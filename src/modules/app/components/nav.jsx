@@ -14,8 +14,8 @@ const Nav = (p) => {
 
 	return (
 		<nav className={`app-nav ${p.className ? p.className : ''}`}>
-			<div className="nav-group left-navs">
-				{ p.isSideBarAllowed &&
+			<span className="app-nav-link">
+				{p.isSideBarAllowed &&
 					<button
 						className="unstyled"
 						onClick={p.toggleSideBar}
@@ -23,68 +23,64 @@ const Nav = (p) => {
 						{p.isSideBarCollapsed ? <i></i> : <i></i>}
 					</button>
 				}
+			</span>
+			<Link
+				className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
+				{...p.marketsLink}
+			>
+				Markets
+			</Link>
+			{p.logged && !!p.marketsInfo.numFavorites &&
 				<Link
-					className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
-					{...p.marketsLink}
+					className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+					{...p.favoritesLink}
 				>
-					Markets
+					{!!p.marketsInfo.numFavorites && p.marketsInfo.numFavorites} Favorites
 				</Link>
-				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numFavorites &&
-					<Link
-						className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
-						{...p.favoritesLink}
-					>
-						{!!p.marketsInfo.numFavorites && p.marketsInfo.numFavorites} Favorites
-					</Link>
-				}
-				{!!p.loginAccount && !!p.loginAccount.id && !!p.marketsInfo.numPendingReports &&
-					<Link
-						className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
-						{...p.pendingReportsLink}
-					>
-						{!!p.marketsInfo.numPendingReports && p.marketsInfo.numPendingReports} Pending Reports
-					</Link>
-				}
-			</div>
-			<div className="nav-group branding">
+			}
+			{p.logged && !!p.marketsInfo.numPendingReports &&
 				<Link
-					className="augur-brand"
-					{...p.marketsLink}
+					className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+					{...p.pendingReportsLink}
 				>
-					<AugurLogo />
+					{!!p.marketsInfo.numPendingReports && p.marketsInfo.numPendingReports} Pending Reports
 				</Link>
-			</div>
-			<div className="nav-group right-navs">
-				{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
-					<Link
-						className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
-						{...p.myPositionsLink}
-					>
-						Portfolio
-					</Link>
-				}
-				{!!p.loginAccount && !!p.loginAccount.id &&
-					<Link
-						className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
-						{...p.transactionsLink}
-					>
-						{p.transactionsTotals.title}
-					</Link>
-				}
-				{!!p.loginAccount && !!p.loginAccount.id &&
-					<Link
-						className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
-						{...p.accountLink}
-					>
-						Account
-					</Link>
-				}
-				{(!p.loginAccount || !p.loginAccount.id) &&
-					<Link className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
-						Sign Up / Login
-					</Link>
-				}
-			</div>
+			}
+			<Link
+				className="augur-brand"
+				{...p.marketsLink}
+			>
+				<AugurLogo />
+			</Link>
+			{p.logged && !!p.portfolioTotals &&
+				<Link
+					className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
+					{...p.myPositionsLink}
+				>
+					Portfolio
+				</Link>
+			}
+			{p.logged &&
+				<Link
+					className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+					{...p.transactionsLink}
+				>
+					{p.transactionsTotals.title}
+				</Link>
+			}
+			{p.logged &&
+				<Link
+					className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+					{...p.accountLink}
+				>
+					Account
+				</Link>
+			}
+			{!p.logged &&
+				<Link className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
+					Sign Up / Login
+				</Link>
+			}
 		</nav>
 	);
 };

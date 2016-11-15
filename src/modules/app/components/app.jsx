@@ -11,6 +11,7 @@ import ChatView from 'modules/chat/components/chat-view';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
+import getValue from 'utils/get-value';
 
 export default function (appElement, selectors) {
 	render(<AppComponent {...selectors} />, appElement);
@@ -64,11 +65,11 @@ class AppComponent extends Component {
 		const s = this.state;
 
 		const navProps = {
+			logged: getValue(p, 'loginAccount.address'),
 			isSideBarAllowed: s.isSideBarAllowed,
 			isSideBarCollapsed: s.isSideBarCollapsed,
 			toggleSideBar: () => { this.toggleSideBar(); },
 			activeView: p.activeView,
-			loginAccount: p.loginAccount,
 			positionsSummary: p.positionsSummary,
 			transactionsTotals: p.transactionsTotals,
 			isTransactionsWorking: p.isTransactionsWorking,
@@ -85,8 +86,7 @@ class AppComponent extends Component {
 		};
 
 		const sideBarProps = {
-			tags: p.tags,
-			loginAccount: p.loginAccount
+			tags: p.tags
 		};
 
 		// NOTE -- A few implementation details:

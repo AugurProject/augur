@@ -13,47 +13,60 @@
 		}
 	}
 
-	.nav-group {
+	.augur-brand {
 		display: flex;
-		flex: 1;
+		flex: 10;
 		justify-content: center;
+		padding: 0 1em;
 
-		@media @breakpoint-2-1 {
-			flex: 0;
-		}
-
-		&.left-navs {
-			justify-content: flex-start;
-		}
-
-		&.right-navs {
-			justify-content: flex-end;
-		}
-
-		&.left-navs,
-		&.right-navs {
-			flex: 2;
-			vertical-align: middle;
-		}
-
-		.link {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-
-			@media @breakpoint-2 {
-				padding: 1.5em 1em;
-			}
-		}
-
-		&.branding .link {
-			padding: 0 1em;
-
-			.augur-logo {
-				height: 2.5em;
-			}
+		.augur-logo {
+			height: 2.5em;
 		}
 	}
+
+	.app-nav-link {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		justify-content: center;
+		white-space: nowrap;
+	}
+
+	// .nav-group {
+	// 	display: flex;
+	// 	flex: 1;
+	// 	justify-content: center;
+	//
+	// 	@media @breakpoint-2-1 {
+	// 		flex: 0;
+	// 	}
+	//
+	// 	&.left-navs {
+	// 		justify-content: flex-start;
+	// 	}
+	//
+	// 	&.right-navs {
+	// 		justify-content: flex-end;
+	// 	}
+	//
+	// 	&.left-navs,
+	// 	&.right-navs {
+	// 		flex: 2;
+	// 		vertical-align: middle;
+	// 	}
+	//
+	// 	.link {
+	// 		display: flex;
+	// 		flex-direction: column;
+	// 		justify-content: center;
+	//
+	// 		@media @breakpoint-2 {
+	// 			padding: 1.5em 1em;
+	// 		}
+	// 	}
+	//
+	//
+	// }
 
 	.link,
 	button.unstyled {
