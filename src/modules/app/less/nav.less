@@ -3,77 +3,117 @@
 	flex: 1;
 	justify-content: center;
 
+	// Navs displayed in header
+	&.nav-header {
+
+		.contained();
+
+		.nav-icon {
+			display: none;
+		}
+
+		.augur-brand {
+			display: flex;
+			flex: 1;
+			justify-content: center;
+			padding: 0;
+
+			.augur-logo-full {
+				height: 2.5em;
+				padding: 1em 0;  // Dictates Header Height (others flex to fill)
+			}
+		}
+
+		.app-nav-link {
+			align-items: center;
+			display: flex;
+			justify-content: center;
+			padding: 0 1.8em;
+			white-space: nowrap;
+
+			@media @breakpoint-2 {
+				padding: 0 1em;
+			}
+
+			.nav-count {
+				margin-right: 0.2em;
+			}
+
+			&:not(button) {
+
+				.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+
+				&:hover,
+				&:active {
+					&:not(.augur-brand):not(button) {
+						background-color: @color-nav-background-active;
+						color: @color-text-light;
+						cursor: pointer;
+					}
+				}
+
+				&.active {
+					background-color: @color-nav-background-active;
+					color: @color-text-light;
+				}
+
+				&.transactions {
+					&.working {
+						&:not(.active) {
+
+							.animation-flash-slow(@color-orange);
+
+							color: @color-text-light;
+						}
+					}
+
+					.link-text {
+						white-space: nowrap;
+					}
+				}
+			}
+		}
+	}
+
+	// Navs displayed in footer
 	&.nav-footer {
 		display: none;
 
 		@media @breakpoint-1, @breakpoint-2-2 {
 			display: flex;
 			flex: 1;
+			flex-wrap: wrap;
 			justify-content: center;
 		}
-	}
 
-	.augur-brand.link {
-		display: flex;
-		flex: 10;
-		justify-content: center;
-		padding: 0;
-
-		.augur-logo {
-			height: 2.5em;
-			padding: 1em 0;  // Dictates Header Height (others flex to fill)
-		}
-	}
-
-	.app-nav-link {
-		display: flex;
-		flex: 1;
-		flex-direction: column;
-		justify-content: center;
-		white-space: nowrap;
-
-		@media @breakpoint-2 {
-			padding: 0 1em;
-		}
-	}
-
-	.app-nav-link,
-	button.unstyled {
-
-		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
-
-		padding: 0 1.8em;
-
-		&:hover,
-		&:active {
-			&:not(.augur-brand):not(button) {
-				background-color: @color-nav-background-active;
-				color: @color-text-light;
-				cursor: pointer;
-			}
+		.app-nav-link {
+			align-items: center;
+			align-content: center;
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			justify-content: center;
+			padding: 1em;
+			position: relative;
+			text-align: center; // accounts for wrapped text
+			min-width: 4em;
 		}
 
-		&.active {
+		.nav-icon {
 
-			.font-weight-light();
+			.font-size-extra-large();
 
-			background-color: @color-nav-background-active;
-			color: @color-text-light;
+			margin-bottom: 0.2em;
 		}
 
-		&.transactions {
-			&.working {
-				&:not(.active) {
+		.nav-count {
 
-					.animation-flash-slow(@color-orange);
+			.border(true);
 
-					color: @color-text-light;
-				}
-			}
-
-			.link-text {
-				white-space: nowrap;
-			}
+			position: absolute;
+			top: 0;
+			right: 0;
+			padding: 0.25em 0.5em;
 		}
 	}
 }

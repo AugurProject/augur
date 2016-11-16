@@ -36,7 +36,6 @@ class AppComponent extends Component {
 	}
 
 	componentDidMount() {
-		// Checks whether the app is currently in breakpoints 1 or 2 and will auto-hide the side-bar
 		if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
 			this.main.style.willChange = 'auto'; // reset
 			this.toggleSideBar();
@@ -74,15 +73,17 @@ class AppComponent extends Component {
 			transactionsTotals: p.transactionsTotals,
 			isTransactionsWorking: p.isTransactionsWorking,
 			marketsInfo: p.marketsHeader,
-			marketsLink: (p.links && p.links.marketsLink) || undefined,
-			favoritesLink: (p.links && p.links.favoritesLink) || undefined,
-			pendingReportsLink: (p.links && p.links.pendingReportsLink) || undefined,
-			transactionsLink: (p.links && p.links.transactionsLink) || undefined,
-			authLink: (p.links && p.links.authLink) || undefined,
-			accountLink: (p.links && p.links.accountLink) || undefined,
-			accountLinkText: (p.loginAccount && p.loginAccount.linkText) || undefined,
-			myPositionsLink: (p.links && p.links.myPositionsLink) || undefined,
-			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
+			numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
+			portfolioTotals: getValue(p, 'portfolio.totals'),
+			hasFavorites: getValue(p, 'marketsHeader.numFavorites'),
+			hasPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
+			marketsLink: getValue(p, 'links.marketsLink'),
+			favoritesLink: getValue(p, 'links.favoritesLink'),
+			pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
+			transactionsLink: getValue(p, 'links.transactionsLink'),
+			authLink: getValue(p, 'links.authLink'),
+			accountLink: getValue(p, 'links.accountLink'),
+			myPositionsLink: getValue(p, 'links.myPositionsLink')
 		};
 
 		const sideBarProps = {
