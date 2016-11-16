@@ -3,6 +3,40 @@
 	flex: 1;
 	justify-content: center;
 
+	.app-nav-link:not(button) {
+
+		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+
+		&:hover,
+		&:active {
+			&:not(.augur-brand):not(button) {
+				background-color: @color-nav-background-active;
+				color: @color-text-light;
+				cursor: pointer;
+			}
+		}
+
+		&.active {
+			background-color: @color-nav-background-active;
+			color: @color-text-light;
+		}
+
+		&.transactions {
+			&.working {
+				&:not(.active) {
+
+					.animation-flash-slow(@color-orange);
+
+					color: @color-text-light;
+				}
+			}
+
+			.link-text {
+				white-space: nowrap;
+			}
+		}
+	}
+
 	// Navs displayed in header
 	&.nav-header {
 
@@ -37,40 +71,6 @@
 
 			.nav-count {
 				margin-right: 0.2em;
-			}
-
-			&:not(button) {
-
-				.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
-
-				&:hover,
-				&:active {
-					&:not(.augur-brand):not(button) {
-						background-color: @color-nav-background-active;
-						color: @color-text-light;
-						cursor: pointer;
-					}
-				}
-
-				&.active {
-					background-color: @color-nav-background-active;
-					color: @color-text-light;
-				}
-
-				&.transactions {
-					&.working {
-						&:not(.active) {
-
-							.animation-flash-slow(@color-orange);
-
-							color: @color-text-light;
-						}
-					}
-
-					.link-text {
-						white-space: nowrap;
-					}
-				}
 			}
 		}
 	}
