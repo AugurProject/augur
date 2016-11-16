@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
 			<h3>November 15, 2016</h3>
 			<ol>
 				<li>
+					Removed checkboxes from sidebar.
+				</li>
+				<li>
 					Fixed market selector isExpired property calculation, distinguished it from isOpen.
 				</li>
 				<li>
