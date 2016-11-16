@@ -1,4 +1,4 @@
-// NOTE -- additional styles located in common/less/layout.less
+// NOTE -- additional styles located in app/less/layout.less
 .side-bar {
 	background-color: @color-side-bar-background;
 	color: @color-text-light-muted;
@@ -33,9 +33,10 @@
 			padding: 1em 2rem;
 			text-align: left;
 
-			&:hover {
-				background-color: @color-nav-background-active;
-				color: @color-text-light;
+			&:hover,
+			&.checked {
+				background-color: @color-side-bar-background-active;
+				color: @color-text-dark;
 			}
 		}
 	}
