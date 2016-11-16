@@ -34,6 +34,14 @@ class AppComponent extends Component {
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
 	}
 
+	componentDidMount() {
+		// Checks whether the app is currently in breakpoints 1 or 2 and will auto-hide the side-bar
+		if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
+			this.main.style.willChange = 'auto'; // reset
+			this.toggleSideBar();
+		}
+	}
+
 	componentDidUpdate() {
 		handleScrollTop(this.props.url);
 	}
@@ -84,7 +92,7 @@ class AppComponent extends Component {
 		// As a result, you'll notice that both the `Header` + `CortStats` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
 		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
 		return (
-			<main>
+			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
 					<div id="app_container" >
 						<div id="app_header">
