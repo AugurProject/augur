@@ -80,10 +80,14 @@
 		display: none;
 
 		@media @breakpoint-1, @breakpoint-2-2 {
+
+			.font-color-light();
+
+			background-color: @color-nav-background;
 			display: flex;
 			flex: 1;
 			flex-wrap: wrap;
-			justify-content: center;
+			justify-content: flex-start;
 		}
 
 		.app-nav-link {
@@ -99,6 +103,15 @@
 			text-align: center; // accounts for wrapped text
 		}
 
+		button.app-nav-link {
+			flex: 0;
+
+			i {
+
+				.font-size-large();
+			}
+		}
+
 		.nav-icon {
 
 			.font-size-extra-large();
@@ -108,12 +121,14 @@
 
 		.nav-count {
 
-			.border(true);
+			.font-color-dark();
 
+			background-color: @color-white-subtle;
 			padding: 0.25em 0.5em;
 			position: absolute;
-			right: 0;
-			top: 0;
+			right: 10%;
+			top: 10%;
+			border-radius: 50%;
 		}
 	}
 }
