@@ -13,6 +13,8 @@ var reporting = require("../../src/modules/reporting");
 var makeReports = require("../../src/modules/makeReports");
 var augur;
 
+makeReports.options = {debug: {reporting: false}};
+
 describe("hashSenderPlusEvent", function () {
     var test = function (t) {
         it(JSON.stringify(t), function () {
