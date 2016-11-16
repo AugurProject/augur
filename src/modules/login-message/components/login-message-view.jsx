@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 16, 2016</h3>
+			<ol>
+				<li>
+					Improved makeReports tests in augur.js
+				</li>
+				<li>
+					Improved site repsonsiveness with specific focus on site navigation
+				</li>
+			</ol>
 			<h3>November 15, 2016</h3>
 			<ol>
 				<li>
@@ -153,30 +162,6 @@ const LoginMessagePage = p => (
 				</li>
 				<li>
 					Began refactoring the monolithic checkPeriod method in augur.js.  Set up mocks and stubs for unit testing.
-				</li>
-			</ol>
-			<h3>November 9, 2016</h3>
-			<ol>
-				<li>
-					Fixed the My Reports (Portfolio) display.
-				</li>
-				<li>
-					Added reporting cycle information (cycle number and how many cycles ago) to the My Reports display.
-				</li>
-				<li>
-					Added a red thumbs-down &quot;unethical&quot; icon to the My Reports display.  This appears by your reported outcome if you report a market unethical.
-				</li>
-				<li>
-					Removed the fees collected column from My Reports, since this information is not yet accessible.
-				</li>
-				<li>
-					Fixed the Ask / Ask Q. headers (switched positions).
-				</li>
-				<li>
-					Improved load-events-with-submitted-report workflow: fixed penalize log-lookup, load event/report data from the reports state instead of the blockchain (where possible), and removed not-yet-implemented backend function calls.
-				</li>
-				<li>
-					Added minValue, maxValue, and numOutcomes to the getMarketsInfo (compositeGetters contract) return array, and updated augur.js bindings.  augur.js now assigns a type field (scalar, binary, categorical) to each market object in getMarketsInfo.
 				</li>
 			</ol>
 			{p.marketsLink &&
