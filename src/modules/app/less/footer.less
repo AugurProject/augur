@@ -1,9 +1,15 @@
 footer {
 
 	.border(true, @border-top);
+	.transition(bottom @animation-speed-very-fast);
 
 	background-color: @color-footer-background;
 	width: 100vw;
+
+	@media @breakpoint-1, @breakpoint-2-2 {
+		position: fixed;
+		bottom: 0;
+	}
 
 	#footer_content {
 
