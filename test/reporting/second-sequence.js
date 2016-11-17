@@ -372,9 +372,7 @@ describe("Reporting sequence", function () {
                                     assert(parseInt(winningOutcomes[0]) !== 0);
                                     assert(parseInt(eventOutcome) !== 0);
                                     assert.strictEqual(Math.round(parseFloat(eventOutcome)), report[type]);
-                                    if (type === "scalar") {
-                                        assert.deepEqual(winningOutcomes, ["1", "2"]);
-                                    } else {
+                                    if (type !== "scalar") {
                                         assert.strictEqual(parseInt(winningOutcomes[0]), report[type]);
                                     }
                                     nextEvent();
