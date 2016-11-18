@@ -1,6 +1,6 @@
 import React from 'react';
 
-import OutcomeRow from 'modules/outcomes/components/outcome-row';
+import Outcome from 'modules/outcomes/components/outcome';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
 
@@ -15,13 +15,17 @@ const Outcomes = p => (
 			<span>Last</span>
 		</div>
 		{(p.outcomes || []).map(outcome => (
-			<OutcomeRow
+			<Outcome
 				key={outcome.id}
 				marketType={p.marketType}
 				outcome={outcome}
 				selectedOutcome={p.selectedOutcome}
 				updateSelectedOutcome={p.updateSelectedOutcome}
 				selectedShareDenomination={p.selectedShareDenomination}
+				tradeSummary={p.tradeSummary}
+				submitTrade={p.submitTrade}
+				selectedTradeSide={p.selectedTradeSide}
+				updateSelectedTradeSide={p.updateSelectedTradeSide}
 			/>
 		))}
 	</article>

@@ -89,10 +89,13 @@ export default class MarketActive extends Component {
 						marketType={marketType}
 						selectedOutcome={s.selectedOutcome}
 						updateSelectedOutcome={this.updateSelectedOutcome}
-						selectedTradeSide={s.selectedTradeSide}
 						selectedShareDenomination={selectedShareDenomination}
 						shareDenominations={shareDenominations}
 						updateSelectedShareDenomination={updateSelectedShareDenomination}
+						tradeSummary={tradeSummary}
+						submitTrade={(id) => { submitTrade(id); }}
+						selectedTradeSide={s.selectedTradeSide}
+						updateSelectedTradeSide={this.updateSelectedTradeSide}
 					/>
 					<OrderBook
 						marketType={marketType}
@@ -100,16 +103,6 @@ export default class MarketActive extends Component {
 						selectedTradeSide={s.selectedTradeSide}
 						selectedShareDenomination={selectedShareDenomination}
 					/>
-					{p.logged &&
-						<OutcomeTrade
-							marketType={marketType}
-							selectedOutcome={s.selectedOutcome}
-							tradeSummary={tradeSummary}
-							submitTrade={(id) => { submitTrade(id); }}
-							selectedShareDenomination={selectedShareDenomination}
-							updateSelectedTradeSide={this.updateSelectedTradeSide}
-						/>
-					}
 				</div>
 				{p.logged &&
 					<div className="market-group">

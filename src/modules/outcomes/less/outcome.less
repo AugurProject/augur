@@ -1,0 +1,22 @@
+.outcome {
+
+	.outcome-trade {
+		display: none;
+	}
+
+	&.selected {
+		.outcome-trade {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+	.outcome-row {
+
+		.table-row();
+
+		&.link {
+			cursor: default;
+		}
+	}
+}
