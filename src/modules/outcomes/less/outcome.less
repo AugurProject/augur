@@ -6,8 +6,10 @@
 
 	&.selected {
 		.outcome-trade {
-			display: flex;
-			flex-direction: column;
+			@media @breakpoint-mobile {
+				display: flex;
+				flex-direction: column;
+			}
 		}
 	}
 
