@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { render } from 'react-dom';
 import classnames from 'classnames';
+import Hammer from 'react-hammerjs';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
@@ -33,6 +34,7 @@ class AppComponent extends Component {
 
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
+		this.handleSidebarSwipe = this.handleSidebarSwipe.bind(this);
 	}
 
 	componentDidMount() {
@@ -57,6 +59,16 @@ class AppComponent extends Component {
 	// chat display
 	toggleChat() {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
+	}
+
+	handleSidebarSwipe(swipe) {
+		if (this.state.isSideBarAllowed) {
+			if (swipe.deltaX > 0) {
+				this.setState({ isSideBarCollapsed: false });
+			} else {
+				this.setState({ isSideBarCollapsed: true });
+			}
+		}
 	}
 
 	render() {
@@ -123,10 +135,12 @@ class AppComponent extends Component {
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>
-									<Routes
-										{...p}
-										setSidebarAllowed={this.setSidebarAllowed}
-									/>
+									<Hammer onSwipe={this.handleSidebarSwipe} >
+										<Routes
+											{...p}
+											setSidebarAllowed={this.setSidebarAllowed}
+										/>
+									</Hammer>
 								</div>
 							</div>
 						</div>
