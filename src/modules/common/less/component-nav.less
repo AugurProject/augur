@@ -6,6 +6,14 @@
 
 	.link {
 		cursor: default;
+
+		&.mobile-only {
+			display: none;
+
+			@media @breakpoint-mobile {
+				display: block;
+			}
+		}
 	}
 
 	li {

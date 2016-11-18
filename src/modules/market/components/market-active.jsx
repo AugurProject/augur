@@ -89,6 +89,7 @@ export default class MarketActive extends Component {
 						marketType={marketType}
 						selectedOutcome={s.selectedOutcome}
 						updateSelectedOutcome={this.updateSelectedOutcome}
+						selectedTradeSide={s.selectedTradeSide}
 						selectedShareDenomination={selectedShareDenomination}
 						shareDenominations={shareDenominations}
 						updateSelectedShareDenomination={updateSelectedShareDenomination}
