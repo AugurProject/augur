@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Hammer from 'react-hammerjs';
 
 import Nav from 'modules/app/components/nav';
 
@@ -16,6 +17,7 @@ export default class Footer extends Component {
 		this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
 		this.toggleFooter = this.toggleFooter.bind(this);
 		this.slideFooter = this.slideFooter.bind(this);
+		this.handleSwipe = this.handleSwipe.bind(this);
 	}
 
 	componentDidMount() {
@@ -41,6 +43,14 @@ export default class Footer extends Component {
 		}
 	}
 
+	handleSwipe(swipe) {
+		if (swipe.deltaY > 0) {
+			this.setState({ isFooterCollapsed: true });
+		} else {
+			this.setState({ isFooterCollapsed: false });
+		}
+	}
+
 	slideFooter() {
 		const s = this.state;
 		const navHeight = this.navRef.offsetHeight;
@@ -63,30 +73,32 @@ export default class Footer extends Component {
 		const s = this.state;
 
 		return (
-			<footer
-				ref={(footer) => { this.footer = footer; }}
-				style={{ bottom: s.verticalOffset }}
-			>
-				<button
-					ref={(toggler) => { this.toggler = toggler; }}
-					className="nav-toggler unstyled"
-					onClick={this.toggleFooter}
+			<Hammer onSwipe={this.handleSwipe} direction="DIRECTION_VERTICAL">
+				<footer
+					ref={(footer) => { this.footer = footer; }}
+					style={{ bottom: s.verticalOffset }}
 				>
-					<span className="nav-toggler-button">
-						<i>{s.isFooterCollapsed ? '' : ''}</i>
-					</span>
-				</button>
-				<Nav
-					className="nav-footer"
-					navRef={(navRef) => { this.navRef = navRef; }}
-					toggleFooter={this.toggleFooter}
-					{...p}
-				/>
-				<div id="footer_content">
-					<a className="link" href="https://augur.net" target="_blank" rel="noopener noreferrer" >About</a>
-					<a className="link" href="http://augur.link/augur-beta-ToS-v2.pdf" target="_blank" rel="noopener noreferrer" >Terms of Service</a>
-				</div>
-			</footer>
+					<button
+						ref={(toggler) => { this.toggler = toggler; }}
+						className="nav-toggler unstyled"
+						onClick={this.toggleFooter}
+					>
+						<span className="nav-toggler-button">
+							<i>{s.isFooterCollapsed ? '' : ''}</i>
+						</span>
+					</button>
+					<Nav
+						className="nav-footer"
+						navRef={(navRef) => { this.navRef = navRef; }}
+						toggleFooter={this.toggleFooter}
+						{...p}
+					/>
+					<div id="footer_content">
+						<a className="link" href="https://augur.net" target="_blank" rel="noopener noreferrer" >About</a>
+						<a className="link" href="http://augur.link/augur-beta-ToS-v2.pdf" target="_blank" rel="noopener noreferrer" >Terms of Service</a>
+					</div>
+				</footer>
+			</Hammer>
 		);
 	}
 }
