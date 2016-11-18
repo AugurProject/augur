@@ -141,6 +141,40 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		if (mockAugur.augur.getParticipantSharesPurchased.callCount === 5) mockAugur.augur.getParticipantSharesPurchased.reset();
 	});
 
+	describe('Market Type Agnostic Tests', () => {
+		it('should handle a null/undefined outcomeID', () => {
+			store.dispatch(action.placeTrade('testScalarMarketID', null));
+			assert.deepEqual(store.getActions(), [{
+				type: 'CLEAR_TRADE_IN_PROGRESS',
+				marketID: 'testScalarMarketID'
+			}, {
+				type: 'UPDATE_URL',
+				url: 'transactions-link'
+			}], `Didn't produce the expected actions for passing a null outcomeID to place-trade`);
+
+			store.clearActions();
+
+			store.dispatch(action.placeTrade('testScalarMarketID', undefined));
+			assert.deepEqual(store.getActions(), [{
+				type: 'CLEAR_TRADE_IN_PROGRESS',
+				marketID: 'testScalarMarketID'
+			}, {
+				type: 'UPDATE_URL',
+				url: 'transactions-link'
+			}], `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
+		});
+
+		it('should handle a null/undefined marketID', () => {
+			store.dispatch(action.placeTrade(null, '1'));
+			assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`);
+
+			store.clearActions();
+
+			store.dispatch(action.placeTrade(undefined, '1'));
+			assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`);
+		});
+	});
+
 	describe('Binary Market Place Trade Tests', () => {
 		it('should place a BUY trade for a binary market', () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
