@@ -53,115 +53,19 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
-			<h3>November 16, 2016</h3>
+			<h3>November 17, 2016</h3>
 			<ol>
 				<li>
-					Improved makeReports tests in augur.js
+					The trades contract now tracks the best bid and ask price within each block, and the buy/sell functions on the buy & sell shares contract verifies that incoming orders do not cross any previous orders in the same block.  (That is, it makes sure that bids do not exceed the best ask price and vice versa.)  If a make that would result in a crossed order is found, the later arriving order is not created, and an appropriate error message is relayed to the user.
 				</li>
 				<li>
-					Improved site repsonsiveness with specific focus on site navigation
-				</li>
-			</ol>
-			<h3>November 15, 2016</h3>
-			<ol>
-				<li>
-					Removed checkboxes from sidebar.
+					Better handling of mobile touch events, especially pertaining to nav reveal/hide swipe events.
 				</li>
 				<li>
-					Fixed market selector isExpired property calculation, distinguished it from isOpen.
+					Additional responsive UI improvements.
 				</li>
 				<li>
-					Added result (reported outcome / proportion correct) object field to market(s) selectors.
-				</li>
-				<li>
-					For Airbitz logins, private keys are now stored in an Airbitz wallet instead of using the Airbitz dataKey as the Ethereum private key.  (This change only affects Airbitz accounts.)
-				</li>
-			</ol>
-			<h3>November 14, 2016</h3>
-			<ol>
-				<li>
-					Scalar market order books now display &quot;truncated&quot; share quantities for very large quantities of millishares and microshares.
-				</li>
-				<li>
-					Market preview tooltips now display non-truncated values for very large numbers.
-				</li>
-				<li>
-					Categorical outcomes are now correctly rounded to the nearest integer (on eventResolution contract).
-				</li>
-				<li>
-					Added check to make sure event is on the specified branch before penalizing (on consensus contract).  Resolves the edge case of penalization of a reporter who is otherwise caught up when there are no events in a period.
-				</li>
-				<li>
-					Added reporting proportion correct value to getMarketInfo array (on compositeGetters contract).
-				</li>
-				<li>
-					Added event outcome to getMarketsInfo (on compositeGetters contract).
-				</li>
-				<li>
-					Fixed a bug causing some reports to throw hash-mismatching errors during the reveal-report action.
-				</li>
-				<li>
-					Failed reveal report actions now render correctly on the transactions page.
-				</li>
-				<li>
-					Fixed a bug that sometimes caused the login button to be incorrectly disabled.
-				</li>
-			</ol>
-			<h3>November 13, 2016</h3>
-			<ol>
-				<li>
-					Finished refactoring and thoroughly unit testing reporting timing methods (checkPeriod et al) in augur.js.
-				</li>
-				<li>
-					Fixed/updated augur.js reporting-sequence integration tests to work properly with the refactored reporting tools.
-				</li>
-				<li>
-					Fixed error on Reporting detail page.
-				</li>
-				<li>
-					Fixed warning on trade (market detail) page.
-				</li>
-			</ol>
-			<h3>November 12, 2016</h3>
-			<ol>
-				<li>
-					Added rescaling logic for categorical and scalar reports to augur.js fixReport and (new) unfixReport methods, and updated event / report loaders in UI accordingly.
-				</li>
-				<li>
-					Full reset of network 9000 (test chain) contracts.
-				</li>
-			</ol>
-			<h3>November 11, 2016</h3>
-			<ol>
-				<li>
-					Merged augur-core develop into master branch.
-				</li>
-				<li>
-					Changed tick size to tenths on trade page.
-				</li>
-				<li>
-					Added highlighting of the matching side of the order book when user clicks buy/sell.
-				</li>
-				<li>
-					Fixed abnormally high CPU utilization on markets listing page.
-				</li>
-				<li>
-					The trade page for scalar markets now properly displays the unit selection drop-down menu.  The share amounts on the page are updated automatically when a new unit is chosen.
-				</li>
-				<li>
-					Fixed scalar market labels (no longer improperly labeled as categorical markets).
-				</li>
-			</ol>
-			<h3>November 10, 2016</h3>
-			<ol>
-				<li>
-					Added the first big batch of trading unit tests for the main augur repository.
-				</li>
-				<li>
-					Your reported outcome is now displayed in bright red text when you have committed, but not yet revealed, your report.  It displays a tooltip telling you that you must remember to log back in to reveal your report.  (After the report is revealed, the reported outcome text reverts to a normal color.)
-				</li>
-				<li>
-					Began refactoring the monolithic checkPeriod method in augur.js.  Set up mocks and stubs for unit testing.
+					Expanded and refined testing coverage of the short sell trading functionality.
 				</li>
 			</ol>
 			{p.marketsLink &&
