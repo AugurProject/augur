@@ -85,6 +85,17 @@ main,
 				.sub-header {
 					visibility: hidden;
 				}
+
+				footer {
+					display: none;
+
+					@media @breakpoint-mobile {
+						display: flex;
+						position: relative;
+						bottom: 0 !important; // Overrides in-line
+						visibility: hidden;
+					}
+				}
 			}
 		}
 	}

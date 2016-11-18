@@ -104,7 +104,7 @@ class AppComponent extends Component {
 
 		// NOTE -- A few implementation details:
 		// An attention has been paid to avoid JS manipulation of app layout
-		// As a result, you'll notice that both the `Header` + `CortStats` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
+		// As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
 		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
@@ -141,6 +141,7 @@ class AppComponent extends Component {
 											setSidebarAllowed={this.setSidebarAllowed}
 										/>
 									</Hammer>
+									<Footer {...navProps} />
 								</div>
 							</div>
 						</div>
