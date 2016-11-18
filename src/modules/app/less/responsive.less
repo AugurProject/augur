@@ -6,7 +6,7 @@
 // 	.contained elements will max at this width, elements without that style will flow to full window width
 @max-app-width: 1800px;
 
-// 	Break Points
+// 	Raw Break Points
 // 	The breakpoints encompass:
 // 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur (Ascending in px)
 // 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps (Descending in px)
@@ -38,3 +38,7 @@
 //			Explicit declaration of step not necessary here
 //		Rules
 @breakpoint-3: ~"all and (min-width: @{step-2})";
+
+// Helper Breakpoints
+//	Mobile (up to step-2-2)
+@breakpoint-mobile: ~"all and (max-width: @{step-2-2})";

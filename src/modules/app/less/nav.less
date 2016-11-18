@@ -37,6 +37,10 @@
 		}
 	}
 
+	button.app-nav-link {
+		padding: 0 2em;
+	}
+
 	// Navs displayed in header
 	&.nav-header {
 
@@ -44,6 +48,12 @@
 
 		.nav-icon {
 			display: none;
+		}
+
+		button.app-nav-link {
+			@media @breakpoint-mobile {
+				padding: 0 1em;
+			}
 		}
 
 		.augur-brand {
@@ -55,10 +65,15 @@
 			.augur-logo-full {
 				height: 2.5em;
 				padding: 1em 0;  // Dictates Header Height (others flex to fill)
+
+				@media @breakpoint-mobile {
+					height: 1.5em;
+					padding: 0.5em 0;
+				}
 			}
 		}
 
-		.app-nav-link {
+		.app-nav-link.link {
 			align-items: center;
 			display: flex;
 			justify-content: center;
@@ -67,6 +82,10 @@
 
 			@media @breakpoint-2 {
 				padding: 0 1em;
+			}
+
+			@media @breakpoint-mobile {
+				display: none;
 			}
 
 			.nav-count {
@@ -80,7 +99,7 @@
 		display: none;
 		position: relative;
 
-		@media @breakpoint-1, @breakpoint-2-2 {
+		@media @breakpoint-mobile {
 
 			.font-color-light();
 
@@ -105,12 +124,7 @@
 		}
 
 		button.app-nav-link {
-			flex: 0;
-
-			i {
-
-				.font-size-large();
-			}
+			display: none;
 		}
 
 		.nav-icon {
