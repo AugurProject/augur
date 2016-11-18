@@ -45,10 +45,11 @@ export default class Footer extends Component {
 		const s = this.state;
 		const navHeight = this.navRef.offsetHeight;
 		const footerHeight = this.footer.offsetHeight;
+		const togglerHeight = this.toggler.offsetHeight;
 
 		if (navHeight) { // navs are present
 			if (s.isFooterCollapsed) { // collapse
-				this.setState({ verticalOffset: -(footerHeight - navHeight) });
+				this.setState({ verticalOffset: -(footerHeight - togglerHeight - navHeight) });
 			} else { // expand
 				this.setState({ verticalOffset: 0 });
 			}
@@ -66,6 +67,15 @@ export default class Footer extends Component {
 				ref={(footer) => { this.footer = footer; }}
 				style={{ bottom: s.verticalOffset }}
 			>
+				<button
+					ref={(toggler) => { this.toggler = toggler; }}
+					className="nav-toggler unstyled"
+					onClick={this.toggleFooter}
+				>
+					<span className="nav-toggler-button">
+						<i>{s.isFooterCollapsed ? '' : ''}</i>
+					</span>
+				</button>
 				<Nav
 					className="nav-footer"
 					navRef={(navRef) => { this.navRef = navRef; }}

@@ -4,10 +4,43 @@ footer {
 	.transition(bottom @animation-speed-very-fast);
 
 	background-color: @color-footer-background;
+	display: flex;
 	width: 100vw;
 
 	@media @breakpoint-1, @breakpoint-2-2 {
+
+		.border(false);
+
+		background-color: transparent;
+		flex-direction: column;
 		position: fixed;
+	}
+
+	.nav-toggler {
+		display: none;
+		flex: 1;
+		justify-content: center;
+
+		@media @breakpoint-1, @breakpoint-2-2 {
+			display: flex;
+		}
+
+		.nav-toggler-button {
+
+			.font-color-light();
+
+			background-color: @color-nav-background;
+			position: relative;
+			width: 3.5em;
+			height: 1.75em;
+			border-radius: 1.75em 1.75em 0 0;
+			top: 0.3em;
+
+			i {
+
+				.font-size-large();
+			}
+		}
 	}
 
 	#footer_content {
@@ -17,6 +50,14 @@ footer {
 
 		display: flex;
 		justify-content: center;
+
+		@media @breakpoint-1, @breakpoint-2-2 {
+
+			.font-color-light;
+
+			background-color: @color-nav-background;
+			margin: 0;
+		}
 
 		.link {
 			padding: 1.5em;

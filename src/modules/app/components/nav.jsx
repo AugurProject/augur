@@ -15,12 +15,6 @@ import { AUTH_TYPES } from 'modules/auth/constants/auth-types';
 const Nav = p => (
 	<nav className={`app-nav ${p.className ? p.className : ''}`}>
 		<div ref={p.navRef && p.navRef} />
-		<button
-			className="nav-toggler"
-			onClick={p.toggleFooter}
-		>
-			Toggle
-		</button>
 		{p.isSideBarAllowed &&
 			<button
 				className="app-nav-link unstyled"
@@ -72,7 +66,7 @@ const Nav = p => (
 				{...p.myPositionsLink}
 			>
 				<i className="nav-icon">
-					
+					
 				</i>
 				Portfolio
 			</Link>
