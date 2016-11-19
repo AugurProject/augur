@@ -53,6 +53,29 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 18, 2016</h3>
+			<ol>
+				<li>
+					General responsive improvments including:
+					<ul>
+						<li>
+							Improvements to market view components to be fully responsive.
+						</li>
+						<li>
+							{`Improvements to the markets view compoenents' existing responsiveness.`}
+						</li>
+						<li>
+							Various miscellaneous UI responsiveness adjustments + improvements.
+						</li>
+					</ul>
+				</li>
+				<li>
+					Improved UX of header and footer navigation.
+				</li>
+				<li>
+					Inclusion of additonal swipe event to handle show/hide of side bar.
+				</li>
+			</ol>
 			<h3>November 17, 2016</h3>
 			<ol>
 				<li>
