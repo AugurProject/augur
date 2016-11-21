@@ -24,33 +24,29 @@ const Nav = p => (
 			</button>
 		}
 		<Link
-			className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
 			{...p.marketsLink}
+			className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
 		>
 			<i className="nav-icon"></i>
 			Markets
 		</Link>
-		{p.logged && p.hasFavorites &&
+		{p.logged && !!p.numFavorites &&
 			<Link
-				className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
 				{...p.favoritesLink}
+				className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
 			>
 				<i className="nav-icon"></i>
-				{p.marketsInfo.numFavorites &&
-					<span className="nav-count">{p.marketsInfo.numFavorites} </span>
-				}
+				<span className="nav-count">{p.numFavorites} </span>
 				Favorites
 			</Link>
 		}
-		{p.logged && p.hasPendingReports &&
+		{p.logged && !!p.numPendingReports &&
 			<Link
-				className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
 				{...p.pendingReportsLink}
+				className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
 			>
 				<i className="nav-icon"></i>
-				{p.marketsInfo.numPendingReports &&
-					<span className="nav-count">{p.marketsInfo.numPendingReports} </span>
-				}
+				<span className="nav-count">{p.numPendingReports} </span>
 				Pending Reports
 			</Link>
 		}
@@ -62,8 +58,8 @@ const Nav = p => (
 		</Link>
 		{p.logged && !!p.portfolioTotals &&
 			<Link
-				className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
 				{...p.myPositionsLink}
+				className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
 			>
 				<i className="nav-icon">
 					
@@ -73,13 +69,13 @@ const Nav = p => (
 		}
 		{p.logged &&
 			<Link
-				className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 				{...p.transactionsLink}
+				className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 			>
 				<i className="nav-icon">
 					
 				</i>
-				{p.numTransactionsWorking &&
+				{!!p.numTransactionsWorking &&
 					<span className="nav-count">{p.numTransactionsWorking} </span>
 				}
 				{p.transactionsTotals.title}
@@ -87,8 +83,8 @@ const Nav = p => (
 		}
 		{p.logged &&
 			<Link
-				className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
 				{...p.accountLink}
+				className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
 			>
 				<i className="nav-icon">
 					
@@ -97,7 +93,10 @@ const Nav = p => (
 			</Link>
 		}
 		{!p.logged &&
-			<Link className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })} {...p.authLink}>
+			<Link
+				{...p.authLink}
+				className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
+			>
 				<i className="nav-icon">
 					<AugurLogoIcon />
 				</i>

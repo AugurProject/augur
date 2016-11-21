@@ -1,8 +1,8 @@
 export default {
 	selectedMarketsHeader: null,
 	numMarkets: 10,
-	numFavorites: 2,
-	numPendingReports: 3,
+	numFavorites: 6,
+	numPendingReports: 20,
 	onClickAllMarkets: () => {},
 	onClickFavorites: () => {},
 	onClickPendingReports: () => {}
