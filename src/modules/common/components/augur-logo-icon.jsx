@@ -9,10 +9,10 @@ const AugurLogoIcon = () => (
 	>
 		<defs>
 			<style>
-				{'.icon-cls-1,.icon-cls-3,.icon-cls-5{fill:#fff;}.icon-cls-1{clip-rule:evenodd;}.icon-cls-2{fill:none;}.icon-cls-3{fill-rule:evenodd;}.icon-cls-4{clip-path:url(#clip-path);}'}
+				{'.icon-cls-1,.icon-cls-3,.icon-cls-5{fill:#fff;}.icon-cls-1{clip-rule:evenodd;}.icon-cls-2{fill:none;}.icon-cls-3{fill-rule:evenodd;}.icon-cls-4{clip-path:url(#clip-path-icon);}'}
 			</style>
 			<clipPath
-				id="clip-path"
+				id="clip-path-icon"
 				transform="translate(39.37 25)"
 			>
 				<path
