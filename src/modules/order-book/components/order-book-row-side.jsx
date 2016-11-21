@@ -12,7 +12,7 @@ import { BID } from 'modules/transactions/constants/types';
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
 	const nullMessage = 'No Orders';
-	const shouldHighlight = (p.type === BID && p.selectedTradeSide === SELL) || (p.type !== BID && p.selectedTradeSide === BUY);
+	const shouldHighlight = (p.type === BID && p.selectedTradeSide[p.id] === SELL) || (p.type !== BID && p.selectedTradeSide[p.id] === BUY);
 
 	return (
 		<article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>

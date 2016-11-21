@@ -16,6 +16,7 @@ const OrderBook = p => (
 		}
 		<OrderBookHeader />
 		<OrderBookRows
+			id={p.outcome.id}
 			bids={p.outcome.orderBook.bids}
 			asks={p.outcome.orderBook.asks}
 			selectedTradeSide={p.selectedTradeSide}

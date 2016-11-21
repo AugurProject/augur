@@ -74,8 +74,6 @@ export default class OutcomeTrade extends Component {
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
 
-		console.log('p -- ', selectedID);
-
 		return (
 			<article className="outcome-trade">
 				{p.marketType !== SCALAR ?
