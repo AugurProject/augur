@@ -101,6 +101,7 @@ export default class MarketActive extends Component {
 						submitTrade={(id) => { submitTrade(id); }}
 						selectedTradeSide={s.selectedTradeSide}
 						updateSelectedTradeSide={this.updateSelectedTradeSide}
+						outcomeTradeNavItems={p.outcomeTradeNavItems}
 					/>
 					<OrderBook
 						marketType={marketType}
@@ -125,6 +126,7 @@ export default class MarketActive extends Component {
 							selectedTradeSide={s.selectedTradeSide}
 							selectedShareDenomination={selectedShareDenomination}
 							updateSelectedTradeSide={this.updateSelectedTradeSide}
+							outcomeTradeNavItems={p.outcomeTradeNavItems}
 						/>
 					</div>
 				}

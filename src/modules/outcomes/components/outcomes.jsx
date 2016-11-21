@@ -34,6 +34,7 @@ const Outcomes = p => (
 					submitTrade={p.submitTrade}
 					selectedTradeSide={p.selectedTradeSide}
 					updateSelectedTradeSide={p.updateSelectedTradeSide}
+					outcomeTradeNavItems={p.outcomeTradeNavItems}
 				/>
 			))}
 		</div>

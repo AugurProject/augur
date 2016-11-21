@@ -7,7 +7,7 @@ import ComponentNav from 'modules/common/components/component-nav';
 import EmDash from 'modules/common/components/em-dash';
 
 import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations';
-import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
+import { BUY } from 'modules/outcomes/constants/trade-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -87,7 +87,7 @@ export default class OutcomeTrade extends Component {
 					>
 						<div className="outcome-trade-inputs-sides">
 							<ComponentNav
-								navItems={{ [BUY]: { label: BUY }, [SELL]: { label: SELL } }}
+								navItems={p.outcomeTradeNavItems}
 								selectedNav={selectedTradeSide}
 								updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID); }}
 							/>

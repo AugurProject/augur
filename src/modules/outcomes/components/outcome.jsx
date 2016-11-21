@@ -70,6 +70,7 @@ const Outcome = (p) => {
 				selectedTradeSide={p.selectedTradeSide}
 				selectedShareDenomination={p.selectedShareDenomination}
 				updateSelectedTradeSide={p.updateSelectedTradeSide}
+				outcomeTradeNavItems={p.outcomeTradeNavItems}
 			/>
 		</article>
 	);

@@ -36,6 +36,7 @@ import chat from 'selectors/chat';
 import marketUserDataNavItems from 'selectors/market-user-data-nav-items';
 import scalarShareDenomination from 'selectors/scalar-share-denomination';
 import marketReportingNavItems from 'selectors/market-reporting-nav-items';
+import outcomeTradeNavItems from 'selectors/outcome-trade-nav-items';
 
 // all selectors should go here
 const selectors = {
@@ -78,7 +79,8 @@ const selectors = {
 	chat,
 	marketUserDataNavItems,
 	scalarShareDenomination,
-	marketReportingNavItems
+	marketReportingNavItems,
+	outcomeTradeNavItems
 };
 
 // add update helper fn to selectors object
