@@ -1,7 +1,7 @@
 import makeNumber from 'utils/make-number';
 
 const loginAccount = {
-	// address: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa',
+	address: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa',
 	id: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa',
 	prettyAddress: '45a1...1efa',
 	localNode: false,
