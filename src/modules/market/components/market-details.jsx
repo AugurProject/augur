@@ -24,7 +24,7 @@ const MarketDetails = (p) => {
 	};
 
 	return (
-		<div className="market-details">
+		<div className="market-details market-content-scrollable">
 			<ul className="properties">
 				{outcomeName &&
 					<li className="property outcome">

@@ -75,7 +75,7 @@ export default class OutcomeTrade extends Component {
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
 
 		return (
-			<article className="outcome-trade">
+			<article className="outcome-trade market-content-scrollable">
 				{p.marketType !== SCALAR ?
 					<h3>Create Order <EmDash /> {name && name}</h3> :
 					<h3>Create Order</h3>

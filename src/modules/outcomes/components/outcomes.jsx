@@ -21,20 +21,22 @@ const Outcomes = p => (
 				<span>Ask</span>
 			</div>
 		</div>
-		{(p.outcomes || []).map(outcome => (
-			<Outcome
-				key={outcome.id}
-				marketType={p.marketType}
-				outcome={outcome}
-				selectedOutcome={p.selectedOutcome}
-				updateSelectedOutcome={p.updateSelectedOutcome}
-				selectedShareDenomination={p.selectedShareDenomination}
-				tradeSummary={p.tradeSummary}
-				submitTrade={p.submitTrade}
-				selectedTradeSide={p.selectedTradeSide}
-				updateSelectedTradeSide={p.updateSelectedTradeSide}
-			/>
-		))}
+		<div className="market-content-scrollable" >
+			{(p.outcomes || []).map(outcome => (
+				<Outcome
+					key={outcome.id}
+					marketType={p.marketType}
+					outcome={outcome}
+					selectedOutcome={p.selectedOutcome}
+					updateSelectedOutcome={p.updateSelectedOutcome}
+					selectedShareDenomination={p.selectedShareDenomination}
+					tradeSummary={p.tradeSummary}
+					submitTrade={p.submitTrade}
+					selectedTradeSide={p.selectedTradeSide}
+					updateSelectedTradeSide={p.updateSelectedTradeSide}
+				/>
+			))}
+		</div>
 	</article>
 );
 
