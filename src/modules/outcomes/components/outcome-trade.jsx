@@ -18,7 +18,6 @@ export default class OutcomeTrade extends Component {
 
 		this.state = {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
-			selectedNav: BUY,
 			shareInputPlaceholder: generateShareInputPlaceholder(this.props.selectedShareDenomination),
 			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
 			sharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
@@ -48,13 +47,12 @@ export default class OutcomeTrade extends Component {
 		}
 	}
 
-	updateSelectedNav(selectedNav) {
-		this.setState({ selectedNav });
-		this.props.updateSelectedTradeSide(selectedNav);
+	updateSelectedNav(selectedTradeSide, id) {
+		this.props.updateSelectedTradeSide(selectedTradeSide, id);
 
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		if (trade && trade.updateTradeOrder) {
-			trade.updateTradeOrder(null, null, selectedNav);
+			trade.updateTradeOrder(null, null, selectedTradeSide);
 		}
 	}
 
@@ -72,8 +70,11 @@ export default class OutcomeTrade extends Component {
 		const selectedID = getValue(p, 'selectedOutcome.id');
 		const name = getValue(p, 'selectedOutcome.name');
 		const trade = getValue(p, 'selectedOutcome.trade');
+		const selectedTradeSide = (selectedID && p.selectedTradeSide[selectedID]) || BUY;
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
+
+		console.log('p -- ', selectedID);
 
 		return (
 			<article className="outcome-trade">
@@ -89,8 +90,8 @@ export default class OutcomeTrade extends Component {
 						<div className="outcome-trade-inputs-sides">
 							<ComponentNav
 								navItems={{ [BUY]: { label: BUY }, [SELL]: { label: SELL } }}
-								selectedNav={s.selectedNav}
-								updateSelectedNav={this.updateSelectedNav}
+								selectedNav={selectedTradeSide}
+								updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID); }}
 							/>
 						</div>
 						<div className="outcome-trade-inputs-fields">

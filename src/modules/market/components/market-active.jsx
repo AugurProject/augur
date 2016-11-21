@@ -6,6 +6,7 @@ import OrderBook from 'modules/order-book/components/order-book';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
+import { BUY } from 'modules/outcomes/constants/trade-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -16,7 +17,7 @@ export default class MarketActive extends Component {
 
 		this.state = {
 			selectedOutcome: this.props.market.outcomes[0],
-			selectedTradeSide: null
+			selectedTradeSide: {}
 		};
 
 		this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
@@ -45,8 +46,13 @@ export default class MarketActive extends Component {
 		this.setState({ selectedOutcome });
 	}
 
-	updateSelectedTradeSide(selectedTradeSide) {
-		this.setState({ selectedTradeSide });
+	updateSelectedTradeSide(selectedTradeSide, id) {
+		this.setState({
+			selectedTradeSide: {
+				...this.state.selectedTradeSide,
+				[id]: selectedTradeSide
+			}
+		});
 	}
 
 	// NOTE -- only called if a market is of type SCALAR from `componentWillMount`
@@ -117,6 +123,8 @@ export default class MarketActive extends Component {
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
+							selectedOutcome={s.selectedOutcome}
+							selectedTradeSide={s.selectedTradeSide}
 							selectedShareDenomination={selectedShareDenomination}
 							updateSelectedTradeSide={this.updateSelectedTradeSide}
 						/>

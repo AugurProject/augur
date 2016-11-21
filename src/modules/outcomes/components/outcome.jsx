@@ -67,6 +67,7 @@ const Outcome = (p) => {
 				selectedOutcome={p.selectedOutcome}
 				tradeSummary={p.tradeSummary}
 				submitTrade={p.submitTrade}
+				selectedTradeSide={p.selectedTradeSide}
 				selectedShareDenomination={p.selectedShareDenomination}
 				updateSelectedTradeSide={p.updateSelectedTradeSide}
 			/>
