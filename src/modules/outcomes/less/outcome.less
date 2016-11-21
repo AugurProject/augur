@@ -43,9 +43,9 @@
 		}
 
 		.outcome-summary {
+			align-items: flex-start;
 			display: flex;
 			flex-direction: column;
-			align-items: flex-start;
 			justify-content: center;
 
 			.outcome-name {
@@ -61,17 +61,17 @@
 			justify-content: center;
 
 			.outcome-best-container {
-				display: flex;
+				border-radius: 5px;
 				color: @color-white;
+				display: flex;
 				flex-direction: column;
 				padding: 1em 1.5em;
-				border-radius: 5px;
 			}
-
 
 			&.outcome-best-bid .outcome-best-container {
 				background-color: @color-red;
 			}
+
 			&.outcome-best-ask .outcome-best-container {
 				background-color: @color-green;
 			}
