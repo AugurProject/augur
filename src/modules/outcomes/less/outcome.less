@@ -13,12 +13,67 @@
 		}
 	}
 
-	.outcome-row {
+	.outcome-row-full,
+	.outcome-row-condensed {
 
 		.table-row();
 
+		@media @breakpoint-mobile {
+			&.selected {
+				.border(true, @border-left, @color-blue);
+			}
+		}
+
 		&.link {
 			cursor: default;
+		}
+	}
+
+	.outcome-row-full {
+		@media @breakpoint-mobile {
+			display: none;
+		}
+	}
+
+	.outcome-row-condensed {
+		display: none;
+
+		@media @breakpoint-mobile {
+			display: flex;
+		}
+
+		.outcome-summary {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: center;
+
+			.outcome-name {
+
+				.font-weight-normal();
+
+				margin-bottom: 0.2em;
+			}
+		}
+
+		.outcome-best-orders {
+			display: flex;
+			justify-content: center;
+
+			.outcome-best-container {
+				display: flex;
+				color: @color-white;
+				flex-direction: column;
+				padding: 1em 1.5em;
+			}
+
+
+			&.outcome-best-bid .outcome-best-container {
+				background-color: @color-red;
+			}
+			&.outcome-best-ask .outcome-best-container {
+				background-color: @color-green;
+			}
 		}
 	}
 }
