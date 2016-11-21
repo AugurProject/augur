@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --markets --trading --reporting",
+		"unit-test": "scripts/runtests.sh --unit",
     "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --trading --reporting --spec",
     "reporting-sequence": "AUGURJS_INTEGRATION_TESTS=true mocha test/reporting/sequence.js -R spec",
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
