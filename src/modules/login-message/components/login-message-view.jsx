@@ -53,6 +53,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 22, 2016</h3>
+			<ol>
+				<li>
+					Visual indication of 'own' orders within a market outcome's order book.
+				</li>
+				<li>
+					Improved min/max bound handling for both shares and limit price when creating a trade order.
+				</li>
+				<li>
+					Auto highlight behavior change to order book on market view.
+				</li>
+				<li>
+					Improvements to the scalar share denomination label handling.
+				</li>
+				<li>
+					General improvements to Augur.js trade unit tests.
+				</li>
+				<li>
+					Improved test coverage of Augur.js `buy` method.
+				</li>
+				<li>
+					Added test coverage for the Augur.js `sendReputation` method.
+				</li>
+			</ol>
 			<h3>November 21, 2016</h3>
 			<ol>
 				<li>
