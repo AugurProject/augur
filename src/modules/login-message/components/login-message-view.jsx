@@ -71,7 +71,7 @@ const LoginMessagePage = p => (
 					Improved state handling surrounding the outcome trade side selection.
 				</li>
 				<li>
-					Safari and Mobile Safari specitic UI fixes.
+					Safari and Mobile Safari specific UI fixes.
 				</li>
 				<li>
 					Expanded and added additional selector shape coverage for market data and outcome trade selectors respectively.
