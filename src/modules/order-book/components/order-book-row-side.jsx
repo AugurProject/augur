@@ -14,7 +14,7 @@ const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
 	const nullMessage = 'No Orders';
 	const side = p.type || ASK;
-	const shouldHighlight = (side === BID && p.selectedTradeSide[p.id] === SELL) || (side !== BID && p.selectedTradeSide[p.id] === BUY);
+	const shouldHighlight = (side === BID && p.selectedTradeSide[p.id] === SELL) || (side !== BID && p.selectedTradeSide[p.id] === BUY) || (side !== BID && p.selectedTradeSide[p.id] == null);
 
 	return (
 		<article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
@@ -44,7 +44,7 @@ const OrderBookRowSide = (p) => {
 										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
 									}}
 								>
-									<ValueDenomination formatted={p.type === BID ? price : shares} />
+									<ValueDenomination formatted={side === BID ? price : shares} />
 								</button>
 							</div>
 						);
