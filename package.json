@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --markets --trading --reporting",
-		"unit-test": "scripts/runtests.sh --unit",
+    "unit-test": "scripts/runtests.sh --unit",
     "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --trading --reporting --spec",
     "reporting-sequence": "AUGURJS_INTEGRATION_TESTS=true mocha test/reporting/sequence.js -R spec",
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
@@ -71,6 +71,7 @@
     "moment": "^2.13.0",
     "posix-getopt": "^1.1.0",
     "rimraf": "^2.4.0",
+    "sinon": "^1.17.6",
     "spammer": "^0.1.1",
     "uglify-js": "^2.6.1",
     "vinyl-buffer": "^1.0.0",
