@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import ReactTooltip from 'react-tooltip';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -25,11 +26,16 @@ const OrderBookRowSide = (p) => {
 					{(p.orders || []).map((order, i) => {
 						const shares = setShareDenomination(getValue(order, 'shares.formatted'), p.selectedShareDenomination);
 						const price = getValue(order, 'price.formatted');
+						const type = p.type || ASK;
 
 						return (
 							<div
 								key={i}
 								className={classNames('order-book-side-row not-selectable', { 'is-of-current-user': order.isOfCurrentUser })}
+								data-tip
+								data-for={`${type}-${i}-orders`}
+								data-event="click mouseenter"
+								data-event-off="click mouseleave"
 							>
 								<button
 									className="unstyled"
@@ -47,6 +53,18 @@ const OrderBookRowSide = (p) => {
 								>
 									<ValueDenomination formatted={side === BID ? price : shares} />
 								</button>
+								{order.isOfCurrentUser &&
+									<ReactTooltip
+										id={`${type}-${i}-orders`}
+										type="info"
+										effect="solid"
+										place="top"
+									>
+										<span className="tooltip-text">
+											Your Order
+										</span>
+									</ReactTooltip>
+								}
 							</div>
 						);
 					})}
