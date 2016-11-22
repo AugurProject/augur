@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary';
@@ -18,9 +19,13 @@ export default class OutcomeTrade extends Component {
 
 		this.state = {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
-			shareInputPlaceholder: generateShareInputPlaceholder(this.props.selectedShareDenomination),
-			maxSharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.maxNumShares.value', SHARE, this.props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
-			sharesDenominated: denominateShares(getValue(this.props, 'selectedOutcome.trade.numShares'), SHARE, this.props.selectedShareDenomination)
+			shareInputPlaceholder: generateShareInputPlaceholder(props.selectedShareDenomination),
+			maxSharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.maxNumShares.value', SHARE, props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
+			sharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.numShares'), SHARE, props.selectedShareDenomination),
+			minLimitPrice: props.marketType && props.marketType === SCALAR ? props.minLimitPrice : 0,
+			maxLimitPrice: props.marketType && props.marketType === SCALAR ? props.maxLimitPrice : 1,
+			isSharesValueValid: true,
+			isLimitPriceValueValid: true,
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
@@ -28,6 +33,13 @@ export default class OutcomeTrade extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		if (this.props.marketType !== nextProps.markettype) {
+			this.setState({
+				minLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.minLimitPrice : 0,
+				maxLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.maxLimitPrice : 1
+			});
+		}
+
 		const oldTrade = JSON.stringify(getValue(this.props, 'selectedOutcome.trade'));
 		const newTrade = JSON.stringify(getValue(nextProps, 'selectedOutcome.trade'));
 
@@ -78,6 +90,7 @@ export default class OutcomeTrade extends Component {
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
 
+
 		return (
 			<article className="outcome-trade market-content-scrollable">
 				{p.marketType !== SCALAR ?
@@ -98,32 +111,63 @@ export default class OutcomeTrade extends Component {
 						</div>
 						<div className="outcome-trade-inputs-fields">
 							<Input
+								className={classNames({ 'input-error': !s.isSharesValueValid })}
 								placeholder={s.shareInputPlaceholder}
 								type="number"
 								value={s.sharesDenominated}
 								min="0"
 								step="0.1"
-								onChange={(value) => { this.handleSharesInput(value); }}
+								onChange={(value) => {
+									if (value != null) {
+										if (value >= 0 || value === '') {
+											this.handleSharesInput(value);
+											this.setState({ isSharesValueValid: true });
+										} else {
+											this.setState({ isSharesValueValid: false });
+										}
+									}
+								}}
 							/>
 							<span>@</span>
 							<Input
+								className={classNames({ 'input-error': !s.isLimitPriceValueValid })}
 								placeholder="Price"
 								type="number"
 								value={trade.limitPrice}
 								step="0.1"
-								max={p.maxValue}
-								onChange={(value) => { trade.updateTradeOrder(null, value, trade.side); }}
+								min={s.minLimitPrice}
+								max={s.maxLimitPrice}
+								onChange={(value) => {
+									if (value != null) {
+										if ((value >= parseFloat(s.minLimitPrice) && value <= parseFloat(s.maxLimitPrice)) || value === '') {
+											trade.updateTradeOrder(null, value, trade.side);
+											this.setState({ isLimitPriceValueValid: true });
+										} else {
+											this.setState({ isLimitPriceValueValid: false });
+										}
+									}
+								}}
 							/>
 						</div>
 					</div>
 				}
-				{tradeOrder &&
+				{!s.isSharesValueValid &&
+					<span className="outcome-trade-input-error-message" >
+						{`Shares amount must be greater than 0.`}
+					</span>
+				}
+				{!s.isLimitPriceValueValid &&
+					<span className="outcome-trade-input-error-message" >
+						{`Limit price must be between ${s.minLimitPrice} - ${s.maxLimitPrice}.`}
+					</span>
+				}
+				{tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid &&
 					<OutcomeTradeSummary
 						trade={trade}
 						tradeOrder={tradeOrder}
 					/>
 				}
-				{tradeOrder &&
+				{tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid &&
 					<OutcomeTradeAction
 						hasFunds={hasFunds}
 						selectedID={selectedID}
