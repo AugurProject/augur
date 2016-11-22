@@ -53,6 +53,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 21, 2016</h3>
+			<ol>
+				<li>
+					Expanded and refined test coverage of the place trade action.
+				</li>
+				<li>
+					Updated and added additional test coverage related to the market data and outcome trade components.
+				</li>
+				<li>
+					Continued styling improvements to the market view.
+				</li>
+				<li>
+					Bug fix related to the counts presented in both the header and footer navigational items.
+				</li>
+				<li>
+					Improved state handling surrounding the outcome trade side selection.
+				</li>
+				<li>
+					Safari and Mobile Safari specitic UI fixes.
+				</li>
+				<li>
+					Expanded and added additional selector shape coverage for market data and outcome trade selectors respectively.
+				</li>
+			</ol>
 			<h3>November 18, 2016</h3>
 			<ol>
 				<li>
