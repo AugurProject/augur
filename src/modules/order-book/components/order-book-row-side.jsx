@@ -10,7 +10,10 @@ import setShareDenomination from 'utils/set-share-denomination';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 import { BID, ASK } from 'modules/transactions/constants/types';
+<<<<<<< HEAD
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
+=======
+>>>>>>> added tooltip
 
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
@@ -81,6 +84,20 @@ const OrderBookRowSide = (p) => {
 								>
 									<ValueDenomination formatted={p.type === BID ? price : shares} />
 								</button>
+								<ValueDenomination formatted={p.type === BID ? shares : price} />
+								<ValueDenomination formatted={p.type === BID ? price : shares} />
+								{order.isOfCurrentUser &&
+									<ReactTooltip
+										id={`${type}-${i}-orders`}
+										type="info"
+										effect="solid"
+										place="top"
+									>
+										<span className="tooltip-text">
+											Your Order
+										</span>
+									</ReactTooltip>
+								}
 							</div>
 						);
 					})}
