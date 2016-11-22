@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -28,7 +29,7 @@ const OrderBookRowSide = (p) => {
 						return (
 							<div
 								key={i}
-								className="order-book-side-row not-selectable"
+								className={classNames('order-book-side-row not-selectable', { 'is-of-current-user': order.isOfCurrentUser })}
 							>
 								<button
 									className="unstyled"

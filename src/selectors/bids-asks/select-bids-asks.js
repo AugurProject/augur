@@ -13,6 +13,7 @@ function selectOrderBook() {
 				price: makeNumber(0.45, ' ETH')
 			},
 			{
+				isOfCurrentUser: true,
 				shares: makeNumber(2.22, ' shares'),
 				price: makeNumber(0.35, ' ETH')
 			},
@@ -82,6 +83,7 @@ function selectOrderBook() {
 				isOfCurrentUser: Math.random() > 0.3
 			},
 			{
+				isOfCurrentUser: true,
 				shares: makeNumber(5, ' shares'),
 				price: makeNumber(0.82, ' ETH')
 			},
