@@ -10,10 +10,7 @@ import setShareDenomination from 'utils/set-share-denomination';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 import { BID, ASK } from 'modules/transactions/constants/types';
-<<<<<<< HEAD
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
-=======
->>>>>>> added tooltip
 
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
