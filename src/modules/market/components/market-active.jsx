@@ -69,11 +69,8 @@ export default class MarketActive extends Component {
 			const trade = outcome.trade;
 			const tradeSide = side === BID ? SELL : BUY;
 
-			// Clear existing order
-			trade.updateTradeOrder(0, null, tradeSide);
-			trade.updateTradeOrder(null, 0, tradeSide);
-
 			if (orderValueType === PRICE) {
+				trade.updateTradeOrder(0, null, tradeSide); // Clear Shares
 				trade.updateTradeOrder(null, price, tradeSide);
 			} else {
 				const shares = trade.totalSharesUpToOrder(orderIndex, side);
