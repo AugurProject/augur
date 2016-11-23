@@ -65,6 +65,22 @@ const OrderBookRowSide = (p) => {
 										</span>
 									</ReactTooltip>
 								}
+								<button
+									className="unstyled"
+									onClick={() => {
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
+									}}
+								>
+									<ValueDenomination formatted={side === BID ? shares : price} />
+								</button>
+								<button
+									className="unstyled"
+									onClick={() => {
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
+									}}
+								>
+									<ValueDenomination formatted={p.type === BID ? price : shares} />
+								</button>
 							</div>
 						);
 					})}
