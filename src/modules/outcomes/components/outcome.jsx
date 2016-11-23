@@ -5,6 +5,8 @@ import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
+import { BID, ASK } from 'modules/transactions/constants/types';
+import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -32,10 +34,38 @@ const Outcome = (p) => {
 					<ValueDenomination formatted={lastPricePercent} /> :
 					<span className="outcome">{outcomeName}</span>
 				}
-				<ValueDenomination formatted={topBidShares} />
-				<ValueDenomination className="emphasized" formatted={topBidPrice} />
-				<ValueDenomination className="emphasized" formatted={topAskPrice} />
-				<ValueDenomination formatted={topAskShares} />
+				<button
+					className="unstyled"
+					onClick={() => {
+						p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, SHARE);
+					}}
+				>
+					<ValueDenomination formatted={topBidShares} />
+				</button>
+				<button
+					className="unstyled"
+					onClick={() => {
+						p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, PRICE);
+					}}
+				>
+					<ValueDenomination className="emphasized" formatted={topBidPrice} />
+				</button>
+				<button
+					className="unstyled"
+					onClick={() => {
+						p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, PRICE);
+					}}
+				>
+					<ValueDenomination className="emphasized" formatted={topAskPrice} />
+				</button>
+				<button
+					className="unstyled"
+					onClick={() => {
+						p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, SHARE);
+					}}
+				>
+					<ValueDenomination formatted={topAskShares} />
+				</button>
 				<ValueDenomination formatted={lastPrice} />
 			</Link>
 			<Link
@@ -50,16 +80,30 @@ const Outcome = (p) => {
 					</span>
 				}
 				<span className="outcome-best-orders outcome-best-bid">
-					<span className="outcome-best-container">
-						<ValueDenomination className="emphasized" formatted={topBidPrice} />
-						<ValueDenomination formatted={topBidShares} />
-					</span>
+					<button
+						className="unstyled"
+						onClick={() => {
+							p.updateTradeFromSelectedOrder(p.outcome.id, 0, BID, SHARE);
+						}}
+					>
+						<span className="outcome-best-container">
+							<ValueDenomination className="emphasized" formatted={topBidPrice} />
+							<ValueDenomination formatted={topBidShares} />
+						</span>
+					</button>
 				</span>
 				<span className="outcome-best-orders outcome-best-ask">
-					<span className="outcome-best-container">
-						<ValueDenomination className="emphasized" formatted={topAskPrice} />
-						<ValueDenomination formatted={topAskShares} />
-					</span>
+					<button
+						className="unstyled"
+						onClick={() => {
+							p.updateTradeFromSelectedOrder(p.outcome.id, 0, ASK, SHARE);
+						}}
+					>
+						<span className="outcome-best-container">
+							<ValueDenomination className="emphasized" formatted={topAskPrice} />
+							<ValueDenomination formatted={topAskShares} />
+						</span>
+					</button>
 				</span>
 			</Link>
 			<OutcomeTrade

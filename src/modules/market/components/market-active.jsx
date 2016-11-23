@@ -131,6 +131,7 @@ export default class MarketActive extends Component {
 						tradeSummary={tradeSummary}
 						submitTrade={(id) => { submitTrade(id); }}
 						selectedTradeSide={s.selectedTradeSide}
+						updateSelectedTradeSide={this.updateSelectedTradeSide}
 						updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
 						outcomeTradeNavItems={p.outcomeTradeNavItems}
 					/>

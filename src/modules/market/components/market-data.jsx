@@ -54,6 +54,7 @@ export default class MarketData extends Component {
 						selectedTradeSide={p.selectedTradeSide}
 						updateSelectedTradeSide={p.updateSelectedTradeSide}
 						outcomeTradeNavItems={p.outcomeTradeNavItems}
+						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 					/>
 				}
 				{s.selectedNav === MARKET_DATA_ORDERS &&
