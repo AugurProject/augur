@@ -1,5 +1,5 @@
 "use strict";
-
+// page has been modified to avoid connecting to a server...
 var crypto = require("crypto");
 var assert = require("chai").assert;
 var clone = require("clone");
@@ -10,7 +10,8 @@ var utils = require("../../src/utilities");
 var constants = require("../../src/constants");
 var tools = require("../tools");
 var random = require("../random");
-var augur = tools.setup(require("../../src"), process.argv.slice(2));
+// var augur = tools.setup(require("../../src"), process.argv.slice(2));
+var augur = require('../../src');
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
@@ -28,9 +29,9 @@ var name2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 
-var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
-var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
-var market_id = markets[markets.length - 1];
+// var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
+// var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
+// var market_id = markets[markets.length - 1];
 
 function checkAccount(augur, account, noWebAccountCheck) {
     assert.notProperty(account, "error");
@@ -345,7 +346,7 @@ describe("Transaction signing", function () {
     });
 });
 
-describe("eth_call", function () {
+describe.skip("eth_call", function () {
     it("call getBranches using web.invoke", function (done) {
         this.timeout(tools.TIMEOUT);
         // var augur = tools.setup(tools.reset("../../src/index"), process.argv.slice(2));
