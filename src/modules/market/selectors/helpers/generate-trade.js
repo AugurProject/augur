@@ -7,12 +7,15 @@ import { calculateMaxPossibleShares } from '../../../market/selectors/helpers/ca
 
 import { BUY, SELL } from '../../../trade/constants/types';
 import { BID, ASK } from '../../../bids-asks/constants/bids-asks-types';
+import { BID as BID_SIDE, ASK as ASK_SIDE } from '../../../transactions/constants/types'
 import { ZERO } from '../../../trade/constants/numbers';
 import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
 
 import { updateTradesInProgress } from '../../../trade/actions/update-trades-in-progress';
 import { makeTradeTransaction } from '../../../transactions/actions/add-trade-transaction';
 import { makeShortSellTransaction } from '../../../transactions/actions/add-short-sell-transaction';
+
+import { selectAggregateOrderBook } from '../../../bids-asks/helpers/select-order-book';
 
 import store from '../../../../store';
 
@@ -67,8 +70,17 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 		],
 
 		tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
-		updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice))
+		updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
+		totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
 	};
+});
+
+const totalSharesUpToOrder = memoizerific(5)((marketID, outcomeID, side, orderIndex, orderBooks) => {
+	const { orderCancellation } = store.getState();
+
+	const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === BID_SIDE ? 'bids' : 'asks']; // NOTE -- due to the way the order book was generated (no constants used for keys), have to explicitly define.  TODO -- clean up bid, ask, buy, sell constants cross-app
+
+	return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0);
 });
 
 export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
