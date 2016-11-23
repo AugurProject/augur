@@ -18,9 +18,11 @@ const OrderBook = p => (
 		<div className="market-content-scrollable" >
 			<OrderBookRows
 				id={p.outcome.id}
+				trade={p.outcome.trade}
 				bids={p.outcome.orderBook.bids}
 				asks={p.outcome.orderBook.asks}
 				selectedTradeSide={p.selectedTradeSide}
+				updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 				selectedShareDenomination={p.selectedShareDenomination}
 			/>
 		</div>

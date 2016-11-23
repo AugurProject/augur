@@ -7,12 +7,14 @@ import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
-import { BID } from 'modules/transactions/constants/types';
+import { BID, ASK } from 'modules/transactions/constants/types';
+import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
 
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
 	const nullMessage = 'No Orders';
-	const shouldHighlight = (p.type === BID && p.selectedTradeSide[p.id] === SELL) || (p.type !== BID && p.selectedTradeSide[p.id] === BUY);
+	const side = p.type || ASK;
+	const shouldHighlight = (side === BID && p.selectedTradeSide[p.id] === SELL) || (side !== BID && p.selectedTradeSide[p.id] === BUY);
 
 	return (
 		<article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
@@ -28,8 +30,22 @@ const OrderBookRowSide = (p) => {
 								key={i}
 								className="order-book-side-row not-selectable"
 							>
-								<ValueDenomination formatted={p.type === BID ? shares : price} />
-								<ValueDenomination formatted={p.type === BID ? price : shares} />
+								<button
+									className="unstyled"
+									onClick={() => {
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
+									}}
+								>
+									<ValueDenomination formatted={side === BID ? shares : price} />
+								</button>
+								<button
+									className="unstyled"
+									onClick={() => {
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
+									}}
+								>
+									<ValueDenomination formatted={p.type === BID ? price : shares} />
+								</button>
 							</div>
 						);
 					})}

@@ -61,6 +61,7 @@ export default class MarketData extends Component {
 						marketType={p.marketType}
 						outcome={p.selectedOutcome}
 						selectedTradeSide={p.selectedTradeSide}
+						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 						selectedShareDenomination={p.selectedShareDenomination}
 					/>
 				}

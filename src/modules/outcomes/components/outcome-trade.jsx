@@ -41,8 +41,12 @@ export default class OutcomeTrade extends Component {
 
 		const oldID = getValue(this.props, 'selectedOutcome.id');
 		const newID = getValue(nextProps, 'selectedOutcome.id');
+		const oldPrice = getValue(this.props, 'selectedOutcome.trade.limitPrice');
+		const newPrice = getValue(nextProps, 'selectedOutcome.trade.limitPrice');
+		const oldNumShares = getValue(this.props, 'selectedOutcome.trade.numShares');
+		const newNumShares = getValue(nextProps, 'selectedOutcome.trade.numShares');
 
-		if (oldID !== newID) {
+		if (oldID !== newID || oldPrice !== newPrice || oldNumShares !== newNumShares) {
 			this.setState({ timestamp: Date.now() }); // forces re-render of trade component via key value
 		}
 	}
