@@ -57,6 +57,7 @@ export default class MarketData extends Component {
 						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 						minLimitPrice={p.minLimitPrice}
 						maxLimitPrice={p.maxLimitPrice}
+						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 					/>
 				}
 				{s.selectedNav === MARKET_DATA_ORDERS &&
