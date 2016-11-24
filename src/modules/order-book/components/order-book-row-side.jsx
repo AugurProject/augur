@@ -34,8 +34,8 @@ const OrderBookRowSide = (p) => {
 								className={classNames('order-book-side-row not-selectable', { 'is-of-current-user': order.isOfCurrentUser })}
 								data-tip
 								data-for={`${type}-${i}-orders`}
-								data-event="click mouseenter"
-								data-event-off="click mouseleave"
+								data-event="mouseenter"
+								data-event-off="mouseleave"
 							>
 								<button
 									className="unstyled"
@@ -53,36 +53,6 @@ const OrderBookRowSide = (p) => {
 								>
 									<ValueDenomination formatted={side === BID ? price : shares} />
 								</button>
-								{order.isOfCurrentUser &&
-									<ReactTooltip
-										id={`${type}-${i}-orders`}
-										type="info"
-										effect="solid"
-										place="top"
-									>
-										<span className="tooltip-text">
-											Your Order
-										</span>
-									</ReactTooltip>
-								}
-								<button
-									className="unstyled"
-									onClick={() => {
-										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
-									}}
-								>
-									<ValueDenomination formatted={side === BID ? shares : price} />
-								</button>
-								<button
-									className="unstyled"
-									onClick={() => {
-										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
-									}}
-								>
-									<ValueDenomination formatted={p.type === BID ? price : shares} />
-								</button>
-								<ValueDenomination formatted={p.type === BID ? shares : price} />
-								<ValueDenomination formatted={p.type === BID ? price : shares} />
 								{order.isOfCurrentUser &&
 									<ReactTooltip
 										id={`${type}-${i}-orders`}
