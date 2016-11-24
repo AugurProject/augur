@@ -135,7 +135,7 @@ class AppComponent extends Component {
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>
-									<Hammer onSwipe={this.handleSidebarSwipe} >
+									<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
 										<Routes
 											{...p}
 											setSidebarAllowed={this.setSidebarAllowed}
