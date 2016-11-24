@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 23, 2016</h3>
+			<ol>
+				<li>
+					Added the ability to auto-populate a trade ticket by selecting any order present in either the outcomes list or order book.
+				</li>
+				<li>
+					Expanded test coverage of the Augur API buy, sell, and shortAsk trade methods.
+				</li>
+			</ol>
 			<h3>November 22, 2016</h3>
 			<ol>
 				<li>
