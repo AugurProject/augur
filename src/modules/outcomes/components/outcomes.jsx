@@ -39,8 +39,6 @@ const Outcomes = p => (
 					minLimitPrice={p.minLimitPrice}
 					maxLimitPrice={p.maxLimitPrice}
 					updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-					minLimitPrice={p.minLimitPrice}
-					maxLimitPrice={p.maxLimitPrice}
 				/>
 			))}
 		</div>
