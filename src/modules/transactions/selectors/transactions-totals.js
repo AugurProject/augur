@@ -31,7 +31,7 @@ export const selectTransactionsTotals = memoizerific(1)((transactions) => {
 
 	if (o.numWorkingAndPending) {
 		o.title =
-		`${o.numWorkingAndPending} Transaction${(o.numWorkingAndPending !== 1 ? 's' : '')} Working`;
+		`Transaction${(o.numWorkingAndPending !== 1 ? 's' : '')} Working`;
 		o.shortTitle = `${o.numPending} Working`;
 	} else {
 		o.title = `${o.numTotal} Transaction${(o.numTotal !== 1 ? 's' : '')}`;
