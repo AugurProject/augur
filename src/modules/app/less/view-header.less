@@ -4,18 +4,24 @@
 	.font-size-medium();
 
 	color: @color-text-dark;
+	display: flex;
+	flex-wrap: wrap-reverse;
 
-	.view-header-group-1 {
+	.view-header-group {
 		display: flex;
 		flex: 1;
 		justify-content: flex-start;
+		margin: 0 1em 1em 0;
 	}
 
-	.view-header-group-2 {
+	.view-header-group:not(:first-child) {
 		display: flex;
 		flex: 1;
 		justify-content: flex-end;
-		margin-left: 1em;
+	}
+
+	.view-header-group:last-child {
+		margin: 0 0 1em;
 	}
 
 	h2 {

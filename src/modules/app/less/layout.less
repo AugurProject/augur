@@ -30,7 +30,7 @@ main,
 		width: 100vw;
 		z-index: @above-all-content;
 
-		.site-header .site-nav {
+		.site-header .app-nav {
 
 			.contained();
 
@@ -81,9 +81,22 @@ main,
 				display: flex;
 				flex: 4;
 				flex-direction: column;
+				height: 100%;
+				max-height: 100%;
 
 				.sub-header {
 					visibility: hidden;
+				}
+
+				footer {
+					display: none;
+
+					@media @breakpoint-mobile {
+						bottom: 0 !important; // Overrides in-line
+						display: flex;
+						position: relative;
+						visibility: hidden;
+					}
 				}
 			}
 		}
@@ -94,10 +107,15 @@ main,
 	}
 }
 
+// Top level views
 section {
 	display: flex;
 	flex-direction: column;
 	margin: 2rem 6rem 0;
+
+	@media @breakpoint-mobile {
+		margin: 2rem 1rem 0;
+	}
 
 	.view-header {
 		align-items: center;

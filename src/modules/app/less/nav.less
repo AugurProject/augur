@@ -1,0 +1,151 @@
+.app-nav {
+	display: flex;
+	flex: 1;
+	justify-content: center;
+
+	.app-nav-link:not(button) {
+
+		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+
+		&:hover,
+		&:active {
+			&:not(.augur-brand):not(button) {
+				background-color: @color-nav-background-active;
+				color: @color-text-light;
+				cursor: pointer;
+			}
+		}
+
+		&.active {
+			background-color: @color-nav-background-active;
+			color: @color-text-light;
+		}
+
+		&.transactions {
+			&.working {
+				&:not(.active) {
+
+					.animation-flash-slow(@color-orange);
+
+					color: @color-text-light;
+				}
+			}
+
+			.link-text {
+				white-space: nowrap;
+			}
+		}
+	}
+
+	button.app-nav-link {
+		padding: 0 2em;
+	}
+
+	// Navs displayed in header
+	&.nav-header {
+
+		.contained();
+
+		.nav-icon {
+			display: none;
+		}
+
+		button.app-nav-link {
+			@media @breakpoint-mobile {
+				padding: 0 1em;
+			}
+		}
+
+		.augur-brand {
+			display: flex;
+			flex: 1;
+			justify-content: center;
+			padding: 0;
+
+			.augur-logo-full {
+				height: 2.5em;
+				padding: 1em 0;  // Dictates Header Height (others flex to fill)
+
+				@media @breakpoint-mobile {
+					height: 1.5em;
+					padding: 0.5em 0;
+				}
+			}
+		}
+
+		.app-nav-link.link {
+			align-items: center;
+			display: flex;
+			justify-content: center;
+			padding: 0 1.8em;
+			white-space: nowrap;
+
+			@media @breakpoint-2 {
+				padding: 0 1em;
+			}
+
+			@media @breakpoint-mobile {
+				display: none;
+			}
+
+			.nav-count {
+				margin-right: 0.2em;
+			}
+		}
+	}
+
+	// Navs displayed in footer
+	&.nav-footer {
+		display: none;
+		position: relative;
+
+		.augur-brand {
+			display: none;
+		}
+
+		@media @breakpoint-mobile {
+
+			.font-color-light();
+
+			background-color: @color-nav-background;
+			display: flex;
+			flex: 1;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+		}
+
+		.app-nav-link {
+			align-content: center;
+			align-items: center;
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			justify-content: center;
+			min-width: 4em;
+			padding: 1em;
+			position: relative;
+			text-align: center; // accounts for wrapped text
+		}
+
+		button.app-nav-link {
+			display: none;
+		}
+
+		.nav-icon {
+			margin-bottom: 0.2em;
+			width: 2em;
+		}
+
+		.nav-count {
+
+			.font-color-dark();
+
+			background-color: @color-white-subtle;
+			border-radius: 50%;
+			padding: 0.25em 0.5em;
+			position: absolute;
+			right: 10%;
+			top: 10%;
+		}
+	}
+}

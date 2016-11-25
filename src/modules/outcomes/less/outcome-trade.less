@@ -1,4 +1,20 @@
 .outcome-trade {
+	@media @breakpoint-mobile {
+		background-color: @color-gray-extra-light;
+		padding: 1em 0;
+	}
+
+	h3 {
+		@media @breakpoint-mobile {
+			display: none;
+		}
+	}
+
+	.outcome-trade-input-error-message {
+		color: @color-red-light;
+		padding: 0 0 0.5em;
+	}
+
 	& > span {
 		margin-left: 1em;
 	}

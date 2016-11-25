@@ -25,14 +25,16 @@ const MarketPositions = (p) => {
 						<span>Unrealized P/L</span>
 						<span>Total P/L</span>
 					</div>
-					{(outcomePositions || []).map(outcome =>
-						<MarketPositionsRow
-							key={outcome.id}
-							marketType={p.marketType}
-							outcome={outcome}
-							selectedShareDenomination={p.selectedShareDenomination}
-						/>
-					)}
+					<div className="market-content-scrollable" >
+						{(outcomePositions || []).map(outcome =>
+							<MarketPositionsRow
+								key={outcome.id}
+								marketType={p.marketType}
+								outcome={outcome}
+								selectedShareDenomination={p.selectedShareDenomination}
+							/>
+						)}
+					</div>
 				</div>
 			}
 		</article>

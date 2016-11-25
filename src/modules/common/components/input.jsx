@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
+
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Input extends Component {
@@ -66,7 +68,7 @@ export default class Input extends Component {
 		const s = this.state;
 
 		return (
-			<div className={`input ${p.className}`}>
+			<div className={classNames('input', p.className)} >
 				{!p.isMultiline &&
 					<input
 						{...p}

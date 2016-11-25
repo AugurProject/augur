@@ -4,28 +4,14 @@ import ReactTooltip from 'react-tooltip';
 import ValueDate from 'modules/common/components/value-date';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
-import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations';
-
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
+import shareDenominationLabel from 'utils/share-denomination-label';
 
 const MarketProperties = (p) => {
 	const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
 	const shareVolumeFormatted = getValue(p, 'volume.formatted');
-
-	const shareDenomination = () => {
-		// TODO be less hackish (sorry sprinkle)
-		if (!p.shareDenominations) return 'Shares';
-		switch (p.selectedShareDenomination) {
-			case (MICRO_SHARE):
-				return p.shareDenominations.find(denomination => denomination.value === MICRO_SHARE).label;
-			case (MILLI_SHARE):
-				return p.shareDenominations.find(denomination => denomination.value === MILLI_SHARE).label;
-			default:
-			case (SHARE):
-				return p.shareDenominations.find(denomination => denomination.value === SHARE).label;
-		}
-	};
+	const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
 
 	return (
 		<ul className="market-properties">
@@ -102,7 +88,7 @@ const MarketProperties = (p) => {
 						data-event="click focus"
 					>
 						<span className="property-label">Volume:</span>
-						<ValueDenomination className="property-value" formatted={shareVolumeRounded} denomination={shareDenomination()} />
+						<ValueDenomination className="property-value" formatted={shareVolumeRounded} denomination={shareDenomination} />
 					</a>
 					<ReactTooltip
 						id={`${p.id}-volume-tooltip`}

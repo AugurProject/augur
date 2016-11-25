@@ -6,6 +6,9 @@ import OrderBook from 'modules/order-book/components/order-book';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
+import { PRICE } from 'modules/order-book/constants/order-book-value-types';
+import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
+import { BID } from 'modules/transactions/constants/types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -16,12 +19,13 @@ export default class MarketActive extends Component {
 
 		this.state = {
 			selectedOutcome: this.props.market.outcomes[0],
-			selectedTradeSide: null
+			selectedTradeSide: {}
 		};
 
 		this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
 		this.updateSelectedTradeSide = this.updateSelectedTradeSide.bind(this);
 		this.determineDefaultShareDenomination = this.determineDefaultShareDenomination.bind(this);
+		this.updateTradeFromSelectedOrder = this.updateTradeFromSelectedOrder.bind(this);
 	}
 
 	componentWillMount() {
@@ -45,8 +49,37 @@ export default class MarketActive extends Component {
 		this.setState({ selectedOutcome });
 	}
 
-	updateSelectedTradeSide(selectedTradeSide) {
-		this.setState({ selectedTradeSide });
+	updateSelectedTradeSide(selectedTradeSide, id) {
+		this.setState({
+			selectedTradeSide: {
+				...this.state.selectedTradeSide,
+				[id]: selectedTradeSide
+			}
+		});
+	}
+
+	updateTradeFromSelectedOrder(outcomeID, orderIndex, side, orderValueType) {
+		const outcomes = getValue(this.props, 'market.outcomes');
+
+		if (outcomes) {
+			const outcome = outcomes.find(outcome => outcome.id === outcomeID);
+			const orderBookSide = getValue(outcome, `orderBook.${side === BID ? 'bids' : 'asks'}`);
+			const order = (orderBookSide && orderBookSide[orderIndex]) || null;
+			const price = getValue(order, 'price.value') || null;
+			const trade = outcome.trade;
+			const tradeSide = side === BID ? SELL : BUY;
+
+			if (orderValueType === PRICE) {
+				trade.updateTradeOrder(0, null, tradeSide); // Clear Shares
+				trade.updateTradeOrder(null, price, tradeSide);
+			} else {
+				const shares = trade.totalSharesUpToOrder(orderIndex, side);
+
+				trade.updateTradeOrder(shares, price, tradeSide);
+			}
+
+			this.updateSelectedTradeSide(tradeSide, outcomeID);
+		}
 	}
 
 	// NOTE -- only called if a market is of type SCALAR from `componentWillMount`
@@ -75,6 +108,8 @@ export default class MarketActive extends Component {
 		const tradeSummary = getValue(p, 'market.tradeSummary');
 		const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
 		const marketType = getValue(p, 'market.type');
+		const minValue = getValue(p, 'market.minValue');
+		const maxValue = getValue(p, 'market.maxValue');
 
 		const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`);
 		const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
@@ -92,23 +127,22 @@ export default class MarketActive extends Component {
 						selectedShareDenomination={selectedShareDenomination}
 						shareDenominations={shareDenominations}
 						updateSelectedShareDenomination={updateSelectedShareDenomination}
+						tradeSummary={tradeSummary}
+						submitTrade={(id) => { submitTrade(id); }}
+						selectedTradeSide={s.selectedTradeSide}
+						updateSelectedTradeSide={this.updateSelectedTradeSide}
+						updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
+						outcomeTradeNavItems={p.outcomeTradeNavItems}
+						minLimitPrice={minValue}
+						maxLimitPrice={maxValue}
 					/>
 					<OrderBook
 						marketType={marketType}
 						outcome={s.selectedOutcome}
 						selectedTradeSide={s.selectedTradeSide}
+						updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
 						selectedShareDenomination={selectedShareDenomination}
 					/>
-					{p.logged &&
-						<OutcomeTrade
-							marketType={marketType}
-							selectedOutcome={s.selectedOutcome}
-							tradeSummary={tradeSummary}
-							submitTrade={(id) => { submitTrade(id); }}
-							selectedShareDenomination={selectedShareDenomination}
-							updateSelectedTradeSide={this.updateSelectedTradeSide}
-						/>
-					}
 				</div>
 				{p.logged &&
 					<div className="market-group">
@@ -123,8 +157,12 @@ export default class MarketActive extends Component {
 							selectedOutcome={s.selectedOutcome}
 							tradeSummary={tradeSummary}
 							submitTrade={(id) => { submitTrade(id); }}
+							selectedTradeSide={s.selectedTradeSide}
 							selectedShareDenomination={selectedShareDenomination}
 							updateSelectedTradeSide={this.updateSelectedTradeSide}
+							outcomeTradeNavItems={p.outcomeTradeNavItems}
+							minLimitPrice={minValue}
+							maxLimitPrice={maxValue}
 						/>
 					</div>
 				}

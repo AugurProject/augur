@@ -4,8 +4,8 @@ import Dropdown from 'modules/common/components/dropdown';
 import MarketsSearch from 'modules/markets/components/markets-search';
 
 const MarketsFilterSort = p => (
-	<article className={`markets-view-header ${p.className}`}>
-		<div className="view-header-group-1">
+	<article className="markets-filter-sort view-header">
+		<div className="view-header-group">
 			<Dropdown
 				default={p.selectedFilterSort.type}
 				options={p.types}
@@ -29,7 +29,7 @@ const MarketsFilterSort = p => (
 				</button>
 			</div>
 		</div>
-		<div className="view-header-group-2">
+		<div className="view-header-group">
 			<MarketsSearch keywords={p.keywords} />
 		</div>
 	</article>

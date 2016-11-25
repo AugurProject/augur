@@ -15,12 +15,17 @@ const OrderBook = p => (
 			<h3>Order Book</h3>
 		}
 		<OrderBookHeader />
-		<OrderBookRows
-			bids={p.outcome.orderBook.bids}
-			asks={p.outcome.orderBook.asks}
-			selectedTradeSide={p.selectedTradeSide}
-			selectedShareDenomination={p.selectedShareDenomination}
-		/>
+		<div className="market-content-scrollable" >
+			<OrderBookRows
+				id={p.outcome.id}
+				trade={p.outcome.trade}
+				bids={p.outcome.orderBook.bids}
+				asks={p.outcome.orderBook.asks}
+				selectedTradeSide={p.selectedTradeSide}
+				updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+				selectedShareDenomination={p.selectedShareDenomination}
+			/>
+		</div>
 	</article>
 );
 

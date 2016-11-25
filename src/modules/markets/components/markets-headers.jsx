@@ -5,10 +5,10 @@ import Link from 'modules/link/components/link';
 const MarketsHeaders = p => (
 	<article>
 		<div className="view-header">
-			<div className="view-header-group-1">
+			<div className="view-header-group">
 				<h2>Markets</h2>
 			</div>
-			<div className="view-header-group-2">
+			<div className="view-header-group">
 				{p.loginAccount && p.loginAccount.id &&
 					<Link
 						className="button imperative navigational"
@@ -21,7 +21,6 @@ const MarketsHeaders = p => (
 			</div>
 		</div>
 		<MarketsFilterSort
-			className="view-header"
 			keywords={p.keywords}
 			{...p.filterSort}
 		/>

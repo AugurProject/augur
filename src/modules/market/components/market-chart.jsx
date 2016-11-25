@@ -45,7 +45,7 @@ export default class MarketChart extends Component {
 		const nullMessage = 'No Completed Trades';
 
 		return (
-			<article className="price-history-chart">
+			<article className="price-history-chart market-content-scrollable">
 				{!p.series || !p.series.length ?
 					<NullStateMessage message={nullMessage} /> :
 					<ReactHighcharts config={config} />

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { render } from 'react-dom';
 import classnames from 'classnames';
+import Hammer from 'react-hammerjs';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
@@ -11,6 +12,7 @@ import ChatView from 'modules/chat/components/chat-view';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
+import getValue from 'utils/get-value';
 
 export default function (appElement, selectors) {
 	render(<AppComponent {...selectors} />, appElement);
@@ -32,10 +34,10 @@ class AppComponent extends Component {
 
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
+		this.handleSidebarSwipe = this.handleSidebarSwipe.bind(this);
 	}
 
 	componentDidMount() {
-		// Checks whether the app is currently in breakpoints 1 or 2 and will auto-hide the side-bar
 		if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
 			this.main.style.willChange = 'auto'; // reset
 			this.toggleSideBar();
@@ -59,44 +61,57 @@ class AppComponent extends Component {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
+	handleSidebarSwipe(swipe) {
+		if (this.state.isSideBarAllowed) {
+			if (swipe.deltaX > 0) {
+				this.setState({ isSideBarCollapsed: false });
+			} else {
+				this.setState({ isSideBarCollapsed: true });
+			}
+		}
+	}
+
 	render() {
 		const p = this.props;
 		const s = this.state;
-		const siteHeaderProps = {
+
+		const navProps = {
+			logged: getValue(p, 'loginAccount.address'),
 			isSideBarAllowed: s.isSideBarAllowed,
 			isSideBarCollapsed: s.isSideBarCollapsed,
 			toggleSideBar: () => { this.toggleSideBar(); },
 			activeView: p.activeView,
-			loginAccount: p.loginAccount,
 			positionsSummary: p.positionsSummary,
 			transactionsTotals: p.transactionsTotals,
 			isTransactionsWorking: p.isTransactionsWorking,
 			marketsInfo: p.marketsHeader,
-			marketsLink: (p.links && p.links.marketsLink) || undefined,
-			favoritesLink: (p.links && p.links.favoritesLink) || undefined,
-			pendingReportsLink: (p.links && p.links.pendingReportsLink) || undefined,
-			transactionsLink: (p.links && p.links.transactionsLink) || undefined,
-			authLink: (p.links && p.links.authLink) || undefined,
-			accountLink: (p.links && p.links.accountLink) || undefined,
-			accountLinkText: (p.loginAccount && p.loginAccount.linkText) || undefined,
-			myPositionsLink: (p.links && p.links.myPositionsLink) || undefined,
-			portfolioTotals: (p.portfolio && p.portfolio.totals) || undefined
+			portfolioTotals: getValue(p, 'portfolio.totals'),
+			numFavorites: getValue(p, 'marketsHeader.numFavorites'),
+			numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
+			numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
+			marketsLink: getValue(p, 'links.marketsLink'),
+			favoritesLink: getValue(p, 'links.favoritesLink'),
+			pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
+			transactionsLink: getValue(p, 'links.transactionsLink'),
+			authLink: getValue(p, 'links.authLink'),
+			accountLink: getValue(p, 'links.accountLink'),
+			myPositionsLink: getValue(p, 'links.myPositionsLink')
 		};
+
 		const sideBarProps = {
-			tags: p.tags,
-			loginAccount: p.loginAccount
+			tags: p.tags
 		};
 
 		// NOTE -- A few implementation details:
 		// An attention has been paid to avoid JS manipulation of app layout
-		// As a result, you'll notice that both the `Header` + `CortStats` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
+		// As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
 		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
 					<div id="app_container" >
 						<div id="app_header">
-							<Header {...siteHeaderProps} />
+							<Header {...navProps} />
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
@@ -107,7 +122,7 @@ class AppComponent extends Component {
 							</div>
 						</div>
 						<div id="app_views" >
-							<Header {...siteHeaderProps} />
+							<Header {...navProps} />
 							<div id="app_view_container">
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div id="side_bar" >
@@ -120,10 +135,13 @@ class AppComponent extends Component {
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>
-									<Routes
-										{...p}
-										setSidebarAllowed={this.setSidebarAllowed}
-									/>
+									<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
+										<Routes
+											{...p}
+											setSidebarAllowed={this.setSidebarAllowed}
+										/>
+									</Hammer>
+									<Footer {...navProps} />
 								</div>
 							</div>
 						</div>
@@ -136,7 +154,7 @@ class AppComponent extends Component {
 						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
 							Chat
 						</button>
-						<Footer />
+						<Footer {...navProps} />
 					</div>
 				}
 			</main>

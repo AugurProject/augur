@@ -3,19 +3,17 @@
 	flex: 1;
 	flex-direction: column;
 
-	@media @breakpoint-1 {
+	@media @breakpoint-mobile {
+		.market-group:first-child > .order-book {
+			display: none;
+		}
+
 		.market-group:last-child .outcome-trade {
 			display: none;
 		}
 
 		.market-group {
 			flex-direction: column;
-		}
-	}
-
-	@media @breakpoint-2, @breakpoint-3 {
-		.market-group:first-child .outcome-trade {
-			display: none;
 		}
 	}
 }

@@ -110,7 +110,8 @@ export default class Routes extends Component {
 					numPendingReports: p.marketsTotals.numPendingReports,
 					isTradeCommitLocked: p.tradeCommitLock.isLocked,
 					scalarShareDenomination: p.scalarShareDenomination,
-					marketReportingNavItems: p.marketReportingNavItems
+					marketReportingNavItems: p.marketReportingNavItems,
+					outcomeTradeNavItems: p.outcomeTradeNavItems
 				};
 				viewComponent = <MarketView {...viewProps} />;
 				break;

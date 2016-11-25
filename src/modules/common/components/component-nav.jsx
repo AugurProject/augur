@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import Link from 'modules/link/components/link';
 
@@ -7,7 +8,7 @@ const ComponentNav = p => (
 		{Object.keys(p.navItems || {}).map(nav => (
 			<Link
 				key={nav}
-				className={`${p.selectedNav === nav && 'selected'}`}
+				className={classNames({ selected: p.selectedNav === nav, 'mobile-only': p.navItems[nav].mobileOnly })}
 				onClick={() => { p.updateSelectedNav(nav); }}
 			>
 				<li className={`${p.selectedNav === nav && 'selected'}`} >

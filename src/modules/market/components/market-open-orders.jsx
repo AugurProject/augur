@@ -52,8 +52,8 @@ export default class MarketOpenOrders extends Component {
 							<span>Price</span>
 							<span>Action</span>
 						</div>
-						{
-							(p.outcomes || []).map((outcome, index) => {
+						<div className="market-content-scrollable" >
+							{(p.outcomes || []).map((outcome, index) => {
 								const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded');
 
 								return (
@@ -68,8 +68,8 @@ export default class MarketOpenOrders extends Component {
 										selectedShareDenomination={p.selectedShareDenomination}
 									/>
 								);
-							})
-						}
+							})}
+						</div>
 					</div>
 				}
 			</article>

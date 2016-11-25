@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import MarketHeader from 'modules/market/components/market-header';
 import ComponentNav from 'modules/common/components/component-nav';
 import Outcomes from 'modules/outcomes/components/outcomes';
+import OrderBook from 'modules/order-book/components/order-book';
 import MarketChart from 'modules/market/components/market-chart';
 import MarketDetails from 'modules/market/components/market-details';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
 
 export default class MarketData extends Component {
 	constructor(props) {
@@ -47,6 +48,23 @@ export default class MarketData extends Component {
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						updateSelectedOutcome={p.updateSelectedOutcome}
+						selectedShareDenomination={p.selectedShareDenomination}
+						tradeSummary={p.tradeSummary}
+						submitTrade={p.submitTrade}
+						selectedTradeSide={p.selectedTradeSide}
+						updateSelectedTradeSide={p.updateSelectedTradeSide}
+						outcomeTradeNavItems={p.outcomeTradeNavItems}
+						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+						minLimitPrice={p.minLimitPrice}
+						maxLimitPrice={p.maxLimitPrice}
+					/>
+				}
+				{s.selectedNav === MARKET_DATA_ORDERS &&
+					<OrderBook
+						marketType={p.marketType}
+						outcome={p.selectedOutcome}
+						selectedTradeSide={p.selectedTradeSide}
+						updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
 						selectedShareDenomination={p.selectedShareDenomination}
 					/>
 				}
