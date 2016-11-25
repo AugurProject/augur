@@ -162,6 +162,9 @@ module.exports = {
 
     penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
         var self = this;
+        if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
+        }
         self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
             lastPeriodPenalized = parseInt(lastPeriodPenalized);
             if (self.options.debug.reporting) {
