@@ -37,6 +37,7 @@ import marketDataNavItems from './modules/market/selectors/market-data-nav-items
 import marketUserDataNavItems from './modules/market/selectors/market-user-data-nav-items';
 import scalarShareDenomination from './modules/market/selectors/scalar-share-denomination';
 import marketReportingNavItems from './modules/market/selectors/market-reporting-nav-items';
+import outcomeTradeNavItems from './modules/outcome/selectors/outcome-trade-nav-items';
 
 const selectors = {
 	activeView,
@@ -77,7 +78,8 @@ const selectors = {
 	marketDataNavItems,
 	marketUserDataNavItems,
 	scalarShareDenomination,
-	marketReportingNavItems
+	marketReportingNavItems,
+	outcomeTradeNavItems
 };
 
 module.exports = {};
