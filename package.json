@@ -1,18 +1,15 @@
 {
   "name": "augur.js",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --core --create --markets --trading --reporting",
-    "unit-test": "scripts/runtests.sh --unit",
-    "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --trading --reporting --spec",
-    "reporting-sequence": "AUGURJS_INTEGRATION_TESTS=true mocha test/reporting/sequence.js -R spec",
+    "test": "scripts/runtests.sh --core --create --trading --reporting",
+    "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
+    "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/create test/markets test/trading test/reporting --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "setup": "scripts/setup.js --reset --faucets",
-    "build": "gulp build",
-    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect"
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi"
   },
   "dependencies": {
     "async": "1.5.2",
@@ -23,14 +20,14 @@
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "1.2.42",
+    "ethereumjs-connect": "1.2.43",
     "ethereumjs-tx": "1.1.1",
     "ethereumjs-util": "4.4.1",
-    "ethrpc": "2.1.5",
-    "keythereum": "0.3.0",
+    "ethrpc": "2.1.6",
+    "keythereum": "0.3.1",
     "locks": "0.2.2",
-    "node-uuid": "1.4.7",
-    "request": "2.74.0"
+    "request": "2.74.0",
+    "uuid": "3.0.0"
   },
   "engines": {
     "node": ">= 4.2.x"

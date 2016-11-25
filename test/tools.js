@@ -497,7 +497,7 @@ module.exports = {
 
     setup: function (augur, args, rpcinfo) {
         var defaulthost, ipcpath, wsUrl;
-        if (NODE_JS && process.env.AUGURJS_INTEGRATION_TESTS) {
+        if (NODE_JS) {
             defaulthost = process.env.GETH_HTTP || "http://127.0.0.1:8545";
             ipcpath = process.env.GETH_IPC;
             wsUrl = process.env.GETH_WS || "ws://127.0.0.1:8546";

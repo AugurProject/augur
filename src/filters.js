@@ -369,7 +369,6 @@ module.exports = function () {
                 if (err) console.error(err);
                 augur.rpc.customSubscriptionCallback = cb;
                 augur.rpc.resetCustomSubscription = function () {
-                    console.log("re-listening:", augur.rpc.customSubscriptionCallback);
                     self.listen(augur.rpc.customSubscriptionCallback);
                 }.bind(self);
                 if (utils.is_function(setup_complete)) setup_complete(self.filter);
