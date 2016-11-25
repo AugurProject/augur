@@ -52,7 +52,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			numComplete: 3,
 			numWorkingAndPending: 1,
 			numTotal: 4,
-			title: '1 Transaction Working',
+			title: 'Transaction Working',
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
