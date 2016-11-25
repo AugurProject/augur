@@ -21,8 +21,4 @@ describe('modules/outcome/selectors/outcome-trade-nav-items.js', () => {
 	it('should return the expected object', () => {
 		assert.deepEqual(actual, expected, `'outcomeTradeNavItems' did not return the expected object`);
 	});
-
-	it('should delivery the correct object shape to the components', () => {
-		assertions.outcomeTradeNavItems(actual);
-	});
 });
