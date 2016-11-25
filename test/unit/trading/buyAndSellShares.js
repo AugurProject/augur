@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var sinon = require("sinon");
-var augur = require("../../src");
+var augur = require("../../../src");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 

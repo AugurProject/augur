@@ -3,9 +3,8 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var tools = require("../tools");
-// var augur = tools.setup(require("../../src"), process.argv.slice(2));
-var augur = require('../../src');
+var tools = require("../../tools");
+var augur = require('../../../src');
 
 describe("calculatePriceDepth", function () {
 // 4 tests total
