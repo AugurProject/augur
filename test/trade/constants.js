@@ -474,6 +474,37 @@ export const tradeConstOrderBooks = {
 		}
 	}
 };
+// lifted directly from augur.js with a slight change to use abi.bignum instead of BigNumber
+const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
+		if (!orders) return [];
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
+		return Object.keys(orders)
+				.map(function (orderId) {
+						return orders[orderId];
+				})
+				.filter(function (order) {
+						var isMatchingPrice;
+						if (isMarketOrder) {
+								isMatchingPrice = true;
+						} else {
+								isMatchingPrice = traderOrderType === "buy" ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice);
+						}
+						return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+				})
+				.sort(function compareOrdersByPrice(order1, order2) {
+						return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+				});
+};
+// direct copy of calculate-trade-ids helper function but without calling augur.js
+export const stubCalculateBuyTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
+	const orders = orderBooks[marketID] && orderBooks[marketID].sell || {};
+	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id);
+}
+// direct copy of calculate-trade-ids helper function but without calling augur.js
+export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
+	const orders = orderBooks[marketID] && orderBooks[marketID].buy || {};
+	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
+}
 
 export const stubAddBidTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
 	const transaction = {

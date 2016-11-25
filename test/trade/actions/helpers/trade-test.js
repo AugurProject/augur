@@ -663,7 +663,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			assert.deepEqual(store.getActions(), [{ type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }, { type: 'LOAD_BIDS_ASKS' }], `Did dispatch actions when it shouldn't have`);
 		});
 
-		it.skip('should handle a trade that sends in both numShares and remainingEth', () => {
+		it.skip('should handle a trade that sends in both numShares and totalEthWithFee', () => {
 			// not sure how this should be handled yet...
 			helper.trade('testBinaryMarketID', '2', '10', '20.02', 'taker1', () => ['orderID1', 'orderID2', 'orderID3', 'orderID4', 'orderID5', 'orderID6'], store.dispatch, mockCBStatus, mockCB);
 

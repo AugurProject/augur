@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
@@ -76,6 +76,9 @@ describe('modules/trade/actions/process-buy.js', () => {
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
 	sinon.stub(mockAddBidTransaction, 'addBidTransaction', stubAddBidTransaction);
 
+	const mockCalculateTradeIDs = { calculateBuyTradeIDs: () => {} };
+	sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
+
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
@@ -93,7 +96,8 @@ describe('modules/trade/actions/process-buy.js', () => {
 		'../../transactions/actions/add-bid-transaction': mockAddBidTransaction,
 		'../../../modules/my-positions/actions/load-account-trades': mockLoadAccountTrades,
 		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction,
-		'../../bids-asks/actions/load-bids-asks': mockLoadBidAsks
+		'../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
+		'../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs
 	});
 
 	beforeEach(() => {

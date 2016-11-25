@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction } from '../constants';
+import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
@@ -100,6 +100,13 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	const mockAddShortSellTransaction = { addShortSellTransaction: () => {} };
 	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', stubAddShortSellTransaction);
 
+	const mockCalculateTradeIDs = {
+		calculateBuyTradeIDs: () => {},
+		calculateSellTradeIDs: () => {}
+	};
+	sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
+	sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
+
 	const mockSelectTransactionsLink = { selectTransactionsLink: () => {} };
 	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', (dispatch) => {
 		return { onClick: () => dispatch({ type: 'UPDATE_URL', url: 'transactions-link' }) };
@@ -130,6 +137,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		'../../transactions/actions/add-ask-transaction': mockAddAskTransaction,
 		'../../transactions/actions/add-short-ask-transaction': mockAddShortAskTransaction,
 		'../../transactions/actions/add-short-sell-transaction': mockAddShortSellTransaction,
+		'../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs
 	});
 
 	beforeEach(() => {
