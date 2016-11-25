@@ -4,6 +4,7 @@ import proxyquire from 'proxyquire';
 import { abi } from '../../../../src/services/augurjs';
 
 describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
+	proxyquire.noPreserveCache();
 	const mockAugur = { augur: { filterByPriceAndOutcomeAndUserSortByPrice: () => {} } };
 
 	sinon.stub(mockAugur.augur, 'filterByPriceAndOutcomeAndUserSortByPrice', (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
