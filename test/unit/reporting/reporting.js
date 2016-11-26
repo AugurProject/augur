@@ -332,7 +332,7 @@ describe("penaltyCatchUp", function () {
                     method: "getNumReportsActual",
                     params: [branch, period, sender]
                 });
-                callback(state.penalized[branch][period].length.toString());
+                callback(state.numReportsActual[branch].toString());
             };
             augur.getFeesCollected = function (branch, sender, period, callback) {
                 sequence.push({
@@ -504,7 +504,7 @@ describe("penaltyCatchUp", function () {
             numReportsActual: {
                 "0xb1": {
                     "6": "3",
-                    "7": "0",
+                    "7": "3",
                     "8": "0",
                     "9": "0"
                 }
@@ -549,7 +549,7 @@ describe("penaltyCatchUp", function () {
                 params: ["0xb1", "0xb0b", 6]
             }, {
                 method: "getNumReportsActual",
-                params: ["0xb1", 6, "0xb0b"]
+                params: ["0xb1", 7, "0xb0b"]
             }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
@@ -677,7 +677,7 @@ describe("penaltyCatchUp", function () {
                 params: ["0xb1", "0xb0b", 6]
             }, {
                 method: "getNumReportsActual",
-                params: ["0xb1", 6, "0xb0b"]
+                params: ["0xb1", 7, "0xb0b"]
             }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
@@ -781,7 +781,7 @@ describe("penaltyCatchUp", function () {
                 params: ["0xb1", "0xb0b", 6]
             }, {
                 method: "getNumReportsActual",
-                params: ["0xb1", 6, "0xb0b"]
+                params: ["0xb1", 7, "0xb0b"]
             }, {
                 method: "penalizationCatchup",
                 params: {
