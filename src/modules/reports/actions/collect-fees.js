@@ -6,11 +6,18 @@ export function collectFees(cb) {
 		const callback = cb || ((e) => console.log('collectFees:', e));
 		const { branch, loginAccount } = getState();
 		if (branch.isReportRevealPhase) {
+			console.log('collectFees params:', {
+				branch: branch.id,
+				sender: loginAccount.address,
+				periodLength: branch.periodLength
+			});
 			augur.collectFees({
 				branch: branch.id,
 				sender: loginAccount.address,
 				periodLength: branch.periodLength,
-				onSent: () => {},
+				onSent: (res) => {
+					console.log('collectFees sent:', res);
+				},
 				onSuccess: (res) => {
 					console.log('collectFees success:', res.callReturn);
 					dispatch(updateAssets());
