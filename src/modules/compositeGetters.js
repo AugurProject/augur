@@ -281,7 +281,7 @@ module.exports = {
                     this.decodeTag(marketsArray[shift + 7])
                 ],
                 endDate: parseInt(marketsArray[shift + 8], 16),
-                eventID: marketsArray[shift + 10],
+                eventID: abi.format_int256(marketsArray[shift + 10]),
                 minValue: minValue,
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,

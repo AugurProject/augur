@@ -17116,6 +17116,7 @@ module.exports={
           "branch"
         ], 
         "method": "getEventForkedOver", 
+        "parser": "parseMarket", 
         "returns": "int256", 
         "signature": [
           "int256"
@@ -17148,6 +17149,7 @@ module.exports={
           "branch"
         ], 
         "method": "getMarketsInBranch", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -17680,6 +17682,7 @@ module.exports={
           "reporter"
         ], 
         "method": "getEventsWithSubmittedReport", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -17718,6 +17721,7 @@ module.exports={
           "last"
         ], 
         "method": "getMarketsCreatedByMarketCreator", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -19050,6 +19054,7 @@ module.exports={
           "eventIndex"
         ], 
         "method": "getEvent", 
+        "parser": "parseMarket", 
         "returns": "hash", 
         "signature": [
           "int256", 
@@ -19075,6 +19080,7 @@ module.exports={
           "expDateIndex"
         ], 
         "method": "getEvents", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256", 
@@ -19089,6 +19095,7 @@ module.exports={
           "end"
         ], 
         "method": "getEventsRange", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -20093,6 +20100,7 @@ module.exports={
           "index"
         ], 
         "method": "getMarketEvent", 
+        "parser": "parseMarket", 
         "returns": "int256", 
         "signature": [
           "int256", 
@@ -20104,6 +20112,7 @@ module.exports={
           "market"
         ], 
         "method": "getMarketEvents", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -20916,6 +20925,7 @@ module.exports={
           "start"
         ], 
         "method": "getEventsToReportOn", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -42822,7 +42832,7 @@ module.exports = function () {
                     console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
-                if (augur.rpc.debug.broadcast) {
+                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
                     console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
                 }
                 var etx = new EthTx(packaged);
@@ -42887,7 +42897,12 @@ module.exports = function () {
             var self = this;
 
             // if this is just a call, use ethrpc's regular invoke method
-            if (!payload.send) return augur.rpc.fire(payload, cb);
+            if (!payload.send) {
+                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                    console.log("[augur.js] eth_call payload:", payload);
+                }
+                return augur.rpc.fire(payload, cb);
+            }
 
             cb = cb || utils.pass;
             if (!this.account.address || !this.account.privateKey) {
@@ -42903,8 +42918,8 @@ module.exports = function () {
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
-            if (augur.rpc.debug.broadcast) {
-                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
+            if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                console.log("[augur.js] payload:", payload);
             }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
                 packaged.gasPrice = payload.gasPrice;
@@ -43965,7 +43980,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.10";
+    this.version = "3.1.11";
 
     this.options = {
         debug: {
@@ -44243,7 +44258,7 @@ module.exports = {
                 proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
             }
             var event = {
-                id: rawInfo[index],
+                id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
@@ -44636,7 +44651,7 @@ module.exports = {
 
     collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
-        if (branch && branch.branch) {
+        if (branch && branch.constructor === Object) {
             sender = branch.sender;
             periodLength = branch.periodLength;
             onSent = branch.onSent;
@@ -44654,13 +44669,10 @@ module.exports = {
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            if (self.options.debug.reporting) {
-                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            }
-            return self.transact(tx, onSent, utils.compose(function (res, cb) {
-                if (self.options.debug.reporting) {
+            var prepare = function (res, cb) {
+                // if (self.options.debug.reporting) {
                     console.log("collectFees success:", JSON.stringify(res, null, 2));
-                }
+                // }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -44680,7 +44692,11 @@ module.exports = {
                         });
                     });
                 });
-            }, onSuccess), onFailed);
+            };
+            // if (self.options.debug.reporting) {
+                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            // }
+            return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
         });
     }
 };
@@ -44969,7 +44985,7 @@ module.exports = {
                     this.decodeTag(marketsArray[shift + 7])
                 ],
                 endDate: parseInt(marketsArray[shift + 8], 16),
-                eventID: marketsArray[shift + 10],
+                eventID: abi.format_int256(marketsArray[shift + 10]),
                 minValue: minValue,
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,

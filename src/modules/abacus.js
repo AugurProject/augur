@@ -221,7 +221,7 @@ module.exports = {
                 proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
             }
             var event = {
-                id: rawInfo[index],
+                id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
