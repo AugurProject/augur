@@ -65,7 +65,9 @@ describe("Reporting sequence", function () {
         events = {};
         sender = augur.from;
 
-        before("Setup/first period", function (done) {
+        after(function () { if (callback) callback(); });
+
+        it("Setup/first period", function (done) {
             this.timeout(tools.TIMEOUT*100);
             augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             tools.top_up(augur, constants.DEFAULT_BRANCH_ID, unlockable, password, function (err, unlocked) {
@@ -150,8 +152,6 @@ describe("Reporting sequence", function () {
                 }
             });
         });
-
-        after(function () { if (callback) callback(); });
 
         describe("Second period (phase 1)", function () {
             before("Wait for second period to start", function (done) {
