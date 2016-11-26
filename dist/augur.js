@@ -43980,7 +43980,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.11";
+    this.version = "3.1.12";
 
     this.options = {
         debug: {
@@ -47301,7 +47301,7 @@ module.exports = {
                 if (!feesCollected || feesCollected.error) {
                     return callback(feesCollected || "couldn't get fees collected");
                 }
-                self.getNumReportsActual(branch, periodToCheck - 1, sender, function (numReportsActual) {
+                self.getNumReportsActual(branch, periodToCheck, sender, function (numReportsActual) {
                     if (!numReportsActual || numReportsActual.error) {
                         return callback(numReportsActual || "couldn't get num previous period reports");
                     }

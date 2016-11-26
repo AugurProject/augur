@@ -184,7 +184,7 @@ module.exports = {
                 if (!feesCollected || feesCollected.error) {
                     return callback(feesCollected || "couldn't get fees collected");
                 }
-                self.getNumReportsActual(branch, periodToCheck - 1, sender, function (numReportsActual) {
+                self.getNumReportsActual(branch, periodToCheck, sender, function (numReportsActual) {
                     if (!numReportsActual || numReportsActual.error) {
                         return callback(numReportsActual || "couldn't get num previous period reports");
                     }
