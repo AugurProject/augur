@@ -1,5 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { updateBranch } from '../../app/actions/update-branch';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
@@ -28,13 +29,16 @@ export function checkPeriod(unlock, cb) {
 			console.log('checkPeriod tracker:', tracker);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
-				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
+				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod, marketsClosed) => {
 					console.log('checkPeriod complete:', err, reportPeriod);
 					if (err) {
 						tracker.checkPeriodLock = false;
 						return cb && cb(err);
 					}
 					dispatch(updateBranch({ reportPeriod }));
+					if (marketsClosed && marketsClosed.length) {
+						dispatch(loadMarketsInfo(marketsClosed));
+					}
 					dispatch(loadEventsWithSubmittedReport());
 					dispatch(clearOldReports());
 					dispatch(loadReports((err) => {
