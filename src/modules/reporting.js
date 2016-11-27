@@ -117,12 +117,12 @@ module.exports = {
             if (self.options.debug.reporting) {
                 console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, events) {
+            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, marketsClosed) {
                 if (self.options.debug.reporting) {
-                    console.log("[checkPeriod] penaltyCatchUp:", err, events);
+                    console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
                 }
                 if (err) return callback(err);
-                callback(null, votePeriod);
+                callback(null, votePeriod, marketsClosed);
             });
         });
     },
@@ -225,13 +225,13 @@ module.exports = {
                                     if (self.options.debug.reporting) {
                                         console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                                     }
-                                    callback(null, events);
+                                    callback(null);
                                 },
                                 onFailed: function (e) {
                                     console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                                    callback(null, events);
+                                    callback(null);
                                     // if (e.error === -32000) {
-                                    //     return callback(null, events);
+                                    //     return callback(null);
                                     // }
                                     // callback(e);
                                 }
@@ -240,6 +240,7 @@ module.exports = {
                         if (self.options.debug.reporting) {
                             console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
                         }
+                        var marketsClosed = [];
                         async.eachSeries(events, function (event, nextEvent) {
                             self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
                                 if (self.options.debug.reporting) {
@@ -257,15 +258,18 @@ module.exports = {
                                         if (self.options.debug.reporting) {
                                             console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                         }
-                                        self.getNumMarkets(event, function (numMarkets) {
-                                            if (!numMarkets || numMarkets.error) {
-                                                return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
-                                            }
-                                            if (parseInt(numMarkets) === 1) {
-                                                return nextEvent(null);
-                                            }
-                                            self.closeExtraMarkets(branch, event, sender, nextEvent);
-                                        });
+                                        // self.getNumMarkets(event, function (numMarkets) {
+                                        //     if (!numMarkets || numMarkets.error) {
+                                        //         return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                        //     }
+                                        //     if (parseInt(numMarkets) === 1) {
+                                        //         return nextEvent(null);
+                                        //     }
+                                            self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                                                if (err) return nextEvent(err);
+                                                marketsClosed = marketsClosed.concat(markets);
+                                            });
+                                        // });
                                     },
                                     onFailed: function (e) {
                                         console.error("[penaltyCatchUp] penalizeWrong error:", e);
@@ -279,7 +283,7 @@ module.exports = {
                             });
                         }, function (e) {
                             if (e) return callback(e);
-                            callback(null, events);
+                            callback(null, marketsClosed);
                         });
                     });
                 });
@@ -293,10 +297,13 @@ module.exports = {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
         }
         self.getMarkets(event, function (markets) {
-            if (!markets) return callback("no markets found for " + event);
+            if (!markets || !markets.length) {
+                return callback("no markets found for " + event);
+            }
             if (markets && markets.error) return callback(markets);
-            if (markets.length <= 1) return callback(null);
-            async.eachSeries(markets.slice(1), function (market, nextMarket) {
+            // if (markets.length <= 1) return callback(null);
+            // async.eachSeries(markets.slice(1), function (market, nextMarket) {
+            async.eachSeries(markets, function (market, nextMarket) {
                 self.closeMarket({
                     branch: branch,
                     market: market,
@@ -317,7 +324,10 @@ module.exports = {
                         nextMarket(e);
                     }
                 });
-            }, callback);
+            }, function (e) {
+                if (e) return callback(e);
+                callback(null, markets);
+            });
         });
     },
 

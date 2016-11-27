@@ -38,11 +38,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.12";
+    this.version = "3.1.13";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
