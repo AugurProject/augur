@@ -53,6 +53,51 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 26, 2016</h3>
+			<ol>
+				<li>
+					Fixed new-branch first-reporting-cycle edge case on collectFees contract: collectFees method now always returns a value.
+				</li>
+				<li>
+					Renewed augur.net wildcard SSL certificate (for eth2/3/9000 servers).
+				</li>
+				<li>
+					Fixed trade page warning about minLimitPrice/maxLimitPrice types.
+				</li>
+			</ol>
+			<h3>November 25, 2016</h3>
+			<ol>
+				<li>
+					Event IDs retrieved during composite lookups (getMarketInfo, batchGetMarketInfo, and/or getMarketsInfo) are now uniformly formatted.
+				</li>
+				<li>
+					Added market/event ID parser method to the static API data of several augur.js wrappers.
+				</li>
+				<li>
+					Combined first and second reporting test sequences into one method.
+				</li>
+				<li>
+					Default HTTP and websocket hosted node URLs are now attached to the ethrpc (augur.rpc) object / editable by the consumer.
+				</li>
+			</ol>
+			<h3>November 24, 2016</h3>
+			<ol>
+				<li>
+					Restructured augur.js tests: moved unit tests and integration tests to separate folders.
+				</li>
+				<li>
+					Updated UUID versions and package name in keythereum and augur.js.
+				</li>
+				<li>
+					Updated middleware Travis CI builds to only run on updates to the master branch.
+				</li>
+				<li>
+					Various fixes to augur UI unit tests.
+				</li>
+				<li>
+					Merged Sprinkle&#39;s mega-PRs!  (These include fixes/improvements made over the past week.)
+				</li>
+			</ol>
 			<h3>November 23, 2016</h3>
 			<ol>
 				<li>

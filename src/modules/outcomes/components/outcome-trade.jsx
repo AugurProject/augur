@@ -183,8 +183,8 @@ OutcomeTrade.propTypes = {
 	selectedShareDenomination: PropTypes.string,
 	updateSelectedTradeSide: PropTypes.func,
 	marketType: PropTypes.string,
-	minLimitPrice: PropTypes.number,
-	maxLimitPrice: PropTypes.number
+	minLimitPrice: PropTypes.string,
+	maxLimitPrice: PropTypes.string
 };
 
 function denominateShares(shares, fromDenomination, toDenomination) {
