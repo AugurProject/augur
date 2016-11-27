@@ -23,6 +23,8 @@ ex.connect = function connect(env, cb) {
 	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
 	augur.rpc.debug.tx = false;
+	if (env.gethHttpURL) augur.rpc.DEFAULT_HOSTED_NODES = [env.gethHttpURL];
+	if (env.gethWebsocketsURL) augur.rpc.DEFAULT_HOSTED_WEBSOCKET = env.gethWebsocketsURL;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
