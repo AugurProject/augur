@@ -53,6 +53,24 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 27, 2016</h3>
+			<ol>
+				<li>
+					Added answer-in-description reporting test markets for first 4 cycles on root branch.  (Example description: &quot;Binary Reporting Test Market (Cycle 1): correct answer is Yes&quot;)
+				</li>
+				<li>
+					New testnet (Ropsten) genesis file is now bundled with augur.js.
+				</li>
+				<li>
+					Fixed proportion-correct display on closed-market detail page and My Reports page.
+				</li>
+				<li>
+					Fixed market result outcome name lookup for closed markets.
+				</li>
+				<li>
+					The augur.js penaltyCatchUp sequence now calls closeMarket for all markets associated with the penalized event (instead of just extra markets beyond the first).  This may be a temporary fix, depending on how penalizeWrong on-contract method is changed.
+				</li>
+			</ol>
 			<h3>November 26, 2016</h3>
 			<ol>
 				<li>
