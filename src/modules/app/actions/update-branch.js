@@ -35,40 +35,36 @@ export function reportingCycle(periodLength) {
 }
 
 // Synchronize front-end branch state with blockchain branch state.
-export function syncBranch(callback) {
+export function syncBranch(cb) {
 	return (dispatch, getState) => {
-		const { branch } = getState();
+		const callback = cb || ((e) => e && console.log('syncBranch:', e));
+		const { branch, loginAccount } = getState();
+		const reportingCycleInfo = reportingCycle(branch.periodLength);
+		const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
+		dispatch(updateBranch({ ...reportingCycleInfo }));
+		if (branch.reportPeriod && (!loginAccount.address || !isChangedReportPhase)) {
+			return callback(null);
+		}
+		console.log('syncBranch: report phase changed');
 		augur.getVotePeriod(branch.id, (period) => {
-			if (period && period.error) {
-				if (callback) return callback(period || 'could not look up period');
-			} else {
-				const reportPeriod = parseInt(period, 10);
-				const reportingCycleInfo = reportingCycle(branch.periodLength);
-				dispatch(updateBranch({ reportPeriod, ...reportingCycleInfo }));
-				const expectedReportPeriod = reportingCycleInfo.currentPeriod - 1;
-				const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
-				const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
-				const { loginAccount } = getState();
-				if (loginAccount.address) dispatch(claimProceeds());
-
-				// if not logged in, can't increment period
-				// if report period is caught up and we're not in a new
-				// report phase, callback and exit
-				if (!loginAccount.address || (isCaughtUpReportPeriod && !isChangedReportPhase)) {
-					if (callback) return callback(null);
-
-				// check if period needs to be incremented / penalizeWrong
-				// needs to be called
-				} else {
-					dispatch(checkPeriod(isChangedReportPhase, (err) => {
-						if (err) {
-							if (callback) return callback(err);
-						} else {
-							if (callback) return callback(null);
-						}
-					}));
-				}
+			if (!period || period.error) {
+				return callback(period || 'could not look up report period');
 			}
+			const reportPeriod = parseInt(period, 10);
+			dispatch(updateBranch({ reportPeriod }));
+			const expectedReportPeriod = reportingCycleInfo.currentPeriod - 1;
+			const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
+			if (loginAccount.address) dispatch(claimProceeds());
+
+			// if report period is caught up, callback and exit
+			if (isCaughtUpReportPeriod) return callback(null);
+
+			// check if period needs to be incremented / penalizeWrong
+			// needs to be called
+			dispatch(checkPeriod(true, (err) => {
+				if (err) return callback(err);
+				callback(null);
+			}));
 		});
 	};
 }

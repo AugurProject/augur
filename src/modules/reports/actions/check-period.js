@@ -16,7 +16,9 @@ const tracker = {
 
 export function checkPeriod(unlock, cb) {
 	return (dispatch, getState) => {
+		const callback = cb || ((e) => e && console.log('checkPeriod:', e));
 		const { loginAccount, branch } = getState();
+		console.log('checkPeriod:', unlock, tracker);
 		if (branch.id && loginAccount.address && loginAccount.rep !== '0') {
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
 			if (unlock || currentPeriod > tracker.notSoCurrentPeriod) {
@@ -26,14 +28,13 @@ export function checkPeriod(unlock, cb) {
 				tracker.checkPeriodLock = false;
 				dispatch(clearOldReports());
 			}
-			console.log('checkPeriod tracker:', tracker);
 			if (!tracker.checkPeriodLock) {
 				tracker.checkPeriodLock = true;
 				augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod, marketsClosed) => {
-					console.log('checkPeriod complete:', err, reportPeriod);
+					console.log('checkPeriod complete:', err, reportPeriod, marketsClosed);
 					if (err) {
 						tracker.checkPeriodLock = false;
-						return cb && cb(err);
+						return callback(err);
 					}
 					dispatch(updateBranch({ reportPeriod }));
 					if (marketsClosed && marketsClosed.length) {
@@ -44,7 +45,7 @@ export function checkPeriod(unlock, cb) {
 					dispatch(loadReports((err) => {
 						if (err) {
 							tracker.checkPeriodLock = false;
-							return cb && cb(err);
+							return callback(err);
 						}
 						if (branch.isReportRevealPhase) {
 							if (!tracker.reportsRevealed) {
@@ -72,7 +73,7 @@ export function checkPeriod(unlock, cb) {
 						} else {
 							tracker.checkPeriodLock = false;
 						}
-						cb && cb(null);
+						callback(null);
 					}));
 				});
 			}
