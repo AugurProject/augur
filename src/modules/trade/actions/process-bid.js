@@ -7,7 +7,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
-		if (!transactionID) return console.error('processBid has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+		if (!transactionID) return console.error('processBid failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 		if (!limitPrice || !totalEthWithFee) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
@@ -15,10 +15,10 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			}));
 		}
 		if (!marketID || !outcomeID || !totalEthWithFee || !tradingFeesEth || !gasFeesRealEth || !numShares) {
-			console.error('processAsk has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+			console.error('processBid has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
-				message: 'There was an issue processesing the bid trade.'
+				message: 'There was an issue processing your bid order.'
 			}));
 		}
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
