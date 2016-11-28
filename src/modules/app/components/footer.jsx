@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Hammer from 'react-hammerjs';
 
 import Nav from 'modules/app/components/nav';
@@ -11,7 +11,8 @@ export default class Footer extends Component {
 
 		this.state = {
 			isFooterCollapsed: true,
-			verticalOffset: 0
+			verticalOffset: 0,
+			footerHeight: 0
 		};
 
 		this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
@@ -28,6 +29,10 @@ export default class Footer extends Component {
 	componentDidUpdate(pP, pS) {
 		if (pS.isFooterCollapsed !== this.state.isFooterCollapsed) {
 			this.slideFooter();
+		}
+
+		if (pS.footerHeight !== this.state.footerHeight && this.props.updateFooterHeight) {
+			this.props.updateFooterHeight(this.state.footerHeight);
 		}
 	}
 
@@ -59,12 +64,21 @@ export default class Footer extends Component {
 
 		if (navHeight) { // navs are present
 			if (s.isFooterCollapsed) { // collapse
-				this.setState({ verticalOffset: -(footerHeight - togglerHeight - navHeight) });
+				this.setState({
+					verticalOffset: -(footerHeight - togglerHeight - navHeight),
+					footerHeight: navHeight
+				});
 			} else { // expand
-				this.setState({ verticalOffset: 0 });
+				this.setState({
+					verticalOffset: 0,
+					footerHeight: footerHeight - togglerHeight
+				});
 			}
 		} else { // navs are absent
-			this.setState({ verticalOffset: 0 });
+			this.setState({
+				verticalOffset: 0,
+				footerHeight: footerHeight - togglerHeight
+			});
 		}
 	}
 
@@ -102,3 +116,7 @@ export default class Footer extends Component {
 		);
 	}
 }
+
+Footer.propTypes = {
+	updateFooterHeight: PropTypes.func
+};

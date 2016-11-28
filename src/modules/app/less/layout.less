@@ -46,6 +46,12 @@ main,
 
 			.core-stats-bumper {
 				flex: 1;
+
+				@media @breakpoint-mobile {
+					& {
+						display: none;
+					}
+				}
 			}
 
 			.core-stats {
@@ -75,6 +81,11 @@ main,
 			#side_bar {
 				display: flex;
 				flex: 1;
+
+				@media @breakpoint-mobile {
+					z-index: @mask-above;
+					position: fixed;
+				}
 			}
 
 			#app_view {

@@ -1,0 +1,12 @@
+.side-bar-mask {
+	display: none;
+	position: fixed;
+	right: 0;
+	left: 0;
+	z-index: @mask;
+	background-color: @color-mask-background;
+
+	@media @breakpoint-mobile {
+		display: block;
+	}
+}

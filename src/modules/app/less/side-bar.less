@@ -4,6 +4,20 @@
 	color: @color-text-light-muted;
 	flex: 1;
 
+	@media @breakpoint-mobile {
+		position: fixed;
+		overflow-y: auto;
+	}
+
+	footer {
+		display: none;
+
+		@media @breakpoint-mobile {
+			display: flex;
+			visibility: hidden;
+		}
+	}
+
 	h3 {
 
 		.border(true, @border-bottom);

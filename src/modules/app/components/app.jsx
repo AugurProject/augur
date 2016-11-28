@@ -9,6 +9,7 @@ import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
 import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
+import SidebarMask from 'modules/common/components/side-bar-mask';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
@@ -27,7 +28,9 @@ class AppComponent extends Component {
 			isSideBarCollapsed: false,
 			isChatCollapsed: true,
 			doScrollTop: false,
-			currentRoute: null
+			currentRoute: null,
+			headerHeight: 0,
+			footerHeight: 0
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -35,6 +38,8 @@ class AppComponent extends Component {
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
 		this.handleSidebarSwipe = this.handleSidebarSwipe.bind(this);
+		this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
+		this.updateFooterHeight = this.updateFooterHeight.bind(this);
 	}
 
 	componentDidMount() {
@@ -44,11 +49,11 @@ class AppComponent extends Component {
 		}
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(pP, pS) {
 		handleScrollTop(this.props.url);
 	}
 
-	// Sidebar display related methods
+	// Sidebar
 	setSidebarAllowed(isSideBarAllowed) {
 		this.setState({ isSideBarAllowed });
 	}
@@ -56,7 +61,16 @@ class AppComponent extends Component {
 		this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
 	}
 
-	// chat display
+	//	Bounding Element Dimentions
+	//	NOTE -- used by mobile side-bar
+	updateHeaderHeight(headerHeight) {
+		this.setState({ headerHeight });
+	}
+	updateFooterHeight(footerHeight) {
+		this.setState({ footerHeight });
+	}
+
+	// Chat
 	toggleChat() {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
@@ -99,7 +113,9 @@ class AppComponent extends Component {
 		};
 
 		const sideBarProps = {
-			tags: p.tags
+			tags: p.tags,
+			headerHeight: s.headerHeight,
+			footerHeight: s.footerHeight
 		};
 
 		// NOTE -- A few implementation details:
@@ -110,8 +126,19 @@ class AppComponent extends Component {
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
 					<div id="app_container" >
+						{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+							<SidebarMask
+								style={{
+									top: s.headerHeight,
+									bottom: s.footerHeight
+								}}
+							/>
+						}
 						<div id="app_header">
-							<Header {...navProps} />
+							<Header
+								{...navProps}
+								updateHeaderHeight={this.updateHeaderHeight}
+							/>
 							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
@@ -130,6 +157,9 @@ class AppComponent extends Component {
 									</div>
 								}
 								<div id="app_view">
+									{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+										<div className="core-stats-bumper" />
+									}
 									<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
 										{p.loginAccount && p.loginAccount.id &&
 											<CoreStats coreStats={p.coreStats} />
@@ -154,7 +184,10 @@ class AppComponent extends Component {
 						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
 							Chat
 						</button>
-						<Footer {...navProps} />
+						<Footer
+							{...navProps}
+							updateFooterHeight={this.updateFooterHeight}
+						/>
 					</div>
 				}
 			</main>
