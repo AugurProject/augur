@@ -53,7 +53,7 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
-			<h3>November 27, 2016</h3>
+			<h3>November 28, 2016</h3>
 			<ol>
 				<li>
 					The checkPeriod function now only looks up chain data on initial loading and when the reporting cycle phase changes.
