@@ -27,7 +27,7 @@ export default class Footer extends Component {
 	}
 
 	componentDidUpdate(pP, pS) {
-		if (pS.isFooterCollapsed !== this.state.isFooterCollapsed) {
+		if ((pP.logged !== this.props.logged) || (pS.isFooterCollapsed !== this.state.isFooterCollapsed)) {
 			this.slideFooter();
 		}
 
@@ -118,5 +118,6 @@ export default class Footer extends Component {
 }
 
 Footer.propTypes = {
-	updateFooterHeight: PropTypes.func
+	updateFooterHeight: PropTypes.func,
+	logged: PropTypes.bool
 };
