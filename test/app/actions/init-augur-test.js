@@ -21,7 +21,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	const mockLoadBranch = { loadBranch: () => {} };
 	const mockCurrentMessage = sinon.stub().returns(true);
 	const mockUserLogin = sinon.stub().returns(false);
-	const mockInitTimer = sinon.stub().returns({ type: 'INIT_TIMER' });
 
 	mockLoadBranch.loadBranch = sinon.stub().returns({ type: 'LOAD_BRANCH' });
 	mockLoadChatMessages.loadChatMessages = sinon.stub().returns({ type: 'LOAD_CHAT_MESSAGES' });
@@ -49,8 +48,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		'../../chat/actions/load-chat-messages': mockLoadChatMessages,
 		'../../app/actions/load-branch': mockLoadBranch,
 		'../../login-message/helpers/is-current-login-message-read': mockCurrentMessage,
-		'../../auth/helpers/is-user-logged-in': mockUserLogin,
-		'../../app/actions/init-timer': mockInitTimer
+		'../../auth/helpers/is-user-logged-in': mockUserLogin
 	});
 
 	beforeEach(() => {
@@ -79,8 +77,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			type: 'LOAD_LOGIN_ACCOUNT'
 		}, {
 			type: 'LOAD_BRANCH'
-		}, {
-			type: 'INIT_TIMER'
 		}];
 
 		store.dispatch(action.initAugur());
