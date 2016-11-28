@@ -1,12 +1,10 @@
 import * as AugurJS from '../../../services/augurjs';
+
 // fixes Reflect not being recognized in test or node 4.2
 require('core-js/es6/reflect');
 
 import { BRANCH_ID } from '../../app/constants/network';
-
 import { updateEnv } from '../../app/actions/update-env';
-import initTimer from '../../app/actions/init-timer';
-
 import { updateConnectionStatus } from '../../app/actions/update-connection';
 import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
@@ -38,7 +36,6 @@ export function initAugur() {
 							const { links } = require('../../../selectors');
 							links.loginMessageLink.onClick();
 						}
-						dispatch(initTimer());
 					}
 				});
 			}
