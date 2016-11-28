@@ -56,6 +56,18 @@ const LoginMessagePage = p => (
 			<h3>November 27, 2016</h3>
 			<ol>
 				<li>
+					The checkPeriod function now only looks up chain data on initial loading and when the reporting cycle phase changes.
+				</li>
+				<li>
+					Removed code related to the market data refresh timer, which is no longer used.
+				</li>
+				<li>
+					Added a generic hook for transaction callbacks to ethrpc.  The UI (or augur.js) can now register a transaction relay function that is automatically called any time any transaction is sent, succeeds, or fails.
+				</li>
+			</ol>
+			<h3>November 27, 2016</h3>
+			<ol>
+				<li>
 					Added answer-in-description reporting test markets for first 4 cycles on root branch.  (Example description: &quot;Binary Reporting Test Market (Cycle 1): correct answer is Yes&quot;)
 				</li>
 				<li>
