@@ -17,7 +17,6 @@ describe("periodCatchUp", function () {
         var penalizeWrong = augur.penalizeWrong;
         var getNumMarkets = augur.getNumMarkets;
         var getMarkets = augur.getMarkets;
-        var closeMarket = augur.closeMarket;
         var getVotePeriod = augur.getVotePeriod;
         var getCurrentPeriod = augur.getCurrentPeriod;
         var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
@@ -27,7 +26,6 @@ describe("periodCatchUp", function () {
             augur.penalizeWrong = penalizeWrong;
             augur.getNumMarkets = getNumMarkets;
             augur.getMarkets = getMarkets;
-            augur.closeMarket = closeMarket;
             augur.getVotePeriod = getVotePeriod;
             augur.getCurrentPeriod = getCurrentPeriod;
             augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
@@ -67,10 +65,6 @@ describe("periodCatchUp", function () {
                     }
                 });
                 state.reportPeriod[o.branch] += 1;
-                o.onSuccess({callReturn: "1"});
-            };
-            augur.closeMarket = function (o) {
-                sequence.push({method: "closeMarket", params: o});
                 o.onSuccess({callReturn: "1"});
             };
             augur.penalizeWrong = function (o) {
@@ -278,10 +272,10 @@ describe("penaltyCatchUp", function () {
         var penalizeWrong = augur.penalizeWrong;
         var getNumMarkets = augur.getNumMarkets;
         var getMarkets = augur.getMarkets;
-        var closeMarket = augur.closeMarket;
         var getVotePeriod = augur.getVotePeriod;
         var getCurrentPeriod = augur.getCurrentPeriod;
         var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
+        var closeExtraMarkets = augur.closeExtraMarkets;
         after(function () {
             augur.getEvents = getEvents;
             augur.getPenalizedUpTo = getPenalizedUpTo;
@@ -292,10 +286,10 @@ describe("penaltyCatchUp", function () {
             augur.penalizeWrong = penalizeWrong;
             augur.getNumMarkets = getNumMarkets;
             augur.getMarkets = getMarkets;
-            augur.closeMarket = closeMarket;
             augur.getVotePeriod = getVotePeriod;
             augur.getCurrentPeriod = getCurrentPeriod;
             augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
+            augur.closeExtraMarkets = closeExtraMarkets;
         });
         it(t.description, function (done) {
             var sequence = [];
@@ -369,17 +363,6 @@ describe("penaltyCatchUp", function () {
                 state.reportPeriod[o.branch] += 1;
                 o.onSuccess({callReturn: "1"});
             };
-            augur.closeMarket = function (o) {
-                sequence.push({
-                    method: "closeMarket",
-                    params: {
-                        branch: o.branch,
-                        market: o.market,
-                        sender: o.sender
-                    }
-                });
-                o.onSuccess({callReturn: "1"});
-            };
             augur.penalizeWrong = function (o) {
                 sequence.push({
                     method: "penalizeWrong",
@@ -394,6 +377,13 @@ describe("penaltyCatchUp", function () {
                     state.lastPeriodPenalized[o.branch] += 1;
                 }
                 o.onSuccess({callReturn: "1"});
+            };
+            augur.closeExtraMarkets = function (branch, event, sender, callback) {
+                sequence.push({
+                    method: "closeExtraMarkets",
+                    params: [branch, event, sender]
+                });
+                callback(null, state.markets[event]);
             };
             augur.penaltyCatchUp(t.params.branchID, t.params.periodToCheck, t.params.sender, function (err) {
                 assert.isNull(err);
@@ -563,8 +553,8 @@ describe("penaltyCatchUp", function () {
                     event: "0x7e1"
                 }
             }, {
-                method: "getNumMarkets",
-                params: ["0x7e1"]
+                "method": "closeExtraMarkets",
+                "params": ["0xb1", "0x7e1", "0xb0b"]
             }, {
                 method: "getEventCanReportOn",
                 params: ["0xb1", 7, "0xb0b", "0x7e2"]
@@ -575,8 +565,8 @@ describe("penaltyCatchUp", function () {
                     event: "0x7e2"
                 }
             }, {
-                method: "getNumMarkets",
-                params: ["0x7e2"]
+                "method": "closeExtraMarkets",
+                "params": ["0xb1", "0x7e2", "0xb0b"]
             }, {
                 method: "getEventCanReportOn",
                 params: ["0xb1", 7, "0xb0b", "0x7e3"]
@@ -587,8 +577,8 @@ describe("penaltyCatchUp", function () {
                     event: "0x7e3"
                 }
             }, {
-                method: "getNumMarkets",
-                params: ["0x7e3"]
+                "method": "closeExtraMarkets",
+                "params": ["0xb1", "0x7e3", "0xb0b"]
             }]);
             assert.deepEqual(startState.periodLength, endState.periodLength);
             assert.deepEqual(startState.currentPeriod, endState.currentPeriod);

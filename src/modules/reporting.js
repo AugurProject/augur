@@ -268,6 +268,7 @@ module.exports = {
                                             self.closeExtraMarkets(branch, event, sender, function (err, markets) {
                                                 if (err) return nextEvent(err);
                                                 marketsClosed = marketsClosed.concat(markets);
+                                                nextEvent(null);
                                             });
                                         // });
                                     },
