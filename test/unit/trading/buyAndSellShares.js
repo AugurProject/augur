@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var sinon = require("sinon");
+// var sinon = require("sinon");
 var augur = require("../../../src");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
@@ -10,7 +10,13 @@ var BigNumber = require("bignumber.js");
 describe("buyAndSellShares Unit Tests", function() {
 	// define noop to use as dummy functions for onSent, onSuccess, onFailed...
 	function noop() {};
+	var transactCallCount = 0;
+	var transact = augur.transact;
+	var shrinkScalarPrice = augur.shrinkScalarPrice;
 	function sharedTransactMock(tx, onSent, onSuccess, onFailed) {
+		// inc the call count...
+		transactCallCount++;
+
 		assert.isObject(tx, "tx sent to this.transact is not a Object");
 		assert.isNumber(tx.gas, "tx.gas sent to this.transact isn't a number as expected");
 		assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
@@ -33,7 +39,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		// assert.isString(tx.from, "tx.from sent to this.transact isn't an String as expected");
 		assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 		// handles different expected params based on inputs...
-		switch (augur.transact.callCount) {
+		switch (transactCallCount) {
 		case 7:
 		case 8:
 		case 9:
@@ -72,8 +78,7 @@ describe("buyAndSellShares Unit Tests", function() {
 	describe('augur.cancel tests', function() {
 		// 4 tests total
 		before(function() {
-			// add a stub to augur functions used in this file before running any tests...
-			sinon.stub(augur, "transact", function(tx, onSent, onSuccess, onFailed) {
+			augur.transact = function(tx, onSent, onSuccess, onFailed) {
 				assert.isObject(tx, "tx sent to this.transact is not a Object");
 				assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
 
@@ -96,11 +101,12 @@ describe("buyAndSellShares Unit Tests", function() {
 				assert.isFunction(onSent, "onSent passed to this.transact is not a function");
 				assert.isFunction(onSuccess, "onSuccess passed to this.transact is not a function");
 				assert.isFunction(onFailed, "onFailed passed to this.transact is not a function");
-			});
+			};
 		});
 
+
 		after(function() {
-			augur.transact.restore();
+			augur.transact = transact;
 		});
 
 		it('should send a cancel trade transaction with multiple arguments', function() {
@@ -123,15 +129,15 @@ describe("buyAndSellShares Unit Tests", function() {
 	describe('augur.buy tests', function() {
 		// 18 tests total
 		before(function() {
-			// add a stub to augur functions used in this file before running any tests...
-			sinon.stub(augur, "transact", sharedTransactMock);
-			sinon.stub(augur, 'shrinkScalarPrice', sharedShrinkScalarPriceMock);
+			augur.transact = sharedTransactMock;
+			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
 		});
 
 		after(function() {
 			// after all the tests in this describe block, remove the stubs...
-			augur.shrinkScalarPrice.restore();
-			augur.transact.restore();
+			augur.shrinkScalarPrice = shrinkScalarPrice;
+			augur.transact = transact;
+			transactCallCount = 0;
 		});
 
 		it('Should handle a binary market buy using JS Number inputs', function () {
@@ -210,15 +216,15 @@ describe("buyAndSellShares Unit Tests", function() {
 	describe('augur.sell tests', function() {
 		// 18 tests total
 		before(function() {
-			// add a stub to augur functions used in this file before running any tests...
-			sinon.stub(augur, "transact", sharedTransactMock);
-			sinon.stub(augur, 'shrinkScalarPrice', sharedShrinkScalarPriceMock);
+			augur.transact = sharedTransactMock;
+			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
 		});
 
 		after(function() {
 			// after all the tests in this describe block, remove the stubs...
-			augur.shrinkScalarPrice.restore();
-			augur.transact.restore();
+			augur.shrinkScalarPrice = shrinkScalarPrice;
+			augur.transact = transact;
+			transactCallCount = 0;
 		});
 
 		it('Should handle a binary market sell using JS Number inputs', function () {
@@ -297,15 +303,15 @@ describe("buyAndSellShares Unit Tests", function() {
 	describe('augur.shortAsk tests', function() {
 		// 18 tests total
 		before(function() {
-			// add a stub to augur functions used in this file before running any tests...
-			sinon.stub(augur, "transact", sharedTransactMock);
-			sinon.stub(augur, 'shrinkScalarPrice', sharedShrinkScalarPriceMock);
+			augur.transact = sharedTransactMock;
+			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
 		});
 
 		after(function() {
 			// after all the tests in this describe block, remove the stubs...
-			augur.shrinkScalarPrice.restore();
-			augur.transact.restore();
+			augur.shrinkScalarPrice = shrinkScalarPrice;
+			augur.transact = transact;
+			transactCallCount = 0;
 		});
 
 		it('Should handle a binary market shortAsk using JS Number inputs', function () {
