@@ -382,7 +382,7 @@ module.exports = function () {
                     console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
-                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                if (augur.rpc.debug.broadcast) {
                     console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
                 }
                 var etx = new EthTx(packaged);
@@ -448,7 +448,7 @@ module.exports = function () {
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!payload.send) {
-                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                if (augur.rpc.debug.broadcast) {
                     console.log("[augur.js] eth_call payload:", payload);
                 }
                 return augur.rpc.fire(payload, cb);
@@ -468,7 +468,7 @@ module.exports = function () {
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
-            if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+            if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {

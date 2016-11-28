@@ -42832,7 +42832,7 @@ module.exports = function () {
                     console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
-                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                if (augur.rpc.debug.broadcast) {
                     console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
                 }
                 var etx = new EthTx(packaged);
@@ -42898,7 +42898,7 @@ module.exports = function () {
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!payload.send) {
-                if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+                if (augur.rpc.debug.broadcast) {
                     console.log("[augur.js] eth_call payload:", payload);
                 }
                 return augur.rpc.fire(payload, cb);
@@ -42918,7 +42918,7 @@ module.exports = function () {
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
-            if (augur.rpc.debug.broadcast || augur.options.debug.reporting) {
+            if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
@@ -43980,7 +43980,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.14";
+    this.version = "3.1.15";
 
     this.options = {
         debug: {
@@ -46218,55 +46218,37 @@ module.exports = {
 
     // report in fixed-point
     encryptReport: function (report, key, salt) {
-        if (this.options.debug.reporting) {
-            console.log('encryptReport params:', report, key, salt);
-        }
         if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
         if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
         if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
         if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        var encryptedReport = abi.prefix_hex(
+        return abi.prefix_hex(
             new Buffer(
                 keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
                 "base64"
             ).toString("hex")
         );
-        if (this.options.debug.reporting) {
-            console.log('encryptReport:', encryptedReport);
-        }
-        return encryptedReport;
     },
 
     // returns plaintext fixed-point report
     decryptReport: function (encryptedReport, key, salt) {
-        if (this.options.debug.reporting) {
-            console.log('decryptReport params:', encryptedReport, key, salt);
-        }
         if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
         if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
         if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
         if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        var decryptedReport = abi.prefix_hex(
+        return abi.prefix_hex(
             keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
         );
-        if (this.options.debug.reporting) {
-            console.log('decryptedReport:', decryptedReport);
-        }
-        return decryptedReport;
     },
 
     parseAndDecryptReport: function (arr, secret) {
         if (!arr || arr.constructor !== Array || arr.length < 2) return null;
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
-        var parsedAndDecryptedReport = {
+        return {
             salt: salt,
             report: this.decryptReport(arr[0], secret.derivedKey, salt),
             ethics: (arr.length >= 2) ? arr[2] : false
         };
-        if (this.options.debug.reporting) {
-            console.log('parseAndDecryptReport:', parsedAndDecryptedReport);
-        }
-        return parsedAndDecryptedReport;
     },
 
     getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
@@ -46281,10 +46263,6 @@ module.exports = {
         }
         var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
         tx.params = [branch, expDateIndex, reporter, event];
-        if (this.options.debug.reporting) {
-            console.log('getEncryptedReport secret:', secret);
-            console.log('getEncryptedReport params:', tx.params);
-        }
         return this.fire(tx, callback, this.parseAndDecryptReport, secret);
     },
 
@@ -49635,6 +49613,9 @@ module.exports = {
 
     requests: 1,
 
+    // Hook for transaction callbacks
+    txRelay: null,
+
     txs: {},
 
     rawTxs: {},
@@ -49644,6 +49625,22 @@ module.exports = {
     notifications: {},
 
     gasPrice: 20000000000,
+
+    registerTxRelay: function (txRelay) {
+        this.txRelay = txRelay;
+    },
+
+    unregisterTxRelay: function () {
+        this.txRelay = null;
+    },
+
+    wrapTxRelayCallback: function (status, callback) {
+        var self = this;
+        return function (response) {
+            if (isFunction(callback)) callback(response);
+            self.txRelay({status: status, payload: response});
+        };
+    },
 
     unmarshal: function (string, returns, stride, init) {
         var elements, array, position;
@@ -51100,7 +51097,7 @@ module.exports = {
 
             // send the transaction hash and return value back
             // to the client, using the onSent callback
-            onSent({txHash: txHash, callReturn: callReturn});
+            onSent({hash: txHash, txHash: txHash, callReturn: callReturn});
 
             self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
                 if (err) return onFailed(err);
@@ -51377,19 +51374,26 @@ module.exports = {
         if (!isFunction(onSent)) return this.transactSync(payload);
 
         // asynchronous / non-blocking transact sequence
-        onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
-        onFailed = (isFunction(onFailed)) ? onFailed : noop;
+        var cb = (isFunction(this.txRelay)) ? {
+            sent: this.wrapTxRelayCallback("sent", onSent),
+            success: this.wrapTxRelayCallback("success", onSuccess),
+            failed: this.wrapTxRelayCallback("failed", onFailed)
+        } : {
+            sent: onSent,
+            success: (isFunction(onSuccess)) ? onSuccess : noop,
+            failed: (isFunction(onFailed)) ? onFailed : noop
+        };
         if (payload.mutable || payload.returns === "null") {
-            return this.transactAsync(payload, null, onSent, onSuccess, onFailed);
+            return this.transactAsync(payload, null, cb.sent, cb.success, cb.failed);
         }
         this.fire(payload, function (callReturn) {
             if (self.debug.tx) console.debug("callReturn:", callReturn);
             if (callReturn === undefined || callReturn === null) {
-                return onFailed(errors.NULL_CALL_RETURN);
+                return cb.failed(errors.NULL_CALL_RETURN);
             } else if (callReturn.error) {
-                return onFailed(callReturn);
+                return cb.failed(callReturn);
             }
-            self.transactAsync(payload, callReturn, onSent, onSuccess, onFailed);
+            self.transactAsync(payload, callReturn, cb.sent, cb.success, cb.failed);
         });
     }
 };
