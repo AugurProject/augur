@@ -17,6 +17,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	};
 	const mockLoadLoginAccount = {};
 	const mockReportingTestSetup = {};
+	const mockRegisterTransactionRelay = {};
 	const mockLoadChatMessages = { loadChatMessages: () => {} };
 	const mockLoadBranch = { loadBranch: () => {} };
 	const mockCurrentMessage = sinon.stub().returns(true);
@@ -40,11 +41,15 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	mockReportingTestSetup.reportingTestSetup = sinon.stub().returns({
 		type: 'REPORTING_TEST_SETUP'
 	});
+	mockRegisterTransactionRelay.registerTransactionRelay = sinon.stub().returns({
+		type: 'REGISTER_TRANSACTION_RELAY'
+	});
 
 	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../auth/actions/load-login-account': mockLoadLoginAccount,
-		'../../reports/actions/reportingTestSetup': mockReportingTestSetup,
+		'../../reports/actions/reporting-test-setup': mockReportingTestSetup,
+		'../../transactions/actions/register-transaction-relay': mockRegisterTransactionRelay,
 		'../../chat/actions/load-chat-messages': mockLoadChatMessages,
 		'../../app/actions/load-branch': mockLoadBranch,
 		'../../login-message/helpers/is-current-login-message-read': mockCurrentMessage,
@@ -72,6 +77,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			},
 			type: 'UPDATE_CONNECTION_STATUS'
 		}, {
+			type: 'REGISTER_TRANSACTION_RELAY'
+		}, {
 			type: 'LOAD_CHAT_MESSAGES'
 		}, {
 			type: 'LOAD_LOGIN_ACCOUNT'
@@ -84,6 +91,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false }`);
 
 		assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
+		assert(mockRegisterTransactionRelay.registerTransactionRelay.calledOnce, `Didn't call registerTransactionRelay exactly once as expected`);
 		assert(mockLoadLoginAccount.loadLoginAccount.calledOnce, `Didn't call loadLoginAccount exactly once as expected`);
 		assert(mockLoadChatMessages.loadChatMessages.calledOnce, `Didn't call loadChatMessages exactly once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
