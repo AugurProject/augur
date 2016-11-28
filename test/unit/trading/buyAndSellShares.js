@@ -1,7 +1,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-// var sinon = require("sinon");
 var augur = require("../../../src");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
@@ -47,7 +46,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		case 11:
 		case 12:
 			// adjust for scalar calcs...
-			assert.deepEqual(tx.params, [abi.fix(10, "hex"), abi.fix(10.5, "hex"), 'testScalarMarketID', '1'], "tx.params didn't contain the expected values");
+			assert.deepEqual(tx.params, [abi.fix(10, "hex"), abi.fix(65, "hex"), 'testScalarMarketID', '1'], "tx.params didn't contain the expected values");
 			break;
 		case 13:
 		case 14:
@@ -68,7 +67,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		assert.isFunction(onFailed, "onFailed passed to this.transact is not a function");
 	};
 	function sharedShrinkScalarPriceMock(minValue, price) {
-		assert.equal(price, 0.5);
+		assert.equal(price, 55);
 		assert.equal(minValue, -10);
 		if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
 		if (price.constructor !== BigNumber) price = abi.bignum(price);
@@ -77,6 +76,13 @@ describe("buyAndSellShares Unit Tests", function() {
 
 	describe('augur.cancel tests', function() {
 		// 4 tests total
+		var test = function (t) {
+			it(t.description, function() {
+				//assertions aren't provied since we are testing in transact since there is no output of the cancel function.
+				augur.cancel(t.trade_id, t.onSent, t.onSuccess, t.onFailed);
+			});
+		};
+
 		before(function() {
 			augur.transact = function(tx, onSent, onSuccess, onFailed) {
 				assert.isObject(tx, "tx sent to this.transact is not a Object");
@@ -104,30 +110,58 @@ describe("buyAndSellShares Unit Tests", function() {
 			};
 		});
 
-
 		after(function() {
 			augur.transact = transact;
 		});
 
-		it('should send a cancel trade transaction with multiple arguments', function() {
-			augur.cancel(['tradeID'], noop, noop, noop);
+		test({
+			description: "should send a cancel trade transaction with multiple arguments",
+			trade_id: ['tradeID'],
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('should send a cancel trade transaction with 1 object arg', function() {
-			augur.cancel({ trade_id: ['tradeID'], onSent: noop, onSuccess: noop, onFailed: noop });
+		test({
+			description: "should send a cancel trade transaction with 1 object arg",
+			trade_id: {
+				trade_id: ['tradeID'],
+				onSent: noop,
+				onSuccess: noop,
+				onFailed: noop
+			},
+			onSent: undefined,
+			onSuccess: undefined,
+			onFailed: undefined
 		});
-
-		it('should send a cancel trade transaction with 1 trade_id arg only', function() {
-			augur.cancel(['tradeID']);
+		test({
+			description: "should send a cancel trade transaction with 1 trade_id arg only",
+			trade_id: ['tradeID'],
+			onSent: undefined,
+			onSuccess: undefined,
+			onFailed: undefined
 		});
-
-		it('should send a cancel trade transaction with 1 object arg but with undefined onSent, onSuccess, onFailed' , function() {
-			augur.cancel({ trade_id: ['tradeID'] });
+		test({
+			description: "should send a cancel trade transaction with 1 object arg but with undefined onSent, onSuccess, onFailed",
+			trade_id: {
+				trade_id: ['tradeID'],
+				onSent: undefined,
+				onSuccess: undefined,
+				onFailed: undefined
+			},
+			onSent: undefined,
+			onSuccess: undefined,
+			onFailed: undefined
 		});
 	});
 
 	describe('augur.buy tests', function() {
 		// 18 tests total
+		var test = function (t) {
+			it(t.description, function() {
+				augur.buy(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+			});
+		};
+
 		before(function() {
 			augur.transact = sharedTransactMock;
 			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
@@ -140,81 +174,166 @@ describe("buyAndSellShares Unit Tests", function() {
 			transactCallCount = 0;
 		});
 
-		it('Should handle a binary market buy using JS Number inputs', function () {
-			augur.buy(10, 0.5, 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a binary market buy using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market buy using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market buy using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market buy using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null
+		});
+		test({
+			description: "Should handle a binary market buy using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a binary market buy using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
-		it('Should handle a binary market buy using String inputs', function () {
-			augur.buy('10', '0.5', 'testBinaryMarketID', '1', null, noop, noop, noop);
+
+		test({
+			description: "Should handle a scalar market buy using JS Number inputs",
+			amount: 10,
+			price: 55,
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: -10, maxValue: 140 },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market buy using String inputs",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: '-10', maxValue: '140' },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market buy using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(55),
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market buy using String inputs but missing function hooks",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
+		});
+		test({
+			description: "Should handle a scalar market buy using String inputs in a single object argument",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a scalar market buy using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
-		it('Should handle a binary market buy using Big Number inputs', function () {
-				augur.buy(abi.bignum('10'), abi.bignum('0.5'), 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market buy using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market buy using String inputs but missing function hooks', function () {
-			augur.buy('10', '0.5', 'testBinaryMarketID', '1', null);
+		test({
+			description: "Should handle a categorical market buy using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market buy using String inputs in a single object argument', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
+		test({
+			description: "Should handle a categorical market buy using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market buy using String inputs in a single object argument missing the function hooks', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market buy using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null
 		});
-
-		it('Should handle a scalar market buy using JS Number inputs', function () {
-			augur.buy(10, 0.5, 'testScalarMarketID', '1', { minValue: -10, maxValue: 140 }, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market buy using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
-
-		it('Should handle a scalar market buy using String inputs', function () {
-			augur.buy('10', '0.5', 'testScalarMarketID', '1', { minValue: '-10', maxValue: '140' }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market buy using BigNumber inputs', function () {
-			augur.buy(abi.bignum(10), abi.bignum(0.5), 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market buy using String inputs but missing function hooks', function () {
-			augur.buy('10', '0.5', 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) });
-		});
-
-		it('Should handle a scalar market buy using String inputs in a single object argument', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a scalar market buy using String inputs in a single object argument missing the function hooks', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }});
-		});
-
-		it('Should handle a categorical market buy using JS Number inputs', function () {
-			augur.buy(10, 0.5, 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market buy using String inputs', function () {
-			augur.buy('10', '0.5', 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market buy using Big Number inputs', function () {
-				augur.buy(abi.bignum('10'), abi.bignum('0.5'), 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market buy using String inputs but missing function hooks', function () {
-			augur.buy('10', '0.5', 'testCategoricalMarketID', '1', null);
-		});
-
-		it('Should handle a categorical market buy using String inputs in a single object argument', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a categorical market buy using String inputs in a single object argument missing the function hooks', function () {
-			augur.buy({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market buy using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});
 
 	describe('augur.sell tests', function() {
 		// 18 tests total
+		var test = function (t) {
+			it(t.description, function() {
+				augur.sell(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+			});
+		};
+
 		before(function() {
 			augur.transact = sharedTransactMock;
 			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
@@ -227,81 +346,166 @@ describe("buyAndSellShares Unit Tests", function() {
 			transactCallCount = 0;
 		});
 
-		it('Should handle a binary market sell using JS Number inputs', function () {
-			augur.sell(10, 0.5, 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a binary market sell using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market sell using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market sell using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market sell using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null
+		});
+		test({
+			description: "Should handle a binary market sell using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a binary market sell using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
-		it('Should handle a binary market sell using String inputs', function () {
-			augur.sell('10', '0.5', 'testBinaryMarketID', '1', null, noop, noop, noop);
+
+		test({
+			description: "Should handle a scalar market sell using JS Number inputs",
+			amount: 10,
+			price: 55,
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: -10, maxValue: 140 },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market sell using String inputs",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: '-10', maxValue: '140' },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market sell using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(55),
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market sell using String inputs but missing function hooks",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
+		});
+		test({
+			description: "Should handle a scalar market sell using String inputs in a single object argument",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a scalar market sell using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
-		it('Should handle a binary market sell using Big Number inputs', function () {
-				augur.sell(abi.bignum('10'), abi.bignum('0.5'), 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market sell using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market sell using String inputs but missing function hooks', function () {
-			augur.sell('10', '0.5', 'testBinaryMarketID', '1', null);
+		test({
+			description: "Should handle a categorical market sell using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market sell using String inputs in a single object argument', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
+		test({
+			description: "Should handle a categorical market sell using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market sell using String inputs in a single object argument missing the function hooks', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market sell using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null
 		});
-
-		it('Should handle a scalar market sell using JS Number inputs', function () {
-			augur.sell(10, 0.5, 'testScalarMarketID', '1', { minValue: -10, maxValue: 140 }, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market sell using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
-
-		it('Should handle a scalar market sell using String inputs', function () {
-			augur.sell('10', '0.5', 'testScalarMarketID', '1', { minValue: '-10', maxValue: '140' }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market sell using BigNumber inputs', function () {
-			augur.sell(abi.bignum(10), abi.bignum(0.5), 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market sell using String inputs but missing function hooks', function () {
-			augur.sell('10', '0.5', 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) });
-		});
-
-		it('Should handle a scalar market sell using String inputs in a single object argument', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a scalar market sell using String inputs in a single object argument missing the function hooks', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }});
-		});
-
-		it('Should handle a categorical market sell using JS Number inputs', function () {
-			augur.sell(10, 0.5, 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market sell using String inputs', function () {
-			augur.sell('10', '0.5', 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market sell using Big Number inputs', function () {
-				augur.sell(abi.bignum('10'), abi.bignum('0.5'), 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market sell using String inputs but missing function hooks', function () {
-			augur.sell('10', '0.5', 'testCategoricalMarketID', '1', null);
-		});
-
-		it('Should handle a categorical market sell using String inputs in a single object argument', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a categorical market sell using String inputs in a single object argument missing the function hooks', function () {
-			augur.sell({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market sell using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});
 
 	describe('augur.shortAsk tests', function() {
 		// 18 tests total
+		var test = function (t) {
+			it(t.description, function() {
+				augur.shortAsk(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+			});
+		};
+
 		before(function() {
 			augur.transact = sharedTransactMock;
 			augur.shrinkScalarPrice = sharedShrinkScalarPriceMock;
@@ -314,76 +518,155 @@ describe("buyAndSellShares Unit Tests", function() {
 			transactCallCount = 0;
 		});
 
-		it('Should handle a binary market shortAsk using JS Number inputs', function () {
-			augur.shortAsk(10, 0.5, 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a binary market shortAsk using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market shortAsk using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market shortAsk using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a binary market shortAsk using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testBinaryMarketID",
+			outcome: "1",
+			scalarMinMax: null
+		});
+		test({
+			description: "Should handle a binary market shortAsk using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a binary market shortAsk using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
-		it('Should handle a binary market shortAsk using String inputs', function () {
-			augur.shortAsk('10', '0.5', 'testBinaryMarketID', '1', null, noop, noop, noop);
+
+		test({
+			description: "Should handle a scalar market shortAsk using JS Number inputs",
+			amount: 10,
+			price: 55,
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: -10, maxValue: 140 },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market shortAsk using String inputs",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: '-10', maxValue: '140' },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market shortAsk using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(55),
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
+		});
+		test({
+			description: "Should handle a scalar market shortAsk using String inputs but missing function hooks",
+			amount: "10",
+			price: "55",
+			market: "testScalarMarketID",
+			outcome: "1",
+			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
+		});
+		test({
+			description: "Should handle a scalar market shortAsk using String inputs in a single object argument",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+		});
+		test({
+			description: "Should handle a scalar market shortAsk using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
-		it('Should handle a binary market shortAsk using Big Number inputs', function () {
-				augur.shortAsk(abi.bignum('10'), abi.bignum('0.5'), 'testBinaryMarketID', '1', null, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market shortAsk using JS Number inputs",
+			amount: 10,
+			price: 0.5,
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market shortAsk using String inputs but missing function hooks', function () {
-			augur.shortAsk('10', '0.5', 'testBinaryMarketID', '1', null);
+		test({
+			description: "Should handle a categorical market shortAsk using String inputs",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market shortAsk using String inputs in a single object argument', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
+		test({
+			description: "Should handle a categorical market shortAsk using Big Number inputs",
+			amount: abi.bignum(10),
+			price: abi.bignum(0.5),
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null,
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: noop
 		});
-
-		it('Should handle a binary market shortAsk using String inputs in a single object argument missing the function hooks', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market shortAsk using String inputs but missing function hooks",
+			amount: "10",
+			price: "0.5",
+			market: "testCategoricalMarketID",
+			outcome: "1",
+			scalarMinMax: null
 		});
-
-		it('Should handle a scalar market shortAsk using JS Number inputs', function () {
-			augur.shortAsk(10, 0.5, 'testScalarMarketID', '1', { minValue: -10, maxValue: 140 }, noop, noop, noop);
+		test({
+			description: "Should handle a categorical market shortAsk using String inputs in a single object argument",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
-
-		it('Should handle a scalar market shortAsk using String inputs', function () {
-			augur.shortAsk('10', '0.5', 'testScalarMarketID', '1', { minValue: '-10', maxValue: '140' }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market shortAsk using BigNumber inputs', function () {
-			augur.shortAsk(abi.bignum(10), abi.bignum(0.5), 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, noop, noop, noop);
-		});
-
-		it('Should handle a scalar market shortAsk using String inputs but missing function hooks', function () {
-			augur.shortAsk('10', '0.5', 'testScalarMarketID', '1', { minValue: abi.bignum(-10), maxValue: abi.bignum(140) });
-		});
-
-		it('Should handle a scalar market shortAsk using String inputs in a single object argument', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a scalar market shortAsk using String inputs in a single object argument missing the function hooks', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }});
-		});
-
-		it('Should handle a categorical market shortAsk using JS Number inputs', function () {
-			augur.shortAsk(10, 0.5, 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market shortAsk using String inputs', function () {
-			augur.shortAsk('10', '0.5', 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market shortAsk using Big Number inputs', function () {
-				augur.shortAsk(abi.bignum('10'), abi.bignum('0.5'), 'testCategoricalMarketID', '1', null, noop, noop, noop);
-		});
-
-		it('Should handle a categorical market shortAsk using String inputs but missing function hooks', function () {
-			augur.shortAsk('10', '0.5', 'testCategoricalMarketID', '1', null);
-		});
-
-		it('Should handle a categorical market shortAsk using String inputs in a single object argument', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop});
-		});
-
-		it('Should handle a categorical market shortAsk using String inputs in a single object argument missing the function hooks', function () {
-			augur.shortAsk({ amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null});
+		test({
+			description: "Should handle a categorical market shortAsk using String inputs in a single object argument missing the function hooks",
+			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});
 });
