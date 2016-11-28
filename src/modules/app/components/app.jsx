@@ -30,16 +30,18 @@ class AppComponent extends Component {
 			doScrollTop: false,
 			currentRoute: null,
 			headerHeight: 0,
-			footerHeight: 0
+			footerHeight: 0,
+			isFooterCollapsed: true
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
-		this.handleSidebarSwipe = this.handleSidebarSwipe.bind(this);
+		this.handleSwipe = this.handleSwipe.bind(this);
 		this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
 		this.updateFooterHeight = this.updateFooterHeight.bind(this);
+		this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
 	}
 
 	componentDidMount() {
@@ -70,18 +72,31 @@ class AppComponent extends Component {
 		this.setState({ footerHeight });
 	}
 
+	//	Footer
+	updateIsFooterCollapsed(isFooterCollapsed) {
+		this.setState({ isFooterCollapsed });
+	}
+
 	// Chat
 	toggleChat() {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
-	handleSidebarSwipe(swipe) {
+	handleSwipe(swipe) {
+		const threshold = 50;
+
 		if (this.state.isSideBarAllowed) {
-			if (swipe.deltaX > 0) {
+			if (swipe.deltaX > threshold) {
 				this.setState({ isSideBarCollapsed: false });
 			} else {
 				this.setState({ isSideBarCollapsed: true });
 			}
+		}
+
+		if (swipe.deltaY > -threshold) {
+			this.setState({ isFooterCollapsed: true });
+		} else {
+			this.setState({ isFooterCollapsed: false });
 		}
 	}
 
@@ -125,7 +140,10 @@ class AppComponent extends Component {
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
-					<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
+					<Hammer
+						onSwipe={this.handleSwipe}
+						direction="DIRECTION_ALL"
+					>
 						<div id="app_container" >
 							{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 								<SidebarMask
@@ -187,7 +205,9 @@ class AppComponent extends Component {
 							</button>
 							<Footer
 								{...navProps}
+								isFooterCollapsed={s.isFooterCollapsed}
 								updateFooterHeight={this.updateFooterHeight}
+								updateIsFooterCollapsed={this.updateIsFooterCollapsed}
 							/>
 						</div>
 					</ Hammer>
