@@ -18,7 +18,6 @@ const SideBar = (p) => {
 						text2={`(${tag.numMatched})`}
 						isChecked={tag.isSelected}
 						onClick={tag.onClick}
-						isCheckboxVisible={false}
 					/>
 				) : <NullStateMessage message={nullMessage} />
 			}

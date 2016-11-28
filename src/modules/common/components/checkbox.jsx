@@ -10,9 +10,7 @@ const Checkbox = p => (
 			data-tip={p.title}
 			onClick={p.onClick}
 		>
-			{p.isCheckboxVisible &&
-				<span className="checkbox-box" />
-			}
+			<span className="checkbox-box" />
 			<span className="checkbox-label" tabIndex={p.tabIndex} >
 				{p.text}
 			</span>
@@ -33,8 +31,7 @@ Checkbox.propTypes = {
 	text2: PropTypes.string,
 	isChecked: PropTypes.bool,
 	tabIndex: PropTypes.number,
-	onClick: PropTypes.func,
-	isCheckboxVisible: PropTypes.bool
+	onClick: PropTypes.func
 };
 
 export default Checkbox;
