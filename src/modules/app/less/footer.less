@@ -6,8 +6,9 @@ footer {
 	background-color: @color-footer-background;
 	display: flex;
 	width: 100vw;
+	z-index: @mask-above;
 
-	@media @breakpoint-1, @breakpoint-2-2 {
+	@media @breakpoint-mobile {
 
 		.border(false);
 
@@ -22,7 +23,7 @@ footer {
 		flex: 1;
 		justify-content: center;
 
-		@media @breakpoint-1, @breakpoint-2-2 {
+		@media @breakpoint-mobile {
 			display: flex;
 		}
 
@@ -51,7 +52,7 @@ footer {
 		display: flex;
 		justify-content: center;
 
-		@media @breakpoint-1, @breakpoint-2-2 {
+		@media @breakpoint-mobile {
 
 			.font-color-light;
 

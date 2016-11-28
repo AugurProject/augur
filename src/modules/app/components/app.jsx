@@ -9,6 +9,7 @@ import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
 import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
+import SidebarMask from 'modules/common/components/side-bar-mask';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
@@ -27,14 +28,20 @@ class AppComponent extends Component {
 			isSideBarCollapsed: false,
 			isChatCollapsed: true,
 			doScrollTop: false,
-			currentRoute: null
+			currentRoute: null,
+			headerHeight: 0,
+			footerHeight: 0,
+			isFooterCollapsed: true
 		};
 
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
-		this.handleSidebarSwipe = this.handleSidebarSwipe.bind(this);
+		this.handleSwipe = this.handleSwipe.bind(this);
+		this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
+		this.updateFooterHeight = this.updateFooterHeight.bind(this);
+		this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
 	}
 
 	componentDidMount() {
@@ -44,11 +51,11 @@ class AppComponent extends Component {
 		}
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(pP, pS) {
 		handleScrollTop(this.props.url);
 	}
 
-	// Sidebar display related methods
+	// Sidebar
 	setSidebarAllowed(isSideBarAllowed) {
 		this.setState({ isSideBarAllowed });
 	}
@@ -56,18 +63,40 @@ class AppComponent extends Component {
 		this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
 	}
 
-	// chat display
+	//	Bounding Element Dimentions
+	//	NOTE -- used by mobile side-bar
+	updateHeaderHeight(headerHeight) {
+		this.setState({ headerHeight });
+	}
+	updateFooterHeight(footerHeight) {
+		this.setState({ footerHeight });
+	}
+
+	//	Footer
+	updateIsFooterCollapsed(isFooterCollapsed) {
+		this.setState({ isFooterCollapsed });
+	}
+
+	// Chat
 	toggleChat() {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
-	handleSidebarSwipe(swipe) {
+	handleSwipe(swipe) {
+		const threshold = 50;
+
 		if (this.state.isSideBarAllowed) {
-			if (swipe.deltaX > 0) {
+			if (swipe.deltaX > threshold) {
 				this.setState({ isSideBarCollapsed: false });
 			} else {
 				this.setState({ isSideBarCollapsed: true });
 			}
+		}
+
+		if (swipe.deltaY > -threshold) {
+			this.setState({ isFooterCollapsed: true });
+		} else {
+			this.setState({ isFooterCollapsed: false });
 		}
 	}
 
@@ -99,7 +128,9 @@ class AppComponent extends Component {
 		};
 
 		const sideBarProps = {
-			tags: p.tags
+			tags: p.tags,
+			headerHeight: s.headerHeight,
+			footerHeight: s.footerHeight
 		};
 
 		// NOTE -- A few implementation details:
@@ -109,53 +140,77 @@ class AppComponent extends Component {
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
-					<div id="app_container" >
-						<div id="app_header">
-							<Header {...navProps} />
-							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
-									<div className="core-stats-bumper" />
-								}
-								{p.loginAccount && p.loginAccount.id &&
-									<CoreStats coreStats={p.coreStats} />
-								}
+					<Hammer
+						onSwipe={this.handleSwipe}
+						direction="DIRECTION_ALL"
+					>
+						<div id="app_container" >
+							{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+								<SidebarMask
+									style={{
+										top: s.headerHeight,
+										bottom: s.footerHeight
+									}}
+								/>
+							}
+							<div id="app_header">
+								<Header
+									{...navProps}
+									updateHeaderHeight={this.updateHeaderHeight}
+								/>
+								<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+									{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+										<div className="core-stats-bumper" />
+									}
+									{p.loginAccount && p.loginAccount.id &&
+										<CoreStats coreStats={p.coreStats} />
+									}
+								</div>
 							</div>
-						</div>
-						<div id="app_views" >
-							<Header {...navProps} />
-							<div id="app_view_container">
-								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
-									<div id="side_bar" >
-										<SideBar {...sideBarProps} />
-									</div>
-								}
-								<div id="app_view">
-									<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-										{p.loginAccount && p.loginAccount.id &&
-											<CoreStats coreStats={p.coreStats} />
+							<div id="app_views" >
+								<Header {...navProps} />
+								<div id="app_view_container">
+									{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+										<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
+											<div id="side_bar" >
+												<SideBar {...sideBarProps} />
+											</div>
+										</ Hammer>
+									}
+									<div id="app_view">
+										{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+											<div className="core-stats-bumper" />
 										}
-									</div>
-									<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
+										<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+											{p.loginAccount && p.loginAccount.id &&
+												<CoreStats coreStats={p.coreStats} />
+											}
+										</div>
 										<Routes
 											{...p}
 											setSidebarAllowed={this.setSidebarAllowed}
 										/>
-									</Hammer>
-									<Footer {...navProps} />
+										<Footer {...navProps} />
+									</div>
 								</div>
 							</div>
-						</div>
-						{!s.isChatCollapsed &&
-							<ChatView
-								{...p.chat.augur}
-								toggleChat={() => { this.toggleChat(); }}
+							{!s.isChatCollapsed &&
+								<ChatView
+									{...p.chat.augur}
+									toggleChat={() => { this.toggleChat(); }}
+								/>
+							}
+							<button id="chat-button" onClick={() => { this.toggleChat(); }}>
+								Chat
+							</button>
+							<Footer
+								{...navProps}
+								isFooterCollapsed={s.isFooterCollapsed}
+								updateFooterHeight={this.updateFooterHeight}
+								updateIsFooterCollapsed={this.updateIsFooterCollapsed}
 							/>
-						}
-						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
-							Chat
-						</button>
-						<Footer {...navProps} />
-					</div>
+						</div>
+					</ Hammer>
 				}
 			</main>
 		);

@@ -7,7 +7,13 @@ const SideBar = (p) => {
 	const nullMessage = 'No Tags Available';
 
 	return (
-		<article className="side-bar" >
+		<aside
+			className="side-bar"
+			style={{
+				top: p.headerHeight,
+				bottom: p.footerHeight
+			}}
+		>
 			<h3>All Tags</h3>
 			<div className="tags">
 				{p.tags.length ? p.tags.map(tag =>
@@ -22,14 +28,14 @@ const SideBar = (p) => {
 				) : <NullStateMessage message={nullMessage} />
 			}
 			</div>
-		</article>
+		</aside>
 	);
 };
+
+export default SideBar;
 
 
 // TODO -- Prop Validations
 // SideBar.propTypes = {
 // 	filters: React.PropTypes.array
 // };
-
-export default SideBar;
