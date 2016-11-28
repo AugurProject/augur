@@ -69,17 +69,13 @@ describe(`modules/app/actions/update-branch.js`, () => {
 				currentPeriod: 20,
 				currentPeriodProgress: 52,
 				isReportRevealPhase: true,
-				reportPeriod: 19,
 				phaseLabel: 'Reveal',
 				phaseTimeRemaining: 'in 7 minutes'
 			}
 		}, {
-			type: 'CLAIM_PROCEEDS'
-		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));
-		assert(mockAugurJS.augur.getVotePeriod.calledOnce, `getVotePeriod wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
 	});
 	it(`should increment branch if the branch is behind`, () => {
@@ -95,26 +91,34 @@ describe(`modules/app/actions/update-branch.js`, () => {
 				currentPeriod: 20,
 				currentPeriodProgress: 42,
 				isReportRevealPhase: false,
-				reportPeriod: 15,
 				phaseLabel: 'Commit',
 				phaseTimeRemaining: 'in a minute'
 			}
 		}, {
-			type: 'CLAIM_PROCEEDS'
-		}, {
 			type: 'UPDATE_BRANCH',
 			branch: { reportPeriod: 19 }
+		}, {
+			type: 'CLAIM_PROCEEDS'
 		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));
-		assert(mockAugurJS.augur.getVotePeriod.calledTwice, `getVotePeriod wasn't called twice (no reset) as expected`);
+		assert(mockAugurJS.augur.getVotePeriod.calledOnce, `getVotePeriod wasn't called once as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
-		assert(mockCheckPeriod.checkPeriod.calledOnce, `checkPeriod wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
 	it(`should collect fees and reveal reports if we're in the second half of the reporting period`, () => {
+		let state = Object.assign({}, testState, {
+			branch: {
+				currentPeriod: 20,
+				currentPeriodProgress: 49,
+				isReportRevealPhase: false,
+				reportPeriod: 18,
+				periodLength: 900
+			}
+		});
+		let store = mockStore(state);
 		mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
 		let mockCB = () => {
 			store.dispatch({
@@ -127,10 +131,12 @@ describe(`modules/app/actions/update-branch.js`, () => {
 				currentPeriod: 20,
 				currentPeriodProgress: 52,
 				isReportRevealPhase: true,
-				reportPeriod: 18,
 				phaseLabel: 'Reveal',
 				phaseTimeRemaining: 'in 7 minutes'
 			}
+		}, {
+			type: 'UPDATE_BRANCH',
+			branch: { reportPeriod: 15 }
 		}, {
 			type: 'CLAIM_PROCEEDS'
 		}, {
@@ -140,7 +146,7 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));
-		assert(mockAugurJS.augur.getVotePeriod.calledThrice, `getVotePeriod wasn't called three times (no reset) as expected`);
+		assert(mockAugurJS.augur.getVotePeriod.calledTwice, `getVotePeriod wasn't called twice (no reset) as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
