@@ -14,7 +14,7 @@ module.exports = {
 
     collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
-        if (branch && branch.branch) {
+        if (branch && branch.constructor === Object) {
             sender = branch.sender;
             periodLength = branch.periodLength;
             onSent = branch.onSent;
@@ -32,13 +32,10 @@ module.exports = {
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            if (self.options.debug.reporting) {
-                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            }
-            return self.transact(tx, onSent, utils.compose(function (res, cb) {
-                if (self.options.debug.reporting) {
+            var prepare = function (res, cb) {
+                // if (self.options.debug.reporting) {
                     console.log("collectFees success:", JSON.stringify(res, null, 2));
-                }
+                // }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -58,7 +55,11 @@ module.exports = {
                         });
                     });
                 });
-            }, onSuccess), onFailed);
+            };
+            // if (self.options.debug.reporting) {
+                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            // }
+            return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
         });
     }
 };

@@ -39,4 +39,4 @@ if [ -L $symlink ]; then
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
-geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --ipcapi "admin,eth,debug,miner,net,txpool,personal,web3,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --ipcapi "admin,eth,debug,miner,net,txpool,personal,web3,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console

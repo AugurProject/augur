@@ -12,6 +12,8 @@ var DEBUG = false;
 
 augur.options.debug.trading = DEBUG;
 
+var DEFAULT_PERIOD_LENGTH = 172800;
+
 var closingBell = new Date();
 closingBell.setHours(20, 0, 0, 0);
 
@@ -21,7 +23,143 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 
 var today = new Date();
 
+var currentPeriod = augur.getCurrentPeriod(DEFAULT_PERIOD_LENGTH);
+var secondsUntilNextPeriod = DEFAULT_PERIOD_LENGTH * (1 - augur.getCurrentPeriodProgress(DEFAULT_PERIOD_LENGTH)/100) + 1;
+var expDateCycle1 = parseInt(Date.now() / 1000, 10) + secondsUntilNextPeriod;
+
 var cannedMarkets = [{
+    description: "Binary Reporting Test Market (Cycle 1): correct answer is Yes",
+    expDate: expDateCycle1,
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "binary"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Categorical Reporting Test Market (Cycle 1): correct answer is E~|>A|B|C|D|E|F|G",
+    expDate: expDateCycle1,
+    minValue: 1,
+    maxValue: 7,
+    numOutcomes: 7,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "categorical"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Scalar Reporting Test Market (Cycle 1): correct answer is 3.1415",
+    expDate: expDateCycle1,
+    minValue: -5,
+    maxValue: 20,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "scalar"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Binary Reporting Test Market (Cycle 2): correct answer is No",
+    expDate: expDateCycle1 + DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "binary"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Categorical Reporting Test Market (Cycle 2): correct answer is A~|>A|B|C|D|E|F|G",
+    expDate: expDateCycle1 + DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 7,
+    numOutcomes: 7,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "categorical"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Scalar Reporting Test Market (Cycle 2): correct answer is -2",
+    expDate: expDateCycle1 + DEFAULT_PERIOD_LENGTH,
+    minValue: -5,
+    maxValue: 20,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "scalar"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Binary Reporting Test Market (Cycle 3): correct answer is Indeterminate",
+    expDate: expDateCycle1 + 2*DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "binary"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Categorical Reporting Test Market (Cycle 3): correct answer is Indeterminate~|>A|B|C|D|E|F|G",
+    expDate: expDateCycle1 + 2*DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 7,
+    numOutcomes: 7,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "categorical"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Scalar Reporting Test Market (Cycle 3): correct answer is Indeterminate",
+    expDate: expDateCycle1 + 2*DEFAULT_PERIOD_LENGTH,
+    minValue: -5,
+    maxValue: 20,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "scalar"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Binary Reporting Test Market (Cycle 4): correct answer is Yes",
+    expDate: expDateCycle1 + 3*DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "binary"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Categorical Reporting Test Market (Cycle 4): correct answer is G~|>A|B|C|D|E|F|G",
+    expDate: expDateCycle1 + 3*DEFAULT_PERIOD_LENGTH,
+    minValue: 1,
+    maxValue: 7,
+    numOutcomes: 7,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "categorical"],
+    extraInfo: "",
+    resolution: ""
+}, {
+    description: "Scalar Reporting Test Market (Cycle 4): correct answer is 0",
+    expDate: expDateCycle1 + 3*DEFAULT_PERIOD_LENGTH,
+    minValue: -5,
+    maxValue: 20,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["reporting", "testing", "scalar"],
+    extraInfo: "",
+    resolution: ""
+}, {
     description: "What will be the status of the U.S. electoral college on January 1, 2020?~|>Unchanged from 2016|Undermined but still in existence (e.g., National Popular Vote bill)|Formally abolished",
     expDate: parseInt(new Date("1/2/2020").getTime() / 1000, 10),
     minValue: 1,
@@ -110,17 +248,6 @@ var cannedMarkets = [{
     extraInfo: "",
     resolution: ""
 }, {
-    description: "Will Tony Sakich win the 2016 annual Augur breakdancing competition?",
-    expDate: parseInt(midnightTomorrow.getTime() / 1000, 10),
-    minValue: 1,
-    maxValue: 2,
-    numOutcomes: 2,
-    takerFee: "0.11",
-    makerFee: "0.001",
-    tags: ["Augur", "breakdancing", "Tony Swish"],
-    extraInfo: "",
-    resolution: "https://www.augur.net"
-}, {
     description: "Will REP tokens be worth more than 100 USD each any time on or before 1.1.2017 on CoinMarketCap?",
     expDate: parseInt(new Date("1/1/2017").getTime() / 1000, 10),
     minValue: 1,
@@ -153,17 +280,6 @@ var cannedMarkets = [{
     extraInfo: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
     tags: ["space", "Dragon", "ISS"],
     resolution: "http://www.spacex.com"
-}, {
-    description: "Will Gary Johnson be included in at least one nationally televised Presidential debate in 2016, in which Hillary Clinton and Donald Trump also participate?",
-    expDate: parseInt(new Date("11/8/2016").getTime() / 1000, 10),
-    minValue: 1,
-    maxValue: 2,
-    numOutcomes: 2,
-    takerFee: "0.02",
-    makerFee: "0.01",
-    extraInfo: "Candidates must be polling at 15% or higher to be included in the Presidential debates.",
-    tags: ["politics", "US elections", "presidential debates"],
-    resolution: ""
 }, {
     description: "Which city will have the highest median single-family home price for September 2017?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
     expDate: parseInt(new Date("10-2-2017").getTime() / 1000, 10),

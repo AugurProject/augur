@@ -447,7 +447,12 @@ module.exports = function () {
             var self = this;
 
             // if this is just a call, use ethrpc's regular invoke method
-            if (!payload.send) return augur.rpc.fire(payload, cb);
+            if (!payload.send) {
+                if (augur.rpc.debug.broadcast) {
+                    console.log("[augur.js] eth_call payload:", payload);
+                }
+                return augur.rpc.fire(payload, cb);
+            }
 
             cb = cb || utils.pass;
             if (!this.account.address || !this.account.privateKey) {
@@ -464,7 +469,7 @@ module.exports = function () {
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
             if (augur.rpc.debug.broadcast) {
-                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
+                console.log("[augur.js] payload:", payload);
             }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
                 packaged.gasPrice = payload.gasPrice;

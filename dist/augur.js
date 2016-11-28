@@ -17116,6 +17116,7 @@ module.exports={
           "branch"
         ], 
         "method": "getEventForkedOver", 
+        "parser": "parseMarket", 
         "returns": "int256", 
         "signature": [
           "int256"
@@ -17148,6 +17149,7 @@ module.exports={
           "branch"
         ], 
         "method": "getMarketsInBranch", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -17680,6 +17682,7 @@ module.exports={
           "reporter"
         ], 
         "method": "getEventsWithSubmittedReport", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -17718,6 +17721,7 @@ module.exports={
           "last"
         ], 
         "method": "getMarketsCreatedByMarketCreator", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -19050,6 +19054,7 @@ module.exports={
           "eventIndex"
         ], 
         "method": "getEvent", 
+        "parser": "parseMarket", 
         "returns": "hash", 
         "signature": [
           "int256", 
@@ -19075,6 +19080,7 @@ module.exports={
           "expDateIndex"
         ], 
         "method": "getEvents", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256", 
@@ -19089,6 +19095,7 @@ module.exports={
           "end"
         ], 
         "method": "getEventsRange", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -20093,6 +20100,7 @@ module.exports={
           "index"
         ], 
         "method": "getMarketEvent", 
+        "parser": "parseMarket", 
         "returns": "int256", 
         "signature": [
           "int256", 
@@ -20104,6 +20112,7 @@ module.exports={
           "market"
         ], 
         "method": "getMarketEvents", 
+        "parser": "parseMarkets", 
         "returns": "hash[]", 
         "signature": [
           "int256"
@@ -20916,6 +20925,7 @@ module.exports={
           "start"
         ], 
         "method": "getEventsToReportOn", 
+        "parser": "parseMarkets", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -42887,7 +42897,12 @@ module.exports = function () {
             var self = this;
 
             // if this is just a call, use ethrpc's regular invoke method
-            if (!payload.send) return augur.rpc.fire(payload, cb);
+            if (!payload.send) {
+                if (augur.rpc.debug.broadcast) {
+                    console.log("[augur.js] eth_call payload:", payload);
+                }
+                return augur.rpc.fire(payload, cb);
+            }
 
             cb = cb || utils.pass;
             if (!this.account.address || !this.account.privateKey) {
@@ -42904,7 +42919,7 @@ module.exports = function () {
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
             if (augur.rpc.debug.broadcast) {
-                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
+                console.log("[augur.js] payload:", payload);
             }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
                 packaged.gasPrice = payload.gasPrice;
@@ -43965,7 +43980,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.9";
+    this.version = "3.1.16";
 
     this.options = {
         debug: {
@@ -44243,7 +44258,7 @@ module.exports = {
                 proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
             }
             var event = {
-                id: rawInfo[index],
+                id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
@@ -44636,7 +44651,7 @@ module.exports = {
 
     collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
-        if (branch && branch.branch) {
+        if (branch && branch.constructor === Object) {
             sender = branch.sender;
             periodLength = branch.periodLength;
             onSent = branch.onSent;
@@ -44654,13 +44669,10 @@ module.exports = {
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            if (self.options.debug.reporting) {
-                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            }
-            return self.transact(tx, onSent, utils.compose(function (res, cb) {
-                if (self.options.debug.reporting) {
+            var prepare = function (res, cb) {
+                // if (self.options.debug.reporting) {
                     console.log("collectFees success:", JSON.stringify(res, null, 2));
-                }
+                // }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -44680,7 +44692,11 @@ module.exports = {
                         });
                     });
                 });
-            }, onSuccess), onFailed);
+            };
+            // if (self.options.debug.reporting) {
+                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+            // }
+            return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
         });
     }
 };
@@ -44969,7 +44985,7 @@ module.exports = {
                     this.decodeTag(marketsArray[shift + 7])
                 ],
                 endDate: parseInt(marketsArray[shift + 8], 16),
-                eventID: marketsArray[shift + 10],
+                eventID: abi.format_int256(marketsArray[shift + 10]),
                 minValue: minValue,
                 maxValue: maxValue,
                 numOutcomes: numOutcomes,
@@ -46202,55 +46218,37 @@ module.exports = {
 
     // report in fixed-point
     encryptReport: function (report, key, salt) {
-        if (this.options.debug.reporting) {
-            console.log('encryptReport params:', report, key, salt);
-        }
         if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
         if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
         if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
         if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        var encryptedReport = abi.prefix_hex(
+        return abi.prefix_hex(
             new Buffer(
                 keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
                 "base64"
             ).toString("hex")
         );
-        if (this.options.debug.reporting) {
-            console.log('encryptReport:', encryptedReport);
-        }
-        return encryptedReport;
     },
 
     // returns plaintext fixed-point report
     decryptReport: function (encryptedReport, key, salt) {
-        if (this.options.debug.reporting) {
-            console.log('decryptReport params:', encryptedReport, key, salt);
-        }
         if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
         if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
         if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
         if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        var decryptedReport = abi.prefix_hex(
+        return abi.prefix_hex(
             keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
         );
-        if (this.options.debug.reporting) {
-            console.log('decryptedReport:', decryptedReport);
-        }
-        return decryptedReport;
     },
 
     parseAndDecryptReport: function (arr, secret) {
         if (!arr || arr.constructor !== Array || arr.length < 2) return null;
         var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
-        var parsedAndDecryptedReport = {
+        return {
             salt: salt,
             report: this.decryptReport(arr[0], secret.derivedKey, salt),
             ethics: (arr.length >= 2) ? arr[2] : false
         };
-        if (this.options.debug.reporting) {
-            console.log('parseAndDecryptReport:', parsedAndDecryptedReport);
-        }
-        return parsedAndDecryptedReport;
     },
 
     getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
@@ -46265,10 +46263,6 @@ module.exports = {
         }
         var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
         tx.params = [branch, expDateIndex, reporter, event];
-        if (this.options.debug.reporting) {
-            console.log('getEncryptedReport secret:', secret);
-            console.log('getEncryptedReport params:', tx.params);
-        }
         return this.fire(tx, callback, this.parseAndDecryptReport, secret);
     },
 
@@ -47218,12 +47212,12 @@ module.exports = {
             if (self.options.debug.reporting) {
                 console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, events) {
+            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, marketsClosed) {
                 if (self.options.debug.reporting) {
-                    console.log("[checkPeriod] penaltyCatchUp:", err, events);
+                    console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
                 }
                 if (err) return callback(err);
-                callback(null, votePeriod);
+                callback(null, votePeriod, marketsClosed);
             });
         });
     },
@@ -47263,6 +47257,9 @@ module.exports = {
 
     penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
         var self = this;
+        if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
+        }
         self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
             lastPeriodPenalized = parseInt(lastPeriodPenalized);
             if (self.options.debug.reporting) {
@@ -47282,7 +47279,7 @@ module.exports = {
                 if (!feesCollected || feesCollected.error) {
                     return callback(feesCollected || "couldn't get fees collected");
                 }
-                self.getNumReportsActual(branch, periodToCheck - 1, sender, function (numReportsActual) {
+                self.getNumReportsActual(branch, periodToCheck, sender, function (numReportsActual) {
                     if (!numReportsActual || numReportsActual.error) {
                         return callback(numReportsActual || "couldn't get num previous period reports");
                     }
@@ -47323,13 +47320,13 @@ module.exports = {
                                     if (self.options.debug.reporting) {
                                         console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                                     }
-                                    callback(null, events);
+                                    callback(null);
                                 },
                                 onFailed: function (e) {
                                     console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                                    callback(null, events);
+                                    callback(null);
                                     // if (e.error === -32000) {
-                                    //     return callback(null, events);
+                                    //     return callback(null);
                                     // }
                                     // callback(e);
                                 }
@@ -47338,6 +47335,7 @@ module.exports = {
                         if (self.options.debug.reporting) {
                             console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
                         }
+                        var marketsClosed = [];
                         async.eachSeries(events, function (event, nextEvent) {
                             self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
                                 if (self.options.debug.reporting) {
@@ -47355,15 +47353,19 @@ module.exports = {
                                         if (self.options.debug.reporting) {
                                             console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                         }
-                                        self.getNumMarkets(event, function (numMarkets) {
-                                            if (!numMarkets || numMarkets.error) {
-                                                return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
-                                            }
-                                            if (parseInt(numMarkets) === 1) {
-                                                return nextEvent(null);
-                                            }
-                                            self.closeExtraMarkets(branch, event, sender, nextEvent);
-                                        });
+                                        // self.getNumMarkets(event, function (numMarkets) {
+                                        //     if (!numMarkets || numMarkets.error) {
+                                        //         return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
+                                        //     }
+                                        //     if (parseInt(numMarkets) === 1) {
+                                        //         return nextEvent(null);
+                                        //     }
+                                            self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                                                if (err) return nextEvent(err);
+                                                marketsClosed = marketsClosed.concat(markets);
+                                                nextEvent(null);
+                                            });
+                                        // });
                                     },
                                     onFailed: function (e) {
                                         console.error("[penaltyCatchUp] penalizeWrong error:", e);
@@ -47377,7 +47379,7 @@ module.exports = {
                             });
                         }, function (e) {
                             if (e) return callback(e);
-                            callback(null, events);
+                            callback(null, marketsClosed);
                         });
                     });
                 });
@@ -47391,10 +47393,13 @@ module.exports = {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
         }
         self.getMarkets(event, function (markets) {
-            if (!markets) return callback("no markets found for " + event);
+            if (!markets || !markets.length) {
+                return callback("no markets found for " + event);
+            }
             if (markets && markets.error) return callback(markets);
-            if (markets.length <= 1) return callback(null);
-            async.eachSeries(markets.slice(1), function (market, nextMarket) {
+            // if (markets.length <= 1) return callback(null);
+            // async.eachSeries(markets.slice(1), function (market, nextMarket) {
+            async.eachSeries(markets, function (market, nextMarket) {
                 self.closeMarket({
                     branch: branch,
                     market: market,
@@ -47415,7 +47420,10 @@ module.exports = {
                         nextMarket(e);
                     }
                 });
-            }, callback);
+            }, function (e) {
+                if (e) return callback(e);
+                callback(null, markets);
+            });
         });
     },
 
@@ -49027,7 +49035,7 @@ module.exports = {
         augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            // if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
+            if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
                 console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
                 console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
@@ -49036,7 +49044,7 @@ module.exports = {
                 console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
                 console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
-            // }
+            }
             augur.rpc.clear();
         }
         return augur;
@@ -49605,6 +49613,9 @@ module.exports = {
 
     requests: 1,
 
+    // Hook for transaction callbacks
+    txRelay: null,
+
     txs: {},
 
     rawTxs: {},
@@ -49614,6 +49625,22 @@ module.exports = {
     notifications: {},
 
     gasPrice: 20000000000,
+
+    registerTxRelay: function (txRelay) {
+        this.txRelay = txRelay;
+    },
+
+    unregisterTxRelay: function () {
+        this.txRelay = null;
+    },
+
+    wrapTxRelayCallback: function (status, callback) {
+        var self = this;
+        return function (response) {
+            if (isFunction(callback)) callback(response);
+            self.txRelay({status: status, payload: response});
+        };
+    },
 
     unmarshal: function (string, returns, stride, init) {
         var elements, array, position;
@@ -51070,7 +51097,7 @@ module.exports = {
 
             // send the transaction hash and return value back
             // to the client, using the onSent callback
-            onSent({txHash: txHash, callReturn: callReturn});
+            onSent({hash: txHash, txHash: txHash, callReturn: callReturn});
 
             self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
                 if (err) return onFailed(err);
@@ -51347,19 +51374,26 @@ module.exports = {
         if (!isFunction(onSent)) return this.transactSync(payload);
 
         // asynchronous / non-blocking transact sequence
-        onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
-        onFailed = (isFunction(onFailed)) ? onFailed : noop;
+        var cb = (isFunction(this.txRelay)) ? {
+            sent: this.wrapTxRelayCallback("sent", onSent),
+            success: this.wrapTxRelayCallback("success", onSuccess),
+            failed: this.wrapTxRelayCallback("failed", onFailed)
+        } : {
+            sent: onSent,
+            success: (isFunction(onSuccess)) ? onSuccess : noop,
+            failed: (isFunction(onFailed)) ? onFailed : noop
+        };
         if (payload.mutable || payload.returns === "null") {
-            return this.transactAsync(payload, null, onSent, onSuccess, onFailed);
+            return this.transactAsync(payload, null, cb.sent, cb.success, cb.failed);
         }
         this.fire(payload, function (callReturn) {
             if (self.debug.tx) console.debug("callReturn:", callReturn);
             if (callReturn === undefined || callReturn === null) {
-                return onFailed(errors.NULL_CALL_RETURN);
+                return cb.failed(errors.NULL_CALL_RETURN);
             } else if (callReturn.error) {
-                return onFailed(callReturn);
+                return cb.failed(callReturn);
             }
-            self.transactAsync(payload, callReturn, onSent, onSuccess, onFailed);
+            self.transactAsync(payload, callReturn, cb.sent, cb.success, cb.failed);
         });
     }
 };
