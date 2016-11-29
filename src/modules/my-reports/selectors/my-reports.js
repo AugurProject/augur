@@ -28,7 +28,7 @@ export default function () {
 			if (marketOutcome !== '0') {
 				outcome = selectMarketOutcome(eventsWithAccountReport[eventId].marketOutcome, marketId);
 			}
-			const outcomePercentage = eventsWithAccountReport[eventId].proportionCorrect && formatPercent(eventsWithAccountReport[eventId].proportionCorrect) || null;
+			const outcomePercentage = eventsWithAccountReport[eventId].proportionCorrect && formatPercent(abi.bignum(eventsWithAccountReport[eventId].proportionCorrect).times(100)) || null;
 			const reported = selectMarketOutcome(eventsWithAccountReport[eventId].accountReport, marketId);
 			const isReportEqual = outcome != null && reported != null && outcome === reported || null; // Can be done here
 			const feesEarned = calculateFeesEarned(eventsWithAccountReport[eventId]);
