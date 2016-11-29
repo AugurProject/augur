@@ -65,8 +65,7 @@ const MarketDetails = (p) => {
 			{!!p.reportedOutcome &&
 				<div className="reported-outcome">
 					<hr />
-					<h4>This market is closed.</h4>
-					Reported outcome: {p.reportedOutcome}
+					<center><h4>This market is closed.</h4></center>
 				</div>
 			}
 		</div>
