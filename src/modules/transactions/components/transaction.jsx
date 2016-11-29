@@ -13,6 +13,7 @@ const Transaction = (p) => {
 	const nodes = {};
 
 	const marketDescription = () => {
+		if (!p.data.description && !p.data.marketDescription) return <span />;
 		const shortDescription = p.data.description ?
 			p.data.description.substring(0, 100) + ((p.data.description.length > 100 && '...') || '') :
 			p.data.marketDescription.substring(0, 100) + ((p.data.marketDescription.length > 100 && '...') || '');

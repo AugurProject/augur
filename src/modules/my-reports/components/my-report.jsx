@@ -10,8 +10,14 @@ const Report = p => (
 			<div className="portfolio-pair">
 				<span className="report-main-group-title">outcome: </span>
 				<span className="report-main-group-title-outcome">
-					{p.outcome ?
-						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span> : '-'
+					{p.outcome && p.outcomePercentage && p.outcomePercentage.value &&
+						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span>
+					}
+					{p.outcome && !p.outcomePercentage &&
+						<span>{p.outcome}</span>
+					}
+					{!p.outcome &&
+						'-'
 					}
 				</span>
 			</div>

@@ -15,10 +15,28 @@ const MarketDetails = (p) => {
 	return (
 		<div className="market-details market-content-scrollable">
 			<ul className="properties">
-				{outcomeName &&
+				{p.type === 'binary' && outcomeName &&
 					<li className="property outcome">
-						<span className="property-label">Result</span>
+						<span className="property-label">result</span>
 						<span className="property-value">{outcomeName} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
+					</li>
+				}
+				{p.type !== 'binary' && outcomeName &&
+					<li className="property outcome">
+						<span className="property-label">result</span>
+						<span className="property-value">{outcomeName}</span>
+					</li>
+				}
+				{p.type === 'binary' && !outcomeName && p.reportedOutcome &&
+					<li className="property outcome">
+						<span className="property-label">result</span>
+						<span className="property-value">{p.reportedOutcome} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
+					</li>
+				}
+				{p.type !== 'binary' && !outcomeName && p.reportedOutcome &&
+					<li className="property outcome">
+						<span className="property-label">result</span>
+						<span className="property-value">{p.reportedOutcome}</span>
 					</li>
 				}
 				{p.author != null &&
@@ -66,6 +84,7 @@ const MarketDetails = (p) => {
 				<div className="reported-outcome">
 					<hr />
 					<center><h4>This market is closed.</h4></center>
+					<hr />
 				</div>
 			}
 		</div>
