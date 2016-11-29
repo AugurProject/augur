@@ -53,6 +53,7 @@ module.exports = {
 
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
+        console.log('claimMarketsProceeds:', branch, markets);
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
@@ -71,10 +72,7 @@ module.exports = {
                     return nextMarket();
                 }
                 if (self.options.debug.reporting) {
-                    console.log('claimProceeds:', {
-                        branch: branch,
-                        market: market
-                    });
+                    console.log('claimProceeds:', {branch: branch, market: market});
                 }
                 self.claimProceeds({
                     branch: branch,
@@ -117,7 +115,7 @@ module.exports = {
             if (self.options.debug.reporting) {
                 console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, marketsClosed) {
+            self.penaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err, marketsClosed) {
                 if (self.options.debug.reporting) {
                     console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
                 }
@@ -160,7 +158,7 @@ module.exports = {
         });
     },
 
-    penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
@@ -193,6 +191,12 @@ module.exports = {
                         console.log("[penaltyCatchUp] numReportsActual:", numReportsActual);
                     }
                     if (parseInt(feesCollected) === 0 || parseInt(numReportsActual) === 0) {
+                        if (self.getCurrentPeriodProgress(periodLength) >= 50) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
+                            }
+                            return callback(null);
+                        }
                         return self.penalizationCatchup({
                             branch: branch,
                             sender: sender,

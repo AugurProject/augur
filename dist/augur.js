@@ -21374,7 +21374,7 @@ module.exports={
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "CompositeGetters": "0xe574be585571337819ddba37b7ca84ab69b90e96", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
@@ -21450,7 +21450,7 @@ module.exports={
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "CompositeGetters": "0x7c8c360e897ecf0fc377a1eace3ce5ebcc12fa70", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
@@ -21604,6 +21604,16 @@ module.exports={
     "sendReputation": {
         "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
         "-2": "Receiving address doesn't exist"
+    },
+    "shortAsk": {
+        "0": "market doesn't exist",
+        "-1": "amount/price bad",
+        "-2": "oracle only branch",
+        "-3": "bad outcome to trade",
+        "-4": "not enough shares",
+        "-5": "best bid exceeds ask price",
+        "10": "insufficient balance",
+        "21": "trade already exists"
     },
     "short_sell": {
         "-1": "trade doesn't exist",
@@ -43980,7 +43990,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.1.16";
+    this.version = "3.2.0";
 
     this.options = {
         debug: {
@@ -44205,7 +44215,7 @@ module.exports = {
     },
 
     parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 8;
+        var EVENTS_FIELDS = 9;
         var OUTCOMES_FIELDS = 3;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
@@ -44254,8 +44264,8 @@ module.exports = {
             if (parseInt(rawInfo[index + 2], 16) !== 0) {
                 outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
             }
-            if (parseInt(rawInfo[index + 7], 16) !== 0) {
-                proportionCorrect = abi.unfix(rawInfo[index + 7], "string");
+            if (parseInt(rawInfo[index + 8], 16) !== 0) {
+                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
             }
             var event = {
                 id: abi.format_int256(rawInfo[index]),
@@ -44263,7 +44273,8 @@ module.exports = {
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
-                isEthical: abi.unfix(abi.hex(rawInfo[index + 6], true), "number") || undefined
+                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string"),
+                isEthical: abi.unfix(abi.hex(rawInfo[index + 7], true), "number") || undefined
             };
             info.reportedOutcome = outcome;
             info.proportionCorrect = proportionCorrect;
@@ -47148,6 +47159,7 @@ module.exports = {
 
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
+        console.log('claimMarketsProceeds:', branch, markets);
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
@@ -47166,10 +47178,7 @@ module.exports = {
                     return nextMarket();
                 }
                 if (self.options.debug.reporting) {
-                    console.log('claimProceeds:', {
-                        branch: branch,
-                        market: market
-                    });
+                    console.log('claimProceeds:', {branch: branch, market: market});
                 }
                 self.claimProceeds({
                     branch: branch,
@@ -47212,7 +47221,7 @@ module.exports = {
             if (self.options.debug.reporting) {
                 console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, votePeriod - 1, sender, function (err, marketsClosed) {
+            self.penaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err, marketsClosed) {
                 if (self.options.debug.reporting) {
                     console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
                 }
@@ -47255,7 +47264,7 @@ module.exports = {
         });
     },
 
-    penaltyCatchUp: function (branch, periodToCheck, sender, callback) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
@@ -47288,6 +47297,12 @@ module.exports = {
                         console.log("[penaltyCatchUp] numReportsActual:", numReportsActual);
                     }
                     if (parseInt(feesCollected) === 0 || parseInt(numReportsActual) === 0) {
+                        if (self.getCurrentPeriodProgress(periodLength) >= 50) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
+                            }
+                            return callback(null);
+                        }
                         return self.penalizationCatchup({
                             branch: branch,
                             sender: sender,
@@ -49634,11 +49649,16 @@ module.exports = {
         this.txRelay = null;
     },
 
-    wrapTxRelayCallback: function (status, callback) {
+    wrapTxRelayCallback: function (status, payload, callback) {
         var self = this;
         return function (response) {
             if (isFunction(callback)) callback(response);
-            self.txRelay({status: status, payload: response});
+            self.txRelay({
+                type: payload.method || "sendEther",
+                status: status,
+                data: payload,
+                response: response
+            });
         };
     },
 
@@ -51375,9 +51395,9 @@ module.exports = {
 
         // asynchronous / non-blocking transact sequence
         var cb = (isFunction(this.txRelay)) ? {
-            sent: this.wrapTxRelayCallback("sent", onSent),
-            success: this.wrapTxRelayCallback("success", onSuccess),
-            failed: this.wrapTxRelayCallback("failed", onFailed)
+            sent: this.wrapTxRelayCallback("sent", payload, onSent),
+            success: this.wrapTxRelayCallback("success", payload, onSuccess),
+            failed: this.wrapTxRelayCallback("failed", payload, onFailed)
         } : {
             sent: onSent,
             success: (isFunction(onSuccess)) ? onSuccess : noop,
