@@ -27,16 +27,16 @@ module.exports = {
             value: abi.fix(value, "hex"),
             returns: "null",
             gas: "0xcf08"
-        }, onSent, onSuccess);
+        }, onSent, onSuccess, onFailed);
     },
-    
+
     depositEther: function (value, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Cash.depositEther);
         var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
         tx.value = abi.fix(unpacked.params[0], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
-    
+
     getCashBalance: function (account, callback) {
         return this.Cash.balance(account, callback);
     },
