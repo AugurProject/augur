@@ -53,6 +53,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 29, 2016</h3>
+			<ol>
+				<li>
+					Attached the initial transact payload and full Ethereum network response data objects to the txRelay callback argument in ethrpc.
+				</li>
+				<li>
+					Percentage reporting on correct outcome is now only displayed for binary markets, since we do not presently have access to this information for categorical and scalar markets.
+				</li>
+				<li>
+					Fixed an array indexing error in getMarketInfo function on the compositeGetters contract.
+				</li>
+				<li>
+					Reports are now revealed in parallel (up to 5 at a time).
+				</li>
+				<li>
+					Registered sell error codes for the shortAsk method.  This fixes the bug where a short ask order would correctly fail (due to orders being &quot;crossed&quot;), but the transactions display would incorrectly show the short ask as successful.
+				</li>
+				<li>
+					Removed deprecated callbacks from augur.js.
+				</li>
+				<li>
+					Fixed augur.js sendEther method to correctly include an onFailed callback.
+				</li>
+			</ol>
 			<h3>November 28, 2016</h3>
 			<ol>
 				<li>
