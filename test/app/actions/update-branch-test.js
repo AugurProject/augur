@@ -100,6 +100,9 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		}, {
 			type: 'CLAIM_PROCEEDS'
 		}, {
+			type: 'UPDATE_BRANCH',
+			branch: { reportPeriod: 19 }
+		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));

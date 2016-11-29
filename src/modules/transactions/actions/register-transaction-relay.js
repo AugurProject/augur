@@ -4,7 +4,7 @@ import { rpc } from '../../../services/augurjs';
 export function registerTransactionRelay() {
 	return (dispatch, getState) => {
 		rpc.registerTxRelay((tx) => {
-			console.debug('rpc.txRelay:', tx);
+			console.log('rpc.txRelay:', tx);
 			// if (tx && tx.response && tx.response.hash) {
 			// 	dispatch(updateTransactionsData({ [tx.response.hash]: tx }));
 			// }

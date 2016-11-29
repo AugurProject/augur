@@ -53,8 +53,6 @@ export function syncBranch(cb) {
 			}
 			const reportPeriod = parseInt(period, 10);
 			dispatch(updateBranch({ reportPeriod }));
-			const expectedReportPeriod = reportingCycleInfo.currentPeriod - 1;
-			const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
 			if (loginAccount.address) dispatch(claimProceeds());
 
 			// check if period needs to be incremented / penalizeWrong
