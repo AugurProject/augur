@@ -17,7 +17,7 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	const fakeUpdateAssets = { updateAssets: () => {} };
 	const fakeFormatRealEther = { formatRealEther: () => {} };
 
-	sinon.stub(fakeAugurJS, 'sendCashFrom', (toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed) => {
+	sinon.stub(fakeAugurJS, 'sendCashFrom', (toAddress, amount, fromAddress, onSent, onSuccess, onFailed) => {
 		onSent();
 		onSuccess({ hash: '0xdeadbeef', timestamp: 1, gasFees: 10 });
 		onFailed({ message: `This is a failure message...You're a FAILURE!` });
