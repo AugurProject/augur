@@ -1,4 +1,5 @@
 import async from 'async';
+import { constants } from '../../../services/augurjs';
 import { updateReports } from '../../reports/actions/update-reports';
 import { addRevealReportTransaction } from '../../transactions/actions/add-reveal-report-transaction';
 
@@ -21,7 +22,7 @@ export function revealReports(cb) {
 						return obj;
 					});
 				if (revealableReports && revealableReports.length && loginAccount.id) {
-					async.eachSeries(revealableReports, (report, nextReport) => {
+					async.eachLimit(revealableReports, constants.PARALLEL_LIMIT, (report, nextReport) => {
 						let type;
 						if (report.isScalar) {
 							type = 'scalar';
