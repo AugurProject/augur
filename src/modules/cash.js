@@ -27,7 +27,7 @@ module.exports = {
             value: abi.fix(value, "hex"),
             returns: "null",
             gas: "0xcf08"
-        }, onSent, onSuccess);
+        }, onSent, onSuccess, onFailed);
     },
     
     depositEther: function (value, onSent, onSuccess, onFailed) {

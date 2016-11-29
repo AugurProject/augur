@@ -11,7 +11,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed, onConfirmed) {
+    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
         // branch: hash id
         // recver: ethereum address of recipient
         // value: number -> fixed-point
@@ -22,7 +22,6 @@ module.exports = {
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
-            onConfirmed = branch.onConfirmed;
             branch = branch.branch;
         }
         var tx = clone(this.tx.SendReputation.sendReputation);
@@ -46,7 +45,7 @@ module.exports = {
                     if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
                         return onFailed({error: "-3", message: "cannot send reputation until redistribution is complete"});
                     }
-                    self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed, onConfirmed);
+                    self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
                 });
             });
         };
@@ -54,7 +53,6 @@ module.exports = {
         this.transact(tx,
             onSent,
             utils.compose(prepare, onSuccess),
-            onFailed,
-            utils.compose(prepare, onConfirmed));
+            onFailed);
     }
 };

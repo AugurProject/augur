@@ -51,7 +51,7 @@ var test = {
                 expected.params = clone(t.params);
             }
             var transact = augur.transact;
-            augur.transact = function (tx, onSent, onSuccess, onFailed, onConfirmed) {
+            augur.transact = function (tx, onSent, onSuccess, onFailed) {
                 if (tx.timeout) delete tx.timeout;
                 if (!tx.params) tx.params = [];
                 if (tx.params && tx.params.constructor === Array &&
@@ -65,7 +65,7 @@ var test = {
                 next();
             };
             var labels = augur.tx[t.contract][t.method].inputs || [];
-            var params = {onSent: noop, onSuccess: noop, onFailed: noop, onConfirmed: noop};
+            var params = {onSent: noop, onSuccess: noop, onFailed: noop};
             for (i = 0; i < labels.length; ++i) {
                 if (params[labels[i]]) continue;
                 params[labels[i]] = t.params[i];
@@ -80,7 +80,7 @@ var test = {
                 expected.params = clone(t.params);
             }
             var transact = augur.transact;
-            augur.transact = function (tx, onSent, onSuccess, onFailed, onConfirmed) {
+            augur.transact = function (tx, onSent, onSuccess, onFailed) {
                 if (tx.timeout) delete tx.timeout;
                 if (!tx.params) tx.params = [];
                 if (tx.params && tx.params.constructor === Array &&
