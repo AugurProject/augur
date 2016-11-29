@@ -385,7 +385,7 @@ describe("penaltyCatchUp", function () {
                 });
                 callback(null, state.markets[event]);
             };
-            augur.penaltyCatchUp(t.params.branchID, t.params.periodToCheck, t.params.sender, function (err) {
+            augur.penaltyCatchUp(t.params.branchID, t.params.periodLength, t.params.periodToCheck, t.params.sender, function (err) {
                 assert.isNull(err);
                 t.assertions(sequence, t.state, state);
                 done();
@@ -397,7 +397,8 @@ describe("penaltyCatchUp", function () {
         params: {
             branchID: "0xb1",
             sender: "0xb0b",
-            periodToCheck: 7
+            periodToCheck: 7,
+            periodLength: 100
         },
         state: {
             periodLength: {

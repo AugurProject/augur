@@ -11,7 +11,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
+    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         var self = this;
         if (description && description.parent) {
             periodLength = description.periodLength;
@@ -21,7 +21,6 @@ module.exports = {
             onSent = description.onSent;
             onSuccess = description.onSuccess;
             onFailed = description.onFailed;
-            onConfirmed = description.onConfirmed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
@@ -69,12 +68,11 @@ module.exports = {
                     onSuccess(response);
                 });
             },
-            onFailed: onFailed,
-            onConfirmed: onConfirmed
+            onFailed: onFailed
         });
     },
 
-    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
+    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
@@ -83,7 +81,6 @@ module.exports = {
             onSent = description.onSent;
             onSuccess = description.onSuccess;
             onFailed = description.onFailed;
-            onConfirmed = description.onConfirmed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
@@ -95,6 +92,6 @@ module.exports = {
             abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+        return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
