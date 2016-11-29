@@ -39,6 +39,7 @@ export function syncBranch(cb) {
 	return (dispatch, getState) => {
 		const callback = cb || ((e) => e && console.log('syncBranch:', e));
 		const { branch, loginAccount } = getState();
+		if (!branch.periodLength) return callback(null);
 		const reportingCycleInfo = reportingCycle(branch.periodLength);
 		const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
 		dispatch(updateBranch({ ...reportingCycleInfo }));
@@ -55,9 +56,6 @@ export function syncBranch(cb) {
 			const expectedReportPeriod = reportingCycleInfo.currentPeriod - 1;
 			const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
 			if (loginAccount.address) dispatch(claimProceeds());
-
-			// if report period is caught up, callback and exit
-			if (isCaughtUpReportPeriod) return callback(null);
 
 			// check if period needs to be incremented / penalizeWrong
 			// needs to be called

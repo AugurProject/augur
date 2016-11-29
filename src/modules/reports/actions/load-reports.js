@@ -15,7 +15,9 @@ export function loadReports(callback) {
 		const branchID = branch.id;
 		const marketIDs = [];
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
-			console.log('eventsToReportOn:', eventsToReportOn);
+			if (augur.options.debug.reporting) {
+				console.log('eventsToReportOn:', eventsToReportOn);
+			}
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
 				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
 				augur.getMarket(eventID, 0, (marketID) => {

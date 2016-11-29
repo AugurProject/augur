@@ -151,7 +151,7 @@ export function loadAdditionalEventData(events) {
 			augur.getOutcome(eventID, (marketOutcome) => {
 				if (marketOutcome) {
 					updateEvent(eventID, { marketOutcome });
-					augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && updateEvent(eventID, { proportionCorrect }));
+					augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
 				}
 			});
 			// augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
