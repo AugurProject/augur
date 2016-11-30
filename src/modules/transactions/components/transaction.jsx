@@ -218,7 +218,17 @@ const Transaction = (p) => {
 			break;
 		}
 		default:
-			nodes.description = (<span className="description">{p.type}</span>);
+			nodes.description = (
+				<span className="description">
+					<span className="action">{p.type}</span>
+					<br />
+					{marketDescription()}
+					<br />
+					{p.timestamp &&
+						<ValueTimestamp className="property-value" {...p.timestamp} />
+					}
+				</span>
+			);
 			break;
 	}
 
