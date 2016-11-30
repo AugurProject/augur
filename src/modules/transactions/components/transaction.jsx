@@ -14,7 +14,13 @@ const Transaction = (p) => {
 
 	const buildDescription = (fullDescription) => {
 		if (!fullDescription) return <span />;
-		const shortDescription = fullDescription.substring(0, 100) + ((fullDescription.length > 100 && '...') || '');
+		let shortDescription;
+		if (fullDescription.indexOf('\n') > -1) {
+			shortDescription = fullDescription.split('\n').map(text => <li key={text}>{text}</li>);
+			shortDescription = <ul>{shortDescription}</ul>;
+		} else {
+			shortDescription = fullDescription.substring(0, 100) + ((fullDescription.length > 100 && '...') || '');
+		}
 		const description = (isShortened) => {
 			if (isShortened) {
 				return (
