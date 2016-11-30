@@ -58,7 +58,7 @@ describe("Reporting sequence", function () {
             password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
             unlockable = augur.rpc.accounts();
             description = madlibs.adjective() + " " + madlibs.noun();
-            periodLength = 900;
+            periodLength = 1200;
             report = {
                 binary: 2,
                 categorical: 3,

@@ -16702,6 +16702,7 @@ module.exports={
           "event", 
           "amount"
         ], 
+        "label": "Adj Fork Bond Paid", 
         "method": "adjForkBondPaid", 
         "returns": "int256", 
         "signature": [
@@ -16714,6 +16715,7 @@ module.exports={
           "sender", 
           "event"
         ], 
+        "label": "Do Round Two Refund", 
         "method": "doRoundTwoRefund", 
         "returns": "int256", 
         "signature": [
@@ -16725,6 +16727,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Bond Amount", 
         "method": "getBondAmount", 
         "returns": "int256", 
         "signature": [
@@ -16735,6 +16738,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Bond Paid", 
         "method": "getBondPaid", 
         "returns": "int256", 
         "signature": [
@@ -16745,6 +16749,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Bond Poster", 
         "method": "getBondPoster", 
         "returns": "address", 
         "signature": [
@@ -16755,6 +16760,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Bond Returned", 
         "method": "getBondReturned", 
         "returns": "int256", 
         "signature": [
@@ -16765,6 +16771,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Final", 
         "method": "getFinal", 
         "returns": "number", 
         "signature": [
@@ -16775,6 +16782,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Fork Bond Paid", 
         "method": "getForkBondPaid", 
         "returns": "int256", 
         "signature": [
@@ -16785,6 +16793,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Fork Bond Poster", 
         "method": "getForkBondPoster", 
         "returns": "int256", 
         "signature": [
@@ -16795,6 +16804,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Forked Over Ethicality", 
         "method": "getForkedOverEthicality", 
         "returns": "int256", 
         "signature": [
@@ -16805,6 +16815,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Moved", 
         "method": "getMoved", 
         "returns": "int256", 
         "signature": [
@@ -16815,6 +16826,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Original Branch", 
         "method": "getOriginalBranch", 
         "returns": "int256", 
         "signature": [
@@ -16825,6 +16837,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Original Ethicality", 
         "method": "getOriginalEthicality", 
         "returns": "int256", 
         "signature": [
@@ -16835,6 +16848,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Original Outcome", 
         "method": "getOriginalOutcome", 
         "returns": "int256", 
         "signature": [
@@ -16845,6 +16859,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Original Vote Period", 
         "method": "getOriginalVotePeriod", 
         "returns": "number", 
         "signature": [
@@ -16856,6 +16871,7 @@ module.exports={
           "branch", 
           "forkPeriod"
         ], 
+        "label": "Get Resolved", 
         "method": "getResolved", 
         "returns": "int256", 
         "signature": [
@@ -16867,6 +16883,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Round Two", 
         "method": "getRoundTwo", 
         "returns": "number", 
         "signature": [
@@ -16878,6 +16895,7 @@ module.exports={
           "event", 
           "amount"
         ], 
+        "label": "Increase Bond Paid", 
         "method": "increaseBondPaid", 
         "returns": "int256", 
         "send": true, 
@@ -16891,6 +16909,7 @@ module.exports={
           "event", 
           "amount"
         ], 
+        "label": "Set Bond Amount", 
         "method": "setBondAmount", 
         "returns": "int256", 
         "send": true, 
@@ -16904,6 +16923,7 @@ module.exports={
           "event", 
           "bondPoster"
         ], 
+        "label": "Set Bond Poster", 
         "method": "setBondPoster", 
         "returns": "number", 
         "send": true, 
@@ -16916,6 +16936,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Bond Returned", 
         "method": "setBondReturned", 
         "returns": "int256", 
         "send": true, 
@@ -16927,6 +16948,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Final", 
         "method": "setFinal", 
         "returns": "number", 
         "send": true, 
@@ -16939,6 +16961,7 @@ module.exports={
           "event", 
           "poster"
         ], 
+        "label": "Set Fork Bond Poster", 
         "method": "setForkBondPoster", 
         "returns": "int256", 
         "send": true, 
@@ -16951,6 +16974,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Forked Over Ethicality", 
         "method": "setForkedOverEthicality", 
         "returns": "int256", 
         "send": true, 
@@ -16962,6 +16986,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Moved", 
         "method": "setMoved", 
         "returns": "int256", 
         "send": true, 
@@ -16974,6 +16999,7 @@ module.exports={
           "event", 
           "branch"
         ], 
+        "label": "Set Original Branch", 
         "method": "setOriginalBranch", 
         "returns": "int256", 
         "send": true, 
@@ -16987,6 +17013,7 @@ module.exports={
           "event", 
           "ethicality"
         ], 
+        "label": "Set Original Ethicality", 
         "method": "setOriginalEthicality", 
         "returns": "number", 
         "send": true, 
@@ -17000,6 +17027,7 @@ module.exports={
           "event", 
           "originalOutcome"
         ], 
+        "label": "Set Original Outcome", 
         "method": "setOriginalOutcome", 
         "returns": "number", 
         "send": true, 
@@ -17013,6 +17041,7 @@ module.exports={
           "event", 
           "period"
         ], 
+        "label": "Set Original Vote Period", 
         "method": "setOriginalVotePeriod", 
         "returns": "number", 
         "send": true, 
@@ -17027,6 +17056,7 @@ module.exports={
           "forkPeriod", 
           "winner"
         ], 
+        "label": "Set Resolved", 
         "method": "setResolved", 
         "returns": "int256", 
         "send": true, 
@@ -17041,6 +17071,7 @@ module.exports={
           "event", 
           "roundTwo"
         ], 
+        "label": "Set Round Two", 
         "method": "setRoundTwo", 
         "returns": "number", 
         "send": true, 
@@ -17054,6 +17085,7 @@ module.exports={
           "event", 
           "amt"
         ], 
+        "label": "Set Round Two Refund", 
         "method": "setRoundTwoRefund", 
         "returns": "int256", 
         "send": true, 
@@ -17069,6 +17101,7 @@ module.exports={
           "branch", 
           "market"
         ], 
+        "label": "Add Market To Branch", 
         "method": "addMarketToBranch", 
         "returns": "int256", 
         "send": true, 
@@ -17081,6 +17114,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Base Reporters", 
         "method": "getBaseReporters", 
         "returns": "int256", 
         "signature": [
@@ -17091,6 +17125,7 @@ module.exports={
         "inputs": [
           "branchNumber"
         ], 
+        "label": "Get Branch By Num", 
         "method": "getBranchByNum", 
         "returns": "hash", 
         "signature": [
@@ -17098,6 +17133,7 @@ module.exports={
         ]
       }, 
       "getBranches": {
+        "label": "Get Branches", 
         "method": "getBranches", 
         "returns": "hash[]"
       }, 
@@ -17105,6 +17141,7 @@ module.exports={
         "inputs": [
           "ID"
         ], 
+        "label": "Get Creation Date", 
         "method": "getCreationDate", 
         "returns": "int256", 
         "signature": [
@@ -17115,6 +17152,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Event Forked Over", 
         "method": "getEventForkedOver", 
         "parser": "parseMarket", 
         "returns": "int256", 
@@ -17126,6 +17164,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Fork Period", 
         "method": "getForkPeriod", 
         "returns": "int256", 
         "signature": [
@@ -17137,6 +17176,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Initial Balance", 
         "method": "getInitialBalance", 
         "returns": "int256", 
         "signature": [
@@ -17148,6 +17188,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Markets In Branch", 
         "method": "getMarketsInBranch", 
         "parser": "parseMarkets", 
         "returns": "hash[]", 
@@ -17159,6 +17200,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Min Trading Fee", 
         "method": "getMinTradingFee", 
         "returns": "unfix", 
         "signature": [
@@ -17166,6 +17208,7 @@ module.exports={
         ]
       }, 
       "getNumBranches": {
+        "label": "Get Num Branches", 
         "method": "getNumBranches", 
         "returns": "number"
       }, 
@@ -17173,6 +17216,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Num Markets Branch", 
         "method": "getNumMarketsBranch", 
         "returns": "number", 
         "signature": [
@@ -17183,6 +17227,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Oracle Only", 
         "method": "getOracleOnly", 
         "returns": "int256", 
         "signature": [
@@ -17193,6 +17238,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Parent", 
         "method": "getParent", 
         "returns": "int256", 
         "signature": [
@@ -17203,6 +17249,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Parent Period", 
         "method": "getParentPeriod", 
         "returns": "int256", 
         "signature": [
@@ -17213,6 +17260,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Period Length", 
         "method": "getPeriodLength", 
         "returns": "int", 
         "signature": [
@@ -17225,6 +17273,7 @@ module.exports={
           "initial", 
           "last"
         ], 
+        "label": "Get Some Markets In Branch", 
         "method": "getSomeMarketsInBranch", 
         "returns": "int256[]", 
         "signature": [
@@ -17237,6 +17286,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Vote Period", 
         "method": "getVotePeriod", 
         "returns": "int", 
         "signature": [
@@ -17247,6 +17297,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Increment Period", 
         "method": "incrementPeriod", 
         "returns": "number", 
         "send": true, 
@@ -17255,6 +17306,7 @@ module.exports={
         ]
       }, 
       "initDefaultBranch": {
+        "label": "Init Default Branch", 
         "method": "initDefaultBranch", 
         "returns": "number", 
         "send": true
@@ -17269,6 +17321,7 @@ module.exports={
           "parentPeriod", 
           "parent"
         ], 
+        "label": "Initialize Branch", 
         "method": "initializeBranch", 
         "returns": "int256", 
         "send": true, 
@@ -17287,6 +17340,7 @@ module.exports={
           "branch", 
           "num"
         ], 
+        "label": "Set Base Reporters", 
         "method": "setBaseReporters", 
         "returns": "int256", 
         "send": true, 
@@ -17300,6 +17354,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Set Event Forked Over", 
         "method": "setEventForkedOver", 
         "returns": "int256", 
         "send": true, 
@@ -17312,6 +17367,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Set Fork Period", 
         "method": "setForkPeriod", 
         "returns": "int256", 
         "send": true, 
@@ -17325,6 +17381,7 @@ module.exports={
           "period", 
           "balance"
         ], 
+        "label": "Set Initial Balance", 
         "method": "setInitialBalance", 
         "returns": "int256", 
         "send": true, 
@@ -17344,6 +17401,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Bid", 
         "method": "buy", 
         "mutable": true, 
         "returns": "int256", 
@@ -17360,6 +17418,7 @@ module.exports={
         "inputs": [
           "trade_id"
         ], 
+        "label": "Cancel", 
         "method": "cancel", 
         "mutable": true, 
         "returns": "number", 
@@ -17376,6 +17435,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Ask", 
         "method": "sell", 
         "mutable": true, 
         "returns": "int256", 
@@ -17395,6 +17455,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Short Ask", 
         "method": "shortAsk", 
         "mutable": true, 
         "returns": "int256", 
@@ -17415,6 +17476,7 @@ module.exports={
           "ID", 
           "amount"
         ], 
+        "label": "Add Cash", 
         "method": "addCash", 
         "returns": "number", 
         "send": true, 
@@ -17427,6 +17489,7 @@ module.exports={
         "inputs": [
           "address"
         ], 
+        "label": "Balance", 
         "method": "balance", 
         "returns": "unfix", 
         "signature": [
@@ -17434,6 +17497,8 @@ module.exports={
         ]
       }, 
       "depositEther": {
+        "description": "Convert Ether to tradeable Ether token", 
+        "label": "Deposit Ether", 
         "method": "depositEther", 
         "returns": "number", 
         "send": true
@@ -17442,6 +17507,7 @@ module.exports={
         "inputs": [
           "account"
         ], 
+        "label": "Initiate Owner", 
         "method": "initiateOwner", 
         "returns": "number", 
         "send": true, 
@@ -17457,6 +17523,7 @@ module.exports={
           "recver", 
           "value"
         ], 
+        "label": "Send Tokens", 
         "method": "send", 
         "returns": "unfix", 
         "send": true, 
@@ -17474,6 +17541,7 @@ module.exports={
           "value", 
           "from"
         ], 
+        "label": "Send Tokens", 
         "method": "sendFrom", 
         "returns": "unfix", 
         "send": true, 
@@ -17491,6 +17559,7 @@ module.exports={
           "address", 
           "balance"
         ], 
+        "label": "Set Cash", 
         "method": "setCash", 
         "returns": "number", 
         "send": true, 
@@ -17504,6 +17573,7 @@ module.exports={
           "ID", 
           "amount"
         ], 
+        "label": "Subtract Cash", 
         "method": "subtractCash", 
         "returns": "int256", 
         "signature": [
@@ -17512,6 +17582,7 @@ module.exports={
         ]
       }, 
       "withdrawEther": {
+        "description": "Convert tradeable Ether token to Ether", 
         "fixed": [
           1
         ], 
@@ -17519,6 +17590,7 @@ module.exports={
           "to", 
           "value"
         ], 
+        "label": "Withdraw Ether", 
         "method": "withdrawEther", 
         "returns": "number", 
         "send": true, 
@@ -17530,10 +17602,12 @@ module.exports={
     }, 
     "CloseMarket": {
       "claimProceeds": {
+        "description": "Claim trading proceeds from closed market", 
         "inputs": [
           "branch", 
           "market"
         ], 
+        "label": "Claim Trading Payout", 
         "method": "claimProceeds", 
         "returns": "number", 
         "send": true, 
@@ -17548,6 +17622,7 @@ module.exports={
           "market", 
           "sender"
         ], 
+        "label": "Close Market", 
         "method": "closeMarket", 
         "mutable": true, 
         "returns": "number", 
@@ -17568,6 +17643,7 @@ module.exports={
           "categoricalPointFive", 
           "numOutcomes"
         ], 
+        "label": "One Outcome", 
         "method": "oneOutcome", 
         "returns": "int256", 
         "signature": [
@@ -17587,6 +17663,7 @@ module.exports={
           "event", 
           "sender"
         ], 
+        "label": "Two Outcomes", 
         "method": "twoOutcomes", 
         "returns": "int256", 
         "signature": [
@@ -17599,10 +17676,12 @@ module.exports={
     }, 
     "CollectFees": {
       "collectFees": {
+        "description": "Collect Reporting fees for previous Reporting cycle", 
         "inputs": [
           "branch", 
           "sender"
         ], 
+        "label": "Collect Reporting Fees", 
         "method": "collectFees", 
         "returns": "number", 
         "send": true, 
@@ -17622,6 +17701,7 @@ module.exports={
           "market", 
           "amount"
         ], 
+        "label": "Buy Complete Sets", 
         "method": "buyCompleteSets", 
         "mutable": true, 
         "returns": "hash[]", 
@@ -17640,6 +17720,7 @@ module.exports={
           "market", 
           "amount"
         ], 
+        "label": "Sell Complete Sets", 
         "method": "sellCompleteSets", 
         "mutable": true, 
         "returns": "hash[]", 
@@ -17656,6 +17737,7 @@ module.exports={
           "marketIDs", 
           "account"
         ], 
+        "label": "Batch Get Market Info", 
         "method": "batchGetMarketInfo", 
         "returns": "hash[]", 
         "signature": [
@@ -17668,6 +17750,7 @@ module.exports={
           "marketID", 
           "account"
         ], 
+        "label": "Get Account Order Book", 
         "method": "getAccountOrderBook", 
         "returns": "int256[]", 
         "signature": [
@@ -17681,6 +17764,7 @@ module.exports={
           "period", 
           "reporter"
         ], 
+        "label": "Get Events With Submitted Report", 
         "method": "getEventsWithSubmittedReport", 
         "parser": "parseMarkets", 
         "returns": "int256[]", 
@@ -17694,6 +17778,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Market Creator Fees Collected", 
         "method": "getMarketCreatorFeesCollected", 
         "returns": "unfix", 
         "signature": [
@@ -17705,6 +17790,7 @@ module.exports={
           "marketID", 
           "account"
         ], 
+        "label": "Get Market Info", 
         "method": "getMarketInfo", 
         "parser": "validateMarketInfo", 
         "returns": "hash[]", 
@@ -17720,6 +17806,7 @@ module.exports={
           "initial", 
           "last"
         ], 
+        "label": "Get Markets Created By Market Creator", 
         "method": "getMarketsCreatedByMarketCreator", 
         "parser": "parseMarkets", 
         "returns": "int256[]", 
@@ -17738,6 +17825,7 @@ module.exports={
           "volumeMin", 
           "volumeMax"
         ], 
+        "label": "Get Markets Info", 
         "method": "getMarketsInfo", 
         "returns": "hash[]", 
         "signature": [
@@ -17754,6 +17842,7 @@ module.exports={
           "offset", 
           "numTradesToLoad"
         ], 
+        "label": "Get Order Book", 
         "method": "getOrderBook", 
         "parser": "parseOrderBook", 
         "returns": "hash[]", 
@@ -17768,6 +17857,7 @@ module.exports={
           "market", 
           "account"
         ], 
+        "label": "Get Position In Market", 
         "method": "getPositionInMarket", 
         "parser": "parsePositionInMarket", 
         "returns": "int256[]", 
@@ -17779,9 +17869,11 @@ module.exports={
     }, 
     "Consensus": {
       "incrementPeriodAfterReporting": {
+        "description": "Advance to the next Reporting cycle", 
         "inputs": [
           "branch"
         ], 
+        "label": "Next Reporting Cycle", 
         "method": "incrementPeriodAfterReporting", 
         "returns": "number", 
         "send": true, 
@@ -17790,10 +17882,12 @@ module.exports={
         ]
       }, 
       "penalizeWrong": {
+        "description": "Compare your report to the consensus outcome", 
         "inputs": [
           "branch", 
           "event"
         ], 
+        "label": "Check Report Against Consensus", 
         "method": "penalizeWrong", 
         "mutable": true, 
         "returns": "number", 
@@ -17810,6 +17904,7 @@ module.exports={
           "sender", 
           "refunder"
         ], 
+        "label": "Do Refund", 
         "method": "doRefund", 
         "returns": "int256", 
         "signature": [
@@ -17821,6 +17916,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Base Reporters Last Period", 
         "method": "getBaseReportersLastPeriod", 
         "returns": "int256", 
         "signature": [
@@ -17832,6 +17928,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Denominator", 
         "method": "getDenominator", 
         "returns": "int256", 
         "signature": [
@@ -17844,6 +17941,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Fee First", 
         "method": "getFeeFirst", 
         "returns": "int256", 
         "signature": [
@@ -17857,6 +17955,7 @@ module.exports={
           "address", 
           "period"
         ], 
+        "label": "Get Fees Collected", 
         "method": "getFeesCollected", 
         "returns": "number", 
         "signature": [
@@ -17871,6 +17970,7 @@ module.exports={
           "address", 
           "period"
         ], 
+        "label": "Get Not Enough Penalized", 
         "method": "getNotEnoughPenalized", 
         "returns": "int256", 
         "signature": [
@@ -17886,6 +17986,7 @@ module.exports={
           "sender", 
           "event"
         ], 
+        "label": "Get Penalized", 
         "method": "getPenalized", 
         "returns": "int256", 
         "signature": [
@@ -17901,6 +18002,7 @@ module.exports={
           "period", 
           "sender"
         ], 
+        "label": "Get Penalized Num", 
         "method": "getPenalizedNum", 
         "returns": "int256", 
         "signature": [
@@ -17914,6 +18016,7 @@ module.exports={
           "branch", 
           "sender"
         ], 
+        "label": "Get Penalized Up To", 
         "method": "getPenalizedUpTo", 
         "returns": "int", 
         "signature": [
@@ -17926,6 +18029,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Period Balance", 
         "method": "getPeriodBalance", 
         "returns": "int256", 
         "signature": [
@@ -17938,6 +18042,7 @@ module.exports={
           "branch", 
           "reporter"
         ], 
+        "label": "Get Rep Redistribution Done", 
         "method": "getRepRedistributionDone", 
         "returns": "number", 
         "signature": [
@@ -17951,6 +18056,7 @@ module.exports={
           "votePeriod", 
           "reporter"
         ], 
+        "label": "Get Slashed", 
         "method": "getSlashed", 
         "returns": "int256", 
         "signature": [
@@ -17965,6 +18071,7 @@ module.exports={
           "period", 
           "amount"
         ], 
+        "label": "Increase Denominator", 
         "method": "increaseDenominator", 
         "returns": "int256", 
         "signature": [
@@ -17980,6 +18087,7 @@ module.exports={
           "sender", 
           "amount"
         ], 
+        "label": "Increase Penalized Num", 
         "method": "increasePenalizedNum", 
         "returns": "int256", 
         "signature": [
@@ -17994,6 +18102,7 @@ module.exports={
           "branch", 
           "amount"
         ], 
+        "label": "Set Base Reporters Last Period", 
         "method": "setBaseReportersLastPeriod", 
         "returns": "int256", 
         "send": true, 
@@ -18008,6 +18117,7 @@ module.exports={
           "period", 
           "val"
         ], 
+        "label": "Set Fee First", 
         "method": "setFeeFirst", 
         "returns": "int256", 
         "send": true, 
@@ -18023,6 +18133,7 @@ module.exports={
           "address", 
           "period"
         ], 
+        "label": "Set Fees Collected", 
         "method": "setFeesCollected", 
         "returns": "int256", 
         "send": true, 
@@ -18038,6 +18149,7 @@ module.exports={
           "address", 
           "period"
         ], 
+        "label": "Set Not Enough Penalized", 
         "method": "setNotEnoughPenalized", 
         "returns": "int256", 
         "send": true, 
@@ -18054,6 +18166,7 @@ module.exports={
           "sender", 
           "event"
         ], 
+        "label": "Set Penalized", 
         "method": "setPenalized", 
         "returns": "int256", 
         "send": true, 
@@ -18070,6 +18183,7 @@ module.exports={
           "sender", 
           "period"
         ], 
+        "label": "Set Penalized Up To", 
         "method": "setPenalizedUpTo", 
         "returns": "number", 
         "send": true, 
@@ -18085,6 +18199,7 @@ module.exports={
           "period", 
           "balance"
         ], 
+        "label": "Set Period Balance", 
         "method": "setPeriodBalance", 
         "send": true, 
         "signature": [
@@ -18098,6 +18213,7 @@ module.exports={
           "refunder", 
           "amt"
         ], 
+        "label": "Set Refund", 
         "method": "setRefund", 
         "returns": "int256", 
         "send": true, 
@@ -18112,6 +18228,7 @@ module.exports={
           "votePeriod", 
           "reporter"
         ], 
+        "label": "Set Slashed", 
         "method": "setSlashed", 
         "returns": "int256", 
         "send": true, 
@@ -18131,6 +18248,7 @@ module.exports={
           "minTradingFee", 
           "oracleOnly"
         ], 
+        "label": "Fork Reputation", 
         "method": "createSubbranch", 
         "returns": "hash", 
         "send": true, 
@@ -18154,6 +18272,7 @@ module.exports={
           "numOutcomes", 
           "resolution"
         ], 
+        "label": "Create Event", 
         "method": "createEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18179,6 +18298,7 @@ module.exports={
           "makerFees", 
           "extraInfo"
         ], 
+        "label": "Create Market", 
         "method": "createMarket", 
         "mutable": true, 
         "returns": "int256", 
@@ -18211,6 +18331,7 @@ module.exports={
           "makerFees", 
           "extraInfo"
         ], 
+        "label": "Create Market", 
         "method": "createSingleEventMarket", 
         "mutable": true, 
         "returns": "hash", 
@@ -18236,6 +18357,7 @@ module.exports={
           "branch", 
           "market"
         ], 
+        "label": "Push Market Forward", 
         "method": "pushMarketForward", 
         "returns": "number", 
         "send": true, 
@@ -18251,6 +18373,7 @@ module.exports={
           "tradingFee", 
           "makerFees"
         ], 
+        "label": "Update Trading Fee", 
         "method": "updateTradingFee", 
         "returns": "number", 
         "send": true, 
@@ -18267,6 +18390,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Determine Winning Outcomes", 
         "method": "determineWinningOutcomes", 
         "returns": "int256[]", 
         "send": true, 
@@ -18281,6 +18405,7 @@ module.exports={
           "branch", 
           "votingPeriodEvent"
         ], 
+        "label": "Resolve Binary", 
         "method": "resolveBinary", 
         "returns": "int256", 
         "send": true, 
@@ -18300,6 +18425,7 @@ module.exports={
           "branch", 
           "votingPeriodEvent"
         ], 
+        "label": "Resolve Categorical Or Scalar", 
         "method": "resolveCategoricalOrScalar", 
         "returns": "int256", 
         "send": true, 
@@ -18319,6 +18445,7 @@ module.exports={
           "event", 
           "marketID"
         ], 
+        "label": "Add Market", 
         "method": "addMarket", 
         "returns": "int256", 
         "send": true, 
@@ -18331,6 +18458,7 @@ module.exports={
         "inputs": [
           "period"
         ], 
+        "label": "Add Past24", 
         "method": "addPast24", 
         "returns": "int256", 
         "send": true, 
@@ -18342,6 +18470,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Bond", 
         "method": "getBond", 
         "returns": "int256", 
         "signature": [
@@ -18352,6 +18481,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Branch", 
         "method": "getBranch", 
         "returns": "int256", 
         "signature": [
@@ -18362,6 +18492,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Ethical", 
         "method": "getEthical", 
         "returns": "int256", 
         "signature": [
@@ -18372,6 +18503,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Ethics", 
         "method": "getEthics", 
         "returns": "int256", 
         "signature": [
@@ -18382,6 +18514,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Event Branch", 
         "method": "getEventBranch", 
         "returns": "hash", 
         "signature": [
@@ -18392,6 +18525,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Event Info", 
         "method": "getEventInfo", 
         "parser": "parseEventInfo", 
         "returns": "hash[]", 
@@ -18403,6 +18537,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Event Pushed Up", 
         "method": "getEventPushedUp", 
         "returns": "int256", 
         "signature": [
@@ -18413,6 +18548,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Expiration", 
         "method": "getExpiration", 
         "returns": "number", 
         "signature": [
@@ -18423,6 +18559,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Fork Ethicality", 
         "method": "getForkEthicality", 
         "returns": "int256", 
         "signature": [
@@ -18433,6 +18570,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Fork Outcome", 
         "method": "getForkOutcome", 
         "returns": "int256", 
         "signature": [
@@ -18443,6 +18581,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Forked", 
         "method": "getForked", 
         "returns": "int256", 
         "signature": [
@@ -18453,6 +18592,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Forked Done", 
         "method": "getForkedDone", 
         "returns": "int256", 
         "signature": [
@@ -18464,6 +18604,7 @@ module.exports={
           "event", 
           "marketIndex"
         ], 
+        "label": "Get Market", 
         "method": "getMarket", 
         "parser": "parseMarket", 
         "returns": "int256", 
@@ -18476,6 +18617,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Markets", 
         "method": "getMarkets", 
         "parser": "parseMarkets", 
         "returns": "hash[]", 
@@ -18487,6 +18629,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Max Value", 
         "method": "getMaxValue", 
         "returns": "unfix", 
         "signature": [
@@ -18497,6 +18640,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Min Value", 
         "method": "getMinValue", 
         "returns": "unfix", 
         "signature": [
@@ -18507,6 +18651,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Num Markets", 
         "method": "getNumMarkets", 
         "returns": "number", 
         "signature": [
@@ -18517,6 +18662,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Num Outcomes", 
         "method": "getNumOutcomes", 
         "returns": "number", 
         "signature": [
@@ -18527,6 +18673,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Original Expiration", 
         "method": "getOriginalExpiration", 
         "returns": "int256", 
         "signature": [
@@ -18537,6 +18684,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Outcome", 
         "method": "getOutcome", 
         "returns": "unfix", 
         "signature": [
@@ -18547,6 +18695,7 @@ module.exports={
         "inputs": [
           "period"
         ], 
+        "label": "Get Past24", 
         "method": "getPast24", 
         "returns": "int256", 
         "signature": [
@@ -18557,6 +18706,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Rejected", 
         "method": "getRejected", 
         "returns": "int256", 
         "signature": [
@@ -18567,6 +18717,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Rejected Period", 
         "method": "getRejectedPeriod", 
         "returns": "int256", 
         "signature": [
@@ -18577,6 +18728,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Reporting Threshold", 
         "method": "getReportingThreshold", 
         "returns": "unfix", 
         "signature": [
@@ -18587,6 +18739,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Resolution", 
         "method": "getResolution", 
         "returns": "string", 
         "signature": [
@@ -18597,6 +18750,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Resolution Length", 
         "method": "getResolutionLength", 
         "returns": "int", 
         "signature": [
@@ -18607,6 +18761,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Uncaught Outcome", 
         "method": "getUncaughtOutcome", 
         "returns": "unfix", 
         "signature": [
@@ -18617,6 +18772,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Getmode", 
         "method": "getmode", 
         "returns": "unfix", 
         "signature": [
@@ -18633,6 +18789,7 @@ module.exports={
           "numOutcomes", 
           "resolution"
         ], 
+        "label": "Initialize Event", 
         "method": "initializeEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18651,6 +18808,7 @@ module.exports={
           "event", 
           "bond"
         ], 
+        "label": "Set Bond", 
         "method": "setBond", 
         "returns": "int256", 
         "send": true, 
@@ -18664,6 +18822,7 @@ module.exports={
           "event", 
           "branch"
         ], 
+        "label": "Set Branch", 
         "method": "setBranch", 
         "returns": "int256", 
         "send": true, 
@@ -18677,6 +18836,7 @@ module.exports={
           "event", 
           "ethicality"
         ], 
+        "label": "Set Ethics", 
         "method": "setEthics", 
         "returns": "int256", 
         "send": true, 
@@ -18690,6 +18850,7 @@ module.exports={
           "event", 
           "val"
         ], 
+        "label": "Set Event Pushed Up", 
         "method": "setEventPushedUp", 
         "returns": "int256", 
         "send": true, 
@@ -18703,6 +18864,7 @@ module.exports={
           "event", 
           "date"
         ], 
+        "label": "Set Expiration", 
         "method": "setExpiration", 
         "returns": "int256", 
         "send": true, 
@@ -18715,6 +18877,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Fork Done", 
         "method": "setForkDone", 
         "returns": "int256", 
         "send": true, 
@@ -18727,6 +18890,7 @@ module.exports={
           "event", 
           "value"
         ], 
+        "label": "Set Fork Ethicality", 
         "method": "setForkEthicality", 
         "returns": "int256", 
         "send": true, 
@@ -18740,6 +18904,7 @@ module.exports={
           "event", 
           "value"
         ], 
+        "label": "Set Fork Outcome", 
         "method": "setForkOutcome", 
         "returns": "int256", 
         "send": true, 
@@ -18752,6 +18917,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Forked", 
         "method": "setForked", 
         "returns": "int256", 
         "send": true, 
@@ -18764,6 +18930,7 @@ module.exports={
           "event", 
           "date"
         ], 
+        "label": "Set Original Expiration", 
         "method": "setOriginalExpiration", 
         "returns": "int256", 
         "send": true, 
@@ -18777,6 +18944,7 @@ module.exports={
           "ID", 
           "outcome"
         ], 
+        "label": "Set Outcome", 
         "method": "setOutcome", 
         "returns": "number", 
         "send": true, 
@@ -18790,6 +18958,7 @@ module.exports={
           "event", 
           "period"
         ], 
+        "label": "Set Rejected", 
         "method": "setRejected", 
         "returns": "int256", 
         "send": true, 
@@ -18803,6 +18972,7 @@ module.exports={
           "event", 
           "threshold"
         ], 
+        "label": "Set Threshold", 
         "method": "setThreshold", 
         "returns": "int256", 
         "send": true, 
@@ -18816,6 +18986,7 @@ module.exports={
           "event", 
           "outcome"
         ], 
+        "label": "Set Uncaught Outcome", 
         "method": "setUncaughtOutcome", 
         "returns": "int256", 
         "send": true, 
@@ -18829,6 +19000,7 @@ module.exports={
           "event", 
           "mode"
         ], 
+        "label": "Setmode", 
         "method": "setmode", 
         "returns": "int256", 
         "send": true, 
@@ -18846,6 +19018,7 @@ module.exports={
           "eventID", 
           "subsidy"
         ], 
+        "label": "Add Event", 
         "method": "addEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18863,6 +19036,7 @@ module.exports={
           "event", 
           "amount"
         ], 
+        "label": "Add Rep Event", 
         "method": "addRepEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18880,6 +19054,7 @@ module.exports={
           "eventID", 
           "sender"
         ], 
+        "label": "Add Report To Event", 
         "method": "addReportToEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18895,6 +19070,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Add Reporters Paid So Far", 
         "method": "addReportersPaidSoFar", 
         "returns": "int256", 
         "send": true, 
@@ -18908,6 +19084,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Add Round Two", 
         "method": "addRoundTwo", 
         "returns": "int256", 
         "send": true, 
@@ -18923,6 +19100,7 @@ module.exports={
           "report", 
           "amount"
         ], 
+        "label": "Add To Weight Of Report", 
         "method": "addToWeightOfReport", 
         "returns": "int256", 
         "send": true, 
@@ -18939,6 +19117,7 @@ module.exports={
           "expIndex", 
           "amount"
         ], 
+        "label": "Adjust Period Share Value Outstanding", 
         "method": "adjustPeriodShareValueOutstanding", 
         "returns": "int256", 
         "send": true, 
@@ -18954,6 +19133,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Delete Event", 
         "method": "deleteEvent", 
         "returns": "int256", 
         "send": true, 
@@ -18969,6 +19149,7 @@ module.exports={
           "period", 
           "sender"
         ], 
+        "label": "Get After Rep", 
         "method": "getAfterRep", 
         "returns": "unfix", 
         "signature": [
@@ -18983,6 +19164,7 @@ module.exports={
           "period", 
           "sender"
         ], 
+        "label": "Get Before Rep", 
         "method": "getBeforeRep", 
         "returns": "unfix", 
         "signature": [
@@ -18996,6 +19178,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Get Current Mode", 
         "method": "getCurrentMode", 
         "returns": "int256", 
         "signature": [
@@ -19008,6 +19191,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Get Current Mode Items", 
         "method": "getCurrentModeItems", 
         "returns": "int256", 
         "signature": [
@@ -19022,6 +19206,7 @@ module.exports={
           "reporter", 
           "event"
         ], 
+        "label": "Get Encrypted Report", 
         "method": "getEncryptedReport", 
         "returns": "int256[]", 
         "signature": [
@@ -19038,6 +19223,7 @@ module.exports={
           "event", 
           "sender"
         ], 
+        "label": "Get Ethic Report", 
         "method": "getEthicReport", 
         "returns": "unfix", 
         "signature": [
@@ -19053,6 +19239,7 @@ module.exports={
           "expDateIndex", 
           "eventIndex"
         ], 
+        "label": "Get Event", 
         "method": "getEvent", 
         "parser": "parseMarket", 
         "returns": "hash", 
@@ -19067,6 +19254,7 @@ module.exports={
           "period", 
           "eventID"
         ], 
+        "label": "Get Event Index", 
         "method": "getEventIndex", 
         "returns": "number", 
         "signature": [
@@ -19079,6 +19267,7 @@ module.exports={
           "branch", 
           "expDateIndex"
         ], 
+        "label": "Get Events", 
         "method": "getEvents", 
         "parser": "parseMarkets", 
         "returns": "hash[]", 
@@ -19094,6 +19283,7 @@ module.exports={
           "start", 
           "end"
         ], 
+        "label": "Get Events Range", 
         "method": "getEventsRange", 
         "parser": "parseMarkets", 
         "returns": "int256[]", 
@@ -19110,6 +19300,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Get Lesser Report Num", 
         "method": "getLesserReportNum", 
         "returns": "unfix", 
         "signature": [
@@ -19123,6 +19314,7 @@ module.exports={
           "branch", 
           "expDateIndex"
         ], 
+        "label": "Get Num Events To Report On", 
         "method": "getNumEventsToReportOn", 
         "returns": "int256", 
         "signature": [
@@ -19135,6 +19327,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Num Removed", 
         "method": "getNumRemoved", 
         "returns": "int256", 
         "signature": [
@@ -19148,6 +19341,7 @@ module.exports={
           "votePeriod", 
           "sender"
         ], 
+        "label": "Get Num Reports Actual", 
         "method": "getNumReportsActual", 
         "returns": "number", 
         "signature": [
@@ -19162,6 +19356,7 @@ module.exports={
           "votePeriod", 
           "eventID"
         ], 
+        "label": "Get Num Reports Event", 
         "method": "getNumReportsEvent", 
         "returns": "int256", 
         "signature": [
@@ -19175,6 +19370,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Num Required", 
         "method": "getNumRequired", 
         "returns": "int256", 
         "signature": [
@@ -19187,6 +19383,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Get Num Round Two", 
         "method": "getNumRoundTwo", 
         "returns": "int256", 
         "signature": [
@@ -19199,6 +19396,7 @@ module.exports={
           "branch", 
           "expDateIndex"
         ], 
+        "label": "Get Number Events", 
         "method": "getNumberEvents", 
         "returns": "number", 
         "signature": [
@@ -19212,6 +19410,7 @@ module.exports={
           "period", 
           "sender"
         ], 
+        "label": "Get Period Dormant Rep", 
         "method": "getPeriodDormantRep", 
         "returns": "int256", 
         "signature": [
@@ -19226,6 +19425,7 @@ module.exports={
           "votePeriod", 
           "sender"
         ], 
+        "label": "Get Period Rep Constant", 
         "method": "getPeriodRepConstant", 
         "returns": "unfix", 
         "signature": [
@@ -19240,6 +19440,7 @@ module.exports={
           "votePeriod", 
           "event"
         ], 
+        "label": "Get Rep Event", 
         "method": "getRepEvent", 
         "returns": "int256", 
         "signature": [
@@ -19255,6 +19456,7 @@ module.exports={
           "event", 
           "sender"
         ], 
+        "label": "Get Report", 
         "method": "getReport", 
         "returns": "int256", 
         "signature": [
@@ -19271,6 +19473,7 @@ module.exports={
           "reporter", 
           "event"
         ], 
+        "label": "Get Report Hash", 
         "method": "getReportHash", 
         "returns": "int256", 
         "signature": [
@@ -19285,6 +19488,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Get Reporters Paid So Far", 
         "method": "getReportersPaidSoFar", 
         "returns": "int256", 
         "signature": [
@@ -19296,6 +19500,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Get Required", 
         "method": "getRequired", 
         "returns": "int256", 
         "signature": [
@@ -19307,6 +19512,7 @@ module.exports={
           "branch", 
           "expIndex"
         ], 
+        "label": "Get Share Value", 
         "method": "getShareValue", 
         "returns": "int256", 
         "signature": [
@@ -19320,6 +19526,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Get Subsidy", 
         "method": "getSubsidy", 
         "returns": "int256", 
         "signature": [
@@ -19334,6 +19541,7 @@ module.exports={
           "event", 
           "report"
         ], 
+        "label": "Get Weight Of Report", 
         "method": "getWeightOfReport", 
         "returns": "int256", 
         "signature": [
@@ -19347,6 +19555,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Move Event", 
         "method": "moveEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19360,6 +19569,7 @@ module.exports={
           "to", 
           "value"
         ], 
+        "label": "Refund Cost", 
         "method": "refundCost", 
         "returns": "int256", 
         "send": true, 
@@ -19373,6 +19583,7 @@ module.exports={
           "branch", 
           "period"
         ], 
+        "label": "Remove Event", 
         "method": "removeEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19388,6 +19599,7 @@ module.exports={
           "rep", 
           "sender"
         ], 
+        "label": "Set After Rep", 
         "method": "setAfterRep", 
         "returns": "int256", 
         "send": true, 
@@ -19405,6 +19617,7 @@ module.exports={
           "rep", 
           "sender"
         ], 
+        "label": "Set Before Rep", 
         "method": "setBeforeRep", 
         "returns": "int256", 
         "send": true, 
@@ -19421,6 +19634,7 @@ module.exports={
           "event", 
           "mode"
         ], 
+        "label": "Set Current Mode", 
         "method": "setCurrentMode", 
         "returns": "int256", 
         "send": true, 
@@ -19436,6 +19650,7 @@ module.exports={
           "event", 
           "modeReport"
         ], 
+        "label": "Set Current Mode Items", 
         "method": "setCurrentModeItems", 
         "returns": "int256", 
         "send": true, 
@@ -19455,6 +19670,7 @@ module.exports={
           "ethics", 
           "event"
         ], 
+        "label": "Set Encrypted Report", 
         "method": "setEncryptedReport", 
         "returns": "number", 
         "send": true, 
@@ -19476,6 +19692,7 @@ module.exports={
           "ethics", 
           "sender"
         ], 
+        "label": "Set Ethic Report", 
         "method": "setEthicReport", 
         "returns": "int256", 
         "send": true, 
@@ -19493,6 +19710,7 @@ module.exports={
           "period", 
           "event"
         ], 
+        "label": "Set Event Required", 
         "method": "setEventRequired", 
         "returns": "int256", 
         "send": true, 
@@ -19509,6 +19727,7 @@ module.exports={
           "event", 
           "num"
         ], 
+        "label": "Set Lesser Report Num", 
         "method": "setLesserReportNum", 
         "returns": "int256", 
         "send": true, 
@@ -19523,6 +19742,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Set Num Events To Report On", 
         "method": "setNumEventsToReportOn", 
         "returns": "int256", 
         "send": true, 
@@ -19537,6 +19757,7 @@ module.exports={
           "eventID", 
           "num"
         ], 
+        "label": "Set Num Reports Event", 
         "method": "setNumReportsEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19554,6 +19775,7 @@ module.exports={
           "rep", 
           "sender"
         ], 
+        "label": "Set Period Dormant Rep", 
         "method": "setPeriodDormantRep", 
         "returns": "int256", 
         "send": true, 
@@ -19571,6 +19793,7 @@ module.exports={
           "sender", 
           "value"
         ], 
+        "label": "Set Period Rep Constant", 
         "method": "setPeriodRepConstant", 
         "returns": "int256", 
         "send": true, 
@@ -19589,6 +19812,7 @@ module.exports={
           "report", 
           "sender"
         ], 
+        "label": "Set Report", 
         "method": "setReport", 
         "returns": "int256", 
         "send": true, 
@@ -19608,6 +19832,7 @@ module.exports={
           "reportHash", 
           "event"
         ], 
+        "label": "Set Report Hash", 
         "method": "setReportHash", 
         "returns": "int256", 
         "send": true, 
@@ -19622,6 +19847,7 @@ module.exports={
     }, 
     "Faucets": {
       "cashFaucet": {
+        "label": "Cash Faucet", 
         "method": "cashFaucet", 
         "returns": "number", 
         "send": true
@@ -19631,6 +19857,7 @@ module.exports={
           "parent", 
           "branch"
         ], 
+        "label": "Claim Initial Rep", 
         "method": "claimInitialRep", 
         "returns": "int256", 
         "send": true, 
@@ -19640,9 +19867,11 @@ module.exports={
         ]
       }, 
       "fundNewAccount": {
+        "description": "Request testnet Ether and Reputation", 
         "inputs": [
           "branch"
         ], 
+        "label": "Fund Account", 
         "method": "fundNewAccount", 
         "returns": "number", 
         "send": true, 
@@ -19654,6 +19883,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Reputation Faucet", 
         "method": "reputationFaucet", 
         "returns": "number", 
         "send": true, 
@@ -19668,6 +19898,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Penalize On Forked Event", 
         "method": "penalizeOnForkedEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19680,6 +19911,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Proportion Correct Fork Event", 
         "method": "proportionCorrectForkEvent", 
         "returns": "unfix", 
         "signature": [
@@ -19692,6 +19924,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Exchange Rate", 
         "method": "exchangeRate", 
         "returns": "int256", 
         "signature": [
@@ -19704,6 +19937,7 @@ module.exports={
           "branch", 
           "forkedOverEthicality"
         ], 
+        "label": "Fork", 
         "method": "fork", 
         "returns": "int256", 
         "send": true, 
@@ -19717,6 +19951,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Move event", 
         "method": "move_event", 
         "returns": "int256", 
         "send": true, 
@@ -19729,6 +19964,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Resolve Fork Event", 
         "method": "resolveForkEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19742,6 +19978,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Resolve Forked Event", 
         "method": "resolveForkedEvent", 
         "returns": "int256", 
         "send": true, 
@@ -19754,6 +19991,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Resolve fork", 
         "method": "resolve_fork", 
         "returns": "int256", 
         "send": true, 
@@ -19767,6 +20005,7 @@ module.exports={
         "inputs": [
           "x"
         ], 
+        "label": "Fx exp", 
         "method": "fx_exp", 
         "returns": "int256", 
         "signature": [
@@ -19777,6 +20016,7 @@ module.exports={
         "inputs": [
           "x"
         ], 
+        "label": "Fx log", 
         "method": "fx_log", 
         "returns": "int256", 
         "signature": [
@@ -19787,6 +20027,7 @@ module.exports={
         "inputs": [
           "n"
         ], 
+        "label": "Sqrt", 
         "method": "sqrt", 
         "returns": "int256", 
         "signature": [
@@ -19799,6 +20040,7 @@ module.exports={
         "inputs": [
           "ID"
         ], 
+        "label": "Get Creation Fee", 
         "method": "getCreationFee", 
         "returns": "unfix", 
         "signature": [
@@ -19809,6 +20051,7 @@ module.exports={
         "inputs": [
           "ID"
         ], 
+        "label": "Get Creator", 
         "method": "getCreator", 
         "returns": "address", 
         "signature": [
@@ -19819,6 +20062,7 @@ module.exports={
         "inputs": [
           "ID"
         ], 
+        "label": "Get Description", 
         "method": "getDescription", 
         "returns": "string", 
         "signature": [
@@ -19829,6 +20073,7 @@ module.exports={
         "inputs": [
           "ID"
         ], 
+        "label": "Get Description Length", 
         "method": "getDescriptionLength", 
         "returns": "int", 
         "signature": [
@@ -19842,6 +20087,7 @@ module.exports={
           "creator", 
           "fee"
         ], 
+        "label": "Set Info", 
         "method": "setInfo", 
         "returns": "number", 
         "send": true, 
@@ -19862,6 +20108,7 @@ module.exports={
           "eventID", 
           "sender"
         ], 
+        "label": "Make Hash", 
         "method": "makeHash", 
         "returns": "hash", 
         "signature": [
@@ -19881,6 +20128,7 @@ module.exports={
           "report", 
           "ethics"
         ], 
+        "label": "Reveal Report", 
         "method": "submitReport", 
         "mutable": true, 
         "returns": "number", 
@@ -19900,6 +20148,7 @@ module.exports={
           "encryptedSalt", 
           "ethics"
         ], 
+        "label": "Commit Report", 
         "method": "submitReportHash", 
         "returns": "number", 
         "send": true, 
@@ -19926,6 +20175,7 @@ module.exports={
           "roundTwo", 
           "balance"
         ], 
+        "label": "Validate Report", 
         "method": "validateReport", 
         "returns": "number", 
         "signature": [
@@ -19946,6 +20196,7 @@ module.exports={
           "market", 
           "amount"
         ], 
+        "label": "Add Fees", 
         "method": "addFees", 
         "returns": "int256", 
         "send": true, 
@@ -19959,6 +20210,7 @@ module.exports={
           "branch", 
           "newHash"
         ], 
+        "label": "Add To Markets Hash", 
         "method": "addToMarketsHash", 
         "returns": "int256", 
         "send": true, 
@@ -19973,6 +20225,7 @@ module.exports={
           "trade_id", 
           "last_id"
         ], 
+        "label": "Add Trade", 
         "method": "addTrade", 
         "returns": "int256", 
         "send": true, 
@@ -19986,6 +20239,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Bonds Man", 
         "method": "getBondsMan", 
         "returns": "int256", 
         "signature": [
@@ -19996,6 +20250,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Branch ID", 
         "method": "getBranchID", 
         "returns": "hash", 
         "signature": [
@@ -20006,6 +20261,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Creation Time", 
         "method": "getCreationTime", 
         "returns": "number", 
         "signature": [
@@ -20016,6 +20272,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Cum Scale", 
         "method": "getCumScale", 
         "returns": "unfix", 
         "signature": [
@@ -20026,6 +20283,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Extra Info", 
         "method": "getExtraInfo", 
         "returns": "string", 
         "signature": [
@@ -20036,6 +20294,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Extra Info Length", 
         "method": "getExtraInfoLength", 
         "returns": "int", 
         "signature": [
@@ -20046,6 +20305,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Fees", 
         "method": "getFees", 
         "returns": "unfix", 
         "signature": [
@@ -20056,6 +20316,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Last Exp Date", 
         "method": "getLastExpDate", 
         "returns": "number", 
         "signature": [
@@ -20067,6 +20328,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Get Last Outcome Price", 
         "method": "getLastOutcomePrice", 
         "returns": "int256", 
         "signature": [
@@ -20078,6 +20340,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Last Trade", 
         "method": "getLastTrade", 
         "returns": "int256", 
         "signature": [
@@ -20088,6 +20351,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Maker Fees", 
         "method": "getMakerFees", 
         "returns": "unfix", 
         "signature": [
@@ -20099,6 +20363,7 @@ module.exports={
           "market", 
           "index"
         ], 
+        "label": "Get Market Event", 
         "method": "getMarketEvent", 
         "parser": "parseMarket", 
         "returns": "int256", 
@@ -20111,6 +20376,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Market Events", 
         "method": "getMarketEvents", 
         "parser": "parseMarkets", 
         "returns": "hash[]", 
@@ -20122,6 +20388,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Market Num Outcomes", 
         "method": "getMarketNumOutcomes", 
         "returns": "number", 
         "signature": [
@@ -20132,6 +20399,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Markets Hash", 
         "method": "getMarketsHash", 
         "returns": "int256", 
         "signature": [
@@ -20142,6 +20410,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Num Events", 
         "method": "getNumEvents", 
         "returns": "number", 
         "signature": [
@@ -20153,6 +20422,7 @@ module.exports={
           "market", 
           "num"
         ], 
+        "label": "Get One Winning Outcome", 
         "method": "getOneWinningOutcome", 
         "returns": "int256", 
         "signature": [
@@ -20164,6 +20434,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Original Trading Period", 
         "method": "getOriginalTradingPeriod", 
         "returns": "int256", 
         "signature": [
@@ -20176,6 +20447,7 @@ module.exports={
           "trader", 
           "outcome"
         ], 
+        "label": "Get Participant Shares Purchased", 
         "method": "getParticipantSharesPurchased", 
         "returns": "unfix", 
         "signature": [
@@ -20188,6 +20460,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Pushed Forward", 
         "method": "getPushedForward", 
         "returns": "int256", 
         "signature": [
@@ -20195,6 +20468,7 @@ module.exports={
         ]
       }, 
       "getSender": {
+        "label": "Get Sender", 
         "method": "getSender", 
         "returns": "int256"
       }, 
@@ -20203,6 +20477,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Get Shares Purchased", 
         "method": "getSharesPurchased", 
         "returns": "unfix", 
         "signature": [
@@ -20214,6 +20489,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Shares Value", 
         "method": "getSharesValue", 
         "returns": "unfix", 
         "signature": [
@@ -20224,6 +20500,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Total Shares Purchased", 
         "method": "getTotalSharesPurchased", 
         "returns": "unfix", 
         "signature": [
@@ -20234,6 +20511,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Trading Fee", 
         "method": "getTradingFee", 
         "returns": "unfix", 
         "signature": [
@@ -20244,6 +20522,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Trading Period", 
         "method": "getTradingPeriod", 
         "returns": "number", 
         "signature": [
@@ -20254,6 +20533,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Volume", 
         "method": "getVolume", 
         "returns": "unfix", 
         "signature": [
@@ -20264,6 +20544,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Get Winning Outcomes", 
         "method": "getWinningOutcomes", 
         "returns": "number[]", 
         "signature": [
@@ -20274,6 +20555,7 @@ module.exports={
         "inputs": [
           "market_id"
         ], 
+        "label": "Get total trades", 
         "method": "get_total_trades", 
         "returns": "number", 
         "signature": [
@@ -20284,6 +20566,7 @@ module.exports={
         "inputs": [
           "market_id"
         ], 
+        "label": "Get trade ids", 
         "method": "get_trade_ids", 
         "returns": "hash[]", 
         "signature": [
@@ -20294,6 +20577,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Getgas Subsidy", 
         "method": "getgasSubsidy", 
         "returns": "int", 
         "signature": [
@@ -20318,6 +20602,7 @@ module.exports={
           "creationFee", 
           "lastExpDate"
         ], 
+        "label": "Initialize Market", 
         "method": "initializeMarket", 
         "returns": "int256", 
         "send": true, 
@@ -20347,6 +20632,7 @@ module.exports={
           "amount", 
           "cancel"
         ], 
+        "label": "Modify Participant Shares", 
         "method": "modifyParticipantShares", 
         "returns": "int256", 
         "signature": [
@@ -20363,6 +20649,7 @@ module.exports={
           "outcome", 
           "amount"
         ], 
+        "label": "Modify Shares", 
         "method": "modifyShares", 
         "returns": "number", 
         "send": true, 
@@ -20377,6 +20664,7 @@ module.exports={
           "marketID", 
           "amount"
         ], 
+        "label": "Modify Shares Value", 
         "method": "modifySharesValue", 
         "returns": "int256", 
         "signature": [
@@ -20389,6 +20677,7 @@ module.exports={
           "market", 
           "to"
         ], 
+        "label": "Refund Closing", 
         "method": "refundClosing", 
         "returns": "int256", 
         "signature": [
@@ -20401,6 +20690,7 @@ module.exports={
           "market_id", 
           "trade_id"
         ], 
+        "label": "Remove trade from market", 
         "method": "remove_trade_from_market", 
         "returns": "int256", 
         "send": true, 
@@ -20413,6 +20703,7 @@ module.exports={
         "inputs": [
           "market"
         ], 
+        "label": "Return Tags", 
         "method": "returnTags", 
         "returns": "hash[]", 
         "signature": [
@@ -20424,6 +20715,7 @@ module.exports={
           "market", 
           "makerFees"
         ], 
+        "label": "Set Maker Fees", 
         "method": "setMakerFees", 
         "returns": "int256", 
         "send": true, 
@@ -20438,6 +20730,7 @@ module.exports={
           "outcome", 
           "price"
         ], 
+        "label": "Set Price", 
         "method": "setPrice", 
         "returns": "int256", 
         "send": true, 
@@ -20453,6 +20746,7 @@ module.exports={
           "bool", 
           "sender"
         ], 
+        "label": "Set Pushed Forward", 
         "method": "setPushedForward", 
         "returns": "int256", 
         "send": true, 
@@ -20467,6 +20761,7 @@ module.exports={
           "market", 
           "fee"
         ], 
+        "label": "Set Trading Fee", 
         "method": "setTradingFee", 
         "returns": "int256", 
         "send": true, 
@@ -20480,6 +20775,7 @@ module.exports={
           "market", 
           "period"
         ], 
+        "label": "Set Trading Period", 
         "method": "setTradingPeriod", 
         "returns": "int256", 
         "send": true, 
@@ -20493,6 +20789,7 @@ module.exports={
           "market", 
           "outcomes"
         ], 
+        "label": "Set Winning Outcomes", 
         "method": "setWinningOutcomes", 
         "returns": "int256", 
         "send": true, 
@@ -20508,6 +20805,7 @@ module.exports={
           "branch", 
           "sender"
         ], 
+        "label": "Reporting Cycle Catch-Up", 
         "method": "penalizationCatchup", 
         "returns": "number", 
         "send": true, 
@@ -20524,6 +20822,7 @@ module.exports={
           "reporter", 
           "eventExample"
         ], 
+        "label": "Prove Reporter Didnt Report Enough", 
         "method": "proveReporterDidntReportEnough", 
         "returns": "number", 
         "send": true, 
@@ -20539,6 +20838,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Proportion Correct", 
         "method": "proportionCorrect", 
         "returns": "unfix", 
         "signature": [
@@ -20548,6 +20848,8 @@ module.exports={
     }, 
     "Register": {
       "register": {
+        "description": "Write registration timestamp to the blockchain", 
+        "label": "Save Registration Timestamp", 
         "method": "register", 
         "returns": "number", 
         "send": true
@@ -20560,6 +20862,7 @@ module.exports={
           "index", 
           "value"
         ], 
+        "label": "Add Dormant Rep", 
         "method": "addDormantRep", 
         "returns": "number", 
         "send": true, 
@@ -20575,6 +20878,7 @@ module.exports={
           "index", 
           "value"
         ], 
+        "label": "Add Rep", 
         "method": "addRep", 
         "returns": "number", 
         "send": true, 
@@ -20592,6 +20896,7 @@ module.exports={
           "dormant", 
           "repToBonderOrBranch"
         ], 
+        "label": "Add Reporter", 
         "method": "addReporter", 
         "returns": "number", 
         "send": true, 
@@ -20608,6 +20913,7 @@ module.exports={
           "branch", 
           "amount"
         ], 
+        "label": "Adjust Active Rep", 
         "method": "adjustActiveRep", 
         "returns": "number", 
         "send": true, 
@@ -20621,6 +20927,7 @@ module.exports={
           "branch", 
           "address"
         ], 
+        "label": "Balance Of", 
         "method": "balanceOf", 
         "returns": "unfix", 
         "signature": [
@@ -20633,6 +20940,7 @@ module.exports={
           "contract", 
           "address"
         ], 
+        "label": "Check Contract Whitelist", 
         "method": "checkContractWhitelist", 
         "returns": "int256", 
         "signature": [
@@ -20644,6 +20952,7 @@ module.exports={
         "inputs": [
           "address"
         ], 
+        "label": "Check Whitelist", 
         "method": "checkWhitelist", 
         "returns": "int256", 
         "signature": [
@@ -20654,6 +20963,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Active Rep", 
         "method": "getActiveRep", 
         "returns": "unfix", 
         "signature": [
@@ -20665,6 +20975,7 @@ module.exports={
           "branch", 
           "repIndex"
         ], 
+        "label": "Get Dormant Rep By Index", 
         "method": "getDormantRepByIndex", 
         "returns": "unfix", 
         "signature": [
@@ -20676,6 +20987,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Fork", 
         "method": "getFork", 
         "returns": "number", 
         "signature": [
@@ -20686,6 +20998,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Number Reporters", 
         "method": "getNumberReporters", 
         "returns": "number", 
         "signature": [
@@ -20697,6 +21010,7 @@ module.exports={
           "branch", 
           "address"
         ], 
+        "label": "Get Rep Balance", 
         "method": "getRepBalance", 
         "returns": "unfix", 
         "signature": [
@@ -20709,6 +21023,7 @@ module.exports={
           "branch", 
           "repIndex"
         ], 
+        "label": "Get Rep By Index", 
         "method": "getRepByIndex", 
         "returns": "unfix", 
         "signature": [
@@ -20721,6 +21036,7 @@ module.exports={
           "branch", 
           "index"
         ], 
+        "label": "Get Reporter ID", 
         "method": "getReporterID", 
         "returns": "hash", 
         "signature": [
@@ -20732,6 +21048,7 @@ module.exports={
         "inputs": [
           "address"
         ], 
+        "label": "Get Reputation", 
         "method": "getReputation", 
         "returns": "hash[]", 
         "signature": [
@@ -20742,6 +21059,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Get Total Rep", 
         "method": "getTotalRep", 
         "returns": "unfix", 
         "signature": [
@@ -20753,6 +21071,7 @@ module.exports={
           "branch", 
           "repID"
         ], 
+        "label": "Rep ID To Index", 
         "method": "repIDToIndex", 
         "returns": "number", 
         "signature": [
@@ -20764,6 +21083,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Set Fork", 
         "method": "setFork", 
         "returns": "number", 
         "send": true, 
@@ -20776,6 +21096,7 @@ module.exports={
           "parent", 
           "branchID"
         ], 
+        "label": "Set Initial Reporters", 
         "method": "setInitialReporters", 
         "returns": "number", 
         "send": true, 
@@ -20790,6 +21111,7 @@ module.exports={
           "index", 
           "newRep"
         ], 
+        "label": "Set Rep", 
         "method": "setRep", 
         "returns": "number", 
         "send": true, 
@@ -20805,6 +21127,7 @@ module.exports={
           "balances", 
           "branchID"
         ], 
+        "label": "Set Sale Distribution", 
         "method": "setSaleDistribution", 
         "returns": "number", 
         "send": true, 
@@ -20819,6 +21142,7 @@ module.exports={
           "contract", 
           "addresses"
         ], 
+        "label": "Set Whitelist", 
         "method": "setWhitelist", 
         "returns": "string", 
         "send": true, 
@@ -20833,6 +21157,7 @@ module.exports={
           "index", 
           "value"
         ], 
+        "label": "Subtract Dormant Rep", 
         "method": "subtractDormantRep", 
         "returns": "number", 
         "send": true, 
@@ -20848,6 +21173,7 @@ module.exports={
           "index", 
           "value"
         ], 
+        "label": "Subtract Rep", 
         "method": "subtractRep", 
         "returns": "number", 
         "send": true, 
@@ -20861,6 +21187,7 @@ module.exports={
         "inputs": [
           "branch"
         ], 
+        "label": "Total Supply", 
         "method": "totalSupply", 
         "returns": "unfix", 
         "signature": [
@@ -20876,6 +21203,7 @@ module.exports={
           "votePeriod", 
           "sender"
         ], 
+        "label": "Calculate Report Target For Event", 
         "method": "calculateReportTargetForEvent", 
         "returns": "int256", 
         "signature": [
@@ -20892,6 +21220,7 @@ module.exports={
           "votePeriod", 
           "sender"
         ], 
+        "label": "Calculate Reporting Threshold", 
         "method": "calculateReportingThreshold", 
         "returns": "int256", 
         "signature": [
@@ -20908,6 +21237,7 @@ module.exports={
           "reporter", 
           "event"
         ], 
+        "label": "Get Event Can Report On", 
         "method": "getEventCanReportOn", 
         "returns": "number", 
         "signature": [
@@ -20924,6 +21254,7 @@ module.exports={
           "sender", 
           "start"
         ], 
+        "label": "Get Events To Report On", 
         "method": "getEventsToReportOn", 
         "parser": "parseMarkets", 
         "returns": "int256[]", 
@@ -20938,6 +21269,7 @@ module.exports={
         "inputs": [
           "event"
         ], 
+        "label": "Set Reporting Threshold", 
         "method": "setReportingThreshold", 
         "returns": "int256", 
         "send": true, 
@@ -20952,6 +21284,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Resolve", 
         "method": "resolve", 
         "returns": "number", 
         "send": true, 
@@ -20967,6 +21300,7 @@ module.exports={
           "eventIndex", 
           "votePeriod"
         ], 
+        "label": "Round Two Post Bond", 
         "method": "roundTwoPostBond", 
         "returns": "number", 
         "send": true, 
@@ -20984,6 +21318,7 @@ module.exports={
           "eventIndex", 
           "sender"
         ], 
+        "label": "Round Two Resolve", 
         "method": "roundTwoResolve", 
         "returns": "number", 
         "send": true, 
@@ -21001,6 +21336,7 @@ module.exports={
           "branch", 
           "event"
         ], 
+        "label": "Penalize Round Two Wrong", 
         "method": "penalizeRoundTwoWrong", 
         "returns": "int256", 
         "signature": [
@@ -21015,6 +21351,7 @@ module.exports={
           "owner", 
           "spender"
         ], 
+        "label": "Allowance", 
         "method": "allowance", 
         "returns": "int256", 
         "signature": [
@@ -21028,6 +21365,7 @@ module.exports={
           "spender", 
           "value"
         ], 
+        "label": "Approve", 
         "method": "approve", 
         "returns": "int256", 
         "signature": [
@@ -21041,6 +21379,7 @@ module.exports={
           "branch", 
           "value"
         ], 
+        "label": "Convert To Active Rep", 
         "method": "convertToActiveRep", 
         "returns": "int256", 
         "signature": [
@@ -21053,6 +21392,7 @@ module.exports={
           "branch", 
           "value"
         ], 
+        "label": "Convert To Dormant Rep", 
         "method": "convertToDormantRep", 
         "returns": "int256", 
         "signature": [
@@ -21066,6 +21406,7 @@ module.exports={
           "recver", 
           "value"
         ], 
+        "label": "Send Reputation", 
         "method": "sendReputation", 
         "returns": "unfix", 
         "send": true, 
@@ -21081,6 +21422,7 @@ module.exports={
           "recver", 
           "value"
         ], 
+        "label": "Transfer", 
         "method": "transfer", 
         "returns": "int256", 
         "signature": [
@@ -21096,6 +21438,7 @@ module.exports={
           "recver", 
           "value"
         ], 
+        "label": "Transfer From", 
         "method": "transferFrom", 
         "returns": "int256", 
         "signature": [
@@ -21108,6 +21451,7 @@ module.exports={
     }, 
     "SlashRep": {
       "slashRep": {
+        "description": "Punish Reporter for insufficient Reports submitted", 
         "inputs": [
           "branch", 
           "salt", 
@@ -21115,6 +21459,7 @@ module.exports={
           "reporter", 
           "eventID"
         ], 
+        "label": "Punish Reporter", 
         "method": "slashRep", 
         "returns": "number", 
         "send": true, 
@@ -21134,6 +21479,7 @@ module.exports={
           "buyer_trade_id", 
           "max_amount"
         ], 
+        "label": "Short sell", 
         "method": "short_sell", 
         "mutable": true, 
         "returns": "hash[]", 
@@ -21150,6 +21496,7 @@ module.exports={
           "max_amount", 
           "trade_ids"
         ], 
+        "label": "Trade", 
         "method": "trade", 
         "mutable": true, 
         "returns": "hash[]", 
@@ -21167,6 +21514,7 @@ module.exports={
           "tradeHash", 
           "sender"
         ], 
+        "label": "Check Hash", 
         "method": "checkHash", 
         "returns": "number", 
         "signature": [
@@ -21179,6 +21527,7 @@ module.exports={
         "inputs": [
           "hash"
         ], 
+        "label": "Commit Trade", 
         "method": "commitTrade", 
         "returns": "number", 
         "send": true, 
@@ -21194,6 +21543,7 @@ module.exports={
           "id", 
           "fill"
         ], 
+        "label": "Fill trade", 
         "method": "fill_trade", 
         "returns": "number", 
         "send": true, 
@@ -21207,6 +21557,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Get Best Ask ID", 
         "method": "getBestAskID", 
         "returns": "int256", 
         "signature": [
@@ -21219,6 +21570,7 @@ module.exports={
           "market", 
           "outcome"
         ], 
+        "label": "Get Best Bid ID", 
         "method": "getBestBidID", 
         "returns": "int256", 
         "signature": [
@@ -21230,6 +21582,7 @@ module.exports={
         "inputs": [
           "tradeID"
         ], 
+        "label": "Get ID", 
         "method": "getID", 
         "returns": "hash", 
         "signature": [
@@ -21240,6 +21593,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Get Trade Owner", 
         "method": "getTradeOwner", 
         "returns": "int256", 
         "signature": [
@@ -21250,6 +21604,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Get amount", 
         "method": "get_amount", 
         "returns": "unfix", 
         "signature": [
@@ -21260,6 +21615,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Get price", 
         "method": "get_price", 
         "returns": "unfix", 
         "signature": [
@@ -21270,6 +21626,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Get trade", 
         "method": "get_trade", 
         "parser": "parseTradeInfo", 
         "returns": "hash[]", 
@@ -21281,6 +21638,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Get trade block", 
         "method": "get_trade_block", 
         "returns": "int256", 
         "signature": [
@@ -21293,6 +21651,7 @@ module.exports={
           "max_amount", 
           "trade_ids"
         ], 
+        "label": "Make Trade Hash", 
         "method": "makeTradeHash", 
         "returns": "hash", 
         "signature": [
@@ -21305,6 +21664,7 @@ module.exports={
         "inputs": [
           "id"
         ], 
+        "label": "Remove trade", 
         "method": "remove_trade", 
         "returns": "number", 
         "send": true, 
@@ -21326,6 +21686,7 @@ module.exports={
           "sender", 
           "outcome"
         ], 
+        "label": "Save Trade", 
         "method": "saveTrade", 
         "returns": "number", 
         "send": true, 
@@ -21347,6 +21708,7 @@ module.exports={
           "id", 
           "price"
         ], 
+        "label": "Update trade", 
         "method": "update_trade", 
         "send": true, 
         "signature": [
@@ -21355,6 +21717,7 @@ module.exports={
         ]
       }, 
       "zeroHash": {
+        "label": "Zero Hash", 
         "method": "zeroHash", 
         "returns": "number", 
         "send": true
@@ -43989,7 +44352,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.1";
+    this.version = "3.2.2";
 
     this.options = {
         debug: {
@@ -44296,7 +44659,7 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
+                    price: abi.unfix(abi.hex(rawInfo[i*OUTCOMES_FIELDS + index + 1], true), "string"),
                     sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
@@ -44401,7 +44764,7 @@ module.exports = {
             amount = amount.times(constants.PRECISION.multiple).floor().dividedBy(constants.PRECISION.multiple).toFixed();
         }
 
-        var price = abi.unfix(trade[4]);
+        var price = abi.unfix(abi.hex(trade[4], true));
         if (price.lt(constants.PRECISION.zero)) return null;
         if (price.lt(constants.PRECISION.limit)) {
             price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
@@ -44415,7 +44778,7 @@ module.exports = {
             market: trade[2],
             amount: amount,
             price: price,
-            fullPrecisionPrice: abi.unfix(trade[4], "string"),
+            fullPrecisionPrice: abi.unfix(abi.hex(trade[4], true), "string"),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
@@ -44473,6 +44836,7 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.cancel);
         tx.params = trade_id;
+        tx.description = "Cancel order " + trade_id;
         if (this.options.debug.trading) {
             console.log("cancel tx:", JSON.stringify(tx, null, 2));
         }
@@ -44528,6 +44892,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Bid " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
@@ -44556,6 +44921,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
@@ -44584,6 +44950,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Short Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
@@ -44607,9 +44974,9 @@ var constants = require("../constants");
 module.exports = {
 
     sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        if (to && to.constructor === Object && to.value) {
+        if (to && to.constructor === Object) {
             value = to.value;
-            if (to.from) from = to.from;
+            from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;
@@ -44623,14 +44990,14 @@ module.exports = {
             gas: "0xcf08"
         }, onSent, onSuccess, onFailed);
     },
-    
+
     depositEther: function (value, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Cash.depositEther);
         var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
         tx.value = abi.fix(unpacked.params[0], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
-    
+
     getCashBalance: function (account, callback) {
         return this.Cash.balance(account, callback);
     },
@@ -44676,13 +45043,15 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
+        var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
+        tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
             var prepare = function (res, cb) {
-                // if (self.options.debug.reporting) {
+                if (self.options.debug.reporting) {
                     console.log("collectFees success:", JSON.stringify(res, null, 2));
-                // }
+                }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -44703,9 +45072,9 @@ module.exports = {
                     });
                 });
             };
-            // if (self.options.debug.reporting) {
+            if (self.options.debug.reporting) {
                 console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            // }
+            }
             return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
         });
     }
@@ -45343,6 +45712,7 @@ module.exports = {
             abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
+        tx.description = description.trim();
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
@@ -45401,6 +45771,7 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -45439,6 +45810,7 @@ module.exports = {
             numOutcomes,
             resolution || ""
         ];
+        tx.description = description.split("~|>")[0];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -45474,6 +45846,7 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -45590,7 +45963,7 @@ module.exports = {
                 if (!trades[marketID][outcomeID]) trades[marketID][outcomeID] = [];
                 trades[marketID][outcomeID].push({
                     type: 2,
-                    price: abi.unfix(logData[0], "string"),
+                    price: abi.unfix(abi.hex(logData[0], true), "string"),
                     shares: abi.unfix(logData[1], "string"),
                     trade_id: logData[2],
                     blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -45659,7 +46032,7 @@ module.exports = {
                         market: market,
                         type: parseInt(parsed[0], 16),
                         user: abi.format_address(logs[i].topics[2]),
-                        price: abi.unfix(parsed[1], "string"),
+                        price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
                         timestamp: parseInt(parsed[5], 16),
                         blockNumber: parseInt(logs[i].blockNumber, 16)
@@ -45845,7 +46218,7 @@ module.exports = {
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: 2,
-                            price: abi.unfix(parsed[0], "string"),
+                            price: abi.unfix(abi.hex(parsed[0], true), "string"),
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -45856,7 +46229,7 @@ module.exports = {
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: parseInt(parsed[0], 16),
-                            price: abi.unfix(parsed[1], "string"),
+                            price: abi.unfix(abi.hex(parsed[1], true), "string"),
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -45964,7 +46337,7 @@ module.exports = {
                     if (!trades[outcome]) trades[outcome] = [];
                     trades[outcome].push({
                         type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
+                        price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
                         trade_id: parsed[3],
                         blockNumber: parseInt(logs[i].blockNumber, 16)
@@ -47675,6 +48048,15 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        var hasValue = !abi.bignum(max_value).eq(constants.ZERO);
+                        tx.description = "";
+                        if (!abi.bignum(max_amount).eq(constants.ZERO)) {
+                            tx.description += max_amount.toString() + " Shares to sell";
+                            if (hasValue) tx.description += " and ";
+                        }
+                        if (hasValue) {
+                            tx.description += max_value.toString() + " ETH to spend";
+                        }
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -47792,6 +48174,7 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        tx.description = max_amount.toString() + " Shares to short sell";
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }
@@ -48637,7 +49020,7 @@ module.exports = {
     // Create a new branch and get Reputation on it
     setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
         var self = this;
-        var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + Math.random().toString(36).substring(4) + "]";
+        var branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
         var tradingFee = "0.01";
         var accounts = clone(accountList);
         if (this.DEBUG) {
@@ -48710,10 +49093,12 @@ module.exports = {
 
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
+        var binaryDescription = "Binary test market";
+        var categoricalDescription = "Categorical test market";
+        var scalarDescription = "Scalar test market";
         var streetName = madlibs.streetName();
         var action = madlibs.action();
         var city = madlibs.city();
-        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
         var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
         var tags = [streetName, action, city];
         var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
@@ -48723,7 +49108,7 @@ module.exports = {
         var numCategories = 7;
         var categories = new Array(numCategories);
         for (var i = 0; i < numCategories; ++i) {
-            categories[i] = madlibs.action();
+            categories[i] = "Outcome " + i.toString();
         }
         var markets = {};
 
@@ -48731,7 +49116,7 @@ module.exports = {
         console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
         augur.createSingleEventMarket({
             branchId: branchID,
-            description: description + " [" + Math.random().toString(36).substring(4) + "]",
+            description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
             expDate: expDate,
             minValue: 1,
             maxValue: 2,
@@ -48746,7 +49131,7 @@ module.exports = {
                 // create a categorical market
                 augur.createSingleEventMarket({
                     branchId: branchID,
-                    description: description + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
+                    description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
                     expDate: expDate,
                     minValue: 1,
                     maxValue: numCategories,
@@ -48761,10 +49146,10 @@ module.exports = {
                         // create a scalar market
                         augur.createSingleEventMarket({
                             branchId: branchID,
-                            description: description + " [" + Math.random().toString(36).substring(4) + "]",
+                            description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
                             expDate: expDate,
-                            minValue: 5,
-                            maxValue: 10,
+                            minValue: -5,
+                            maxValue: 20,
                             numOutcomes: 2,
                             resolution: resolution,
                             takerFee: takerFee,
@@ -48835,9 +49220,9 @@ module.exports = {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
                         augur.sell({
                             amount: amountPerMarket,
-                            price: "0.99",
+                            price: "0.7",
                             market: market,
-                            outcome: 1,
+                            outcome: 2,
                             onSent: function () {},
                             onSuccess: function () {
                                 nextMarket(null);
@@ -48850,7 +49235,7 @@ module.exports = {
             });
         }, function (err) {
             augur.useAccount(taker);
-            var trades = [];
+            var trades = {};
             async.forEachOf(markets, function (market, type, nextMarket) {
                 if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
                 var marketTrades = augur.get_trade_ids(market);
@@ -48865,56 +49250,58 @@ module.exports = {
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
                     nextTrade(thisTrade);
                 }, function (trade) {
-                    trades.push(trade);
+                    trades[type] = trade;
                     nextMarket(null);
                 });
             }, function (err) {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
-                    augur.trade({
-                        max_value: Object.keys(markets).length*amountPerMarket,
-                        max_amount: 0,
-                        trade_ids: trades,
-                        sender: taker,
-                        onTradeHash: function (tradeHash) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                    async.forEachOfSeries(markets, function (market, type, nextMarket) {
+                        augur.trade({
+                            max_value: amountPerMarket / 2,
+                            max_amount: 0,
+                            trade_ids: [trades[type]],
+                            sender: taker,
+                            onTradeHash: function (tradeHash) {
+                                if (self.DEBUG) {
+                                    self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                                }
+                            },
+                            onCommitSent: function () {},
+                            onCommitSuccess: function (r) {
+                                if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
+                            },
+                            onCommitFailed: function (e) {
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(e);
+                            },
+                            onNextBlock: function (block) {
+                                if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
+                            },
+                            onTradeSent: function () {},
+                            onTradeSuccess: function (r) {
+                                if (self.DEBUG) {
+                                    self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
+                                }
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(null);
+                            },
+                            onTradeFailed: function (e) {
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(e);
                             }
-                        },
-                        onCommitSent: function () {},
-                        onCommitSuccess: function (r) {
-                            if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
-                        },
-                        onCommitFailed: function (e) {
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(e);
-                        },
-                        onNextBlock: function (block) {
-                            if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
-                        },
-                        onTradeSent: function () {},
-                        onTradeSuccess: function (r) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
-                            }
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(null);
-                        },
-                        onTradeFailed: function (e) {
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(e);
-                        }
-                    });
+                        });
+                    }, callback);
                 });
             });
         });
@@ -49583,6 +49970,9 @@ module.exports = {
     // Hook for transaction callbacks
     txRelay: null,
 
+    // Do not call txRelay for these methods
+    excludedFromTxRelay: {},
+
     txs: {},
 
     rawTxs: {},
@@ -49605,13 +49995,39 @@ module.exports = {
         var self = this;
         return function (response) {
             if (isFunction(callback)) callback(response);
-            self.txRelay({
-                type: payload.method || "sendEther",
-                status: status,
-                data: payload,
-                response: response
-            });
+            if (payload.method && !self.excludedFromTxRelay[payload.method]) {
+                self.txRelay({
+                    type: payload.label || payload.method,
+                    status: status,
+                    data: payload,
+                    response: response
+                });
+            }
         };
+    },
+
+    excludeFromTxRelay: function (method) {
+        if (method) {
+            if (method.constructor === Array && method.length) {
+                for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
+                    this.excludedFromTxRelay[method[i]] = true;
+                }
+            } else {
+                this.excludedFromTxRelay[method] = true;
+            }
+        }
+    },
+
+    includeInTxRelay: function (method) {
+        if (method) {
+            if (method.constructor === Array && method.length) {
+                for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
+                    this.excludedFromTxRelay[method[i]] = false;
+                }
+            } else {
+                this.excludedFromTxRelay[method] = false;
+            }
+        }
     },
 
     unmarshal: function (string, returns, stride, init) {
@@ -50337,9 +50753,9 @@ module.exports = {
     },
 
     sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        if (to && to.constructor === Object && to.value) {
+        if (to && to.constructor === Object) {
             value = to.value;
-            if (to.from) from = to.from;
+            from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;

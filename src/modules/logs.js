@@ -30,7 +30,7 @@ module.exports = {
                 if (!trades[marketID][outcomeID]) trades[marketID][outcomeID] = [];
                 trades[marketID][outcomeID].push({
                     type: 2,
-                    price: abi.unfix(logData[0], "string"),
+                    price: abi.unfix(abi.hex(logData[0], true), "string"),
                     shares: abi.unfix(logData[1], "string"),
                     trade_id: logData[2],
                     blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -99,7 +99,7 @@ module.exports = {
                         market: market,
                         type: parseInt(parsed[0], 16),
                         user: abi.format_address(logs[i].topics[2]),
-                        price: abi.unfix(parsed[1], "string"),
+                        price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
                         timestamp: parseInt(parsed[5], 16),
                         blockNumber: parseInt(logs[i].blockNumber, 16)
@@ -285,7 +285,7 @@ module.exports = {
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: 2,
-                            price: abi.unfix(parsed[0], "string"),
+                            price: abi.unfix(abi.hex(parsed[0], true), "string"),
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -296,7 +296,7 @@ module.exports = {
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
                             type: parseInt(parsed[0], 16),
-                            price: abi.unfix(parsed[1], "string"),
+                            price: abi.unfix(abi.hex(parsed[1], true), "string"),
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
@@ -404,7 +404,7 @@ module.exports = {
                     if (!trades[outcome]) trades[outcome] = [];
                     trades[outcome].push({
                         type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
+                        price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
                         trade_id: parsed[3],
                         blockNumber: parseInt(logs[i].blockNumber, 16)

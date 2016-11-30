@@ -29,13 +29,15 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
+        var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
+        tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
             var prepare = function (res, cb) {
-                // if (self.options.debug.reporting) {
+                if (self.options.debug.reporting) {
                     console.log("collectFees success:", JSON.stringify(res, null, 2));
-                // }
+                }
                 if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                     return cb(res);
                 }
@@ -56,9 +58,9 @@ module.exports = {
                     });
                 });
             };
-            // if (self.options.debug.reporting) {
+            if (self.options.debug.reporting) {
                 console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            // }
+            }
             return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
         });
     }

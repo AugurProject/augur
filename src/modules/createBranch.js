@@ -92,6 +92,7 @@ module.exports = {
             abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
+        tx.description = description.trim();
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };

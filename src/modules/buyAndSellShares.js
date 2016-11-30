@@ -28,6 +28,7 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.cancel);
         tx.params = trade_id;
+        tx.description = "Cancel order " + trade_id;
         if (this.options.debug.trading) {
             console.log("cancel tx:", JSON.stringify(tx, null, 2));
         }
@@ -83,6 +84,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Bid " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
@@ -111,6 +113,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
@@ -139,6 +142,7 @@ module.exports = {
         }
         var tx = clone(this.tx.BuyAndSellShares.shortAsk);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.description = "Short Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
