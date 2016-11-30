@@ -15,6 +15,7 @@ export function formatDate(d) {
 	return {
 		value: date,
 		formatted: `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} ${time.join(':')} ${ampm}`,
-		full: d.toUTCString()
+		full: d.toUTCString(),
+		timestamp: d.getTime()
 	};
 }
