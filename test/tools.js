@@ -144,7 +144,7 @@ module.exports = {
     // Create a new branch and get Reputation on it
     setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
         var self = this;
-        var branchDescription = "Funcrusher Plus [" + Math.random().toString(36).substring(4) + "]";
+        var branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
         var tradingFee = "0.01";
         var accounts = clone(accountList);
         if (this.DEBUG) {
@@ -217,10 +217,12 @@ module.exports = {
 
         // markets have matching descriptions, tags, fees, etc.
         branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
+        var binaryDescription = "Binary test market";
+        var categoricalDescription = "Categorical test market";
+        var scalarDescription = "Scalar test market";
         var streetName = madlibs.streetName();
         var action = madlibs.action();
         var city = madlibs.city();
-        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
         var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
         var tags = [streetName, action, city];
         var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
@@ -230,7 +232,7 @@ module.exports = {
         var numCategories = 7;
         var categories = new Array(numCategories);
         for (var i = 0; i < numCategories; ++i) {
-            categories[i] = madlibs.action();
+            categories[i] = "Outcome " + i.toString();
         }
         var markets = {};
 
@@ -238,7 +240,7 @@ module.exports = {
         console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
         augur.createSingleEventMarket({
             branchId: branchID,
-            description: description + " [" + Math.random().toString(36).substring(4) + "]",
+            description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
             expDate: expDate,
             minValue: 1,
             maxValue: 2,
@@ -253,7 +255,7 @@ module.exports = {
                 // create a categorical market
                 augur.createSingleEventMarket({
                     branchId: branchID,
-                    description: description + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
+                    description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
                     expDate: expDate,
                     minValue: 1,
                     maxValue: numCategories,
@@ -268,10 +270,10 @@ module.exports = {
                         // create a scalar market
                         augur.createSingleEventMarket({
                             branchId: branchID,
-                            description: description + " [" + Math.random().toString(36).substring(4) + "]",
+                            description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
                             expDate: expDate,
-                            minValue: 5,
-                            maxValue: 10,
+                            minValue: -5,
+                            maxValue: 20,
                             numOutcomes: 2,
                             resolution: resolution,
                             takerFee: takerFee,
@@ -342,9 +344,9 @@ module.exports = {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
                         augur.sell({
                             amount: amountPerMarket,
-                            price: "0.99",
+                            price: "0.7",
                             market: market,
-                            outcome: 1,
+                            outcome: 2,
                             onSent: function () {},
                             onSuccess: function () {
                                 nextMarket(null);
@@ -380,7 +382,7 @@ module.exports = {
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
                     augur.trade({
-                        max_value: Object.keys(markets).length*amountPerMarket,
+                        max_value: Object.keys(markets).length*(amountPerMarket / 2),
                         max_amount: 0,
                         trade_ids: trades,
                         sender: taker,
