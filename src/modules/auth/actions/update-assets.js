@@ -5,13 +5,13 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 export function updateAssets(cb) {
 	return (dispatch, getState) => {
 		const { loginAccount, branch } = getState();
-		if (!loginAccount.id) {
+		if (!loginAccount.address) {
 			return dispatch(updateLoginAccount({
 				ether: undefined,
 				realEther: undefined,
 				rep: undefined }));
 		}
-		augur.loadAssets(branch.id || BRANCH_ID, loginAccount.id,
+		augur.loadAssets(branch.id || BRANCH_ID, loginAccount.address,
 			(err, ether) => {
 				if (err) {
 					console.info('!! ERROR updateAssets() ether', err);
