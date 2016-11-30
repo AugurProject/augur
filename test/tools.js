@@ -144,7 +144,7 @@ module.exports = {
     // Create a new branch and get Reputation on it
     setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
         var self = this;
-        var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + Math.random().toString(36).substring(4) + "]";
+        var branchDescription = "Funcrusher Plus [" + Math.random().toString(36).substring(4) + "]";
         var tradingFee = "0.01";
         var accounts = clone(accountList);
         if (this.DEBUG) {
