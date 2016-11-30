@@ -250,7 +250,7 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
+                    price: abi.unfix(abi.hex(rawInfo[i*OUTCOMES_FIELDS + index + 1], true), "string"),
                     sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
@@ -355,7 +355,7 @@ module.exports = {
             amount = amount.times(constants.PRECISION.multiple).floor().dividedBy(constants.PRECISION.multiple).toFixed();
         }
 
-        var price = abi.unfix(trade[4]);
+        var price = abi.unfix(abi.hex(trade[4], true));
         if (price.lt(constants.PRECISION.zero)) return null;
         if (price.lt(constants.PRECISION.limit)) {
             price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
@@ -369,7 +369,7 @@ module.exports = {
             market: trade[2],
             amount: amount,
             price: price,
-            fullPrecisionPrice: abi.unfix(trade[4], "string"),
+            fullPrecisionPrice: abi.unfix(abi.hex(trade[4], true), "string"),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
