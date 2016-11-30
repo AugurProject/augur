@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>November 30, 2016</h3>
+			<ol>
+				<li>
+					Added human-readable &quot;label&quot; and &quot;description&quot; fields to static API data.  Added &quot;label maker&quot; to augur-core API maker script.
+				</li>
+				<li>
+					The following things are now included in the auto-generated transaction display: formatted label, description, timestamp, and gas fees.
+				</li>
+				<li>
+					Added a &quot;no-relay&quot; list to the UI, which has the names of methods for which the transaction relay should not be triggered.  This will allow the old manually-constructed &quot;transactions&quot; to peacefully coexist with relay-generated transactions in the transaction display.
+				</li>
+			</ol>
 			<h3>November 29, 2016</h3>
 			<ol>
 				<li>

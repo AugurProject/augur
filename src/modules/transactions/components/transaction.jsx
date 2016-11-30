@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import Link from 'modules/link/components/link';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
-import { LOGIN, FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
+import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
@@ -12,12 +12,9 @@ function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeS
 const Transaction = (p) => {
 	const nodes = {};
 
-	const marketDescription = () => {
-		if (!p.data.description && !p.data.marketDescription) return <span />;
-		const shortDescription = p.data.description ?
-			p.data.description.substring(0, 100) + ((p.data.description.length > 100 && '...') || '') :
-			p.data.marketDescription.substring(0, 100) + ((p.data.marketDescription.length > 100 && '...') || '');
-		const fullDescription = p.data.description || p.data.marketDescription;
+	const buildDescription = (fullDescription) => {
+		if (!fullDescription) return <span />;
+		const shortDescription = fullDescription.substring(0, 100) + ((fullDescription.length > 100 && '...') || '');
 		const description = (isShortened) => {
 			if (isShortened) {
 				return (
@@ -87,7 +84,7 @@ const Transaction = (p) => {
 					<br className="hide-in-tx-display" />
 					<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br className="hide-in-trade-summary-display" />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -103,7 +100,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -112,13 +109,6 @@ const Transaction = (p) => {
 			);
 			break;
 
-		case LOGIN:
-			nodes.description = (
-				<span className="description">
-					Login
-				</span>
-			);
-			break;
 		case FUND_ACCOUNT:
 			nodes.action = 'REGISTER NEW ACCOUNT';
 			nodes.description = (
@@ -133,13 +123,14 @@ const Transaction = (p) => {
 				</span>
 			);
 			break;
+
 		case CREATE_MARKET:
 			nodes.action = 'Create market';
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -174,7 +165,7 @@ const Transaction = (p) => {
 						<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description || p.data.marketDescription)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -189,7 +180,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -207,7 +198,7 @@ const Transaction = (p) => {
 					<span className="of">of</span>
 					<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -222,7 +213,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{p.type}</span>
 					<br />
-					{marketDescription()}
+					{buildDescription(p.data.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
