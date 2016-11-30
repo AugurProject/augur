@@ -381,7 +381,7 @@ module.exports = {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
-                    async.forEachOf(markets, function (market, type, nextMarket) {
+                    async.forEachOfSeries(markets, function (market, type, nextMarket) {
                         augur.trade({
                             max_value: amountPerMarket / 2,
                             max_amount: 0,
