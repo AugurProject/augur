@@ -142,6 +142,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 		const password = process.env.GETH_PASSWORD;
 		tools.top_up(augur, branchID, accounts, password, (err, unlocked) => {
 			if (err) return callback(err);
+			console.log('augur.web.account.address:', augur.web.account.address);
 			console.log('Unlocked:', unlocked);
 			tools.trade_in_each_market(augur, 1, markets, unlocked[0], unlocked[1], password, (err) => {
 				if (err) return callback(err);

@@ -1,42 +1,26 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
-// import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import store from '../../../store';
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
 	const { transactionsData } = store.getState();
-
 	return selectTransactions(transactionsData);
 }
 
-export const selectTransactions = memoizerific(1)((transactionsData) => {
-	let splitA;
-	let splitB;
-	let valA;
-	let valB;
-
-	return Object.keys(transactionsData || {})
+export const selectTransactions = memoizerific(1)((transactionsData) => (
+	Object.keys(transactionsData || {})
 		.sort((a, b) => {
-			splitA = a.split('-');
-			splitB = b.split('-');
-
-			valA = parseInt(splitA[0], 10);
-			valB = parseInt(splitB[0], 10);
-
-			if (valA > valB) {
-				return -1;
-			} else if (valB > valA) {
+			const timestampA = transactionsData[a].timestamp;
+			const timestampB = transactionsData[b].timestamp;
+			if (timestampA && timestampA.timestamp && timestampB && timestampB.timestamp) {
+				return timestampB.timestamp - timestampA.timestamp;
+			} else if (timestampA && timestampA.timestamp) {
 				return 1;
-			}
-
-			valA = parseInt(splitA[1], 10);
-			valB = parseInt(splitB[1], 10);
-
-			if (valA > valB) {
+			} else if (timestampB && timestampB.timestamp) {
 				return -1;
 			}
-			return 1;
+			return 0;
 		})
 		.map(id => {
 			let marketLink = null;
@@ -49,8 +33,7 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 					store.dispatch
 				);
 			}
-
-			const obj = {
+			return {
 				...transactionsData[id],
 				data: {
 					...transactionsData[id].data,
@@ -63,7 +46,5 @@ export const selectTransactions = memoizerific(1)((transactionsData) => {
 				formatShares(transactionsData[id].sharesChange),
 				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
 			};
-
-			return obj;
-		});
-});
+		})
+));
