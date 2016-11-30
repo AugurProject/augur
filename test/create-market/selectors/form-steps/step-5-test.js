@@ -105,7 +105,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				initialFairPrices: {
 					type: BINARY,
@@ -289,7 +290,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				outcomes: [
 					{
@@ -425,7 +427,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -642,7 +645,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				categoricalOutcomes: [
 					'test1',
@@ -779,7 +783,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				initialFairPrices: {
 					type: SCALAR,
@@ -968,7 +973,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: {
 					value: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
 					formatted: 'Jan 1, 3000 12:00 AM',
-					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString()
+					full: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)).toUTCString(),
+					timestamp: 32503680000000
 				},
 				outcomes: [
 					{

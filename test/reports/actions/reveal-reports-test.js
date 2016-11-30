@@ -98,30 +98,10 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 					}
 				}
 			}
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: {
-				[testState.branch.id]: {
-					test2: {
-						...reports[testState.branch.id].test2,
-						isRevealed: true
-					}
-				}
-			}
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: {
-				[testState.branch.id]: {
-					test3: {
-						...reports[testState.branch.id].test3,
-						isRevealed: true
-					}
-				}
-			}
 		}];
 		store.dispatch(action.revealReports());
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledThrice, `Didn't call addRevealReportTransaction three times as expected`);
+		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledOnce, `Didn't call addRevealReportTransaction once as expected`);
 	});
 
 });

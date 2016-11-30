@@ -20,9 +20,7 @@ export function registerTransactionRelay() {
 								params[tx.data.fixed[i]] = abi.unfix(params[tx.data.fixed[i]], 'string');
 							}
 						}
-						tx.data.description = tx.data.inputs.map((input, i) => 
-							`${input}: ${params[i]}`
-						).join('\n');
+						tx.data.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 					}
 					const timestamp = tx.response.timestamp ?
 						formatDate(new Date(tx.response.timestamp * 1000)) :
