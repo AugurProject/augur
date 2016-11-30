@@ -23,6 +23,8 @@ ex.connect = function connect(env, cb) {
 	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
 	augur.rpc.debug.tx = false;
+	if (env.gethHttpURL) augur.rpc.DEFAULT_HOSTED_NODES = [env.gethHttpURL];
+	if (env.gethWebsocketsURL) augur.rpc.DEFAULT_HOSTED_WEBSOCKET = env.gethWebsocketsURL;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
@@ -140,6 +142,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 		const password = process.env.GETH_PASSWORD;
 		tools.top_up(augur, branchID, accounts, password, (err, unlocked) => {
 			if (err) return callback(err);
+			console.log('augur.web.account.address:', augur.web.account.address);
 			console.log('Unlocked:', unlocked);
 			tools.trade_in_each_market(augur, 1, markets, unlocked[0], unlocked[1], password, (err) => {
 				if (err) return callback(err);

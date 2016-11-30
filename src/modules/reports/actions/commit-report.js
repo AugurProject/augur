@@ -38,7 +38,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		const { loginAccount, branch, reports } = getState();
 		const eventID = market.eventID;
 		const report = reports[branch.id][eventID];
-		console.log('reporting on market', market.id, 'event', eventID, report);
+		console.log('reporting on market', market.id, 'event', eventID);
+		console.log('report:', report);
 		const branchID = branch.id;
 		if (!loginAccount || !loginAccount.address || !eventID || !event || !market || !reportedOutcomeID) {
 			return dispatch(updateExistingTransaction(transactionID, {
@@ -57,16 +58,6 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		const outcomeName = report.isScalar ?
 			reportedOutcomeID :
 			(market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {}).name;
-		console.log('submitReportHash params:', {
-			event: eventID,
-			reportHash: report.reportHash,
-			encryptedReport,
-			encryptedSalt,
-			ethics: Number(!isUnethical),
-			branch: branchID,
-			period: report.reportPeriod,
-			periodLength: branch.periodLength
-		});
 		augur.submitReportHash({
 			event: eventID,
 			reportHash: report.reportHash,
@@ -77,7 +68,6 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			period: report.reportPeriod,
 			periodLength: branch.periodLength,
 			onSent: (res) => {
-				console.debug('submitReportHash sent:', res);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUBMITTED,
 					message: `committing to report outcome ${outcomeName}`
@@ -95,7 +85,6 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				const branchReports = getState().reports[branch.id] || {};
-				console.log('branchReports:', branchReports, branchReports[eventID]);
 				dispatch(updateReports({
 					[branchID]: {
 						[eventID]: {

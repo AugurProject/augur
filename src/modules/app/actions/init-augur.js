@@ -1,16 +1,15 @@
 import * as AugurJS from '../../../services/augurjs';
+
 // fixes Reflect not being recognized in test or node 4.2
 require('core-js/es6/reflect');
 
 import { BRANCH_ID } from '../../app/constants/network';
-
 import { updateEnv } from '../../app/actions/update-env';
-import initTimer from '../../app/actions/init-timer';
-
 import { updateConnectionStatus } from '../../app/actions/update-connection';
 import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
+import { registerTransactionRelay } from '../../transactions/actions/register-transaction-relay';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
@@ -27,6 +26,7 @@ export function initAugur() {
 				AugurJS.connect(env, (err, connected) => {
 					if (err) return console.error('connect failure:', err);
 					dispatch(updateConnectionStatus(connected));
+					dispatch(registerTransactionRelay());
 					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
@@ -38,7 +38,6 @@ export function initAugur() {
 							const { links } = require('../../../selectors');
 							links.loginMessageLink.onClick();
 						}
-						dispatch(initTimer());
 					}
 				});
 			}

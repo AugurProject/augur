@@ -18,7 +18,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeUpdateAssets = {};
 	const fakeLoadAcctTrades = {};
 	const fakeLoadReports = {};
-	const fakeCheckPeriod = { checkPeriod: () => {} };
+	const fakeUpdateBranch = { syncBranch: () => {} };
 	const fakeCollectFees = {};
 	const fakeLoadMarketsInfo = {};
 	let action, store;
@@ -48,11 +48,11 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			dispatch({ type: 'UPDATE_MARKETS_INFO' });
 		};
 	};
-	sinon.stub(fakeCheckPeriod, 'checkPeriod', (cb) => {
+	sinon.stub(fakeUpdateBranch, 'syncBranch', (cb) => {
 		return (dispatch, getState) => {
 			const reportPeriod = 19;
-			dispatch({ type: 'UPDATE_BLOCKCHAIN', data: { reportPeriod } });
-			cb && cb(null, reportPeriod);
+			dispatch({ type: 'SYNC_BRANCH', data: { reportPeriod } });
+			if (cb) cb(null);
 		};
 	});
 
@@ -66,7 +66,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		'../../markets/actions/load-markets-info': fakeLoadMarketsInfo,
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
-		'../../reports/actions/check-period': fakeCheckPeriod,
+		'../../app/actions/update-branch': fakeUpdateBranch,
 		'../../reports/actions/collect-fees': fakeCollectFees
 	});
 
@@ -97,12 +97,10 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
 		}, {
-			type: 'UPDATE_MARKETS_INFO'
-		}, {
 			type: 'CLEAR_REPORTS'
 		}, {
-			type: 'UPDATE_BLOCKCHAIN',
-			data: { reportPeriod: 19 }
+			type: 'SYNC_BRANCH',
+			data:  { reportPeriod: 19 }
 		}];
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
 		const actual = store.getActions();

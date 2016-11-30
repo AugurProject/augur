@@ -415,7 +415,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', null, '2', '10', '0.5', '0.1234', '0.1', '0.005'));
@@ -423,7 +423,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if outcomeID is undefined or null`, () => {
@@ -433,7 +433,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', null, '10', '0.5', '0.1234', '0.1', '0.005'));
@@ -441,7 +441,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if numShares is undefined or null`, () => {
@@ -451,7 +451,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', null, '0.5', '0.1234', '0.1', '0.005'));
@@ -459,7 +459,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if tradingFeesEth is undefined or null`, () => {
@@ -469,7 +469,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', null, '0.005'));
@@ -477,7 +477,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if gasFeesRealEth is undefined or null`, () => {
@@ -487,7 +487,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', null));
@@ -495,6 +495,6 @@ describe('modules/trade/actions/process-bid.js', () => {
 		transactionID: 'transid1',
 		data:
 		 { status: 'failed',
-			 message: 'There was an issue processesing the bid trade.' } } ], `Didn't dispatch the failed transaction action object`);
+			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
 	});
 });

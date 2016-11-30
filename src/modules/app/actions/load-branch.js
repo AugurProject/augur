@@ -17,12 +17,12 @@ export function loadBranch(branchID) {
 				...branch,
 				...reportingCycle(branch.periodLength)
 			}));
-			dispatch(loadMarkets(branchID));
 
 			const { selectedMarketID } = getState();
 			if (selectedMarketID !== null) {
 				dispatch(loadFullMarket(selectedMarketID));
 			}
+			dispatch(loadMarkets(branchID));
 
 			dispatch(syncBlockchain());
 			dispatch(syncBranch((err) => {

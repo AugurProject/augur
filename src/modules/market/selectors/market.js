@@ -322,12 +322,13 @@ export function assembleMarket(
 			// Update the `result` object
 			// This houses the reported outcome + the proportion correct of that outcome
 			if (market.reportedOutcome) {
-				market.result = {
-					outcomeID: market.reportedOutcome,
-					outcomeName: market.outcomes.find(outcome => outcome.id === market.reportedOutcome).name
-				};
+				market.result = { outcomeID: market.reportedOutcome };
+				if (market.type !== 'scalar' && market.reportableOutcomes.length) {
+					const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.reportedOutcome);
+					if (marketOutcome) market.result.outcomeName = marketOutcome.name;
+				}
 				if (market.proportionCorrect) {
-					market.result.proportionCorrect = formatPercent(market.proportionCorrect);
+					market.result.proportionCorrect = formatPercent(abi.bignum(market.proportionCorrect).times(100));
 				}
 			}
 
