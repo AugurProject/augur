@@ -14,6 +14,8 @@ export function updateExistingTransaction(transactionID, newTransactionData) {
 		}
 		if (newTransactionData.timestamp) {
 			newTransactionData.timestamp = formatDate(new Date(newTransactionData.timestamp * 1000));
+		} else {
+			newTransactionData.timestamp = formatDate(new Date());
 		}
 
 		dispatch(updateTransactionsData({ [transactionID]: newTransactionData }));
