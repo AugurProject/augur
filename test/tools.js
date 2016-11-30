@@ -359,7 +359,7 @@ module.exports = {
             });
         }, function (err) {
             augur.useAccount(taker);
-            var trades = [];
+            var trades = {};
             async.forEachOf(markets, function (market, type, nextMarket) {
                 if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
                 var marketTrades = augur.get_trade_ids(market);
@@ -374,56 +374,58 @@ module.exports = {
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
                     nextTrade(thisTrade);
                 }, function (trade) {
-                    trades.push(trade);
+                    trades[type] = trade;
                     nextMarket(null);
                 });
             }, function (err) {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);
-                    augur.trade({
-                        max_value: Object.keys(markets).length*(amountPerMarket / 2),
-                        max_amount: 0,
-                        trade_ids: trades,
-                        sender: taker,
-                        onTradeHash: function (tradeHash) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                    async.forEachOf(markets, function (market, type, nextMarket) {
+                        augur.trade({
+                            max_value: amountPerMarket / 2,
+                            max_amount: 0,
+                            trade_ids: [trades[type]],
+                            sender: taker,
+                            onTradeHash: function (tradeHash) {
+                                if (self.DEBUG) {
+                                    self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                                }
+                            },
+                            onCommitSent: function () {},
+                            onCommitSuccess: function (r) {
+                                if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
+                            },
+                            onCommitFailed: function (e) {
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(e);
+                            },
+                            onNextBlock: function (block) {
+                                if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
+                            },
+                            onTradeSent: function () {},
+                            onTradeSuccess: function (r) {
+                                if (self.DEBUG) {
+                                    self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
+                                }
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(null);
+                            },
+                            onTradeFailed: function (e) {
+                                if (clientSideAccount) {
+                                    augur.web.account = clientSideAccount;
+                                }
+                                augur.useAccount(active);
+                                nextMarket(e);
                             }
-                        },
-                        onCommitSent: function () {},
-                        onCommitSuccess: function (r) {
-                            if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
-                        },
-                        onCommitFailed: function (e) {
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(e);
-                        },
-                        onNextBlock: function (block) {
-                            if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
-                        },
-                        onTradeSent: function () {},
-                        onTradeSuccess: function (r) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
-                            }
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(null);
-                        },
-                        onTradeFailed: function (e) {
-                            if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(e);
-                        }
-                    });
+                        });
+                    }, callback);
                 });
             });
         });
