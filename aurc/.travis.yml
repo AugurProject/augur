@@ -1,0 +1,27 @@
+sudo: false
+
+language: node_js
+
+env:
+  - CXX=g++-4.8
+
+node_js:
+  - "6"
+  - "5"
+  - "4"
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+
+before_script:
+  - npm install
+
+script:
+  - npm run lint
+  - npm run test
+  - npm run coverage

@@ -1,0 +1,96 @@
+.market-open-orders {
+	.open-orders-list {
+		font-size: 1.2rem;
+		margin-left: 4%;
+		width: 92%;
+
+		.open-orders-group {
+			width: 100%;
+
+			td {
+				box-sizing: border-box; // this should be done for *
+				padding: 0.5em 0;
+			}
+
+			.outcome-name {
+				min-width: 9rem;
+				text-align: left;
+			}
+
+			.type {
+				text-align: right;
+			}
+
+			.shares {
+				text-align: right;
+			}
+
+			.price {
+				text-align: right;
+			}
+
+			.cancel {
+				text-align: right;
+				width: 110px; // so there is enough space for different states
+
+				.cancel-order-action {
+					background: transparent;
+					color: @color-danger-active;
+					height: unset;
+					line-height: unset;
+					padding: 0;
+					text-align: left;
+
+					&::before {
+						content: '\f00d';
+						display: inline-block;
+						font-family: 'Font Awesome';
+						font-weight: 700;
+						left: -0.2em;
+						position: relative;
+					}
+
+					&:hover,
+					&:active {
+						font-weight: 900;
+					}
+
+					&[disabled] {
+						background: transparent !important;
+						color: @color-muted-active !important;
+					}
+				}
+
+				.cancel-order-abort-confirmation {
+					background-color: transparent;
+					color: inherit;
+					height: unset;
+					line-height: unset;
+					margin-right: 1.4em;
+					padding: 0;
+					text-align: left;
+
+					&:hover {
+						font-weight: 700;
+					}
+				}
+			}
+
+			.open-order {
+				border-top: 1px solid @color-border;
+
+				&.first {
+					border-top: none;
+				}
+
+				.outcome-name {
+					text-transform: uppercase;
+				}
+
+				&.is-disabled {
+					text-decoration: line-through;
+				}
+			}
+		}
+	}
+}

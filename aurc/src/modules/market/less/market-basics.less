@@ -1,0 +1,52 @@
+.market-basics {
+	display: flex;
+	flex-direction: column;
+	margin: 0 0 2em;
+
+	.market-basics-header {
+		display: flex;
+		flex-direction: row;
+
+		.market-basics-header-group-1 {
+			flex: 4;
+
+			.tags {
+				color: @color-blue;
+				display: flex;
+				flex: 1;
+				flex-direction: row;
+
+				.tag {
+					&:not(:last-of-type)::after {
+
+						.fa();
+
+						content: '';
+						cursor: default;
+						padding: 0 0.5em;
+					}
+				}
+			}
+		}
+
+		.market-basics-header-group-2 {
+			display: flex;
+			flex: 1;
+			justify-content: flex-end;
+		}
+	}
+
+	.market-description {
+
+		.font-size-large();
+		.font-weight-normal();
+
+		padding: 0.4em 0;
+	}
+}
+
+.market-reported-details {
+	.market-basics {
+		margin: 1em 0 2em 1em;
+	}
+}
