@@ -124,6 +124,15 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        var hasValue = !abi.bignum(max_value).eq(constants.ZERO);
+                        tx.description = "";
+                        if (!abi.bignum(max_amount).eq(constants.ZERO)) {
+                            tx.description += max_amount.toString() + " Shares to sell";
+                            if (hasValue) tx.description += " and ";
+                        }
+                        if (hasValue) {
+                            tx.description += max_value.toString() + " ETH to spend";
+                        }
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -241,6 +250,7 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        tx.description = max_amount.toString() + " Shares to short sell";
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }

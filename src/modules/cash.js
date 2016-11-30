@@ -15,15 +15,13 @@ module.exports = {
     sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
         if (to && to.constructor === Object) {
             value = to.value;
-            if (to.from) from = to.from;
+            from = to.from;
             if (to.onSent) onSent = to.onSent;
             if (to.onSuccess) onSuccess = to.onSuccess;
             if (to.onFailed) onFailed = to.onFailed;
             to = to.to;
         }
         return this.transact({
-            description: "Send Ether to " + to,
-            label: "Send Ether",
             from: from,
             to: to,
             value: abi.fix(value, "hex"),
