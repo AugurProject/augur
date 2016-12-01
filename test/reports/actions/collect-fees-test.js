@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -11,11 +10,10 @@ describe('modules/reports/actions/collect-fees.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockAugurJS = { augur: { collectFees: () => {} } };
-	let mockUpdateAssets = {};
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockAugurJS = { augur: { collectFees: () => {} } };
+	const mockUpdateAssets = {};
 
 	sinon.stub(mockAugurJS.augur, 'collectFees', (o) => {
 		o.onSuccess({ callReturn: 1 });
@@ -24,7 +22,7 @@ describe('modules/reports/actions/collect-fees.js', () => {
 		type: 'UPDATE_ASSETS'
 	});
 
-	action = proxyquire('../../../src/modules/reports/actions/collect-fees', {
+	const action = proxyquire('../../../src/modules/reports/actions/collect-fees', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../auth/actions/update-assets': mockUpdateAssets
 	});
@@ -38,7 +36,7 @@ describe('modules/reports/actions/collect-fees.js', () => {
 	});
 
 	it('should dispatch an updateAssets action after called collectFees from augur.js', () => {
-		out = [{
+		const out = [{
 			type: 'UPDATE_ASSETS'
 		}];
 

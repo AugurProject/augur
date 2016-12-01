@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -11,39 +12,36 @@ describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action;
-	let state = Object.assign({}, testState, {
-		blockchain: {...testState.blockchain,
+	const state = Object.assign({}, testState, {
+		blockchain: {
+			...testState.blockchain,
 			isReportRevealPhase: false
 		},
-		loginAccount: {...testState.loginAccount,
+		loginAccount: {
+			...testState.loginAccount,
 			rep: 100
 		}
 	});
-	store = mockStore(state);
-	let mockAugurJS = { augur: {} };
-	let mockLoadReports = { loadReports: () => {} };
-	let mockCollectFees = {};
-	let mockRevealReports = {};
-	let mockLoadEventsWithSubmittedReport = { loadEventsWithSubmittedReport: () => {} };
+	const store = mockStore(state);
+	const mockAugurJS = { augur: {} };
+	const mockLoadReports = { loadReports: () => {} };
+	const mockCollectFees = {};
+	const mockRevealReports = {};
+	const mockLoadEventsWithSubmittedReport = { loadEventsWithSubmittedReport: () => {} };
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
 	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
 	mockAugurJS.augur.checkPeriod = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
-	sinon.stub(mockLoadReports, 'loadReports', (cb) => {
-		return (dispatch, getState) => {
-			dispatch({
-				type: 'UPDATE_REPORTS',
-				reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
-			});
-			cb(null);
-		};
+	sinon.stub(mockLoadReports, 'loadReports', (cb) => (dispatch, getState) => {
+		dispatch({
+			type: 'UPDATE_REPORTS',
+			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
+		});
+		cb(null);
 	});
-	sinon.stub(mockLoadEventsWithSubmittedReport, 'loadEventsWithSubmittedReport', () => {
-		return dispatch => {
-			dispatch({ type: 'LOAD_EVENTS' });
-		};
+	sinon.stub(mockLoadEventsWithSubmittedReport, 'loadEventsWithSubmittedReport', () => dispatch => {
+		dispatch({ type: 'LOAD_EVENTS' });
 	});
 	mockCollectFees.collectFees = sinon.stub().returns({
 		type: 'UPDATE_ASSETS'
@@ -53,8 +51,7 @@ describe('modules/reports/actions/check-period.js', () => {
 		reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
 	});
 
-
-	action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
+	const action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../reports/actions/load-reports': mockLoadReports,
 		'../../reports/actions/collect-fees': mockCollectFees,

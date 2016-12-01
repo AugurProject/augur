@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -9,9 +10,9 @@ import * as action from '../../../src/modules/reports/actions/update-reports';
 describe(`modules/reports/actions/update-reports.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let out;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
 
 	beforeEach(() => {
 		store.clearActions();
@@ -36,7 +37,7 @@ describe(`modules/reports/actions/update-reports.js`, () => {
 			}
 		}];
 
-		test = {
+		const test = {
 			test: {
 				_id: 'test',
 				data: 'test'

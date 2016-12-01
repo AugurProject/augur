@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, afterEach } from 'mocha';
+import { assert } from 'chai';
 import {
 	UPDATE_REPORTS,
 	CLEAR_REPORTS
@@ -9,9 +8,10 @@ import testState from '../../testState';
 import reducer from '../../../src/modules/reports/reducers/reports';
 
 describe(`modules/reports/reducers/reports.js`, () => {
-	let action, out, test;
+	let action;
+	let test;
 	const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
-	let state = Object.assign({}, testState);
+	const state = Object.assign({}, testState);
 
 	afterEach(() => {
 		testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
@@ -41,7 +41,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
 				}
 			}
 		};
-		out = {
+		const out = {
 			[testState.branch.id]: {
 				test: {
 					eventID: 'test',
@@ -78,7 +78,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
 		action = {
 			type: CLEAR_REPORTS
 		};
-		let fakeState = {
+		const fakeState = {
 			[testState.branch.id]: {
 				test: {
 					eventID: 'test',

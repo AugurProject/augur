@@ -1,9 +1,9 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
 
 describe('modules/reports/actions/load-report.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -33,12 +33,10 @@ describe('modules/reports/actions/load-report.js', () => {
 			sinon.stub(AugurJS.augur, 'getReportHash', (branchID, period, account, eventID, cb) => {
 				cb(t.blockchain.reportHashes[branchID][eventID]);
 			});
-			sinon.stub(AugurJS.augur, 'unfixReport', (fixedReport, minValue, maxValue, type) => {
-				return {
-					report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
-					isIndeterminate: false
-				};
-			});
+			sinon.stub(AugurJS.augur, 'unfixReport', (fixedReport, minValue, maxValue, type) => ({
+				report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
+				isIndeterminate: false
+			}));
 			sinon.stub(DecryptReport, 'decryptReport', (loginAccount, branchID, period, eventID, cb) => {
 				console.log('decryptReport:', loginAccount, branchID, period, eventID);
 				cb(null, {
@@ -305,7 +303,6 @@ describe('modules/reports/actions/load-report.js', () => {
 							isUnethical: false,
 							reportedOutcomeID: null,
 							salt: null,
-							isUnethical: false,
 							isRevealed: false,
 							isCommitted: true
 						}
@@ -399,7 +396,6 @@ describe('modules/reports/actions/load-report.js', () => {
 							isUnethical: false,
 							reportedOutcomeID: null,
 							salt: null,
-							isUnethical: false,
 							isRevealed: false,
 							isCommitted: true
 						}
@@ -480,7 +476,6 @@ describe('modules/reports/actions/load-report.js', () => {
 							reportedOutcomeID: '1',
 							salt: '0x7331',
 							isIndeterminate: false,
-							isUnethical: false,
 							isRevealed: false,
 							isCommitted: true
 						}

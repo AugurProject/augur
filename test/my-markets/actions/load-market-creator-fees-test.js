@@ -1,14 +1,15 @@
+import { describe, it, before, after } from 'mocha';
 import { assert } from 'chai';
 
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
 
-import { augur, abi } from '../../../src/services/augurjs';
+import { abi } from '../../../src/services/augurjs';
 
 describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let { store } = mockStore.default;
+	const { store } = mockStore.default;
 
 	const mockAugurJS = {
 		augur: {},
@@ -19,7 +20,10 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 	const mockActions = {
 		updateMarketCreatorFees: () => {}
 	};
-	sinon.stub(mockActions, 'updateMarketCreatorFees', marketFees => ({type: 'TESTING', data: marketFees}));
+	sinon.stub(mockActions, 'updateMarketCreatorFees', marketFees => ({
+		type: 'TESTING',
+		data: marketFees
+	}));
 
 	const action = proxyquire('../../../src/modules/my-markets/actions/load-market-creator-fees', {
 		'../../my-markets/actions/update-market-creator-fees': mockActions,

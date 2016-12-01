@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -12,9 +13,6 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 	const test = (t) => {
 		it(t.description, () => {
 			const store = mockStore(t.state);
-			const AddCommitReportTransaction = {
-				addCommitReportTransaction: () => {}
-			};
 			const AugurJS = {
 				augur: {
 					claimMarketsProceeds: () => {}
@@ -34,9 +32,10 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, marketIDs, cb) => {
 				cb(null, marketIDs);
 			});
-			sinon.stub(ListenToUpdates, 'refreshMarket', (marketID) => {
-				return { type: 'REFRESH_MARKET', marketID };
-			});
+			sinon.stub(ListenToUpdates, 'refreshMarket', (marketID) => ({
+				type: 'REFRESH_MARKET',
+				marketID
+			}));
 			UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
 			store.dispatch(action.claimProceeds());
 			t.assertions(store.getActions());

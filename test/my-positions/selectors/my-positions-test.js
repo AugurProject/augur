@@ -1,11 +1,10 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
-let positionsMarkets;
 describe(`modules/my-positions/selectors/my-positions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, out, test;
-	let mockSelectors = {
+	const mockSelectors = {
 		positionsMarkets: [{
 			id: 'test1',
 			isPendingReport: false,
@@ -64,18 +63,14 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
 		}]
 	};
 
-	selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions.js', {
+	const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions.js', {
 		'../../../selectors': mockSelectors
 	});
 
-	positionsMarkets = selector.default;
-
 	it(`should return only positions markets`, () => {
-		test = selector.default();
-		out = mockSelectors.positionsMarkets.filter(market => market.positionsSummary && market.positionsSummary.numPositions && market.positionsSummary.numPositions.value);
+		const test = selector.default();
+		const out = mockSelectors.positionsMarkets.filter(market => market.positionsSummary && market.positionsSummary.numPositions && market.positionsSummary.numPositions.value);
 
 		assert.deepEqual(test, out, `Didn't return the expected markets`);
 	});
 });
-
-export default positionsMarkets;

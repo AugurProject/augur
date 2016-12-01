@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import store from '../src/store';
 /*
@@ -77,8 +78,8 @@ describe(`store.js`, () => {
 		assert.isObject(state.selectedFilterSort, 'selectedSort is not an Object');
 		assert.isOk(state.selectedFilterSort.isDesc, 'selectedSort.isDesc is not true');
 		assert.deepPropertyVal(state, 'selectedFilterSort.type', 'open', `selectedFilterSort.type doesn't equal 'open'`);
-		assert.deepPropertyVal(state, 'selectedFilterSort.sort', 'volume', `sectectedFilterSort.sort doesn't equal 'volume'`)
-		assert.deepPropertyVal(state, 'selectedFilterSort.isDesc', true, `selectedFilterSort.isDesc doesn't equal 'true'`)
+		assert.deepPropertyVal(state, 'selectedFilterSort.sort', 'volume', `sectectedFilterSort.sort doesn't equal 'volume'`);
+		assert.deepPropertyVal(state, 'selectedFilterSort.isDesc', true, `selectedFilterSort.isDesc doesn't equal 'true'`);
 
 		assert.isOk(state.tradesInProgress, 'tradesInProgress is not defined');
 		assert.isObject(state.tradesInProgress, 'tradesInProgress is not an object');

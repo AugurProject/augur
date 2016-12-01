@@ -1,10 +1,11 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import assertions from 'augur-ui-react-components/lib/assertions';
+// import assertions from 'augur-ui-react-components/lib/assertions';
 
 import { BUY, SELL } from '../../../src/modules/trade/constants/types';
 
-import selector from '../../../src/modules/outcome/selectors/outcome-trade-nav-items';
+import selector from '../../../src/modules/outcomes/selectors/outcome-trade-nav-items';
 
 describe('modules/outcome/selectors/outcome-trade-nav-items.js', () => {
 	const actual = selector();

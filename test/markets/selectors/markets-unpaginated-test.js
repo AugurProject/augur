@@ -1,18 +1,14 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
 import allMarkets from './markets-all-test';
 import filteredMarkets from './markets-filtered-test';
 import favoriteMarkets from './markets-favorite-test';
 
-let unpaginatedMarkets;
 describe('modules/markets/selectors/markets-unpaginated', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, actual, expected;
-	let { state, store } = mockStore.default;
+	const { store } = mockStore.default;
 
 	const mockSelectors = {
 		filteredMarkets: filteredMarkets(),
@@ -20,11 +16,10 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 		favoriteMarkets: favoriteMarkets()
 	};
 
-	selector = proxyquire('../../../src/modules/markets/selectors/markets-unpaginated', {
+	const selector = proxyquire('../../../src/modules/markets/selectors/markets-unpaginated', {
 		'../../../store': store,
 		'../../../selectors': mockSelectors
 	});
-	unpaginatedMarkets = selector.default;
 
 	beforeEach(() => {
 		store.clearActions();
@@ -35,9 +30,9 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 	});
 
 	it(`should return unpaginated markets`, () => {
-		actual = selector.default();
+		const actual = selector.default();
 
-		expected = [{
+		const expected = [{
 			isOpen: true,
 			description: 'test 1',
 			outcomes: [
@@ -64,5 +59,3 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 		assert.deepEqual(actual, expected, `didn't produce the expected output`);
 	});
 });
-
-export default unpaginatedMarkets;

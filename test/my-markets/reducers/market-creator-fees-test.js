@@ -1,10 +1,12 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 import { UPDATE_MARKET_CREATOR_FEES } from '../../../src/modules/my-markets/actions/update-market-creator-fees';
 import reducer from '../../../src/modules/my-markets/reducers/market-creator-fees';
 
 describe('modules/my-markets/reducers/market-creator-fees.js', () => {
-	let state, expected;
+	let state;
+	let expected;
 
 	const action = {
 		type: UPDATE_MARKET_CREATOR_FEES,
@@ -12,7 +14,7 @@ describe('modules/my-markets/reducers/market-creator-fees.js', () => {
 	};
 
 	it('should return the default parameter state', () => {
-		assert.deepEqual(reducer(undefined, {type: null, data: null}), {}, `didn't return the default parameter state`);
+		assert.deepEqual(reducer(undefined, { type: null, data: null }), {}, `didn't return the default parameter state`);
 	});
 
 	it('should return an object with a first update', () => {

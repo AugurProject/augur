@@ -146,10 +146,10 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans1',
-		    data: { status: 'failed', message: 'test error' } },
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: { status: 'failed', message: 'test error' } },
+			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans1',

@@ -1,13 +1,11 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-let markets;
 describe(`modules/markets/selectors/markets.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -182,5 +180,3 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		assert.deepEqual(test, out, `Didn't return only markets that are pending reports`);
 	});
 });
-
-export default markets;

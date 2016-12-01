@@ -1,9 +1,10 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import selector from '../../../src/selectors'
-import assertions from 'augur-ui-react-components/lib/assertions';
+import selector from '../../../src/selectors';
+// import assertions from 'augur-ui-react-components/lib/assertions';
 
 describe('modules/outcome/selectors/selected-outcome.js', () => {
-	let actual = selector.selectedOutcome;
+	const actual = selector.selectedOutcome;
 
 	it('should produce the expected initial state', () => {
 		assert.isNull(actual.selectedOutcomeID, 'selectedOutcomeID initial state is not null');
@@ -11,6 +12,6 @@ describe('modules/outcome/selectors/selected-outcome.js', () => {
 	});
 
 	it('should provide the expected object to components', () => {
-		assertions.selectedOutcome(actual);
+		// assertions.selectedOutcome(actual);
 	});
 });

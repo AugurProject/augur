@@ -959,12 +959,12 @@ describe('modules/trade/actions/process-buy.js', () => {
 				data: {
 					status: 'success'
 				}
-		},
-		{ type: 'LOAD_BIDS_ASKS' },
-		{
-			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: 'testBinaryMarketID'
-		}
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testBinaryMarketID'
+			}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
@@ -1168,17 +1168,17 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			},
 			{
-			type: 'UPDATE_EXISTING_TRANSACTION',
-			transactionID: 'trans1',
-			data: {
-				status: 'success'
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: {
+					status: 'success'
+				}
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testBinaryMarketID'
 			}
-		},
-		{ type: 'LOAD_BIDS_ASKS' },
-		{
-			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: 'testBinaryMarketID'
-		}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
