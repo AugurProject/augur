@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -13,13 +14,19 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 	const fakeProcessTransferFunds = { processTransferFunds: () => {} };
 	const fakeAddTransactions = { addTransaction: () => {} };
 
-	sinon.stub(fakeProcessTransferFunds, 'processTransferFunds', (transID, fromAddress, amount, currency, toAddress) => {
-		return { type: 'PROCESS_TRANSFER_FUNDS', transID, fromAddress, amount, currency, toAddress };
-	});
+	sinon.stub(fakeProcessTransferFunds, 'processTransferFunds', (transID, fromAddress, amount, currency, toAddress) => ({
+		type: 'PROCESS_TRANSFER_FUNDS',
+		transID,
+		fromAddress,
+		amount,
+		currency,
+		toAddress
+	}));
 
-	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => {
-		return { type: 'ADD_TRANSACTION', ...data };
-	});
+	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => ({
+		type: 'ADD_TRANSACTION',
+		...data
+	}));
 
 	beforeEach(() => {
 		store.clearActions();
@@ -44,7 +51,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 				amount: 5,
 				currency: 'eth',
 				toAddress: 'testAddress123',
-				action:  store.getActions()[0].action
+				action: store.getActions()[0].action
 			},
 			{
 				type: 'PROCESS_TRANSFER_FUNDS',

@@ -1,9 +1,10 @@
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import addCommas from '../../src/utils/add-commas-to-number';
 
 describe('utils/add-commas-to-number.js', () => {
-	let mockNumber,
-		out;
+	let mockNumber;
+	let out;
 
 	beforeEach(() => {
 		mockNumber = null;
@@ -34,6 +35,6 @@ describe('utils/add-commas-to-number.js', () => {
 		mockNumber = 100000000.123456;
 		out = '100,000,000.123456';
 
-		assert.strictEqual(addCommas(mockNumber), out, 'returned value with decimal was not formatted correctly')
+		assert.strictEqual(addCommas(mockNumber), out, 'returned value with decimal was not formatted correctly');
 	});
 });

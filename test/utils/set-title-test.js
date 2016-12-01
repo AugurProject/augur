@@ -1,3 +1,4 @@
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 
 import * as setTitle from '../../src/utils/set-title';
@@ -20,10 +21,10 @@ describe('utils/set-title.js', () => {
 		const currentPage = pages[page];
 
 		it(`should correctly set the page title for the ${currentPage} page`, () => {
-			if(currentPage !== pages.M){
+			if (currentPage !== pages.M) {
 				setTitle.default(null, { page: currentPage });
 
-				testPageTitle(currentPage)
+				testPageTitle(currentPage);
 			} else {
 				describe('market pages', () => {
 					const page = pages.M;
@@ -58,9 +59,9 @@ describe('utils/set-title.js', () => {
 });
 
 function testPageTitle(page, description, long) {
-	let expected,
-		appended = ' | Augur',
-		title = global.document.title || '';
+	let expected;
+	const appended = ' | Augur';
+	const	title = global.document.title || '';
 
 	switch (page) {
 		case pages.M: {
@@ -71,7 +72,7 @@ function testPageTitle(page, description, long) {
 
 				assert.strictEqual(title, expected + appended, `title for ${page} page WITHOUT description not set to expected value`);
 			} else {
-				if(!!long){
+				if (!!long) {
 					expected = 'Some title here that is fairly long as...'; // Specifically tests appropriate truncation when final word is added that causes string to be longer than 40 characters
 
 					assert.strictEqual(title, expected + appended, `title for ${page} page WITH long description not set to expected value`);
