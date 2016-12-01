@@ -5,6 +5,7 @@ import {
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
+import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
@@ -39,7 +40,12 @@ export function login(secureLoginID, password, rememberMe) {
 			}
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
+			dispatch(loadLoginAccountDependents((err, ether) => {
+				if (err) return console.error('loadLoginAccountDependents:', err);
+				if (ether === '0') {
+					dispatch(addFundNewAccount(loginAccount.id));
+				}
+			}));
 
 			// need to load selectors here as they get updated above
 			const { links } = require('../../../selectors');
