@@ -21851,7 +21851,7 @@ module.exports={
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x7c8c360e897ecf0fc377a1eace3ce5ebcc12fa70", 
+        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
@@ -21859,7 +21859,7 @@ module.exports={
         "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "Faucets": "0x6fb23f38bfe5f8de1857e8e37ae877c191a32ac8", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
@@ -44390,7 +44390,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.4";
+    this.version = "3.2.5";
 
     this.options = {
         debug: {
