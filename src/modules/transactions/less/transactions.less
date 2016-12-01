@@ -1,0 +1,163 @@
+#transactions_view {
+	.page-content {
+		background: white;
+		font-size: 1.2rem;
+
+		.transactions-container {
+			display: table;
+			width: 100%;
+
+			.transaction-item {
+				.animation-flash-slow(@color-orange);
+
+				background: @color-orange-light;
+				border-bottom: 1px solid @color-border;
+				display: table-row;
+				font-size: 1.3rem;
+				font-weight: 900;
+				line-height: 2.5rem;
+				padding: 2.4vh 0 1.3vh;
+
+				&.failed,
+				&.interrupted {
+					animation-name: unset;
+					background: fade(@color-danger-normal, 6%);
+
+					.status-and-message {
+						color: @color-danger-normal;
+					}
+				}
+
+				&.pending {
+					animation-name: unset;
+					background: fade(@color-light-normal, 50%);
+
+					.status-and-message {
+						color: @color-dark-normal;
+					}
+				}
+
+				&.success {
+					animation-name: unset;
+					background: fade(@color-success-normal, 6%);
+
+					.status-and-message {
+						color: @color-success-normal;
+					}
+				}
+
+				> * {
+					display: table-cell;
+					padding: 2vh 2vw;
+					vertical-align: middle;
+				}
+
+				.index {
+					padding-right: 0;
+					text-align: right;
+				}
+
+				.description {
+					font-weight: 400;
+					line-height: 1.5em;
+					text-align: left;
+
+					> * {
+						display: inline-block;
+						margin-right: 0.3rem;
+					}
+
+					.action {
+						text-transform: uppercase;
+					}
+
+					.action,
+					.shares,
+					.avg-price {
+						font-weight: 900;
+					}
+
+					.outcome-name {
+						text-transform: uppercase;
+					}
+
+					.market-description {
+						font-size: 0.8em;
+						line-height: 1.5em;
+					}
+
+					.hide-in-tx-display {
+						display: none;
+					}
+
+					.avgPrice {
+						display: none;
+					}
+
+					.value-timestamp {
+						color: #6d6d6d;
+						font-size: 75%;
+					}
+				}
+
+				.value-changes {
+					display: none;
+				}
+
+				.status-and-message {
+					color: orange;
+					display: block;
+					line-height: 1.4rem;
+					overflow: hidden;
+					text-align: right;
+
+					.status {
+						font-size: 0.75em;
+						font-weight: bold;
+					}
+
+					.message {
+						font-size: 0.95em;
+					}
+
+					.gasFees-message {
+						font-size: 0.8em;
+					}
+
+					.eventBond-message {
+						font-size: 0.8em;
+					}
+
+					.marketCreationFee-message {
+						font-size: 0.8em;
+					}
+
+					.tradingFees-message {
+						font-size: 0.85em;
+					}
+
+					.totalCost-message {
+						font-size: 0.85em;
+					}
+
+					.totalReturn-message {
+						font-size: 0.85em;
+					}
+
+					.freeze-message {
+						font-size: 0.85em;
+					}
+				}
+			}
+		}
+
+		.feel-free {
+			color: @color-plain-active;
+			display: block;
+			font-size: 1.1rem;
+			font-style: italic;
+			padding: 2rem 3rem 5rem;
+			text-align: right;
+		}
+	}
+}

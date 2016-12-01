@@ -1,0 +1,52 @@
+.outcomes {
+
+	.table();
+
+	margin-top: 1em;
+
+	.outcomes-header-full,
+	.outcomes-header-condensed {
+		.table-header();
+	}
+
+	.outcomes-header-full {
+		@media @breakpoint-mobile {
+			display: none;
+		}
+	}
+
+	.outcomes-header-condensed {
+		display: none;
+
+		@media @breakpoint-mobile {
+			display: flex;
+
+			.border(false);
+		}
+	}
+
+	.outcomes-header-full,
+	.outcomes-header-condensed,
+	.outcome-row-full,
+	.outcome-row-condensed {
+		& > * {
+			flex: 1;
+
+			&:first-child {
+				flex: 3;
+				margin-left: 1em;
+			}
+
+			@media @breakpoint-mobile {
+				padding-left: 1em;
+				padding-right: 1em;
+			}
+		}
+
+		span:not(:first-child) {
+			text-align: center;
+
+			.border(false, @border-left);
+		}
+	}
+}

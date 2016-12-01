@@ -1,0 +1,28 @@
+.market-preview-outcomes {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+
+	.outcome {
+
+		.font-weight-normal();
+
+		display: flex;
+		padding: 0.2em;
+
+		.outcome-price {
+			display: flex;
+			flex: 1;
+			justify-content: flex-end;
+
+			.value:only-child {
+				margin-right: @font-size-normal;
+			}
+		}
+
+		.outcome-name {
+			flex: 3;
+			padding-left: 0.5em;
+		}
+	}
+}
