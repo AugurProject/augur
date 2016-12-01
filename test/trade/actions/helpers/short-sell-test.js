@@ -212,13 +212,11 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 			// assert no error
 			assert(args[0] === null, `the error object sent to cb is not null as expected`);
 			// assert that the "res" object we get back has the expected calcs
-			assert.deepEqual(args[1], {
-				remainingShares: ZERO,
-				filledShares: abi.bignum('50'),
-				filledEth: abi.bignum('50'),
-				tradingFees: abi.bignum('0.03'),
-				gasFees: abi.bignum('0.08702424')
-			}, `The res object passed to cb didn't produce the expected calculations`);
+			assert(args[1].remainingShares.eq(ZERO), `remainingShares value is incorrect`);
+			assert(args[1].filledShares.eq(abi.bignum('50')), `filledShares value is incorrect`);
+			assert(args[1].filledEth.eq(abi.bignum('50')), `filledEth value is incorrect`);
+			assert(args[1].tradingFees.eq(abi.bignum('0.03')), `tradingFees value is incorrect`);
+			assert(args[1].gasFees.eq(abi.bignum('0.08702424')), `gasFees value is incorrect`);
 
 			assert(mockCBStatus.calledWithExactly({ status: 'submitting' }), `Didn't call cbStatus with a submitting status`);
 			assert(mockCBStatus.calledWithExactly({ status: 'committing' }), `Didn't call cbStatus with a committing status`);
