@@ -474,6 +474,37 @@ export const tradeConstOrderBooks = {
 		}
 	}
 };
+// lifted directly from augur.js with a slight change to use abi.bignum instead of BigNumber
+const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
+		if (!orders) return [];
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
+		return Object.keys(orders)
+				.map(function (orderId) {
+						return orders[orderId];
+				})
+				.filter(function (order) {
+						var isMatchingPrice;
+						if (isMarketOrder) {
+								isMatchingPrice = true;
+						} else {
+								isMatchingPrice = traderOrderType === "buy" ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice);
+						}
+						return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+				})
+				.sort(function compareOrdersByPrice(order1, order2) {
+						return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+				});
+};
+// direct copy of calculate-trade-ids helper function but without calling augur.js
+export const stubCalculateBuyTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
+	const orders = orderBooks[marketID] && orderBooks[marketID].sell || {};
+	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id);
+}
+// direct copy of calculate-trade-ids helper function but without calling augur.js
+export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
+	const orders = orderBooks[marketID] && orderBooks[marketID].buy || {};
+	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
+}
 
 export const stubAddBidTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
 	const transaction = {
@@ -577,6 +608,14 @@ export const stubAddShortSellTransaction = (marketID, outcomeID, marketType, mar
 
 export const stubUpdateExistingTransaction = (transactionID, data) => {
 	return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
+};
+
+export const stubLoadAccountTrades = (marketID, cb) => {
+	assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
+	// originally some of my tests returned the order books but it turns out this isn't required, left this here just incase...
+	// cb(undefined, store.getState().orderBooks[marketID]);
+	cb();
+	return { type: 'LOAD_ACCOUNT_TRADES', marketID };
 };
 
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
