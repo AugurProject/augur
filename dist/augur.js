@@ -44390,7 +44390,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.5";
+    this.version = "3.2.6";
 
     this.options = {
         debug: {
@@ -49566,7 +49566,7 @@ module.exports = {
 var async = require("async");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
-var network_id = "2";
+var network_id = "3";
 
 function noop() {}
 
