@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -13,13 +14,12 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
 	const testState = {
 		selectedMarketID: 'testmarket',
 		tradesInProgress: {
-			'testmarket': 'this is a test'
+			testmarket: 'this is a test'
 		}
 	};
-	let selector, store;
-	store = mockStore(testState);
+	const store = mockStore(testState);
 
-	selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
+	const selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
 		'../../../store': store
 	});
 

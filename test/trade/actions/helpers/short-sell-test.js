@@ -1,3 +1,4 @@
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -8,7 +9,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 	const mockAugur = { augur: { ...augur }, abi: { ...abi }, constants: { ...constants } };
 
 	sinon.stub(mockAugur.augur, 'short_sell', (args) => {
-		const { max_amount, buyer_trade_id, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
+		const { onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
 		console.log('mock short_sell called');
 		console.log(args);
 		onTradeHash('tradeHash1');
@@ -17,7 +18,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		if (mockAugur.augur.short_sell.callCount === 3) onCommitFailed({ error: 'error', message: 'error message' });
 		if (mockAugur.augur.short_sell.callCount !== 3) onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
 		if (mockAugur.augur.short_sell.callCount !== 3) onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
-		if (mockAugur.augur.short_sell.callCount === 1) onTradeSuccess({ sharesBought: '0', cashFromTrade: '10.00', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
+		if (mockAugur.augur.short_sell.callCount === 1) onTradeSuccess({ sharesBought: '0', cashFromTrade: '10.00', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 		if (mockAugur.augur.short_sell.callCount === 2) onTradeFailed({ error: 'error', message: 'error message' });
 	});
 
@@ -119,7 +120,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	it('should handle an empty array of tradeIDs', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
-		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [ ], mockCBStatus, mockCB);
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [], mockCBStatus, mockCB);
 		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
 		assert(mockCB.calledWithExactly(null, {
 			remainingShares: abi.bignum(10),

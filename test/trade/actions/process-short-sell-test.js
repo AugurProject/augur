@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -39,7 +40,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		assert.isFunction(cbStatus, `cbStatus passed to shortSell isn't a function`);
 		assert.isFunction(cb, `cb passed to shortSell isn't a function`);
 		let tradingFees;
-		switch(marketID) {
+		switch (marketID) {
 			case 'testBinaryMarketID':
 				tradingFees = '0.01536';
 				break;
@@ -53,9 +54,9 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				tradingFees = '0';
 				break;
 		}
-		cbStatus({ status: 'Testing', hash: 'testhash', timestamp: 1500000000, tradingFees, gasFees: '0.02791268' })
+		cbStatus({ status: 'Testing', hash: 'testhash', timestamp: 1500000000, tradingFees, gasFees: '0.02791268' });
 		cb({ code: 0, message: 'test error' }, undefined);
-		cb(undefined, { filledEth: abi.bignum('0'), remainingShares: abi.bignum('20'),tradingFees: abi.bignum(tradingFees), gasFees: abi.bignum('0.02791268') });
+		cb(undefined, { filledEth: abi.bignum('0'), remainingShares: abi.bignum('20'), tradingFees: abi.bignum(tradingFees), gasFees: abi.bignum('0.02791268') });
 	});
 	const action = proxyquire('../../../src/modules/trade/actions/process-short-sell.js', {
 		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction,
@@ -257,10 +258,10 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-			 	transactionID: 'trans1',
-			 	data: { status: 'success' } },
-		 	{ type: 'LOAD_BIDS_ASKS' },
-		 	{ type: 'LOAD_ACCOUNT_TRADES' }
+			transactionID: 'trans1',
+			data: { status: 'success' } },
+			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'LOAD_ACCOUNT_TRADES' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 	it('should process an short sell order for a categorical market', () => {
@@ -335,10 +336,10 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'failed', message: 'test error' } },
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans2',
+				data: { status: 'failed', message: 'test error' } },
+				{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
@@ -378,71 +379,71 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			},
 			{ type: 'short_ask',
-		    data:
-		     { marketID: 'testCategoricalMarketID',
-		       outcomeID: '1',
-		       marketType: 'categorical',
-		       marketDescription: 'test categorical market',
-		       outcomeName: 'Democratic' },
-		    numShares:
-		     { value: 20,
-		       formattedValue: 20,
-		       formatted: '20',
-		       roundedValue: 20,
-		       rounded: '20.00',
-		       minimized: '20',
-		       denomination: ' shares',
-		       full: '20 shares' },
-		    noFeePrice:
-		     { value: 0.4,
-		       formattedValue: 0.4,
-		       formatted: '0.4000',
-		       roundedValue: 0.4,
-		       rounded: '0.4000',
-		       minimized: '0.4',
-		       denomination: ' ETH',
-		       full: '0.4000 ETH' },
-		    avgPrice:
-		     { value: 0.0003839999999999996,
-		       formattedValue: 0.000384,
-		       formatted: '0.0003840',
-		       roundedValue: 0.0004,
-		       rounded: '0.0004',
-		       minimized: '0.000384',
-		       denomination: ' ETH',
-		       full: '0.0003840 ETH' },
-		    tradingFees:
-		     { value: 0.007679999999999992,
-		       formattedValue: 0.0077,
-		       formatted: '0.0077',
-		       roundedValue: 0.0077,
-		       rounded: '0.0077',
-		       minimized: '0.0077',
-		       denomination: ' ETH',
-		       full: '0.0077 ETH' },
-		    feePercent:
-		     { value: 0.09980039920159671,
-		       formattedValue: 0.1,
-		       formatted: '0.1',
-		       roundedValue: 0,
-		       rounded: '0',
-		       minimized: '0.1',
-		       denomination: '%',
-		       full: '0.1%' },
-		    gasFees:
-		     { value: 0.02791268,
-		       formattedValue: 0.0279,
-		       formatted: '0.0279',
-		       roundedValue: 0.0279,
-		       rounded: '0.0279',
-		       minimized: '0.0279',
-		       denomination: ' real ETH',
-		       full: '0.0279 real ETH' } },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'success' } },
-		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'LOAD_ACCOUNT_TRADES' }
+			data:
+				{ marketID: 'testCategoricalMarketID',
+					outcomeID: '1',
+					marketType: 'categorical',
+					marketDescription: 'test categorical market',
+					outcomeName: 'Democratic' },
+			numShares:
+   { value: 20,
+     formattedValue: 20,
+     formatted: '20',
+     roundedValue: 20,
+     rounded: '20.00',
+     minimized: '20',
+     denomination: ' shares',
+     full: '20 shares' },
+  noFeePrice:
+   { value: 0.4,
+     formattedValue: 0.4,
+     formatted: '0.4000',
+     roundedValue: 0.4,
+     rounded: '0.4000',
+     minimized: '0.4',
+     denomination: ' ETH',
+     full: '0.4000 ETH' },
+  avgPrice:
+   { value: 0.0003839999999999996,
+     formattedValue: 0.000384,
+     formatted: '0.0003840',
+     roundedValue: 0.0004,
+     rounded: '0.0004',
+     minimized: '0.000384',
+     denomination: ' ETH',
+     full: '0.0003840 ETH' },
+  tradingFees:
+   { value: 0.007679999999999992,
+     formattedValue: 0.0077,
+     formatted: '0.0077',
+     roundedValue: 0.0077,
+     rounded: '0.0077',
+     minimized: '0.0077',
+     denomination: ' ETH',
+     full: '0.0077 ETH' },
+  feePercent:
+   { value: 0.09980039920159671,
+     formattedValue: 0.1,
+     formatted: '0.1',
+     roundedValue: 0,
+     rounded: '0',
+     minimized: '0.1',
+     denomination: '%',
+     full: '0.1%' },
+  gasFees:
+   { value: 0.02791268,
+     formattedValue: 0.0279,
+     formatted: '0.0279',
+     roundedValue: 0.0279,
+     rounded: '0.0279',
+     minimized: '0.0279',
+     denomination: ' real ETH',
+     full: '0.0279 real ETH' } },
+{ type: 'UPDATE_EXISTING_TRANSACTION',
+  transactionID: 'trans2',
+  data: { status: 'success' } },
+{ type: 'LOAD_BIDS_ASKS' },
+{ type: 'LOAD_ACCOUNT_TRADES' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 	it('should process an short sell order for a scalar market', () => {
@@ -517,10 +518,10 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-  		{ type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans3',
-		    data: { status: 'failed', message: 'test error' } },
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans3',
+				data: { status: 'failed', message: 'test error' } },
+			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
@@ -629,11 +630,11 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 					full: '0.0279 real ETH'
 				}
 			},
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans3',
-		    data: { status: 'success' } },
-		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'LOAD_ACCOUNT_TRADES' }
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans3',
+				data: { status: 'success' } },
+				{ type: 'LOAD_BIDS_ASKS' },
+				{ type: 'LOAD_ACCOUNT_TRADES' }
 		], `Didn't produce the expected Actions or Calculations`);
 	});
 });

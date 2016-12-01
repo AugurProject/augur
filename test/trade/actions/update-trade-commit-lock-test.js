@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import { updateTradeCommitLock, UPDATE_TRADE_COMMIT_LOCK } from '../../../src/modules/trade/actions/update-trade-commit-lock.js';
 

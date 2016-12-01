@@ -1,5 +1,6 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { formatEther } from '../../../src/utils/format-number'
+import { formatEther } from '../../../src/utils/format-number';
 
 describe('modules/trade/helpers/has-user-enough-funds.js', () => {
 	const hasUserEnoughFunds = require('../../../src/modules/trade/helpers/has-user-enough-funds').default;

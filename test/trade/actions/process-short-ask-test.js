@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -11,9 +12,9 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = tradeConstOrderBooks;
 	const store = mockStore(testState);
-	const mockAugurJS = { augur: {...augur} };
+	const mockAugurJS = { augur: { ...augur } };
 	sinon.stub(mockAugurJS.augur, 'shortAsk', (arg) => {
-		const { amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed } = arg;
+		const { onSent, onSuccess, onFailed } = arg;
 		onSent();
 		onSuccess({
 			hash: 'testhash',
@@ -141,16 +142,16 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 				}
 			},
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans1',
-		    data: { status: 'updating position' } },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans1',
-		    data: { status: 'success' } },
-		  { type: 'LOAD_ACCOUNT_TRADES' },
-		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans1',
-		    data: { status: 'failed', message: 'error message!' }
+			transactionID: 'trans1',
+			data: { status: 'updating position' } },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: { status: 'success' } },
+			{ type: 'LOAD_ACCOUNT_TRADES' },
+			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: { status: 'failed', message: 'error message!' }
 			}
 		], `Didn't produce the expected actions or calculations`);
 	});

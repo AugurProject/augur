@@ -1,3 +1,4 @@
+import { describe, it, beforeEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -11,25 +12,23 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockSubmit = {};
-	let mockAdd = {
+	let out;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockSubmit = {};
+	const mockAdd = {
 		addTransaction: () => {}
 	};
 	mockSubmit.sendCommitReport = sinon.stub().returns({
 		type: 'PROCESS_REPORTS'
 	});
 
-	sinon.stub(mockAdd, `addTransaction`, (arg) => {
-		return {
-			type: 'ADD_TRANSACTION',
-			data: arg
-		}
-	});
+	sinon.stub(mockAdd, `addTransaction`, (arg) => ({
+		type: 'ADD_TRANSACTION',
+		data: arg
+	}));
 
-	action = proxyquire('../../../src/modules/transactions/actions/add-commit-report-transaction.js', {
+	const action = proxyquire('../../../src/modules/transactions/actions/add-commit-report-transaction.js', {
 		'../../reports/actions/commit-report': mockSubmit,
 		'../../transactions/actions/add-transactions': mockAdd
 	});
@@ -39,7 +38,7 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 	});
 
 	it(`should add and make a report transaction`, () => {
-		let market = {
+		const market = {
 			id: 'testMarket',
 			reportableOutcomes: {
 				test1: {

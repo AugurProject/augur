@@ -1,3 +1,4 @@
+import { describe, it, beforeEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -17,17 +18,20 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	const fakeProcessBuy = { processBuy: () => {} };
 	const fakeProcessSell = { processSell: () => {} };
 
-	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => {
-		return { type: 'ADD_TRANSACTION', ...data };
-	});
+	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => ({
+		type: 'ADD_TRANSACTION',
+		...data
+	}));
 
-	sinon.stub(fakeProcessBuy, 'processBuy', (data) => {
-		return { type: 'BUY', ...data };
-	});
+	sinon.stub(fakeProcessBuy, 'processBuy', (data) => ({
+		type: 'BUY',
+		...data
+	}));
 
-	sinon.stub(fakeProcessSell, 'processSell', (data) => {
-		return { type: 'SELL', ...data };
-	});
+	sinon.stub(fakeProcessSell, 'processSell', (data) => ({
+		type: 'SELL',
+		...data
+	}));
 
 	const action = proxyquire('../../../src/modules/transactions/actions/add-trade-transaction.js', {
 		'../../transactions/actions/add-transactions': fakeAddTransactions,
@@ -36,7 +40,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	});
 
 	beforeEach(() => {
-		store.clearActions()
+		store.clearActions();
 	});
 
 	it(`should add a Buy Trade Transaction`, () => {

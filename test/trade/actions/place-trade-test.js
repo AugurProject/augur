@@ -1,18 +1,18 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction } from '../constants';
-import { abi } from '../../../src/services/augurjs';
+import { BUY, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction } from '../constants';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
 	proxyquire.noPreserveCache();
 	const { state, mockStore } = mocks.default;
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = tradeConstOrderBooks;
-	testState.tradesInProgress =  {
-		'testBinaryMarketID': {
-			'2': {
+	testState.tradesInProgress = {
+		testBinaryMarketID: {
+			2: {
 				side: BUY,
 				numShares: '10',
 				limitPrice: '0.5',
@@ -33,8 +33,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.199203187250996016'
 			}
 		},
-		'testCategoricalMarketID': {
-			'1': {
+		testCategoricalMarketID: {
+			1: {
 				side: BUY,
 				numShares: '10',
 				limitPrice: '0.5',
@@ -55,8 +55,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				feePercent: '0.099800399201596707'
 			}
 		},
-		'testScalarMarketID': {
-			'1': {
+		testScalarMarketID: {
+			1: {
 				side: BUY,
 				numShares: '10',
 				limitPrice: '55',
@@ -82,9 +82,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	};
 	const store = mockStore(testState);
 	const mockSelectMarket = { selectMarket: () => {} };
-	sinon.stub(mockSelectMarket, 'selectMarket', (marketID) => {
-		return store.getState().marketsData[marketID];
-	});
+	sinon.stub(mockSelectMarket, 'selectMarket', (marketID) => store.getState().marketsData[marketID]);
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
 	sinon.stub(mockAddBidTransaction, 'addBidTransaction', stubAddBidTransaction);
 
@@ -101,9 +99,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', stubAddShortSellTransaction);
 
 	const mockSelectTransactionsLink = { selectTransactionsLink: () => {} };
-	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', (dispatch) => {
-		return { onClick: () => dispatch({ type: 'UPDATE_URL', url: 'transactions-link' }) };
-	})
+	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', (dispatch) => ({
+		onClick: () => dispatch({
+			type: 'UPDATE_URL',
+			url: 'transactions-link'
+		})
+	}));
 	const mockAugur = { augur: { getParticipantSharesPurchased: () => {} } };
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
 		console.log('callcount:', mockAugur.augur.getParticipantSharesPurchased.callCount);
@@ -214,37 +215,37 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					full: '0.0145 real ETH'
 				}
 			},
-		  { type: 'CLEAR_TRADE_IN_PROGRESS',
-		    marketID: 'testBinaryMarketID' },
-		  { type: 'UPDATE_URL', url: 'transactions-link' }
+			{ type: 'CLEAR_TRADE_IN_PROGRESS',
+				marketID: 'testBinaryMarketID' },
+			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected actions and calculations`);
 		});
 
 		it('should place a BID trade for a binary market', () => {
-			store.getState().tradesInProgress['testBinaryMarketID'] = {
-				'2': {
-				side: 'buy',
-				numShares: '10',
-				limitPrice: '0.35',
-				totalFee: '0.00637',
-				totalCost: '3.50637',
-				tradeActions: [{
-					action: 'BID',
-					shares: '10',
-					gasEth: '0.01450404',
-					feeEth: '0.00637',
-					feePercent: '0.182',
-					costEth: '3.50637',
-					avgPrice: '0.350637',
-					noFeePrice: '0.35'
-				}],
-				tradingFeesEth: '0.00637',
-				gasFeesRealEth: '0.01450404',
-				feePercent: '0.18133992268143956'
+			store.getState().tradesInProgress.testBinaryMarketID = {
+				2: {
+					side: 'buy',
+					numShares: '10',
+					limitPrice: '0.35',
+					totalFee: '0.00637',
+					totalCost: '3.50637',
+					tradeActions: [{
+						action: 'BID',
+						shares: '10',
+						gasEth: '0.01450404',
+						feeEth: '0.00637',
+						feePercent: '0.182',
+						costEth: '3.50637',
+						avgPrice: '0.350637',
+						noFeePrice: '0.35'
+					}],
+					tradingFeesEth: '0.00637',
+					gasFeesRealEth: '0.01450404',
+					feePercent: '0.18133992268143956'
 				}
 			};
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-			assert.deepEqual(store.getActions(), [ {
+			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
 				data: {
 					marketID: 'testBinaryMarketID',
@@ -323,270 +324,277 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a ASK trade for a binary market', () => {
-			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
-			  numShares: '10',
-			  limitPrice: '0.5',
-			  totalFee: '0.01',
-			  totalCost: '-10.01',
-			  tradeActions:
-			   [ { action: 'SHORT_ASK',
-			       shares: '10',
-			       gasEth: '0.02791268',
-			       feeEth: '0.01',
-			       feePercent: '0.2',
-			       costEth: '-10.01',
-			       avgPrice: '1.001',
-			       noFeePrice: '0.5' } ],
-			  tradingFeesEth: '0.01',
-			  gasFeesRealEth: '0.02791268',
-			  feePercent: '0.099800399201596806' }
+			store.getState().tradesInProgress.testBinaryMarketID = {
+				2: {
+					side: 'sell',
+					numShares: '10',
+					limitPrice: '0.5',
+					totalFee: '0.01',
+					totalCost: '-10.01',
+					tradeActions: [{
+						action: 'SHORT_ASK',
+						shares: '10',
+						gasEth: '0.02791268',
+						feeEth: '0.01',
+						feePercent: '0.2',
+						costEth: '-10.01',
+						avgPrice: '1.001',
+						noFeePrice: '0.5'
+					}],
+					tradingFeesEth: '0.01',
+					gasFeesRealEth: '0.02791268',
+					feePercent: '0.099800399201596806'
+				}
 			};
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-			assert.deepEqual(store.getActions(), [ {
-					type: 'ask',
-					data: {
-						marketID: 'testBinaryMarketID',
-						outcomeID: '2',
-						marketType: 'binary',
-						marketDescription: 'test binary market?',
-						outcomeName: 'Yes'
-					},
-					numShares: {
-						value: 10,
-						formattedValue: 10,
-						formatted: '10',
-						roundedValue: 10,
-						rounded: '10.00',
-						minimized: '10',
-						denomination: ' shares',
-						full: '10 shares'
-					},
-					noFeePrice: {
-						value: 0.5,
-						formattedValue: 0.5,
-						formatted: '0.5000',
-						roundedValue: 0.5,
-						rounded: '0.5000',
-						minimized: '0.5',
-						denomination: ' ETH',
-						full: '0.5000 ETH'
-					},
-					avgPrice: {
-						value: 1.001,
-						formattedValue: 1.001,
-						formatted: '1.0010',
-						roundedValue: 1.001,
-						rounded: '1.0010',
-						minimized: '1.001',
-						denomination: ' ETH',
-						full: '1.0010 ETH'
-					},
-					tradingFees: {
-						value: 0.01,
-						formattedValue: 0.01,
-						formatted: '0.0100',
-						roundedValue: 0.01,
-						rounded: '0.0100',
-						minimized: '0.01',
-						denomination: ' ETH',
-						full: '0.0100 ETH'
-					},
-					feePercent: {
-						value: 0.0998003992015968,
-						formattedValue: 0.1,
-						formatted: '0.1',
-						roundedValue: 0,
-						rounded: '0',
-						minimized: '0.1',
-						denomination: '%',
-						full: '0.1%'
-					},
-					gasFees: {
-						value: 0.02791268,
-						formattedValue: 0.0279,
-						formatted: '0.0279',
-						roundedValue: 0.0279,
-						rounded: '0.0279',
-						minimized: '0.0279',
-						denomination: ' real ETH',
-						full: '0.0279 real ETH'
-					}
+			assert.deepEqual(store.getActions(), [{
+				type: 'ask',
+				data: {
+					marketID: 'testBinaryMarketID',
+					outcomeID: '2',
+					marketType: 'binary',
+					marketDescription: 'test binary market?',
+					outcomeName: 'Yes'
 				},
-			  { type: 'CLEAR_TRADE_IN_PROGRESS',
-			    marketID: 'testBinaryMarketID' },
-			  { type: 'UPDATE_URL', url: 'transactions-link' }
-			], `Didn't produce the expected Actions or Calculations`);
+				numShares: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10',
+					roundedValue: 10,
+					rounded: '10.00',
+					minimized: '10',
+					denomination: ' shares',
+					full: '10 shares'
+				},
+				noFeePrice: {
+					value: 0.5,
+					formattedValue: 0.5,
+					formatted: '0.5000',
+					roundedValue: 0.5,
+					rounded: '0.5000',
+					minimized: '0.5',
+					denomination: ' ETH',
+					full: '0.5000 ETH'
+				},
+				avgPrice: {
+					value: 1.001,
+					formattedValue: 1.001,
+					formatted: '1.0010',
+					roundedValue: 1.001,
+					rounded: '1.0010',
+					minimized: '1.001',
+					denomination: ' ETH',
+					full: '1.0010 ETH'
+				},
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH',
+					full: '0.0100 ETH'
+				},
+				feePercent: {
+					value: 0.0998003992015968,
+					formattedValue: 0.1,
+					formatted: '0.1',
+					roundedValue: 0,
+					rounded: '0',
+					minimized: '0.1',
+					denomination: '%',
+					full: '0.1%'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
+			},
+			{ type: 'CLEAR_TRADE_IN_PROGRESS',
+				marketID: 'testBinaryMarketID' },
+			{ type: 'UPDATE_URL', url: 'transactions-link' }
+		], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a binary market', () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			console.log(store.getActions());
-			assert.deepEqual(store.getActions(), [ {
-			 	type: 'ask',
-			 	data: {
-			 		marketID: 'testBinaryMarketID',
-			 		outcomeID: '2',
-			 		marketType: 'binary',
-			 		marketDescription: 'test binary market?',
-			 		outcomeName: 'Yes'
-			 	},
-			 	numShares: {
-			 		value: 5,
-			 		formattedValue: 5,
-			 		formatted: '5',
-			 		roundedValue: 5,
-			 		rounded: '5.00',
-			 		minimized: '5',
-			 		denomination: ' shares',
-			 		full: '5 shares'
-			 	},
-			 	noFeePrice: {
-			 		value: 0.5,
-			 		formattedValue: 0.5,
-			 		formatted: '0.5000',
-			 		roundedValue: 0.5,
-			 		rounded: '0.5000',
-			 		minimized: '0.5',
-			 		denomination: ' ETH',
-			 		full: '0.5000 ETH'
-			 	},
-			 	avgPrice: {
-			 		value: 2.002,
-			 		formattedValue: 2.002,
-			 		formatted: '2.0020',
-			 		roundedValue: 2.002,
-			 		rounded: '2.0020',
-			 		minimized: '2.002',
-			 		denomination: ' ETH',
-			 		full: '2.0020 ETH'
-			 	},
-			 	tradingFees: {
-			 		value: 0.01,
-			 		formattedValue: 0.01,
-			 		formatted: '0.0100',
-			 		roundedValue: 0.01,
-			 		rounded: '0.0100',
-			 		minimized: '0.01',
-			 		denomination: ' ETH',
-			 		full: '0.0100 ETH'
-			 	},
-			 	feePercent: {
-			 		value: 0.0998003992015968,
-			 		formattedValue: 0.1,
-			 		formatted: '0.1',
-			 		roundedValue: 0,
-			 		rounded: '0',
-			 		minimized: '0.1',
-			 		denomination: '%',
-			 		full: '0.1%'
-			 	},
-			 	gasFees: {
-			 		value: 0.02791268,
-			 		formattedValue: 0.0279,
-			 		formatted: '0.0279',
-			 		roundedValue: 0.0279,
-			 		rounded: '0.0279',
-			 		minimized: '0.0279',
-			 		denomination: ' real ETH',
-			 		full: '0.0279 real ETH'
-			 	}
-			 }, {
-			 	type: 'short_ask',
-			 	data: {
-			 		marketID: 'testBinaryMarketID',
-			 		outcomeID: '2',
-			 		marketType: 'binary',
-			 		marketDescription: 'test binary market?',
-			 		outcomeName: 'Yes'
-			 	},
-			 	numShares: {
-			 		value: 5,
-			 		formattedValue: 5,
-			 		formatted: '5',
-			 		roundedValue: 5,
-			 		rounded: '5.00',
-			 		minimized: '5',
-			 		denomination: ' shares',
-			 		full: '5 shares'
-			 	},
-			 	noFeePrice: {
-			 		value: 0.5,
-			 		formattedValue: 0.5,
-			 		formatted: '0.5000',
-			 		roundedValue: 0.5,
-			 		rounded: '0.5000',
-			 		minimized: '0.5',
-			 		denomination: ' ETH',
-			 		full: '0.5000 ETH'
-			 	},
-			 	avgPrice: {
-			 		value: 2.002,
-			 		formattedValue: 2.002,
-			 		formatted: '2.0020',
-			 		roundedValue: 2.002,
-			 		rounded: '2.0020',
-			 		minimized: '2.002',
-			 		denomination: ' ETH',
-			 		full: '2.0020 ETH'
-			 	},
-			 	tradingFees: {
-			 		value: 0.01,
-			 		formattedValue: 0.01,
-			 		formatted: '0.0100',
-			 		roundedValue: 0.01,
-			 		rounded: '0.0100',
-			 		minimized: '0.01',
-			 		denomination: ' ETH',
-			 		full: '0.0100 ETH'
-			 	},
-			 	feePercent: {
-			 		value: 0.0998003992015968,
-			 		formattedValue: 0.1,
-			 		formatted: '0.1',
-			 		roundedValue: 0,
-			 		rounded: '0',
-			 		minimized: '0.1',
-			 		denomination: '%',
-			 		full: '0.1%'
-			 	},
-			 	gasFees: {
-			 		value: 0.02791268,
-			 		formattedValue: 0.0279,
-			 		formatted: '0.0279',
-			 		roundedValue: 0.0279,
-			 		rounded: '0.0279',
-			 		minimized: '0.0279',
-			 		denomination: ' real ETH',
-			 		full: '0.0279 real ETH'
-			 	}
+			assert.deepEqual(store.getActions(), [{
+				type: 'ask',
+				data: {
+					marketID: 'testBinaryMarketID',
+					outcomeID: '2',
+					marketType: 'binary',
+					marketDescription: 'test binary market?',
+					outcomeName: 'Yes'
+				},
+				numShares: {
+					value: 5,
+					formattedValue: 5,
+					formatted: '5',
+					roundedValue: 5,
+					rounded: '5.00',
+					minimized: '5',
+					denomination: ' shares',
+					full: '5 shares'
+				},
+				noFeePrice: {
+					value: 0.5,
+					formattedValue: 0.5,
+					formatted: '0.5000',
+					roundedValue: 0.5,
+					rounded: '0.5000',
+					minimized: '0.5',
+					denomination: ' ETH',
+					full: '0.5000 ETH'
+				},
+				avgPrice: {
+					value: 2.002,
+					formattedValue: 2.002,
+					formatted: '2.0020',
+					roundedValue: 2.002,
+					rounded: '2.0020',
+					minimized: '2.002',
+					denomination: ' ETH',
+					full: '2.0020 ETH'
+				},
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH',
+					full: '0.0100 ETH'
+				},
+				feePercent: {
+					value: 0.0998003992015968,
+					formattedValue: 0.1,
+					formatted: '0.1',
+					roundedValue: 0,
+					rounded: '0',
+					minimized: '0.1',
+					denomination: '%',
+					full: '0.1%'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
+			}, {
+				type: 'short_ask',
+				data: {
+					marketID: 'testBinaryMarketID',
+					outcomeID: '2',
+					marketType: 'binary',
+					marketDescription: 'test binary market?',
+					outcomeName: 'Yes'
+				},
+				numShares: {
+					value: 5,
+					formattedValue: 5,
+					formatted: '5',
+					roundedValue: 5,
+					rounded: '5.00',
+					minimized: '5',
+					denomination: ' shares',
+					full: '5 shares'
+				},
+				noFeePrice: {
+					value: 0.5,
+					formattedValue: 0.5,
+					formatted: '0.5000',
+					roundedValue: 0.5,
+					rounded: '0.5000',
+					minimized: '0.5',
+					denomination: ' ETH',
+					full: '0.5000 ETH'
+				},
+				avgPrice: {
+					value: 2.002,
+					formattedValue: 2.002,
+					formatted: '2.0020',
+					roundedValue: 2.002,
+					rounded: '2.0020',
+					minimized: '2.002',
+					denomination: ' ETH',
+					full: '2.0020 ETH'
+				},
+				tradingFees: {
+					value: 0.01,
+					formattedValue: 0.01,
+					formatted: '0.0100',
+					roundedValue: 0.01,
+					rounded: '0.0100',
+					minimized: '0.01',
+					denomination: ' ETH',
+					full: '0.0100 ETH'
+				},
+				feePercent: {
+					value: 0.0998003992015968,
+					formattedValue: 0.1,
+					formatted: '0.1',
+					roundedValue: 0,
+					rounded: '0',
+					minimized: '0.1',
+					denomination: '%',
+					full: '0.1%'
+				},
+				gasFees: {
+					value: 0.02791268,
+					formattedValue: 0.0279,
+					formatted: '0.0279',
+					roundedValue: 0.0279,
+					rounded: '0.0279',
+					minimized: '0.0279',
+					denomination: ' real ETH',
+					full: '0.0279 real ETH'
+				}
 			},
 			{ type: 'CLEAR_TRADE_IN_PROGRESS',
-			  marketID: 'testBinaryMarketID' },
+				marketID: 'testBinaryMarketID' },
 			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a SELL trade for a binary market', () => {
-			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
-			  numShares: '10',
-			  limitPrice: '0.45',
-			  totalFee: '0.00891',
-			  totalCost: '-10.00891',
-			  tradeActions:
-			   [ { action: 'SHORT_ASK',
-			       shares: '10',
-			       gasEth: '0.02791268',
-			       feeEth: '0.00891',
-			       feePercent: '0.198',
-			       costEth: '-10.00891',
-			       avgPrice: '1.000891',
-			       noFeePrice: '0.45' } ],
-			  tradingFeesEth: '0.00891',
-			  gasFeesRealEth: '0.02791268',
-			  feePercent: '0.088941506235887648' }
+			store.getState().tradesInProgress.testBinaryMarketID = {
+				2: {
+					side: 'sell',
+					numShares: '10',
+					limitPrice: '0.45',
+					totalFee: '0.00891',
+					totalCost: '-10.00891',
+					tradeActions: [{
+						action: 'SHORT_ASK',
+						shares: '10',
+						gasEth: '0.02791268',
+						feeEth: '0.00891',
+						feePercent: '0.198',
+						costEth: '-10.00891',
+						avgPrice: '1.000891',
+						noFeePrice: '0.45'
+					}],
+					tradingFeesEth: '0.00891',
+					gasFeesRealEth: '0.02791268',
+					feePercent: '0.088941506235887648' }
 			};
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-			assert.deepEqual(store.getActions(), [ {
+			assert.deepEqual(store.getActions(), [{
 				type: 'UPDATE_TRADE_COMMIT_LOCK',
 				isLocked: true
 			}, {
@@ -668,7 +676,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_ASK trade for a binary market', () => {
-			store.getState().tradesInProgress['testBinaryMarketID'] = { '2': { side: 'sell',
+			store.getState().tradesInProgress.testBinaryMarketID = {
+				2: { side: 'sell',
 			  numShares: '10',
 			  limitPrice: '0.5',
 			  totalFee: '0.01',
@@ -1050,12 +1059,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Calculations`);
+			}], "Didn't produce the expected Actions or Calculations");
 		});
 
 		it('should place a ASK trade for a categorical market', () => {
-			store.getState().tradesInProgress['testCategoricalMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testCategoricalMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '0.5',
@@ -1152,7 +1161,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Calculations`);
+			}], "Didn't produce the expected Actions or Calculations");
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a categorical market', () => {
@@ -1301,12 +1310,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Calculations`);
+			}], "Didn't produce the expected Actions or Calculations");
 		});
 
 		it('should place a SELL trade for a categorical market', () => {
-			store.getState().tradesInProgress['testCategoricalMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testCategoricalMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '0.45',
@@ -1410,8 +1419,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_ASK trade for a categorical market', () => {
-			store.getState().tradesInProgress['testCategoricalMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testCategoricalMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '0.5',
@@ -1512,8 +1521,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		});
 
 		it('should place a SHORT_SELL trade for a categorical market', () => {
-			store.getState().tradesInProgress['testCategoricalMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testCategoricalMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '0.45',
@@ -1613,7 +1622,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Calculations`);
+			}], "Didn't produce the expected Actions or Calculations");
 		});
 	});
 
@@ -1698,12 +1707,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a BID trade for a scalar market', () => {
-			store.getState().tradesInProgress['testScalarMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testScalarMarketID = {
+				1: {
 					side: 'buy',
 					numShares: '10',
 					limitPrice: '35',
@@ -1800,12 +1809,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a ASK trade for a scalar market', () => {
-			store.getState().tradesInProgress['testScalarMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testScalarMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '55',
@@ -1902,7 +1911,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a scalar market', () => {
@@ -2051,12 +2060,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a SELL trade for a scalar market', () => {
-			store.getState().tradesInProgress['testScalarMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testScalarMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '45',
@@ -2156,12 +2165,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a SHORT_ASK trade for a scalar market', () => {
-			store.getState().tradesInProgress['testScalarMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testScalarMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '55',
@@ -2258,12 +2267,12 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
-			}],`Didn't produce the expected Actions or Caclculations`);
+			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
 		it('should place a SHORT_SELL trade for a scalar market', () => {
-			store.getState().tradesInProgress['testScalarMarketID'] = {
-				'1': {
+			store.getState().tradesInProgress.testScalarMarketID = {
+				1: {
 					side: 'sell',
 					numShares: '10',
 					limitPrice: '45',

@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -16,335 +17,335 @@ describe('modules/trade/actions/process-sell.js', () => {
 		args[5]();
 		console.log('trade cc:', mockTrade.trade.callCount);
 		switch (args[0]) {
-		case 'testBinaryMarketID':
-			switch (mockTrade.trade.callCount) {
-				case 1:
-				case 2:
-				case 3:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '0.01',
-						gasFees: '0.02791268',
-						filledShares: '10',
-						filledEth: '10',
-						remainingShares: '0'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						filledShares: abi.bignum('10'),
-						filledEth: abi.bignum('10.00'),
-						tradingFees: abi.bignum('0.01'),
-						gasFees: abi.bignum('0.02791268'),
-						remainingShares: abi.bignum('0')
-					});
-					break;
-				case 4:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '0.02',
-						gasFees: '0.02791268',
-						filledShares: '15',
-						filledEth: '15',
-						remainingShares: '5'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						filledShares: abi.bignum('15'),
-						filledEth: abi.bignum('15.00'),
-						tradingFees: abi.bignum('0.02'),
-						gasFees: abi.bignum('0.02791268'),
-						remainingShares: abi.bignum('5')
-					});
-					break;
-				case 5:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '0.01536',
-						gasFees: '0.02791268',
-						filledShares: '5',
-						filledEth: '5',
-						remainingShares: '15'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						filledShares: abi.bignum('5'),
-						filledEth: abi.bignum('5'),
-						tradingFees: abi.bignum('0.01536'),
-						gasFees: abi.bignum('0.02791268'),
-						remainingShares: abi.bignum('15')
-					});
-					break;
-				case 6:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '0.02',
-						gasFees: '0.02791268',
-						filledShares: '0',
-						filledEth: '0',
-						remainingShares: '20'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						filledShares: abi.bignum('0'),
-						filledEth: abi.bignum('0'),
-						tradingFees: abi.bignum('0.02'),
-						gasFees: abi.bignum('0.02791268'),
-						remainingShares: abi.bignum('20')
-					});
-					break;
-				case 7:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '0.01536',
-						gasFees: '0.02791268',
-						filledShares: '0',
-						filledEth: '0',
-						remainingShares: '20'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						filledShares: abi.bignum('0'),
-						filledEth: abi.bignum('0'),
-						tradingFees: abi.bignum('0.01536'),
-						gasFees: abi.bignum('0.02791268'),
-						remainingShares: abi.bignum('20')
-					});
-					break;
-				default:
-					console.log('binary default break. callCount:', mockTrade.trade.callCount);
-					break;
-			}
-			break;
-		case 'testCategoricalMarketID':
-			switch (mockTrade.trade.callCount) {
-			case 1:
-			case 2:
-			case 3:
-				args[7]({
-					status: 'success',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: '0.004999999999999995',
-					gasFees: '0.02791268',
-					remainingShares: '0',
-					filledShares: '10',
-					filledEth: '10',
-				});
-				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-				args[8](undefined, {
-					remainingShares: abi.bignum('0'),
-					filledShares: abi.bignum('10'),
-					filledEth: abi.bignum('10'),
-					tradingFees: abi.bignum('0.004999999999999995'),
-					gasFees: abi.bignum('0.02791268')
-				});
+			case 'testBinaryMarketID':
+				switch (mockTrade.trade.callCount) {
+					case 1:
+					case 2:
+					case 3:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.01',
+							gasFees: '0.02791268',
+							filledShares: '10',
+							filledEth: '10',
+							remainingShares: '0'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('10'),
+							filledEth: abi.bignum('10.00'),
+							tradingFees: abi.bignum('0.01'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('0')
+						});
+						break;
+					case 4:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.02',
+							gasFees: '0.02791268',
+							filledShares: '15',
+							filledEth: '15',
+							remainingShares: '5'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('15'),
+							filledEth: abi.bignum('15.00'),
+							tradingFees: abi.bignum('0.02'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('5')
+						});
+						break;
+					case 5:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.01536',
+							gasFees: '0.02791268',
+							filledShares: '5',
+							filledEth: '5',
+							remainingShares: '15'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('5'),
+							filledEth: abi.bignum('5'),
+							tradingFees: abi.bignum('0.01536'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('15')
+						});
+						break;
+					case 6:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.02',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('0.02'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('20')
+						});
+						break;
+					case 7:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.01536',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('0.01536'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('20')
+						});
+						break;
+					default:
+						console.log('binary default break. callCount:', mockTrade.trade.callCount);
+						break;
+				}
 				break;
-			case 4:
-				args[7]({
-					status: 'success',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: '0.00999999999999999',
-					gasFees: '0.02791268',
-					filledShares: '15',
-					filledEth: '15',
-					remainingShares: '5'
-				});
-				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-				args[8](undefined, {
-					filledShares: abi.bignum('15'),
-					filledEth: abi.bignum('15.00'),
-					tradingFees: abi.bignum('0.00999999999999999'),
-					gasFees: abi.bignum('0.02791268'),
-					remainingShares: abi.bignum('5')
-				});
+			case 'testCategoricalMarketID':
+				switch (mockTrade.trade.callCount) {
+					case 1:
+					case 2:
+					case 3:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.004999999999999995',
+							gasFees: '0.02791268',
+							remainingShares: '0',
+							filledShares: '10',
+							filledEth: '10',
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							remainingShares: abi.bignum('0'),
+							filledShares: abi.bignum('10'),
+							filledEth: abi.bignum('10'),
+							tradingFees: abi.bignum('0.004999999999999995'),
+							gasFees: abi.bignum('0.02791268')
+						});
+						break;
+					case 4:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.00999999999999999',
+							gasFees: '0.02791268',
+							filledShares: '15',
+							filledEth: '15',
+							remainingShares: '5'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('15'),
+							filledEth: abi.bignum('15.00'),
+							tradingFees: abi.bignum('0.00999999999999999'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('5')
+						});
+						break;
+					case 5:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.007679999999999992',
+							gasFees: '0.02791268',
+							filledShares: '5',
+							filledEth: '5',
+							remainingShares: '15'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('5'),
+							filledEth: abi.bignum('5'),
+							tradingFees: abi.bignum('0.007679999999999992'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('15')
+						});
+						break;
+					case 6:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.02',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('0.02'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('20')
+						});
+						break;
+					case 7:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '0.007679999999999992',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('0.007679999999999992'),
+							gasFees: abi.bignum('0.02791268'),
+							remainingShares: abi.bignum('20')
+						});
+						break;
+					default:
+						console.log('trade cat default hit', mockTrade.trade.callCount);
+						break;
+				}
 				break;
-			case 5:
-				args[7]({
-					status: 'success',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: '0.007679999999999992',
-					gasFees: '0.02791268',
-					filledShares: '5',
-					filledEth: '5',
-					remainingShares: '15'
-				});
-				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-				args[8](undefined, {
-					filledShares: abi.bignum('5'),
-					filledEth: abi.bignum('5'),
-					tradingFees: abi.bignum('0.007679999999999992'),
-					gasFees: abi.bignum('0.02791268'),
-					remainingShares: abi.bignum('15')
-				});
-				break;
-			case 6:
-				args[7]({
-					status: 'success',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: '0.02',
-					gasFees: '0.02791268',
-					filledShares: '0',
-					filledEth: '0',
-					remainingShares: '20'
-				});
-				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-				args[8](undefined, {
-					filledShares: abi.bignum('0'),
-					filledEth: abi.bignum('0'),
-					tradingFees: abi.bignum('0.02'),
-					gasFees: abi.bignum('0.02791268'),
-					remainingShares: abi.bignum('20')
-				});
-				break;
-			case 7:
-				args[7]({
-					status: 'success',
-					hash: 'testhash',
-					timestamp: 1500000000,
-					tradingFees: '0.007679999999999992',
-					gasFees: '0.02791268',
-					filledShares: '0',
-					filledEth: '0',
-					remainingShares: '20'
-				});
-				args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-				args[8](undefined, {
-					filledShares: abi.bignum('0'),
-					filledEth: abi.bignum('0'),
-					tradingFees: abi.bignum('0.007679999999999992'),
-					gasFees: abi.bignum('0.02791268'),
-					remainingShares: abi.bignum('20')
-				});
+			case 'testScalarMarketID':
+				switch (mockTrade.trade.callCount) {
+					case 1:
+					case 2:
+					case 3:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '5.36982248520710025',
+							gasFees: '0.02791268',
+							filledShares: '10',
+							filledEth: '15.36982248520710025',
+							remainingShares: '0'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							remainingShares: abi.bignum('0'),
+							filledShares: abi.bignum('10'),
+							filledEth: abi.bignum('15.36982248520710025'),
+							tradingFees: abi.bignum('5.36982248520710025'),
+							gasFees: abi.bignum('0.02791268')
+						});
+						break;
+					case 4:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '10.7396449704142005',
+							gasFees: '0.02791268',
+							filledShares: '15',
+							filledEth: '25.7396449704142005',
+							remainingShares: '5'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							tradingFees: abi.bignum('10.7396449704142005'),
+							gasFees: abi.bignum('0.02791268'),
+							filledShares: abi.bignum('15'),
+							filledEth: abi.bignum('25.7396449704142005'),
+							remainingShares: abi.bignum('5')
+						});
+						break;
+					case 5:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '6.8165680473372776',
+							gasFees: '0.02791268',
+							filledShares: '5',
+							filledEth: '11.8165680473372776',
+							remainingShares: '15'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							tradingFees: abi.bignum('6.8165680473372776'),
+							gasFees: abi.bignum('0.02791268'),
+							filledShares: abi.bignum('5'),
+							filledEth: abi.bignum('11.8165680473372776'),
+							remainingShares: abi.bignum('15'),
+						});
+						break;
+					case 6:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '10.7396449704142005',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							remainingShares: abi.bignum('20'),
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('10.7396449704142005'),
+							gasFees: abi.bignum('0.02791268')
+						});
+						break;
+					case 7:
+						args[7]({
+							status: 'success',
+							hash: 'testhash',
+							timestamp: 1500000000,
+							tradingFees: '6.8165680473372776',
+							gasFees: '0.02791268',
+							filledShares: '0',
+							filledEth: '0',
+							remainingShares: '20'
+						});
+						args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+						args[8](undefined, {
+							remainingShares: abi.bignum('20'),
+							filledShares: abi.bignum('0'),
+							filledEth: abi.bignum('0'),
+							tradingFees: abi.bignum('6.8165680473372776'),
+							gasFees: abi.bignum('0.02791268')
+						});
+						break;
+					default:
+						console.log('scalar default break, callcount: ', mockTrade.trade.callCount);
+						break;
+				}
 				break;
 			default:
-				console.log('trade cat default hit', mockTrade.trade.callCount);
 				break;
-			}
-			break;
-		case 'testScalarMarketID':
-			switch (mockTrade.trade.callCount) {
-				case 1:
-				case 2:
-				case 3:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '5.36982248520710025',
-						gasFees: '0.02791268',
-						filledShares: '10',
-						filledEth: '15.36982248520710025',
-						remainingShares: '0'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						remainingShares: abi.bignum('0'),
-						filledShares: abi.bignum('10'),
-						filledEth: abi.bignum('15.36982248520710025'),
-						tradingFees: abi.bignum('5.36982248520710025'),
-						gasFees: abi.bignum('0.02791268')
-					});
-					break;
-				case 4:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '10.7396449704142005',
-						gasFees: '0.02791268',
-						filledShares: '15',
-						filledEth: '25.7396449704142005',
-						remainingShares: '5'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						tradingFees: abi.bignum('10.7396449704142005'),
-						gasFees: abi.bignum('0.02791268'),
-						filledShares: abi.bignum('15'),
-						filledEth: abi.bignum('25.7396449704142005'),
-						remainingShares: abi.bignum('5')
-					});
-					break;
-				case 5:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '6.8165680473372776',
-						gasFees: '0.02791268',
-						filledShares: '5',
-						filledEth: '11.8165680473372776',
-						remainingShares: '15'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						tradingFees: abi.bignum('6.8165680473372776'),
-						gasFees: abi.bignum('0.02791268'),
-						filledShares: abi.bignum('5'),
-						filledEth: abi.bignum('11.8165680473372776'),
-						remainingShares: abi.bignum('15'),
-					});
-					break;
-				case 6:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '10.7396449704142005',
-						gasFees: '0.02791268',
-						filledShares: '0',
-						filledEth: '0',
-						remainingShares: '20'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						remainingShares: abi.bignum('20'),
-						filledShares: abi.bignum('0'),
-						filledEth: abi.bignum('0'),
-						tradingFees: abi.bignum('10.7396449704142005'),
-						gasFees: abi.bignum('0.02791268')
-					});
-					break;
-				case 7:
-					args[7]({
-						status: 'success',
-						hash: 'testhash',
-						timestamp: 1500000000,
-						tradingFees: '6.8165680473372776',
-						gasFees: '0.02791268',
-						filledShares: '0',
-						filledEth: '0',
-						remainingShares: '20'
-					});
-					args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-					args[8](undefined, {
-						remainingShares: abi.bignum('20'),
-						filledShares: abi.bignum('0'),
-						filledEth: abi.bignum('0'),
-						tradingFees: abi.bignum('6.8165680473372776'),
-						gasFees: abi.bignum('0.02791268')
-					});
-					break;
-				default:
-					console.log('scalar default break, callcount: ', mockTrade.trade.callCount);
-					break;
-			}
-			break;
-		default:
-			break;
 		}
 	});
 	const mockAddAskTransaction = { addAskTransaction: () => {} };
@@ -384,7 +385,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
 		cb(undefined, store.getState().orderBooks[marketID]);
 		return { type: 'LOAD_BIDS_ASKS' };
-	})
+	});
 
 	const action = proxyquire('../../../src/modules/trade/actions/process-sell.js', {
 		'../../../services/augurjs': mockAugur,
@@ -404,10 +405,12 @@ describe('modules/trade/actions/process-sell.js', () => {
 	afterEach(() => {
 		store.clearActions();
 		// reset the trade/getParticipantSharesPurchased functions to prep for the next type of market tests...
-		if (mockTrade.trade.callCount === 7)
+		if (mockTrade.trade.callCount === 7) {
 			mockTrade.trade.reset();
-		if (mockAugur.augur.getParticipantSharesPurchased.callCount === 4)
+		}
+		if (mockAugur.augur.getParticipantSharesPurchased.callCount === 4) {
 			mockAugur.augur.getParticipantSharesPurchased.reset();
+		}
 	});
 
 	const binaryExpectedOutput1 = [
@@ -760,7 +763,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
- 			{
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testBinaryMarketID'
 			}
@@ -1035,7 +1038,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
- 			{
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testBinaryMarketID'
 			}
@@ -1453,7 +1456,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				transactionID: 'trans1',
 				data: { status: 'success' }
 			},
- 			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testBinaryMarketID'
@@ -1499,7 +1502,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 					full: '0.0279 real ETH (estimated)'
 				}
 			}
-		},{
+		}, {
 			type: 'UPDATE_EXISTING_TRANSACTION',
 			transactionID: 'trans2',
 			data: {
@@ -1809,7 +1812,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
- 			{
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testCategoricalMarketID'
 			}
@@ -1897,10 +1900,10 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'failed', message: 'this error is a test.' } },
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans2',
+				data: { status: 'failed', message: 'this error is a test.' } },
+			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
@@ -2077,14 +2080,14 @@ describe('modules/trade/actions/process-sell.js', () => {
 					full: '0.0279 real ETH'
 				}
 			},
-		  {
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'success' }
+				transactionID: 'trans2',
+				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
-		  { type: 'LOAD_ACCOUNT_TRADES',
-		    marketID: 'testCategoricalMarketID'
+			{ type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testCategoricalMarketID'
 			}
 		], `Didn't produce the expected actions or calculations`);
 	});
@@ -2170,10 +2173,10 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'failed', message: 'this error is a test.' } },
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans2',
+				data: { status: 'failed', message: 'this error is a test.' } },
+			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
@@ -2417,7 +2420,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true },
-		  {
+			{
 				type: 'short_sell',
 				data: {
 					marketID: 'testCategoricalMarketID',
@@ -2487,12 +2490,12 @@ describe('modules/trade/actions/process-sell.js', () => {
 					full: '0.0279 real ETH'
 				}
 			},
-		  { type: 'LOAD_BIDS_ASKS' },
-		  { type: 'UPDATE_EXISTING_TRANSACTION',
-		    transactionID: 'trans2',
-		    data: { status: 'success' } },
 			{ type: 'LOAD_BIDS_ASKS' },
-		  {
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans2',
+				data: { status: 'success' } },
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testCategoricalMarketID'
 			}
@@ -2577,7 +2580,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}
 		},
-		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false},
+		{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 		{
 			type: 'UPDATE_EXISTING_TRANSACTION',
 			transactionID: 'trans3',
@@ -2732,7 +2735,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
- 			{
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: {
@@ -2741,7 +2744,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
- 			{
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: {
@@ -2852,7 +2855,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				transactionID: 'trans3',
 				data: { status: 'success' }
 			},
- 			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testScalarMarketID'
@@ -3125,7 +3128,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				transactionID: 'trans3',
 				data: { status: 'success' }
 			},
- 			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testScalarMarketID'
@@ -3331,7 +3334,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				transactionID: 'trans3',
 				data: { status: 'success' }
 			},
- 			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'LOAD_BIDS_ASKS' },
 			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testScalarMarketID'
@@ -3421,8 +3424,8 @@ describe('modules/trade/actions/process-sell.js', () => {
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-			  transactionID: 'trans3',
-			  data: { status: 'failed', message: 'this error is a test.' } },
+				transactionID: 'trans3',
+				data: { status: 'failed', message: 'this error is a test.' } },
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
@@ -3540,7 +3543,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
- 			{
+			{
 				type: 'LOAD_ACCOUNT_TRADES',
 				marketID: 'testScalarMarketID'
 			}
@@ -3591,39 +3594,51 @@ describe('modules/trade/actions/process-sell.js', () => {
 	it('should gracefully handle numShares passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', undefined, '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "0.5" or shares "undefined"' } } ], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or shares "undefined"'
+			}
+		}], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', null, '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "0.5" or shares "null"' } } ], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or shares "null"'
+			}
+		}], `Dispatched unexpected actions when it shouldn't have given a null numShares`);
 	});
 
 	it('should gracefully handle limitPrice passed as null or undefined', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', undefined, '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "undefined" or shares "10"' } } ], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "undefined" or shares "10"'
+			}
+		}], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
 
 		store.clearActions();
 
 		store.dispatch(action.processSell('trans1', 'testBinaryMarketID', '2', '10', null, '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "null" or shares "10"' } } ], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "null" or shares "10"'
+			}
+		}], `Dispatched unexpected actions when it shouldn't have given a null limitPrice`);
 	});
 
 	it('should gracefully handle totalEthWithFee passed as null or undefined', () => {

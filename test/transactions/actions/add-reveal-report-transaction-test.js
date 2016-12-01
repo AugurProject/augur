@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -36,24 +37,30 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 			tx: { MakeReports: { submitReport: {} } }
 		}
 	};
-	sinon.stub(mockAddTransactions, 'addTransaction', (data) => {
-		return { type: 'ADD_TRANSACTION', data };
-	});
-	sinon.stub(mockUpdateExistingTransaction, 'updateExistingTransaction', (transactionID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, ...data };
-	});
-	sinon.stub(mockUpdateAssets, 'updateAssets', () => {
-		return { type: 'UPDATE_ASSETS' };
-	});
+
+	sinon.stub(mockAddTransactions, 'addTransaction', (data) => ({
+		type: 'ADD_TRANSACTION',
+		data
+	}));
+
+	sinon.stub(mockUpdateExistingTransaction, 'updateExistingTransaction', (transactionID, data) => ({
+		type: 'UPDATE_EXISTING_TRANSACTION',
+		transactionID,
+		...data
+	}));
+
+	sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
+
 	sinon.stub(mockAugurJS.augur, 'getDescription', (eventID, callback) => {
 		callback('some test description');
 	});
+
 	sinon.stub(mockAugurJS.augur, 'getMarket', (eventID, index, callback) => {
 		callback('testMarketID');
 	});
-	sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => {
-		return 1;
-	});
+
+	sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
+
 	sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
 		o.onSent({
 			status: 'submitted',

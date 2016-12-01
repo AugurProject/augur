@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -11,33 +12,28 @@ describe(`modules/transactions/actions/add-create-market-transaction.js`, () => 
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockSubmit = {
+	let out;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockSubmit = {
 		createMarket: () => {}
 	};
-	let mockAdd = {
+	const mockAdd = {
 		addTransaction: () => {}
 	};
 
-	sinon.stub(mockSubmit, 'createMarket', (id, data) => {
-		return {
-			type: 'CREATE_MARKET',
-			id,
-			data
-		};
-	});
+	sinon.stub(mockSubmit, 'createMarket', (id, data) => ({
+		type: 'CREATE_MARKET',
+		id,
+		data
+	}));
 
-	sinon.stub(mockAdd, `addTransaction`, (arg) => {
-		return {
-			type: 'ADD_TRANSACTION',
-			data: arg
-		}
-	});
+	sinon.stub(mockAdd, `addTransaction`, (arg) => ({
+		type: 'ADD_TRANSACTION',
+		data: arg
+	}));
 
-
-	action = proxyquire('../../../src/modules/transactions/actions/add-create-market-transaction.js', {
+	const action = proxyquire('../../../src/modules/transactions/actions/add-create-market-transaction.js', {
 		'../../create-market/actions/submit-new-market': mockSubmit,
 		'../../transactions/actions/add-transactions': mockAdd
 	});
@@ -51,7 +47,7 @@ describe(`modules/transactions/actions/add-create-market-transaction.js`, () => 
 	});
 
 	it(`should add and create a new create market transaction`, () => {
-		let marketData = {
+		const marketData = {
 			id: 'testMarket1'
 		};
 		store.dispatch(action.addCreateMarketTransaction(marketData, 1, 5));

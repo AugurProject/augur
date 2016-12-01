@@ -21,7 +21,7 @@ export const tradeTestState = {
 	},
 	selectedMarketID: 'testBinaryMarketID',
 	marketsData: {
-		'testBinaryMarketID': {
+		testBinaryMarketID: {
 			author: 'testAuthor1',
 			branchID: '0x010101',
 			creationFee: '22.5',
@@ -40,7 +40,11 @@ export const tradeTestState = {
 			numOutcomes: 2,
 			reportedOutcome: undefined,
 			sortOrder: 0,
-			tags: [ 'binary', 'markets', null ],
+			tags: [
+				'binary',
+				'markets',
+				null
+			],
 			takerFee: '0.01',
 			tradingFee: '0.008',
 			tradingPeriod: 8653,
@@ -48,7 +52,7 @@ export const tradeTestState = {
 			volume: '3030',
 			winningOutcomes: []
 		},
-		'testCategoricalMarketID': {
+		testCategoricalMarketID: {
 			author: 'testAuthor2',
 			branchId: '0x010101',
 			creationFee: '12.857142857142857142',
@@ -77,7 +81,7 @@ export const tradeTestState = {
 			volume: '0',
 			winningOutcomes: []
 		},
-		'testScalarMarketID': {
+		testScalarMarketID: {
 			author: 'testAuthor3',
 			branchID: '0x010101',
 			creationFee: '9',
@@ -97,7 +101,11 @@ export const tradeTestState = {
 			reportedOutcome: undefined,
 			resolution: 'https://www.resolution-of-market.com',
 			sortOrder: 3,
-			tags: [ 'scalar', 'markets', 'test' ],
+			tags: [
+				'scalar',
+				'markets',
+				'test'
+			],
 			takerFee: '0.02',
 			tradingFee: '0.02',
 			tradingPeriod: 8544,
@@ -106,15 +114,15 @@ export const tradeTestState = {
 			winningOutcomes: []
 		},
 	}, outcomesData: {
-		'testBinaryMarketID': {
-			'2': {
+		testBinaryMarketID: {
+			2: {
 				id: 2,
 				name: 'Yes',
 				outstandingShares: '1005',
 				price: '0.5',
 				sharesPurchased: '0'
 			},
-			'1': {
+			1: {
 				id: 1,
 				name: 'No',
 				outstandingShares: '2025',
@@ -122,41 +130,41 @@ export const tradeTestState = {
 				sharesPurchased: '0'
 			}
 		},
-		'testCategoricalMarketID': {
-			'1': {
+		testCategoricalMarketID: {
+			1: {
 				name: 'Democratic',
 				outstandingShares: '0',
 				price: '0',
 				sharesPurchased: '0'
 			},
-			'2': {
+			2: {
 				name: 'Republican',
 				outstandingShares: '0',
 				price: '0',
 				sharesPurchased: '0'
 			},
-			'3': {
+			3: {
 				name: 'Libertarian',
 				outstandingShares: '0',
 				price: '0',
 				sharesPurchased: '0'
 			},
-			'4': {
+			4: {
 				name: 'Other',
 				outstandingShares: '0',
 				price: '0',
 				sharesPurchased: '0'
 			}
 		},
-		'testScalarMarketID': {
-			'1': {
+		testScalarMarketID: {
+			1: {
 				id: 1,
 				name: '',
 				outstandingShares: '0',
 				price: '65',
 				sharesPurchased: '0'
 			},
-			'2': {
+			2: {
 				id: 2,
 				name: '',
 				outstandingShares: '0',
@@ -167,7 +175,7 @@ export const tradeTestState = {
 	},
 	tradesInProgress: {},
 	transactionsData: {
-		'trans1': {
+		trans1: {
 			data: {
 				marketID: 'testBinaryMarketID',
 				outcomeID: '2',
@@ -179,7 +187,7 @@ export const tradeTestState = {
 				value: '0.199203187250996016'
 			}
 		},
-		'trans2': {
+		trans2: {
 			data: {
 				marketID: 'testCategoricalMarketID',
 				outcomeID: '1',
@@ -191,7 +199,7 @@ export const tradeTestState = {
 				value: '0.099800399201596707'
 			}
 		},
-		'trans3': {
+		trans3: {
 			data: {
 				marketID: 'testScalarMarketID',
 				outcomeID: '1',
@@ -209,42 +217,42 @@ export const tradeTestState = {
 export const tradeConstOrderBooks = {
 	testBinaryMarketID: {
 		buy: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '0.45',
 				numShares: '10',
 				outcome: '2',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '0.45',
 				numShares: '5',
 				outcome: '2',
 				owner: 'owner2'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '0.45',
 				numShares: '3',
 				outcome: '2',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '0.44',
 				numShares: '10',
 				outcome: '2',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '0.46',
 				numShares: '15',
 				outcome: '2',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '0.43',
 				numShares: '5',
@@ -253,42 +261,42 @@ export const tradeConstOrderBooks = {
 			}
 		},
 		sell: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '0.4',
 				numShares: '10',
 				outcome: '2',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '0.4',
 				numShares: '5',
 				outcome: '2',
 				owner: 'owner2'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '0.4',
 				numShares: '10',
 				outcome: '2',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '0.39',
 				numShares: '3',
 				outcome: '2',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '0.41',
 				numShares: '15',
 				outcome: '2',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '0.415',
 				numShares: '20',
@@ -299,40 +307,40 @@ export const tradeConstOrderBooks = {
 	},
 	testCategoricalMarketID: {
 		buy: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '0.45',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '0.45',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '0.45',
 				numShares: '3',
 				outcome: '1',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '0.44',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '0.46',
 				numShares: '15',
 				outcome: '1',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '0.43',
 				numShares: '5',
@@ -341,42 +349,42 @@ export const tradeConstOrderBooks = {
 			}
 		},
 		sell: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '0.4',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '0.4',
 				numShares: '5',
 				outcome: '1',
 				owner: 'owner2'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '0.4',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '0.39',
 				numShares: '3',
 				outcome: '1',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '0.41',
 				numShares: '15',
 				outcome: '1',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '0.415',
 				numShares: '20',
@@ -387,40 +395,40 @@ export const tradeConstOrderBooks = {
 	},
 	testScalarMarketID: {
 		buy: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '45',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '45',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '45',
 				numShares: '3',
 				outcome: '1',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '44',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '46',
 				numShares: '15',
 				outcome: '1',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '43',
 				numShares: '5',
@@ -429,42 +437,42 @@ export const tradeConstOrderBooks = {
 			}
 		},
 		sell: {
-			'orderID1': {
+			orderID1: {
 				id: 'orderID1',
 				price: '40',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner1'
 			},
-			'orderID2': {
+			orderID2: {
 				id: 'orderID2',
 				price: '40',
 				numShares: '5',
 				outcome: '1',
 				owner: 'owner2'
 			},
-			'orderID3': {
+			orderID3: {
 				id: 'orderID3',
 				price: '40',
 				numShares: '10',
 				outcome: '1',
 				owner: 'owner3'
 			},
-			'orderID4': {
+			orderID4: {
 				id: 'orderID4',
 				price: '39',
 				numShares: '3',
 				outcome: '1',
 				owner: 'owner4'
 			},
-			'orderID5': {
+			orderID5: {
 				id: 'orderID5',
 				price: '41',
 				numShares: '15',
 				outcome: '1',
 				owner: 'owner5'
 			},
-			'orderID6': {
+			orderID6: {
 				id: 'orderID6',
 				price: '415',
 				numShares: '20',
@@ -575,9 +583,10 @@ export const stubAddShortSellTransaction = (marketID, outcomeID, marketType, mar
 	return transaction;
 };
 
-export const stubUpdateExistingTransaction = (transactionID, data) => {
-	return { type: 'UPDATE_EXISTING_TRANSACTION', transactionID, data };
-};
+export const stubUpdateExistingTransaction = (transactionID, data) => ({
+	type: 'UPDATE_EXISTING_TRANSACTION',
+	transactionID, data
+});
 
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
 	const Data = UpdateTradesInProgressAction.data;
