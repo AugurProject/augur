@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';

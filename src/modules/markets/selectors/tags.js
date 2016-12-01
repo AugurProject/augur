@@ -16,7 +16,7 @@ export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
 	markets.forEach(market => {
 		market.tags.forEach(tag => {
 			tagCounts[tag.name] = tagCounts[tag.name] || 0;
-			tagCounts[tag.name]++;
+			tagCounts[tag.name] += 1;
 		});
 	});
 

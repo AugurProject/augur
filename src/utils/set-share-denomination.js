@@ -11,13 +11,13 @@ function setShareDenomination(value, denomination) {
 	}
 
 	switch (denomination) {
-	case (MICRO_SHARE):
-		return formatValue(value, 4);
-	case (MILLI_SHARE):
-		return formatValue(value, 1);
-	default:
-	case (SHARE):
-		return value;
+		case (MICRO_SHARE):
+			return formatValue(value, 4);
+		case (MILLI_SHARE):
+			return formatValue(value, 1);
+		default:
+		case (SHARE):
+			return value;
 	}
 }
 
@@ -70,47 +70,47 @@ function handlePostfixedUnit(valueArray, zeroPadAmount) {
 
 	switch (valueArray[newValueArray.length - 1]) {
 	// Handle existing > 10000 values
-	case ('K'): {
-		newValueArray[newValueArray.length - 1] = step ? 'M' : 'B';
-		return newValueArray;
-	}
-	case ('M'): {
-		if (step) {
-			newValueArray[newValueArray.length - 1] = 'B';
-		} else {
-			newValueArray = gtTrillion;
+		case ('K'): {
+			newValueArray[newValueArray.length - 1] = step ? 'M' : 'B';
+			return newValueArray;
 		}
-		return newValueArray;
-	}
-	case ('B'):
-	case ('T'): {
-		newValueArray = gtTrillion;
-		return newValueArray;
-	}
+		case ('M'): {
+			if (step) {
+				newValueArray[newValueArray.length - 1] = 'B';
+			} else {
+				newValueArray = gtTrillion;
+			}
+			return newValueArray;
+		}
+		case ('B'):
+		case ('T'): {
+			newValueArray = gtTrillion;
+			return newValueArray;
+		}
 
 	// Handle values that become greater than 10000
-	default: {
-		// Append 0's
-		for (let i = 0; i < zeroPadAmount; i++) {
-			newValueArray.push('0');
-		}
+		default: {
+			// Append 0's
+			for (let i = 0; i < zeroPadAmount; i++) {
+				newValueArray.push('0');
+			}
 
-		// Mirrors logic present in format-number
-		if (newValueArray.length >= 13) {
-			newValueArray = gtTrillion;
-		} else if (newValueArray.length >= 11) {
-			newValueArray.splice(newValueArray.length - 9);
-			newValueArray.push('B');
-		} else if (newValueArray.length >= 8) {
-			newValueArray.splice(newValueArray.length - 6);
-			newValueArray.push('M');
-		} else if (newValueArray.length >= 5) {
-			newValueArray.splice(newValueArray.length - 3);
-			newValueArray.push('K');
-		}
+			// Mirrors logic present in format-number
+			if (newValueArray.length >= 13) {
+				newValueArray = gtTrillion;
+			} else if (newValueArray.length >= 11) {
+				newValueArray.splice(newValueArray.length - 9);
+				newValueArray.push('B');
+			} else if (newValueArray.length >= 8) {
+				newValueArray.splice(newValueArray.length - 6);
+				newValueArray.push('M');
+			} else if (newValueArray.length >= 5) {
+				newValueArray.splice(newValueArray.length - 3);
+				newValueArray.push('K');
+			}
 
-		return newValueArray;
-	}
+			return newValueArray;
+		}
 	}
 }
 

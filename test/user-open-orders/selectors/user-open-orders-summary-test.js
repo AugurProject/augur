@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import {
 	assert
 } from 'chai';

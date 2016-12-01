@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 
 describe('modules/bids-asks/helpers/is-order-of-user.js', () => {

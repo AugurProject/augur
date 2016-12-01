@@ -63,13 +63,13 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 		}
 
 		switch (authType) {
-		case IMPORT:
-			return makeLocation({ page: IMPORT }).url;
-		case LOGIN:
-			return makeLocation({ page: LOGIN }).url;
-		case REGISTER:
-		default:
-			return makeLocation({ page: REGISTER }).url;
+			case IMPORT:
+				return makeLocation({ page: IMPORT }).url;
+			case LOGIN:
+				return makeLocation({ page: LOGIN }).url;
+			case REGISTER:
+			default:
+				return makeLocation({ page: REGISTER }).url;
 		}
 	};
 
@@ -153,14 +153,14 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
 			const { marketsHeader } = require('../../../selectors');
 
 			switch (subSet) {
-			case (FAVORITES):
-				dispatch(marketsHeader.onClickFavorites);
-				break;
-			case (PENDING_REPORTS):
-				dispatch(marketsHeader.onClickPendingReports);
-				break;
-			default:
-				dispatch(marketsHeader.onClickAllMarkets);
+				case (FAVORITES):
+					dispatch(marketsHeader.onClickFavorites);
+					break;
+				case (PENDING_REPORTS):
+					dispatch(marketsHeader.onClickPendingReports);
+					break;
+				default:
+					dispatch(marketsHeader.onClickAllMarkets);
 			}
 
 			dispatch(updateURL(href));

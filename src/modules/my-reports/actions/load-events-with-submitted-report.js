@@ -16,7 +16,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 
 			while (startPeriod <= branch.currentPeriod) {
 				dispatch(getEventsWithReports(branch.id, startPeriod, loginAccount.id));
-				startPeriod++;
+				startPeriod += 1;
 			}
 		}
 	};

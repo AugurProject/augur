@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 import mocks from '../../../mockStore'
 

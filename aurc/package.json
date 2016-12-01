@@ -17,7 +17,7 @@
     "start": "augur-ui-webserver -d './demo'",
     "watch": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development; npm run -s watch:all",
     "build": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
-    "lint": "clear; echo Linting... && eslint --ext .jsx,.js src && stylelint '**/*.less' && echo Linting Complete!",
+    "lint": "clear; echo Linting... && eslint --ext .jsx,.js src && echo Linting Complete!",
     "lint:watch": "npm run lint -- --watch",
     "test": "NODE_ENV=test NODE_PATH=./src mocha",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=development npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push --follow-tags && npm publish",

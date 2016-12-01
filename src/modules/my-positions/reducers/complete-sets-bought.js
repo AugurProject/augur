@@ -4,30 +4,30 @@ import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
 export default function (completeSetsBought = {}, action) {
 	switch (action.type) {
-	case UPDATE_COMPLETE_SETS_BOUGHT:
-		if (action.data) {
-			if (action.marketID) {
+		case UPDATE_COMPLETE_SETS_BOUGHT:
+			if (action.data) {
+				if (action.marketID) {
+					return {
+						...completeSetsBought,
+						[action.marketID]: {
+							...action.data[action.marketID]
+						}
+					};
+				}
 				return {
 					...completeSetsBought,
-					[action.marketID]: {
-						...action.data[action.marketID]
-					}
+					...action.data
 				};
 			}
-			return {
-				...completeSetsBought,
-				...action.data
-			};
-		}
-		return completeSetsBought;
+			return completeSetsBought;
 
-	case CLEAR_LOGIN_ACCOUNT:
-		return {};
+		case CLEAR_LOGIN_ACCOUNT:
+			return {};
 
-	case CLEAR_ACCOUNT_TRADES:
-		return {};
+		case CLEAR_ACCOUNT_TRADES:
+			return {};
 
-	default:
-		return completeSetsBought;
+		default:
+			return completeSetsBought;
 	}
 }

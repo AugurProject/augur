@@ -1,9 +1,3 @@
-/*
- * Author: priecint
- *
- * At what time was market data downloaded
- */
-
 import { assert } from 'chai';
 import marketDataTimestampsReducer from '../../../src/modules/markets/reducers/market-data-timestamps'
 import { UPDATE_MARKET_DATA_TIMESTAMP } from '../../../src/modules/market/actions/update-market-data-timestamp';

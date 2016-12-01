@@ -73,16 +73,16 @@ export const selectOutcomesFromForm = (
 	scalarSmallNum,
 	scalarBigNum) => {
 	switch (type) {
-	case BINARY:
-		return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
-	case CATEGORICAL:
-		return categoricalOutcomes.map((outcome, i) => {
-			const obj = { id: i, name: outcome };
-			return obj;
-		});
-	case SCALAR:
-		return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
-	default:
-		break;
+		case BINARY:
+			return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+		case CATEGORICAL:
+			return categoricalOutcomes.map((outcome, i) => {
+				const obj = { id: i, name: outcome };
+				return obj;
+			});
+		case SCALAR:
+			return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+		default:
+			break;
 	}
 };

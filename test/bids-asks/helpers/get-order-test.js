@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 import { BID } from "../../../src/modules/bids-asks/constants/bids-asks-types";
 

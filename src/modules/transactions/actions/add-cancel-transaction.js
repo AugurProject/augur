@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processCancelOrder } from '../../bids-asks/actions/cancel-order';
 import { CANCEL_ORDER } from '../../transactions/constants/types';

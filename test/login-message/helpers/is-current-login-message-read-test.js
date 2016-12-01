@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { assert } from 'chai';
 import isCurrentLoginMessageRead from '../../../src/modules/login-message/helpers/is-current-login-message-read';
 

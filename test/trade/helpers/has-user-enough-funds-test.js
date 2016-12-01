@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 import { formatEther } from '../../../src/utils/format-number'
 

@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { assert } from 'chai';
 
 import formatTimePassed from '../../src/utils/format-time-passed';

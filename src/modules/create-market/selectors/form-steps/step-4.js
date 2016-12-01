@@ -81,21 +81,21 @@ export const initialFairPrices = (formState) => {
 	};
 	const labels = [];
 	switch (formState.type) {
-	case BINARY:
-		return setInitialFairPrices(['Yes', 'No']);
-	case SCALAR:
-		return setInitialFairPrices(['⇧', '⇩']);
-	case CATEGORICAL:
+		case BINARY:
+			return setInitialFairPrices(['Yes', 'No']);
+		case SCALAR:
+			return setInitialFairPrices(['⇧', '⇩']);
+		case CATEGORICAL:
 
-		formState.categoricalOutcomes.map((val, i) => {
-			labels[i] = val;
-			return val;
-		});
+			formState.categoricalOutcomes.map((val, i) => {
+				labels[i] = val;
+				return val;
+			});
 
-		return setInitialFairPrices(labels);
+			return setInitialFairPrices(labels);
 
-	default:
-		break;
+		default:
+			break;
 	}
 };
 

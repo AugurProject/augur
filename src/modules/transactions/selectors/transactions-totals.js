@@ -17,13 +17,13 @@ export const selectTransactionsTotals = memoizerific(1)((transactions) => {
 	};
 
 	o.transactions = transactions.forEach(transaction => {
-		o.numTotal++;
+		o.numTotal += 1;
 		if (transaction.status === PENDING) {
-			o.numPending++;
+			o.numPending += 1;
 		} else if ([SUCCESS, FAILED, INTERRUPTED].indexOf(transaction.status) >= 0) {
-			o.numComplete++;
+			o.numComplete += 1;
 		} else {
-			o.numWorking++;
+			o.numWorking += 1;
 		}
 	});
 

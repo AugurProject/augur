@@ -1,9 +1,3 @@
-/*
- *
- *
- * Author: priecint
- */
-
 export default function (millis) {
 	let timePassed;
 	if (millis > (60 * 60 * 1000)) {

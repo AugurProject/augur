@@ -28,24 +28,24 @@ export const selectErrMsg = (err) => {
 	}
 
 	switch (err.code) {
-	case INVALID_USERNAME_OR_PASSWORD:
-		return 'invalid username or password';
-	case USERNAME_REQUIRED:
-		return 'username is required';
-	case PASSWORDS_DO_NOT_MATCH:
-		return 'passwords do not match';
-	case PASSWORD_TOO_SHORT:
-		return err.message; // use message so we dont have to update length requiremenets here
-	case PASSWORD_NEEDS_LOWERCASE:
-		return err.message;
-	case PASSWORD_NEEDS_UPPERCASE:
-		return err.message;
-	case PASSWORD_NEEDS_NUMBER:
-		return err.message;
-	case USERNAME_TAKEN:
-		return 'username already registered';
-	default:
-		return err.message;
+		case INVALID_USERNAME_OR_PASSWORD:
+			return 'invalid username or password';
+		case USERNAME_REQUIRED:
+			return 'username is required';
+		case PASSWORDS_DO_NOT_MATCH:
+			return 'passwords do not match';
+		case PASSWORD_TOO_SHORT:
+			return err.message; // use message so we dont have to update length requiremenets here
+		case PASSWORD_NEEDS_LOWERCASE:
+			return err.message;
+		case PASSWORD_NEEDS_UPPERCASE:
+			return err.message;
+		case PASSWORD_NEEDS_NUMBER:
+			return err.message;
+		case USERNAME_TAKEN:
+			return 'username already registered';
+		default:
+			return err.message;
 	}
 };
 
@@ -162,14 +162,14 @@ export const selectImportAccount = (auth, dispatch) => {
 
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
-	case REGISTER:
-		return selectRegister(auth, loginAccount, dispatch);
-	case LOGIN:
-		return selectLogin(auth, dispatch);
-	case IMPORT:
-		return selectImportAccount(auth, dispatch);
-	default:
-		return;
+		case REGISTER:
+			return selectRegister(auth, loginAccount, dispatch);
+		case LOGIN:
+			return selectLogin(auth, dispatch);
+		case IMPORT:
+			return selectImportAccount(auth, dispatch);
+		default:
+			return;
 	}
 };
 

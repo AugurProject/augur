@@ -35,24 +35,24 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 		};
 
 		switch (currency) {
-		case 'ETH':
-			return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed);
-		case 'real ETH':
-			return augur.sendEther({
-				to,
-				value: amount,
-				from: fromAddress,
-				onSent: sent,
-				onSuccess: success,
-				onFailed: failed
-			});
-		case 'REP':
-			return augur.sendReputation(branch.id, to, amount, sent, success, failed);
-		default:
-			return dispatch(updateExistingTransaction(transactionID, {
-				status: FAILED,
-				message: 'Unrecognized currency selected. Transaction failed.'
-			}));
+			case 'ETH':
+				return augur.sendCashFrom(to, amount, fromAddress, sent, success, failed);
+			case 'real ETH':
+				return augur.sendEther({
+					to,
+					value: amount,
+					from: fromAddress,
+					onSent: sent,
+					onSuccess: success,
+					onFailed: failed
+				});
+			case 'REP':
+				return augur.sendReputation(branch.id, to, amount, sent, success, failed);
+			default:
+				return dispatch(updateExistingTransaction(transactionID, {
+					status: FAILED,
+					message: 'Unrecognized currency selected. Transaction failed.'
+				}));
 		}
 	};
 }

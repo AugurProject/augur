@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
 import updateSelectedOutcome from '../../outcomes/actions/update-selected-outcome';

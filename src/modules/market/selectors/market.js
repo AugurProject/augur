@@ -177,23 +177,23 @@ export function assembleMarket(
 			const now = new Date();
 
 			switch (market.type) {
-			case BINARY:
-				market.isBinary = true;
-				market.isCategorical = false;
-				market.isScalar = false;
-				break;
-			case CATEGORICAL:
-				market.isBinary = false;
-				market.isCategorical = true;
-				market.isScalar = false;
-				break;
-			case SCALAR:
-				market.isBinary = false;
-				market.isCategorical = false;
-				market.isScalar = true;
-				break;
-			default:
-				break;
+				case BINARY:
+					market.isBinary = true;
+					market.isCategorical = false;
+					market.isScalar = false;
+					break;
+				case CATEGORICAL:
+					market.isBinary = false;
+					market.isCategorical = true;
+					market.isScalar = false;
+					break;
+				case SCALAR:
+					market.isBinary = false;
+					market.isCategorical = false;
+					market.isScalar = true;
+					break;
+				default:
+					break;
 			}
 
 			market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;

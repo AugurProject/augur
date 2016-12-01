@@ -8,16 +8,16 @@ import validateCategoricalOutcomes from '../../../create-market/validators/valid
 
 export const select = (formState) => {
 	switch (formState.type) {
-	case BINARY:
-		return selectBinary(formState);
-	case CATEGORICAL:
-		return selectCategorical(formState);
-	case SCALAR:
-		return selectScalar(formState);
-	case COMBINATORIAL:
-		return selectCombinatorial(formState);
-	default:
-		break;
+		case BINARY:
+			return selectBinary(formState);
+		case CATEGORICAL:
+			return selectCategorical(formState);
+		case SCALAR:
+			return selectScalar(formState);
+		case COMBINATORIAL:
+			return selectCombinatorial(formState);
+		default:
+			break;
 	}
 };
 
@@ -86,23 +86,23 @@ export const isValid = (formState) => {
 	}
 
 	switch (formState.type) {
-	case CATEGORICAL:
-		if (validateCategoricalOutcomes(formState.categoricalOutcomes).some(errors => !!errors)) {
-			return false;
-		}
-		break;
-	case SCALAR:
-		if (validateScalarSmallNum(formState.scalarSmallNum, formState.scalarBigNum)) {
-			return false;
-		}
-		if (validateScalarBigNum(formState.scalarSmallNum, formState.scalarBigNum)) {
-			return false;
-		}
-		break;
-	case COMBINATORIAL:
-		break;
-	default:
-		break;
+		case CATEGORICAL:
+			if (validateCategoricalOutcomes(formState.categoricalOutcomes).some(errors => !!errors)) {
+				return false;
+			}
+			break;
+		case SCALAR:
+			if (validateScalarSmallNum(formState.scalarSmallNum, formState.scalarBigNum)) {
+				return false;
+			}
+			if (validateScalarBigNum(formState.scalarSmallNum, formState.scalarBigNum)) {
+				return false;
+			}
+			break;
+		case COMBINATORIAL:
+			break;
+		default:
+			break;
 	}
 
 	return true;
@@ -120,25 +120,25 @@ export const errors = (formState) => {
 	}
 
 	switch (formState.type) {
-	case CATEGORICAL:
-		if (formState.hasOwnProperty('categoricalOutcomes')) {
-			errs.categoricalOutcomes = validateCategoricalOutcomes(formState.categoricalOutcomes);
-		}
-		break;
-	case SCALAR:
-		if (formState.scalarSmallNum !== undefined) {
-			errs.scalarSmallNum = validateScalarSmallNum(
-				formState.scalarSmallNum,
-				formState.scalarBigNum);
-		}
-		if (formState.scalarBigNum !== undefined) {
-			errs.scalarBigNum = validateScalarBigNum(formState.scalarSmallNum, formState.scalarBigNum);
-		}
-		break;
-	case COMBINATORIAL:
-		break;
-	default:
-		break;
+		case CATEGORICAL:
+			if (formState.hasOwnProperty('categoricalOutcomes')) {
+				errs.categoricalOutcomes = validateCategoricalOutcomes(formState.categoricalOutcomes);
+			}
+			break;
+		case SCALAR:
+			if (formState.scalarSmallNum !== undefined) {
+				errs.scalarSmallNum = validateScalarSmallNum(
+					formState.scalarSmallNum,
+					formState.scalarBigNum);
+			}
+			if (formState.scalarBigNum !== undefined) {
+				errs.scalarBigNum = validateScalarBigNum(formState.scalarSmallNum, formState.scalarBigNum);
+			}
+			break;
+		case COMBINATORIAL:
+			break;
+		default:
+			break;
 	}
 
 	return errs;

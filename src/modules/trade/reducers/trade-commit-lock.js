@@ -2,9 +2,9 @@ import { UPDATE_TRADE_COMMIT_LOCK } from '../../trade/actions/update-trade-commi
 
 export default function (tradeCommitLock = {}, action) {
 	switch (action.type) {
-	case UPDATE_TRADE_COMMIT_LOCK:
-		return { ...tradeCommitLock, isLocked: action.isLocked };
-	default:
-		return tradeCommitLock;
+		case UPDATE_TRADE_COMMIT_LOCK:
+			return { ...tradeCommitLock, isLocked: action.isLocked };
+		default:
+			return tradeCommitLock;
 	}
 }

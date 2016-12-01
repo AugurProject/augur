@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { assert } from 'chai';
 import loginMessageReducer from '../../../src/modules/login-message/reducers/login-message';
 import { UPDATE_LOGIN_MESSAGE_VERSION_READ } from '../../../src/modules/login-message/actions/update-user-login-message-version-read';

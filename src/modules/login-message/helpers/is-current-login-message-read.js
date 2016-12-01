@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 export default function (loginMessageState) {
 	if (loginMessageState.userVersionRead == null) {
 		return false;

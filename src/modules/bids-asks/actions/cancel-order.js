@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import { formatEther, formatRealEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';

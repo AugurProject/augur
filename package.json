@@ -20,7 +20,7 @@
     "build:dev": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=development npm run -s build:all",
     "test": "clear; NODE_ENV=test NODE_PATH=./src mocha",
     "test:watch": "clear; npm test -- --watch",
-    "lint": "echo begin linting... && eslint src/*.js src/services/* src/utils/* src/modules/* && echo linting complete.",
+    "lint": "clear; echo begin linting... && eslint --ext .js,.jsx src && stylelint '**/*.less' && echo linting complete.",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "link": "npm link augur.js && npm link augur-ui-react-components",
     "deploy-firebase": "firebase deploy",

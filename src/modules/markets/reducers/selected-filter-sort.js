@@ -12,25 +12,25 @@ const INITIAL_STATE = {
 
 export default function (selectedFilterSort = INITIAL_STATE, action) {
 	switch (action.type) {
-	case UPDATE_SELECTED_FILTER_SORT:
-		return {
-			...selectedFilterSort,
-			...action.selectedFilterSort
-		};
-	case UPDATE_URL: {
-		const params = determineParams(action.parsedURL.searchParams);
-
-		if (Object.keys(params).length) {
+		case UPDATE_SELECTED_FILTER_SORT:
 			return {
 				...selectedFilterSort,
-				...params
+				...action.selectedFilterSort
 			};
-		}
+		case UPDATE_URL: {
+			const params = determineParams(action.parsedURL.searchParams);
 
-		return selectedFilterSort;
-	}
-	default:
-		return selectedFilterSort;
+			if (Object.keys(params).length) {
+				return {
+					...selectedFilterSort,
+					...params
+				};
+			}
+
+			return selectedFilterSort;
+		}
+		default:
+			return selectedFilterSort;
 	}
 }
 

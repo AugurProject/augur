@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { assert } from 'chai';
 import requestsReducer from '../../../src/modules/app/reducers/requests';
 import { MARKET_DATA_LOADING } from '../../../src/modules/market/actions/load-full-market';

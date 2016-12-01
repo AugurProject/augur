@@ -53,87 +53,66 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 		let message = null;
 
 		switch (res.status) {
-		case COMPLETE_SET_BOUGHT:
-			dispatch(
-				updateExistingTransaction(
-					transactionID,
-					{
-						status: COMPLETE_SET_BOUGHT,
-						hash: p.hash,
-						timestamp: p.timestamp,
-						gasFees: totalGasFeesMessage,
-						message
-					}
-				)
-			);
-
-			break;
-		case ORDER_BOOK_ORDER_COMPLETE:
-			message = `${
-				!!p.buyPrice ? 'Bid' : 'Ask'
-				} for ${
-				p.amount
-				} share${
-				p.amount > 1 ? 's' : ''
-				} of outcome '${
-				marketData.outcomes[p.outcome - 1].name
-				}' at ${
-			p.buyPrice || p.sellPrice
-				} ETH created.`;
-
-			dispatch(
-				updateExistingTransaction(
-					transactionID,
-					{
-						status: ORDER_BOOK_ORDER_COMPLETE,
-						hash: p.hash,
-						timestamp: p.timestamp,
-						gasFees: totalGasFeesMessage,
-						message
-					}
-				)
-			);
-
-			break;
-		case ORDER_BOOK_OUTCOME_COMPLETE:
-			message = `Order book creation for outcome '${
-				marketData.outcomes[p.outcome - 1].name
-				}' completed.`;
-
-			dispatch(
-				updateExistingTransaction(
-					transactionID,
-					{
-						status: ORDER_BOOK_OUTCOME_COMPLETE,
-						gasFees: totalGasFeesMessage,
-						message
-					}
-				)
-			);
-
-			break;
-		case SUCCESS:
-			dispatch(
-				updateExistingTransaction(
-					transactionID,
-					{
-						status: SUCCESS,
-						gasFees: totalGasFeesMessage,
-						message
-					}
-				)
-			);
-			if (marketData && marketData.id) {
-				dispatch(loadBidsAsks(marketData.id));
-				dispatch(loadAccountTrades(marketData.id, () => {
-					dispatch(updateSellCompleteSetsLock(marketData.id, false));
+			case COMPLETE_SET_BOUGHT:
+				dispatch(updateExistingTransaction(transactionID, {
+					status: COMPLETE_SET_BOUGHT,
+					hash: p.hash,
+					timestamp: p.timestamp,
+					gasFees: totalGasFeesMessage,
+					message
 				}));
-			}
+				break;
+			case ORDER_BOOK_ORDER_COMPLETE:
+				message = `${
+					!!p.buyPrice ? 'Bid' : 'Ask'
+					} for ${
+					p.amount
+					} share${
+					p.amount > 1 ? 's' : ''
+					} of outcome '${
+					marketData.outcomes[p.outcome - 1].name
+					}' at ${
+					p.buyPrice || p.sellPrice
+					} ETH created.`;
 
-			break;
-		default:
-			break;
+				dispatch(updateExistingTransaction(transactionID, {
+					status: ORDER_BOOK_ORDER_COMPLETE,
+					hash: p.hash,
+					timestamp: p.timestamp,
+					gasFees: totalGasFeesMessage,
+					message
+				}));
+
+				break;
+			case ORDER_BOOK_OUTCOME_COMPLETE:
+				message = `Order book creation for outcome '${
+					marketData.outcomes[p.outcome - 1].name
+					}' completed.`;
+
+				dispatch(updateExistingTransaction(transactionID, {
+					status: ORDER_BOOK_OUTCOME_COMPLETE,
+					gasFees: totalGasFeesMessage,
+					message
+				}));
+
+				break;
+			case SUCCESS:
+				dispatch(updateExistingTransaction(transactionID, {
+					status: SUCCESS,
+					gasFees: totalGasFeesMessage,
+					message
+				}));
+
+				if (marketData && marketData.id) {
+					dispatch(loadBidsAsks(marketData.id));
+					dispatch(loadAccountTrades(marketData.id, () => {
+						dispatch(updateSellCompleteSetsLock(marketData.id, false));
+					}));
+				}
+
+				break;
+			default:
+				break;
 		}
 	};
 }
-
