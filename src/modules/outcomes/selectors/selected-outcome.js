@@ -3,7 +3,7 @@
  */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
-import updateSelectedOutcome from '../../outcome/actions/update-selected-outcome';
+import updateSelectedOutcome from '../../outcomes/actions/update-selected-outcome';
 
 export default () =>
 	({

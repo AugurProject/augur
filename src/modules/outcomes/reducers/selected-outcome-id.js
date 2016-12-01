@@ -1,7 +1,7 @@
 /*
  * Author: priecint
  */
-import { UPDATE_SELECTED_OUTCOME } from '../../outcome/actions/update-selected-outcome';
+import { UPDATE_SELECTED_OUTCOME } from '../../outcomes/actions/update-selected-outcome';
 
 export default (selectedOutcomeID = null, action) => {
 	switch (action.type) {

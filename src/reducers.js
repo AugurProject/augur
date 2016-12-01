@@ -44,7 +44,7 @@ import priceHistory from './modules/markets/reducers/price-history';
 import settings from './modules/auth/reducers/account-settings';
 import chatMessages from './modules/chat/reducers/chat-messages';
 
-import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
+import selectedOutcomeID from './modules/outcomes/reducers/selected-outcome-id';
 import loginMessage from './modules/login-message/reducers/login-message';
 
 import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
