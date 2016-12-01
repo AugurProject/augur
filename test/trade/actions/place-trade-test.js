@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction } from '../constants';
+import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
@@ -100,6 +100,13 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	const mockAddShortSellTransaction = { addShortSellTransaction: () => {} };
 	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', stubAddShortSellTransaction);
 
+	const mockCalculateTradeIDs = {
+		calculateBuyTradeIDs: () => {},
+		calculateSellTradeIDs: () => {}
+	};
+	sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
+	sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
+
 	const mockSelectTransactionsLink = { selectTransactionsLink: () => {} };
 	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', (dispatch) => {
 		return { onClick: () => dispatch({ type: 'UPDATE_URL', url: 'transactions-link' }) };
@@ -130,6 +137,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		'../../transactions/actions/add-ask-transaction': mockAddAskTransaction,
 		'../../transactions/actions/add-short-ask-transaction': mockAddShortAskTransaction,
 		'../../transactions/actions/add-short-sell-transaction': mockAddShortSellTransaction,
+		'../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs
 	});
 
 	beforeEach(() => {
@@ -2364,6 +2372,44 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				type: 'UPDATE_URL',
 				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Caclculations`);
+		});
+	});
+
+	const expectedFailedTradeActions = [
+		{
+			type: 'CLEAR_TRADE_IN_PROGRESS',
+			marketID: 'testBinaryMarketID'
+		}, {
+			type: 'UPDATE_URL',
+			url: 'transactions-link'
+		}
+	];
+
+	describe('Market Type Agnostic Tests', () => {
+		it('should handle a null/undefined outcomeID', () => {
+			store.dispatch(action.placeTrade('testBinaryMarketID', null));
+			assert.deepEqual(store.getActions(), expectedFailedTradeActions, `Didn't produce the expected actions for passing a null outcomeID to place-trade`);
+
+			store.clearActions();
+
+			store.dispatch(action.placeTrade('testBinaryMarketID', undefined));
+			assert.deepEqual(store.getActions(), expectedFailedTradeActions, `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
+		});
+
+		it('should handle a null/undefined marketID', () => {
+			store.dispatch(action.placeTrade(null, '1'));
+			assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`);
+
+			store.clearActions();
+
+			store.dispatch(action.placeTrade(undefined, '1'));
+			assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`);
+		});
+
+		it('should gracefully handle missing trade in progress', () => {
+			// sending in an outcome of 3 which doesn't exist in a binary market
+			store.dispatch(action.placeTrade('testBinaryMarketID', '3'));
+			assert.deepEqual(store.getActions(), expectedFailedTradeActions, `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
 		});
 	});
 });
