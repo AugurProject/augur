@@ -18,7 +18,7 @@ passfile="${symlink}/.password"
 bootnodes=""
 optargs=""
 
-if [ "${network}" = "2" ]; then
+if [ "${network}" = "3" ]; then
     optargs="--testnet"
     # address="0x15f6400a88fb320822b689607d425272bea2175f"
     address="0x7c0d52faab596c08f484e3478aebc6205f3f5d8c"

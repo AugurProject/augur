@@ -21803,6 +21803,44 @@ module.exports={
         "Trade": "0xf22f08f6a893725c0161fb30667b902781aa9dc8", 
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
+    "3": {
+        "Backstops": "0x918aaae4c87aca922cdcf8f7ddccffb2b9b1bbce", 
+        "Branches": "0x59d8ac14200841082ad80869b5c0e135715b4cec", 
+        "BuyAndSellShares": "0x41ef965061f8ccf903c75fed865abb821836665a", 
+        "Cash": "0x2bb6f66eb40dc0c166dc3e664a33fcbcc8de4a18", 
+        "CloseMarket": "0xb6ee488c1b820d260187ba50b1053f36a1760d4e", 
+        "CloseMarketOne": "0xecd9f50876b557dad630436a3259934a95a502da", 
+        "CloseMarketTwo": "0x6a0f948872f0c1e99a5956b7d507d7c2136e0119", 
+        "CollectFees": "0x87bc55fbca6ea594d100c5c62b3d98af652b1fe6", 
+        "CompleteSets": "0x924d9da2a0af8d6a95fbb72e0f3b45ab5555e156", 
+        "CompositeGetters": "0x289c94ccc95f4d99cbba55bbd0d18b5204ae37eb", 
+        "Consensus": "0x8efccc9a11ca1500b88f457bc488f1d591dde668", 
+        "ConsensusData": "0xb69ad75543bad7acd50b0316956ccdf752945cc1", 
+        "CreateBranch": "0x44fb65707bbabf70612c052bf565485361fc98d5", 
+        "CreateMarket": "0x6186bf181ca73cd080622d4154fece24922fcfe4", 
+        "EventResolution": "0xe5ad3289e3082dedaf0f971988ef7bccb591322e", 
+        "Events": "0x4b3599ea3251e6e6f28ec163f0e96cabc6b26dc8", 
+        "ExpiringEvents": "0x93e9e14d00e840f1d26ab85a81147624dc56024e", 
+        "Faucets": "0xfcd3c9fff5f761cb2f5b04757925e2932bd7f88b", 
+        "ForkPenalize": "0xe5d837aeb338c996563a787992f70027ebb82b27", 
+        "Forking": "0x207c15ad8a366ddd2e8483f450268f5dc960cff4", 
+        "FxpFunctions": "0x7651332ff40346e6ef86342eff6669f5f702d892", 
+        "Info": "0xf990de559892e895db07e25d6db00e5531e89383", 
+        "MakeReports": "0x30e04923e894323eb3e90b5489c2239c50c6515c", 
+        "Markets": "0x366ca214e6a5890ab5d07ec4560632e5466e6be6", 
+        "PenalizationCatchup": "0xacfc07b3f90ad5305a92985fd65862f88f98b3b5", 
+        "PenalizeNotEnoughReports": "0xbb10e2e27fd9b2e8fcc7479397b21b1834d63ffa", 
+        "ProportionCorrect": "0xea2a9cabc7dfc506a476a4a673265c8fb0c15712", 
+        "Register": "0xe8b6806da0ef7fd8a941259736349184dacc9873", 
+        "Reporting": "0x15ecec324f0bc35fafab9230289a1c6e0089d59a", 
+        "ReportingThreshold": "0x7ae47c7c19f3d72066c51f48f814dc01cfcb69ca", 
+        "RoundTwo": "0x4e4b6735bd4e4f45b68e1456d7bbbbc0f0e6b816", 
+        "RoundTwoPenalize": "0x553039eb20929b8ede4564f587d0f622f298f23d", 
+        "SendReputation": "0xd44bdf727141df138b9a72d0e8c43057f8fb7559", 
+        "SlashRep": "0xf1b01daa5eefbdf37b1329e9f4dd8b048ac53dcc", 
+        "Trade": "0x266a02222f8ff62ecc32a92a6fcac124116fc8f6", 
+        "Trades": "0xd0d8ba56de0e2147dd4932865b8a9700aafe0fa1"
+    }, 
     "9000": {
         "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
@@ -21813,7 +21851,7 @@ module.exports={
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x7c8c360e897ecf0fc377a1eace3ce5ebcc12fa70", 
+        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
@@ -21821,7 +21859,7 @@ module.exports={
         "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "Faucets": "0x6fb23f38bfe5f8de1857e8e37ae877c191a32ac8", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
@@ -42842,7 +42880,7 @@ var errors = require("augur-contracts").errors;
 var constants = require("./constants");
 var utils = require("./utilities");
 
-request = request.defaults({timeout: 240000});
+request = request.defaults({timeout: 999999});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
@@ -44352,7 +44390,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.2";
+    this.version = "3.2.5";
 
     this.options = {
         debug: {

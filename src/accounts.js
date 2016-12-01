@@ -19,7 +19,7 @@ var errors = require("augur-contracts").errors;
 var constants = require("./constants");
 var utils = require("./utilities");
 
-request = request.defaults({timeout: 240000});
+request = request.defaults({timeout: 999999});
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
 keys.constants.scrypt.n = constants.ROUNDS;
