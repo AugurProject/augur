@@ -2,7 +2,7 @@
   "name": "augur-ui",
   "version": "2.0.0",
   "description": "Augur UI",
-  "author": "Augur Project",
+  "author": "Forecast Foundation OU",
   "license": "AAL",
   "engines": {
     "node": ">= 4.2.x"
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development node server.js",
-    "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
+    "watch": "clear; echo '* YARN UPGRADE *'; yarn upgrade; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "watch:noUp": "clear; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "node server.js",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all; mv ./build/index-2.0.0.html ./build/index.html; cp ./src/sitemap.xml ./build/sitemap.xml",
@@ -29,8 +29,8 @@
     "_____": "",
     "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:env & npm run -s build:favicon & npm run -s build:js) && npm run -s build:html && npm run -s build:airbitz && npm run -s build:finish",
     "build:env": "cp ./src/env.json ./build/ && echo ---------ENV------------`date +%r`",
-    "build:assets": "cp -R ./src/assets/. ./build/$npm_package_version/assets && cp -R $npm_package_config_assets_folder ./build/$npm_package_version/assets && echo ---------ASSETS---------`date +%r`",
-    "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceBuildFolderString > ./build/$npm_package_version/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
+    "build:assets": "cp -R ./src/assets/. ./build/$npm_package_version/assets && echo ---------ASSETS---------`date +%r`",
+    "build:css": "lessc --glob $npm_package_config_less_entry_file | postcss --use autoprefixer | cleancss --s0 > ./build/$npm_package_version/styles.css | sed -e 's~less~css~' && lessc ./src/splash.less | cleancss --s0 > ./build/$npm_package_version/splash.css && echo ---------CSS------------`date +%r`",
     "build:js": "npm run -s build:js:browserify | npm run -s partial:replaceBuildFolderString | npm run -s partial:uglify -- --mangle > ./build/$npm_package_version/build.js && echo ---------JS-------------`date +%r`",
     "build:js:browserify": "browserify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 ] ] -t [envify purge]",
     "build:favicon": "cp ./src/favicon.ico ./build/ && cat ./src/manifest.json | npm run -s partial:replaceBuildFolderString | npm run -s build:inline_sources > ./build/$npm_package_version/manifest.json && echo ---------FAVICON--------`date +%r`",
@@ -44,7 +44,7 @@
     "watch:env": "onchange './src/env.json' -i -- npm run -s build:env",
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s build:css",
-    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceBuildFolderString > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
+    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceBuildFolderString > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
     "watch:favicon": "onchange './src/favicon.ico' './src/manifest.json' -i -- npm run -s build:favicon",
     "watch:html": "onchange './src/index.html' -i -- npm run -s build:html",
     "_______": "",
@@ -56,7 +56,9 @@
     "partial:replaceBuildFolderString": "sed 's~${build_folder}~'$npm_package_version'~g'",
     "partial:uglify": "[ $NODE_ENV != production ] && cat || uglifyjs --compress drop_console,unused=true --screw-ie8",
     "partial:uglify:do": "uglifyjs --compress drop_console,unused=true --screw-ie8",
-    "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
+    "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\"",
+    "__________": "",
+    "heyo": "node scripts/heyo.js"
   },
   "dependencies": {
     "airbitz-core-js-ui": "0.0.12",
@@ -121,9 +123,10 @@
     "redux-mock-store": "1.1.2",
     "rimraf": "2.5.4",
     "shared-git-hooks": "^1.2.1",
+    "shelljs": "0.7.5",
     "sinon": "1.17.5",
-    "stylelint": "^7.6.0",
-    "stylelint-config-standard": "^15.0.0",
+    "stylelint": "7.6.0",
+    "stylelint-config-standard": "15.0.0",
     "uglify-js": "2.7.0",
     "watchify": "3.7.0"
   },
@@ -138,9 +141,7 @@
   },
   "config": {
     "js_entry_file": "./src/index.js",
-    "less_entry_files": "./src/less/*.less",
-    "assets_folder": "./node_modules/augur-ui-react-components/build/assets/**",
-		"less_entry_file": "./src/styles.less"
+    "less_entry_file": "./src/styles.less"
   },
   "aliasify": {
     "aliases": {
