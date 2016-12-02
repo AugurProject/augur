@@ -1,13 +1,11 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import * as action from '../../../src/modules/app/actions/update-connection';
 
 describe('modules/app/actions/update-connection.js', () => {
-
 	it(`should return a update connection action object`, () => {
-		let test = action.updateConnectionStatus('test');
-		let out = {
+		const test = action.updateConnectionStatus('test');
+		const out = {
 			type: 'UPDATE_CONNECTION_STATUS',
 			isConnected: 'test'
 		};

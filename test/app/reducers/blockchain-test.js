@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import testState from '../../testState';
 import {
 	UPDATE_BLOCKCHAIN
@@ -8,11 +7,10 @@ import {
 import reducer from '../../../src/modules/app/reducers/blockchain';
 
 describe(`modules/app/reducers/blockchain.js`, () => {
-	let action;
-	let thisTestState = Object.assign({}, testState);
+	const thisTestState = Object.assign({}, testState);
 
 	it(`should update the blockchain in state`, () => {
-		action = {
+		const action = {
 			type: UPDATE_BLOCKCHAIN,
 			data: {
 				currentPeriod: 21,

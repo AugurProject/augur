@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -31,13 +30,9 @@ describe(`modules/auth/actions/process-fund-new-account.js`, () => {
 		onFailed({ message: 'this is a failure message' });
 	});
 
-	sinon.stub(fakeUpdateTrans, 'updateExistingTransaction', (transID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTIONS', transID: { ...data}};
-	});
+	sinon.stub(fakeUpdateTrans, 'updateExistingTransaction', (transID, data) => ({ type: 'UPDATE_EXISTING_TRANSACTIONS', transID: { ...data } }));
 
-	sinon.stub(fakeUpdateAssets, 'updateAssets', () => {
-		return { type: 'UPDATE_ASSETS' };
-	});
+	sinon.stub(fakeUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
 
 	beforeEach(() => {
 		store.clearActions();

@@ -9,7 +9,7 @@ import sinon from 'sinon';
 describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let formState
+	let formState;
 	let out;
 
 	const validations = {

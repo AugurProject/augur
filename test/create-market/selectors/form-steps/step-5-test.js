@@ -23,7 +23,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 	let formState;
 	let out;
 	let outAction;
-	let select;
 	const state = Object.assign({}, testState);
 	const store = mockStore(state);
 
@@ -449,7 +448,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							value: 0.5
 						}
 					],
-					raw: [ 0.5, 0.5, 0.5 ],
+					raw: [0.5, 0.5, 0.5],
 					formatted: [
 						{
 							denomination: 'ETH | test1',
@@ -607,7 +606,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(
 				select,

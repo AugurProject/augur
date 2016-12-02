@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -16,9 +15,10 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
 		augur: { web: { changeAccountName: () => {} } }
 	};
 
-	sinon.stub(fakeAugurJS.augur.web, 'changeAccountName', (name) => {
-		return { type: 'FAKE TYPE NAME CHANGE', name };
-	});
+	sinon.stub(fakeAugurJS.augur.web, 'changeAccountName', (name) => ({
+		type: 'FAKE TYPE NAME CHANGE',
+		name
+	}));
 
 	beforeEach(() => {
 		store.clearActions();

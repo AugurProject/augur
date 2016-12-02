@@ -21,14 +21,13 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '.
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-
-	let store;
 	let out;
 	let clock;
 	let marketData = {};
 	let expectedMarketData = {};
+
+	const middlewares = [thunk];
+	const mockStore = configureMockStore(middlewares);
 
 	const testData = {
 		type: 'UPDATE_TRANSACTIONS_DATA',

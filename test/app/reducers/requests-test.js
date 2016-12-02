@@ -1,7 +1,8 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import requestsReducer from '../../../src/modules/app/reducers/requests';
 import { MARKET_DATA_LOADING } from '../../../src/modules/market/actions/load-full-market';
-import { UPDATE_MARKET_DATA_TIMESTAMP } from "../../../src/modules/market/actions/update-market-data-timestamp";
+import { UPDATE_MARKET_DATA_TIMESTAMP } from '../../../src/modules/market/actions/update-market-data-timestamp';
 
 describe('modules/app/reducers/requests.js', () => {
 	it('should react to default action', () => {
@@ -21,8 +22,8 @@ describe('modules/app/reducers/requests.js', () => {
 		});
 
 		assert.deepEqual(newState, {
-			'MARKET_DATA_LOADING': {
-				'marketID': true
+			MARKET_DATA_LOADING: {
+				marketID: true
 			}
 		});
 		assert.notStrictEqual(currentState, newState);
@@ -30,8 +31,8 @@ describe('modules/app/reducers/requests.js', () => {
 
 	it('should react to UPDATE_MARKET_DATA_TIMESTAMP action', () => {
 		const currentState = {
-			'MARKET_DATA_LOADING': {
-				'marketID': true
+			MARKET_DATA_LOADING: {
+				marketID: true
 			}
 		};
 
@@ -42,15 +43,15 @@ describe('modules/app/reducers/requests.js', () => {
 		});
 
 		assert.deepEqual(newState, {
-			'MARKET_DATA_LOADING': {}
+			MARKET_DATA_LOADING: {}
 		});
 		assert.notStrictEqual(currentState, newState);
 	});
 
 	it('shouldn\'t react to UPDATE_MARKET_DATA_TIMESTAMP action if there is no state value', () => {
 		const currentState = {
-			'MARKET_DATA_LOADING': {
-				'marketID': true
+			MARKET_DATA_LOADING: {
+				marketID: true
 			}
 		};
 
