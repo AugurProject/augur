@@ -21821,7 +21821,7 @@ module.exports={
         "EventResolution": "0xe5ad3289e3082dedaf0f971988ef7bccb591322e", 
         "Events": "0x4b3599ea3251e6e6f28ec163f0e96cabc6b26dc8", 
         "ExpiringEvents": "0x93e9e14d00e840f1d26ab85a81147624dc56024e", 
-        "Faucets": "0xfcd3c9fff5f761cb2f5b04757925e2932bd7f88b", 
+        "Faucets": "0x575ee98fe3d1ca1526c8ce9e541a54319fad4210", 
         "ForkPenalize": "0xe5d837aeb338c996563a787992f70027ebb82b27", 
         "Forking": "0x207c15ad8a366ddd2e8483f450268f5dc960cff4", 
         "FxpFunctions": "0x7651332ff40346e6ef86342eff6669f5f702d892", 
@@ -21859,7 +21859,7 @@ module.exports={
         "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x6fb23f38bfe5f8de1857e8e37ae877c191a32ac8", 
+        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
@@ -44390,7 +44390,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.6";
+    this.version = "3.2.7";
 
     this.options = {
         debug: {
