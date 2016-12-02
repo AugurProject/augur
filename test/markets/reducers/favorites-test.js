@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import reducer from '../../../src/modules/markets/reducers/favorites';
 import {
 	UPDATE_FAVORITES,

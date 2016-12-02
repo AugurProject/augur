@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import {
 	UPDATE_SELECTED_FILTER_SORT
 } from '../../../src/modules/markets/actions/update-selected-filter-sort';

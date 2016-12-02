@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -11,11 +10,9 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	const { loginAccount } = store.getState();
-	let mockAugurJS = {
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockAugurJS = {
 		augur: { batchGetMarketInfo: () => {} }
 	};
 	const mockLoadFullMarket = {};
@@ -54,14 +51,14 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 		});
 	});
 
-	action = proxyquire('../../../src/modules/markets/actions/load-markets-info', {
+	const action = proxyquire('../../../src/modules/markets/actions/load-markets-info', {
 		'../../market/actions/load-full-market': mockLoadFullMarket,
 		'../../my-markets/actions/load-market-creator-fees': mockLoadMarketCreatorFees,
 		'../../../services/augurjs': mockAugurJS
 	});
 
 	it(`should load markets info`, () => {
-		out = [
+		const out = [
 			{
 				type: 'UPDATE_MARKETS_DATA',
 				marketsData: {

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import { UPDATE_SELECTED_PAGE_NUM } from '../../../src/modules/markets/actions/update-selected-page-num';
 import { UPDATE_SELECTED_FILTER_SORT } from '../../../src/modules/markets/actions/update-selected-filter-sort';
@@ -7,8 +8,10 @@ import reducer from '../../../src/modules/markets/reducers/pagination';
 import testState from '../../testState';
 
 describe(`modules/markets/reducers/pagination.js`, () => {
-	let action, expectedOutput, test;
-	let thisTestState = Object.assign({}, testState);
+	let action;
+	let test;
+	let expectedOutput;
+	const thisTestState = Object.assign({}, testState);
 
 	it(`should update the selected page number`, () => {
 		action = {

@@ -1,5 +1,6 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import mocks from '../../../mockStore'
+import mocks from '../../../mockStore';
 
 import { BID, ASK } from '../../../../src/modules/transactions/constants/types';
 

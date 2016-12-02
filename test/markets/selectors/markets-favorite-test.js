@@ -1,13 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
-let favoriteMarkets;
 describe(`modules/markets/selectors/markets-favorite.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, out, test;
-	let mockSelectors = {
+	const mockSelectors = {
 		filteredMarkets: [{
 			id: 'test1',
 			isFavorite: true,
@@ -72,17 +69,14 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 		}]
 	};
 
-	selector = proxyquire('../../../src/modules/markets/selectors/markets-favorite.js', {
+	const selector = proxyquire('../../../src/modules/markets/selectors/markets-favorite.js', {
 		'../../../selectors': mockSelectors
 	});
 
-	favoriteMarkets = selector.default;
 
 	it(`should return only favorite markets`, () => {
-		test = selector.default();
-		out = mockSelectors.filteredMarkets.filter(market => market.isFavorite);
+		const test = selector.default();
+		const out = mockSelectors.filteredMarkets.filter(market => market.isFavorite);
 		assert.deepEqual(test, out, `Didn't return the expected markets`);
 	});
 });
-
-export default favoriteMarkets;

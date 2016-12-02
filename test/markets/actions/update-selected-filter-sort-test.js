@@ -1,3 +1,4 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -6,15 +7,15 @@ import * as mockStore from '../../mockStore';
 describe('modules/markets/actions/update-selected-filter-sort', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let { state, store } = mockStore.default;
-	let out, action;
-	let mockUpdateURL = { updateURL: () => {} };
+	const { store } = mockStore.default;
+	const mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockUpdateURL, 'updateURL', (href) => {
-		return { type: 'UPDATE_URL', href };
-	});
+	sinon.stub(mockUpdateURL, 'updateURL', (href) => ({
+		type: 'UPDATE_URL',
+		href
+	}));
 
-	action = proxyquire('../../../src/modules/markets/actions/update-selected-filter-sort', {
+	const action = proxyquire('../../../src/modules/markets/actions/update-selected-filter-sort', {
 		'../../link/actions/update-url': mockUpdateURL,
 		'../../../selectors': proxyquire('../../../src/selectors', {
 			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
@@ -45,9 +46,7 @@ describe('modules/markets/actions/update-selected-filter-sort', () => {
 		const filterSortChange = { sort: 'expiry' };
 		store.dispatch(action.updateSelectedFilterSort(filterSortChange));
 
-		console.log('test -- ', store.getActions());
-
-		out = [
+		const out = [
 			{
 				type: 'UPDATE_SELECTED_FILTER_SORT',
 				selectedFilterSort: {

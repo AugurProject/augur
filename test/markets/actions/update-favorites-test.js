@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import * as actions from '../../../src/modules/markets/actions/update-favorites';
 
 
