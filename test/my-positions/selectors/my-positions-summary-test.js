@@ -15,7 +15,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 
 		const actual = selector.generatePositionsSummary(numPositions, qtyShares, meanTradeValue, realizedNet, unrealizedNet);
 
-		assert.exists(actual);  // TOOD -- tmp placeholder
+		assert.isDefined(actual);  // TOOD -- tmp placeholder
 
 		// assertions.positionsSummary(actual);
 	});

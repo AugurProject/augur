@@ -2,8 +2,12 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
+// TODO -- this really should be handled differently via local state for the requiring tests
+let favoriteMarkets;  // eslint-disable-line import/no-mutable-exports
+
 describe(`modules/markets/selectors/markets-favorite.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
+
 	const mockSelectors = {
 		filteredMarkets: [{
 			id: 'test1',
@@ -73,6 +77,8 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
+favoriteMarkets = selector.default;
+
 
 	it(`should return only favorite markets`, () => {
 		const test = selector.default();
@@ -80,3 +86,5 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 		assert.deepEqual(test, out, `Didn't return the expected markets`);
 	});
 });
+
+export default favoriteMarkets;

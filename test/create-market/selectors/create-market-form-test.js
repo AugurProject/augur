@@ -146,7 +146,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 					...actualStep2.select(state.createMarketInProgress)
 				};
 
-				assert.exists(fullTestState); // TODO --remove
+				assert.isDefined(fullTestState); // TODO --remove
 
 				// assertions.createMarketForm(fullTestState);
 			});
@@ -187,8 +187,6 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...state.createMarketInProgress,
 				...actualStep3.select(state.createMarketInProgress)
 			};
-
-			assert.exists(fullTestState); // TODO -- remove
 
 			// assertions.createMarketForm(fullTestState);
 		});

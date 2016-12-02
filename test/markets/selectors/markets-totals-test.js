@@ -173,7 +173,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	it(`should return the market totals for selected market`, () => {
 		const actual = selector.default();
-		assert.exists(actual); // TODO -- remove
+		assert.isDefined(actual); // TODO -- remove
 		// assertions.marketsTotals(actual);
 	});
 });

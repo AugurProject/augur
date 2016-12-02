@@ -23,7 +23,7 @@ describe(`modules/link/selectors/links.js`, () => {
 
 	it(`should have the expected shape`, () => {
 		const actual = selector.default();
-		assert.exists(actual);  // TODO -- remove
+		assert.isDefined(actual);  // TODO -- remove
 		// console.log(actual);
 		// assertions.links(actual);
 	});

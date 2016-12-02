@@ -25,7 +25,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'register'
 		};
 
-		assert.exists(authForm);  // TODO -- remove
+		assert.isDefined(authForm);  // TODO -- remove
 
 		// console.log(authForm.default());
 		// assertions.authForm(authForm.default());

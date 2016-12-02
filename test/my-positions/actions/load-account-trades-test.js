@@ -42,7 +42,7 @@ describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 		'../../../services/augurjs': mockAugurJS
 	});
 
-	assert.exists(action); // TODO -- remove
+	assert.isDefined(action); // TODO -- remove
 
 	it('TODO -- should load trades from AugurJS for a given account id');
 

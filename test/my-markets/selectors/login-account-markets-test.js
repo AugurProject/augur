@@ -40,7 +40,7 @@ describe('modules/my-markets/selectors/login-account-markets', () => {
 	});
 
 	it('should return the correct object to augur-ui-react-components', () => {
-		assert.exists(actual);  // TODO -- remove
+		assert.isDefined(actual);  // TODO -- remove
 		// assertions.loginAccountMarkets(actual);
 	});
 });

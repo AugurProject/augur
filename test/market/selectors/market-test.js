@@ -41,7 +41,7 @@ describe(`modules/market/selectors/market.js`, () => {
 
 	it(`should return the expected values to components`, () => {
 		const actual = selector.default();
-		assert.exists(actual); // TOOD -- remove
+		assert.isDefined(actual); // TOOD -- remove
 		// assertions.market(actual);
 	});
 });

@@ -3,6 +3,9 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
 
+// TODO -- this really should be handled differently via local state for the requiring tests
+let filteredMarkets;  // eslint-disable-line import/no-mutable-exports
+
 describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const { store } = mockStore.default;
@@ -41,6 +44,8 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 		'../../../store': store,
 		'../../../selectors': mockSelectors
 	});
+
+	filteredMarkets = selector.default;
 
 	beforeEach(() => {
 		store.clearActions();
@@ -85,3 +90,5 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	});
 
 });
+
+export default filteredMarkets;

@@ -1,7 +1,5 @@
 import { describe, it } from 'mocha';
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 
 import { formatShares, formatEther } from '../../../src/utils/format-number';
 
@@ -18,7 +16,7 @@ describe(`modules/bids-asks/helpers/select-order-book.js`, () => {
 	});
 
 	it(`should return aggregate sorted orders for specified outcome`, () => {
-		const orderBook = selectAggregateOrderBook(1, {
+		const orderBook = selectAggregateOrderBook('1', {
 			buy: {
 				order1: { amount: '8', price: '0.3', outcome: '2' },
 				order2: { amount: '4', price: '0.2', outcome: '1' },

@@ -7,7 +7,7 @@ describe(`modules/app/selectors/active-page.js`, () => {
 	it(`should get active page from store`, () => {
 		const actual = selector();
 
-		assert.exists(actual);  // TODO -- remove
+		assert.isDefined(actual);  // TODO -- remove
 		// assertions.activeView(actual);
 	});
 });

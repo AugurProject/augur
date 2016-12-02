@@ -23,7 +23,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 	it(`should login an account`, () => {
 		const actual = selector.default();
 
-		assert.exists(actual); // TODO --remove
+		assert.isDefined(actual); // TODO --remove
 		// assertions.loginAccount(actual);
 	});
 });

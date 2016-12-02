@@ -7,6 +7,9 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 // import assertions from 'augur-ui-react-components/lib/assertions';
 
+// TODO -- should be refactored to use local state in requiring test
+let allMarkets; // eslint-disable-line import/no-mutable-exports
+
 describe(`modules/markets/selectors/markets-all.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -94,11 +97,15 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		'../../../store': store
 	});
 
+	allMarkets = selector.default;
+
 	it(`should return the correct selectedMarket function`, () => {
 		const actual = selector.default();
 
 		// assertions.markets(actual);
-		assert.exists(actual); // TODO --remove
+		assert.isDefined(actual); // TODO --remove
 		assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
 	});
 });
+
+export default allMarkets;

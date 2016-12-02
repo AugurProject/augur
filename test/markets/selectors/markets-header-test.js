@@ -53,7 +53,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		}];
 
 		// assertions.marketsHeader(actual)
-		assert.exists(actual); // TODO -- remove
+		assert.isDefined(actual); // TODO -- remove
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();

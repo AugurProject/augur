@@ -52,6 +52,6 @@ describe('modules/portfolio/selectors/portfolio', () => {
 
 	it(`should return the correct object to augur-ui-react-components`, () => {
 		// assertions.portfolio(actual);
-		assert.exists(actual); // NOTE -- just a placeholder while the assertions are commented out.
+		assert.isDefined(actual); // NOTE -- just a placeholder while the assertions are commented out.
 	});
 });

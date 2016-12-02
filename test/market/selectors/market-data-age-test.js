@@ -21,7 +21,7 @@ describe('modules/market/selectors/market-data-age.js', () => {
 			'../../../store': store
 		}).default;
 
-		assert.exists(selectMarketDataAge); // TODO -- remove
+		assert.isDefined(selectMarketDataAge); // TODO -- remove
 
 		// assertions.marketDataAge(selectMarketDataAge());
 	});
