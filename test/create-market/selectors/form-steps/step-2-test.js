@@ -1,3 +1,4 @@
+import { describe, it, before, beforeEach, after } from 'mocha';
 import { assert } from 'chai';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
 import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from '../../../../src/modules/create-market/constants/market-values-constraints';
@@ -8,10 +9,10 @@ import sinon from 'sinon';
 describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let formState,
-		out;
+	let formState
+	let out;
 
-	let validations = {
+	const validations = {
 		validateDescription: () => {},
 		validateEndDate: () => {},
 		validateScalarSmallNum: () => {},
@@ -19,22 +20,22 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		validateCategoricalOutcomes: () => {}
 	};
 
-	let stubbedValidateDescription = sinon.stub(validations, 'validateDescription');
+	const stubbedValidateDescription = sinon.stub(validations, 'validateDescription');
 	stubbedValidateDescription.returns(false);
 
-	let stubbedValidateEndDate = sinon.stub(validations, 'validateEndDate');
+	const stubbedValidateEndDate = sinon.stub(validations, 'validateEndDate');
 	stubbedValidateEndDate.returns(false);
 
-	let stubbedValidateScalarSmallNum = sinon.stub(validations, 'validateScalarSmallNum');
+	const stubbedValidateScalarSmallNum = sinon.stub(validations, 'validateScalarSmallNum');
 	stubbedValidateScalarSmallNum.returns(false);
 
-	let stubbedValidateScalarBigNum = sinon.stub(validations, 'validateScalarBigNum');
+	const stubbedValidateScalarBigNum = sinon.stub(validations, 'validateScalarBigNum');
 	stubbedValidateScalarBigNum.returns(false);
 
-	let stubbedValidateCategoricalOutcomes = sinon.stub(validations, 'validateCategoricalOutcomes');
+	const stubbedValidateCategoricalOutcomes = sinon.stub(validations, 'validateCategoricalOutcomes');
 	stubbedValidateCategoricalOutcomes.returns([]);
 
-	let validators = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-2', {
+	const validators = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-2', {
 		'../../../create-market/validators/validate-description': stubbedValidateDescription,
 		'../../../create-market/validators/validate-end-date': stubbedValidateEndDate,
 		'../../../create-market/validators/validate-scalar-small-num': stubbedValidateScalarSmallNum,

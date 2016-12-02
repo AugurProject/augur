@@ -1,3 +1,4 @@
+import { describe, it, before, beforeEach, afterEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -23,57 +24,54 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 
-	let store,
-		action,
-		out,
-		clock,
-		transID = 'testtransaction12345',
-		branchID = '0xf69b5',
-		failedMarketData = {
-			type: BINARY,
-			minValue: 1,
-			maxValue: 2,
-			numOutcomes: 2,
-			endDate: { value: new Date() },
-			expirySource: true,
-			failTest: FAILED
-		},
-		marketData = {},
-		expectedMarketData = {},
-		testData = {
-			type: 'UPDATE_TRANSACTIONS_DATA',
-			test123: {
-				type: 'create_market',
-				gas: 0,
-				ether: 0,
-				data: {
-					market: 'some marketdata'
-				},
-				action: 'do some action',
-				status: 'pending'
-			}
-		},
-		state = Object.assign({}, testState);
+	let store;
+	let out;
+	let clock;
+	let marketData = {};
+	let expectedMarketData = {};
 
-	store = mockStore(state);
+	const testData = {
+		type: 'UPDATE_TRANSACTIONS_DATA',
+		test123: {
+			type: 'create_market',
+			gas: 0,
+			ether: 0,
+			data: {
+				market: 'some marketdata'
+			},
+			action: 'do some action',
+			status: 'pending'
+		}
+	};
+	const transID = 'testtransaction12345';
+	const failedMarketData = {
+		type: BINARY,
+		minValue: 1,
+		maxValue: 2,
+		numOutcomes: 2,
+		endDate: { value: new Date() },
+		expirySource: true,
+		failTest: FAILED
+	};
+	const state = Object.assign({}, testState);
 
-	let stubbedNewMarketTransactions = {
+	const store = mockStore(state);
+
+	const stubbedNewMarketTransactions = {
 		addCreateMarketTransaction: () => {}
 	};
 	sinon.stub(stubbedNewMarketTransactions, 'addCreateMarketTransaction', (newMarket) => testData);
 
-	let stubbedUpdateExistingTransaction = {
+	const stubbedUpdateExistingTransaction = {
 		updateExistingTransaction: () => {}
 	};
-	sinon.stub(stubbedUpdateExistingTransaction, 'updateExistingTransaction', (transactionID, status) => {
-		return {
-			type: 'UPDATE_EXISTING_TRANSACTIONS',
-			transactionID,
-			status
-		};
-	});
+	sinon.stub(stubbedUpdateExistingTransaction, 'updateExistingTransaction', (transactionID, status) => ({
+		type: 'UPDATE_EXISTING_TRANSACTIONS',
+		transactionID,
+		status
+	}));
 
-	let stubbedAugurJS = {
+	const stubbedAugurJS = {
 		augur: { createSingleEventMarket: () => {} }
 	};
 	sinon.stub(stubbedAugurJS.augur, 'createSingleEventMarket', (o) => {
@@ -84,16 +82,14 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		}
 	});
 
-	let stubbedGenerateOrderBook = {
+	const stubbedGenerateOrderBook = {
 		submitGenerateOrderBook: () => {}
 	};
-	sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', (data) => {
-		return {
-			type: 'submitGenerateOrderBook'
-		};
-	});
+	sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', (data) => ({
+		type: 'submitGenerateOrderBook'
+	}));
 
-	let stubbedLink = {
+	const stubbedLink = {
 		selectTransactionsLink: () => {}
 	};
 	sinon.stub(stubbedLink, 'selectTransactionsLink', () => ({
@@ -102,7 +98,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		})
 	}));
 
-	action = proxyquire(
+	const action = proxyquire(
 		'../../../src/modules/create-market/actions/submit-new-market',
 		{
 			'../../transactions/actions/add-create-market-transaction': stubbedNewMarketTransactions,
@@ -138,7 +134,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		out = [{
 			type: 'UPDATE_TRANSACTIONS_DATA',
-			'test123': {
+			test123: {
 				type: 'create_market',
 				gas: 0,
 				ether: 0,
@@ -182,7 +178,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should fail correctly', () => {
 			console.log('failedMarketData:', failedMarketData);
-			store.dispatch(action.createMarket( transID, failedMarketData ));
+			store.dispatch(action.createMarket(transID, failedMarketData));
 
 			out = [
 				{
@@ -213,7 +209,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -278,7 +274,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				type: BINARY
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -342,7 +338,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				scalarBigNum: 100
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -411,7 +407,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				scalarBigNum: 100
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -475,13 +471,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				type: CATEGORICAL,
 				isCreatingOrderBook: true,
 				outcomes: [
-					{ id: 0, name: 'outcome1'},
-					{ id: 1, name: 'outcome2'},
-					{ id: 2, name: 'outcome3'}
+					{ id: 0, name: 'outcome1' },
+					{ id: 1, name: 'outcome2' },
+					{ id: 2, name: 'outcome3' }
 				]
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -533,9 +529,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				type: CATEGORICAL,
 				isCreatingOrderBook: true,
 				outcomes: [
-					{ id: 0, name: 'outcome1'},
-					{ id: 1, name: 'outcome2'},
-					{ id: 2, name: 'outcome3'}
+					{ id: 0, name: 'outcome1' },
+					{ id: 1, name: 'outcome2' },
+					{ id: 2, name: 'outcome3' }
 				],
 				minValue: 1,
 				maxValue: 3,
@@ -553,13 +549,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				description: 'test',
 				type: CATEGORICAL,
 				outcomes: [
-					{ id: 0, name: 'outcome1'},
-					{ id: 1, name: 'outcome2'},
-					{ id: 2, name: 'outcome3'}
+					{ id: 0, name: 'outcome1' },
+					{ id: 1, name: 'outcome2' },
+					{ id: 2, name: 'outcome3' }
 				]
 			};
 
-			store.dispatch(action.createMarket( transID, marketData ));
+			store.dispatch(action.createMarket(transID, marketData));
 
 			clock.tick(10000);
 
@@ -607,9 +603,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
 				type: CATEGORICAL,
 				outcomes: [
-					{ id: 0, name: 'outcome1'},
-					{ id: 1, name: 'outcome2'},
-					{ id: 2, name: 'outcome3'}
+					{ id: 0, name: 'outcome1' },
+					{ id: 1, name: 'outcome2' },
+					{ id: 2, name: 'outcome3' }
 				],
 				minValue: 1,
 				maxValue: 3,

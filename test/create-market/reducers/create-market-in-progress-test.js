@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import {
 	UPDATE_MAKE_IN_PROGRESS,
 	CLEAR_MAKE_IN_PROGRESS
@@ -9,8 +8,10 @@ import reducer from '../../../src/modules/create-market/reducers/create-market-i
 import testState from '../../testState';
 
 describe(`modules/create-market/reducers/create-market-in-progress.js`, () => {
-	let action, expectedOutput, test;
-	let thisTestState = Object.assign({}, testState);
+	let action;
+	let expectedOutput;
+	let test;
+	const thisTestState = Object.assign({}, testState);
 
 	it(`should be able to update a make in progress`, () => {
 		action = {

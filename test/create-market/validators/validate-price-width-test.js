@@ -1,13 +1,12 @@
-import {
-    assert
-} from 'chai';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import { PRICE_WIDTH_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
 import { formatEther } from '../../../src/utils/format-number';
 import validatePriceWidth from '../../../src/modules/create-market/validators/validate-price-width';
 
 describe('modules/create-market/validators/validate-price-width.js', () => {
-	let priceWidth,
-		out;
+	let priceWidth;
+	let out;
 
 	beforeEach(() => {
 		priceWidth = null;

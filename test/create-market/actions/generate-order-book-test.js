@@ -1,6 +1,5 @@
-import {
-    assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -20,10 +19,10 @@ import {
 } from '../../../src/modules/transactions/constants/statuses';
 
 describe('modules/create-market/actions/generate-order-book.js', () => {
-    proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru();
 
-    const   middlewares = [thunk],
-            mockStore = configureMockStore(middlewares);
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
 
     let store,
         action,
@@ -280,7 +279,7 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);
         });
-        
+
         it('should handle onSetupOrder', () => {
             store.dispatch(
                 action.handleGenerateOrderBookResponse(

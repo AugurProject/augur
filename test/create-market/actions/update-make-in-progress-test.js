@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import * as action from '../../../src/modules/create-market/actions/update-make-in-progress';
 
 describe(`modules/create-market/actions/update-make-in-progress.js`, () => {

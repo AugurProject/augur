@@ -1,21 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import {
-PASSWORD_TOO_SHORT,
-PASSWORD_NEEDS_LOWERCASE,
-PASSWORD_NEEDS_UPPERCASE,
-PASSWORD_NEEDS_NUMBER,
-PASSWORD_TOO_SHORT_MSG,
-PASSWORD_NEEDS_LOWERCASE_MSG,
-PASSWORD_NEEDS_UPPERCASE_MSG,
-PASSWORD_NEEDS_NUMBER_MSG,
-} from '../../../src/modules/auth/constants/form-errors';
 
 describe(`modules/auth/actions/register.js`, () => {
 	proxyquire.noPreserveCache();
@@ -26,23 +15,21 @@ describe(`modules/auth/actions/register.js`, () => {
 	const fakeSelectors = {};
 	const fakeFund = {};
 	const updtLoginAccStub = {};
-	const autoStub = {};
 	const ldLoginAccStub = {
 		loadLoginAccountDependents: () => {}
 	};
 
-	let action, clock, store;
-	let thisTestState = Object.assign({}, testState, {
+	const thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
 	});
-	store = mockStore(thisTestState);
+	const store = mockStore(thisTestState);
 	const fakeCallback = sinon.stub();
 	fakeAugurJS.augur.web.register = (name, psswrd, cb) => {
 		cb({
 			address: 'test',
 			id: 'test',
 			secureLoginID: 'testid',
-			name: name,
+			name,
 			ether: 0,
 			realEther: 0,
 			rep: 0
@@ -56,23 +43,21 @@ describe(`modules/auth/actions/register.js`, () => {
 			onClick: () => {}
 		},
 	};
-	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => {
-		return { onClick: () => {} };
-	};
+	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
 	fakeFund.addFundNewAccount = sinon.stub().returns({ type: 'FUND_NEW_ACCOUNT' });
-	let updateTestString = 'updateLoginAccount(loginAccount) called.';
-	let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-	let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+	const updateTestString = 'updateLoginAccount(loginAccount) called.';
+	const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
+	const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({type: updateTestString });
+	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
 	// ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
 	sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
 		if (cb) cb(null, 2.5);
 		return { type: ldLoginAccDepTestString };
 	});
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({type: ldLoginAccLSTestString });
+	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
-	action = proxyquire('../../../src/modules/auth/actions/register', {
+	const action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../../selectors': fakeSelectors,
 		'../../link/selectors/links': fakeAuthLink,

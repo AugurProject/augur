@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import * as action from '../../../src/modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/update-login-account.js`, () => {

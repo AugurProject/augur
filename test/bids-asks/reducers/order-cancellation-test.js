@@ -1,5 +1,6 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import orderCancellationReducer from '../../../src/modules/bids-asks/reducers/order-cancellation'
+import orderCancellationReducer from '../../../src/modules/bids-asks/reducers/order-cancellation';
 import { ABORT_CANCEL_ORDER_CONFIRMATION, SHOW_CANCEL_ORDER_CONFIRMATION } from '../../../src/modules/bids-asks/actions/cancel-order';
 import { UPDATE_ORDER_STATUS } from '../../../src/modules/bids-asks/actions/update-order-status';
 import { CANCELLATION_CONFIRMATION } from '../../../src/modules/bids-asks/constants/order-status';

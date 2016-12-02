@@ -1,3 +1,4 @@
+import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
@@ -26,7 +27,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		'../../transactions/actions/add-cancel-transaction': { addCancelTransaction },
 		'../../../services/augurjs': {
 			augur,
-			abi: { bignum: sinon.stub().returns(new BigNumber("1", 10)) },
+			abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
 		},
 		'../../bids-asks/actions/update-order-status': { updateOrderStatus },
 		'../../transactions/actions/update-existing-transaction': { updateExistingTransaction }
@@ -108,7 +109,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		it('should produce action', () => {
 			store.dispatch(cancelOrderModule.abortCancelOrderConfirmation('orderID'));
 			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID'}])
+			assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
 		});
 	});
 
@@ -116,7 +117,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		it('should produce action', () => {
 			store.dispatch(cancelOrderModule.showCancelOrderConfirmation('orderID'));
 			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID'}])
+			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
 		});
 	});
 });

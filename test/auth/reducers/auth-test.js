@@ -1,13 +1,13 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import testState from '../../testState';
 import reducer from '../../../src/modules/auth/reducers/auth';
-import { DEFAULT_AUTH_TYPE } from '../../../src/modules/auth/constants/auth-types';
 import { UPDATE_URL } from '../../../src/modules/link/actions/update-url';
 import { AUTH_ERROR } from '../../../src/modules/auth/actions/auth-error';
 
 describe(`modules/auth/reducers/auth.js`, () => {
 	let action;
-	let thisTestState = Object.assign({}, testState);
+	const thisTestState = Object.assign({}, testState);
 	it(`should change selected auth type`, () => {
 		action = {
 			type: UPDATE_URL,

@@ -95,7 +95,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	});
 
 	it(`should return the correct selectedMarket function`, () => {
-		actual = selector.default();
+		const actual = selector.default();
 
 		// assertions.markets(actual);
 		assert.exists(actual); // TODO --remove

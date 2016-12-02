@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import mocks from '../../mockStore';
 import { UPDATE_LOGIN_MESSAGE_VERSION_READ } from '../../../src/modules/login-message/actions/update-user-login-message-version-read';
@@ -8,8 +9,8 @@ describe('modules/login-message/actions/update-user-login-message-version-read.j
 	it('should dispatch UPDATE_LOGIN_MESSAGE_VERSION_READ action', () => {
 		const updateUserLoginMessageVersionRead = require('../../../src/modules/login-message/actions/update-user-login-message-version-read').default;
 		const expected = [{
-				type: UPDATE_LOGIN_MESSAGE_VERSION_READ,
-				loginMessageVersion: 2
+			type: UPDATE_LOGIN_MESSAGE_VERSION_READ,
+			loginMessageVersion: 2
 		}];
 
 		store.dispatch(updateUserLoginMessageVersionRead(2));

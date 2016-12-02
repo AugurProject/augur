@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -11,15 +10,14 @@ describe(`modules/auth/actions/update-assets.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const fakeAugurJS = { augur: {} };
-	let action, store;
-	let thisTestState = Object.assign({}, testState);
-	store = mockStore(thisTestState);
+	const thisTestState = Object.assign({}, testState);
+	const store = mockStore(thisTestState);
 	fakeAugurJS.augur.loadAssets = (BRANCH_ID, loginID, cbEther, cbRep, cbRealEther) => {
 		cbEther(null, 500);
 		cbRep(null, 25);
 		cbRealEther(null, 100);
 	};
-	action = proxyquire('../../../src/modules/auth/actions/update-assets', {
+	const action = proxyquire('../../../src/modules/auth/actions/update-assets', {
 		'../../../services/augurjs': fakeAugurJS
 	});
 

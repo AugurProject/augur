@@ -1,4 +1,5 @@
-import chai, { assert } from 'chai';
+import { describe, it, before, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -19,17 +20,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 
-	let formState,
-		out,
-		outAction,
-		state = Object.assign({}, testState),
-		store = mockStore(state);
+	let formState;
+	let out;
+	let outAction;
+	let select;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
 
-	let stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
-
-	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-5', {
-		'../../../create-market/actions/submit-new-market': stubbedSubmitNewMarket
-	});
+	const stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
 
 	describe('select', () => {
 		before(() => {
@@ -49,7 +47,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		});
 
 		it('should call the correct action onSubmit', () => {
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -89,7 +87,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				}
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -120,7 +118,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							value: 0.5
 						}
 					],
-					raw: [ 0.5, 0.5 ],
+					raw: [0.5, 0.5],
 					formatted: [
 						{
 							denomination: 'ETH | Yes',
@@ -264,7 +262,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(select, out, `correct object was not returned`);
 		});
@@ -274,7 +272,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				...formState
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -368,7 +366,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isFavorite: false
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(select, out, `correct object was not returned`);
 		});
@@ -411,7 +409,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				]
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -629,7 +627,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				]
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -732,7 +730,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isFavorite: false
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(select, out, `correct object was not returned`);
 		});
@@ -767,7 +765,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				scalarBigNum: 100
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -798,7 +796,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							value: 55
 						}
 					],
-					raw: [ 55, 55 ],
+					raw: [55, 55],
 					formatted: [
 						{
 							denomination: 'ETH | ⇧',
@@ -944,7 +942,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(select, out, 'correct object was not returned');
 		});
@@ -957,7 +955,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				scalarBigNum: 100
 			};
 
-			let select = selector.select(
+			const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -1053,7 +1051,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				scalarBigNum: 100
 			};
 
-			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
 			assert.deepEqual(select, out, 'correct object was not returned');
 		});

@@ -1,10 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import validator from '../../../src/modules/create-market/validators/validate-scalar-small-num';
 
 describe(`modules/market/validators/validate-scalar-small-num.js`, () => {
-	let test, out;
+	let test;
+	let out;
 
 	it(`should make sure the user has provided a minimum number`, () => {
 		test = validator(null, 100);

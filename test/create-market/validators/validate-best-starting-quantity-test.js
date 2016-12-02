@@ -1,13 +1,12 @@
-import {
-    assert
-} from 'chai';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import { BEST_STARTING_QUANTITY_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
 import { formatShares } from '../../../src/utils/format-number';
 import validateBestStartingQuantity from '../../../src/modules/create-market/validators/validate-best-starting-quantity';
 
 describe('modules/create-market/validators/validate-best-starting-quantity.js', () => {
-	let bestStartingQuantity,
-		out;
+	let bestStartingQuantity;
+	let out;
 
 	beforeEach(() => {
 		bestStartingQuantity = null;

@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import {
 	DESCRIPTION_MIN_LENGTH,
 	DESCRIPTION_MAX_LENGTH
@@ -8,7 +7,8 @@ import {
 import validator from '../../../src/modules/create-market/validators/validate-description';
 
 describe(`modules/market/validators/validate-description.js`, () => {
-	let test, out;
+	let test;
+	let out;
 
 	it(`should make sure description is populated`, () => {
 		test = validator('');

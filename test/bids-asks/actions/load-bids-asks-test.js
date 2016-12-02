@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from '../../mockStore';
@@ -11,11 +10,11 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 	const getOrderBookStub = sinon.stub();
 	getOrderBookStub.withArgs({ market: 'testMarketID', offset: 0, numTradesToLoad: 1, scalarMinMax: { minValue: 1, maxValue: 2 } }).callsArgWith(1, {});
 	getOrderBookStub.withArgs({ market: 'nonExistingMarketID', offset: 0, numTradesToLoad: 0 }, {}).callsArgWith(1, null);
-	const get_total_tradesStub = sinon.stub();
-	get_total_tradesStub.withArgs('testMarketID').callsArgWith(1, 1);
-	get_total_tradesStub.withArgs('nonExistingMarketID').callsArgWith(1, null);
+	const getTotalTradesStub = sinon.stub();
+	getTotalTradesStub.withArgs('testMarketID').callsArgWith(1, 1);
+	getTotalTradesStub.withArgs('nonExistingMarketID').callsArgWith(1, null);
 	const augurJsMock = {
-		augur: { getOrderBook: getOrderBookStub, get_total_trades: get_total_tradesStub }
+		augur: { getOrderBook: getOrderBookStub, get_total_trades: getTotalTradesStub }
 	};
 	const updateMarketOrderBookModule = {
 		updateMarketOrderBook: mocks.actionCreator(),
