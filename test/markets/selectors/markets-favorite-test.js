@@ -77,8 +77,7 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
-favoriteMarkets = selector.default;
-
+	favoriteMarkets = selector.default;
 
 	it(`should return only favorite markets`, () => {
 		const test = selector.default();
