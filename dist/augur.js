@@ -21821,7 +21821,7 @@ module.exports={
         "EventResolution": "0xe5ad3289e3082dedaf0f971988ef7bccb591322e", 
         "Events": "0x4b3599ea3251e6e6f28ec163f0e96cabc6b26dc8", 
         "ExpiringEvents": "0x93e9e14d00e840f1d26ab85a81147624dc56024e", 
-        "Faucets": "0x575ee98fe3d1ca1526c8ce9e541a54319fad4210", 
+        "Faucets": "0x11d22a13a01a5dcc618b074cd6313cd5a6d770f1", 
         "ForkPenalize": "0xe5d837aeb338c996563a787992f70027ebb82b27", 
         "Forking": "0x207c15ad8a366ddd2e8483f450268f5dc960cff4", 
         "FxpFunctions": "0x7651332ff40346e6ef86342eff6669f5f702d892", 
@@ -44390,7 +44390,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.2.7";
+    this.version = "3.2.8";
 
     this.options = {
         debug: {
