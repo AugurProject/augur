@@ -13,12 +13,12 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		// console.log('mock short_sell called');
 		// console.log(args);
 		onTradeHash('tradeHash1');
-		onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
+		onCommitSent({ hash: 'tradeHash1', callReturn: '1' });
 
 		if (mockAugur.augur.short_sell.callCount !== 3) {
 			onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-		 	onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
-		 	onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+		 	onNextBlock({ hash: 'tradeHash1', callReturn: '1' });
+		 	onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 		}
 		// console.log('short_sell callcount:', mockAugur.augur.short_sell.callCount);
 		switch (mockAugur.augur.short_sell.callCount) {

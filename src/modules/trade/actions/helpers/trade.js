@@ -93,7 +93,6 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 						res.remainingEth = abi.bignum(data.unmatchedCash);
 						res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-						console.log('FILLED: filled, remain, gas, trade', res.filledShares.toFixed(), res.remainingShares.toFixed(), res.gasFees.toFixed(), res.tradingFees.toFixed());
 						cbStatus({
 							status: 'filled',
 							hash: data.hash,

@@ -70,7 +70,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			// if buying numShares must be 0, if selling totalEthWithFee must be 0
 			const { max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
 			onTradeHash('tradeHash1');
-			onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
+			onCommitSent({ hash: 'tradeHash1', callReturn: '1' });
 			console.log('trade cc:', mockAugur.augur.trade.callCount);
 			switch (mockAugur.augur.trade.callCount) {
 			case 4:
@@ -78,22 +78,22 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 				break;
 			case 5:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 				onTradeFailed({ error: 'trade failed error', message: 'trade failed error message' });
 				break;
 			case 6:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 				onTradeSuccess({ sharesBought: '20', cashFromTrade: '0', unmatchedShares: '80', unmatchedCash: '160', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 				break;
 			case 7:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 				onTradeSuccess({ sharesBought: '80', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 				break;
 			default:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 				onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 				break;
 			}
@@ -374,7 +374,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			// if buying numShares must be 0, if selling totalEthWithFee must be 0
 			const { max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
 			onTradeHash('tradeHash1');
-			onCommitSent({ txHash: 'tradeHash1', callReturn: '1' });
+			onCommitSent({ hash: 'tradeHash1', callReturn: '1' });
 			console.log('trade cc:', mockAugurSell.augur.trade.callCount);
 			switch (mockAugurSell.augur.trade.callCount) {
 			// case 4:
@@ -382,18 +382,18 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			// 	break;
 			// case 5:
 			// 	onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-			// 	onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+			// 	onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 			// 	onTradeFailed({ error: 'trade failed error', message: 'trade failed error message' });
 			// 	break;
 			default:
 				onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-				onTradeSent({ txHash: 'tradeHash1', callReturn: '1' });
+				onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 				onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp:1500000000 });
 				break;
 			}
 			return;
 			// onCommitFailed({ error: 'error', message: 'error message' });
-			// onNextBlock({ txHash: 'tradeHash1', callReturn: '1' });
+			// onNextBlock({ hash: 'tradeHash1', callReturn: '1' });
 			// onTradeFailed({ error: 'error', message: 'error message' });
 		});
 
