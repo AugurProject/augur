@@ -53,7 +53,9 @@ module.exports = {
 
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
-        console.log('claimMarketsProceeds:', branch, markets);
+        if (this.options.debug.reporting) {
+            console.log('claimMarketsProceeds:', branch, markets);
+        }
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
