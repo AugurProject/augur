@@ -29,8 +29,10 @@ export function selectCoreStats() {
 
 	// Group 3
 	const totalPL = getValue(loginAccountPositions, 'summary.totalNet');
-	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
-	const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
+	// const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
+	// const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
+	const totalPLMonth = formatEther(selectPeriodPL(accountTrades, blockchain, outcomesData, 30));
+	const totalPLDay = formatEther(selectPeriodPL(accountTrades, blockchain, outcomesData, 1));
 
 	return [
 		{
@@ -83,8 +85,8 @@ export function selectCoreStats() {
 }
 
 // Period is in days
-const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, outcomesData, period) => {
-	if (!accountTrades || !markets || !blockchain) {
+const selectPeriodPL = memoizerific(2)((accountTrades, blockchain, outcomesData, period) => {
+	if (!accountTrades || !blockchain) {
 		return null;
 	}
 
@@ -95,7 +97,7 @@ const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, outc
 		if (!outcomesData[marketID]) return p;
 		const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
 			const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
-			const lastPrice = selectOutcomeLastPrice(markets, marketID, outcomeID);
+			const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID);
 			const { realized, unrealized } = augur.calculateProfitLoss(periodTrades, lastPrice);
 
 			return p.plus(abi.bignum(realized).plus(abi.bignum(unrealized)));
@@ -105,13 +107,7 @@ const selectPeriodPL = memoizerific(2)((accountTrades, markets, blockchain, outc
 	}, abi.bignum(0));
 });
 
-function selectOutcomeLastPrice(markets, marketID, outcomeID) {
-	if (!markets || !markets.length || !marketID || !outcomeID) {
-		return null;
-	}
-
-	const market = markets.find(market => market.id === marketID);
-	const outcome = market.outcomes.find(outcome => outcome.id === outcomeID);
-
-	return outcome.lastPrice.value;
+function selectOutcomeLastPrice(marketOutcomeData, outcomeID) {
+	if (!marketOutcomeData || !outcomeID) return null;
+	return (marketOutcomeData[outcomeID] || {}).price;
 }
