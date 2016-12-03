@@ -65,7 +65,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			encryptedSalt,
 			ethics: Number(!isUnethical),
 			branch: branchID,
-			period: report.reportPeriod,
+			period: report.period,
 			periodLength: branch.periodLength,
 			onSent: (res) => {
 				dispatch(updateExistingTransaction(transactionID, {
@@ -87,10 +87,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				const branchReports = getState().reports[branch.id] || {};
 				dispatch(updateReports({
 					[branchID]: {
-						[eventID]: {
-							...branchReports[eventID],
-							isCommitted: true
-						}
+						[eventID]: { ...branchReports[eventID], isCommitted: true }
 					}
 				}));
 			},
@@ -99,6 +96,12 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				dispatch(updateExistingTransaction(transactionID, {
 					status: FAILED,
 					message: err.message
+				}));
+				const branchReports = getState().reports[branch.id] || {};
+				dispatch(updateReports({
+					[branchID]: {
+						[eventID]: { ...branchReports[eventID], isCommitted: false }
+					}
 				}));
 			}
 		});
