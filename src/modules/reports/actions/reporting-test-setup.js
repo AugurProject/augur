@@ -6,12 +6,13 @@ import { syncBlockchain } from '../../app/actions/update-blockchain';
 import { syncBranch } from '../../app/actions/update-branch';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
+import { updateAssets } from '../../auth/actions/update-assets';
 
 export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';
 
 export function reportingTestSetup(branchID) {
 	return (dispatch, getState) => {
-		const periodLength = 1200;
+		const periodLength = 300;
 		console.warn('Found reportingTest=true in env.json');
 		console.info('*** STARTING REPORTING SETUP SEQUENCE ***');
 		dispatch({ type: REPORTING_TEST_SETUP, data: { periodLength } });
@@ -20,6 +21,7 @@ export function reportingTestSetup(branchID) {
 			console.info('*** REPORTING SETUP STEP', step, 'COMPLETE***');
 			if (branchID) return dispatch(loadBranch(branchID));
 			const { selectedMarketID, branch } = getState();
+			dispatch(updateAssets());
 			dispatch(loadMarkets(branch.id));
 			if (selectedMarketID !== null) {
 				dispatch(loadFullMarket(selectedMarketID));
