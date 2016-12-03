@@ -30,8 +30,17 @@ export function registerTransactionRelay() {
 						formatRealEtherEstimate(augur.getTxGasEth({
 							...tx.data
 						}, rpc.gasPrice));
+					let message;
+					if (tx.response.callReturn && (
+						tx.response.callReturn.constructor === Array ||
+						tx.response.callReturn.constructor === Object)
+					) {
+						message = JSON.stringify(tx.response.callReturn);
+					} else {
+						message = tx.response.callReturn;
+					}
 					dispatch(updateTransactionsData({
-						[hash]: { ...tx, timestamp, gasFees, hash }
+						[hash]: { ...tx, message, timestamp, gasFees, hash }
 					}));
 				}
 			}
