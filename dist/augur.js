@@ -17602,7 +17602,6 @@ module.exports={
     }, 
     "CloseMarket": {
       "claimProceeds": {
-        "description": "Claim trading proceeds from closed market", 
         "inputs": [
           "branch", 
           "market"
@@ -19867,7 +19866,6 @@ module.exports={
         ]
       }, 
       "fundNewAccount": {
-        "description": "Request testnet Ether and Reputation", 
         "inputs": [
           "branch"
         ], 
@@ -21808,25 +21806,25 @@ module.exports={
         "Branches": "0x59d8ac14200841082ad80869b5c0e135715b4cec", 
         "BuyAndSellShares": "0x41ef965061f8ccf903c75fed865abb821836665a", 
         "Cash": "0x2bb6f66eb40dc0c166dc3e664a33fcbcc8de4a18", 
-        "CloseMarket": "0xb6ee488c1b820d260187ba50b1053f36a1760d4e", 
+        "CloseMarket": "0x2b35942ab8f260adca3c66f89a25d0ec1b1e9a63", 
         "CloseMarketOne": "0xecd9f50876b557dad630436a3259934a95a502da", 
         "CloseMarketTwo": "0x6a0f948872f0c1e99a5956b7d507d7c2136e0119", 
         "CollectFees": "0x87bc55fbca6ea594d100c5c62b3d98af652b1fe6", 
         "CompleteSets": "0x924d9da2a0af8d6a95fbb72e0f3b45ab5555e156", 
         "CompositeGetters": "0x289c94ccc95f4d99cbba55bbd0d18b5204ae37eb", 
-        "Consensus": "0x8efccc9a11ca1500b88f457bc488f1d591dde668", 
+        "Consensus": "0x32e32f5b86763533c101aed576668bca1a3f2a3e", 
         "ConsensusData": "0xb69ad75543bad7acd50b0316956ccdf752945cc1", 
         "CreateBranch": "0x44fb65707bbabf70612c052bf565485361fc98d5", 
         "CreateMarket": "0x6186bf181ca73cd080622d4154fece24922fcfe4", 
         "EventResolution": "0xe5ad3289e3082dedaf0f971988ef7bccb591322e", 
         "Events": "0x4b3599ea3251e6e6f28ec163f0e96cabc6b26dc8", 
         "ExpiringEvents": "0x93e9e14d00e840f1d26ab85a81147624dc56024e", 
-        "Faucets": "0x11d22a13a01a5dcc618b074cd6313cd5a6d770f1", 
+        "Faucets": "0xc5e90cd79dc2c9c36d163f5739ef29004896a353", 
         "ForkPenalize": "0xe5d837aeb338c996563a787992f70027ebb82b27", 
-        "Forking": "0x207c15ad8a366ddd2e8483f450268f5dc960cff4", 
+        "Forking": "0xa95fdc600bb21bdeaba51f5d6c0d0b5f569b8995", 
         "FxpFunctions": "0x7651332ff40346e6ef86342eff6669f5f702d892", 
         "Info": "0xf990de559892e895db07e25d6db00e5531e89383", 
-        "MakeReports": "0x30e04923e894323eb3e90b5489c2239c50c6515c", 
+        "MakeReports": "0xb9db073f3bb5530cb6ed99e7b4bbf458bd46cd7e", 
         "Markets": "0x366ca214e6a5890ab5d07ec4560632e5466e6be6", 
         "PenalizationCatchup": "0xacfc07b3f90ad5305a92985fd65862f88f98b3b5", 
         "PenalizeNotEnoughReports": "0xbb10e2e27fd9b2e8fcc7479397b21b1834d63ffa", 
@@ -21834,9 +21832,9 @@ module.exports={
         "Register": "0xe8b6806da0ef7fd8a941259736349184dacc9873", 
         "Reporting": "0x15ecec324f0bc35fafab9230289a1c6e0089d59a", 
         "ReportingThreshold": "0x7ae47c7c19f3d72066c51f48f814dc01cfcb69ca", 
-        "RoundTwo": "0x4e4b6735bd4e4f45b68e1456d7bbbbc0f0e6b816", 
-        "RoundTwoPenalize": "0x553039eb20929b8ede4564f587d0f622f298f23d", 
-        "SendReputation": "0xd44bdf727141df138b9a72d0e8c43057f8fb7559", 
+        "RoundTwo": "0x45f22e15b70aa261600bbf5692a0acbc230b8ada", 
+        "RoundTwoPenalize": "0x633d4d837179cffab44f4cb86954e98706372541", 
+        "SendReputation": "0x7b255fc30849cd98185c67b22177d07f369971b3", 
         "SlashRep": "0xf1b01daa5eefbdf37b1329e9f4dd8b048ac53dcc", 
         "Trade": "0x266a02222f8ff62ecc32a92a6fcac124116fc8f6", 
         "Trades": "0xd0d8ba56de0e2147dd4932865b8a9700aafe0fa1"
@@ -21846,25 +21844,25 @@ module.exports={
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
         "BuyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
         "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "CloseMarket": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "CloseMarket": "0x833c0a2381298bf9c3c1c6045e3258f6fe0d8496", 
         "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
         "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "Consensus": "0x240d7c255408de59e3a4cc4f641996067ca3bef2", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "CreateMarket": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
         "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "Faucets": "0x570372c441d7cc67d512337c5c2637be084012a3", 
         "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Forking": "0x9f52f5841050b5b6f7590fcde30726672b7976ca", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "MakeReports": "0xfba220254fea0ad2e8cbfb3285edf7fc7b6dc0a2", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
@@ -21872,9 +21870,9 @@ module.exports={
         "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "RoundTwo": "0xe96c027eff937d6ff7a2b172b2f5c82c929f37fa", 
+        "RoundTwoPenalize": "0xcf044ec66a0d8850522cc371ae2cb580f09e2e29", 
+        "SendReputation": "0xc524e453d0adb1673fa62b7f5f9866989e756c00", 
         "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
         "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
         "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
@@ -22032,7 +22030,8 @@ module.exports={
         "-2": "reporter doesn't exist"
     },
     "submitReportHash": {
-        "-1": "invalid event"
+        "-1": "invalid event",
+        "-3": "not eligible to report on this event"
     },
     "submitReport": {
         "0": "reporter doesn't exist or has <1 rep",
@@ -46750,8 +46749,9 @@ module.exports = {
                 callback: function (storedReportHash) {
                     if (parseInt(storedReportHash, 16)) {
                         res.callReturn = "1";
+                        return onSuccess(res);
                     }
-                    onSuccess(res);
+                    onFailed({"-2": "not in first half of period (commit phase)"});
                 }
             });
         }, onFailed);
@@ -47562,7 +47562,9 @@ module.exports = {
 
     // markets: array of market IDs for which to claim proceeds
     claimMarketsProceeds: function (branch, markets, callback) {
-        console.log('claimMarketsProceeds:', branch, markets);
+        if (this.options.debug.reporting) {
+            console.log('claimMarketsProceeds:', branch, markets);
+        }
         var self = this;
         var claimedMarkets = [];
         async.eachSeries(markets, function (market, nextMarket) {
@@ -48128,7 +48130,7 @@ module.exports = {
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length) {
+                                                if (logdata && logdata.constructor === Array && logdata.length > 6) {
                                                     tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
 
                                                     // buy (matched sell order)
@@ -48138,7 +48140,7 @@ module.exports = {
                                                     // sell (matched buy order)
                                                     // cash received = price per share * shares sold
                                                     } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[2])));
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
                                                     }
                                                 }
                                             }
@@ -48146,7 +48148,7 @@ module.exports = {
                                     }
                                     cb({
                                         hash: txHash,
-                                        unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                        unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
                                         cashFromTrade: abi.string(cashFromTrade),
@@ -48245,8 +48247,8 @@ module.exports = {
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[1])));
+                                                if (logdata && logdata.constructor === Array && logdata.length > 8) {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
                                                     tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }
@@ -48255,9 +48257,9 @@ module.exports = {
                                     cb({
                                         hash: txHash,
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                                        matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                        matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
-                                        price: abi.unfix(result.callReturn[3], "string"),
+                                        price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
                                         tradingFees: abi.string(tradingFees),
                                         gasFees: result.gasFees,
                                         timestamp: result.timestamp
@@ -49067,14 +49069,22 @@ module.exports = {
         }
         var sender = augur.from;
         var clientSideAccount;
+        var parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
+        console.log("from:", sender);
+        console.log("web.account.address:", augur.web.account.address);
+        console.log("parent branch ID:", parentBranchID);
+        console.log("parent branch rep balance:", parentBranchRepBalance);
         augur.createBranch({
             description: branchDescription,
             periodLength: periodLength,
             parent: parentBranchID,
             minTradingFee: tradingFee,
             oracleOnly: 0,
-            onSent: utils.noop,
+            onSent: function (res) {
+                console.log("createBranch sent:", res);
+            },
             onSuccess: function (res) {
+                console.log("createBranch success:", res);
                 var newBranchID = res.branchID;
                 if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
                 var block = augur.rpc.getBlock(res.blockNumber);
@@ -49092,7 +49102,7 @@ module.exports = {
                         }
                         nextAccount();
                     }
-                    if (!augur.web.account.address) {
+                    if (account !== augur.web.account.address) {
                         augur.useAccount(account);
                     }
                     augur.fundNewAccount({
@@ -49342,6 +49352,56 @@ module.exports = {
                     }, callback);
                 });
             });
+        });
+    },
+
+    make_order_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
+        var self = this;
+        var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
+        var periodLength = augur.getPeriodLength(branch);
+        var active = augur.from;
+        var clientSideAccount;
+        if (augur.web.account.address) {
+            clientSideAccount = clone(augur.web.account);
+            augur.web.account = {};
+        }
+        if (this.DEBUG) {
+            console.log(chalk.blue.bold("\nTrading in each market..."));
+            console.log(chalk.white.dim("Maker:"), chalk.green(maker));
+            console.log(chalk.white.dim("Taker:"), chalk.green(taker));
+        }
+        async.forEachOf(markets, function (market, type, nextMarket) {
+            augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
+                if (unlocked && unlocked.error) return nextMarket(unlocked);
+                augur.useAccount(maker);
+                if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
+                augur.buyCompleteSets({
+                    market: market,
+                    amount: amountPerMarket,
+                    onSent: function () {},
+                    onSuccess: function (r) {
+                        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+                        augur.sell({
+                            amount: amountPerMarket,
+                            price: "0.7",
+                            market: market,
+                            outcome: 2,
+                            onSent: function () {},
+                            onSuccess: function () {
+                                nextMarket(null);
+                            },
+                            onFailed: nextMarket
+                        });
+                    },
+                    onFailed: nextMarket
+                });
+            });
+        }, function (err) {
+            if (clientSideAccount) {
+                augur.web.account = clientSideAccount;
+            }
+            augur.useAccount(active);
+            callback(err);
         });
     },
 
@@ -50527,7 +50587,7 @@ module.exports = {
 
         if (this.debug.broadcast) {
             console.log("[ethrpc] broadcast: " + JSON.stringify(command, null, 2));
-            console.log(" - HTTP: " + JSON.stringify(this.nodes, null, 2));
+            console.log(" - HTTP: " + JSON.stringify(this.nodes));
             console.log(" - WS:   " + this.wsUrl);
             console.log(" - IPC:  " + this.ipcpath);
         }
