@@ -33,7 +33,7 @@ export function placeTrade(marketID, outcomeID) {
 			console.log('outcomeTradeInProgress:', outcomeTradeInProgress);
 			const totalCost = abi.bignum(outcomeTradeInProgress.totalCost).abs().toFixed();
 			if (outcomeTradeInProgress.side === BUY) {
-				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.address);
 				if (tradeIDs && tradeIDs.length) {
 					dispatch(updateTradeCommitLock(true));
 					dispatch(addTradeTransaction(
@@ -69,13 +69,13 @@ export function placeTrade(marketID, outcomeID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-				augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+				augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
 					if (!sharesPurchased || sharesPurchased.error) {
 						console.error('getParticipantSharesPurchased:', sharesPurchased);
 						return nextOutcome(sharesPurchased || 'shares lookup failed');
 					}
 					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.address);
 					if (position && position.gt(constants.PRECISION.zero)) {
 						if (tradeIDs && tradeIDs.length) {
 							dispatch(updateTradeCommitLock(true));

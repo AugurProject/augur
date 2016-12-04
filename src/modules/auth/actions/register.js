@@ -31,7 +31,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			}
 			loginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 			loginAccount.settings = loginAccount.settings || {};
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents((err, ether) => {
 				dispatch(addFundNewAccount(loginAccount.address));

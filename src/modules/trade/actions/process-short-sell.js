@@ -36,7 +36,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
-		shortSell(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		shortSell(marketID, outcomeID, numShares, loginAccount.address, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.address),
 			(data) => {
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;

@@ -12,7 +12,7 @@ export function refreshMarket(marketID) {
 		if (getState().marketsData[marketID]) {
 			dispatch(loadMarketsInfo([marketID], () => {
 				dispatch(loadBidsAsks(marketID));
-				if (getState().loginAccount.id) {
+				if (getState().loginAccount.address) {
 					dispatch(loadAccountTrades(marketID));
 				}
 			}));

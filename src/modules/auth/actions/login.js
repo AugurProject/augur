@@ -25,7 +25,7 @@ export function login(secureLoginID, password, rememberMe) {
 				settings: {},
 				onUpdateAccountSettings: (settings) => dispatch(updateAccountSettings(settings))
 			};
-			if (!loginAccount || !loginAccount.id) {
+			if (!loginAccount || !loginAccount.address) {
 				return;
 			}
 			if (rememberMe && localStorageRef && localStorageRef.setItem) {
@@ -38,12 +38,12 @@ export function login(secureLoginID, password, rememberMe) {
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents((err, ether) => {
 				if (err) return console.error('loadLoginAccountDependents:', err);
 				if (ether === '0') {
-					dispatch(addFundNewAccount(loginAccount.id));
+					dispatch(addFundNewAccount(loginAccount.address));
 				}
 			}));
 

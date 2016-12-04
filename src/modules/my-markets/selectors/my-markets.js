@@ -8,9 +8,9 @@ import { selectMarketLink } from '../../link/selectors/links';
 export default function () {
 	const { allMarkets, loginAccount } = require('../../../selectors');
 
-	if (!allMarkets || !loginAccount || !loginAccount.id) return [];
+	if (!allMarkets || !loginAccount || !loginAccount.address) return [];
 
-	const filteredMarkets = selectFilteredMarkets(allMarkets, loginAccount.id);
+	const filteredMarkets = selectFilteredMarkets(allMarkets, loginAccount.address);
 	const loginAccountMarkets = selectLoginAccountMarkets(filteredMarkets);
 
 	return loginAccountMarkets;
@@ -19,8 +19,8 @@ export default function () {
 export const selectMyMarket = market => {
 	const { loginAccount } = require('../../../selectors');
 
-	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [];
-	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [];
+	if (!market || !loginAccount || !loginAccount.address || !market.author || market.author !== loginAccount.address) return [];
+	if (!market || !loginAccount || !loginAccount.address || !market.author || market.author !== loginAccount.address) return [];
 
 	return selectLoginAccountMarkets([market]);
 };

@@ -1,5 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
 export function collectFees(cb) {
 	return (dispatch, getState) => {

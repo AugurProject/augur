@@ -37,7 +37,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
-		trade(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		trade(marketID, outcomeID, numShares, 0, loginAccount.address, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.address),
 			dispatch,
 			(res) => {
 				const update = { status: `${res.status} sell` };
@@ -71,7 +71,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					gasFees: formatRealEther(res.gasFees)
 				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) {
-					augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+					augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
@@ -114,7 +114,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						} else {
 							dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
 								if (err) console.error('loadBidsAsks:', err);
-								const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.id);
+								const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.address);
 								if (tradeIDs && tradeIDs.length) {
 									dispatch(updateTradeCommitLock(true));
 									dispatch(addShortSellTransaction(

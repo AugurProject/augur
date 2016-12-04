@@ -4,7 +4,7 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const addTransferFunds = (amount, currency, toAddress) => (
 	(dispatch, getState) => {
-		const fromAddress = getState().loginAccount.id;
+		const fromAddress = getState().loginAccount.address;
 		dispatch(addTransaction(makeAddTransferFundsTransaction(fromAddress, currency, amount, toAddress, dispatch)));
 	}
 );

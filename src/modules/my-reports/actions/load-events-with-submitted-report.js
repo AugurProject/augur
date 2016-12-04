@@ -7,7 +7,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 	return (dispatch, getState) => {
 		const { branch, loginAccount, oldestLoadedEventPeriod } = getState();
 
-		if (branch.id && branch.currentPeriod && loginAccount.id) {
+		if (branch.id && branch.currentPeriod && loginAccount.address) {
 			const oldestLoadedPeriod = oldestLoadedEventPeriod || branch.currentPeriod - 5;
 
 			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
@@ -15,7 +15,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 			dispatch(updateOldestLoadedEventPeriod(startPeriod));
 
 			while (startPeriod <= branch.currentPeriod) {
-				dispatch(getEventsWithReports(branch.id, startPeriod, loginAccount.id));
+				dispatch(getEventsWithReports(branch.id, startPeriod, loginAccount.address));
 				startPeriod++;
 			}
 		}

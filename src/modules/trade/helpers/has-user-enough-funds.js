@@ -13,7 +13,7 @@ import { ZERO } from '../constants/numbers';
  * @return {boolean}
  */
 export default memoizerific(10)((trades, loginAccount) => {
-	if (!loginAccount || loginAccount.id == null || loginAccount.ether == null) {
+	if (!loginAccount || loginAccount.address == null || loginAccount.ether == null) {
 		return false;
 	}
 

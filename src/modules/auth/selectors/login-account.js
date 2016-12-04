@@ -14,7 +14,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 	if (loginAccount.secureLoginID && !loginAccount.loginID) {
 		loginAccount.loginID = loginAccount.secureLoginID;
 	}
-	const cleanAddress = loginAccount.id ? loginAccount.id.replace('0x', '') : undefined;
+	const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
 
 	const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
 
@@ -29,7 +29,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 		.toISOString()
 		.split(':')
 		.join('-');
-	const downloadAccountFileName = `UTC--${date}--${loginAccount.id}`;
+	const downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
 	const accountData = encodeURIComponent(JSON.stringify({
 		...loginAccount.keystore
 	}));
