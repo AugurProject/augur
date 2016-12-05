@@ -69,7 +69,7 @@
     "express": "4.14.0",
     "helmet": "2.3.0",
     "memoizerific": "1.8.4",
-    "moment": "2.14.1",
+    "moment": "^2.14.1",
     "prerender-node": "^2.4.0",
     "rc-progress": "^2.0.3",
     "react": "^15.4.1",
@@ -80,7 +80,8 @@
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
     "rimraf": "2.5.4",
-    "secure-random": "1.1.1"
+    "secure-random": "1.1.1",
+    "webpack": "2.1.0-beta.27"
   },
   "devDependencies": {
     "aliasify": "^2.0.0",
@@ -89,7 +90,7 @@
     "babel-eslint": "6.1.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-transform-remove-console": "6.8.0",
-    "babel-preset-es2015": "6.9.0",
+    "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "6.11.1",
     "babel-preset-stage-0": "6.5.0",
     "babel-register": "6.11.6",
@@ -132,7 +133,6 @@
     "stylelint-config-standard": "15.0.0",
     "uglify-js": "2.7.0",
     "watchify": "3.7.0",
-    "webpack": "^2.1.0-beta.27",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2"
   },

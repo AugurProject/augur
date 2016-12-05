@@ -4,11 +4,14 @@ const hotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config');
 const express = require('express');
 const helmet = require('helmet');
+const path = require('path');
 
 const app = express();
 const compiler = webpack(config);
 
 const PROD_HOST = 'app.augur.net';
+
+app.use(express.static('build'));
 
 app.use(devMiddleware(compiler, {
 	publicPath: config.output.publicPath,
@@ -23,10 +26,11 @@ app.use(helmet());
 app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));
 
 // static handlers
-app.use(express.static('build'));
+// app.use(express.static('build'));
 
 // redirect production site to secure version
 app.get('*', (req, res, next) => {
+	// res.sendFile(path.resolve(__dirname, 'build/index.html'));
 	if (req.headers['x-forwarded-proto'] !== 'https' && req.get('host') === PROD_HOST) {
 		res.redirect('https://' + PROD_HOST + req.url);
 	} else {

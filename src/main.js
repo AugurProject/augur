@@ -3,7 +3,7 @@ require('core-js/fn/string/starts-with');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import { AppContainer } from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import App from 'modules/app/components/app';
 
 import selectors from './selectors';
@@ -36,30 +36,22 @@ const appElement = document.getElementById('app');
 
 function render(appElement, selectors) {
 	ReactDOM.render(
-		<App {...selectors} />,
+		<AppContainer>
+			<App {...selectors} />
+		</AppContainer>,
 		appElement
 	);
-	// render(<AppComponent {...selectors} />, appElement);
 }
 // store.dispatch(MarketsActions.listenToMarkets());
 
 store.subscribe(() => render(appElement, selectors)); // eslint-disable-line new-cap
 
-console.log('store -- ', store);
-
 window.onpopstate = (e) => {
 	store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
-// if (module.hot) {
-// 	module.hot.accept('./modules/app/components/app', () => {
-// 		const NextApp = require('./modules/app/components/app');
-//
-// 		ReactDOM.render(
-// 			<AppContainer>
-// 				<NextApp {...selectors} />
-// 			</AppContainer>,
-// 			appElement
-// 		);
-// 	});
-// }
+if (module.hot) {
+	module.hot.accept('modules/app/components/app', () => {
+		render(appElement, selectors);
+	});
+}
