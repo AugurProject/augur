@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { render } from 'react-dom';
 import classnames from 'classnames';
 import Hammer from 'react-hammerjs';
 
@@ -15,13 +14,11 @@ import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import getValue from 'utils/get-value';
 
-export default function (appElement, selectors) {
-	render(<AppComponent {...selectors} />, appElement);
-}
-
-class AppComponent extends Component {
+export default class App extends Component {
 	constructor(props) {
 		super(props);
+
+		console.log('App -- ', props);
 
 		this.state = {
 			isSideBarAllowed: false,
@@ -140,83 +137,76 @@ class AppComponent extends Component {
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
 				{!!p &&
-					<Hammer
-						onSwipe={this.handleSwipe}
-						direction="DIRECTION_ALL"
-					>
-						<div id="app_container" >
-							{s.isSideBarAllowed && !s.isSideBarCollapsed &&
-								<SidebarMask
-									style={{
-										top: s.headerHeight,
-										bottom: s.footerHeight
-									}}
-								/>
-							}
-							<div id="app_header">
-								<Header
-									{...navProps}
-									updateHeaderHeight={this.updateHeaderHeight}
-								/>
-								<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+					<div id="app_container" >
+						{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+							<SidebarMask
+								style={{
+									top: s.headerHeight,
+									bottom: s.footerHeight
+								}}
+							/>
+						}
+						<div id="app_header">
+							<Header
+								{...navProps}
+								updateHeaderHeight={this.updateHeaderHeight}
+							/>
+							<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+									<div className="core-stats-bumper" />
+								}
+								{p.loginAccount && p.loginAccount.id &&
+									<CoreStats coreStats={p.coreStats} />
+								}
+							</div>
+						</div>
+						<div id="app_views" >
+							<Header {...navProps} />
+							<div id="app_view_container">
+								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
+									<div id="side_bar" >
+										<SideBar {...sideBarProps} />
+									</div>
+								}
+								<div id="app_view">
 									{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 										<div className="core-stats-bumper" />
 									}
-									{p.loginAccount && p.loginAccount.id &&
-										<CoreStats coreStats={p.coreStats} />
-									}
-								</div>
-							</div>
-							<div id="app_views" >
-								<Header {...navProps} />
-								<div id="app_view_container">
-									{s.isSideBarAllowed && !s.isSideBarCollapsed &&
-										<Hammer onSwipe={this.handleSidebarSwipe} style={{ overflow: 'hidden' }} >
-											<div id="side_bar" >
-												<SideBar {...sideBarProps} />
-											</div>
-										</ Hammer>
-									}
-									<div id="app_view">
-										{s.isSideBarAllowed && !s.isSideBarCollapsed &&
-											<div className="core-stats-bumper" />
+									<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+										{p.loginAccount && p.loginAccount.id &&
+											<CoreStats coreStats={p.coreStats} />
 										}
-										<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-											{p.loginAccount && p.loginAccount.id &&
-												<CoreStats coreStats={p.coreStats} />
-											}
-										</div>
-										<Routes
-											{...p}
-											setSidebarAllowed={this.setSidebarAllowed}
-										/>
-										<Footer {...navProps} />
 									</div>
+									<Routes
+										{...p}
+										setSidebarAllowed={this.setSidebarAllowed}
+									/>
+									<Footer {...navProps} />
 								</div>
 							</div>
-							{!s.isChatCollapsed &&
-								<ChatView
-									{...p.chat.augur}
-									toggleChat={() => { this.toggleChat(); }}
-								/>
-							}
-							<button id="chat-button" onClick={() => { this.toggleChat(); }}>
-								Chat
-							</button>
-							<Footer
-								{...navProps}
-								isFooterCollapsed={s.isFooterCollapsed}
-								updateFooterHeight={this.updateFooterHeight}
-								updateIsFooterCollapsed={this.updateIsFooterCollapsed}
-							/>
 						</div>
-					</ Hammer>
+						{!s.isChatCollapsed &&
+							<ChatView
+								{...p.chat.augur}
+								toggleChat={() => { this.toggleChat(); }}
+							/>
+						}
+						<button id="chat-button" onClick={() => { this.toggleChat(); }}>
+							Chat
+						</button>
+						<Footer
+							{...navProps}
+							isFooterCollapsed={s.isFooterCollapsed}
+							updateFooterHeight={this.updateFooterHeight}
+							updateIsFooterCollapsed={this.updateIsFooterCollapsed}
+						/>
+					</div>
 				}
 			</main>
 		);
 	}
 }
 
-AppComponent.propTypes = {
+App.propTypes = {
 	url: PropTypes.string
 };

@@ -1,7 +1,23 @@
+const webpack = require('webpack');
+const devMiddleware = require('webpack-dev-middleware');
+const hotMiddleware = require('webpack-hot-middleware');
+const config = require('./webpack.config');
 const express = require('express');
 const helmet = require('helmet');
-const PROD_HOST = 'app.augur.net';
+
 const app = express();
+const compiler = webpack(config);
+
+const PROD_HOST = 'app.augur.net';
+
+app.use(devMiddleware(compiler, {
+	publicPath: config.output.publicPath,
+	stats: {
+		color: true
+	}
+}));
+
+app.use(hotMiddleware(compiler));
 
 app.use(helmet());
 app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));

@@ -50,9 +50,10 @@
 					".js",
 					".jsx"
 				],
-				"moduleDirectory": [
+				"moduleDirectory": [ # prevents linting issues w/ aliased paths
 					"node_modules",
-					"src" # prevents linting issues w/ aliased paths
+					"src",
+					"test"
 				]
 			}
 		}
