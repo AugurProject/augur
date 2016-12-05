@@ -18,7 +18,7 @@ ex.connect = function connect(env, cb) {
 		if (!isEnvWss) options.ws = null;
 	}
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
-	augur.options.debug.trading = true;
+	augur.options.debug.trading = false;
 	augur.options.debug.reporting = true;
 	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
@@ -40,10 +40,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
-		return cb(null, {
-			...augur.web.account,
-			id: augur.web.account.address
-		});
+		return cb(null, { ...augur.web.account });
 	}
 	// if the user has a persistent login, use it
 	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
@@ -51,10 +48,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		if (account && account.privateKey) {
 			// local storage account exists, load it spawn the callback using augur.web.account
 			augur.web.loadLocalLoginAccount(account, (loginAccount) =>
-				cb(null, {
-					...augur.web.account,
-					id: augur.web.account.address
-				})
+				cb(null, { ...augur.web.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
 			return;
@@ -74,7 +68,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		if (unlocked && !unlocked.error) {
 			augur.web.logout();
 			console.log('using unlocked account:', augur.from);
-			return cb(null, { address: augur.from, id: augur.from });
+			return cb(null, { address: augur.from });
 		}
 
 		// otherwise, no account available

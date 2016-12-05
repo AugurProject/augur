@@ -10,9 +10,9 @@ export function updateBranch(branch) {
 	return { type: UPDATE_BRANCH, branch };
 }
 
-export function reportingCycle(periodLength) {
-	const currentPeriod = augur.getCurrentPeriod(periodLength);
-	const currentPeriodProgress = augur.getCurrentPeriodProgress(periodLength);
+export function reportingCycle(periodLength, timestamp) {
+	const currentPeriod = augur.getCurrentPeriod(periodLength, timestamp);
+	const currentPeriodProgress = augur.getCurrentPeriodProgress(periodLength, timestamp);
 	const isReportRevealPhase = currentPeriodProgress > 50;
 	const bnPeriodLength = abi.bignum(periodLength);
 	const secondsRemaining = ONE.minus(abi.bignum(currentPeriodProgress).dividedBy(100)).times(bnPeriodLength);
@@ -38,9 +38,9 @@ export function reportingCycle(periodLength) {
 export function syncBranch(cb) {
 	return (dispatch, getState) => {
 		const callback = cb || ((e) => e && console.log('syncBranch:', e));
-		const { branch, loginAccount } = getState();
+		const { blockchain, branch, loginAccount } = getState();
 		if (!branch.periodLength) return callback(null);
-		const reportingCycleInfo = reportingCycle(branch.periodLength);
+		const reportingCycleInfo = reportingCycle(branch.periodLength, blockchain.currentBlockTimestamp);
 		const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
 		dispatch(updateBranch({ ...reportingCycleInfo }));
 		if (branch.reportPeriod && (!loginAccount.address || !isChangedReportPhase)) {
@@ -58,6 +58,7 @@ export function syncBranch(cb) {
 			// check if period needs to be incremented / penalizeWrong
 			// needs to be called
 			dispatch(checkPeriod(true, (err) => {
+				console.log('checkPeriod done', err);
 				if (err) return callback(err);
 				callback(null);
 			}));

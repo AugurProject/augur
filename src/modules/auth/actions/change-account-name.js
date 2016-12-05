@@ -11,7 +11,7 @@ export function changeAccountName(name) {
 					message: 'failed to edit account name'
 				}));
 			}
-			const loginAccount = { ...account, id: account.address };
+			const loginAccount = { ...account };
 			const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 			if (localStorageRef && localStorageRef.setItem && localStorageRef.getItem && localStorageRef.getItem('account')) {
 				localStorageRef.setItem('account', JSON.stringify(loginAccount));

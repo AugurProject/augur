@@ -14,6 +14,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	let state = Object.assign({}, testState, {
 		blockchain: {
 			currentBlockMillisSinceEpoch: 12344,
+			currentBlockTimestamp: 4886718335,
 			currentBlockNumber: 9999
 		}
 	});
@@ -21,11 +22,15 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	let mockAugurJS = {
 		rpc: {
 			block: { number: 10000 },
-			blockNumber: () => {}
+			blockNumber: () => {},
+			getBlock: () => {}
 		}
 	};
 	sinon.stub(mockAugurJS.rpc, 'blockNumber', (cb) => {
 		cb('0x2710');
+	});
+	sinon.stub(mockAugurJS.rpc, 'getBlock', (blockNumber, cb) => {
+		cb({ timestamp: '0x123456789' });
 	});
 	let action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
 		'../../../services/augurjs': mockAugurJS
@@ -44,6 +49,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 			type: 'UPDATE_BLOCKCHAIN',
 			data: {
 				currentBlockNumber: 10000,
+				currentBlockTimestamp: 4886718345,
 				currentBlockMillisSinceEpoch: 12345
 			}
 		}];
@@ -52,11 +58,12 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
 	});
 	it('rpc.block set: should sync with blockchain using rpc.block.number', () => {
-		mockAugurJS.rpc.block = { number: 10000 };
+		mockAugurJS.rpc.block = { number: 10000, timestamp: '0x123456789' };
 		let out = [{
 			type: 'UPDATE_BLOCKCHAIN',
 			data: {
 				currentBlockNumber: 10000,
+				currentBlockTimestamp: 4886718345,
 				currentBlockMillisSinceEpoch: 12345
 			}
 		}];

@@ -11,15 +11,21 @@ export function syncBlockchain() {
 		if (rpc.block && rpc.block.number) {
 			dispatch(updateBlockchain({
 				currentBlockNumber: rpc.block.number,
+				currentBlockTimestamp: parseInt(rpc.block.timestamp, 16),
 				currentBlockMillisSinceEpoch: Date.now()
 			}));
 		} else {
 			rpc.blockNumber((blockNumber) => {
 				if (blockNumber && !blockNumber.error) {
-					dispatch(updateBlockchain({
-						currentBlockNumber: parseInt(blockNumber, 16),
-						currentBlockMillisSinceEpoch: Date.now()
-					}));
+					rpc.getBlock(blockNumber, (block) => {
+						if (block && !block.error) {
+							dispatch(updateBlockchain({
+								currentBlockNumber: parseInt(blockNumber, 16),
+								currentBlockTimestamp: parseInt(block.timestamp, 16),
+								currentBlockMillisSinceEpoch: Date.now()
+							}));
+						}
+					});
 				}
 			});
 		}

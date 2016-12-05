@@ -1,5 +1,4 @@
 import async from 'async';
-// import { constants } from '../../../services/augurjs';
 import { updateReports } from '../../reports/actions/update-reports';
 import { addRevealReportTransaction } from '../../transactions/actions/add-reveal-report-transaction';
 

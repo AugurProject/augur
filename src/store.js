@@ -31,9 +31,8 @@ const localStorageMiddleware = store => next => action => {
 			scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
 			favorites: state.favorites,
 			transactionsData: state.transactionsData,
-			accountTrades: state.accountTrades,
-			reports: state.reports,
 			settings: state.settings,
+			reports: state.reports,
 			loginMessageVersionRead: state.loginMessage.userVersionRead
 		}));
 	}

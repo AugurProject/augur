@@ -41,7 +41,6 @@ const testState = {
 	env,
 	loginAccount: {
 		address: '0x0000000000000000000000000000000000000001',
-		id: '0x0000000000000000000000000000000000000001',
 		name: 'testTesterson',
 		loginID: 'testSecureID',
 		localNode: false,

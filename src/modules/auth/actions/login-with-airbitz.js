@@ -21,15 +21,17 @@ function loginWithEthereumWallet(dispatch, airbitzAccount, ethereumWallet) {
 		} else if (account.error) {
 			return dispatch(authError({ code: account.error, message: account.message }));
 		}
-		const loginAccount = { ...account, id: account.address, airbitzAccount };
+		const loginAccount = { ...account, airbitzAccount };
 		if (!loginAccount || !loginAccount.address) {
 			return;
 		}
 		dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 		dispatch(updateLoginAccount(loginAccount));
-		dispatch(loadLoginAccountDependents((err, ether) => {
-			if (err) return console.error('loadLoginAccountDependents:', err);
-			if (ether === '0') {
+		dispatch(loadLoginAccountDependents((err, balances) => {
+			if (err || !balances) {
+				return console.error('loadLoginAccountDependents:', err);
+			}
+			if (balances.ether === '0') {
 				dispatch(addFundNewAccount(loginAccount.address));
 			}
 		}));

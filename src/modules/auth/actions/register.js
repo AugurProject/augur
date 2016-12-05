@@ -57,10 +57,9 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			}
 			const localLoginAccount = {
 				...account,
-				id: account.address,
 				loginID: account.loginID || account.secureLoginID
 			};
-			if (!localLoginAccount || !localLoginAccount.id) {
+			if (!localLoginAccount || !localLoginAccount.address) {
 				return;
 			}
 			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));

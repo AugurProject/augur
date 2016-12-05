@@ -20,7 +20,6 @@ export function login(secureLoginID, password, rememberMe) {
 			}
 			const loginAccount = {
 				...account,
-				id: account.address,
 				loginID: account.loginID || account.secureLoginID,
 				settings: {},
 				onUpdateAccountSettings: (settings) => dispatch(updateAccountSettings(settings))
@@ -40,9 +39,11 @@ export function login(secureLoginID, password, rememberMe) {
 			}
 			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents((err, ether) => {
-				if (err) return console.error('loadLoginAccountDependents:', err);
-				if (ether === '0') {
+			dispatch(loadLoginAccountDependents((err, balances) => {
+				if (err || !balances) {
+					return console.error('loadLoginAccountDependents:', err);
+				}
+				if (balances.ether === '0') {
 					dispatch(addFundNewAccount(loginAccount.address));
 				}
 			}));

@@ -26,6 +26,7 @@ export function listenToUpdates() {
 
 			// block arrivals
 			block: (blockHash) => {
+				// console.log('block:', blockHash);
 				dispatch(updateAssets());
 				dispatch(syncBlockchain());
 				dispatch(syncBranch());

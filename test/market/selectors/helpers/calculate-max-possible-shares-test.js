@@ -16,7 +16,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: null
 		},
 		{
-			loginAccount: { id: 'address', ether: 0 },
+			loginAccount: { address: 'address', ether: 0 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',
@@ -47,7 +47,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: '0'
 		},
 		{
-			loginAccount: { id: 'address', ether: 5 },
+			loginAccount: { address: 'address', ether: 5 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',
@@ -89,7 +89,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: '6'
 		},
 		{
-			loginAccount: { id: 'address', ether: 9 },
+			loginAccount: { address: 'address', ether: 9 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',
@@ -131,7 +131,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: '6'
 		},
 		{
-			loginAccount: { id: 'address', ether: '0.001' },
+			loginAccount: { address: 'address', ether: '0.001' },
 			makerFee: '0.01',
 			takerFee: '0.02',
 			cumulativeScale: '1',
@@ -174,7 +174,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 		},
 
 		{
-			loginAccount: { id: 'address', ether: 5 },
+			loginAccount: { address: 'address', ether: 5 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',
@@ -216,7 +216,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: '29.711690363349131121'
 		},
 		{
-			loginAccount: { id: 'address', ether: 9 },
+			loginAccount: { address: 'address', ether: 9 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',
@@ -258,7 +258,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
 			result: '42.921584054550222921'
 		},
 		{
-			loginAccount: { id: 'address', ether: 100 },
+			loginAccount: { address: 'address', ether: 100 },
 			makerFee: '0.001000000000000000006',
 			takerFee: '0.019999999999999999994',
 			cumulativeScale: '1',

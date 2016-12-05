@@ -106,12 +106,12 @@ export function loadLoginAccount() {
 				}
 			}
 
-			if (!localLoginAccount || !localLoginAccount.id) {
+			if (!localLoginAccount || !localLoginAccount.address) {
 				return;
 			}
 			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
+			dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
 			return;
