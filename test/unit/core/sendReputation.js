@@ -3,6 +3,7 @@
 var assert = require("chai").assert;
 var augur = require("../../../src");
 var abi = require("augur-abi");
+var contracts = require('augur-contracts');
 // 10 tests total
 
 describe("sendReputation Unit Tests", () => {
@@ -44,9 +45,12 @@ describe("sendReputation Unit Tests", () => {
 			assert.deepEqual(tx.signature, ["int256", "int256", "int256"], "tx.signature didn't contain the expected values");
 
 			assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
+			// make sure the tx.to is sending to the correct contract.
+			// contracts[branch][method] - 2 = test trans, SendReputation is method
+			assert.deepEqual(tx.to, contracts['2']['SendReputation'], "tx.to didn't point to the sendReputation contract");
 			assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
-			assert.deepEqual(tx.params, ["010101", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");
+			assert.deepEqual(tx.params, ["2", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");
 
 			assert.isFunction(onSent, "onSent passed to this.transact is not a function");
 			assert.isFunction(onSuccess, "onSuccess passed to this.transact is not a function");
@@ -95,7 +99,7 @@ describe("sendReputation Unit Tests", () => {
 
 	test({
 		description: "Should handle a request to send rep given a JS Number 'value'",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -107,7 +111,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep given a String 'value'",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: "5",
 		onSent: noop,
@@ -119,7 +123,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep given a BigNumber 'value'",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: abi.bignum(5),
 		onSent: noop,
@@ -132,7 +136,7 @@ describe("sendReputation Unit Tests", () => {
 	test({
 		description: "Should handle a request to send rep with only 1 large object arg",
 		branch: {
-			branch: "010101",
+			branch: "2",
 			recver: "recipientAddress",
 			value: "5",
 			onSent: noop,
@@ -145,7 +149,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that requires a retry to send the rep",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -155,7 +159,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that fails due to not enough rep on the account",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -167,7 +171,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that fails because getRepBalance returns an error",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -179,7 +183,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that fails because getRepBalance returns undefined",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -191,7 +195,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that fails because repRedistribution is not complete.",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,
@@ -203,7 +207,7 @@ describe("sendReputation Unit Tests", () => {
 	});
 	test({
 		description: "Should handle a request to send rep that fails because repRedistributionDone returns undefined.",
-		branch: "010101",
+		branch: "2",
 		recver: "recipientAddress",
 		value: 5,
 		onSent: noop,

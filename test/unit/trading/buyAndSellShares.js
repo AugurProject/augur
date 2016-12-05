@@ -4,6 +4,7 @@ var assert = require("chai").assert;
 var augur = require("../../../src");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
+var contracts = require('augur-contracts');
 
 // 58 tests total
 describe("buyAndSellShares Unit Tests", function() {
@@ -15,7 +16,6 @@ describe("buyAndSellShares Unit Tests", function() {
 	function sharedTransactMock(tx, onSent, onSuccess, onFailed) {
 		// inc the call count...
 		transactCallCount++;
-
 		assert.isObject(tx, "tx sent to this.transact is not a Object");
 		assert.isNumber(tx.gas, "tx.gas sent to this.transact isn't a number as expected");
 		assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
@@ -34,8 +34,8 @@ describe("buyAndSellShares Unit Tests", function() {
 		assert.deepEqual(tx.signature, ["int256", "int256", "int256", "int256"], "tx.signature didn't contain the expected values");
 
 		assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
-		// since this is a unit test, we aren't going to actually connect so the tx.from field will be undefined...
-		// assert.isString(tx.from, "tx.from sent to this.transact isn't an String as expected");
+		assert.deepEqual(tx.to, contracts["2"]["BuyAndSellShares"], "tx.to didn't point to the BuyAndSellShares contract");
+
 		assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 		// handles different expected params based on inputs...
 		switch (transactCallCount) {
@@ -98,8 +98,7 @@ describe("buyAndSellShares Unit Tests", function() {
 				assert.deepEqual(tx.signature, ["int256"], "tx.signature didn't contain the expected values");
 
 				assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
-				// since this is a unit test, we aren't going to actually connect so the tx.from field will be undefined...
-				// assert.isString(tx.from, "tx.from sent to this.transact isn't an String as expected");
+				assert.deepEqual(tx.to, contracts["2"]["BuyAndSellShares"], "tx.to didn't point to the BuyAndSellShares contract");
 				assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
 				assert.deepEqual(tx.params, ["tradeID"], "tx.params didn't contain the expected values");
