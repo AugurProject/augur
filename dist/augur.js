@@ -16572,6 +16572,33 @@ module.exports={
       "name": "marketCreated(int256)", 
       "signature": "0x63f140d7adcc464732c9379020aa9e5ce1b1e350796814d780ea3ca41d62a36b"
     }, 
+    "payout": {
+      "contract": "Payout", 
+      "inputs": [
+        {
+          "indexed": true, 
+          "name": "sender", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "market", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "payoutValue", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "shares", 
+          "type": "int256"
+        }
+      ], 
+      "name": "payout(int256,int256,int256,int256)", 
+      "signature": "0xa2462be94780bd0b9f754c0a57d1174c8770114065de61be36b5e28953301a38"
+    }, 
     "penalize": {
       "contract": "Consensus", 
       "inputs": [
@@ -17633,46 +17660,6 @@ module.exports={
         ]
       }
     }, 
-    "CloseMarketOne": {
-      "oneOutcome": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "sender", 
-          "categoricalPointFive", 
-          "numOutcomes"
-        ], 
-        "label": "One Outcome", 
-        "method": "oneOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarketTwo": {
-      "twoOutcomes": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "event", 
-          "sender"
-        ], 
-        "label": "Two Outcomes", 
-        "method": "twoOutcomes", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
     "CollectFees": {
       "collectFees": {
         "description": "Collect Reporting fees for previous Reporting cycle", 
@@ -17881,12 +17868,11 @@ module.exports={
         ]
       }, 
       "penalizeWrong": {
-        "description": "Compare your report to the consensus outcome", 
         "inputs": [
           "branch", 
           "event"
         ], 
-        "label": "Check Report Against Consensus", 
+        "label": "Compare Report To Consensus", 
         "method": "penalizeWrong", 
         "mutable": true, 
         "returns": "number", 
@@ -20797,6 +20783,44 @@ module.exports={
         ]
       }
     }, 
+    "Payout": {
+      "oneOutcome": {
+        "inputs": [
+          "market", 
+          "winningOutcome", 
+          "sender", 
+          "categoricalPointFive", 
+          "numOutcomes"
+        ], 
+        "label": "One Outcome", 
+        "method": "oneOutcome", 
+        "returns": "int256", 
+        "signature": [
+          "int256", 
+          "int256", 
+          "int256", 
+          "int256", 
+          "int256"
+        ]
+      }, 
+      "twoOutcomes": {
+        "inputs": [
+          "market", 
+          "winningOutcome", 
+          "event", 
+          "sender"
+        ], 
+        "label": "Two Outcomes", 
+        "method": "twoOutcomes", 
+        "returns": "int256", 
+        "signature": [
+          "int256", 
+          "int256[]", 
+          "int256", 
+          "int256"
+        ]
+      }
+    }, 
     "PenalizationCatchup": {
       "penalizationCatchup": {
         "inputs": [
@@ -21726,42 +21750,41 @@ module.exports={
 },{}],56:[function(require,module,exports){
 module.exports={
     "10101": {
-        "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "Backstops": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "BuyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "BuyAndSellShares": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "CloseMarket": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CloseMarket": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "Consensus": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "CompositeGetters": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "Consensus": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
-        "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "CreateMarket": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "CreateBranch": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "CreateMarket": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "EventResolution": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "Events": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "ForkPenalize": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Forking": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "Info": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "MakeReports": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
+        "Payout": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "ProportionCorrect": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "ProportionCorrect": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Register": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "RoundTwoPenalize": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "SendReputation": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
+        "RoundTwo": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "RoundTwoPenalize": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "SendReputation": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "SlashRep": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Trade": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "Trades": "0x35152caa07026203a1add680771afb690d872d7d"
     }, 
     "2": {
         "Backstops": "0xe7b15def7af9b21efaf23107aa674068a887f91b", 
@@ -21802,80 +21825,78 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x918aaae4c87aca922cdcf8f7ddccffb2b9b1bbce", 
-        "Branches": "0x59d8ac14200841082ad80869b5c0e135715b4cec", 
-        "BuyAndSellShares": "0x41ef965061f8ccf903c75fed865abb821836665a", 
-        "Cash": "0x2bb6f66eb40dc0c166dc3e664a33fcbcc8de4a18", 
-        "CloseMarket": "0x2b35942ab8f260adca3c66f89a25d0ec1b1e9a63", 
-        "CloseMarketOne": "0xecd9f50876b557dad630436a3259934a95a502da", 
-        "CloseMarketTwo": "0x6a0f948872f0c1e99a5956b7d507d7c2136e0119", 
-        "CollectFees": "0x87bc55fbca6ea594d100c5c62b3d98af652b1fe6", 
-        "CompleteSets": "0x924d9da2a0af8d6a95fbb72e0f3b45ab5555e156", 
-        "CompositeGetters": "0x289c94ccc95f4d99cbba55bbd0d18b5204ae37eb", 
-        "Consensus": "0x32e32f5b86763533c101aed576668bca1a3f2a3e", 
-        "ConsensusData": "0xb69ad75543bad7acd50b0316956ccdf752945cc1", 
-        "CreateBranch": "0x44fb65707bbabf70612c052bf565485361fc98d5", 
-        "CreateMarket": "0x6186bf181ca73cd080622d4154fece24922fcfe4", 
-        "EventResolution": "0xe5ad3289e3082dedaf0f971988ef7bccb591322e", 
-        "Events": "0x4b3599ea3251e6e6f28ec163f0e96cabc6b26dc8", 
-        "ExpiringEvents": "0x93e9e14d00e840f1d26ab85a81147624dc56024e", 
-        "Faucets": "0xc5e90cd79dc2c9c36d163f5739ef29004896a353", 
-        "ForkPenalize": "0xe5d837aeb338c996563a787992f70027ebb82b27", 
-        "Forking": "0xa95fdc600bb21bdeaba51f5d6c0d0b5f569b8995", 
-        "FxpFunctions": "0x7651332ff40346e6ef86342eff6669f5f702d892", 
-        "Info": "0xf990de559892e895db07e25d6db00e5531e89383", 
-        "MakeReports": "0xb9db073f3bb5530cb6ed99e7b4bbf458bd46cd7e", 
-        "Markets": "0x366ca214e6a5890ab5d07ec4560632e5466e6be6", 
-        "PenalizationCatchup": "0xacfc07b3f90ad5305a92985fd65862f88f98b3b5", 
-        "PenalizeNotEnoughReports": "0xbb10e2e27fd9b2e8fcc7479397b21b1834d63ffa", 
-        "ProportionCorrect": "0xea2a9cabc7dfc506a476a4a673265c8fb0c15712", 
-        "Register": "0xe8b6806da0ef7fd8a941259736349184dacc9873", 
-        "Reporting": "0x15ecec324f0bc35fafab9230289a1c6e0089d59a", 
-        "ReportingThreshold": "0x7ae47c7c19f3d72066c51f48f814dc01cfcb69ca", 
-        "RoundTwo": "0x45f22e15b70aa261600bbf5692a0acbc230b8ada", 
-        "RoundTwoPenalize": "0x633d4d837179cffab44f4cb86954e98706372541", 
-        "SendReputation": "0x7b255fc30849cd98185c67b22177d07f369971b3", 
-        "SlashRep": "0xf1b01daa5eefbdf37b1329e9f4dd8b048ac53dcc", 
-        "Trade": "0x266a02222f8ff62ecc32a92a6fcac124116fc8f6", 
-        "Trades": "0xd0d8ba56de0e2147dd4932865b8a9700aafe0fa1"
+        "Backstops": "0x4040a0128dd4d2caf1c0f179cd6630c4b5179bfd", 
+        "Branches": "0x447056d6e233e2885443c89b89420aed92515a38", 
+        "BuyAndSellShares": "0xcacab392be7edc9c7028d5bce3cab60f8d9e8946", 
+        "Cash": "0xef6ae11aab9575e3ff0fd19acdff264c0caa85f1", 
+        "CloseMarket": "0xb618891f0aee18b4dfd39c2cb30ec5e48a348e1e", 
+        "CollectFees": "0x2eb52b2cc95b1c20f0e8605e7635d2721bb76f18", 
+        "CompleteSets": "0x9f7d3d82326bc79b1b29bea38ad55ee9394c50db", 
+        "CompositeGetters": "0x287d126ce2c72a444a1df2c856bbfd2138697033", 
+        "Consensus": "0x1632f4f84e60e946cef027abd5dadb87f29321d2", 
+        "ConsensusData": "0xbbaea0aae1beda816446627bbeb817737f7d17af", 
+        "CreateBranch": "0x79743ec62e5c08453c8748e117593237c191ad2f", 
+        "CreateMarket": "0x88c39904bdd4aca5a16673260371650d75dc3641", 
+        "EventResolution": "0xc8766127e48fa70bb34909e621d37b05c51c724b", 
+        "Events": "0x53e341764ccf4241b0161d6a6616f3288e8118df", 
+        "ExpiringEvents": "0x99e362f50dfd2838e58ac3b7e40d27e1c8be42e0", 
+        "Faucets": "0xc5bf0d08f19a50e367e85fef3492ec6cef05b255", 
+        "ForkPenalize": "0x5f49f66a5c0ae45cd3c2aa13afc99bbf1281d0db", 
+        "Forking": "0x4385b596c4ca6a5e7db98c4975065ddd00c5e898", 
+        "FxpFunctions": "0x48317cd39b03d7edac6fd1eb460be774bf9d5937", 
+        "Info": "0x2fe92607a6a7ee373e38861cfcb741ce0069ebc4", 
+        "MakeReports": "0xe5f48dedeb03ba4ae31091c3dfa6bbf227e2f5ad", 
+        "Markets": "0x1580844294a3c2907edc1d6a8e297cd76577702f", 
+        "Payout": "0xc045d16905f32dca8d0a0bfc3e193dcbf7a80abf", 
+        "PenalizationCatchup": "0x2b4883a95b37535f8e0bae5eaa1251c4c1a305a7", 
+        "PenalizeNotEnoughReports": "0xb092aa6c058fbb8232de0b53de8e6a910fbafaaa", 
+        "ProportionCorrect": "0x04c8986a8403c7a3493dbcf76145627e8fda7fcd", 
+        "Register": "0x4cd8d9da2cb81b3ed351d6245c9d164c22a9e466", 
+        "Reporting": "0xfe36f16af8ffde73ba7d1b10cc75a4417a0657f6", 
+        "ReportingThreshold": "0xe296a4d491580bdf482a99398b8e09768df46a18", 
+        "RoundTwo": "0xd8957bafe18f3bcbb3052c2d1f752ee9fa72e28a", 
+        "RoundTwoPenalize": "0xc363f18732228cb8dd895f4eec47a5a2d1b891a6", 
+        "SendReputation": "0xd4837c41d77811e25398c418bbc00d1943cc6cd4", 
+        "SlashRep": "0xbb7e9e8235a565c43aa8d9d163f47617273ea685", 
+        "Trade": "0xf567a01e48708984daae74b8558b157e37a2a275", 
+        "Trades": "0x18650080b5e9ce96b3fe03ae8bc5a01b8029bb78"
     }, 
     "9000": {
-        "Backstops": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "Backstops": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "BuyAndSellShares": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "BuyAndSellShares": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "CloseMarket": "0x833c0a2381298bf9c3c1c6045e3258f6fe0d8496", 
-        "CloseMarketOne": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "CloseMarketTwo": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CloseMarket": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompleteSets": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CompositeGetters": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "Consensus": "0x240d7c255408de59e3a4cc4f641996067ca3bef2", 
+        "CompositeGetters": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "Consensus": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "ConsensusData": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
-        "CreateBranch": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "CreateMarket": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "EventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "Events": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x570372c441d7cc67d512337c5c2637be084012a3", 
-        "ForkPenalize": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "Forking": "0x9f52f5841050b5b6f7590fcde30726672b7976ca", 
+        "CreateBranch": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "CreateMarket": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "EventResolution": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "Events": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "ForkPenalize": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Forking": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
         "FxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Info": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "MakeReports": "0xfba220254fea0ad2e8cbfb3285edf7fc7b6dc0a2", 
+        "Info": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "MakeReports": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
         "Markets": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
+        "Payout": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
         "PenalizeNotEnoughReports": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "ProportionCorrect": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "Register": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "ProportionCorrect": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Register": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "Reporting": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "ReportingThreshold": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "RoundTwo": "0xe96c027eff937d6ff7a2b172b2f5c82c929f37fa", 
-        "RoundTwoPenalize": "0xcf044ec66a0d8850522cc371ae2cb580f09e2e29", 
-        "SendReputation": "0xc524e453d0adb1673fa62b7f5f9866989e756c00", 
-        "SlashRep": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Trade": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "Trades": "0x3f3276849a878a176b2f02dd48a483e8182a49e4"
+        "RoundTwo": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "RoundTwoPenalize": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "SendReputation": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "SlashRep": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Trade": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "Trades": "0x35152caa07026203a1add680771afb690d872d7d"
     }
 }
 },{}],57:[function(require,module,exports){
@@ -21971,7 +21992,6 @@ module.exports={
         "-1": "need to penalize in round 2 penalize function",
         "-2": "already past first half of new period and needed to penalize before then",
         "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
-        "-5": "already done for all events in this period",
         "-6": "forked events should be penalized using the fork penalization function",
         "-7": "no outcome"
     },
@@ -43348,7 +43368,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":238,"./utilities":261,"_process":191,"async":79,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":272,"locks":175,"request":87,"uuid":232}],235:[function(require,module,exports){
+},{"./constants":238,"./utilities":262,"_process":191,"async":79,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"browser-request":86,"buffer":116,"clone":119,"ethereumjs-tx":157,"keythereum":273,"locks":175,"request":87,"uuid":232}],235:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -44109,7 +44129,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":238,"./utilities":261,"async":79,"augur-abi":1,"augur-contracts":58,"clone":119}],240:[function(require,module,exports){
+},{"./constants":238,"./utilities":262,"async":79,"augur-abi":1,"augur-contracts":58,"clone":119}],240:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -44383,13 +44403,14 @@ var modules = [
     require("./modules/logs"),
     require("./modules/abacus"),
     require("./modules/reporting"),
+    require("./modules/payout"),
     require("./modules/tradingActions"),
     require("./modules/positions"),
     require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "3.2.9";
+    this.version = "3.3.0";
 
     this.options = {
         debug: {
@@ -44442,7 +44463,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":263,"./accounts":234,"./augurNode":235,"./batch":236,"./chat":237,"./constants":238,"./filters":239,"./generateOrderBook":240,"./modules/abacus":242,"./modules/buyAndSellShares":243,"./modules/cash":244,"./modules/collectFees":245,"./modules/compositeGetters":246,"./modules/connect":247,"./modules/createBranch":248,"./modules/createMarket":249,"./modules/events":250,"./modules/logs":251,"./modules/makeReports":252,"./modules/markets":253,"./modules/positions":254,"./modules/register":255,"./modules/reporting":256,"./modules/sendReputation":257,"./modules/trade":258,"./modules/tradingActions":259,"./modules/transact":260,"./utilities":261,"_process":191,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":266}],242:[function(require,module,exports){
+},{"../test/tools":264,"./accounts":234,"./augurNode":235,"./batch":236,"./chat":237,"./constants":238,"./filters":239,"./generateOrderBook":240,"./modules/abacus":242,"./modules/buyAndSellShares":243,"./modules/cash":244,"./modules/collectFees":245,"./modules/compositeGetters":246,"./modules/connect":247,"./modules/createBranch":248,"./modules/createMarket":249,"./modules/events":250,"./modules/logs":251,"./modules/makeReports":252,"./modules/markets":253,"./modules/payout":254,"./modules/positions":255,"./modules/register":256,"./modules/reporting":257,"./modules/sendReputation":258,"./modules/trade":259,"./modules/tradingActions":260,"./modules/transact":261,"./utilities":262,"_process":191,"augur-abi":1,"augur-contracts":58,"bignumber.js":82,"ethrpc":267}],242:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -44842,7 +44863,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":238,"../utilities":261,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":114,"buffer":116,"clone":119}],243:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":114,"buffer":116,"clone":119}],243:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44995,7 +45016,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"clone":119}],244:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":119}],244:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45048,7 +45069,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"clone":119}],245:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":119}],245:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45117,7 +45138,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],246:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"bignumber.js":82,"clone":119}],246:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45454,7 +45475,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],247:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"bignumber.js":82,"clone":119}],247:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -45654,7 +45675,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"clone":119,"ethereumjs-connect":264}],248:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":119,"ethereumjs-connect":265}],248:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45754,7 +45775,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"augur-abi":1,"clone":119}],249:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":119}],249:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45921,7 +45942,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"augur-abi":1,"bignumber.js":82,"clone":119}],250:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"bignumber.js":82,"clone":119}],250:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46545,7 +46566,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"clone":119}],252:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":119}],252:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -46791,7 +46812,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":238,"../utilities":261,"augur-abi":1,"augur-contracts":58,"buffer":116,"clone":119,"keythereum":272}],253:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"augur-contracts":58,"buffer":116,"clone":119,"keythereum":273}],253:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -46832,7 +46853,138 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"clone":119}],254:[function(require,module,exports){
+},{"../utilities":262,"clone":119}],254:[function(require,module,exports){
+/**
+ * Cash payouts from closed markets
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var async = require("async");
+var constants = require("../constants");
+
+module.exports = {
+
+    closeMarket: function (branch, market, sender, description, onSent, onSuccess, onFailed) {
+        if (branch.constructor === Object) {
+            market = branch.market;
+            sender = branch.sender;
+            description = branch.description;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            branch = branch.branch;
+        }
+        var tx = clone(this.tx.CloseMarket.closeMarket);
+        tx.params = [branch, market, sender];
+        tx.description = description;
+        this.transact(tx, onSent, onSuccess, onFailed);
+    },
+
+    // markets: array of market IDs for which to claim proceeds
+    claimMarketsProceeds: function (branch, markets, callback, onSent, onSuccess) {
+        if (this.options.debug.reporting) {
+            console.log("claimMarketsProceeds:", branch, markets);
+        }
+        var self = this;
+        var claimedMarkets = [];
+        async.eachSeries(markets, function (market, nextMarket) {
+            if (self.options.debug.reporting) {
+                console.log("claimMarketsProceeds", market);
+            }
+            self.getWinningOutcomes(market.id, function (winningOutcomes) {
+                // market not yet resolved
+                if (self.options.debug.reporting) {
+                    console.log("got winning outcomes:", winningOutcomes);
+                }
+                if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+                    if (self.options.debug.reporting) {
+                        console.log("market not yet resolved", market.id);
+                    }
+                    return nextMarket();
+                }
+                self.claimProceeds({
+                    branch: branch,
+                    market: market.id,
+                    description: market.description,
+                    onSent: function (res) {
+                        if (self.options.debug.reporting) {
+                            console.log("claim proceeds sent:", market.id, res);
+                        }
+                        if (onSent) onSent(res.hash, market.id);
+                    },
+                    onSuccess: function (res) {
+                        if (self.options.debug.reporting) {
+                            console.log("claim proceeds success:", market.id, res);
+                        }
+                        if (onSuccess) {
+                            onSuccess(res.hash, market.id, {
+                                cash: res.callReturn.cash,
+                                shares: res.callReturn.shares
+                            });
+                        }
+                        claimedMarkets.push(market.id);
+                        nextMarket();
+                    },
+                    onFailed: nextMarket
+                });
+            });
+        }, function (err) {
+            if (err) return callback(err);
+            callback(null, claimedMarkets);
+        });
+    },
+
+    claimProceeds: function (branch, market, description, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (branch.constructor === Object) {
+            market = branch.market;
+            description = branch.description;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            branch = branch.branch;
+        }
+        var tx = clone(self.tx.CloseMarket.claimProceeds);
+        tx.params = [branch, market];
+        tx.description = description;
+        if (self.options.debug.reporting) {
+            console.log("claimProceeds:", branch, market, description);
+            console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
+        }
+        self.transact(tx, onSent, function (res) {
+            if (self.options.debug.reporting) {
+                console.log("claimProceeds success:", market, res);
+            }
+            if (res.callReturn !== "1") return onFailed(res.callReturn);
+            self.rpc.receipt(res.hash, function (receipt) {
+                var logdata;
+                var cashPayout = constants.ZERO;
+                var shares = constants.ZERO;
+                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    var logs = receipt.logs;
+                    var sig = self.api.events.payout.signature;
+                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                        if (logs[i].topics[0] === sig) {
+                            logdata = self.rpc.unmarshal(logs[i].data);
+                            if (logdata && logdata.constructor === Array && logdata.length > 1) {
+                                cashPayout = abi.unfix(abi.hex(logdata[0], true));
+                                shares = abi.unfix(logdata[1]);
+                            }
+                        }
+                    }
+                }
+                res.callReturn = {cash: cashPayout.toFixed(), shares: shares.toFixed()};
+                onSuccess(res);
+            });
+        }, onFailed);
+    }
+};
+
+},{"../constants":238,"async":79,"augur-abi":1,"clone":119}],255:[function(require,module,exports){
 /**
  * Tools to adjust positions in Augur markets for display.
  * @author Jack Peterson (jack@tinybike.net)
@@ -47394,7 +47546,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"async":79,"augur-abi":1,"bignumber.js":82}],255:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"async":79,"augur-abi":1,"bignumber.js":82}],256:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -47506,7 +47658,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"augur-abi":1,"clone":119}],256:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"augur-abi":1,"clone":119}],257:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -47514,18 +47666,21 @@ module.exports = {
 
 "use strict";
 
+var clone = require("clone");
 var abi = require("augur-abi");
 var async = require("async");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
 
-    getCurrentPeriod: function (periodLength) {
-        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    getCurrentPeriod: function (periodLength, timestamp) {
+        var t = timestamp || parseInt(new Date().getTime() / 1000);
+        return Math.floor(t / periodLength);
     },
 
-    getCurrentPeriodProgress: function (periodLength) {
-        var t = parseInt(new Date().getTime() / 1000);
+    getCurrentPeriodProgress: function (periodLength, timestamp) {
+        var t = timestamp || parseInt(new Date().getTime() / 1000);
         return 100 * (t % periodLength) / periodLength;
     },
 
@@ -47560,63 +47715,26 @@ module.exports = {
         });
     },
 
-    // markets: array of market IDs for which to claim proceeds
-    claimMarketsProceeds: function (branch, markets, callback) {
-        if (this.options.debug.reporting) {
-            console.log('claimMarketsProceeds:', branch, markets);
+    penalizeWrong: function (branch, event, description, onSent, onSuccess, onFailed) {
+        if (branch.constructor === Object) {
+            event = branch.event;
+            description = branch.description;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            branch = branch.branch;
         }
-        var self = this;
-        var claimedMarkets = [];
-        async.eachSeries(markets, function (market, nextMarket) {
-            if (self.options.debug.reporting) {
-                console.log('claimMarketsProceeds: getting winning outcomes for market:', market);
-            }
-            self.getWinningOutcomes(market, function (winningOutcomes) {
-                // market not yet resolved
-                if (self.options.debug.reporting) {
-                    console.log('got winning outcomes:', winningOutcomes);
-                }
-                if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
-                    if (self.options.debug.reporting) {
-                        console.log("market not yet resolved", market);
-                    }
-                    return nextMarket();
-                }
-                if (self.options.debug.reporting) {
-                    console.log('claimProceeds:', {branch: branch, market: market});
-                }
-                self.claimProceeds({
-                    branch: branch,
-                    market: market,
-                    onSent: function (res) {
-                        if (self.options.debug.reporting) {
-                            console.log("claim proceeds sent:", market, res);
-                        }
-                    },
-                    onSuccess: function (res) {
-                        if (self.options.debug.reporting) {
-                            console.log("claim proceeds success:", market, res.callReturn);
-                        }
-                        if (res.callReturn === "1") {
-                            claimedMarkets.push(market);
-                            return nextMarket();
-                        }
-                        nextMarket(res.callReturn);
-                    },
-                    onFailed: nextMarket
-                });
-            });
-        }, function (err) {
-            if (err) return callback(err);
-            callback(null, claimedMarkets);
-        });
+        var tx = clone(this.tx.Consensus.penalizeWrong);
+        tx.params = [branch, event];
+        tx.description = description;
+        this.transact(tx, onSent, onSuccess, onFailed);
     },
 
     // Increment vote period until vote period = current period - 1
     checkPeriod: function (branch, periodLength, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
-            console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength);
+            console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength, sender);
         }
         this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
             if (self.options.debug.reporting) {
@@ -47669,7 +47787,7 @@ module.exports = {
         });
     },
 
-    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback, onSent, onSuccess) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
@@ -47685,6 +47803,31 @@ module.exports = {
                     console.log("[penaltyCatchUp] Penalties caught up!");
                 }
                 return callback(null);
+            } else if (lastPeriodPenalized < periodToCheck - 1) {
+                if (self.getCurrentPeriodProgress(periodLength) >= 50) {
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
+                    }
+                    return callback(null);
+                }
+                return self.penalizationCatchup({
+                    branch: branch,
+                    sender: sender,
+                    onSent: function (r) {
+                        if (onSent) onSent(r.hash, null, "penalizationCatchup");
+                    },
+                    onSuccess: function (r) {
+                        if (self.options.debug.reporting) {
+                            console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
+                        }
+                        if (onSuccess) onSuccess(r.hash, null, "penalizationCatchup");
+                        callback(null);
+                    },
+                    onFailed: function (e) {
+                        console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+                        callback(e);
+                    }
+                });
             }
             // If reported last period and called collectfees then call the penalization functions in
             // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
@@ -47693,65 +47836,34 @@ module.exports = {
                 if (!feesCollected || feesCollected.error) {
                     return callback(feesCollected || "couldn't get fees collected");
                 }
-                self.getNumReportsActual(branch, periodToCheck, sender, function (numReportsActual) {
-                    if (!numReportsActual || numReportsActual.error) {
-                        return callback(numReportsActual || "couldn't get num previous period reports");
-                    }
-                    if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] feesCollected:", feesCollected);
-                        console.log("[penaltyCatchUp] numReportsActual:", numReportsActual);
-                    }
-                    if (parseInt(feesCollected) === 0 || parseInt(numReportsActual) === 0) {
-                        if (self.getCurrentPeriodProgress(periodLength) >= 50) {
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
-                            }
-                            return callback(null);
+                if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] feesCollected:", feesCollected);
+                }
+                self.getEvents(branch, periodToCheck, function (events) {
+                    if (!events || events.constructor !== Array || !events.length) {
+                        if (self.options.debug.reporting) {
+                            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
                         }
-                        return self.penalizationCatchup({
+                        self.penalizeWrong({
                             branch: branch,
-                            sender: sender,
-                            onSent: utils.noop,
+                            event: 0,
+                            description: "Empty Reporting cycle",
+                            onSent: function (r) {
+                                if (onSent) onSent(r.hash, 0, "penalizeWrong");
+                            },
                             onSuccess: function (r) {
                                 if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
+                                    console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                                 }
+                                if (onSuccess) onSuccess(r.hash, 0, "penalizeWrong");
                                 callback(null);
                             },
                             onFailed: function (e) {
-                                console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
-                                if (e.error === -32000) {
-                                    return callback(null);
-                                }
-                                callback(e);
+                                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                                callback(null);
                             }
                         });
-                    }
-                    self.getEvents(branch, periodToCheck, function (events) {
-                        if (!events || events.constructor !== Array || !events.length) {
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-                            }
-                            return self.penalizeWrong({
-                                branch: branch,
-                                event: 0,
-                                onSent: utils.noop,
-                                onSuccess: function (r) {
-                                    if (self.options.debug.reporting) {
-                                        console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
-                                    }
-                                    callback(null);
-                                },
-                                onFailed: function (e) {
-                                    console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                                    callback(null);
-                                    // if (e.error === -32000) {
-                                    //     return callback(null);
-                                    // }
-                                    // callback(e);
-                                }
-                            });
-                        }
+                    } else {
                         if (self.options.debug.reporting) {
                             console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
                         }
@@ -47765,49 +47877,44 @@ module.exports = {
                                 if (self.options.debug.reporting) {
                                     console.log("[penaltyCatchUp] penalizeWrong:", event);
                                 }
-                                self.penalizeWrong({
-                                    branch: branch,
-                                    event: event,
-                                    onSent: utils.noop,
-                                    onSuccess: function (r) {
-                                        if (self.options.debug.reporting) {
-                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                        }
-                                        // self.getNumMarkets(event, function (numMarkets) {
-                                        //     if (!numMarkets || numMarkets.error) {
-                                        //         return nextEvent(numMarkets || "couldn't getNumMarkets for event " + event);
-                                        //     }
-                                        //     if (parseInt(numMarkets) === 1) {
-                                        //         return nextEvent(null);
-                                        //     }
-                                            self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                                self.getDescription(event, function (description) {
+                                    description = description.split("~|>")[0];
+                                    self.penalizeWrong({
+                                        branch: branch,
+                                        event: event,
+                                        description: description,
+                                        onSent: function (r) {
+                                            if (onSent) onSent(r.hash, event, "penalizeWrong");
+                                        },
+                                        onSuccess: function (r) {
+                                            if (self.options.debug.reporting) {
+                                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                                            }
+                                            if (onSuccess) onSuccess(r.hash, event, "penalizeWrong");
+                                            self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
                                                 if (err) return nextEvent(err);
                                                 marketsClosed = marketsClosed.concat(markets);
                                                 nextEvent(null);
-                                            });
-                                        // });
-                                    },
-                                    onFailed: function (e) {
-                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                        nextEvent(null);
-                                        // if (e.error === -32000) {
-                                        //     return nextEvent(null);
-                                        // }
-                                        // nextEvent(e);
-                                    }
+                                            }, onSent, onSuccess);
+                                        },
+                                        onFailed: function (e) {
+                                            console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                            nextEvent(null);
+                                        }
+                                    });
                                 });
                             });
                         }, function (e) {
                             if (e) return callback(e);
                             callback(null, marketsClosed);
                         });
-                    });
+                    }
                 });
             });
         });
     },
 
-    closeExtraMarkets: function (branch, event, sender, callback) {
+    closeExtraMarkets: function (branch, event, description, sender, callback, onSent, onSuccess) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
@@ -47817,22 +47924,23 @@ module.exports = {
                 return callback("no markets found for " + event);
             }
             if (markets && markets.error) return callback(markets);
-            // if (markets.length <= 1) return callback(null);
-            // async.eachSeries(markets.slice(1), function (market, nextMarket) {
             async.eachSeries(markets, function (market, nextMarket) {
                 self.closeMarket({
                     branch: branch,
                     market: market,
                     sender: sender,
+                    description: description,
                     onSent: function (r) {
                         if (self.options.debug.reporting) {
                             console.log("[closeExtraMarkets] closeMarket sent:", market, r);
                         }
+                        if (onSent) onSent(r.hash, market, "closeMarket");
                     },
                     onSuccess: function (r) {
                         if (self.options.debug.reporting) {
                             console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
                         }
+                        if (onSuccess) onSuccess(r.hash, market, "closeMarket");
                         nextMarket(null);
                     },
                     onFailed: function (e) {
@@ -47901,7 +48009,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"async":79,"augur-abi":1}],257:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"async":79,"augur-abi":1,"clone":119}],258:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -47961,7 +48069,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":261,"augur-abi":1,"clone":119}],258:[function(require,module,exports){
+},{"../utilities":262,"augur-abi":1,"clone":119}],259:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -48284,7 +48392,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"../utilities":261,"./abacus":242,"async":79,"augur-abi":1,"clone":119,"ethrpc":266}],259:[function(require,module,exports){
+},{"../constants":238,"../utilities":262,"./abacus":242,"async":79,"augur-abi":1,"clone":119,"ethrpc":267}],260:[function(require,module,exports){
 /*
  * Author: priecint
  */
@@ -48677,7 +48785,7 @@ module.exports = {
     }
 };
 
-},{"../constants":238,"./abacus":242,"augur-abi":1,"bignumber.js":82,"clone":119,"ethereumjs-tx":157}],260:[function(require,module,exports){
+},{"../constants":238,"./abacus":242,"augur-abi":1,"bignumber.js":82,"clone":119,"ethereumjs-tx":157}],261:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -48707,7 +48815,7 @@ module.exports = {
     }
 };
 
-},{}],261:[function(require,module,exports){
+},{}],262:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -48882,7 +48990,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":238,"_process":191,"augur-abi":1,"bignumber.js":82,"buffer":116,"clone":119,"crypto":126}],262:[function(require,module,exports){
+},{"./constants":238,"_process":191,"augur-abi":1,"bignumber.js":82,"buffer":116,"clone":119,"crypto":126}],263:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -48912,7 +49020,7 @@ module.exports = {
     }    
 };
 
-},{}],263:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -49162,6 +49270,12 @@ module.exports = {
 
         // create a binary market
         console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
+        var active = augur.from;
+        var clientSideAccount;
+        if (augur.web.account.address) {
+            clientSideAccount = clone(augur.web.account);
+            augur.web.account = {};
+        }
         augur.createSingleEventMarket({
             branchId: branchID,
             description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
@@ -49208,7 +49322,13 @@ module.exports = {
                             onSuccess: function (res) {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
                                 markets.scalar = res.callReturn;
-                                if (self.is_created(markets)) callback(null, markets);
+                                if (self.is_created(markets)) {
+                                    if (clientSideAccount) {
+                                        augur.web.account = clientSideAccount;
+                                    }
+                                    augur.useAccount(active);
+                                    callback(null, markets);
+                                }
                             },
                             onFailed: function (err) {
                                 if (self.DEBUG) console.error("Scalar createSingleEventMarket failed:", err);
@@ -49219,7 +49339,13 @@ module.exports = {
                     onSuccess: function (res) {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
                         markets.categorical = res.callReturn;
-                        if (self.is_created(markets)) callback(null, markets);
+                        if (self.is_created(markets)) {
+                            if (clientSideAccount) {
+                                augur.web.account = clientSideAccount;
+                            }
+                            augur.useAccount(active);
+                            callback(null, markets);
+                        }
                     },
                     onFailed: function (err) {
                         if (self.DEBUG) console.error("Categorical createSingleEventMarket failed:", err);
@@ -49230,7 +49356,13 @@ module.exports = {
             onSuccess: function (res) {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
                 markets.binary = res.callReturn;
-                if (self.is_created(markets)) callback(null, markets);
+                if (self.is_created(markets)) {
+                    if (clientSideAccount) {
+                        augur.web.account = clientSideAccount;
+                    }
+                    augur.useAccount(active);
+                    callback(null, markets);
+                }
             },
             onFailed: function (err) {
                 if (self.DEBUG) console.error("Binary createSingleEventMarket failed:", err);
@@ -49615,7 +49747,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":238,"../src/modules/reporting":256,"../src/utilities":261,"./madlibs":262,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":188}],264:[function(require,module,exports){
+},{"../src/constants":238,"../src/modules/reporting":257,"../src/utilities":262,"./madlibs":263,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":117,"clone":119,"fs":113,"madlibs":180,"path":188}],265:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -49947,9 +50079,9 @@ module.exports = {
 
 };
 
-},{"async":265,"augur-contracts":58,"ethrpc":266}],265:[function(require,module,exports){
+},{"async":266,"augur-contracts":58,"ethrpc":267}],266:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],266:[function(require,module,exports){
+},{"_process":191,"dup":79}],267:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -51885,17 +52017,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":191,"async":267,"augur-abi":1,"augur-contracts":58,"bignumber.js":268,"browser-request":269,"clone":270,"js-sha3":271,"net":113,"request":87,"sync-request":87,"websocket":87}],267:[function(require,module,exports){
+},{"_process":191,"async":268,"augur-abi":1,"augur-contracts":58,"bignumber.js":269,"browser-request":270,"clone":271,"js-sha3":272,"net":113,"request":87,"sync-request":87,"websocket":87}],268:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],268:[function(require,module,exports){
+},{"_process":191,"dup":79}],269:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],269:[function(require,module,exports){
+},{"dup":2}],270:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"dup":86}],270:[function(require,module,exports){
+},{"dup":86}],271:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":116,"dup":59}],271:[function(require,module,exports){
+},{"buffer":116,"dup":59}],272:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],272:[function(require,module,exports){
+},{"dup":38}],273:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -52526,7 +52658,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":273,"./lib/scrypt":274,"_process":191,"buffer":116,"crypto":126,"elliptic":278,"ethereumjs-util":295,"fs":113,"path":188,"sjcl":305,"uuid":307,"validator":308}],273:[function(require,module,exports){
+},{"./lib/keccak":274,"./lib/scrypt":275,"_process":191,"buffer":116,"crypto":126,"elliptic":279,"ethereumjs-util":296,"fs":113,"path":188,"sjcl":306,"uuid":308,"validator":309}],274:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -52720,7 +52852,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],274:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -64441,7 +64573,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":191,"fs":113,"path":188}],275:[function(require,module,exports){
+},{"_process":191,"fs":113,"path":188}],276:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -66890,7 +67022,7 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],276:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -66949,7 +67081,7 @@ if (typeof window === 'object') {
   }
 }
 
-},{"crypto":87}],277:[function(require,module,exports){
+},{"crypto":87}],278:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -66975,9 +67107,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":116,"js-sha3":303}],278:[function(require,module,exports){
+},{"buffer":116,"js-sha3":304}],279:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":294,"./elliptic/curve":281,"./elliptic/curves":284,"./elliptic/ec":285,"./elliptic/eddsa":288,"./elliptic/hmac-drbg":291,"./elliptic/utils":293,"brorand":276,"dup":11}],279:[function(require,module,exports){
+},{"../package.json":295,"./elliptic/curve":282,"./elliptic/curves":285,"./elliptic/ec":286,"./elliptic/eddsa":289,"./elliptic/hmac-drbg":292,"./elliptic/utils":294,"brorand":277,"dup":11}],280:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67330,7 +67462,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":278,"bn.js":275}],280:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],281:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -67738,9 +67870,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],281:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],282:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":279,"./edwards":280,"./mont":282,"./short":283,"dup":14}],282:[function(require,module,exports){
+},{"./base":280,"./edwards":281,"./mont":283,"./short":284,"dup":14}],283:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -67918,7 +68050,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],283:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],284:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -68827,7 +68959,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":278,"../curve":281,"bn.js":275,"inherits":302}],284:[function(require,module,exports){
+},{"../../elliptic":279,"../curve":282,"bn.js":276,"inherits":303}],285:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -68986,7 +69118,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":278,"./precomputed/secp256k1":292,"hash.js":296}],285:[function(require,module,exports){
+},{"../elliptic":279,"./precomputed/secp256k1":293,"hash.js":297}],286:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69198,7 +69330,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":278,"./key":286,"./signature":287,"bn.js":275}],286:[function(require,module,exports){
+},{"../../elliptic":279,"./key":287,"./signature":288,"bn.js":276}],287:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69307,7 +69439,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":275}],287:[function(require,module,exports){
+},{"bn.js":276}],288:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69379,9 +69511,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":278,"bn.js":275}],288:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],289:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":278,"./key":289,"./signature":290,"dup":21,"hash.js":296}],289:[function(require,module,exports){
+},{"../../elliptic":279,"./key":290,"./signature":291,"dup":21,"hash.js":297}],290:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -69479,7 +69611,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":278}],290:[function(require,module,exports){
+},{"../../elliptic":279}],291:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69547,11 +69679,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":278,"bn.js":275}],291:[function(require,module,exports){
+},{"../../elliptic":279,"bn.js":276}],292:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":278,"dup":24,"hash.js":296}],292:[function(require,module,exports){
+},{"../elliptic":279,"dup":24,"hash.js":297}],293:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],293:[function(require,module,exports){
+},{"dup":25}],294:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -69725,7 +69857,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":275}],294:[function(require,module,exports){
+},{"bn.js":276}],295:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -69826,7 +69958,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],295:[function(require,module,exports){
+},{}],296:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -70174,23 +70306,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":275,"buffer":116,"elliptic":278,"rlp":304,"sha3":277}],296:[function(require,module,exports){
+},{"assert":78,"bn.js":276,"buffer":116,"elliptic":279,"rlp":305,"sha3":278}],297:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":297,"./hash/hmac":298,"./hash/ripemd":299,"./hash/sha":300,"./hash/utils":301,"dup":31}],297:[function(require,module,exports){
+},{"./hash/common":298,"./hash/hmac":299,"./hash/ripemd":300,"./hash/sha":301,"./hash/utils":302,"dup":31}],298:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":296,"dup":32}],298:[function(require,module,exports){
+},{"../hash":297,"dup":32}],299:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":296,"dup":33}],299:[function(require,module,exports){
+},{"../hash":297,"dup":33}],300:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":296,"dup":34}],300:[function(require,module,exports){
+},{"../hash":297,"dup":34}],301:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":296,"dup":35}],301:[function(require,module,exports){
+},{"../hash":297,"dup":35}],302:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":302}],302:[function(require,module,exports){
+},{"dup":36,"inherits":303}],303:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],303:[function(require,module,exports){
+},{"dup":37}],304:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],304:[function(require,module,exports){
+},{"dup":38}],305:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -70419,7 +70551,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"buffer":116}],305:[function(require,module,exports){
+},{"assert":78,"buffer":116}],306:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -70481,11 +70613,11 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":126}],306:[function(require,module,exports){
+},{"crypto":126}],307:[function(require,module,exports){
 arguments[4][231][0].apply(exports,arguments)
-},{"dup":231}],307:[function(require,module,exports){
+},{"dup":231}],308:[function(require,module,exports){
 arguments[4][232][0].apply(exports,arguments)
-},{"./lib/rng":306,"dup":232}],308:[function(require,module,exports){
+},{"./lib/rng":307,"dup":232}],309:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *

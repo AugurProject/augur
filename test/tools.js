@@ -246,6 +246,12 @@ module.exports = {
 
         // create a binary market
         console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
+        var active = augur.from;
+        var clientSideAccount;
+        if (augur.web.account.address) {
+            clientSideAccount = clone(augur.web.account);
+            augur.web.account = {};
+        }
         augur.createSingleEventMarket({
             branchId: branchID,
             description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
@@ -292,7 +298,13 @@ module.exports = {
                             onSuccess: function (res) {
                                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
                                 markets.scalar = res.callReturn;
-                                if (self.is_created(markets)) callback(null, markets);
+                                if (self.is_created(markets)) {
+                                    if (clientSideAccount) {
+                                        augur.web.account = clientSideAccount;
+                                    }
+                                    augur.useAccount(active);
+                                    callback(null, markets);
+                                }
                             },
                             onFailed: function (err) {
                                 if (self.DEBUG) console.error("Scalar createSingleEventMarket failed:", err);
@@ -303,7 +315,13 @@ module.exports = {
                     onSuccess: function (res) {
                         if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
                         markets.categorical = res.callReturn;
-                        if (self.is_created(markets)) callback(null, markets);
+                        if (self.is_created(markets)) {
+                            if (clientSideAccount) {
+                                augur.web.account = clientSideAccount;
+                            }
+                            augur.useAccount(active);
+                            callback(null, markets);
+                        }
                     },
                     onFailed: function (err) {
                         if (self.DEBUG) console.error("Categorical createSingleEventMarket failed:", err);
@@ -314,7 +332,13 @@ module.exports = {
             onSuccess: function (res) {
                 if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
                 markets.binary = res.callReturn;
-                if (self.is_created(markets)) callback(null, markets);
+                if (self.is_created(markets)) {
+                    if (clientSideAccount) {
+                        augur.web.account = clientSideAccount;
+                    }
+                    augur.useAccount(active);
+                    callback(null, markets);
+                }
             },
             onFailed: function (err) {
                 if (self.DEBUG) console.error("Binary createSingleEventMarket failed:", err);
