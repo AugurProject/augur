@@ -3,8 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from '../constants';
-import { abi } from '../../../src/services/augurjs';
+import { BUY, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from '../constants';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
 	proxyquire.noPreserveCache();

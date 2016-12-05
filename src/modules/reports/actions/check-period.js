@@ -95,54 +95,54 @@ export function checkPeriod(unlock, cb) {
 		}, (transactionID, eventOrMarketID, method) => {
 			let message;
 			switch (method) {
-			case 'penalizeWrong': {
-				if (eventOrMarketID) {
-					const { branch, marketsData, reports } = getState();
-					const myReport = reports[branch.id][eventOrMarketID];
-					message = `comparing ${myReport.reportedOutcomeID} to ${marketsData[myReport.marketID].reportedOutcomeID}`;
-				} else {
-					message = '';
+				case 'penalizeWrong': {
+					if (eventOrMarketID) {
+						const { branch, marketsData, reports } = getState();
+						const myReport = reports[branch.id][eventOrMarketID];
+						message = `comparing ${myReport.reportedOutcomeID} to ${marketsData[myReport.marketID].reportedOutcomeID}`;
+					} else {
+						message = '';
+					}
+					break;
 				}
-				break;
-			}
-			case 'penalizationCatchup':
-				message = 'catching up';
-				break;
-			case 'closeMarket':
-				message = 'closing market';
-				break;
-			default:
-				break;
+				case 'penalizationCatchup':
+					message = 'catching up';
+					break;
+				case 'closeMarket':
+					message = 'closing market';
+					break;
+				default:
+					break;
 			}
 			console.log('updating transaction:', transactionID, message);
 			dispatch(updateExistingTransaction(transactionID, { message }));
 		}, (transactionID, eventOrMarketID, method) => {
 			let message;
 			switch (method) {
-			case 'penalizeWrong': {
-				if (eventOrMarketID) {
-					const { branch, marketsData, reports } = getState();
-					const myReport = reports[branch.id][eventOrMarketID];
-					const myReportedOutcome = myReport.reportedOutcomeID;
-					const consensusOutcome = marketsData[myReport.marketID].reportedOutcomeID;
-					if (myReportedOutcome === consensusOutcome) {
-						message = `reported outcome ${myReportedOutcome} matches the consensus`;
+				case 'penalizeWrong': {
+					if (eventOrMarketID) {
+						const { branch, marketsData, reports } = getState();
+						const myReport = reports[branch.id][eventOrMarketID];
+						const myReportedOutcome = myReport.reportedOutcomeID;
+						const consensusOutcome = marketsData[myReport.marketID].reportedOutcomeID;
+						if (myReportedOutcome === consensusOutcome) {
+							message = `reported outcome ${myReportedOutcome} matches the consensus`;
+						} else {
+							message = `reported outcome ${myReportedOutcome} does not match the consensus outcome ${consensusOutcome}`;
+						}
 					} else {
-						message = `reported outcome ${myReportedOutcome} does not match the consensus outcome ${consensusOutcome}`;
+						message = '';
 					}
-				} else {
-					message = '';
+					break;
 				}
-				break;
-			}
-			case 'penalizationCatchup':
-				message = 'caught up';
-				break;
-			case 'closeMarket':
-				message = 'closed market';
-				break;
-			default:
-				break;
+				case 'penalizationCatchup':
+					message = 'caught up';
+					break;
+				case 'closeMarket':
+					message = 'closed market';
+					break;
+				default:
+					break;
 			}
 			console.log('updating transaction:', transactionID, message);
 			dispatch(updateExistingTransaction(transactionID, { message }));
