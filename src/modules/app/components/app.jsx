@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import Hammer from 'react-hammerjs';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';

@@ -75,7 +75,6 @@
     "react": "^15.4.1",
     "react-datetime": "^2.7.5",
     "react-dom": "^15.4.1",
-    "react-hammerjs": "^0.5.0",
     "react-highcharts": "^11.0.0",
     "react-tooltip": "^3.2.2",
     "redux": "3.5.2",
