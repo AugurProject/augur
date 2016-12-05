@@ -166,7 +166,7 @@ module.exports = {
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length) {
+                                                if (logdata && logdata.constructor === Array && logdata.length > 6) {
                                                     tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
 
                                                     // buy (matched sell order)
@@ -176,7 +176,7 @@ module.exports = {
                                                     // sell (matched buy order)
                                                     // cash received = price per share * shares sold
                                                     } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[2])));
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
                                                     }
                                                 }
                                             }
@@ -184,7 +184,7 @@ module.exports = {
                                     }
                                     cb({
                                         hash: txHash,
-                                        unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                        unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
                                         unmatchedShares: abi.unfix(result.callReturn[2], "string"),
                                         sharesBought: abi.string(sharesBought),
                                         cashFromTrade: abi.string(cashFromTrade),
@@ -283,8 +283,8 @@ module.exports = {
                                         for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                                             if (logs[i].topics[0] === sig) {
                                                 logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[8]).times(abi.unfix(logdata[1])));
+                                                if (logdata && logdata.constructor === Array && logdata.length > 8) {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
                                                     tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
                                                 }
                                             }
@@ -293,9 +293,9 @@ module.exports = {
                                     cb({
                                         hash: txHash,
                                         unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                                        matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                        matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
                                         cashFromTrade: abi.string(cashFromTrade),
-                                        price: abi.unfix(result.callReturn[3], "string"),
+                                        price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
                                         tradingFees: abi.string(tradingFees),
                                         gasFees: result.gasFees,
                                         timestamp: result.timestamp

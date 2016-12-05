@@ -200,8 +200,9 @@ module.exports = {
                 callback: function (storedReportHash) {
                     if (parseInt(storedReportHash, 16)) {
                         res.callReturn = "1";
+                        return onSuccess(res);
                     }
-                    onSuccess(res);
+                    onFailed({"-2": "not in first half of period (commit phase)"});
                 }
             });
         }, onFailed);

@@ -58,7 +58,7 @@ describe("Reporting sequence", function () {
             password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
             unlockable = augur.rpc.accounts();
             description = madlibs.adjective() + " " + madlibs.noun();
-            periodLength = 1200;
+            periodLength = 600;
             report = {
                 binary: 2,
                 categorical: 3,
@@ -106,13 +106,13 @@ describe("Reporting sequence", function () {
                                 if (DEBUG) console.log(chalk.white.dim("Events: "), events);
 
                                 // make a single trade in each new market
-                                var counterparty = (sender === unlockable[0]) ? unlockable[1] : unlockable[0];
-                                tools.trade_in_each_market(augur, 1, markets, sender, counterparty, password, function (err) {
-                                    assert.isNull(err, JSON.stringify(err));
+                                // var counterparty = (sender === unlockable[0]) ? unlockable[1] : unlockable[0];
+                                // tools.trade_in_each_market(augur, 1, markets, sender, counterparty, password, function (err) {
+                                //     assert.isNull(err, JSON.stringify(err));
 
                                     // wait until the period after the new events expire
                                     tools.wait_until_expiration(augur, events.binary, done);
-                                });
+                                // });
                             });
                         });
                     } else {
