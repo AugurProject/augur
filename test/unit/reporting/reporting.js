@@ -276,6 +276,7 @@ describe("penaltyCatchUp", function () {
         var getCurrentPeriod = augur.getCurrentPeriod;
         var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
         var closeExtraMarkets = augur.closeExtraMarkets;
+        var getDescription = augur.getDescription;
         after(function () {
             augur.getEvents = getEvents;
             augur.getPenalizedUpTo = getPenalizedUpTo;
@@ -290,6 +291,7 @@ describe("penaltyCatchUp", function () {
             augur.getCurrentPeriod = getCurrentPeriod;
             augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
             augur.closeExtraMarkets = closeExtraMarkets;
+            augur.getDescription = getDescription;
         });
         it(t.description, function (done) {
             var sequence = [];
@@ -378,12 +380,15 @@ describe("penaltyCatchUp", function () {
                 }
                 o.onSuccess({callReturn: "1"});
             };
-            augur.closeExtraMarkets = function (branch, event, sender, callback) {
+            augur.closeExtraMarkets = function (branch, event, description, sender, callback) {
                 sequence.push({
                     method: "closeExtraMarkets",
                     params: [branch, event, sender]
                 });
                 callback(null, state.markets[event]);
+            };
+            augur.getDescription = function (id, callback) {
+                callback('description');
             };
             augur.penaltyCatchUp(t.params.branchID, t.params.periodLength, t.params.periodToCheck, t.params.sender, function (err) {
                 assert.isNull(err);
@@ -539,9 +544,6 @@ describe("penaltyCatchUp", function () {
                 method: "getFeesCollected",
                 params: ["0xb1", "0xb0b", 6]
             }, {
-                method: "getNumReportsActual",
-                params: ["0xb1", 7, "0xb0b"]
-            }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
             }, {
@@ -667,9 +669,6 @@ describe("penaltyCatchUp", function () {
                 method: "getFeesCollected",
                 params: ["0xb1", "0xb0b", 6]
             }, {
-                method: "getNumReportsActual",
-                params: ["0xb1", 7, "0xb0b"]
-            }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
             }, {
@@ -767,12 +766,6 @@ describe("penaltyCatchUp", function () {
             assert.deepEqual(sequence, [{
                 method: "getPenalizedUpTo",
                 params: ["0xb1", "0xb0b"]
-            }, {
-                method: "getFeesCollected",
-                params: ["0xb1", "0xb0b", 6]
-            }, {
-                method: "getNumReportsActual",
-                params: ["0xb1", 7, "0xb0b"]
             }, {
                 method: "penalizationCatchup",
                 params: {
