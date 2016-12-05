@@ -25,6 +25,7 @@ core=0
 create=0
 reporting=0
 trading=0
+markets=0
 
 for arg in "$@"; do
     shift
@@ -34,6 +35,7 @@ for arg in "$@"; do
         "--create") set -- "$@" "-r" ;;
         "--reporting") set -- "$@" "-s" ;;
         "--trading") set -- "$@" "-l" ;;
+				"--markets") set -- "$@" "-m" ;;
         "--spec") set -- "$@" "-k" ;;
         *) set -- "$@" "$arg"
     esac
@@ -47,6 +49,7 @@ while getopts "gvocrmslk" opt; do
         r) create=1 ;;
         s) reporting=1 ;;
         l) trading=1 ;;
+				m) markets=1 ;;
         k) reporter="spec" ;;
     esac
 done
@@ -60,5 +63,6 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${core}" == "1" ] && runtest "core"
 [ "${trading}" == "1" ] && runtest "trading"
 [ "${reporting}" == "1" ] && runtest "reporting"
+[ "${markets}" == "1" ] && runtest "markets"
 
 echo
