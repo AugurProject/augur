@@ -20,7 +20,7 @@ export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
 		const { loginAccount } = getState();
 		dispatch(updateAssets(cb));
-		AugurJS.augur.getRegisterBlockNumber(loginAccount.id, (err, blockNumber) => {
+		AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
 			if (!err && blockNumber) {
 				loginAccount.registerBlockNumber = blockNumber;
 				dispatch(updateLoginAccount(loginAccount));
@@ -106,12 +106,12 @@ export function loadLoginAccount() {
 				}
 			}
 
-			if (!localLoginAccount || !localLoginAccount.id) {
+			if (!localLoginAccount || !localLoginAccount.address) {
 				return;
 			}
 			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
+			dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
 			return;

@@ -12,7 +12,7 @@ export function refreshMarket(marketID) {
 		if (getState().marketsData[marketID]) {
 			dispatch(loadMarketsInfo([marketID], () => {
 				dispatch(loadBidsAsks(marketID));
-				if (getState().loginAccount.id) {
+				if (getState().loginAccount.address) {
 					dispatch(loadAccountTrades(marketID));
 				}
 			}));
@@ -26,6 +26,7 @@ export function listenToUpdates() {
 
 			// block arrivals
 			block: (blockHash) => {
+				// console.log('block:', blockHash);
 				dispatch(updateAssets());
 				dispatch(syncBlockchain());
 				dispatch(syncBranch());

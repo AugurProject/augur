@@ -17,6 +17,9 @@ export function updateExistingTransaction(transactionID, newTransactionData) {
 		} else {
 			newTransactionData.timestamp = formatDate(new Date());
 		}
+		if (newTransactionData.message) {
+			newTransactionData.disableAutoMessage = true;
+		}
 
 		dispatch(updateTransactionsData({ [transactionID]: newTransactionData }));
 		dispatch(updateAssets());

@@ -107,9 +107,9 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		};
 
 		// trade actions
-		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
+		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
 			const market = selectMarket(marketID);
-			augur.getParticipantSharesPurchased(marketID, loginAccount.id, outcomeID, (sharesPurchased) => {
+			augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
 				if (!sharesPurchased || sharesPurchased.error) {
 					console.error('getParticipantSharesPurchased:', sharesPurchased);
 					return dispatch({
@@ -127,7 +127,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.limitPrice,
 					market && market.takerFee || 0,
 					market && market.makerFee || 0,
-					loginAccount.id,
+					loginAccount.address,
 					position && position.toFixed(),
 					outcomeID,
 					market.cumulativeScale,

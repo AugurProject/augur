@@ -5,6 +5,7 @@ import {
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
+import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
@@ -19,12 +20,11 @@ export function login(secureLoginID, password, rememberMe) {
 			}
 			const loginAccount = {
 				...account,
-				id: account.address,
 				loginID: account.loginID || account.secureLoginID,
 				settings: {},
 				onUpdateAccountSettings: (settings) => dispatch(updateAccountSettings(settings))
 			};
-			if (!loginAccount || !loginAccount.id) {
+			if (!loginAccount || !loginAccount.address) {
 				return;
 			}
 			if (rememberMe && localStorageRef && localStorageRef.setItem) {
@@ -37,9 +37,16 @@ export function login(secureLoginID, password, rememberMe) {
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
+			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents());
+			dispatch(loadLoginAccountDependents((err, balances) => {
+				if (err || !balances) {
+					return console.error('loadLoginAccountDependents:', err);
+				}
+				if (balances.ether === '0') {
+					dispatch(addFundNewAccount(loginAccount.address));
+				}
+			}));
 
 			// need to load selectors here as they get updated above
 			const { links } = require('../../../selectors');

@@ -5,8 +5,8 @@ export function postChatMessage(roomName, message) {
 		const { loginAccount } = getState();
 		let senderAddress;
 		let senderName;
-		if (loginAccount.id) {
-			senderAddress = loginAccount.id;
+		if (loginAccount.address) {
+			senderAddress = loginAccount.address;
 			senderName = loginAccount.name || '';
 		} else {
 			senderAddress = '0x0';

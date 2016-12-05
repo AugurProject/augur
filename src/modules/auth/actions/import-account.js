@@ -12,7 +12,10 @@ export function importAccount(name, password, rememberMe, keystore) {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 		try {
 			augur.web.importAccount(name, password, keystore, (loginAccount) => {
-				const importedAccount = { ...loginAccount, id: loginAccount.address, loginID: loginAccount.loginID || loginAccount.secureLoginID };
+				const importedAccount = {
+					...loginAccount,
+					loginID: loginAccount.loginID || loginAccount.secureLoginID
+				};
 				if (!importedAccount || !importedAccount.keystore) {
 					return;
 				}
@@ -23,7 +26,7 @@ export function importAccount(name, password, rememberMe, keystore) {
 					}
 					localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 				}
-				dispatch(loadLoginAccountLocalStorage(importedAccount.id));
+				dispatch(loadLoginAccountLocalStorage(importedAccount.address));
 				dispatch(updateLoginAccount(importedAccount));
 				dispatch(loadLoginAccountDependents());
 				if (links && links.marketsLink)	{

@@ -38,3 +38,6 @@ build/Release
 # IDEs
 .idea
 *.iml
+
+# yarn lock file
+yarn.lock

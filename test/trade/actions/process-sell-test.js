@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateSellTradeIDs } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-sell.js', () => {
@@ -355,15 +355,15 @@ describe('modules/trade/actions/process-sell.js', () => {
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
-		args[1]();
-		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockAddShortAskTransaction = { addShortAskTransaction: () => {} };
 	sinon.stub(mockAddShortAskTransaction, 'addShortAskTransaction', stubAddShortAskTransaction);
 
 	const mockAddShortSellTransaction = { addShortSellTransaction: () => {} };
 	sinon.stub(mockAddShortSellTransaction, 'addShortSellTransaction', stubAddShortSellTransaction);
+
+	const mockCalculateTradeIDs = { calculateSellTradeIDs: () => {} };
+	sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
 
 	const mockAugur = { augur: { getParticipantSharesPurchased: () => {} } };
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
@@ -395,7 +395,8 @@ describe('modules/trade/actions/process-sell.js', () => {
 		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction,
 		'../../transactions/actions/add-ask-transaction': mockAddAskTransaction,
 		'../../transactions/actions/add-short-sell-transaction': mockAddShortSellTransaction,
-		'../../transactions/actions/add-short-ask-transaction': mockAddShortAskTransaction
+		'../../transactions/actions/add-short-ask-transaction': mockAddShortAskTransaction,
+		'../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs
 	});
 
 	beforeEach(() => {

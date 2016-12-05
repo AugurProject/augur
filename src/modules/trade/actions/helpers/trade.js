@@ -22,7 +22,7 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 	let bnCashBalance = bnTotalEth;
 	async.until(() => {
 		matchingTradeIDs = getTradeIDs();
-		console.log('matchingTradeIDs:', matchingTradeIDs);
+		// console.log('matchingTradeIDs:', matchingTradeIDs);
 		console.log('remainingEth:', res.remainingEth.toFixed());
 		console.log('remainingShares:', res.remainingShares.toFixed());
 		console.log('sharesPurchased:', bnSharesPurchased.toFixed());

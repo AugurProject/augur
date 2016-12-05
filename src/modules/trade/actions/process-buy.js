@@ -34,7 +34,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
-		trade(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		trade(marketID, outcomeID, 0, totalEthWithFee, loginAccount.address, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.address),
 			dispatch,
 			(res) => {
 				const update = { status: `${res.status} buy` };

@@ -12,10 +12,18 @@ import { addShortAskTransaction } from '../../transactions/actions/add-short-ask
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
+		if (!transactionID) return console.error('processShortSell failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 		if (!limitPrice || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: `invalid limit price "${limitPrice}" or shares "${numShares}"`
+			}));
+		}
+		if (!marketID || !outcomeID || !totalEthWithFee || !tradingFeesEth || !gasFeesRealEth) {
+			console.error('processShortSell failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED,
+				message: 'There was an issue processesing the Short Sell trade.'
 			}));
 		}
 		let filledEth = ZERO;
@@ -28,7 +36,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 			gasFees: formatRealEtherEstimate(gasFeesRealEth)
 		}));
 		const { loginAccount } = getState();
-		shortSell(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		shortSell(marketID, outcomeID, numShares, loginAccount.address, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.address),
 			(data) => {
 				const update = { status: `${data.status} short sell...` };
 				if (data.hash) update.hash = data.hash;

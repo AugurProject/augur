@@ -34,7 +34,6 @@ describe(`modules/auth/actions/login.js`, () => {
 
 	fakeAugurJS.augur.web.login = sinon.stub().yields({
 		address: 'test',
-		id: 'test',
 		handle: 'test',
 		ether: 0,
 		realEther: 0,

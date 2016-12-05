@@ -9,7 +9,7 @@ export default function (outcomes) {
 }
 
 const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) => {
-	if (loginAccount.id == null) {
+	if (loginAccount.address == null) {
 		return null;
 	}
 

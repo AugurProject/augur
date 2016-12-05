@@ -8,7 +8,7 @@ import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positi
 export function loadAccountTrades(marketID, cb) {
 	return (dispatch, getState) => {
 		const { loginAccount } = getState();
-		const account = loginAccount.id;
+		const account = loginAccount.address;
 		if (account) {
 			const options = { market: marketID };
 			if (loginAccount.registerBlockNumber) {

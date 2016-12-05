@@ -23,7 +23,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const thisTestState = Object.assign({}, testState, { loginAccount: {} });
 	const store = mockStore(thisTestState);
 	fakeAugurJS.loadLoginAccount = (env, cb) => {
-		cb(null, { id: 123456789 });
+		cb(null, { address: 123456789 });
 	};
 	fakeAugurJS.augur.batchGetMarketInfo = (marketIDs, account, cb) => {
 		cb(null);
@@ -71,7 +71,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 
 		const expectedOutput = [{
 			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { id: 123456789 }
+			data: { address: 123456789 }
 		}, {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: { ether: 500 }

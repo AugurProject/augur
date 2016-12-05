@@ -27,7 +27,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders-summary.js`, () =>
 	it(`should return summary for user`, () => {
 		const state = {
 			loginAccount: {
-				id: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
+				address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
 			}
 		};
 		const store = mockStore(state);

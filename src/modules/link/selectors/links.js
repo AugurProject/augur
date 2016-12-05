@@ -22,7 +22,7 @@ export default function () {
 	const { keywords, selectedFilterSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
 	const { market } = require('../../../selectors');
 	return {
-		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
+		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
 		marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, store.dispatch),
 		favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, store.dispatch),
@@ -34,7 +34,7 @@ export default function () {
 		myPositionsLink: selectMyPositionsLink(store.dispatch),
 		myMarketsLink: selectMyMarketsLink(store.dispatch),
 		myReportsLink: selectMyReportsLink(store.dispatch),
-		loginMessageLink: selectLoginMessageLink(loginAccount.id, loginMessage.version, store.dispatch)
+		loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch)
 	};
 
 	// NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.

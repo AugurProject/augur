@@ -1,4 +1,5 @@
 import { describe, it } from 'mocha';
+import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -16,27 +17,50 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			const AugurJS = {
 				augur: {
 					claimMarketsProceeds: () => {}
+				},
+				abi: {
+					bignum: () => {}
 				}
 			};
-			const ListenToUpdates = {
-				refreshMarket: () => {}
+			const LoadMarketsInfo = {
+				loadMarketsInfo: () => {}
 			};
+			const LoadBidsAsks = {
+				loadBidsAsks: () => {}
+			};
+			const LoadAccountTrades = {
+				loadAccountTrades: () => {}
+			};
+			const UpdateExistingTransaction = {};
 			const Selectors = t.selectors;
 			const UpdateAssets = {};
 			const action = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
 				'../../../services/augurjs': AugurJS,
-				'../../app/actions/listen-to-updates': ListenToUpdates,
 				'../../../selectors': Selectors,
-				'../../auth/actions/update-assets': UpdateAssets
+				'../../bids-asks/actions/load-bids-asks': LoadBidsAsks,
+				'../../markets/actions/load-markets-info': LoadMarketsInfo,
+				'../../auth/actions/update-assets': UpdateAssets,
+				'../../transactions/actions/update-existing-transaction': UpdateExistingTransaction
 			});
-			sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, marketIDs, cb) => {
-				cb(null, marketIDs);
+			sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, markets, cb) => {
+				store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
+				cb(null, markets);
 			});
-			sinon.stub(ListenToUpdates, 'refreshMarket', (marketID) => ({
-				type: 'REFRESH_MARKET',
-				marketID
-			}));
+			sinon.stub(AugurJS.abi, 'bignum', (n) => new BigNumber(n, 10));
+			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
+				cb(null);
+			});
+			sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+				cb(null);
+			});
+			sinon.stub(LoadBidsAsks, 'loadBidsAsks', (marketID, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+				cb(null);
+			});
 			UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
+			UpdateExistingTransaction.updateExistingTransaction = sinon.stub().returns({ type: 'UPDATE_EXISTING_TRANSACTION' });
 			store.dispatch(action.claimProceeds());
 			t.assertions(store.getActions());
 			store.clearActions();
@@ -67,6 +91,13 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			outcomesData: {
+				'0xa1': {
+					2: {
+						sharesPurchased: 1
+					}
+				}
 			}
 		},
 		selectors: {
@@ -74,17 +105,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				positions: {
 					markets: [{
 						id: '0xa1',
-						isOpen: false
+						isOpen: false,
+						description: 'test market 1',
+						reportedOutcome: '2'
 					}]
 				}
 			}
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_ASSETS'
+				type: 'CLAIM_MARKETS_PROCEEDS',
+				markets: [{
+					id: '0xa1',
+					description: 'test market 1',
+					shares: 1
+				}]
 			}, {
-				type: 'REFRESH_MARKET',
-				marketID: '0xa1'
+				type: 'UPDATE_ASSETS'
 			}]);
 		}
 	});
@@ -116,6 +153,18 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			outcomesData: {
+				'0xa1': {
+					2: {
+						sharesPurchased: 1
+					}
+				},
+				'0xa2': {
+					2: {
+						sharesPurchased: 1
+					}
+				}
 			}
 		},
 		selectors: {
@@ -126,17 +175,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 						isOpen: true
 					}, {
 						id: '0xa2',
-						isOpen: false
+						isOpen: false,
+						description: 'test market 2',
+						reportedOutcome: '2'
 					}]
 				}
 			}
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_ASSETS'
+				type: 'CLAIM_MARKETS_PROCEEDS',
+				markets: [{
+					id: '0xa2',
+					description: 'test market 2',
+					shares: 1
+				}]
 			}, {
-				type: 'REFRESH_MARKET',
-				marketID: '0xa2'
+				type: 'UPDATE_ASSETS'
 			}]);
 		}
 	});
@@ -146,6 +201,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			outcomesData: {
+				'0xa1': {
+					2: {
+						sharesPurchased: 1
+					}
+				},
+				'0xa2': {
+					2: {
+						sharesPurchased: 1
+					}
+				},
+				'0xa3': {
+					2: {
+						sharesPurchased: 1
+					}
+				}
 			}
 		},
 		selectors: {
@@ -156,23 +228,32 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 						isOpen: true
 					}, {
 						id: '0xa2',
-						isOpen: false
+						isOpen: false,
+						description: 'test market 2',
+						reportedOutcome: '2'
 					}, {
 						id: '0xa3',
-						isOpen: false
+						isOpen: false,
+						description: 'test market 3',
+						reportedOutcome: '2'
 					}]
 				}
 			}
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
+				type: 'CLAIM_MARKETS_PROCEEDS',
+				markets: [{
+					id: '0xa2',
+					description: 'test market 2',
+					shares: 1
+				}, {
+					id: '0xa3',
+					description: 'test market 3',
+					shares: 1
+				}]
+			}, {
 				type: 'UPDATE_ASSETS'
-			}, {
-				type: 'REFRESH_MARKET',
-				marketID: '0xa2'
-			}, {
-				type: 'REFRESH_MARKET',
-				marketID: '0xa3'
 			}]);
 		}
 	});
@@ -182,6 +263,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			outcomesData: {
+				'0xa1': {
+					2: {
+						sharesPurchased: 1
+					}
+				},
+				'0xa2': {
+					2: {
+						sharesPurchased: 1
+					}
+				},
+				'0xa3': {
+					2: {
+						sharesPurchased: 1
+					}
+				}
 			}
 		},
 		selectors: {
@@ -195,17 +293,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 						isOpen: true
 					}, {
 						id: '0xa3',
-						isOpen: false
+						isOpen: false,
+						description: 'test market 3',
+						reportedOutcome: '2'
 					}]
 				}
 			}
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
-				type: 'UPDATE_ASSETS'
+				type: 'CLAIM_MARKETS_PROCEEDS',
+				markets: [{
+					id: '0xa3',
+					description: 'test market 3',
+					shares: 1
+				}]
 			}, {
-				type: 'REFRESH_MARKET',
-				marketID: '0xa3'
+				type: 'UPDATE_ASSETS'
 			}]);
 		}
 	});

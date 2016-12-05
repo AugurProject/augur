@@ -27,7 +27,6 @@ describe(`modules/auth/actions/register.js`, () => {
 	fakeAugurJS.augur.web.register = (name, psswrd, cb) => {
 		cb({
 			address: 'test',
-			id: 'test',
 			secureLoginID: 'testid',
 			name,
 			ether: 0,

@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction } from '../constants';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from '../constants';
 import { abi } from '../../../src/services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
@@ -77,14 +77,14 @@ describe('modules/trade/actions/process-buy.js', () => {
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
 	sinon.stub(mockAddBidTransaction, 'addBidTransaction', stubAddBidTransaction);
 
+	const mockCalculateTradeIDs = { calculateBuyTradeIDs: () => {} };
+	sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
+
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
 	const mockLoadAccountTrades = { loadAccountTrades: () => {} };
-	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', (...args) => {
-		args[1]();
-		return { type: 'LOAD_ACCOUNT_TRADES', marketID: args[0] };
-	});
+	sinon.stub(mockLoadAccountTrades, 'loadAccountTrades', stubLoadAccountTrades);
 	const mockLoadBidAsks = { loadBidsAsks: () => {} };
 	sinon.stub(mockLoadBidAsks, 'loadBidsAsks', (marketID, cb) => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
@@ -97,7 +97,8 @@ describe('modules/trade/actions/process-buy.js', () => {
 		'../../transactions/actions/add-bid-transaction': mockAddBidTransaction,
 		'../../../modules/my-positions/actions/load-account-trades': mockLoadAccountTrades,
 		'../../transactions/actions/update-existing-transaction': mockUpdateExisitngTransaction,
-		'../../bids-asks/actions/load-bids-asks': mockLoadBidAsks
+		'../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
+		'../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs
 	});
 
 	beforeEach(() => {

@@ -29,15 +29,15 @@ export default function (outcomeId, marketOrderBook) {
  * @return {Array}
  */
 const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
-	const isUserLoggedIn = loginAccount.id != null;
+	const isUserLoggedIn = loginAccount.address != null;
 
 	if (!isUserLoggedIn || marketOrderBook == null) {
 		return [];
 	}
 
-	const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.id, orderCancellation);
+	const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.address, orderCancellation);
 
-	const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.id, orderCancellation);
+	const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.address, orderCancellation);
 
 	return userAsks.concat(userBids);
 });

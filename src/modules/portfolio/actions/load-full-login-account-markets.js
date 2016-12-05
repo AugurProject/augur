@@ -5,7 +5,7 @@ export function loadFullLoginAccountMarkets() {
 	return dispatch => {
 		const { allMarkets, loginAccount } = require('../../../selectors');
 
-		allMarkets.filter(market => market.author === loginAccount.id).forEach(market => {
+		allMarkets.filter(market => market.author === loginAccount.address).forEach(market => {
 			dispatch(loadFullMarket(market.id));
 			dispatch(loadMarketCreatorFees(market.id));
 		});

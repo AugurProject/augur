@@ -14,7 +14,7 @@ import { augur, abi, constants } from '../../../../services/augurjs';
  * @param outcomeTradeInProgress {Object} used to bust memoizerific cache
  */
 export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress, scalarMinValue) => {
-	if (loginAccount.id == null) {
+	if (loginAccount.address == null) {
 		return null;
 	}
 	const userEther = loginAccount.ether != null ? new BigNumber(loginAccount.ether, 10) : ZERO;

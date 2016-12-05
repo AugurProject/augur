@@ -22,18 +22,17 @@ const localStorageMiddleware = store => next => action => {
 	next(action);
 	const state = store.getState();
 
-	if (!state || !state.loginAccount || !state.loginAccount.id) {
+	if (!state || !state.loginAccount || !state.loginAccount.address) {
 		return;
 	}
 
 	if (windowRef.localStorage && windowRef.localStorage.setItem) {
-		windowRef.localStorage.setItem(state.loginAccount.id, JSON.stringify({
+		windowRef.localStorage.setItem(state.loginAccount.address, JSON.stringify({
 			scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
 			favorites: state.favorites,
 			transactionsData: state.transactionsData,
-			accountTrades: state.accountTrades,
-			reports: state.reports,
 			settings: state.settings,
+			reports: state.reports,
 			loginMessageVersionRead: state.loginMessage.userVersionRead
 		}));
 	}
