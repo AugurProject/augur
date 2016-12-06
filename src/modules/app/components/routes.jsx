@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-import MarketsView from 'modules/markets/components/markets-view';
+// import MarketsView from 'modules/markets/components/markets-view';
+// const MarketsView = System.import('modules/markets/components/markets-view').then(module => module.default);
+
+// console.log('MarketsView -- ', MarketsView);
+
 import MarketView from 'modules/market/components/market-view';
 import CreateMarketView from 'modules/create-market/components/create-market-view';
 import AuthView from 'modules/auth/components/auth-view';
@@ -26,6 +30,7 @@ export default class Routes extends Component {
 
 		this.shouldComponentUpdate = shouldComponentUpdateOnStateChangeOnly;
 		this.handleRouting = this.handleRouting.bind(this);
+
 	}
 
 	componentWillMount() {
@@ -130,7 +135,19 @@ export default class Routes extends Component {
 					branch: p.branch,
 					scalarShareDenomination: p.scalarShareDenomination,
 				};
-				viewComponent = <MarketsView {...viewProps} />;
+				System.import('modules/markets/components/markets-view').then((module) => {
+					const MarketsView = module.default;
+					viewComponent = <MarketsView {...viewProps} />;
+
+					this.setState({ viewProps, viewComponent });
+				});
+				// require.ensure([], (require) => {
+				// 	const MarketsView = require('modules/markets/components/markets-view');
+				//
+				// 	viewComponent = <MarketsView {...viewProps} />;
+				// }, 'MarketsView');
+
+				// viewComponent = <MarketsView {...viewProps} />;
 			}
 		}
 
@@ -139,8 +156,6 @@ export default class Routes extends Component {
 		} else {
 			p.setSidebarAllowed(false);
 		}
-
-		this.setState({ viewProps, viewComponent });
 	}
 
 	render() {
