@@ -17,8 +17,6 @@ export default class App extends Component {
 	constructor(props) {
 		super(props);
 
-		console.log('App -- ', props);
-
 		this.state = {
 			isSideBarAllowed: false,
 			isSideBarCollapsed: false,

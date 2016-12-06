@@ -79,8 +79,7 @@
     "react-tooltip": "^3.2.2",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1",
-    "webpack-dev-middleware": "^1.8.4"
+    "secure-random": "1.1.1"
   },
   "devDependencies": {
     "aliasify": "^2.0.0",
@@ -112,10 +111,11 @@
     "eslint-plugin-jsx-a11y": "1.5.5",
     "eslint-plugin-react": "5.2.2",
     "exorcist": "0.4.0",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "2.0.0-beta.4",
     "firebase-tools": "3.0.6",
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
+    "import-glob-loader": "^1.1.0",
     "inline-source-cli": "1.1.1",
     "is-dev": "^0.1.4",
     "istanbul": "1.0.0-alpha.2",
@@ -145,6 +145,7 @@
     "uglify-js": "2.7.0",
     "watchify": "3.7.0",
     "webpack": "^2.1.0-beta.27",
+    "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2"
   },
   "browserify": {

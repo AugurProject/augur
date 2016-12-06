@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
 	entry: {
@@ -10,6 +11,7 @@ module.exports = {
 			'webpack-hot-middleware/client',
 			'./src/main'
 		],
+		styles: './src/styles',
 		vendor: [
 			'react',
 			'react-dom',
@@ -37,7 +39,7 @@ module.exports = {
 			},
 			{
 				test: /\.less/,
-				loaders: ['style-loader', 'css-loader', 'less-loader']
+				loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!less-loader!import-glob-loader' })
 			},
 			{
 				test: /\.woff/,
@@ -86,6 +88,7 @@ module.exports = {
 				to: path.resolve(__dirname, 'build/assets/images')
 			}
 		]),
+		new ExtractTextPlugin('[name].css'),
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, 'src/index.pug')
 		})
