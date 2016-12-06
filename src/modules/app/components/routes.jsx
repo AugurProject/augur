@@ -1,24 +1,13 @@
 import React, { Component } from 'react';
 
-// import MarketsView from 'modules/markets/components/markets-view';
-// const MarketsView = System.import('modules/markets/components/markets-view').then(module => module.default);
-
-// console.log('MarketsView -- ', MarketsView);
-
-import MarketView from 'modules/market/components/market-view';
-import CreateMarketView from 'modules/create-market/components/create-market-view';
-import AuthView from 'modules/auth/components/auth-view';
-import AccountView from 'modules/account/components/account-view';
-import PortfolioView from 'modules/portfolio/components/portfolio-view';
-import TransactionsView from 'modules/transactions/components/transactions-view';
-import LoginMessageView from 'modules/login-message/components/login-message-view';
-
 import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/app/constants/views';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
+// NOTE -- 	the respective routes are imported within the switch statement so that
+//					webpack can properly code split the views
 export default class Routes extends Component {
 	constructor(props) {
 		super(props);
@@ -53,7 +42,11 @@ export default class Routes extends Component {
 				viewProps = {
 					authForm: p.authForm
 				};
-				viewComponent = <AuthView {...viewProps} />;
+				System.import('modules/auth/components/auth-view').then((module) => {
+					const AuthView = module.default;
+					viewComponent = <AuthView {...viewProps} />;
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			case ACCOUNT:
 				viewProps = {
@@ -65,14 +58,22 @@ export default class Routes extends Component {
 					authLink: (p.links && p.links.authLink) || null,
 					onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
 				};
-				viewComponent = <AccountView {...viewProps} />;
+				System.import('modules/account/components/account-view').then((module) => {
+					const AccountView = module.default;
+					viewComponent = <AccountView {...viewProps} />;
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			case TRANSACTIONS:
 				viewProps = {
 					transactions: p.transactions,
 					transactionsTotals: p.transactionsTotals
 				};
-				viewComponent =	<TransactionsView {...viewProps} />;
+				System.import('modules/transactions/components/transactions-view').then((module) => {
+					const TransactionsView = module.default;
+					viewComponent =	<TransactionsView {...viewProps} />;
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			case MY_POSITIONS:
 			case MY_MARKETS:
@@ -83,14 +84,22 @@ export default class Routes extends Component {
 					branch: p.branch,
 					...p.portfolio
 				};
-				viewComponent = <PortfolioView {...viewProps} />;
+				System.import('modules/portfolio/components/portfolio-view').then((module) => {
+					const PortfolioView = module.default;
+					viewComponent = <PortfolioView {...viewProps} />;
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			}
 			case LOGIN_MESSAGE: {
 				viewProps = {
 					marketsLink: (p.links && p.links.marketsLink) || null
 				};
-				viewComponent = <LoginMessageView {...viewProps} />;
+				System.import('modules/login-message/components/login-message-view').then((module) => {
+					const LoginMessageView = module.default;
+					viewComponent = <LoginMessageView {...viewProps} />;
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			}
 			case MAKE: {
@@ -98,7 +107,12 @@ export default class Routes extends Component {
 					createMarketForm: p.createMarketForm,
 					scalarShareDenomination: p.scalarShareDenomination
 				};
-				viewComponent = <CreateMarketView {...viewProps} />;
+				System.import('modules/create-market/components/create-market-view').then((module) => {
+					const CreateMarketView = module.default;
+					viewComponent = <CreateMarketView {...viewProps} />;
+
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			}
 			case M: {
@@ -118,7 +132,12 @@ export default class Routes extends Component {
 					marketReportingNavItems: p.marketReportingNavItems,
 					outcomeTradeNavItems: p.outcomeTradeNavItems
 				};
-				viewComponent = <MarketView {...viewProps} />;
+				System.import('modules/market/components/market-view').then((module) => {
+					const MarketView = module.default;
+					viewComponent = <MarketView {...viewProps} />;
+
+					this.setState({ viewProps, viewComponent });
+				});
 				break;
 			}
 			default: {
@@ -141,13 +160,6 @@ export default class Routes extends Component {
 
 					this.setState({ viewProps, viewComponent });
 				});
-				// require.ensure([], (require) => {
-				// 	const MarketsView = require('modules/markets/components/markets-view');
-				//
-				// 	viewComponent = <MarketsView {...viewProps} />;
-				// }, 'MarketsView');
-
-				// viewComponent = <MarketsView {...viewProps} />;
 			}
 		}
 
