@@ -1,6 +1,9 @@
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
+require('./splash.less');
+require('./styles.less');
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
