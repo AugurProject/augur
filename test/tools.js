@@ -489,9 +489,10 @@ module.exports = {
                     onSent: function () {},
                     onSuccess: function (r) {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+                        var price = (type === "scalar") ? "12.3" : "0.7";
                         augur.sell({
                             amount: amountPerMarket,
-                            price: "0.7",
+                            price: price,
                             market: market,
                             outcome: 2,
                             onSent: function () {},

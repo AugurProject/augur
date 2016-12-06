@@ -21825,41 +21825,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x4040a0128dd4d2caf1c0f179cd6630c4b5179bfd", 
-        "Branches": "0x447056d6e233e2885443c89b89420aed92515a38", 
-        "BuyAndSellShares": "0xcacab392be7edc9c7028d5bce3cab60f8d9e8946", 
-        "Cash": "0xef6ae11aab9575e3ff0fd19acdff264c0caa85f1", 
-        "CloseMarket": "0xb618891f0aee18b4dfd39c2cb30ec5e48a348e1e", 
-        "CollectFees": "0x2eb52b2cc95b1c20f0e8605e7635d2721bb76f18", 
-        "CompleteSets": "0x9f7d3d82326bc79b1b29bea38ad55ee9394c50db", 
-        "CompositeGetters": "0x287d126ce2c72a444a1df2c856bbfd2138697033", 
-        "Consensus": "0x1632f4f84e60e946cef027abd5dadb87f29321d2", 
-        "ConsensusData": "0xbbaea0aae1beda816446627bbeb817737f7d17af", 
-        "CreateBranch": "0x79743ec62e5c08453c8748e117593237c191ad2f", 
-        "CreateMarket": "0x88c39904bdd4aca5a16673260371650d75dc3641", 
-        "EventResolution": "0xc8766127e48fa70bb34909e621d37b05c51c724b", 
-        "Events": "0x53e341764ccf4241b0161d6a6616f3288e8118df", 
-        "ExpiringEvents": "0x99e362f50dfd2838e58ac3b7e40d27e1c8be42e0", 
-        "Faucets": "0xc5bf0d08f19a50e367e85fef3492ec6cef05b255", 
-        "ForkPenalize": "0x5f49f66a5c0ae45cd3c2aa13afc99bbf1281d0db", 
-        "Forking": "0x4385b596c4ca6a5e7db98c4975065ddd00c5e898", 
-        "FxpFunctions": "0x48317cd39b03d7edac6fd1eb460be774bf9d5937", 
-        "Info": "0x2fe92607a6a7ee373e38861cfcb741ce0069ebc4", 
-        "MakeReports": "0xe5f48dedeb03ba4ae31091c3dfa6bbf227e2f5ad", 
-        "Markets": "0x1580844294a3c2907edc1d6a8e297cd76577702f", 
-        "Payout": "0xc045d16905f32dca8d0a0bfc3e193dcbf7a80abf", 
-        "PenalizationCatchup": "0x2b4883a95b37535f8e0bae5eaa1251c4c1a305a7", 
-        "PenalizeNotEnoughReports": "0xb092aa6c058fbb8232de0b53de8e6a910fbafaaa", 
-        "ProportionCorrect": "0x04c8986a8403c7a3493dbcf76145627e8fda7fcd", 
-        "Register": "0x4cd8d9da2cb81b3ed351d6245c9d164c22a9e466", 
-        "Reporting": "0xfe36f16af8ffde73ba7d1b10cc75a4417a0657f6", 
-        "ReportingThreshold": "0xe296a4d491580bdf482a99398b8e09768df46a18", 
-        "RoundTwo": "0xd8957bafe18f3bcbb3052c2d1f752ee9fa72e28a", 
-        "RoundTwoPenalize": "0xc363f18732228cb8dd895f4eec47a5a2d1b891a6", 
-        "SendReputation": "0xd4837c41d77811e25398c418bbc00d1943cc6cd4", 
-        "SlashRep": "0xbb7e9e8235a565c43aa8d9d163f47617273ea685", 
-        "Trade": "0xf567a01e48708984daae74b8558b157e37a2a275", 
-        "Trades": "0x18650080b5e9ce96b3fe03ae8bc5a01b8029bb78"
+        "Backstops": "0xef3d033131d68d76751312bc0fddef0dd93f7c58", 
+        "Branches": "0x72076d58f9dc3497dfd2651276203577f0b73ffd", 
+        "BuyAndSellShares": "0xf83a94aeb0e9c1759175747a07a0eaa3a66c8413", 
+        "Cash": "0x35aee3b08a76dc0720669abecd45e1522a9e371a", 
+        "CloseMarket": "0x3d2137f0381633fb0d67d3d4d51d34c0e45d61df", 
+        "CollectFees": "0x700ce2e391a468c77b1bcc12e1856a38f8a746a8", 
+        "CompleteSets": "0xd94e26c9a40dd8b6da51beefdb9bf75604253961", 
+        "CompositeGetters": "0x0487ba3f2ed9a8f1ffdb83a905928bf034522c27", 
+        "Consensus": "0x6bbadd9139a10cfe570ff8f76857203a45be8872", 
+        "ConsensusData": "0x59274e6b6c48af5ee765b243193903402cccbc92", 
+        "CreateBranch": "0x06910856a574cc0639424347162a220432ba81d0", 
+        "CreateMarket": "0x1e737ca17dd53bcc5049ea3da9cb7cd1cdbb38ea", 
+        "EventResolution": "0x2b6a64fd2f690d6a3bec6aee0cfcceb1009b1cf5", 
+        "Events": "0xc26a6b4b627e02d3f135d5170df0784e4b5fc90d", 
+        "ExpiringEvents": "0x59a4c3ef956c91698fb394ec64d5d061e7cd29e8", 
+        "Faucets": "0xe534ba5728c1424d5beedc94d79fb300293c5b4e", 
+        "ForkPenalize": "0x9e0a18659b2009dbcf18ddec9f8ba549abd12838", 
+        "Forking": "0x9767c778ba6bc37a36220c03b969036ba1911c1f", 
+        "FxpFunctions": "0xb835608ce2b9627c4716def7276da475f4149c8a", 
+        "Info": "0x528fd68e5de47dd67d58973bea1aa87863de6d98", 
+        "MakeReports": "0x071673f94931ddf91aeda55a323b247901312696", 
+        "Markets": "0xa8321eebdbc05d3cee6d33630e4ae0a7093ce8ad", 
+        "Payout": "0x220c7a35487d983a92568d3d3cc079cc2b3479b6", 
+        "PenalizationCatchup": "0x65849e17e67f6a1424bd823e81087b9b48667988", 
+        "PenalizeNotEnoughReports": "0xce437f4c9eec83e8d1f18e6ed9c6e6bdd6601dcf", 
+        "ProportionCorrect": "0x0847e1ef34cdef8f711aa33a2e970617ba0c6b59", 
+        "Register": "0x49c79589489986bc9f77d51f47d88a59d36056bc", 
+        "Reporting": "0xf3ec11337f7bcf4b1551824455b5688ba0bcbc52", 
+        "ReportingThreshold": "0xefee212e657ebcdd8cb674227cd7c388e2572e1b", 
+        "RoundTwo": "0xc0067acd61af75f27e8969db0ab1bcbf9bc0c925", 
+        "RoundTwoPenalize": "0x76da057d965a638d84329ebda4a62a15e2cf228d", 
+        "SendReputation": "0x3ca8fb47766eb834d154c8f0f473193a85db6e52", 
+        "SlashRep": "0xe0b8c389c45a220ec650e3d8cbf567dfabc5e1d0", 
+        "Trade": "0xfb8dad7dac521005a3eb6c91da9d10bbb28aa4d2", 
+        "Trades": "0x510f336f3f8d786e478e3f28740505c4ac2e7009"
     }, 
     "9000": {
         "Backstops": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
@@ -43347,7 +43347,7 @@ module.exports = function () {
             packaged.from = this.account.address;
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
-            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
+            packaged.gasLimit = payload.gasLimit || (augur.rpc.block && augur.rpc.block.gasLimit) || constants.DEFAULT_GAS;
             if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }
@@ -44410,7 +44410,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.3.0";
+    this.version = "3.3.1";
 
     this.options = {
         debug: {
@@ -45103,37 +45103,43 @@ module.exports = {
         tx.params = [branch, sender];
         var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
         tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            var prepare = function (res, cb) {
-                if (self.options.debug.reporting) {
-                    console.log("collectFees success:", JSON.stringify(res, null, 2));
-                }
-                if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                    return cb(res);
-                }
-                self.Branches.getVotePeriod(branch, function (period) {
-                    self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                        if (feesCollected !== "1") {
-                            res.callReturn = "2";
+        this.getVotePeriod(branch, function (period) {
+            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                console.log('fees collected:', branch, sender, period - 1, feesCollected);
+                if (feesCollected === "1") return onSuccess({callReturn: "2"});
+                self.rpc.getGasPrice(function (gasPrice) {
+                    tx.gasPrice = gasPrice;
+                    tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
+                    var prepare = function (res, cb) {
+                        if (self.options.debug.reporting) {
+                            console.log("collectFees success:", JSON.stringify(res, null, 2));
+                        }
+                        if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                             return cb(res);
                         }
-                        self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                            if (parseInt(afterRep, 10) <= 1) {
-                                res.callReturn = "2";
-                                return cb(res);
-                            }
-                            res.callReturn = "1";
-                            return cb(res);
+                        self.getVotePeriod(branch, function (period) {
+                            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                                if (feesCollected !== "1") {
+                                    res.callReturn = "2";
+                                    return cb(res);
+                                }
+                                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                                    if (parseInt(afterRep, 10) <= 1) {
+                                        res.callReturn = "2";
+                                        return cb(res);
+                                    }
+                                    res.callReturn = "1";
+                                    return cb(res);
+                                });
+                            });
                         });
-                    });
+                    };
+                    if (self.options.debug.reporting) {
+                        console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+                    }
+                    return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
                 });
-            };
-            if (self.options.debug.reporting) {
-                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            }
-            return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+            });
         });
     }
 };
@@ -49513,9 +49519,10 @@ module.exports = {
                     onSent: function () {},
                     onSuccess: function (r) {
                         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+                        var price = (type === "scalar") ? "12.3" : "0.7";
                         augur.sell({
                             amount: amountPerMarket,
-                            price: "0.7",
+                            price: price,
                             market: market,
                             outcome: 2,
                             onSent: function () {},
@@ -51291,9 +51298,9 @@ module.exports = {
             from: tx.from,
             to: tx.to,
             data: abi.encode(tx),
-            gas: tx.gas || this.DEFAULT_GAS
+            gas: tx.gas || (this.block && this.block.gasLimit) || this.DEFAULT_GAS,
+            gasPrice: tx.gasPrice || this.gasPrice
         };
-        if (tx.gasPrice) packaged.gasPrice = tx.gasPrice;
         if (tx.timeout) packaged.timeout = tx.timeout;
         if (tx.value) packaged.value = tx.value;
         if (tx.returns) packaged.returns = tx.returns;
