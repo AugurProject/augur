@@ -31,37 +31,43 @@ module.exports = {
         tx.params = [branch, sender];
         var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
         tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-            var prepare = function (res, cb) {
-                if (self.options.debug.reporting) {
-                    console.log("collectFees success:", JSON.stringify(res, null, 2));
-                }
-                if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                    return cb(res);
-                }
-                self.Branches.getVotePeriod(branch, function (period) {
-                    self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                        if (feesCollected !== "1") {
-                            res.callReturn = "2";
+        this.getVotePeriod(branch, function (period) {
+            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                console.log('fees collected:', branch, sender, period - 1, feesCollected);
+                if (feesCollected === "1") return onSuccess({callReturn: "2"});
+                self.rpc.getGasPrice(function (gasPrice) {
+                    tx.gasPrice = gasPrice;
+                    tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
+                    var prepare = function (res, cb) {
+                        if (self.options.debug.reporting) {
+                            console.log("collectFees success:", JSON.stringify(res, null, 2));
+                        }
+                        if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                             return cb(res);
                         }
-                        self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                            if (parseInt(afterRep, 10) <= 1) {
-                                res.callReturn = "2";
-                                return cb(res);
-                            }
-                            res.callReturn = "1";
-                            return cb(res);
+                        self.getVotePeriod(branch, function (period) {
+                            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                                if (feesCollected !== "1") {
+                                    res.callReturn = "2";
+                                    return cb(res);
+                                }
+                                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                                    if (parseInt(afterRep, 10) <= 1) {
+                                        res.callReturn = "2";
+                                        return cb(res);
+                                    }
+                                    res.callReturn = "1";
+                                    return cb(res);
+                                });
+                            });
                         });
-                    });
+                    };
+                    if (self.options.debug.reporting) {
+                        console.log("collectFees tx:", JSON.stringify(tx, null, 2));
+                    }
+                    return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
                 });
-            };
-            if (self.options.debug.reporting) {
-                console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-            }
-            return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+            });
         });
     }
 };
