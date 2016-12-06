@@ -66,6 +66,10 @@ module.exports = {
 		}),
 		new CopyWebpackPlugin([
 			{
+				from: path.resolve(__dirname, 'src/splash.css'),
+				to: path.resolve(__dirname, 'build')
+			},
+			{
 				from: path.resolve(__dirname, 'src/env.json'),
 				to: path.resolve(__dirname, 'build')
 			},

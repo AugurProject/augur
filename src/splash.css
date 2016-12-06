@@ -24,7 +24,7 @@ body,
 	animation-iteration-count: infinite;
 	animation-name: splash-anim;
 	animation-timing-function: cubic-bezier(0.11, 0.63, 0.25, 0.89);
-	background-image: url('/${build_folder}/assets/images/augur_logo_200_white.png');
+	background-image: url('/assets/images/augur_logo_200_white.png');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: contain;

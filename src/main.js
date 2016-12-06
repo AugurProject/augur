@@ -1,7 +1,6 @@
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
-require('./splash.less');
 require('./styles.less');
 
 import React from 'react';
