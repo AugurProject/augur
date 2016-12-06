@@ -32,11 +32,13 @@ export function claimProceeds() {
 							if (marketsWithPositions[i].type !== 'scalar' && outcomeIDs[j].toString() === marketsWithPositions[i].reportedOutcome && outcomeData.sharesPurchased && outcomeData.sharesPurchased !== '0') {
 								shares = outcomeData.sharesPurchased;
 							}
-							closedMarketsWithShares.push({
-								id: marketID,
-								description: marketsWithPositions[i].description,
-								shares
-							});
+							if (marketsWithPositions[i].type === 'scalar' || shares) {
+								closedMarketsWithShares.push({
+									id: marketID,
+									description: marketsWithPositions[i].description,
+									shares
+								});
+							}
 						}
 					}
 				}

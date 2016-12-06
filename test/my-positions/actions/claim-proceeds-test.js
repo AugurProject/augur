@@ -82,6 +82,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			}
 		},
 		selectors: {
@@ -101,6 +104,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			},
 			outcomesData: {
 				'0xa1': {
@@ -141,6 +147,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			}
 		},
 		selectors: {
@@ -163,6 +172,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			},
 			outcomesData: {
 				'0xa1': {
@@ -211,6 +223,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			},
 			outcomesData: {
 				'0xa1': {
@@ -273,6 +288,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			branch: {
 				id: '0xb1',
 				reportPeriod: 7
+			},
+			loginAccount: {
+				address: '0xb0b'
 			},
 			outcomesData: {
 				'0xa1': {
