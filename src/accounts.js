@@ -467,7 +467,7 @@ module.exports = function () {
             packaged.from = this.account.address;
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
-            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
+            packaged.gasLimit = payload.gasLimit || (augur.rpc.block && augur.rpc.block.gasLimit) || constants.DEFAULT_GAS;
             if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }
