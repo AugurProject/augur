@@ -11,6 +11,7 @@ const compiler = webpack(config);
 
 const PROD_HOST = 'app.augur.net';
 
+// static handlers
 app.use(express.static('build'));
 
 app.use(devMiddleware(compiler, {
@@ -25,9 +26,6 @@ app.use(hotMiddleware(compiler));
 app.use(helmet());
 app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));
 
-// static handlers
-// app.use(express.static('build'));
-
 // redirect production site to secure version
 app.get('*', (req, res, next) => {
 	// res.sendFile(path.resolve(__dirname, 'build/index.html'));
@@ -37,7 +35,6 @@ app.get('*', (req, res, next) => {
 		next();   // continue to other routes if we're not redirecting
 	}
 });
-
 
 app.get('/', (req, res) => {
 	console.log('loaded');
