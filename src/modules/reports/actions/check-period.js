@@ -51,41 +51,36 @@ export function checkPeriod(unlock, cb) {
 					return callback(err);
 				}
 				if (branch.isReportRevealPhase) {
-					if (!tracker.reportsRevealed) {
+					if (!tracker.feesCollected) {
+						tracker.feesCollected = true;
+						console.debug('collecting fees...');
+						dispatch(collectFees((err) => {
+							console.log('collectFees complete:', err);
+							tracker.checkPeriodLock = false;
+							if (err) {
+								tracker.feesCollected = false;
+								console.error('feesCollected:', err);
+							}
+							tracker.reportsRevealed = true;
+							dispatch(revealReports((err) => {
+								console.log('revealReports complete:', err);
+								if (err) {
+									tracker.reportsRevealed = false;
+									tracker.checkPeriodLock = false;
+									console.error('revealReports:', err);
+								}
+							}));
+						}));
+					} else if (!tracker.reportsRevealed) {
 						tracker.reportsRevealed = true;
 						dispatch(revealReports((err) => {
 							console.log('revealReports complete:', err);
 							if (err) {
 								tracker.reportsRevealed = false;
 								tracker.checkPeriodLock = false;
-								return console.error('revealReports:', err);
-							}
-							if (!tracker.feesCollected) {
-								tracker.feesCollected = true;
-								console.debug('collecting fees...');
-								dispatch(collectFees((err) => {
-									console.log('collectFees complete:', err);
-									tracker.checkPeriodLock = false;
-									if (err) {
-										tracker.reportsRevealed = false;
-										return console.error('revealReports:', err);
-									}
-								}));
+								console.error('revealReports:', err);
 							}
 						}));
-					} else {
-						if (!tracker.feesCollected) {
-							tracker.feesCollected = true;
-							console.debug('collecting fees...');
-							dispatch(collectFees((err) => {
-								console.log('collectFees complete:', err);
-								tracker.checkPeriodLock = false;
-								if (err) {
-									tracker.reportsRevealed = false;
-									return console.error('revealReports:', err);
-								}
-							}));
-						}
 					}
 				} else {
 					tracker.checkPeriodLock = false;
