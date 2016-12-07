@@ -76,6 +76,10 @@ let config = {
 				to: PATHS.BUILD
 			},
 			{
+				from: path.resolve(PATHS.APP, 'favicon.ico'),
+				to: PATHS.BUILD
+			},
+			{
 				from: path.resolve(PATHS.APP, 'assets/fonts'),
 				to: path.resolve(PATHS.BUILD, 'assets/fonts')
 			},
