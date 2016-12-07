@@ -47,7 +47,6 @@ let config = {
 			},
 			{
 				test: /\.jsx?/,
-				include: PATHS.APP,
 				loader: 'babel-loader'
 			},
 			{
