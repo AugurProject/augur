@@ -38,6 +38,7 @@ let config = {
 		loaders: [
 			{
 				test: /\.pug/,
+				include: PATHS.APP,
 				loader: 'pug-loader'
 			},
 			{
@@ -46,6 +47,7 @@ let config = {
 			},
 			{
 				test: /\.jsx?/,
+				include: PATHS.APP,
 				loader: 'babel-loader'
 			},
 			{
@@ -94,7 +96,12 @@ let config = {
 		]),
 		new HtmlWebpackPlugin({
 			template: path.resolve(PATHS.APP, 'index.pug')
-		})
+		}),
+		new webpack.DefinePlugin({
+			'process.env': {
+				NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+			},
+		}),
 	],
 	node: {
 		fs: 'empty',
@@ -117,6 +124,7 @@ if (process.env.NODE_ENV !== 'production') {
 			loaders: [
 				{
 					test: /\.less/,
+					include: PATHS.APP,
 					loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
 				}
 			]
@@ -139,6 +147,7 @@ if (process.env.NODE_ENV === 'production') {
 			loaders: [
 				{
 					test: /\.less/,
+					include: PATHS.APP,
 					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!postcss-loader!less-loader!import-glob-loader' })
 				}
 			]

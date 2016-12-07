@@ -1,12 +1,7 @@
-const webpack = require('webpack');
-const devMiddleware = require('webpack-dev-middleware');
-const hotMiddleware = require('webpack-hot-middleware');
-const config = require('./webpack.config');
 const express = require('express');
 const helmet = require('helmet');
 
 const app = express();
-const compiler = webpack(config);
 
 const PROD_HOST = 'app.augur.net';
 
@@ -15,6 +10,13 @@ app.use(express.static('build'));
 
 // development specific
 if (process.env.NODE_ENV === 'development') {
+	const webpack = require('webpack');
+	const devMiddleware = require('webpack-dev-middleware');
+	const hotMiddleware = require('webpack-hot-middleware');
+	const config = require('./webpack.config');
+
+	const compiler = webpack(config);
+
 	// Hot Module Reload
 	app.use(devMiddleware(compiler, {
 		publicPath: config.output.publicPath,
