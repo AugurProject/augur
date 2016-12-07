@@ -16,7 +16,7 @@ describe('modules/reports/actions/collect-fees.js', () => {
 	const mockUpdateAssets = {};
 
 	sinon.stub(mockAugurJS.augur, 'collectFees', (o) => {
-		o.onSuccess({ callReturn: 1 });
+		o.onSuccess({ callReturn: '1' });
 	});
 	mockUpdateAssets.updateAssets = sinon.stub().returns({
 		type: 'UPDATE_ASSETS'

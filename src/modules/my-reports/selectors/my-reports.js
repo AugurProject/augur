@@ -101,11 +101,6 @@ export const selectMarketOutcome = memoizerific(1000)((outcomeID, marketID) => {
 	const filteredMarket = allMarkets.find(market => market.id === marketID);
 	if (!filteredMarket) return null;
 	if (filteredMarket.type === SCALAR) return outcomeID;
-	let filterResult;
-	for (let i = 0, n = filteredMarket.outcomes.length; i < n; ++i) {
-		if (filteredMarket.outcomes[i].id === outcomeID) {
-			filterResult = filteredMarket.outcomes[i];
-		}
-	}
-	return filterResult ? filterResult.name : null;
+	const outcome = filteredMarket.reportableOutcomes.find(outcome => outcome.id === outcomeID);
+	return outcome ? outcome.name : null;
 });

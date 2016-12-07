@@ -1,11 +1,11 @@
 import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
-import { SCALAR } from '../../markets/constants/market-types';
+import { augur } from '../../../services/augurjs';
+import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { REVEAL_REPORT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { augur } from '../../../services/augurjs';
 
 export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) {
 	return (dispatch, getState) => {
@@ -15,6 +15,8 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 			let outcome;
 			if (isScalar) {
 				outcome = outcomesData ? outcomesData[1] : {};
+			} else if (type === BINARY) {
+				outcome = { name: reportedOutcomeID === '1' ? 'No' : 'Yes' };
 			} else {
 				outcome = outcomesData ? outcomesData[reportedOutcomeID] : {};
 			}
