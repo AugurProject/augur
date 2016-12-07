@@ -160,12 +160,18 @@ describe("Markets Unit Tests", function() {
 			assert.deepEqual(out, '1');
 		}
 	});
-	// This is a possible issue, might need to be fixed as we don't seem to catch errors here and return an empty array.
 	test({
 		description: 'Should handle no callback passed with getMarketNumOutcomes returning an error object',
 		market: 'marketID',
 		assertions: function(out) {
-			assert.deepEqual(out, []);
+			assert.deepEqual(out, { error: '1', message: 'hello world' });
+		}
+	});
+	test({
+		description: 'Should handle no callback passed with getMarketNumOutcomes returning a number',
+		market: 'marketID',
+		assertions: function(out) {
+			assert.deepEqual(out, ['1', '2', '3']);
 		}
 	});
 });
