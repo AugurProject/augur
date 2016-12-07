@@ -13,6 +13,7 @@
   },
   "scripts": {
     "dev": "node scripts/dev.js",
+    "build:foreal": "node scripts/build.js",
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "watch:noUp": "clear; echo '* CLEAN * HTML * ENV * FAVICON * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "node server.js",
@@ -117,7 +118,6 @@
     "html-webpack-plugin": "^2.24.1",
     "import-glob-loader": "^1.1.0",
     "inline-source-cli": "1.1.1",
-    "is-dev": "^0.1.4",
     "istanbul": "1.0.0-alpha.2",
     "json-loader": "^0.5.4",
     "less": "2.7.1",

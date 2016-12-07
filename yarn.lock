@@ -4247,10 +4247,6 @@ is-defined@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-defined/-/is-defined-1.0.0.tgz#1f07ca67d571f594c4b14415a45f7bef88f92bf5"
 
-is-dev@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/is-dev/-/is-dev-0.1.4.tgz#01af59201674658cff67e6ab78fbfe5be9a34ba6"
-
 is-dotfile@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-dotfile/-/is-dotfile-1.0.2.tgz#2c132383f39199f8edc268ca01b9b007d205cc4d"

@@ -60,8 +60,8 @@ html(lang='en')
 		script.
 			document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch-enabled' : ' touch-disabled');
 
+		//- Redirect /blog/ links to augur.strikingly.com/blog
 		script.
-			//- Redirect /blog/ links to augur.strikingly.com/blog
 			if (window.location.pathname.match(/\/blog\//)) {
 				window.location = "http://augur.strikingly.com" + window.location.pathname;
 			}

@@ -1,9 +1,11 @@
 const shell = require('shelljs');
-const Spinner = require('cli-spinner').Spinner;
 
-const spinner = new Spinner('Building');
-spinner.setSpinnerString(18);
-spinner.setSpinnerTitle('Heyo...');
-spinner.start();
+const clean = require('./common/clean');
 
-shell.exec('echo test');
+process.env.NODE_ENV = 'production';
+
+// CLEAN BUILD DIRECTORY
+clean();
+
+// GENERATE BUILD
+shell.exec('webpack --config webpack.config.js');

@@ -1,16 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
+const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-module.exports = {
+const PATHS = {
+	BUILD: path.resolve(__dirname, 'build'),
+	APP: path.resolve(__dirname, 'src')
+};
+
+// COMMON CONFIG
+let config = {
 	entry: {
-		main: [
-			'react-hot-loader/patch',
-			'webpack-hot-middleware/client',
-			'./src/main'
-		],
+		main: ['./src/main'],
 		styles: './src/styles',
 		vendor: [
 			'react',
@@ -20,15 +23,15 @@ module.exports = {
 		]
 	},
 	output: {
-		path: path.resolve(__dirname, 'build'),
+		path: PATHS.BUILD,
 		filename: '[name].js',
 		publicPath: '/'
 	},
 	resolve: {
 		extensions: ['.pug', '.less', '.js', '.jsx', '.json'],
 		alias: {
-			modules: path.resolve(__dirname, 'src/modules'),
-			utils: path.resolve(__dirname, 'src/utils')
+			modules: path.resolve(PATHS.APP, 'modules'),
+			utils: path.resolve(PATHS.APP, 'utils')
 		}
 	},
 	module: {
@@ -58,39 +61,36 @@ module.exports = {
 	stats: {
 		color: true
 	},
-	devtool: 'cheap-module-source-map',
 	plugins: [
 		new webpack.optimize.OccurrenceOrderPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NoErrorsPlugin(),
 		new webpack.optimize.CommonsChunkPlugin({
 			name: 'vendor'
 		}),
 		new CopyWebpackPlugin([
 			{
-				from: path.resolve(__dirname, 'src/splash.css'),
-				to: path.resolve(__dirname, 'build')
+				from: path.resolve(PATHS.APP, 'splash.css'),
+				to: PATHS.BUILD
 			},
 			{
-				from: path.resolve(__dirname, 'src/env.json'),
-				to: path.resolve(__dirname, 'build')
+				from: path.resolve(PATHS.APP, 'env.json'),
+				to: PATHS.BUILD
 			},
 			{
-				from: path.resolve(__dirname, 'src/manifest.json'),
-				to: path.resolve(__dirname, 'build')
+				from: path.resolve(PATHS.APP, 'manifest.json'),
+				to: PATHS.BUILD
 			},
 			{
-				from: path.resolve(__dirname, 'src/assets/fonts'),
-				to: path.resolve(__dirname, 'build/assets/fonts')
+				from: path.resolve(PATHS.APP, 'assets/fonts'),
+				to: path.resolve(PATHS.BUILD, 'assets/fonts')
 			},
 			{
-				from: path.resolve(__dirname, 'src/assets/images'),
-				to: path.resolve(__dirname, 'build/assets/images')
+				from: path.resolve(PATHS.APP, 'assets/images'),
+				to: path.resolve(PATHS.BUILD, 'assets/images')
 			}
 		]),
 		new ExtractTextPlugin('[name].css'),
 		new HtmlWebpackPlugin({
-			template: path.resolve(__dirname, 'src/index.pug')
+			template: path.resolve(PATHS.APP, 'index.pug')
 		})
 	],
 	node: {
@@ -100,3 +100,42 @@ module.exports = {
 		child_process: 'empty'
 	},
 };
+
+// DEVELOPMENT SPECIFIC CONFIG
+if (process.env.NODE_ENV !== 'production') {
+	config = merge(config, {
+		entry: {
+			main: [
+				'react-hot-loader/patch',
+				'webpack-hot-middleware/client',
+			]
+		},
+		devtool: 'eval-source-map',
+		plugins: [
+			new webpack.HotModuleReplacementPlugin(),
+			new webpack.NoErrorsPlugin(),
+		]
+	});
+}
+
+// PRODUCTION SPECIFIC CONFIG
+if (process.env.NODE_ENV === 'production') {
+	config = merge(config, {
+		entry: {
+			main: './src/main'
+		},
+		devtool: 'source-map',
+		plugins: [
+			new webpack.optimize.UglifyJsPlugin({
+				comments: false
+			})
+		]
+	});
+}
+
+const WEBPACK_CONFIG = config;
+
+console.log('isDev -- ', process.env.NODE_ENV);
+console.log('config -- ', WEBPACK_CONFIG);
+
+module.exports = WEBPACK_CONFIG;
