@@ -1,12 +1,21 @@
 const path = require('path');
 const shell = require('shelljs');
+const Ora = require('ora');
 
-const SERVER = path.resolve(__dirname, '../server.js');
+const testSpinner = new Ora({
+	text: 'Running Tests',
+	color: 'cyan'
+});
 
-process.env.NODE_ENV = 'development';
+testSpinner.start();
 
-// START DEVELOPMENT SERVER
-//	NOTE -- this will also automatically spin up webpack w/ HMR (Hot Module Reload)
-shell.exec(`node ${SERVER}`);
-
-// clear; NODE_ENV=test NODE_PATH=./src TEST_PATH=./test mocha
+shell.exec(`mocha --compilers js:babel-core/register`, (code, stdout, stderr) => {
+	if (code !== 0) {
+		testSpinner.
+		testSpinner.text = 'Tests Failed';
+		testSpinner.fail();
+	} else {
+		testSpinner.text = 'Tests Passed';
+		testSpinner.succeed();
+	}
+});
