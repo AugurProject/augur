@@ -1,21 +1,23 @@
-const path = require('path');
 const shell = require('shelljs');
 const Ora = require('ora');
 
-const testSpinner = new Ora({
+const clear = require('./common/clear');
+
+const spinner = new Ora({
 	text: 'Running Tests',
 	color: 'cyan'
 });
 
-testSpinner.start();
+spinner.start();
 
-shell.exec(`mocha --compilers js:babel-core/register`, (code, stdout, stderr) => {
+clear();
+
+shell.exec(`mocha --compilers js:babel-core/register`, (code) => {
 	if (code !== 0) {
-		testSpinner.
-		testSpinner.text = 'Tests Failed';
-		testSpinner.fail();
+		spinner.text = 'Tests Failed';
+		spinner.fail();
 	} else {
-		testSpinner.text = 'Tests Passed';
-		testSpinner.succeed();
+		spinner.text = 'Tests Passed';
+		spinner.succeed();
 	}
 });
