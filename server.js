@@ -4,7 +4,6 @@ const hotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config');
 const express = require('express');
 const helmet = require('helmet');
-const path = require('path');
 
 const app = express();
 const compiler = webpack(config);
@@ -14,14 +13,18 @@ const PROD_HOST = 'app.augur.net';
 // static handlers
 app.use(express.static('build'));
 
-app.use(devMiddleware(compiler, {
-	publicPath: config.output.publicPath,
-	stats: {
-		color: true
-	}
-}));
+// development specific
+if (process.env.NODE_ENV === 'development') {
+	// Hot Module Reload
+	app.use(devMiddleware(compiler, {
+		publicPath: config.output.publicPath,
+		stats: {
+			color: true
+		}
+	}));
 
-app.use(hotMiddleware(compiler));
+	app.use(hotMiddleware(compiler));
+}
 
 app.use(helmet());
 app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));

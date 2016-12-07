@@ -41,10 +41,6 @@ let config = {
 				loader: 'pug-loader'
 			},
 			{
-				test: /\.less/,
-				loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!less-loader!import-glob-loader' })
-			},
-			{
 				test: /\.woff/,
 				loader: 'file-loader'
 			},
@@ -88,7 +84,6 @@ let config = {
 				to: path.resolve(PATHS.BUILD, 'assets/images')
 			}
 		]),
-		new ExtractTextPlugin('[name].css'),
 		new HtmlWebpackPlugin({
 			template: path.resolve(PATHS.APP, 'index.pug')
 		})
@@ -110,6 +105,14 @@ if (process.env.NODE_ENV !== 'production') {
 				'webpack-hot-middleware/client',
 			]
 		},
+		module: {
+			loaders: [
+				{
+					test: /\.less/,
+					loaders: ['style-loader', 'css-loader', 'less-loader', 'import-glob-loader']
+				}
+			]
+		},
 		devtool: 'eval-source-map',
 		plugins: [
 			new webpack.HotModuleReplacementPlugin(),
@@ -124,8 +127,17 @@ if (process.env.NODE_ENV === 'production') {
 		entry: {
 			main: './src/main'
 		},
+		module: {
+			loaders: [
+				{
+					test: /\.less/,
+					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!less-loader!import-glob-loader' })
+				}
+			]
+		},
 		devtool: 'source-map',
 		plugins: [
+			new ExtractTextPlugin('[name].css'),
 			new webpack.optimize.UglifyJsPlugin({
 				comments: false
 			})
@@ -134,8 +146,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const WEBPACK_CONFIG = config;
-
-console.log('isDev -- ', process.env.NODE_ENV);
-console.log('config -- ', WEBPACK_CONFIG);
 
 module.exports = WEBPACK_CONFIG;
