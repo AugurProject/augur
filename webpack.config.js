@@ -109,7 +109,7 @@ if (process.env.NODE_ENV !== 'production') {
 			loaders: [
 				{
 					test: /\.less/,
-					loaders: ['style-loader', 'css-loader', 'less-loader', 'import-glob-loader']
+					loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
 				}
 			]
 		},
@@ -131,7 +131,7 @@ if (process.env.NODE_ENV === 'production') {
 			loaders: [
 				{
 					test: /\.less/,
-					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!less-loader!import-glob-loader' })
+					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!postcss-loader!less-loader!import-glob-loader' })
 				}
 			]
 		},
@@ -139,7 +139,8 @@ if (process.env.NODE_ENV === 'production') {
 		plugins: [
 			new ExtractTextPlugin('[name].css'),
 			new webpack.optimize.UglifyJsPlugin({
-				comments: false
+				comments: false,
+				dropConsole: true
 			})
 		]
 	});

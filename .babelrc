@@ -1,9 +1,4 @@
 {
-    "env": {
-        "production": {
-            "plugins": ["babel-plugin-transform-remove-console"]
-        }
-    },
-    "presets": [["es2015", {"modules": false}], "stage-0", "react"],
-		"plugins": ["react-hot-loader/babel"]
+	"presets": [["es2015", {"modules": false}], "stage-0", "react"],
+	"plugins": ["react-hot-loader/babel"]
 }
