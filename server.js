@@ -1,31 +1,27 @@
+const webpack = require('webpack');
+const devMiddleware = require('webpack-dev-middleware');
+const hotMiddleware = require('webpack-hot-middleware');
 const express = require('express');
 const helmet = require('helmet');
 
+const config = require('./webpack.config');
+
 const app = express();
+const compiler = webpack(config);
 
 const PROD_HOST = 'app.augur.net';
 
-// static handlers
-app.use(express.static('build'));
-
 // development specific
 if (process.env.NODE_ENV === 'development') {
-	const webpack = require('webpack');
-	const devMiddleware = require('webpack-dev-middleware');
-	const hotMiddleware = require('webpack-hot-middleware');
-	const config = require('./webpack.config');
-
-	const compiler = webpack(config);
-
 	// Hot Module Reload
 	app.use(devMiddleware(compiler, {
-		publicPath: config.output.publicPath,
-		stats: {
-			color: true
-		}
+		publicPath: config.output.publicPath
 	}));
 
 	app.use(hotMiddleware(compiler));
+} else {
+	// Static Path
+	app.use(express.static('build'));
 }
 
 app.use(helmet());

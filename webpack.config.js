@@ -55,9 +55,6 @@ let config = {
 			}
 		]
 	},
-	stats: {
-		color: true
-	},
 	plugins: [
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		new webpack.optimize.CommonsChunkPlugin({
