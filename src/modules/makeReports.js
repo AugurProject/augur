@@ -161,7 +161,7 @@ module.exports = {
         }
         return this.transact(tx, onSent, function (res) {
             if (self.options.debug.reporting) {
-                console.log('submitReportHash response:', JSON.stringify(res, null, 2));
+                console.log('submitReportHash response:', res.callReturn);
             }
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {

@@ -44410,11 +44410,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.3.1";
+    this.version = "3.3.3";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -45105,15 +45105,14 @@ module.exports = {
         tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.getVotePeriod(branch, function (period) {
             self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                console.log('fees collected:', branch, sender, period - 1, feesCollected);
+                if (self.options.debug.reporting) {
+                    console.log("Fees collected:", branch, sender, period - 1, feesCollected);
+                }
                 if (feesCollected === "1") return onSuccess({callReturn: "2"});
                 self.rpc.getGasPrice(function (gasPrice) {
                     tx.gasPrice = gasPrice;
                     tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
                     var prepare = function (res, cb) {
-                        if (self.options.debug.reporting) {
-                            console.log("collectFees success:", JSON.stringify(res, null, 2));
-                        }
                         if (res && (res.callReturn === "1" || res.callReturn === "2")) {
                             return cb(res);
                         }
@@ -45134,9 +45133,6 @@ module.exports = {
                             });
                         });
                     };
-                    if (self.options.debug.reporting) {
-                        console.log("collectFees tx:", JSON.stringify(tx, null, 2));
-                    }
                     return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
                 });
             });
@@ -46737,7 +46733,7 @@ module.exports = {
         }
         return this.transact(tx, onSent, function (res) {
             if (self.options.debug.reporting) {
-                console.log('submitReportHash response:', JSON.stringify(res, null, 2));
+                console.log('submitReportHash response:', res.callReturn);
             }
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
@@ -47712,7 +47708,7 @@ module.exports = {
             if (!rawReport || rawReport.error) {
                 return callback(rawReport || self.errors.REPORT_NOT_FOUND);
             }
-            if (!parseInt(rawReport, 16)) return callback("0");
+            if (!parseInt(rawReport, 16)) return callback({report: "0"});
             var report = self.unfixReport(rawReport, minValue, maxValue, type);
             if (self.options.debug.reporting) {
                 console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);

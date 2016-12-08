@@ -218,6 +218,24 @@ describe("Report encryption/decryption", function () {
         });
     };
     test({
+        report: makeReports.fixReport("1.5", 1, 2, "binary", true),
+        key: "0x1",
+        salt: "0x1",
+        encryptedReport: "0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902b23ae675b8a18014"
+    });
+    test({
+        report: makeReports.fixReport("0.5", 1, 4, "scalar", true),
+        key: "0x1",
+        salt: "0x1",
+        encryptedReport: "0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902a01baf2110058014"
+    });
+    test({
+        report: makeReports.fixReport("0.5", 1, 4, "categorical", true),
+        key: "0x1",
+        salt: "0x1",
+        encryptedReport: "0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902a01baf2110058014"
+    });
+    test({
         report: makeReports.fixReport(1, 1, 2, "binary"),
         key: "0x1",
         salt: "0x1",
