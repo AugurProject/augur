@@ -63,21 +63,23 @@ Create an Ethereum account (if needed):
 ```
 geth --testnet account new
 ```
-Be sure to securely store your password and account address (displayed after account creation).
+Be sure to securely store your password and remember the account address (displayed after account creation).
 
 Start geth:  
 ```
 geth --testnet --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '*' --wsorigins '*' --cache 2048 console
 ```
-Some points of note:
-The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
-To get a list of accounts and their numerical value run `geth account list`.
+
+Additional points of note:  
+* The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
+  * To get a list of accounts and their numerical value run `geth account list`.
 
 ### Production -- Main Network
 Create an Ethereum account (if needed):
 ```
 geth account new
 ```
+Be sure to securely store your password and remember the account address (displayed after account creation).
 
 Start geth:  
 ```
@@ -85,11 +87,11 @@ geth --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsa
 ```
 **Important** -- The above command will be using **real Eth (Main Network)** and is potentially more permissive than necessary for your use case.  **DO** educate yourself surrounding the above arguments and determine which are appropriate for your specific use case.
 
-Some additional resources:
-[JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)
-[Javascript Console](https://github.com/ethereum/go-ethereum/wiki/JavaScript-Console#web3)
+Additional resources:  
+[JSON RPC API Documentation](https://github.com/ethereum/wiki/wiki/JSON-RPC)  
+[Javascript Console](https://github.com/ethereum/go-ethereum/wiki/JavaScript-Console#web3)  
 
-Some additional points of note:
+Additional points of note:
 * The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
   * To get a list of accounts and their numerical value run `geth account list`.
 * The values supplied to `--rpccorsdomain` and `--wsorigins` should correspond to the server's domain which is running the instance of Augur.
