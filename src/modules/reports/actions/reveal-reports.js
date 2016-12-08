@@ -22,6 +22,7 @@ export function revealReports(cb) {
 					const obj = { ...branchReports[eventID], eventID };
 					return obj;
 				});
+			console.log('revealableReports:', revealableReports);
 			if (revealableReports && revealableReports.length && loginAccount.address) {
 				async.eachSeries(revealableReports, (report, nextReport) => {
 					console.log('revealReportLock:', report.eventID, revealReportLock[report.eventID]);
