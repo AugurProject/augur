@@ -1,14 +1,11 @@
+const path = require('path');
 const shell = require('shelljs');
 
-const clean = require('./common/clean');
+const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 
 process.env.NODE_ENV = 'production';
 
-// CLEAN BUILD DIRECTORY
-clean();
-
-// GENERATE BUILD
+shell.exec(`rimraf ${BUILD_DIRECTORY}`);
+shell.exec(`mkdir -p ${BUILD_DIRECTORY}`);
 shell.exec('webpack --config webpack.config.js');
-
-// LOCK PACKAGE VERSIONS
 shell.exec('npm prune --production=false && npm shrinkwrap --dev');

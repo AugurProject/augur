@@ -18,9 +18,9 @@
     "__": "",
     "lint": "node scripts/lint.js",
     "test": "node scripts/test.js",
+    "coverage": "node scripts/coverage.js",
     "___": "",
-    "postinstall": "node scripts/lifecycle/post-install.js",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "postinstall": "node scripts/lifecycle/post-install.js"
   },
   "dependencies": {
     "airbitz-core-js-ui": "0.0.14",
