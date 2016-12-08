@@ -6,7 +6,7 @@ import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { updateReport, updateReports } from '../../reports/actions/update-reports';
+import { updateReport } from '../../reports/actions/update-reports';
 import { nextReportPage } from '../../reports/actions/next-report-page';
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
@@ -100,7 +100,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 					status: FAILED,
 					message: err.message
 				}));
-				const branchReports = getState().reports[branch.id] || {}
+				const branchReports = getState().reports[branch.id] || {};
 				dispatch(updateReport(branch.id, eventID, {
 					...branchReports[eventID],
 					isCommitted: false
