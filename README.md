@@ -83,7 +83,7 @@ Be sure to securely store your password and remember the account address (displa
 
 Start geth:  
 **Important** -- The following command will be using **real Eth (Main Network)** and is potentially more permissive than necessary for your use case.  
-**DO** educate yourself surrounding the above arguments and determine which are appropriate for your specific use case.
+**DO** educate yourself surrounding the arguments and determine which are appropriate for your specific use case.
 ```
 geth --unlock 0 --rpc --ws --rpcapi eth,net,shh,admin,txpool,web3,personal --wsapi eth,net,shh,web3,admin,txpool,personal --rpccorsdomain '<domain of server>' --wsorigins '<domain of server>' --cache 2048 console
 ```
