@@ -1,3 +1,5 @@
 const shell = require('shelljs');
 
-shell.exec('mocha --compilers js:babel-core/register');
+process.env.NODE_ENV = 'test';
+
+shell.exec('mocha --require babel-register');

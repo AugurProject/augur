@@ -11,17 +11,16 @@ const compiler = webpack(config);
 
 const PROD_HOST = 'app.augur.net';
 
-// development specific
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
+	// Static Path
+	app.use(express.static('build'));
+} else {
 	// Hot Module Reload
 	app.use(devMiddleware(compiler, {
 		publicPath: config.output.publicPath
 	}));
 
 	app.use(hotMiddleware(compiler));
-} else {
-	// Static Path
-	app.use(express.static('build'));
 }
 
 app.use(helmet());
