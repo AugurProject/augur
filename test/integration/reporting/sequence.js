@@ -259,7 +259,10 @@ describe("Reporting sequence", function () {
                     var halfTime = periodLength / 2;
                     if (t % periodLength > halfTime) {
                         if (DEBUG) printReportingStatus(eventID, "In second half of second period");
-                        return done();
+                        return augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod, marketsClosed) {
+                            assert.isNull(err);
+                            done();
+                        });
                     }
                     var secondsToWait = halfTime - (t % periodLength) + 1;
                     if (DEBUG) printReportingStatus(eventID, "Not in second half of second period, waiting " + secondsToWait + " seconds...");
@@ -268,7 +271,10 @@ describe("Reporting sequence", function () {
                             var t = parseInt(new Date().getTime() / 1000);
                             printReportingStatus(eventID, "In second half of second period: " + (t % periodLength > halfTime));
                         }
-                        done();
+                        augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod, marketsClosed) {
+                            assert.isNull(err);
+                            done();
+                        });
                     }, secondsToWait*1000);
                 });
                 it("makeReports.submitReport", function (done) {
@@ -284,71 +290,101 @@ describe("Reporting sequence", function () {
                             if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
                             augur.rpc.personal("unlockAccount", [sender, password], function (res) {
                                 if (res && res.error) return nextEvent(res);
-                                augur.getMinValue(event, function (minValue) {
-                                    augur.getMaxValue(event, function (maxValue) {
+                                console.log('collectFees:', {
+                                    branch: newBranchID,
+                                    sender: sender,
+                                    periodLength: periodLength
+                                });
+                                augur.collectFees({
+                                    branch: newBranchID,
+                                    sender: sender,
+                                    periodLength: periodLength,
+                                    onSent: function (r) {
+                                        if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
+                                    },
+                                    onSuccess: function (r) {
                                         if (DEBUG) {
-                                            console.log("submitReport:", {
-                                                event: event,
-                                                salt: salt,
-                                                report: report[type],
-                                                ethics: 1, // 1 = ethical
-                                                minValue: minValue,
-                                                maxValue: maxValue,
-                                                type: type,
-                                                isIndeterminate: false
-                                            });
+                                            console.log("collectFees success:", r.hash, r.callReturn);
+                                            printReportingStatus(event, "[" + type  + "] Fees collected for " + r.from);
                                         }
-                                        augur.submitReport({
-                                            event: event,
-                                            salt: salt,
-                                            report: report[type],
-                                            ethics: 1, // 1 = ethical
-                                            minValue: minValue,
-                                            maxValue: maxValue,
-                                            type: type,
-                                            isIndeterminate: false,
-                                            onSent: function (res) {
-                                                console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
-                                            },
-                                            onSuccess: function (res) {
+                                        var period = augur.Branches.getVotePeriod(newBranchID);
+                                        var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
+                                        if (DEBUG) {
+                                            console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+                                        }
+                                        assert.strictEqual(feesCollected, "1");
+                                        augur.getMinValue(event, function (minValue) {
+                                            augur.getMaxValue(event, function (maxValue) {
                                                 if (DEBUG) {
-                                                    console.log("getReport:", {
-                                                        branch: newBranchID,
-                                                        period: period,
+                                                    console.log("submitReport:", {
                                                         event: event,
-                                                        sender: sender,
+                                                        salt: salt,
+                                                        report: report[type],
+                                                        ethics: 1, // 1 = ethical
                                                         minValue: minValue,
                                                         maxValue: maxValue,
-                                                        type: type
+                                                        type: type,
+                                                        isIndeterminate: false
                                                     });
                                                 }
-                                                augur.getReport({
-                                                    branch: newBranchID,
-                                                    period: period,
+                                                augur.submitReport({
                                                     event: event,
-                                                    sender: sender,
+                                                    salt: salt,
+                                                    report: report[type],
+                                                    ethics: 1, // 1 = ethical
                                                     minValue: minValue,
                                                     maxValue: maxValue,
                                                     type: type,
-                                                    callback: function (storedReport) {
+                                                    isIndeterminate: false,
+                                                    onSent: function (res) {
+                                                        console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+                                                    },
+                                                    onSuccess: function (res) {
                                                         if (DEBUG) {
-                                                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
-                                                            console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                                                            printReportingStatus(event, "[" + type  + "] submitReport complete");
-                                                            console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                                                            console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport.report));
-                                                            console.log(chalk.white.dim(" - Expected report:      "), chalk.cyan(report[type]));
+                                                            console.log("getReport:", {
+                                                                branch: newBranchID,
+                                                                period: period,
+                                                                event: event,
+                                                                sender: sender,
+                                                                minValue: minValue,
+                                                                maxValue: maxValue,
+                                                                type: type
+                                                            });
                                                         }
-                                                        assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                                                        assert.strictEqual(parseInt(storedReport.report), report[type]);
-                                                        assert.strictEqual(storedReport.isIndeterminate, false);
-                                                        nextEvent();
-                                                    }
+                                                        augur.getReport({
+                                                            branch: newBranchID,
+                                                            period: period,
+                                                            event: event,
+                                                            sender: sender,
+                                                            minValue: minValue,
+                                                            maxValue: maxValue,
+                                                            type: type,
+                                                            callback: function (storedReport) {
+                                                                if (DEBUG) {
+                                                                    var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
+                                                                    console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+                                                                    printReportingStatus(event, "[" + type  + "] submitReport complete");
+                                                                    console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                                                                    console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport.report));
+                                                                    console.log(chalk.white.dim(" - Expected report:      "), chalk.cyan(report[type]));
+                                                                }
+                                                                assert.strictEqual(res.callReturn, "1");
+                                                                assert.strictEqual(parseInt(storedReport.report), report[type]);
+                                                                assert.strictEqual(storedReport.isIndeterminate, false);
+                                                                nextEvent();
+                                                            }
+                                                        });
+                                                    },
+                                                    onFailed: nextEvent
                                                 });
-                                            },
-                                            onFailed: nextEvent
+                                            });
                                         });
-                                    });
+                                    },
+                                    onFailed: function (err) {
+                                        if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
+                                        if (DEBUG) printReportingStatus(event, "[" + type  + "] collectFees failed");
+                                        nextEvent(err);
+                                    }
                                 });
                             });
                         }, done);
@@ -503,7 +539,9 @@ describe("Reporting sequence", function () {
                                         }
                                         var period = augur.Branches.getVotePeriod(newBranchID);
                                         var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
-                                        console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+                                        if (DEBUG) {
+                                            console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+                                        }
                                         assert.strictEqual(feesCollected, "1");
                                         nextEvent();
                                     },
