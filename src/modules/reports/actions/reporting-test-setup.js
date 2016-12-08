@@ -31,11 +31,6 @@ export function reportingTestSetup(branchID) {
 			dispatch(syncBranch((err, reportPeriod) => {
 				if (err) console.error('syncBranch error:', err);
 				console.log('[REPORTING TEST SETUP] report period:', reportPeriod);
-				console.log('[REPORTING TEST SETUP] synched branch, loading reports...');
-				dispatch(clearOldReports());
-				dispatch(loadReports((err) => {
-					console.log('[REPORTING TEST SETUP] reports loaded!', err);
-				}));
 			}));
 		});
 	};
