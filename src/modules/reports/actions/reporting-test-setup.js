@@ -4,8 +4,6 @@ import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 import { syncBlockchain } from '../../app/actions/update-blockchain';
 import { syncBranch } from '../../app/actions/update-branch';
-import { loadReports } from '../../reports/actions/load-reports';
-import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { updateAssets } from '../../auth/actions/update-assets';
 
 export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';
@@ -31,11 +29,6 @@ export function reportingTestSetup(branchID) {
 			dispatch(syncBranch((err, reportPeriod) => {
 				if (err) console.error('syncBranch error:', err);
 				console.log('[REPORTING TEST SETUP] report period:', reportPeriod);
-				console.log('[REPORTING TEST SETUP] synched branch, loading reports...');
-				dispatch(clearOldReports());
-				dispatch(loadReports((err) => {
-					console.log('[REPORTING TEST SETUP] reports loaded!', err);
-				}));
 			}));
 		});
 	};

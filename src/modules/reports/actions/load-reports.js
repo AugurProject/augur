@@ -14,14 +14,18 @@ export function loadReports(callback) {
 		const account = loginAccount.address;
 		const branchID = branch.id;
 		const marketIDs = [];
+		const branchReports = reports[branchID];
+		console.log('branchReports:', branchReports);
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
 			console.log('eventsToReportOn:', eventsToReportOn);
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
 				if (!eventID || !parseInt(eventID, 16)) return nextEvent();
 				augur.getMarket(eventID, 0, (marketID) => {
 					marketIDs.push(marketID);
+					// TODO check if already loaded
 					dispatch(loadMarketsInfo([marketID], () => {
-						if (reports[branchID] && reports[branchID][eventID] && reports[branchID][eventID].isRevealed) {
+						if (branchReports && branchReports[eventID] && branchReports[eventID].reportedOutcomeID) {
+							console.log('skipping load:', eventID, branchReports[eventID]);
 							return nextEvent();
 						}
 						dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
