@@ -28,7 +28,10 @@ describe('modules/reports/actions/load-report.js', () => {
 				'../../reports/actions/decrypt-report': DecryptReport
 			});
 			sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
-				cb(t.blockchain.reports[branchID][eventID]);
+				cb({
+					report: t.blockchain.reports[branchID][eventID],
+					isIndeterminate: false
+				});
 			});
 			sinon.stub(AugurJS.augur, 'getReportHash', (branchID, period, account, eventID, cb) => {
 				cb(t.blockchain.reportHashes[branchID][eventID]);
@@ -558,10 +561,10 @@ describe('modules/reports/actions/load-report.js', () => {
 							marketID: '0xa1',
 							isUnethical: false,
 							reportedOutcomeID: '1',
-							reportHash: '0x1e',
-							salt: '0x7331',
+							reportHash: null,
+							salt: null,
 							isIndeterminate: false,
-							isRevealed: false,
+							isRevealed: true,
 							isCommitted: true
 						}
 					}
@@ -637,10 +640,11 @@ describe('modules/reports/actions/load-report.js', () => {
 							period: 7,
 							marketID: '0xa1',
 							isUnethical: false,
-							reportedOutcomeID: null,
-							reportHash: '0x1e',
+							isIndeterminate: false,
+							reportedOutcomeID: '1',
+							reportHash: null,
 							salt: null,
-							isRevealed: false,
+							isRevealed: true,
 							isCommitted: true
 						}
 					}
@@ -716,11 +720,12 @@ describe('modules/reports/actions/load-report.js', () => {
 							period: 7,
 							marketID: '0xa1',
 							isUnethical: false,
-							reportedOutcomeID: null,
+							reportedOutcomeID: '1',
 							reportHash: null,
 							salt: null,
-							isRevealed: false,
-							isCommitted: false
+							isIndeterminate: false,
+							isRevealed: true,
+							isCommitted: true
 						}
 					}
 				}

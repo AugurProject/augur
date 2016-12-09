@@ -7,6 +7,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
 		const { loginAccount, marketsData } = getState();
 		const marketData = marketsData[marketID];
 		augur.getReport(branchID, period, eventID, loginAccount.address, marketData.minValue, marketData.maxValue, marketData.type, (report) => {
+			console.log('got report:', report);
 			if (!report || !report.report || report.error) {
 				return callback(report || 'getReport failed');
 			}
