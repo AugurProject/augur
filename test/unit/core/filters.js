@@ -146,7 +146,6 @@ describe("parse_event_message", function () {
                     assert.property(parsed, "taker");
                     assert.property(parsed, "maker");
                     assert.property(parsed, "price");
-                    assert.property(parsed, "shares");
                     assert.property(parsed, "tradeid");
                     assert.property(parsed, "outcome");
                     assert.property(parsed, "blockNumber");
@@ -364,7 +363,6 @@ describe("parse_event_message", function () {
 //                 assert.property(parsed, "taker");
 //                 assert.property(parsed, "maker");
 //                 assert.property(parsed, "price");
-//                 assert.property(parsed, "shares");
 //                 assert.property(parsed, "tradeid");
 //                 assert.property(parsed, "outcome");
 //                 assert.property(parsed, "blockNumber");
