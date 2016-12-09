@@ -43732,8 +43732,11 @@ module.exports = function () {
                 fmt.type = this.format_trade_type(msg.type);
                 fmt.taker = abi.format_address(msg.sender);
                 fmt.maker = abi.format_address(msg.owner);
-                fmt.price = abi.unfix(msg.price, "string");
-                fmt.shares = abi.unfix(msg.shares, "string");
+                fmt.amount = abi.unfix(msg.amount, "string");
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+                fmt.takerFee = abi.unfix(msg.takerFee, "string");
+                fmt.makerFee = abi.unfix(msg.makerFee, "string");
+                fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 fmt.timestamp = parseInt(msg.timestamp, 16);
                 delete fmt.sender;
@@ -43743,7 +43746,7 @@ module.exports = function () {
                 fmt = clone(msg);
                 fmt.type = this.format_trade_type(msg.type);
                 fmt.maker = abi.format_address(msg.sender);
-                fmt.price = abi.unfix(msg.price, "string");
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
                 fmt.amount = abi.unfix(msg.amount, "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 delete fmt.sender;
@@ -44410,11 +44413,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.3.3";
+    this.version = "3.3.4";
 
     this.options = {
         debug: {
-            tools: true,       // if true, testing tools (test/tools.js) included
+            tools: false,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -46377,70 +46380,6 @@ module.exports = {
             }
         }
         return trades;
-    },
-
-    getMarketTrades: function (marketID, options, cb) {
-        var self = this;
-        function parseMarketTrades(logs, callback) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return callback();
-            }
-            if (logs.error) return cb(logs);
-
-            var trades = {};
-
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    var parsed = self.rpc.unmarshal(logs[i].data);
-                    var outcome = parseInt(parsed[4]);
-                    if (!trades[outcome]) trades[outcome] = [];
-                    trades[outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        price: abi.unfix(abi.hex(parsed[1], true), "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
-                    });
-                }
-            }
-            return callback(trades);
-        }
-        if (!cb && utils.is_function(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-        if (!marketID || !utils.is_function(cb)) return;
-        this.rpc.getLogs({
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
-            address: this.contracts.Trade,
-            topics: [
-                this.api.events.log_fill_tx.signature,
-                abi.format_int256(marketID)
-            ],
-            timeout: constants.GET_LOGS_TIMEOUT
-        }, function (logs) {
-            parseMarketTrades(logs, function (trades) {
-                if (!trades || Object.keys(trades).length === 0) {
-                    return cb(null);
-                }
-                var marketIDs = Object.keys(trades);
-                var numMarkets = marketIDs.length;
-                var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
-                for (var i = 0; i < numMarkets; ++i) {
-                    marketTrades = trades[marketIDs[i]];
-                    outcomeIDs = Object.keys(marketTrades);
-                    numOutcomes = outcomeIDs.length;
-                    for (var j = 0; j < numOutcomes; ++j) {
-                        outcomeTrades = marketTrades[outcomeIDs[j]];
-                        outcomeTrades = outcomeTrades.sort(self.sortByBlockNumber);
-                    }
-                }
-                cb(trades);
-            });
-        });
     },
 
     /************************

@@ -50,8 +50,11 @@ module.exports = function () {
                 fmt.type = this.format_trade_type(msg.type);
                 fmt.taker = abi.format_address(msg.sender);
                 fmt.maker = abi.format_address(msg.owner);
-                fmt.price = abi.unfix(msg.price, "string");
-                fmt.shares = abi.unfix(msg.shares, "string");
+                fmt.amount = abi.unfix(msg.amount, "string");
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+                fmt.takerFee = abi.unfix(msg.takerFee, "string");
+                fmt.makerFee = abi.unfix(msg.makerFee, "string");
+                fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 fmt.timestamp = parseInt(msg.timestamp, 16);
                 delete fmt.sender;
@@ -61,7 +64,7 @@ module.exports = function () {
                 fmt = clone(msg);
                 fmt.type = this.format_trade_type(msg.type);
                 fmt.maker = abi.format_address(msg.sender);
-                fmt.price = abi.unfix(msg.price, "string");
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
                 fmt.amount = abi.unfix(msg.amount, "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 delete fmt.sender;
