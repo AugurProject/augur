@@ -93,14 +93,14 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: { registerBlockNumber: 10000 }
 		}, {
-			type: 'CLEAR_ACCOUNT_TRADES'
-		}, {
-			type: 'LOAD_ACCOUNT_TRADES'
-		}, {
 			type: 'CLEAR_REPORTS'
 		}, {
 			type: 'SYNC_BRANCH',
 			data:  { reportPeriod: 19 }
+		}, {
+			type: 'CLEAR_ACCOUNT_TRADES'
+		}, {
+			type: 'LOAD_ACCOUNT_TRADES'
 		}];
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
 		const actual = store.getActions();
