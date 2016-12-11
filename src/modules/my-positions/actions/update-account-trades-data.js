@@ -2,7 +2,7 @@ import { abi } from '../../../services/augurjs';
 import { SUCCESS } from '../../transactions/constants/statuses';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, BINARY_NO_OUTCOME_NAME, BINARY_YES_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { formatEther, formatPercent, formatRealEther, formatShares } from '../../../utils/format-number';
+import { formatEther, formatPercent, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { selectMarketLink } from '../../link/selectors/links';
@@ -28,7 +28,7 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 
 export function updateAccountTradesData(data, marketID) {
 	return (dispatch, getState) => {
-		const { marketsData, outcomesData, transactionsData } = getState();
+		const { marketsData, outcomesData } = getState();
 		const marketIDs = Object.keys(data);
 		const numMarkets = marketIDs.length;
 		let marketID;
@@ -81,7 +81,6 @@ export function updateAccountTradesData(data, marketID) {
 						const tradingFees = abi.bignum(trade.takerFee);
 						const bnShares = abi.bignum(trade.shares);
 						const bnPrice = abi.bignum(trade.price);
-						const tradingFeesPerShare = tradingFees.dividedBy(bnShares);
 						const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 						const totalCostPerShare = totalCost.dividedBy(bnShares);
 						const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
@@ -93,10 +92,7 @@ export function updateAccountTradesData(data, marketID) {
 									marketDescription: description,
 									marketType: marketsData[marketID] && marketsData[marketID].type,
 									outcomeName: outcome.name || outcomeID,
-									marketLink: selectMarketLink({
-										id: marketID,
-										description
-									}, dispatch)
+									marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 								},
 								message: `${perfectType} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
 								numShares: shares,
