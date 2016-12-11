@@ -26,6 +26,7 @@ export function loadAccountTrades(marketID, cb) {
 				},
 				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
 					if (!trades || trades.error) return callback(trades);
+					console.log('trades:', trades);
 					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
 				}),

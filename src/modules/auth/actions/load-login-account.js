@@ -25,14 +25,14 @@ export function loadLoginAccountDependents(cb) {
 				loginAccount.registerBlockNumber = blockNumber;
 				dispatch(updateLoginAccount(loginAccount));
 			}
-			dispatch(clearAccountTrades());
-			dispatch(loadAccountTrades());
 
 			// clear and load reports for any markets that have been loaded
 			// (partly to handle signing out of one account and into another)
 			dispatch(clearReports());
 			dispatch(syncBranch((err) => {
 				if (err) console.error('syncBranch:', err);
+				dispatch(clearAccountTrades());
+				dispatch(loadAccountTrades());
 				dispatch(loadEventsWithSubmittedReport());
 			}));
 		});

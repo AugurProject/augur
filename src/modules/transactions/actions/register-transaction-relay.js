@@ -8,7 +8,6 @@ export function registerTransactionRelay() {
 	return (dispatch, getState) => {
 		rpc.excludeFromTxRelay(NO_RELAY);
 		rpc.registerTxRelay((tx) => {
-			// console.debug('rpc.txRelay:', tx);
 			if (tx && tx.response && tx.data) {
 				const hash = tx.response.hash;
 				if (hash) {
