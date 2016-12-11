@@ -16291,10 +16291,15 @@ module.exports={
           "indexed": false, 
           "name": "numOutcomes", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "completeSets_logReturn(int256,int256,int256,int256,int256)", 
-      "signature": "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175"
+      "name": "completeSets_logReturn(int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6"
     }, 
     "consensus_logReturn": {
       "contract": "Consensus", 
@@ -44413,7 +44418,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.3.6";
+    this.version = "3.3.7";
 
     this.options = {
         debug: {
@@ -46097,7 +46102,7 @@ module.exports = {
                         user: abi.format_address(logs[i].topics[2]),
                         price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
-                        tradeid: parsed[3],
+                        trade_id: parsed[3],
                         timestamp: parseInt(parsed[5], 16),
                         blockNumber: parseInt(logs[i].blockNumber, 16)
                     });
@@ -46286,7 +46291,11 @@ module.exports = {
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker
+                            timestamp: parseInt(parsed[4], 16),
+                            transactionHash: logs[i].transactionHash,
+                            maker: maker,
+                            takerFee: abi.unfix(parsed[5], "string"),
+                            makerFee: abi.unfix(parsed[6], "string")
                         });
                     } else {
                         outcome = parseInt(parsed[4]);
@@ -46297,7 +46306,11 @@ module.exports = {
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker
+                            timestamp: parseInt(parsed[5], 16),
+                            transactionHash: logs[i].transactionHash,
+                            maker: maker,
+                            takerFee: abi.unfix(parsed[6], "string"),
+                            makerFee: abi.unfix(parsed[7], "string")
                         });
                     }
                 }

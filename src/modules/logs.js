@@ -101,7 +101,7 @@ module.exports = {
                         user: abi.format_address(logs[i].topics[2]),
                         price: abi.unfix(abi.hex(parsed[1], true), "string"),
                         shares: abi.unfix(parsed[2], "string"),
-                        tradeid: parsed[3],
+                        trade_id: parsed[3],
                         timestamp: parseInt(parsed[5], 16),
                         blockNumber: parseInt(logs[i].blockNumber, 16)
                     });
@@ -290,7 +290,11 @@ module.exports = {
                             shares: abi.unfix(parsed[1], "string"),
                             trade_id: parsed[2],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker
+                            timestamp: parseInt(parsed[4], 16),
+                            transactionHash: logs[i].transactionHash,
+                            maker: maker,
+                            takerFee: abi.unfix(parsed[5], "string"),
+                            makerFee: abi.unfix(parsed[6], "string")
                         });
                     } else {
                         outcome = parseInt(parsed[4]);
@@ -301,7 +305,11 @@ module.exports = {
                             shares: abi.unfix(parsed[2], "string"),
                             trade_id: parsed[3],
                             blockNumber: parseInt(logs[i].blockNumber, 16),
-                            maker: maker
+                            timestamp: parseInt(parsed[5], 16),
+                            transactionHash: logs[i].transactionHash,
+                            maker: maker,
+                            takerFee: abi.unfix(parsed[6], "string"),
+                            makerFee: abi.unfix(parsed[7], "string")
                         });
                     }
                 }
