@@ -16367,10 +16367,15 @@ module.exports={
           "indexed": false, 
           "name": "tradeid", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x8dbed7bffe37a9907a92186110f23d8104f5967a71fb059f3b907ca9001fd160"
+      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c"
     }, 
     "log_cancel": {
       "contract": "BuyAndSellShares", 
@@ -16414,10 +16419,15 @@ module.exports={
           "indexed": false, 
           "name": "cashRefund", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xf573f1f8bc82665c8e269027671f8892cb92df05d64505b4f0090198a52edfbf"
+      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x87540aa511444ce3628639499047bc199b924522a0dbfd241e849901db56c8db"
     }, 
     "log_fill_tx": {
       "contract": "Trade", 
@@ -21757,7 +21767,7 @@ module.exports={
     "10101": {
         "Backstops": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "BuyAndSellShares": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "BuyAndSellShares": "0x4d84a91f4ea628dfbc185746cacc7fe4b416c8a1", 
         "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
         "CloseMarket": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
@@ -43744,6 +43754,8 @@ module.exports = function () {
                 fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 fmt.timestamp = parseInt(msg.timestamp, 16);
+                fmt.takerFee = abi.unfix(msg.takerFee, "string");
+                fmt.makerFee = abi.unfix(msg.makerFee, "string");
                 delete fmt.sender;
                 delete fmt.owner;
                 return fmt;
@@ -43754,6 +43766,18 @@ module.exports = function () {
                 fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
                 fmt.amount = abi.unfix(msg.amount, "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
+                fmt.timestamp = parseInt(msg.timestamp, 16);
+                delete fmt.sender;
+                return fmt;
+            case "log_cancel":
+                fmt = clone(msg);
+                fmt.type = this.format_trade_type(msg.type);
+                fmt.maker = abi.format_address(msg.sender);
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+                fmt.amount = abi.unfix(msg.amount, "string");
+                fmt.outcome = parseInt(msg.outcome, 16);
+                fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
+                fmt.timestamp = parseInt(msg.timestamp, 16);
                 delete fmt.sender;
                 return fmt;
             default:
@@ -43790,6 +43814,9 @@ module.exports = function () {
                             }
                         }
                         parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                        if (!onMessage) {
+                            return this.format_event_message(label, parsed);
+                        }
                         onMessage(this.format_event_message(label, parsed));
                     }
                     break;
@@ -46269,6 +46296,50 @@ module.exports = {
         return a.blockNumber - b.blockNumber;
     },
 
+    getAccountBidsAsks: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            this.getBidsAsksLogs(account, options, function (err, logs) {
+                if (err) return callback(err);
+                var bidsAsks = {};
+                var parsed;
+                for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                    parsed = self.filters.parse_event_message("log_add_tx", logs[i]);
+                    if (!bidsAsks[parsed.market]) bidsAsks[parsed.market] = [];
+                    bidsAsks[parsed.market].push(parsed);
+                }
+                callback(null, bidsAsks);
+            });
+        }
+    },
+
+    getAccountCancels: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            this.getCancelLogs(account, options, function (err, logs) {
+                if (err) return callback(err);
+                var cancels = {};
+                var parsed;
+                for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                    parsed = self.filters.parse_event_message("log_cancel", logs[i]);
+                    if (!cancels[parsed.market]) cancels[parsed.market] = [];
+                    cancels[parsed.market].push(parsed);
+                }
+                callback(null, cancels);
+            });
+        }
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
         function parseLogs(logs, trades, maker, isShortSell, callback) {
@@ -46399,6 +46470,62 @@ module.exports = {
     /************************
      * Convenience wrappers *
      ************************/
+
+    getCancelLogs: function (account, options, callback) {
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var topics = [
+                this.api.events.log_cancel.signature,
+                options.market ? abi.format_int256(options.market) : null,
+                abi.format_int256(account)
+            ];
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.BuyAndSellShares,
+                topics: topics,
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, []);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, logs);
+            });
+        }
+    },
+
+    getBidsAsksLogs: function (account, options, callback) {
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var topics = [
+                this.api.events.log_add_tx.signature,
+                options.market ? abi.format_int256(options.market) : null,
+                abi.format_int256(account)
+            ];
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.BuyAndSellShares,
+                topics: topics,
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, []);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, logs);
+            });
+        }
+    },
 
     getMakerShortSellLogs: function (account, options, callback) {
         if (!callback && utils.is_function(options)) {

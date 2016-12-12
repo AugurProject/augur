@@ -268,6 +268,50 @@ module.exports = {
         return a.blockNumber - b.blockNumber;
     },
 
+    getAccountBidsAsks: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            this.getBidsAsksLogs(account, options, function (err, logs) {
+                if (err) return callback(err);
+                var bidsAsks = {};
+                var parsed;
+                for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                    parsed = self.filters.parse_event_message("log_add_tx", logs[i]);
+                    if (!bidsAsks[parsed.market]) bidsAsks[parsed.market] = [];
+                    bidsAsks[parsed.market].push(parsed);
+                }
+                callback(null, bidsAsks);
+            });
+        }
+    },
+
+    getAccountCancels: function (account, options, callback) {
+        var self = this;
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            this.getCancelLogs(account, options, function (err, logs) {
+                if (err) return callback(err);
+                var cancels = {};
+                var parsed;
+                for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                    parsed = self.filters.parse_event_message("log_cancel", logs[i]);
+                    if (!cancels[parsed.market]) cancels[parsed.market] = [];
+                    cancels[parsed.market].push(parsed);
+                }
+                callback(null, cancels);
+            });
+        }
+    },
+
     getAccountTrades: function (account, options, cb) {
         var self = this;
         function parseLogs(logs, trades, maker, isShortSell, callback) {
@@ -398,6 +442,62 @@ module.exports = {
     /************************
      * Convenience wrappers *
      ************************/
+
+    getCancelLogs: function (account, options, callback) {
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var topics = [
+                this.api.events.log_cancel.signature,
+                options.market ? abi.format_int256(options.market) : null,
+                abi.format_int256(account)
+            ];
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.BuyAndSellShares,
+                topics: topics,
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, []);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, logs);
+            });
+        }
+    },
+
+    getBidsAsksLogs: function (account, options, callback) {
+        if (!callback && utils.is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (account !== undefined && account !== null) {
+            var topics = [
+                this.api.events.log_add_tx.signature,
+                options.market ? abi.format_int256(options.market) : null,
+                abi.format_int256(account)
+            ];
+            var filter = {
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: this.contracts.BuyAndSellShares,
+                topics: topics,
+                timeout: constants.GET_LOGS_TIMEOUT
+            };
+            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+            this.rpc.getLogs(filter, function (logs) {
+                if (!logs || !logs.length) return callback(null, []);
+                if (logs && logs.error) return callback(logs, null);
+                callback(null, logs);
+            });
+        }
+    },
 
     getMakerShortSellLogs: function (account, options, callback) {
         if (!callback && utils.is_function(options)) {

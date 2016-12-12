@@ -57,6 +57,8 @@ module.exports = function () {
                 fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
                 fmt.timestamp = parseInt(msg.timestamp, 16);
+                fmt.takerFee = abi.unfix(msg.takerFee, "string");
+                fmt.makerFee = abi.unfix(msg.makerFee, "string");
                 delete fmt.sender;
                 delete fmt.owner;
                 return fmt;
@@ -67,6 +69,18 @@ module.exports = function () {
                 fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
                 fmt.amount = abi.unfix(msg.amount, "string");
                 fmt.outcome = parseInt(msg.outcome, 16);
+                fmt.timestamp = parseInt(msg.timestamp, 16);
+                delete fmt.sender;
+                return fmt;
+            case "log_cancel":
+                fmt = clone(msg);
+                fmt.type = this.format_trade_type(msg.type);
+                fmt.maker = abi.format_address(msg.sender);
+                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+                fmt.amount = abi.unfix(msg.amount, "string");
+                fmt.outcome = parseInt(msg.outcome, 16);
+                fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
+                fmt.timestamp = parseInt(msg.timestamp, 16);
                 delete fmt.sender;
                 return fmt;
             default:
@@ -103,6 +117,9 @@ module.exports = function () {
                             }
                         }
                         parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                        if (!onMessage) {
+                            return this.format_event_message(label, parsed);
+                        }
                         onMessage(this.format_event_message(label, parsed));
                     }
                     break;

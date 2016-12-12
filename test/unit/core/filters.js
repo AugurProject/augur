@@ -164,6 +164,18 @@ describe("parse_event_message", function () {
                     assert.strictEqual(t.msg[0].topics[1], parsed.market);
                     assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
+                } else if (t.label === "log_cancel") {
+                    assert.property(parsed, "market");
+                    assert.property(parsed, "maker");
+                    assert.property(parsed, "type");
+                    assert.property(parsed, "price");
+                    assert.property(parsed, "amount");
+                    assert.property(parsed, "outcome");
+                    assert.property(parsed, "cashRefund");
+                    assert.property(parsed, "blockNumber");
+                    assert.strictEqual(t.msg[0].topics[1], parsed.market);
+                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
+                    assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "tradingFeeUpdated") {
                     assert.property(parsed, "marketID");
                     assert.property(parsed, "tradingFee");
