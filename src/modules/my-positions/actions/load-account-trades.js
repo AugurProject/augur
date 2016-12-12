@@ -1,6 +1,6 @@
 import async from 'async';
 import { augur } from '../../../services/augurjs';
-import { updateAccountPositionsData, updateAccountTradesData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
+import { updateAccountPositionsData, updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positions-plus-asks';
@@ -29,6 +29,18 @@ export function loadAccountTrades(marketID, cb) {
 					console.log('trades:', trades);
 					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
+				}),
+				bidsAsks: (callback) => augur.getAccountBidsAsks(account, options, (err, bidsAsks) => {
+					if (err) return callback(err);
+					console.log('bidsAsks:', bidsAsks);
+					dispatch(updateAccountBidsAsksData(bidsAsks, marketID));
+					callback(null, bidsAsks);
+				}),
+				cancels: (callback) => augur.getAccountCancels(account, options, (err, cancels) => {
+					if (err) return callback(err);
+					console.log('cancels:', cancels);
+					dispatch(updateAccountCancelsData(cancels, marketID));
+					callback(null, cancels);
 				}),
 				completeSetsBought: (callback) => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
 					if (err) return callback(err);

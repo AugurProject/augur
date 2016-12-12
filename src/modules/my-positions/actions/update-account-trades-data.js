@@ -26,7 +26,19 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 	};
 }
 
-export function updateAccountTradesData(data, marketID) {
+export function updateAccountBidsAsksData(data, marketID) {
+	return (dispatch, getState) => {
+		dispatch(convertToTransactions("log_add_tx", data, marketID));
+	};
+}
+
+export function updateAccountCancelsData(data, marketID) {
+	return (dispatch, getState) => {
+		dispatch(convertToTransactions("log_cancel", data, marketID));
+	};
+}
+
+export function convertToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
 		const { marketsData, outcomesData } = getState();
 		const marketIDs = Object.keys(data);
@@ -38,7 +50,7 @@ export function updateAccountTradesData(data, marketID) {
 		let trade;
 		let numTrades;
 		let description;
-		let outcome;
+		let outcomeName;
 		let marketType;
 		let marketOutcomesData;
 		for (let i = 0; i < numMarkets; ++i) {
@@ -53,24 +65,10 @@ export function updateAccountTradesData(data, marketID) {
 					for (let k = 0; k < numTrades; ++k) {
 						trade = data[marketID][outcomeID][k];
 						marketType = marketsData[marketID] && marketsData[marketID].type;
-						if (marketType === BINARY) {
-							if (outcomeID === '1') {
-								outcome = { name: BINARY_NO_OUTCOME_NAME };
-							} else if (outcomeID === '2') {
-								outcome = { name: BINARY_YES_OUTCOME_NAME };
-							} else {
-								outcome = { name: INDETERMINATE_OUTCOME_NAME };
-							}
+						if (marketType === BINARY || marketType === SCALAR) {
+							outcomeName = null;
 						} else {
-							if (outcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
-								outcome = { name: INDETERMINATE_OUTCOME_NAME };
-							} else {
-								if (marketType === SCALAR) {
-									outcome = marketOutcomesData ? marketOutcomesData[1] : {};
-								} else {
-									outcome = marketOutcomesData ? marketOutcomesData[outcomeID] : {};
-								}
-							}
+							outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
 						}
 						description = marketsData[marketID] && marketsData[marketID].description;
 						console.log('trade:', trade);
@@ -91,7 +89,7 @@ export function updateAccountTradesData(data, marketID) {
 								data: {
 									marketDescription: description,
 									marketType: marketsData[marketID] && marketsData[marketID].type,
-									outcomeName: outcome.name || outcomeID,
+									outcomeName: outcomeName || outcomeID,
 									marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 								},
 								message: `${perfectType} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
@@ -106,12 +104,18 @@ export function updateAccountTradesData(data, marketID) {
 								totalReturn: trade.type === 2 ? formatEther(totalReturn) : undefined
 							}
 						};
-						console.log(JSON.stringify(utd, null, 2));
+						// console.log(JSON.stringify(utd, null, 2));
 						dispatch(updateTransactionsData(utd));
 					}
 				}
 			}
 		}
+	};
+}
+
+export function updateAccountTradesData(data, marketID) {
+	return (dispatch, getState) => {
+		dispatch(convertToTransactions("log_fill_tx", data, marketID));
 		dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data, marketID });
 	};
 }
