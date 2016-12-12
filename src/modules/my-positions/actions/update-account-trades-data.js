@@ -1,7 +1,6 @@
 import { abi } from '../../../services/augurjs';
 import { SUCCESS } from '../../transactions/constants/statuses';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
-import { CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, BINARY_NO_OUTCOME_NAME, BINARY_YES_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 import { formatEther, formatPercent, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
@@ -28,13 +27,13 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 
 export function updateAccountBidsAsksData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertToTransactions("log_add_tx", data, marketID));
+		dispatch(convertToTransactions('log_add_tx', data, marketID));
 	};
 }
 
 export function updateAccountCancelsData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertToTransactions("log_cancel", data, marketID));
+		dispatch(convertToTransactions('log_cancel', data, marketID));
 	};
 }
 
@@ -115,7 +114,7 @@ export function convertToTransactions(label, data, marketID) {
 
 export function updateAccountTradesData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertToTransactions("log_fill_tx", data, marketID));
+		dispatch(convertToTransactions('log_fill_tx', data, marketID));
 		dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data, marketID });
 	};
 }
