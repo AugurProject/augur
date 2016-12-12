@@ -76,7 +76,7 @@ export function marketConvertToTransactions(label, data, marketID) {
 									outcomeName: outcomeName || outcomeID,
 									marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 								},
-								message: `${perfectType} ${shares.full} for ${formatEther(abi.unfix(trade.type === 1 ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+								message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
 								numShares: shares,
 								noFeePrice: price,
 								avgPrice: price,
