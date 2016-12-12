@@ -2,7 +2,7 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from '../../mockStore';
+import mocks from 'test/mockStore';
 
 describe(`modules/app/actions/init-augur.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

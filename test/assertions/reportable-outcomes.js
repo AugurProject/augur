@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (reportableOutcomes) {
@@ -5,7 +6,7 @@ export default function (reportableOutcomes) {
 		assert.isDefined(reportableOutcomes, `'reportableOutcomes' is not defined`);
 		assert.isArray(reportableOutcomes, `'reportableOutcomes' is not an array`);
 
-		reportableOutcomes.forEach(outcome => {
+		reportableOutcomes.forEach((outcome) => {
 			it('id', () => {
 				assert.isDefined(outcome.id, `reportableOutcomes' id is not defined`);
 				assert.isString(outcome.id, `reportableOutcomes' id is not a string`);
@@ -17,4 +18,4 @@ export default function (reportableOutcomes) {
 			});
 		});
 	});
-};
+}

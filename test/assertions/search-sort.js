@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function(searchSort) {
+export default function (searchSort) {
 	assert.isDefined(searchSort, `searchSort isn't defined`);
 	assert.isObject(searchSort, `searchSort isn't an object`);
 	assert.isDefined(searchSort.onChangeSort, `searchSort.onChangeSort isn't defined`);

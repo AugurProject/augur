@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from 'assertions/common/formatted-number';
 
 export default function (positionsSummary) {
 	assert.isDefined(positionsSummary, `positionsSummary isn't defined`);
@@ -11,5 +11,4 @@ export default function (positionsSummary) {
 	assertFormattedNumber(positionsSummary.realizedNet, 'positionsSummary.realizedNet');
 	assertFormattedNumber(positionsSummary.unrealizedNet, 'positionsSummary.unrealizedNet');
 	assertFormattedNumber(positionsSummary.totalNet, 'positionsSummary.totalNet');
-};
-
+}

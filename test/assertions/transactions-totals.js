@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function(transactionsTotals) {
+export default function (transactionsTotals) {
 	assert.isObject(transactionsTotals);
 
 	assert.isString(transactionsTotals.title);

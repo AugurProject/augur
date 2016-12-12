@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (marketLink, label = 'marketLink') {
@@ -6,7 +7,7 @@ export default function (marketLink, label = 'marketLink') {
 			assert.isDefined(marketLink, `'marketLink' is not defined`);
 			assert.isObject(marketLink, `'marketLink' is not defined`);
 
-			assert.isDefined(marketLink.text,`'text' is not defined`);
+			assert.isDefined(marketLink.text, `'text' is not defined`);
 			assert.isString(marketLink.text, `'text' is not a string`);
 
 			assert.isDefined(marketLink.className, `'className' is not defined`);

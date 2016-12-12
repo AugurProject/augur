@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from 'assertions/common/formatted-number';
 
 export default function (reportsSummary) {
 	assert.isDefined(reportsSummary, `reportsSummary isn't defined`);
@@ -7,5 +7,4 @@ export default function (reportsSummary) {
 
 	assertFormattedNumber(reportsSummary.numReports, 'reportsSummary.numReports');
 	assertFormattedNumber(reportsSummary.netRep, 'reportsSummary.netRep');
-};
-
+}

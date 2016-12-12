@@ -1,3 +1,4 @@
+import { it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (tradeCommitLock) {

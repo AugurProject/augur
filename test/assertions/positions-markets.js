@@ -1,6 +1,7 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import assertFormattedNumber from './common/formatted-number';
-import assertMarketLink from './common/market-link';
+import assertFormattedNumber from 'assertions/common/formatted-number';
+import assertMarketLink from 'assertions/common/market-link';
 
 export default function (positionsMarkets) {
 	assert.isDefined(positionsMarkets, `positionsMarkets isn't defined`);

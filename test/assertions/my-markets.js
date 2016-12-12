@@ -1,18 +1,19 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import assertFormattedNumber from './common/formatted-number';
-import assertFormattedDate from './common/formatted-date';
-import assertMarketLink from './common/market-link';
+import assertFormattedNumber from 'assertions/common/formatted-number';
+import assertFormattedDate from 'assertions/common/formatted-date';
+import assertMarketLink from 'assertions/common/market-link';
 
-export default function (myMarkets){
+export default function (myMarkets) {
 	describe(`augur-ui-react-components myMarkets' shape`, () => {
 		assert.isDefined(myMarkets);
 		assert.isArray(myMarkets);
 
-		myMarkets.forEach(market => { assertMyMarkets(market) });
+		myMarkets.forEach((market) => { assertMyMarkets(market); });
 	});
-};
+}
 
-export function assertMyMarkets(market){
+export function assertMyMarkets(market) {
 	describe(`myMarket's shape`, () => {
 		it('id', () => {
 			assert.isDefined(market.id);
@@ -65,4 +66,4 @@ export function assertMyMarkets(market){
 			assertFormattedNumber(market.openVolume, 'loginAccountMarkets.openVolume');
 		});
 	});
-};
+}

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function (loginAccountReports){
+export default function (loginAccountReports) {
 	describe(`augur-ui-react-components loginAccountReports' shape`, () => {
 		assert.isDefined(loginAccountReports);
 		assert.isObject(loginAccountReports);
@@ -15,4 +15,4 @@ export default function (loginAccountReports){
 			assert.isObject(loginAccountReports.summary);
 		});
 	});
-};
+}

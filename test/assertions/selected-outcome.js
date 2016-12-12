@@ -5,5 +5,5 @@ export default function (selectedOutcome) {
 	assert.isDefined(selectedOutcome.selectedOutcomeID, `selectedOutcome isn't defined`);
 	assert.isFunction(selectedOutcome.updateSelectedOutcome, `updateSelectedOutcome isn't a function`);
 	assert.isDefined(selectedOutcome.updateSelectedOutcome, `updateSelectedOutcome isn't defined`);
-};
+}
 

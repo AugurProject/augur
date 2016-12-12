@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function(authForm) {
+export default function (authForm) {
 	assert.isDefined(authForm, `authForm isn't defined`);
 	assert.isObject(authForm, `authForm isn't an object`);
 

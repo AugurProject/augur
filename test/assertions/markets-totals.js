@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function(marketsTotals) {
+export default function (marketsTotals) {
 	assert.isDefined(marketsTotals, `marketsTotals isn't defined`);
 	assert.isObject(marketsTotals, `marketsTotals isn't an object`);
 

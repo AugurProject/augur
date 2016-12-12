@@ -1,14 +1,15 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import assertFormattedNumber from './common/formatted-number';
-import assertFormattedDate from './common/formatted-date';
-import assertMarketLink from './common/market-link';
+import assertFormattedNumber from 'assertions/common/formatted-number';
+import assertFormattedDate from 'assertions/common/formatted-date';
+import assertMarketLink from 'assertions/common/market-link';
 
 export default function (reports) {
 	describe(`augur-ui-react-components loginAccountReports.reports' shape`, () => {
 		assert.isDefined(reports);
 		assert.isArray(reports);
 
-		reports.forEach(report => { assertAccountReport(report) })
+		reports.forEach((report) => { assertAccountReport(report); });
 	});
 }
 
@@ -79,4 +80,4 @@ export function assertAccountReport(report) {
 			assert.isBoolean(report.isChallengeable);
 		});
 	});
-};
+}

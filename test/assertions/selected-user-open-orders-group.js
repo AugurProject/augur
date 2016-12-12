@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (selectedUserOpenOrdersGroup) {
@@ -22,4 +23,4 @@ export default function (selectedUserOpenOrdersGroup) {
 			});
 		});
 	});
-};
+}

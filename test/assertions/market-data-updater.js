@@ -1,4 +1,5 @@
-import {assert} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 
 export default function (marketDataUpdater) {
 	describe('augur-ui-react-components marketDataUpdater', () => {

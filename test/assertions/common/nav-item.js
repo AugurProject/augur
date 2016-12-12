@@ -1,7 +1,8 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import assertLink from '../../../test/assertions/common/link';
+import assertLink from 'assertions/common/link';
 
-export default function (navItem, label = 'Nav Item'){
+export default function (navItem, label = 'Nav Item') {
 	describe(`${label}' Shape`, () => {
 		assert.isDefined(navItem);
 		assert.isObject(navItem);

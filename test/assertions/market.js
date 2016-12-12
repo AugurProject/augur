@@ -1,8 +1,9 @@
-import {assert} from 'chai';
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertFormattedDate from './common/formatted-date';
-import assertMarketLink from './common/market-link';
-import assertReportableOutcomes from '../../test/assertions/reportable-outcomes';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import assertFormattedNumber from 'assertions/common/formatted-number';
+import assertFormattedDate from 'assertions/common/formatted-date';
+import assertMarketLink from 'assertions/common/market-link';
+import assertReportableOutcomes from 'assertions/reportable-outcomes';
 
 export default function (market) {
 
@@ -307,7 +308,7 @@ export default function (market) {
 			assert.isArray(tradeOrders);
 		});
 
-		tradeOrders.map((trade, i) => {
+		tradeOrders.forEach((trade, i) => {
 			it(`market.tradeSummary.tradeOrders${i}.shares`, () => {
 				assert.isDefined(trade.shares);
 				assert.isObject(trade.shares);
@@ -373,7 +374,6 @@ export default function (market) {
 			assert.isArray(market.priceTimeSeries);
 		});
 
-		const userOpenOrdersSummary = market.userOpenOrdersSummary;
 		it('market.userOpenOrdersSummary', () => {
 			assert.isDefined(market.userOpenOrdersSummary);
 			assert.isObject(market.userOpenOrdersSummary);

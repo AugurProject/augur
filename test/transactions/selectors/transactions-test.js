@@ -9,7 +9,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState, {
+	const state = Object.assign({}, testState, {
 		transactionsData: {
 			testtransaction12345: {
 				id: 'testtransaction12345',

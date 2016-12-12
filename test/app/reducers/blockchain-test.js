@@ -1,10 +1,10 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import testState from '../../testState';
+import testState from 'test/testState';
 import {
 	UPDATE_BLOCKCHAIN
-} from '../../../src/modules/app/actions/update-blockchain';
-import reducer from '../../../src/modules/app/reducers/blockchain';
+} from 'modules/app/actions/update-blockchain';
+import reducer from 'modules/app/reducers/blockchain';
 
 describe(`modules/app/reducers/blockchain.js`, () => {
 	const thisTestState = Object.assign({}, testState);

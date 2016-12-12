@@ -1,3 +1,4 @@
+import { describe } from 'mocha';
 import { assert } from 'chai';
 
 export default function (scalarShareDenomination) {
@@ -11,7 +12,7 @@ export default function (scalarShareDenomination) {
 		assert.isDefined(markets, `markets isn't defined`);
 		assert.isObject(markets, `markets isn't an object`);
 
-		Object.keys(markets || {}).forEach(market => {
+		Object.keys(markets || {}).forEach((market) => {
 			assert.isDefined(markets[market], `markets.market isn't defined`);
 			assert.isString(markets[market], `markets.market isn't a string`);
 		});
@@ -24,7 +25,7 @@ export default function (scalarShareDenomination) {
 		assert.isDefined(denominations, `denominations isn't defined`);
 		assert.isArray(denominations, `denominations isn't an array`);
 
-		(denominations || []).forEach(denomination => {
+		(denominations || []).forEach((denomination) => {
 			assert.isDefined(denomination, `denominations.denomination isn't defined`);
 			assert.isObject(denomination, `denominations.denomination isn't an object`);
 

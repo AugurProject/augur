@@ -1,10 +1,10 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import testState from '../../testState';
+import testState from 'test/testState';
 import {
 	UPDATE_BRANCH
-} from '../../../src/modules/app/actions/update-branch';
-import reducer from '../../../src/modules/app/reducers/branch';
+} from 'modules/app/actions/update-branch';
+import reducer from 'modules/app/reducers/branch';
 
 describe(`modules/app/reducers/branch.js`, () => {
 	const thisTestState = Object.assign({}, testState);

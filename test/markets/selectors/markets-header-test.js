@@ -52,7 +52,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		marketsHeaderAssertions(actual)
+		marketsHeaderAssertions(actual);
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();

@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
-export default function(loginAccount) {
+export default function (loginAccount) {
 	assert.isDefined(loginAccount, `loginAccount isn't defined`);
 	assert.isObject(loginAccount, `loginAccount isn't an object`);
 

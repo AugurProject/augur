@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as action from '../../../src/modules/app/actions/update-connection';
+import * as action from 'modules/app/actions/update-connection';
 
 describe('modules/app/actions/update-connection.js', () => {
 	it(`should return a update connection action object`, () => {

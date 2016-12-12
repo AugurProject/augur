@@ -1,8 +1,9 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import assertLink from '../../test/assertions/common/link';
 
 
-export default function(links) {
+export default function (links) {
 	describe('augur-ui-react-components links state', () => {
 		assert.isDefined(links, `links isn't defined`);
 		assert.isObject(links, `links isn't an object`);
@@ -35,4 +36,4 @@ export default function(links) {
 			assertLink(links.loginMessageLink, 'loginMessageLink');
 		});
 	});
-};
+}

@@ -1,13 +1,14 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 import assertFormattedDate from '../../test/assertions/common/formatted-date';
 import assertInitialFairPrices from '../../test/assertions/common/initial-fair-prices';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
-export default function(createMarketForm) {
+export default function (createMarketForm) {
 	describe('createMarketForm', () => {
 		describe(`step ${createMarketForm.step} state`, () => {
-			switch(createMarketForm.step){
+			switch (createMarketForm.step) {
 				case 1:
 					describe('step', () => {
 						it('should be defined', () => {
@@ -96,7 +97,7 @@ export default function(createMarketForm) {
 					});
 
 					describe(`type: ${createMarketForm.type}`, () => {
-						switch(createMarketForm.type){
+						switch (createMarketForm.type) {
 							case 'categorical':
 								describe('categoricalOutcomesMinNum', () => {
 									it('should be defined', () => {
@@ -148,6 +149,8 @@ export default function(createMarketForm) {
 										assert.isNumber(createMarketForm.scalarBigNum, `'scalarBigNum' is not a number`);
 									});
 								});
+								break;
+							default:
 								break;
 						}
 					});
@@ -236,7 +239,7 @@ export default function(createMarketForm) {
 						});
 					});
 
-					if(createMarketForm.isCreatingOrderBook){
+					if (createMarketForm.isCreatingOrderBook) {
 						describe('initialLiquidity', () => {
 							it('should be defined', () => {
 								assert.isDefined(createMarketForm.initialLiquidity, `'initialLiquidity' is not defined`);
@@ -391,7 +394,7 @@ export default function(createMarketForm) {
 						});
 					});
 
-					if(createMarketForm.isCreatingOrderBook) {
+					if (createMarketForm.isCreatingOrderBook) {
 						describe('initialFairPrices', () => {
 							it('should be defined', () => {
 								assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);

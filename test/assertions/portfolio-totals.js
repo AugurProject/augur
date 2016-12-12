@@ -1,8 +1,9 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from 'assertions/common/formatted-number';
 
-export default function (portfolioTotals){
+export default function (portfolioTotals) {
 	describe(`augur-ui-react-components portfolioTotals' shape`, () => {
 		assert.isDefined(portfolioTotals);
 		assert.isObject(portfolioTotals);
@@ -12,4 +13,4 @@ export default function (portfolioTotals){
 			assertFormattedNumber(portfolioTotals.netChange, 'portfolio.totals.netChange');
 		});
 	});
-};
+}

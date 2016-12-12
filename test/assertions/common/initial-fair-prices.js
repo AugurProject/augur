@@ -1,6 +1,7 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-export default function (initialFairPrices, refObj){
+export default function (initialFairPrices, refObj) {
 	describe(`${refObj}'s initiaiFairPrices`, () => {
 		describe('type', () => {
 			it('should exist', () => {

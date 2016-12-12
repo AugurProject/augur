@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (actual, label = 'Formatted Number') {
@@ -21,4 +22,4 @@ export default function (actual, label = 'Formatted Number') {
 			assert.isString(actual.full, `'full' isn't a string`);
 		});
 	});
-};
+}

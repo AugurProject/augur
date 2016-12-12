@@ -1,6 +1,7 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-export default function (formattedDate, label = 'Formatted Date'){
+export default function (formattedDate, label = 'Formatted Date') {
 	describe(`${label}`, () => {
 		it(`should be formatted date`, () => {
 			assert.isDefined(formattedDate.value, `value is not defined`);

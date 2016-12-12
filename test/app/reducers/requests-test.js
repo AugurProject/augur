@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import requestsReducer from '../../../src/modules/app/reducers/requests';
-import { MARKET_DATA_LOADING } from '../../../src/modules/market/actions/load-full-market';
-import { UPDATE_MARKET_DATA_TIMESTAMP } from '../../../src/modules/market/actions/update-market-data-timestamp';
+import requestsReducer from 'modules/app/reducers/requests';
+import { MARKET_DATA_LOADING } from 'modules/market/actions/load-full-market';
+import { UPDATE_MARKET_DATA_TIMESTAMP } from 'modules/market/actions/update-market-data-timestamp';
 
 describe('modules/app/reducers/requests.js', () => {
 	it('should react to default action', () => {
