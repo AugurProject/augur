@@ -65,6 +65,7 @@ export function marketConvertToTransactions(label, data, marketID) {
 						const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 						const totalCostPerShare = totalCost.dividedBy(bnShares);
 						const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+						const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 						utd = {
 							[trade.transactionHash]: {
 								type,
