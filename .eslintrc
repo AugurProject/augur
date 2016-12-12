@@ -4,10 +4,12 @@
 	},
 	"extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "parser": "babel-eslint",
-	"parserOptions": {
-		"jsx": true
-	},
 	"plugins": ["react"],
+	"parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
   "rules": { # 0 = disabled, 1 = warn, 2 = error
 		# Disabled
     "comma-dangle": 0,
@@ -44,17 +46,8 @@
   },
 	"settings": {
 		"import/resolver": {
-			"node": {
-				extensions: [
-					"",
-					".js",
-					".jsx"
-				],
-				"moduleDirectory": [ # prevents linting issues w/ aliased paths
-					"node_modules",
-					"src",
-					"test"
-				]
+			"babel-module": {
+				"extensions": [".js", ".jsx"]
 			}
 		}
 	}
