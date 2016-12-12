@@ -29,7 +29,7 @@ export const makeBidTransaction = (marketID, outcomeID, marketType, marketDescri
 		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
-	transaction.action = (transactionID) => dispatch(processBid(
+	transaction.action = transactionID => dispatch(processBid(
 		transactionID,
 		marketID,
 		outcomeID,

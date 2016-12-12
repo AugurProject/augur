@@ -15,7 +15,7 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
 		augur: { web: { changeAccountName: () => {} } }
 	};
 
-	sinon.stub(fakeAugurJS.augur.web, 'changeAccountName', (name) => ({
+	sinon.stub(fakeAugurJS.augur.web, 'changeAccountName', name => ({
 		type: 'FAKE TYPE NAME CHANGE',
 		name
 	}));

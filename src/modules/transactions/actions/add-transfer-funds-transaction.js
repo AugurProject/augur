@@ -16,7 +16,7 @@ export const makeAddTransferFundsTransaction = (fromAddress, currency, amount, t
 		currency,
 		amount,
 		toAddress,
-		action: (transactionID) => dispatch(processTransferFunds(transactionID, fromAddress, amount, currency, toAddress))
+		action: transactionID => dispatch(processTransferFunds(transactionID, fromAddress, amount, currency, toAddress))
 	};
 	return addFundingObject;
 };

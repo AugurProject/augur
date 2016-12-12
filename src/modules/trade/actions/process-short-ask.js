@@ -72,7 +72,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 					}));
 				}));
 			},
-			onFailed: (err) => dispatch(updateExistingTransaction(transactionID, {
+			onFailed: err => dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: err.message
 			}))

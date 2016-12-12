@@ -1,9 +1,10 @@
 import { assert } from 'chai';
+import { formatPercent, formatShares, formatEther, formatRealEther } from '../../src/utils/format-number';
+import { abi } from '../../src/services/augurjs';
+
 export { BINARY, SCALAR, CATEGORICAL } from '../../src/modules/markets/constants/market-types';
 export { BUY, SELL } from '../../src/modules/trade/constants/types';
 export { BID, ASK } from '../../src/modules/bids-asks/constants/bids-asks-types';
-import { formatPercent, formatShares, formatEther, formatRealEther } from '../../src/utils/format-number';
-import { abi } from '../../src/services/augurjs';
 
 export const tradeTestState = {
 	loginAccount: {
@@ -113,7 +114,8 @@ export const tradeTestState = {
 			volume: '0',
 			winningOutcomes: []
 		},
-	}, outcomesData: {
+	},
+	outcomesData: {
 		testBinaryMarketID: {
 			2: {
 				id: 2,
@@ -502,13 +504,13 @@ const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limi
 
 // direct copy of calculate-trade-ids helper function but without calling augur.js
 export const stubCalculateBuyTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-	const orders = orderBooks[marketID] && orderBooks[marketID].sell || {};
+	const orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
 	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id);
 };
 
 // direct copy of calculate-trade-ids helper function but without calling augur.js
 export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-	const orders = orderBooks[marketID] && orderBooks[marketID].buy || {};
+	const orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
 	return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
 };
 
@@ -614,7 +616,8 @@ export const stubAddShortSellTransaction = (marketID, outcomeID, marketType, mar
 
 export const stubUpdateExistingTransaction = (transactionID, data) => ({
 	type: 'UPDATE_EXISTING_TRANSACTION',
-	transactionID, data
+	transactionID,
+	data
 });
 
 export const stubLoadAccountTrades = (marketID, cb) => {

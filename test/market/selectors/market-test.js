@@ -1,10 +1,10 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+
 import * as mockStore from '../../mockStore';
 // import assertions from 'augur-ui-react-components/lib/assertions';
-
-import sinon from 'sinon';
 
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -15,7 +15,7 @@ describe(`modules/market/selectors/market.js`, () => {
 
 	const stubbedAugurJS = {
 		getMarketCreatorFeesCollected: () => {},
-		abi: { bignum: (n) => n }
+		abi: { bignum: n => n }
 	};
 	sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
 

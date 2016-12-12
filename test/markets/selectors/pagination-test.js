@@ -19,7 +19,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 		}
 	};
 
-	sinon.stub(mockPage, 'updateSelectedPageNum', (pageNum) => ({
+	sinon.stub(mockPage, 'updateSelectedPageNum', pageNum => ({
 		type: 'UPDATE_SELECTED_PAGE_NUM',
 		pageNum
 	}));

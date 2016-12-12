@@ -8,6 +8,6 @@ export default () =>
 		updateSelectedOutcome: selectUpdateSelectedOutcome(store.dispatch)
 	});
 
-const selectUpdateSelectedOutcome = memoizerific(1)((dispatch) =>
-	(selectedOutcomeID) => dispatch(updateSelectedOutcome(selectedOutcomeID))
+const selectUpdateSelectedOutcome = memoizerific(1)(dispatch =>
+	selectedOutcomeID => dispatch(updateSelectedOutcome(selectedOutcomeID))
 );

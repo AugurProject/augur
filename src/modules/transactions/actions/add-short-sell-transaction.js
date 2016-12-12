@@ -33,7 +33,7 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketType, market
 		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
-	transaction.action = (transactionID) => dispatch(processShortSell(
+	transaction.action = transactionID => dispatch(processShortSell(
 		transactionID,
 		marketID,
 		outcomeID,

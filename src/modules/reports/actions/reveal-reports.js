@@ -6,7 +6,7 @@ const revealReportLock = {};
 
 export function revealReports(cb) {
 	return (dispatch, getState) => {
-		const callback = cb || ((e) => console.log('revealReports:', e));
+		const callback = cb || (e => console.log('revealReports:', e));
 		const { branch, loginAccount, reports } = getState();
 		// Make sure that:
 		//  - branch is in the second half of its reporting period
@@ -18,7 +18,7 @@ export function revealReports(cb) {
 			const revealableReports = Object.keys(branchReports)
 				.filter(eventID => branchReports[eventID].reportHash &&
 				branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
-				.map(eventID => {
+				.map((eventID) => {
 					const obj = { ...branchReports[eventID], eventID };
 					return obj;
 				});

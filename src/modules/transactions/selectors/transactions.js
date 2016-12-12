@@ -8,7 +8,7 @@ export default function () {
 	return selectTransactions(transactionsData);
 }
 
-export const selectTransactions = memoizerific(1)((transactionsData) => (
+export const selectTransactions = memoizerific(1)(transactionsData => (
 	Object.keys(transactionsData || {})
 		.sort((a, b) => {
 			const timestampA = transactionsData[a].timestamp;
@@ -22,7 +22,7 @@ export const selectTransactions = memoizerific(1)((transactionsData) => (
 			}
 			return 0;
 		})
-		.map(id => {
+		.map((id) => {
 			let marketLink = null;
 			if (transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
 				marketLink = selectMarketLink(

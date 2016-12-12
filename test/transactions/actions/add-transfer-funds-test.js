@@ -23,7 +23,7 @@ describe(`modules/transactions/actions/add-transfer-funds-transaction.js`, () =>
 		toAddress
 	}));
 
-	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => ({
+	sinon.stub(fakeAddTransactions, 'addTransaction', data => ({
 		type: 'ADD_TRANSACTION',
 		...data
 	}));

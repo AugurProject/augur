@@ -1,12 +1,11 @@
 import { describe, it, beforeEach } from 'mocha';
-import {
-	assert
-} from 'chai';
-import { BUY, SELL } from '../../../src/modules/trade/constants/types';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+
+import { BUY, SELL } from '../../../src/modules/trade/constants/types';
 import testState from '../../testState';
 
 describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
@@ -18,17 +17,17 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	const fakeProcessBuy = { processBuy: () => {} };
 	const fakeProcessSell = { processSell: () => {} };
 
-	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => ({
+	sinon.stub(fakeAddTransactions, 'addTransaction', data => ({
 		type: 'ADD_TRANSACTION',
 		...data
 	}));
 
-	sinon.stub(fakeProcessBuy, 'processBuy', (data) => ({
+	sinon.stub(fakeProcessBuy, 'processBuy', data => ({
 		type: 'BUY',
 		...data
 	}));
 
-	sinon.stub(fakeProcessSell, 'processSell', (data) => ({
+	sinon.stub(fakeProcessSell, 'processSell', data => ({
 		type: 'SELL',
 		...data
 	}));

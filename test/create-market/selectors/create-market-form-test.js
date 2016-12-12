@@ -27,9 +27,9 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	const store = mockStore(state);
 
 	const steps = {
-		select: (formState) => true,
+		select: formState => true,
 		errors: () => {},
-		isValid: (formState) => true
+		isValid: formState => true
 	};
 
 	const step2 = sinon.stub(Object.assign({}, steps, {
@@ -40,13 +40,13 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	step2.initialFairPrices.returns({});
 
 	const step3 = sinon.stub(Object.assign({}, steps, {
-		select: (formState) => returnObj
+		select: formState => returnObj
 	}));
 	step3.isValid.returns(true);
 	step3.select.returns(returnObj);
 
 	const step4 = sinon.stub(Object.assign({}, steps, {
-		select: (formState) => returnObj
+		select: formState => returnObj
 	}));
 	step4.isValid.returns(true);
 	step4.select.returns(returnObj);

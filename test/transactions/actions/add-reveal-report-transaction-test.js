@@ -38,7 +38,7 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 		}
 	};
 
-	sinon.stub(mockAddTransactions, 'addTransaction', (data) => ({
+	sinon.stub(mockAddTransactions, 'addTransaction', data => ({
 		type: 'ADD_TRANSACTION',
 		data
 	}));

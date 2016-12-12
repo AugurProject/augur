@@ -17,7 +17,7 @@ describe('utils/set-title.js', () => {
 		assert.strictEqual(global.document.title, 'testing | Augur', 'title not set to expected value');
 	});
 
-	Object.keys(pages).forEach(page => {
+	Object.keys(pages).forEach((page) => {
 		const currentPage = pages[page];
 
 		it(`should correctly set the page title for the ${currentPage} page`, () => {
@@ -71,16 +71,14 @@ function testPageTitle(page, description, long) {
 				expected = titles.MARKET;
 
 				assert.strictEqual(title, expected + appended, `title for ${page} page WITHOUT description not set to expected value`);
+			} else if (long) {
+				expected = 'Some title here that is fairly long as...'; // Specifically tests appropriate truncation when final word is added that causes string to be longer than 40 characters
+
+				assert.strictEqual(title, expected + appended, `title for ${page} page WITH long description not set to expected value`);
 			} else {
-				if (!!long) {
-					expected = 'Some title here that is fairly long as...'; // Specifically tests appropriate truncation when final word is added that causes string to be longer than 40 characters
+				expected = 'Some title here?';
 
-					assert.strictEqual(title, expected + appended, `title for ${page} page WITH long description not set to expected value`);
-				} else {
-					expected = 'Some title here?';
-
-					assert.strictEqual(title, expected + appended, `title for ${page} page WITH short description not set to expected value`);
-				}
+				assert.strictEqual(title, expected + appended, `title for ${page} page WITH short description not set to expected value`);
 			}
 			break;
 		}

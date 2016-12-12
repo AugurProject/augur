@@ -1,10 +1,11 @@
 import { describe, it, before, beforeEach, after } from 'mocha';
 import { assert } from 'chai';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+
 import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
 import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from '../../../../src/modules/create-market/constants/market-values-constraints';
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-2';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 
 describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

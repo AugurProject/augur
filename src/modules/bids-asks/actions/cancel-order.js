@@ -57,7 +57,7 @@ export function processCancelOrder(transactionID, orderID) {
 
 		augur.cancel({
 			trade_id: orderID,
-			onSent: (res) => console.log('augur.cancel sent: %o', res),
+			onSent: res => console.log('augur.cancel sent: %o', res),
 			onSuccess: (res) => {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));

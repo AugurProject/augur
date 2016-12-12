@@ -39,7 +39,7 @@ export default function validateInitialFairPrices(type, initialFairPrices, width
 		return null;
 	});
 
-	if (!!Object.keys(fairPriceErrors).length) {
+	if (Object.keys(fairPriceErrors).length) {
 		return fairPriceErrors;
 	}
 }

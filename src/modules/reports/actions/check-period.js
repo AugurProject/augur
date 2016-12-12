@@ -17,7 +17,7 @@ const tracker = {
 
 export function checkPeriod(unlock, cb) {
 	return (dispatch, getState) => {
-		const callback = cb || ((e) => e && console.log('checkPeriod:', e));
+		const callback = cb || (e => e && console.log('checkPeriod:', e));
 		const { loginAccount, branch } = getState();
 		console.log('checkPeriod:', unlock, tracker);
 		if (!branch.id || !loginAccount.address || loginAccount.rep === '0') {

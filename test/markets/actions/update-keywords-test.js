@@ -10,7 +10,7 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 	const { store } = mockStore.default;
 	const mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockUpdateURL, 'updateURL', (href) => ({
+	sinon.stub(mockUpdateURL, 'updateURL', href => ({
 		type: 'UPDATE_URL',
 		href
 	}));

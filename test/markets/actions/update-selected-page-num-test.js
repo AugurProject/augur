@@ -1,8 +1,9 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
-import * as mockStore from '../../mockStore';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import * as mockStore from '../../mockStore';
 // import configureMockStore from 'redux-mock-store';
 // import thunk from 'redux-thunk';
 // import testState from '../../testState';
@@ -14,7 +15,7 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	const { store } = mockStore.default;
 	const mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockUpdateURL, 'updateURL', (href) => ({ type: 'UPDATE_URL', href }));
+	sinon.stub(mockUpdateURL, 'updateURL', href => ({ type: 'UPDATE_URL', href }));
 
 	const action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
 		'../../link/actions/update-url': mockUpdateURL,

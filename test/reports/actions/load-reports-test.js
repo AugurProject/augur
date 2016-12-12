@@ -48,7 +48,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 				dispatch({ type: 'LOAD_REPORT' });
 				cb(null);
 			});
-			sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', (cb) => (dispatch, getState) => {
+			sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', cb => (dispatch, getState) => {
 				dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
 				cb(null);
 			});

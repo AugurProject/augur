@@ -10,6 +10,6 @@ export default function () {
 	};
 }
 
-export const selectOnChangeKeywords = memoizerific(1)((dispatch) =>
-	(keywords) => dispatch(updateKeywords(keywords))
+export const selectOnChangeKeywords = memoizerific(1)(dispatch =>
+	keywords => dispatch(updateKeywords(keywords))
 );

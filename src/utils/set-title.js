@@ -2,7 +2,7 @@ import * as views from '../modules/app/constants/views';
 import * as titles from '../modules/app/constants/page-titles';
 
 export default function (title, params) {
-	if (!!title) {
+	if (title) {
 		setDocumentTitle(title);
 	} else {
 		switch (params.page) {

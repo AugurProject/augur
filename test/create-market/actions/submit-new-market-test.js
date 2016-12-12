@@ -59,7 +59,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	const stubbedNewMarketTransactions = {
 		addCreateMarketTransaction: () => {}
 	};
-	sinon.stub(stubbedNewMarketTransactions, 'addCreateMarketTransaction', (newMarket) => testData);
+	sinon.stub(stubbedNewMarketTransactions, 'addCreateMarketTransaction', newMarket => testData);
 
 	const stubbedUpdateExistingTransaction = {
 		updateExistingTransaction: () => {}
@@ -84,7 +84,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	const stubbedGenerateOrderBook = {
 		submitGenerateOrderBook: () => {}
 	};
-	sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', (data) => ({
+	sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', data => ({
 		type: 'submitGenerateOrderBook'
 	}));
 

@@ -52,7 +52,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockLoadAccountTrades.loadAccountTrades = sinon.stub().returns({
 		type: 'UPDATE_ACCOUNT_TRADES_DATA'
 	});
-	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', (marketID) => ({
+	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', marketID => ({
 		type: 'LOAD_BASIC_MARKET',
 		marketID
 	}));

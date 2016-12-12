@@ -23,7 +23,7 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 		type: 'PROCESS_REPORTS'
 	});
 
-	sinon.stub(mockAdd, `addTransaction`, (arg) => ({
+	sinon.stub(mockAdd, `addTransaction`, arg => ({
 		type: 'ADD_TRANSACTION',
 		data: arg
 	}));

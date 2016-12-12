@@ -12,7 +12,7 @@ describe('modules/markets/selectors/keywords.js', () => {
 	const mockUpdate = {
 		updateKeywords: () => {}
 	};
-	sinon.stub(mockUpdate, 'updateKeywords', (keywords) => ({
+	sinon.stub(mockUpdate, 'updateKeywords', keywords => ({
 		type: 'UPDATE_KEYWORDS',
 		keywords
 	}));

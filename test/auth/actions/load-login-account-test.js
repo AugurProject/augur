@@ -42,7 +42,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeLoadMarketsInfo.loadMarketsInfo = () => (dispatch, getState) => {
 		dispatch({ type: 'UPDATE_MARKETS_INFO' });
 	};
-	sinon.stub(fakeUpdateBranch, 'syncBranch', (cb) => (dispatch, getState) => {
+	sinon.stub(fakeUpdateBranch, 'syncBranch', cb => (dispatch, getState) => {
 		const reportPeriod = 19;
 		dispatch({ type: 'SYNC_BRANCH', data: { reportPeriod } });
 		if (cb) cb(null);

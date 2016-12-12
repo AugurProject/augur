@@ -18,7 +18,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 	const mockHeader = {
 		updateSelectedMarketsHeader: () => {}
 	};
-	sinon.stub(mockHeader, 'updateSelectedMarketsHeader', (arg) => ({
+	sinon.stub(mockHeader, 'updateSelectedMarketsHeader', arg => ({
 		type: 'UPDATE_SELECTED_MARKETS_HEADER',
 		header: arg
 	}));

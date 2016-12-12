@@ -10,7 +10,7 @@ export function loadEventsWithSubmittedReport(loadMore) {
 		if (branch.id && branch.currentPeriod && loginAccount.address) {
 			const oldestLoadedPeriod = oldestLoadedEventPeriod || branch.currentPeriod - 5;
 
-			let startPeriod = !!loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
+			let startPeriod = loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
 
 			dispatch(updateOldestLoadedEventPeriod(startPeriod));
 
@@ -26,7 +26,7 @@ export function getEventsWithReports(branch, period, accountID) {
 	return (dispatch, getState) => {
 		augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
 			const events = {};
-			(eventIDs || []).forEach(eventID => {
+			(eventIDs || []).forEach((eventID) => {
 				if (parseInt(eventID, 16)) events[eventID] = { branch, period };
 			});
 			dispatch(updateEventsWithAccountReportData(events));
@@ -66,16 +66,16 @@ export function loadAdditionalEventData(events) {
 			}
 		}
 
-		Object.keys(events).forEach(eventID => {
+		Object.keys(events).forEach((eventID) => {
 			augur.getExpiration(eventID, (expirationDate) => {
-				if (!!expirationDate) {
+				if (expirationDate) {
 					updateEvent(eventID, {
 						expirationDate: new Date(parseInt(expirationDate, 10) * 1000)
 					});
 				}
 			});
 			augur.getMarket(eventID, 0, (marketID) => { // Simply getting the first market since events -> markets are 1-to-1 currently
-				if (!!marketID) {
+				if (marketID) {
 					updateEvent(eventID, { marketID });
 					augur.getFees(marketID, marketFees => !!marketFees && updateEvent(eventID, { marketFees }));
 					if (!branchReports || !branchReports[eventID] || !branchReports[eventID].reportedOutcomeID) {

@@ -46,7 +46,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
 				cb(null, markets);
 			});
-			sinon.stub(AugurJS.abi, 'bignum', (n) => new BigNumber(n, 10));
+			sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
 				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
 				cb(null);

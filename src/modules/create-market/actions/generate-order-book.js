@@ -22,7 +22,7 @@ export function submitGenerateOrderBook(marketData) {
 }
 
 export function createOrderBook(transactionID, marketData) {
-	return dispatch => {
+	return (dispatch) => {
 		dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
 		dispatch(updateSellCompleteSetsLock(marketData.id, true));
 		AugurJS.generateOrderBook(marketData, (err, res) => {
@@ -32,7 +32,7 @@ export function createOrderBook(transactionID, marketData) {
 }
 
 export function handleGenerateOrderBookResponse(err, res, transactionID, marketData) {
-	return dispatch => {
+	return (dispatch) => {
 		if (err) {
 			dispatch(
 				updateExistingTransaction(
@@ -64,7 +64,7 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 				break;
 			case ORDER_BOOK_ORDER_COMPLETE:
 				message = `${
-					!!p.buyPrice ? 'Bid' : 'Ask'
+					p.buyPrice ? 'Bid' : 'Ask'
 					} for ${
 					p.amount
 					} share${

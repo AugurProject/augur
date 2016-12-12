@@ -1902,7 +1902,7 @@ describe('modules/trade/actions/process-sell.js', () => {
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
-			transactionID: 'trans2',
+				transactionID: 'trans2',
 				data: { status: 'failed', message: 'this error is a test.' } },
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{

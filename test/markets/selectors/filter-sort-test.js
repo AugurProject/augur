@@ -14,7 +14,7 @@ describe(`modules/markets/selectors/filter-sort.js`, () => {
 		updateSelectedFilterSort: () => {}
 	};
 
-	sinon.stub(mockSort, 'updateSelectedFilterSort', (o) => ({
+	sinon.stub(mockSort, 'updateSelectedFilterSort', o => ({
 		type: 'UPDATE_SELECTED_FILTER_SORT',
 		value: o
 	}));

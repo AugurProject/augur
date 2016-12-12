@@ -12,7 +12,7 @@ export default function () {
 	};
 }
 
-const getUpdate = memoizerific(1)((dispatch) =>
+const getUpdate = memoizerific(1)(dispatch =>
 	(marketId) => {
 		dispatch(loadMarketsInfo([marketId], () => {
 			dispatch(loadFullMarket(marketId));

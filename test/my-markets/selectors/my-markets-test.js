@@ -1,5 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
+import sinon from 'sinon';
+import proxyquire from 'proxyquire';
+
 // import assertions from 'augur-ui-react-components/lib/assertions';
 import * as mockStore from '../../mockStore';
 
@@ -7,9 +10,6 @@ import { formatNumber, formatEther } from '../../../src/utils/format-number';
 import { formatDate } from '../../../src/utils/format-date';
 
 import { abi } from '../../../src/services/augurjs';
-
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
 	proxyquire.noPreserveCache().noCallThru();

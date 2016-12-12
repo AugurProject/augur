@@ -1,3 +1,5 @@
+import memoizerific from 'memoizerific';
+
 import { formatEther, formatPercent, formatRep } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
@@ -5,7 +7,6 @@ import { abi } from '../../../services/augurjs';
 import { TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 import store from '../../../store';
-import memoizerific from 'memoizerific';
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
@@ -17,23 +18,23 @@ export default function () {
 
 	const reports = Object.keys(eventsWithAccountReport)
 		.filter(eventId => !!eventsWithAccountReport[eventId].marketID)
-		.map(eventId => {
+		.map((eventId) => {
 			const expirationDate = eventsWithAccountReport[eventId].expirationDate || null;
 			const isFinal = eventsWithAccountReport[eventId].isFinal || null;
 			const marketId = eventsWithAccountReport[eventId].marketID || null;
 			const description = getMarketDescription(marketId);
-			const marketLink = marketId && description && selectMarketLink({ id: marketId, description }, store.dispatch) || null;
+			const marketLink = (marketId && description && selectMarketLink({ id: marketId, description }, store.dispatch)) || null;
 			const marketOutcome = eventsWithAccountReport[eventId].marketOutcome;
 			let outcome = null;
 			if (marketOutcome !== '0') {
 				outcome = selectMarketOutcome(eventsWithAccountReport[eventId].marketOutcome, marketId);
 			}
-			const outcomePercentage = eventsWithAccountReport[eventId].proportionCorrect && formatPercent(abi.bignum(eventsWithAccountReport[eventId].proportionCorrect).times(100)) || null;
+			const outcomePercentage = (eventsWithAccountReport[eventId].proportionCorrect && formatPercent(abi.bignum(eventsWithAccountReport[eventId].proportionCorrect).times(100))) || null;
 			const reported = selectMarketOutcome(eventsWithAccountReport[eventId].accountReport, marketId);
-			const isReportEqual = outcome != null && reported != null && outcome === reported || null; // Can be done here
+			const isReportEqual = (outcome != null && reported != null && outcome === reported) || null; // Can be done here
 			const feesEarned = calculateFeesEarned(eventsWithAccountReport[eventId]);
-			const repEarned = eventsWithAccountReport[eventId].repEarned && formatRep(eventsWithAccountReport[eventId].repEarned) || null;
-			const endDate = expirationDate && formatDate(expirationDate) || null;
+			const repEarned = (eventsWithAccountReport[eventId].repEarned && formatRep(eventsWithAccountReport[eventId].repEarned)) || null;
+			const endDate = (expirationDate && formatDate(expirationDate)) || null;
 			const isChallenged = eventsWithAccountReport[eventId].isChallenged || null;
 			const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged;
 			const period = eventsWithAccountReport[eventId].period || null;
@@ -73,7 +74,7 @@ export default function () {
 	return reports;
 }
 
-export const getMarketDescription = memoizerific(1000)(marketID => {
+export const getMarketDescription = memoizerific(1000)((marketID) => {
 	const { allMarkets } = require('../../../selectors');
 
 	if (!allMarkets.filter(market => market.id === marketID)) {
@@ -81,7 +82,7 @@ export const getMarketDescription = memoizerific(1000)(marketID => {
 		return null;
 	}
 
-	return allMarkets.filter(market => market.id === marketID)[0] && allMarkets.filter(market => market.id === marketID)[0].description || null;
+	return (allMarkets.filter(market => market.id === marketID)[0] && allMarkets.filter(market => market.id === marketID)[0].description) || null;
 });
 
 export const calculateFeesEarned = (event) => {

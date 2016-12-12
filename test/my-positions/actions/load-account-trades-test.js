@@ -35,7 +35,7 @@ describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 	const stubbedActions = {
 		updateAccountTradesData: () => {}
 	};
-	const stubbedUpdateAccountTradesData = sinon.stub(stubbedActions, 'updateAccountTradesData', (accountTrades) => store.dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data: accountTrades }));
+	const stubbedUpdateAccountTradesData = sinon.stub(stubbedActions, 'updateAccountTradesData', accountTrades => store.dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data: accountTrades }));
 
 	const action = proxyquire('../../../src/modules/my-positions/actions/load-account-trades', {
 		'../../../modules/my-positions/actions/update-account-trades-data': stubbedUpdateAccountTradesData,

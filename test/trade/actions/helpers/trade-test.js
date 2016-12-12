@@ -47,7 +47,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					cb('10');
 					break;
 			}
-			return;
+
 		});
 
 		sinon.stub(mockAugur.augur, 'getCashBalance', (takerAddress, cb) => {
@@ -64,7 +64,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					cb('10000.0');
 					break;
 			}
-			return;
+
 		});
 
 		sinon.stub(mockAugur.augur, 'trade', (args) => {
@@ -98,7 +98,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 					break;
 			}
-			return;
+
 		});
 
 		const helper = proxyquire('../../../../src/modules/trade/actions/helpers/trade.js', {
@@ -358,7 +358,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					cb('10');
 					break;
 			}
-			return;
+
 		});
 
 		sinon.stub(mockAugurSell.augur, 'getCashBalance', (takerAddress, cb) => {
@@ -368,7 +368,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					cb('10000.0');
 					break;
 			}
-			return;
+
 		});
 
 		sinon.stub(mockAugurSell.augur, 'trade', (args) => {
@@ -392,7 +392,7 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 					onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 					break;
 			}
-			return;
+
 			// onCommitFailed({ error: 'error', message: 'error message' });
 			// onNextBlock({ hash: 'tradeHash1', callReturn: '1' });
 			// onTradeFailed({ error: 'error', message: 'error message' });

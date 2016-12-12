@@ -90,7 +90,7 @@ const selectPeriodPL = memoizerific(2)((accountTrades, blockchain, outcomesData,
 		return null;
 	}
 
-	const periodDate = new Date(Date.now() - period*24*60*60*1000);
+	const periodDate = new Date(Date.now() - (period*24*60*60*1000));
 	const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber);
 
 	return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs

@@ -43,7 +43,7 @@ export default function () {
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {
 		href: makeLocation({ page: ACCOUNT }).url,
-		onClick: (href) => dispatch(updateURL(href))
+		onClick: href => dispatch(updateURL(href))
 	};
 	return obj;
 });
@@ -51,7 +51,7 @@ export const selectAccountLink = memoizerific(1)((dispatch) => {
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {
 		href: makeLocation({ page: MARKETS }).url,
-		onClick: (href) => dispatch(updateURL(href))
+		onClick: href => dispatch(updateURL(href))
 	};
 	return obj;
 });
@@ -78,7 +78,7 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	return {
 		href,
 		onClick: () => {
-			if (!!alsoLogout) {
+			if (alsoLogout) {
 				dispatch(logout());
 			}
 
@@ -99,7 +99,7 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	}
 }));
 
-export const selectAirbitzOnLoad = memoizerific(1)((dispatch) => ({
+export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
 	onLoad: () => {
 		const abcContext = require('../../../selectors').abc.abcContext;
 		const usernames = abcContext.listUsernames();

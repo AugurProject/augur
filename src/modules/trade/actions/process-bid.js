@@ -44,7 +44,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			market: marketID,
 			outcome: outcomeID,
 			scalarMinMax,
-			onSent: (res) => console.log('bid onSent', res),
+			onSent: res => console.log('bid onSent', res),
 			onSuccess: (res) => {
 				dispatch(updateExistingTransaction(transactionID, {
 					hash: res.hash,
@@ -64,7 +64,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 					}));
 				}));
 			},
-			onFailed: (err) => dispatch(updateExistingTransaction(transactionID, {
+			onFailed: err => dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: err.message
 			}))

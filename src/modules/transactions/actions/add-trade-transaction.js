@@ -31,7 +31,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 	};
 
 	if (type === BUY) {
-		transaction.action = (transactionID) => dispatch(processBuy(
+		transaction.action = transactionID => dispatch(processBuy(
 				transactionID,
 				marketID,
 				outcomeID,
@@ -42,7 +42,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 				gasFeesRealEth));
 
 	} else if (type === SELL) {
-		transaction.action = (transactionID) => dispatch(processSell(
+		transaction.action = transactionID => dispatch(processSell(
 				transactionID,
 				marketID,
 				outcomeID,

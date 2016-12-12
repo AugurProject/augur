@@ -9,7 +9,7 @@ import reducers from './reducers';
 
 const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
-const consoleLog = store => next => action => {
+const consoleLog = store => next => (action) => {
 	const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
 	if (typeof action !== 'function' && !isIgnoreFlag) {
 		// console.log(action);
@@ -18,7 +18,7 @@ const consoleLog = store => next => action => {
 };
 
 // local storage middleware
-const localStorageMiddleware = store => next => action => {
+const localStorageMiddleware = store => next => (action) => {
 	next(action);
 	const state = store.getState();
 

@@ -35,7 +35,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
 	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
 
-	if (!!o.isCreatingOrderBook) {
+	if (o.isCreatingOrderBook) {
 		const formattedFairPrices = [];
 
 		o.initialFairPrices.values.map((cV, i) => {

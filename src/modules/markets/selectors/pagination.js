@@ -28,7 +28,7 @@ export default function () {
 		startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
 		endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
 			marketsTotals.numUnpaginated),
-		onUpdateSelectedPageNum: (pageNum) => store.dispatch(updateSelectedPageNum(pageNum))
+		onUpdateSelectedPageNum: pageNum => store.dispatch(updateSelectedPageNum(pageNum))
 	};
 
 	if (marketsTotals.numUnpaginated > o.numPerPage) {
@@ -38,8 +38,8 @@ export default function () {
 		o.nextItemNum = o.selectedPageNum < o.numPages ? o.endItemNum + 1 : undefined;
 		o.previousItemNum = o.selectedPageNum >= 2 ? o.startItemNum - o.numPerPage : undefined;
 
-		o.nextPageLink = !!o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
-		o.previousPageLink = !!o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
+		o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
+		o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
 	}
 
 	return o;

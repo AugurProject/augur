@@ -34,17 +34,15 @@ export function loadReports(callback) {
 			}, (err) => {
 				if (err) {
 					if (callback) callback(err);
+				} else if (!marketIDs.length) {
+					if (callback) callback(null, marketIDs);
 				} else {
-					if (!marketIDs.length) {
-						if (callback) callback(null, marketIDs);
-					} else {
-						dispatch(loadReportDescriptors((e) => {
-							if (callback) {
-								if (e) return callback(e);
-								callback(null, marketIDs);
-							}
-						}));
-					}
+					dispatch(loadReportDescriptors((e) => {
+						if (callback) {
+							if (e) return callback(e);
+							callback(null, marketIDs);
+						}
+					}));
 				}
 			});
 		});

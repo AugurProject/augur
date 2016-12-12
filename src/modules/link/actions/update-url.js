@@ -12,7 +12,7 @@ export function updateURL(url, title) {
 	return (dispatch, getState) => {
 		const parsedURL = parseURL(url);
 
-		if (!!title) {
+		if (title) {
 			setTitle(title);
 		} else if (title !== false) {
 			setTitle(null, (parsedURL.searchParams|| null));

@@ -82,7 +82,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	};
 	const store = mockStore(testState);
 	const mockSelectMarket = { selectMarket: () => {} };
-	sinon.stub(mockSelectMarket, 'selectMarket', (marketID) => store.getState().marketsData[marketID]);
+	sinon.stub(mockSelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
 	sinon.stub(mockAddBidTransaction, 'addBidTransaction', stubAddBidTransaction);
 
@@ -106,7 +106,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
 
 	const mockSelectTransactionsLink = { selectTransactionsLink: () => {} };
-	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', (dispatch) => ({
+	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', dispatch => ({
 		onClick: () => dispatch({
 			type: 'UPDATE_URL',
 			url: 'transactions-link'
@@ -428,7 +428,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			{ type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID' },
 			{ type: 'UPDATE_URL', url: 'transactions-link' }
-		], `Didn't produce the expected Actions or Calculations`);
+			], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a binary market', () => {

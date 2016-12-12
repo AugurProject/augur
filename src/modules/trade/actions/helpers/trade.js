@@ -61,8 +61,8 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					max_amount: maxAmount.toFixed(),
 					trade_ids: tradeIDs,
 					sender: takerAddress,
-					onTradeHash: (data) => cbStatus({ status: 'submitting' }),
-					onCommitSent: (data) => cbStatus({ status: 'committing' }),
+					onTradeHash: data => cbStatus({ status: 'submitting' }),
+					onCommitSent: data => cbStatus({ status: 'committing' }),
 					onCommitSuccess: (data) => {
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 						cbStatus({
@@ -76,7 +76,7 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 						console.log('commit failed:', err);
 						nextTrade(err);
 					},
-					onNextBlock: (data) => console.log('trade-onNextBlock', data),
+					onNextBlock: data => console.log('trade-onNextBlock', data),
 					onTradeSent: (data) => {
 						console.log('trade sent:', data);
 						cbStatus({ status: 'filling' });

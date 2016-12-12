@@ -29,7 +29,7 @@ export const makeShortAskTransaction = (marketID, outcomeID, marketType, marketD
 		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
-	transaction.action = (transactionID) => dispatch(processShortAsk(
+	transaction.action = transactionID => dispatch(processShortAsk(
 		transactionID,
 		marketID,
 		outcomeID,

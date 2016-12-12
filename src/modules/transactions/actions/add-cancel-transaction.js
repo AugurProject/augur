@@ -30,6 +30,6 @@ export function makeCancelTransaction(order, market, outcome, ether, gas, dispat
 			},
 			outcome
 		},
-		action: (transactionID) => dispatch(processCancelOrder(transactionID, order.id))
+		action: transactionID => dispatch(processCancelOrder(transactionID, order.id))
 	};
 }

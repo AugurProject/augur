@@ -18,11 +18,11 @@ export default function () {
 	);
 }
 
-export const selectPendingReports = memoizerific(1)((markets) =>
+export const selectPendingReports = memoizerific(1)(markets =>
 	markets.filter(market => !!market.isPendingReport)
 );
 
-export const selectPositions = memoizerific(1)((markets) =>
+export const selectPositions = memoizerific(1)(markets =>
 	markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
 );
 

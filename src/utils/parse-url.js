@@ -3,7 +3,7 @@
  * @return {{searchParams: Object, url: String}}
  */
 export function makeLocation(searchParams = {}) {
-	const search = searchParams && Object.keys(searchParams).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`).join('&') || '';
+	const search = (searchParams && Object.keys(searchParams).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`).join('&')) || '';
 	let url = '/';
 	if (search.length) {
 		url = `${url}?${search}`;

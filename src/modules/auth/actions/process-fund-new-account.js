@@ -47,7 +47,7 @@ export function processFundNewAccount(transactionID, address) {
 						dispatch(updateLoginAccount(loginAccount));
 						console.log('augur.Register.register success:', r);
 					},
-					onFailed: (e) => console.error('augur.Register.register failed:', e)
+					onFailed: e => console.error('augur.Register.register failed:', e)
 				});
 			},
 			(failedTransaction) => {

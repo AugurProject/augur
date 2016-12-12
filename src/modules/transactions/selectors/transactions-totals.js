@@ -16,7 +16,7 @@ export const selectTransactionsTotals = memoizerific(1)((transactions) => {
 		title: ''
 	};
 
-	o.transactions = transactions.forEach(transaction => {
+	o.transactions = transactions.forEach((transaction) => {
 		o.numTotal += 1;
 		if (transaction.status === PENDING) {
 			o.numPending += 1;

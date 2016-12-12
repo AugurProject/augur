@@ -28,7 +28,7 @@ describe(`modules/transactions/actions/add-create-market-transaction.js`, () => 
 		data
 	}));
 
-	sinon.stub(mockAdd, `addTransaction`, (arg) => ({
+	sinon.stub(mockAdd, `addTransaction`, arg => ({
 		type: 'ADD_TRANSACTION',
 		data: arg
 	}));

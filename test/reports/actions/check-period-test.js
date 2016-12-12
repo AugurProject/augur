@@ -33,14 +33,14 @@ describe('modules/reports/actions/check-period.js', () => {
 	mockAugurJS.augur.checkPeriod = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
-	sinon.stub(mockLoadReports, 'loadReports', (cb) => (dispatch, getState) => {
+	sinon.stub(mockLoadReports, 'loadReports', cb => (dispatch, getState) => {
 		dispatch({
 			type: 'UPDATE_REPORTS',
 			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
 		});
 		cb(null);
 	});
-	sinon.stub(mockLoadEventsWithSubmittedReport, 'loadEventsWithSubmittedReport', () => dispatch => {
+	sinon.stub(mockLoadEventsWithSubmittedReport, 'loadEventsWithSubmittedReport', () => (dispatch) => {
 		dispatch({ type: 'LOAD_EVENTS' });
 	});
 	mockCollectFees.collectFees = sinon.stub().returns({

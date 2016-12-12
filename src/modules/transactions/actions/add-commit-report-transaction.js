@@ -20,7 +20,7 @@ export const makeCommitReportTransaction =
 			isIndeterminate
 		},
 		gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReportHash }, augur.rpc.gasPrice)),
-		action: (transactionID) =>
+		action: transactionID =>
 			dispatch(
 				sendCommitReport(
 					transactionID, market,

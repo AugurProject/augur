@@ -1,5 +1,8 @@
 import { describe, it, before, beforeEach, after } from 'mocha';
 import { assert } from 'chai';
+import sinon from 'sinon';
+import proxyquire from 'proxyquire';
+
 import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
 import {
 	TAKER_FEE_DEFAULT,
@@ -20,9 +23,6 @@ import * as validateInitialFairPrices from '../../../../src/modules/create-marke
 import * as validateBestStartingQuantity from '../../../../src/modules/create-market/validators/validate-best-starting-quantity';
 import * as validateStartingQuantity from '../../../../src/modules/create-market/validators/validate-starting-quantity';
 import * as validatePriceWidth from '../../../../src/modules/create-market/validators/validate-price-width';
-
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We implicitly tested `initialFairPrices` via the `select` test.

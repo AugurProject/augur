@@ -1,8 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
 
-// fixes Reflect not being recognized in test or node 4.2
-require('core-js/es6/reflect');
-
 import { BRANCH_ID } from '../../app/constants/network';
 import { updateEnv } from '../../app/actions/update-env';
 import { updateConnectionStatus } from '../../app/actions/update-connection';
@@ -15,6 +12,9 @@ import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
 // for testing only
 import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
+
+// fixes Reflect not being recognized in test or node 4.2
+require('core-js/es6/reflect');
 
 export function initAugur() {
 	return (dispatch, getState) => {

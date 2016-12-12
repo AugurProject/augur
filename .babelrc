@@ -10,10 +10,12 @@
 	"presets": [["es2015", {"modules": false}], "stage-0", "react"],
 	"plugins": [
 		["module-resolver", {
-			"root": ["./src"],
+			"root": ["./src", "./test"],
 			"alias": {
+				"src": "./src",
+				"test": "./test",
 				"modules": "modules",
-				"test": "./test"
+				"utils": "utils"
 			},
 			"extensions": [".js", ".jsx"]
 		}]

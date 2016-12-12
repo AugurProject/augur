@@ -66,7 +66,7 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 		abi: { bignum: () => {} }
 	};
 	sinon.stub(stubbedAugurJS, 'generateOrderBook');
-	sinon.stub(stubbedAugurJS.abi, 'bignum', (n) => new BigNumber(n, 10));
+	sinon.stub(stubbedAugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 
 	const action = proxyquire(
     '../../../src/modules/create-market/actions/generate-order-book',

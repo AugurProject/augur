@@ -67,9 +67,7 @@ function sellCompleteSetsMarket(marketID, callback) {
 				}
 				if (callback) callback(null);
 			}));
-		} else {
-			if (callback) callback(null);
-		}
+		} else if (callback) callback(null);
 	};
 }
 
