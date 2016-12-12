@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import * as selector from '../../../src/modules/my-positions/selectors/my-positions-summary';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import positionsSummaryAssertions from 'assertions/positions-summary';
 import { abi } from '../../../src/services/augurjs';
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
@@ -17,6 +17,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 
 		assert.isDefined(actual);  // TOOD -- tmp placeholder
 
-		// assertions.positionsSummary(actual);
+		positionsSummaryAssertions(actual);
 	});
 });

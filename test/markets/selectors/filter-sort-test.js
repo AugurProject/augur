@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import filterSortAssertions from 'assertions/filter-sort';
 
 describe(`modules/markets/selectors/filter-sort.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -56,6 +56,6 @@ describe(`modules/markets/selectors/filter-sort.js`, () => {
 	});
 
 	it('should deliver the correct shape to augur-ui-react-components', () => {
-		// assertions.filterSort(actual);
+		filterSortAssertions(actual);
 	});
 });

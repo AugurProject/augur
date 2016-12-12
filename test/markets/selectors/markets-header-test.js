@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import marketsHeaderAssertions from 'assertions/markets-header';
 
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -52,8 +52,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		// assertions.marketsHeader(actual)
-		assert.isDefined(actual); // TODO -- remove
+		marketsHeaderAssertions(actual)
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();

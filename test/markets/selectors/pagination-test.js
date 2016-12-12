@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import paginationAssertions from 'assertions/pagination';
 
 describe(`modules/markets/selectors/pagination.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -56,6 +56,6 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 
 		actual = selector.default();
 
-		// assertions.pagination(actual);
+		paginationAssertions(actual);
 	});
 });

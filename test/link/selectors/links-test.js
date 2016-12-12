@@ -1,8 +1,7 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import linksAssertions from 'assertions/links';
 
 describe(`modules/link/selectors/links.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -23,8 +22,7 @@ describe(`modules/link/selectors/links.js`, () => {
 
 	it(`should have the expected shape`, () => {
 		const actual = selector.default();
-		assert.isDefined(actual);  // TODO -- remove
 		// console.log(actual);
-		// assertions.links(actual);
+		linksAssertions(actual);
 	});
 });

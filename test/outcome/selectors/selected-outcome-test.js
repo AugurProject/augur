@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import selector from '../../../src/selectors';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import selectedOutcomeAssertions from 'assertions/selected-outcome';
 
 describe('modules/outcome/selectors/selected-outcome.js', () => {
 	const actual = selector.selectedOutcome;
@@ -12,6 +12,6 @@ describe('modules/outcome/selectors/selected-outcome.js', () => {
 	});
 
 	it('should provide the expected object to components', () => {
-		// assertions.selectedOutcome(actual);
+		selectedOutcomeAssertions(actual);
 	});
 });

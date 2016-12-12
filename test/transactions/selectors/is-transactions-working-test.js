@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import isTransactionsWorkingAssertions from 'assertions/is-transactions-working';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -55,7 +55,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 		};
 		actual = selector.selectIsWorking(data);
 
-		// assertions.isTransactionsWorking(actual);
+		isTransactionsWorkingAssertions(actual);
 		assert.isTrue(actual, `Didn't mark the transaction as working when status was test.`);
 	});
 

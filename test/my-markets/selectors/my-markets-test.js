@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import myMarketsAssertions from 'assertions/my-markets';
 import * as mockStore from '../../mockStore';
 
 import { formatNumber, formatEther } from '../../../src/utils/format-number';
@@ -94,6 +94,6 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
 		actual = proxiedSelector.default();
 
-		// assertions.myMarkets(actual);
+		myMarketsAssertions(actual);
 	});
 });

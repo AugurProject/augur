@@ -1,9 +1,8 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import marketsTotalsAssertions from 'assertions/markets-totals';
 
 describe(`modules/markets/selectors/markets-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -173,7 +172,6 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	it(`should return the market totals for selected market`, () => {
 		const actual = selector.default();
-		assert.isDefined(actual); // TODO -- remove
-		// assertions.marketsTotals(actual);
+		marketsTotalsAssertions(actual);
 	});
 });

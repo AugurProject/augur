@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import createMarketFormAssertions from 'assertions/create-market-form';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
 
 import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
@@ -79,7 +79,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			// assertions.createMarketForm(state.createMarketInProgress);
+			createMarketFormAssertions(state.createMarketInProgress);
 		});
 	});
 
@@ -148,7 +148,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 				assert.isDefined(fullTestState); // TODO --remove
 
-				// assertions.createMarketForm(fullTestState);
+				createMarketFormAssertions(fullTestState);
 			});
 		});
 	});
@@ -188,7 +188,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep3.select(state.createMarketInProgress)
 			};
 
-			// assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 
@@ -233,7 +233,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep4.select(state.createMarketInProgress)
 			};
 
-			// assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 
@@ -265,7 +265,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				)
 			};
 
-			// assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 });

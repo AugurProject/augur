@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import marketsAssertions from 'assertions/markets';
 
 // TODO -- should be refactored to use local state in requiring test
 let allMarkets; // eslint-disable-line import/no-mutable-exports
@@ -102,8 +102,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	it(`should return the correct selectedMarket function`, () => {
 		const actual = selector.default();
 
-		// assertions.markets(actual);
-		assert.isDefined(actual); // TODO --remove
+		marketsAssertions(actual);
 		assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
 	});
 });

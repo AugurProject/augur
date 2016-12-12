@@ -1,6 +1,6 @@
 import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import myMarketsSummaryAssertions from 'assertions/my-markets-summary';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
@@ -46,6 +46,6 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
 	});
 
 	it('should return the correct object to augur-ui-react-components', () => {
-		// assertions.myMarketsSummary(actual);
+		myMarketsSummaryAssertions(actual);
 	});
 });

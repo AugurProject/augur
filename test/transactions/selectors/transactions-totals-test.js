@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import * as selector from '../../../src/modules/transactions/selectors/transactions-totals';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import transactionsTotalsAssertions from 'assertions/transactions-totals';
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -58,7 +58,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
-		// assertions.transactionsTotals(actual);
+		transactionsTotalsAssertions(actual);
 		assert.deepEqual(actual, expected, `Didn't return total info on transactions`);
 	});
 });

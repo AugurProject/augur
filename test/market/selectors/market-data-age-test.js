@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import marketDataAgeAssertions from 'assertions/market-data-age';
 import mocks from '../../mockStore';
 
 describe('modules/market/selectors/market-data-age.js', () => {
@@ -21,9 +21,7 @@ describe('modules/market/selectors/market-data-age.js', () => {
 			'../../../store': store
 		}).default;
 
-		assert.isDefined(selectMarketDataAge); // TODO -- remove
-
-		// assertions.marketDataAge(selectMarketDataAge());
+		marketDataAgeAssertions(selectMarketDataAge());
 	});
 
 	it('should return default object for empty values', () => {

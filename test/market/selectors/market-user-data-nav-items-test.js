@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import marketUserDataNavItemsAssertions from 'assertions/market-user-data-nav-items';
 
 import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from '../../../src/modules/app/constants/views';
 
@@ -24,6 +24,6 @@ describe('modules/market/selectors/market-user-data-nav-items.js', () => {
 	});
 
 	it('should delivery the correct object shape to the components', () => {
-		// assertions.marketUserDataNavItems(actual);
+		marketUserDataNavItemsAssertions(actual);
 	});
 });

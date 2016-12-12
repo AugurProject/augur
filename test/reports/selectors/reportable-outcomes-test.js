@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import reportableOutcomesAssertions from 'assertions/reportable-outcomes';
 
 import { selectReportableOutcomes } from '../../../src/modules/reports/selectors/reportable-outcomes';
 import { BINARY, CATEGORICAL } from '../../../src/modules/markets/constants/market-types';
@@ -60,7 +60,7 @@ describe('modules/reports/selectors/reportable-outcomes.js', () => {
 		];
 
 		assert.deepEqual(actual, expected, `expected array for a CATEGORICAL market was not returned`);
-		// assertions.reportableOutcomes(actual);
+		reportableOutcomesAssertions(actual);
 	});
 
 	it('should return the correct array for DEFAULT case', () => {

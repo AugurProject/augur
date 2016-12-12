@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import keywordsAssertions from 'assertions/keywords';
 
 describe('modules/markets/selectors/keywords.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -31,7 +31,7 @@ describe('modules/markets/selectors/keywords.js', () => {
 		}];
 
 		actual.onChangeKeywords(keywords);
-		// assertions.keywords(actual);
+		keywordsAssertions(actual);
 
 		assert(mockUpdate.updateKeywords.calledOnce, `updateKeywords wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the correct action when onChangeKeywords was called.`);

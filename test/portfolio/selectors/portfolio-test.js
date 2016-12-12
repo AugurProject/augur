@@ -1,6 +1,6 @@
 import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import portfolioAssertions from 'assertions/portfolio';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
@@ -51,7 +51,6 @@ describe('modules/portfolio/selectors/portfolio', () => {
 	});
 
 	it(`should return the correct object to augur-ui-react-components`, () => {
-		// assertions.portfolio(actual);
-		assert.isDefined(actual); // NOTE -- just a placeholder while the assertions are commented out.
+		portfolioAssertions(actual);
 	});
 });

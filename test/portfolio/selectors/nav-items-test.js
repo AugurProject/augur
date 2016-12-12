@@ -1,6 +1,6 @@
 import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-// import assertions from 'augur-ui-react-components/lib/assertions';
+import portfolioNavItemsAssertions from 'assertions/portfolio-nav-items';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
@@ -152,6 +152,6 @@ describe('modules/portfolio/selectors/nav-items', () => {
 	it('should deliver the expected shape to augur-ui-react-components', () => {
 		actual = selector.default();
 
-		// assertions.portfolioNavItems(actual);
+		portfolioNavItemsAssertions(actual);
 	});
 });
