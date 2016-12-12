@@ -282,8 +282,14 @@ module.exports = {
                 var parsed;
                 for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                     parsed = self.filters.parse_event_message("log_add_tx", logs[i]);
-                    if (!bidsAsks[parsed.market]) bidsAsks[parsed.market] = [];
-                    bidsAsks[parsed.market].push(parsed);
+                    if (!bidsAsks[parsed.market]) {
+                        bidsAsks[parsed.market] = {};
+                    }
+                    if (!bidsAsks[parsed.market][parsed.outcome]) {
+                        bidsAsks[parsed.market][parsed.outcome] = [];
+                    }
+                    parsed.transactionHash = logs[i].transactionHash;
+                    bidsAsks[parsed.market][parsed.outcome].push(parsed);
                 }
                 callback(null, bidsAsks);
             });
@@ -304,8 +310,14 @@ module.exports = {
                 var parsed;
                 for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                     parsed = self.filters.parse_event_message("log_cancel", logs[i]);
-                    if (!cancels[parsed.market]) cancels[parsed.market] = [];
-                    cancels[parsed.market].push(parsed);
+                    if (!cancels[parsed.market]) {
+                        cancels[parsed.market] = {};
+                    }
+                    if (!cancels[parsed.market][parsed.outcome]) {
+                        cancels[parsed.market][parsed.outcome] = [];
+                    }
+                    parsed.transactionHash = logs[i].transactionHash;
+                    cancels[parsed.market][parsed.outcome].push(parsed);
                 }
                 callback(null, cancels);
             });

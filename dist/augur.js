@@ -16370,12 +16370,17 @@ module.exports={
         }, 
         {
           "indexed": false, 
+          "name": "fee", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
           "name": "timestamp", 
           "type": "int256"
         }
       ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c"
+      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xf6ebadeafdbe1f52fd45da6789b3f8fd7a39efd3b536a8c5ad1bfcf3914a1443"
     }, 
     "log_cancel": {
       "contract": "BuyAndSellShares", 
@@ -21767,7 +21772,7 @@ module.exports={
     "10101": {
         "Backstops": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Branches": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "BuyAndSellShares": "0x4d84a91f4ea628dfbc185746cacc7fe4b416c8a1", 
+        "BuyAndSellShares": "0xc6ab2d4eda8b9b918cdd54edf6a2e3dc8f4ca40a", 
         "Cash": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
         "CloseMarket": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "CollectFees": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
@@ -44445,7 +44450,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.3.7";
+    this.version = "3.3.8";
 
     this.options = {
         debug: {
@@ -46310,8 +46315,14 @@ module.exports = {
                 var parsed;
                 for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                     parsed = self.filters.parse_event_message("log_add_tx", logs[i]);
-                    if (!bidsAsks[parsed.market]) bidsAsks[parsed.market] = [];
-                    bidsAsks[parsed.market].push(parsed);
+                    if (!bidsAsks[parsed.market]) {
+                        bidsAsks[parsed.market] = {};
+                    }
+                    if (!bidsAsks[parsed.market][parsed.outcome]) {
+                        bidsAsks[parsed.market][parsed.outcome] = [];
+                    }
+                    parsed.transactionHash = logs[i].transactionHash;
+                    bidsAsks[parsed.market][parsed.outcome].push(parsed);
                 }
                 callback(null, bidsAsks);
             });
@@ -46332,8 +46343,14 @@ module.exports = {
                 var parsed;
                 for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                     parsed = self.filters.parse_event_message("log_cancel", logs[i]);
-                    if (!cancels[parsed.market]) cancels[parsed.market] = [];
-                    cancels[parsed.market].push(parsed);
+                    if (!cancels[parsed.market]) {
+                        cancels[parsed.market] = {};
+                    }
+                    if (!cancels[parsed.market][parsed.outcome]) {
+                        cancels[parsed.market][parsed.outcome] = [];
+                    }
+                    parsed.transactionHash = logs[i].transactionHash;
+                    cancels[parsed.market][parsed.outcome].push(parsed);
                 }
                 callback(null, cancels);
             });
