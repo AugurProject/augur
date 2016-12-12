@@ -231,6 +231,8 @@ describe('modules/reports/actions/load-reports.js', () => {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
 			}, {
+				type: 'LOAD_REPORT'
+			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf2']
 			}, {
