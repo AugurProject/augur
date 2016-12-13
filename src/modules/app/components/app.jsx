@@ -84,7 +84,8 @@ export default class App extends Component {
 	attachTouchHandler() {
 		const options = {
 			dragLockToAxis: true,
-			dragBlockHorizontal: true
+			dragBlockHorizontal: true,
+			preventDefault: true
 		};
 
 		const hammer = new Hammer(this.main, options);

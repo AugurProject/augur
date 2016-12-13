@@ -79,7 +79,8 @@ export default class Footer extends Component {
 	attachTouchHandler() {
 		const options = {
 			dragLockToAxis: true,
-			dragBlockHorizontal: true
+			dragBlockHorizontal: true,
+			preventDefault: true
 		};
 		const hammer = new Hammer(this.footer, options);
 		hammer.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
