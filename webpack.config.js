@@ -89,7 +89,7 @@ let config = {
 			},
 			{
 				from: path.resolve(__dirname, 'node_modules/airbitz-core-js-ui/assets'),
-				to: path.resolve(PATHS.BUILD, 'abcui')
+				to: path.resolve(PATHS.BUILD, 'abcui/assets')
 			}
 		]),
 		new HtmlWebpackPlugin({
