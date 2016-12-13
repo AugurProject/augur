@@ -15,9 +15,8 @@ const PATHS = {
 // COMMON CONFIG
 let config = {
 	entry: {
-		main: ['./src/main'],
-		styles: './src/styles',
-		vendor: [
+		'assets/styles/styles': `${PATHS.APP}/styles`,
+		'assets/scripts/vendor': [
 			'react',
 			'react-dom',
 			'redux',
@@ -25,8 +24,8 @@ let config = {
 		]
 	},
 	output: {
+		filename: '[name].[chunkhash].js',
 		path: PATHS.BUILD,
-		filename: '[name].js',
 		publicPath: '/'
 	},
 	resolve: {
@@ -40,7 +39,6 @@ let config = {
 		loaders: [
 			{
 				test: /\.pug/,
-				include: PATHS.APP,
 				loader: 'pug-loader'
 			},
 			{
@@ -59,21 +57,18 @@ let config = {
 	},
 	plugins: [
 		new webpack.optimize.OccurrenceOrderPlugin(),
-		new webpack.optimize.CommonsChunkPlugin({
-			name: 'vendor'
-		}),
 		new CopyWebpackPlugin([
 			{
 				from: path.resolve(PATHS.APP, 'splash.css'),
-				to: PATHS.BUILD
+				to: path.resolve(PATHS.BUILD, 'assets/styles')
 			},
 			{
 				from: path.resolve(PATHS.APP, 'env.json'),
-				to: PATHS.BUILD
+				to: path.resolve(PATHS.BUILD, 'config')
 			},
 			{
 				from: path.resolve(PATHS.APP, 'manifest.json'),
-				to: PATHS.BUILD
+				to: path.resolve(PATHS.BUILD, 'config')
 			},
 			{
 				from: path.resolve(PATHS.APP, 'favicon.ico'),
@@ -90,8 +85,16 @@ let config = {
 			{
 				from: path.resolve(__dirname, 'node_modules/airbitz-core-js-ui/assets'),
 				to: path.resolve(PATHS.BUILD, 'abcui/assets')
+			},
+			{
+				from: path.resolve(PATHS.APP, 'sitemap.xml'),
+				to: PATHS.BUILD
 			}
 		]),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'common',
+			filename: 'assets/scripts/common.js'
+		}),
 		new HtmlWebpackPlugin({
 			template: path.resolve(PATHS.APP, 'index.pug')
 		}),
@@ -116,13 +119,13 @@ if (process.env.NODE_ENV !== 'production') {
 			main: [
 				'react-hot-loader/patch',
 				'webpack-hot-middleware/client',
+				`${PATHS.APP}/main`
 			]
 		},
 		module: {
 			loaders: [
 				{
 					test: /\.less/,
-					include: PATHS.APP,
 					loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
 				}
 			]
@@ -139,14 +142,13 @@ if (process.env.NODE_ENV !== 'production') {
 if (process.env.NODE_ENV === 'production') {
 	config = merge(config, {
 		entry: {
-			main: './src/main'
+			main: `${PATHS.APP}/main`
 		},
 		module: {
 			loaders: [
 				{
 					test: /\.less/,
-					include: PATHS.APP,
-					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!postcss-loader!less-loader!import-glob-loader' })
+					loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!postcss-loader!less-loader!import-glob-loader' }),
 				}
 			]
 		},

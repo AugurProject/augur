@@ -42,7 +42,7 @@ export function initAugur() {
 				});
 			}
 		};
-		xhttp.open('GET', '/env.json', true);
+		xhttp.open('GET', '/config/env.json', true);
 		xhttp.send();
 	};
 }
