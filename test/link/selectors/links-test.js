@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import linksAssertions from 'assertions/links';
 
 describe(`modules/link/selectors/links.js`, () => {

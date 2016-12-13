@@ -4,7 +4,7 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
 describe(`modules/market/selectors/price-time-series.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

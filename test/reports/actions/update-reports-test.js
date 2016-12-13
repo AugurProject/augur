@@ -4,8 +4,8 @@ import {
 } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as action from '../../../src/modules/reports/actions/update-reports';
+import testState from 'test/testState';
+import * as action from 'modules/reports/actions/update-reports';
 
 describe(`modules/reports/actions/update-reports.js`, () => {
 	const middlewares = [thunk];

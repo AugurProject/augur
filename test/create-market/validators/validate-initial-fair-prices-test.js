@@ -1,8 +1,8 @@
 import { describe, it, before, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import { PRICE_WIDTH_DEFAULT } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
-import validateInitialFairPrices from '../../../src/modules/create-market/validators/validate-initial-fair-prices';
+import { PRICE_WIDTH_DEFAULT } from 'modules/create-market/constants/market-values-constraints';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import validateInitialFairPrices from 'modules/create-market/validators/validate-initial-fair-prices';
 
 describe('modules/create-market/validators/validate-initial-fair-prices.js', () => {
 	let obj;

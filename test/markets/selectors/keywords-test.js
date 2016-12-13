@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import keywordsAssertions from 'assertions/keywords';
 
 describe('modules/markets/selectors/keywords.js', () => {

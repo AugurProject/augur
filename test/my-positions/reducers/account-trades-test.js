@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/my-positions/actions/update-account-trades-data';
-import { CLEAR_LOGIN_ACCOUNT } from '../../../src/modules/auth/actions/update-login-account';
-import reducer from '../../../src/modules/my-positions/reducers/account-trades';
+import { UPDATE_ACCOUNT_TRADES_DATA } from 'modules/my-positions/actions/update-account-trades-data';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
+import reducer from 'modules/my-positions/reducers/account-trades';
 
 describe(`modules/my-positions/reducers/account-trades.js`, () => {
 	it(`should return updated account trades data`, () => {

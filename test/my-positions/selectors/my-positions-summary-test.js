@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as selector from '../../../src/modules/my-positions/selectors/my-positions-summary';
+import * as selector from 'modules/my-positions/selectors/my-positions-summary';
 import positionsSummaryAssertions from 'assertions/positions-summary';
-import { abi } from '../../../src/services/augurjs';
+import { abi } from 'services/augurjs';
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 	it(`should return a summary of positions`, () => {

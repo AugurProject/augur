@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import marketAssertions from 'assertions/market';
 
 describe(`modules/market/selectors/market.js`, () => {

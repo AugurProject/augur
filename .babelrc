@@ -15,7 +15,8 @@
 				"src": "./src",
 				"test": "./test",
 				"modules": "modules",
-				"utils": "utils"
+				"utils": "utils",
+				"services": "services"
 			},
 			"extensions": [".js", ".jsx"]
 		}]

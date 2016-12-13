@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import {
 	UPDATE_MAKE_IN_PROGRESS,
 	CLEAR_MAKE_IN_PROGRESS
-} from '../../../src/modules/create-market/actions/update-make-in-progress';
-import reducer from '../../../src/modules/create-market/reducers/create-market-in-progress';
-import testState from '../../testState';
+} from 'modules/create-market/actions/update-make-in-progress';
+import reducer from 'modules/create-market/reducers/create-market-in-progress';
+import testState from 'test/testState';
 
 describe(`modules/create-market/reducers/create-market-in-progress.js`, () => {
 	let action;

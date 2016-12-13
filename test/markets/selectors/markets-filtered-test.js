@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
 // TODO -- this really should be handled differently via local state for the requiring tests
 let filteredMarkets;  // eslint-disable-line import/no-mutable-exports

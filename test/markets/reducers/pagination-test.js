@@ -1,11 +1,11 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { UPDATE_SELECTED_PAGE_NUM } from '../../../src/modules/markets/actions/update-selected-page-num';
-import { UPDATE_SELECTED_FILTER_SORT } from '../../../src/modules/markets/actions/update-selected-filter-sort';
-import { UPDATE_KEYWORDS } from '../../../src/modules/markets/actions/update-keywords';
-import { UPDATED_SELECTED_MARKETS_HEADER } from '../../../src/modules/markets/actions/update-selected-markets-header';
-import reducer from '../../../src/modules/markets/reducers/pagination';
-import testState from '../../testState';
+import { UPDATE_SELECTED_PAGE_NUM } from 'modules/markets/actions/update-selected-page-num';
+import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-selected-filter-sort';
+import { UPDATE_KEYWORDS } from 'modules/markets/actions/update-keywords';
+import { UPDATED_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
+import reducer from 'modules/markets/reducers/pagination';
+import testState from 'test/testState';
 
 describe(`modules/markets/reducers/pagination.js`, () => {
 	let action;

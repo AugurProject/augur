@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as action from '../../../src/modules/markets/actions/update-outcome-price';
+import * as action from 'modules/markets/actions/update-outcome-price';
 
 describe(`modules/markets/actions/update-outcome-price.js`, () => {
 	it(`should return an update outcome price action`, () => {

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import { formatShares, formatEther } from '../../../src/utils/format-number';
+import { formatShares, formatEther } from 'utils/format-number';
 
 describe(`modules/bids-asks/helpers/select-order-book.js`, () => {
 	const selectAggregateOrderBook = require('../../../src/modules/bids-asks/helpers/select-order-book').selectAggregateOrderBook;

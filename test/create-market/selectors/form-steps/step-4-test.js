@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import {
 	TAKER_FEE_DEFAULT,
 	INITIAL_LIQUIDITY_DEFAULT,
@@ -13,16 +13,16 @@ import {
 	PRICE_WIDTH_DEFAULT,
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
-} from '../../../../src/modules/create-market/constants/market-values-constraints';
+} from 'modules/create-market/constants/market-values-constraints';
 
-import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
-import * as validateTakerFee from '../../../../src/modules/create-market/validators/validate-taker-fee';
-import * as validateMakerFee from '../../../../src/modules/create-market/validators/validate-maker-fee';
-import * as validateInitialLiquidity from '../../../../src/modules/create-market/validators/validate-initial-liquidity';
-import * as validateInitialFairPrices from '../../../../src/modules/create-market/validators/validate-initial-fair-prices';
-import * as validateBestStartingQuantity from '../../../../src/modules/create-market/validators/validate-best-starting-quantity';
-import * as validateStartingQuantity from '../../../../src/modules/create-market/validators/validate-starting-quantity';
-import * as validatePriceWidth from '../../../../src/modules/create-market/validators/validate-price-width';
+import * as selector from 'modules/create-market/selectors/form-steps/step-4';
+import * as validateTakerFee from 'modules/create-market/validators/validate-taker-fee';
+import * as validateMakerFee from 'modules/create-market/validators/validate-maker-fee';
+import * as validateInitialLiquidity from 'modules/create-market/validators/validate-initial-liquidity';
+import * as validateInitialFairPrices from 'modules/create-market/validators/validate-initial-fair-prices';
+import * as validateBestStartingQuantity from 'modules/create-market/validators/validate-best-starting-quantity';
+import * as validateStartingQuantity from 'modules/create-market/validators/validate-starting-quantity';
+import * as validatePriceWidth from 'modules/create-market/validators/validate-price-width';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We implicitly tested `initialFairPrices` via the `select` test.

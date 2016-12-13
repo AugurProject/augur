@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import marketsTotalsAssertions from 'assertions/markets-totals';
 
 describe(`modules/markets/selectors/markets-totals.js`, () => {

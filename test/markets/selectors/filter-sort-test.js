@@ -2,7 +2,7 @@ import { describe, it, before, beforeEach, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import filterSortAssertions from 'assertions/filter-sort';
 
 describe(`modules/markets/selectors/filter-sort.js`, () => {

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import mocks from '../../mockStore';
-import { UPDATE_MARKET_DATA_TIMESTAMP } from '../../../src/modules/market/actions/update-market-data-timestamp';
+import mocks from 'test/mockStore';
+import { UPDATE_MARKET_DATA_TIMESTAMP } from 'modules/market/actions/update-market-data-timestamp';
 
 describe('modules/market/actions/update-market-data-timestamp.js', () => {
 	const store = mocks.mockStore({});

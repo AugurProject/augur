@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import mocks from '../../../mockStore';
+import mocks from 'test/mockStore';
 
-import { BID, ASK } from '../../../../src/modules/transactions/constants/types';
+import { BID, ASK } from 'modules/transactions/constants/types';
 
 describe('modules/market/selectors/helpers/generate-trade.js', () => {
 	const { state } = mocks;

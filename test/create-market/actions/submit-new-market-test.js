@@ -6,17 +6,17 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 import {
 	BINARY,
 	CATEGORICAL,
 	SCALAR
-} from '../../../src/modules/markets/constants/market-types';
+} from 'modules/markets/constants/market-types';
 import {
 	SUCCESS,
 	FAILED
-} from '../../../src/modules/transactions/constants/statuses';
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../../src/modules/markets/constants/market-outcomes';
+} from 'modules/transactions/constants/statuses';
+import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

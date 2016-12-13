@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as action from '../../../src/modules/create-market/actions/update-make-in-progress';
+import * as action from 'modules/create-market/actions/update-make-in-progress';
 
 describe(`modules/create-market/actions/update-make-in-progress.js`, () => {
 	it(`should fire UPDATE_MAKE_IN_PROGRESS with data`, () => {

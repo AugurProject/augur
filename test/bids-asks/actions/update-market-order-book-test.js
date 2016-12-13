@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import {
 	UPDATE_MARKET_ORDER_BOOK,
 	updateMarketOrderBook
-} from '../../../src/modules/bids-asks/actions/update-market-order-book';
+} from 'modules/bids-asks/actions/update-market-order-book';
 
 describe(`modules/bids-asks/actions/update-market-order-book.js`, () => {
 	it(`should fire the UPDATE_MARKET_ORDER_BOOK action with data`, () => {

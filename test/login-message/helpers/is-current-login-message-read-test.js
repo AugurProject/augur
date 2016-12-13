@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import isCurrentLoginMessageRead from '../../../src/modules/login-message/helpers/is-current-login-message-read';
+import isCurrentLoginMessageRead from 'modules/login-message/helpers/is-current-login-message-read';
 
 describe('modules/auth/helpers/is-user-logged-in.js', () => {
 	it(`should return false if user hasn't read the message`, () => {

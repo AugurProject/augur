@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import {
 	UPDATE_LOGIN_ACCOUNT,
 	CLEAR_LOGIN_ACCOUNT
-} from '../../../src/modules/auth/actions/update-login-account';
-import reducer from '../../../src/modules/auth/reducers/login-account';
-import testState from '../../testState';
+} from 'modules/auth/actions/update-login-account';
+import reducer from 'modules/auth/reducers/login-account';
+import testState from 'test/testState';
 
 describe(`modules/auth/reducers/login-account.js`, () => {
 	let action;

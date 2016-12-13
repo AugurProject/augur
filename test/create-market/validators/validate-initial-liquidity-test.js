@@ -6,10 +6,10 @@ import {
     BEST_STARTING_QUANTITY_DEFAULT,
     PRICE_WIDTH_DEFAULT,
     INITIAL_LIQUIDITY_MIN
-} from '../../../src/modules/create-market/constants/market-values-constraints';
-import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
-import { formatEther } from '../../../src/utils/format-number';
-import validateInitialLiquidity from '../../../src/modules/create-market/validators/validate-initial-liquidity';
+} from 'modules/create-market/constants/market-values-constraints';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { formatEther } from 'utils/format-number';
+import validateInitialLiquidity from 'modules/create-market/validators/validate-initial-liquidity';
 
 describe('modules/create-market/validators/validate-initial-liquidity.js', () => {
 	let obj;

@@ -1,10 +1,10 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
-import allMarkets from './markets-all-test';
-import filteredMarkets from './markets-filtered-test';
-import favoriteMarkets from './markets-favorite-test';
+import * as mockStore from 'test/mockStore';
+import allMarkets from 'test/markets/selectors/markets-all-test';
+import filteredMarkets from 'test/markets/selectors/markets-filtered-test';
+import favoriteMarkets from 'test/markets/selectors/markets-favorite-test';
 
 describe('modules/markets/selectors/markets-unpaginated', () => {
 	proxyquire.noPreserveCache().noCallThru();

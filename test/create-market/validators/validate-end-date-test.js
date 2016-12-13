@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import validator from '../../../src/modules/create-market/validators/validate-end-date';
+import validator from 'modules/create-market/validators/validate-end-date';
 
 describe(`modules/market/validators/validate-end-date.js`, () => {
 	it(`should make sure that end date is populated`, () => {

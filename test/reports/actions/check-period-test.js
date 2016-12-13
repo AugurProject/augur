@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

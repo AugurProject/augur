@@ -3,8 +3,8 @@ import { assert } from 'chai';
 import {
 	DESCRIPTION_MIN_LENGTH,
 	DESCRIPTION_MAX_LENGTH
-} from '../../../src/modules/create-market/constants/market-values-constraints';
-import validator from '../../../src/modules/create-market/validators/validate-description';
+} from 'modules/create-market/constants/market-values-constraints';
+import validator from 'modules/create-market/validators/validate-description';
 
 describe(`modules/market/validators/validate-description.js`, () => {
 	let test;

@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import marketDataAgeAssertions from 'assertions/market-data-age';
-import mocks from '../../mockStore';
+import mocks from 'test/mockStore';
 
 describe('modules/market/selectors/market-data-age.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

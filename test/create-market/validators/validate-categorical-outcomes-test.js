@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import validator from '../../../src/modules/create-market/validators/validate-categorical-outcomes';
+import validator from 'modules/create-market/validators/validate-categorical-outcomes';
 
 describe(`modules/market/validators/validate-categorical-outcomes.js`, () => {
 	let mockData;

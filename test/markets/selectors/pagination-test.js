@@ -2,7 +2,7 @@ import { describe, it, before, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import paginationAssertions from 'assertions/pagination';
 
 describe(`modules/markets/selectors/pagination.js`, () => {

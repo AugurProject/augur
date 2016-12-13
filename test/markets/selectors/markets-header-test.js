@@ -2,7 +2,7 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import marketsHeaderAssertions from 'assertions/markets-header';
 
 describe(`modules/markets/selectors/markets-header.js`, () => {

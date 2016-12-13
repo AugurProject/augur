@@ -1,6 +1,6 @@
 import { describe, it, before, after } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 import loginAccountAssertions from 'assertions/login-account';
 
 describe(`modules/auth/selectors/login-account.js`, () => {

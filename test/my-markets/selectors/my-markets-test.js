@@ -4,12 +4,12 @@ import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
 import myMarketsAssertions from 'assertions/my-markets';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
-import { formatNumber, formatEther } from '../../../src/utils/format-number';
-import { formatDate } from '../../../src/utils/format-date';
+import { formatNumber, formatEther } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
 
-import { abi } from '../../../src/services/augurjs';
+import { abi } from 'services/augurjs';
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
 	proxyquire.noPreserveCache().noCallThru();

@@ -3,9 +3,9 @@ import { assert } from 'chai';
 
 import outcomeTradeNavItemsAssertions from 'assertions/outcome-trade-nav-items';
 
-import { BUY, SELL } from '../../../src/modules/trade/constants/types';
+import { BUY, SELL } from 'modules/trade/constants/types';
 
-import selector from '../../../src/modules/outcomes/selectors/outcome-trade-nav-items';
+import selector from 'modules/outcomes/selectors/outcome-trade-nav-items';
 
 describe('modules/outcome/selectors/outcome-trade-nav-items.js', () => {
 	const actual = selector();

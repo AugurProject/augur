@@ -2,7 +2,7 @@ import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from '../../mockStore';
+import mocks from 'test/mockStore';
 
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

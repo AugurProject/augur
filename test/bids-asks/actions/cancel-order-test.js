@@ -3,12 +3,12 @@ import { assert } from 'chai';
 import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from '../../mockStore';
-import { CANCEL_ORDER } from '../../../src/modules/transactions/constants/types';
-import { BID, ASK } from '../../../src/modules/bids-asks/constants/bids-asks-types';
-import { CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
-import { CANCELLING_ORDER } from '../../../src/modules/transactions/constants/statuses';
-import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from '../../../src/modules/bids-asks/actions/cancel-order';
+import mocks from 'test/mockStore';
+import { CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+import { CANCELLING } from 'modules/bids-asks/constants/order-status';
+import { CANCELLING_ORDER } from 'modules/transactions/constants/statuses';
+import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

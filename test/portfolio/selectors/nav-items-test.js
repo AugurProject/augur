@@ -5,11 +5,11 @@ import portfolioNavItemsAssertions from 'assertions/portfolio-nav-items';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
-import { formatNumber, formatEther, formatRep } from '../../../src/utils/format-number';
+import { formatNumber, formatEther, formatRep } from 'utils/format-number';
 
-import * as selector from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
+import * as selector from 'modules/portfolio/selectors/portfolio-nav-items';
 
 describe('modules/portfolio/selectors/nav-items', () => {
 	proxyquire.noPreserveCache().noCallThru();

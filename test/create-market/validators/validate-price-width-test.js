@@ -1,8 +1,8 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import { PRICE_WIDTH_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { formatEther } from '../../../src/utils/format-number';
-import validatePriceWidth from '../../../src/modules/create-market/validators/validate-price-width';
+import { PRICE_WIDTH_MIN } from 'modules/create-market/constants/market-values-constraints';
+import { formatEther } from 'utils/format-number';
+import validatePriceWidth from 'modules/create-market/validators/validate-price-width';
 
 describe('modules/create-market/validators/validate-price-width.js', () => {
 	let priceWidth;

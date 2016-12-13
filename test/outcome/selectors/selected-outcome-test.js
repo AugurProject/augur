@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import selector from '../../../src/selectors';
+import selector from 'src/selectors';
 import selectedOutcomeAssertions from 'assertions/selected-outcome';
 
 describe('modules/outcome/selectors/selected-outcome.js', () => {

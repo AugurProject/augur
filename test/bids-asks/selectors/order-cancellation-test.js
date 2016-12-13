@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import mocks from '../../mockStore';
-import { CANCELLATION_CONFIRMATION, CANCELLATION_FAILED, CANCELLED, CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
+import mocks from 'test/mockStore';
+import { CANCELLATION_CONFIRMATION, CANCELLATION_FAILED, CANCELLED, CANCELLING } from 'modules/bids-asks/constants/order-status';
 
 describe('modules/bids-asks/selectors/order-cancellation.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

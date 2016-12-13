@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as action from '../../../src/modules/auth/actions/update-login-account';
+import * as action from 'modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/update-login-account.js`, () => {
 	it(`should fire a UPDATE_LOGIN_ACCOUNT action type with data`, () => {

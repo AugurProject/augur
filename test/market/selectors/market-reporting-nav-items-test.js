@@ -3,9 +3,9 @@ import { assert } from 'chai';
 
 import marketReportingNavItemsAssertions from 'assertions/market-reporting-nav-items';
 
-import { MARKET_REPORTING_NAV_REPORT, MARKET_REPORTING_NAV_DETAILS } from '../../../src/modules/app/constants/views';
+import { MARKET_REPORTING_NAV_REPORT, MARKET_REPORTING_NAV_DETAILS } from 'modules/app/constants/views';
 
-import selector from '../../../src/modules/market/selectors/market-reporting-nav-items';
+import selector from 'modules/market/selectors/market-reporting-nav-items';
 
 describe('modules/market/selectors/market-reporting-nav-items.js', () => {
 	const actual = selector();

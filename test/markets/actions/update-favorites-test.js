@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as actions from '../../../src/modules/markets/actions/update-favorites';
+import * as actions from 'modules/markets/actions/update-favorites';
 
 
 describe(`modules/markets/actions/update-favorites.js`, () => {

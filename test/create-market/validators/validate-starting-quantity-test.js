@@ -1,8 +1,8 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import { STARTING_QUANTITY_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { formatShares } from '../../../src/utils/format-number';
-import validateStartingQuantity from '../../../src/modules/create-market/validators/validate-starting-quantity';
+import { STARTING_QUANTITY_MIN } from 'modules/create-market/constants/market-values-constraints';
+import { formatShares } from 'utils/format-number';
+import validateStartingQuantity from 'modules/create-market/validators/validate-starting-quantity';
 
 describe('modules/create-market/validators/validate-starting-quantity.js', () => {
 	let startingQuantity;

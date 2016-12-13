@@ -2,9 +2,9 @@ import { describe, it, beforeEach } from 'mocha';
 import {
     assert
 } from 'chai';
-import { TAKER_FEE_MIN, TAKER_FEE_MAX } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { formatPercent } from '../../../src/utils/format-number';
-import validateTakerFee from '../../../src/modules/create-market/validators/validate-taker-fee';
+import { TAKER_FEE_MIN, TAKER_FEE_MAX } from 'modules/create-market/constants/market-values-constraints';
+import { formatPercent } from 'utils/format-number';
+import validateTakerFee from 'modules/create-market/validators/validate-taker-fee';
 
 describe('modules/create-market/validators/validate-taker-fee.js', () => {
 	let takerFee;

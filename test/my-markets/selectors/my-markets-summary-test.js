@@ -5,7 +5,7 @@ import myMarketsSummaryAssertions from 'assertions/my-markets-summary';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
 describe('modules/my-markets/selectors/my-markets-summary', () => {
 	proxyquire.noPreserveCache().noCallThru();

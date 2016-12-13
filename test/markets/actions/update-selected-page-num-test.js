@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 // import configureMockStore from 'redux-mock-store';
 // import thunk from 'redux-thunk';
 // import testState from '../../testState';

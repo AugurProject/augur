@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import testState from '../../testState';
-import reducer from '../../../src/modules/auth/reducers/auth';
-import { UPDATE_URL } from '../../../src/modules/link/actions/update-url';
-import { AUTH_ERROR } from '../../../src/modules/auth/actions/auth-error';
+import testState from 'test/testState';
+import reducer from 'modules/auth/reducers/auth';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
+import { AUTH_ERROR } from 'modules/auth/actions/auth-error';
 
 describe(`modules/auth/reducers/auth.js`, () => {
 	let action;

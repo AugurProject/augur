@@ -4,14 +4,14 @@ import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 import createMarketFormAssertions from 'assertions/create-market-form';
-import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
-import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
-import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
-import * as actualStep4 from '../../../src/modules/create-market/selectors/form-steps/step-4';
-import * as actualStep5 from '../../../src/modules/create-market/selectors/form-steps/step-5';
+import * as actualStep2 from 'modules/create-market/selectors/form-steps/step-2';
+import * as actualStep3 from 'modules/create-market/selectors/form-steps/step-3';
+import * as actualStep4 from 'modules/create-market/selectors/form-steps/step-4';
+import * as actualStep5 from 'modules/create-market/selectors/form-steps/step-5';
 
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

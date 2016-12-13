@@ -4,15 +4,15 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../../testState';
+import testState from 'test/testState';
 
-import { CREATE_MARKET } from '../../../../src/modules/transactions/constants/types';
+import { CREATE_MARKET } from 'modules/transactions/constants/types';
 
-import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from '../../../../src/modules/create-market/constants/market-values-constraints';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from 'modules/create-market/constants/market-values-constraints';
 
-import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
-import * as submitNewMarket from '../../../../src/modules/create-market/actions/submit-new-market';
+import * as selector from 'modules/create-market/selectors/form-steps/step-5';
+import * as submitNewMarket from 'modules/create-market/actions/submit-new-market';
 
 describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

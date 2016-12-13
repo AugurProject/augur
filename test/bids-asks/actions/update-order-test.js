@@ -1,9 +1,9 @@
 import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import mocks from '../../mockStore';
-import { CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
-import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
+import mocks from 'test/mockStore';
+import { CANCELLING } from 'modules/bids-asks/constants/order-status';
+import { BID } from 'modules/bids-asks/constants/bids-asks-types';
 
 describe('modules/bids-asks/actions/update-order-status.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

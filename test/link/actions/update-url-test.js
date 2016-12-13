@@ -2,8 +2,8 @@ import { describe, it, beforeEach, afterEach, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
-import * as setTitle from '../../../src/utils/set-title';
+import * as mockStore from 'test/mockStore';
+import * as setTitle from 'utils/set-title';
 
 describe(`modules/link/actions/update-url.js`, () => {
 	const { store } = mockStore.default;

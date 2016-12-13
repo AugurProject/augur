@@ -1,8 +1,8 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import { MAKER_FEE_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { formatPercent } from '../../../src/utils/format-number';
-import validateMakerFee from '../../../src/modules/create-market/validators/validate-maker-fee';
+import { MAKER_FEE_MIN } from 'modules/create-market/constants/market-values-constraints';
+import { formatPercent } from 'utils/format-number';
+import validateMakerFee from 'modules/create-market/validators/validate-maker-fee';
 
 describe('modules/create-market/validators/validate-maker-fee.js', () => {
 	let makerFee;

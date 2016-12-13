@@ -3,9 +3,9 @@ import { assert } from 'chai';
 
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
-import { abi } from '../../../src/services/augurjs';
+import { abi } from 'services/augurjs';
 
 describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

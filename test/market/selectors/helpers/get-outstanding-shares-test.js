@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import mocks from '../../../mockStore';
+import mocks from 'test/mockStore';
 
 describe('modules/market/selectors/helpers/get-outstanding-shares.js', () => {
 	const getOutstandingShares = require('../../../../src/modules/market/selectors/helpers/get-outstanding-shares').default;

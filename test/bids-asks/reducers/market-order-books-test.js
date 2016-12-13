@@ -1,8 +1,8 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import testState from '../../testState';
-import { UPDATE_MARKET_ORDER_BOOK } from '../../../src/modules/bids-asks/actions/update-market-order-book';
-import reducer from '../../../src/modules/bids-asks/reducers/order-books';
+import testState from 'test/testState';
+import { UPDATE_MARKET_ORDER_BOOK } from 'modules/bids-asks/actions/update-market-order-book';
+import reducer from 'modules/bids-asks/reducers/order-books';
 
 describe(`modules/bids-asks/reducers/order-books.js`, () => {
 	let thisTestState;

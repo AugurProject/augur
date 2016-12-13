@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
+import { BID } from 'modules/bids-asks/constants/bids-asks-types';
 
 describe('modules/bids-asks/helpers/get-order.js', () => {
 	const getOrder = require('../../../src/modules/bids-asks/helpers/get-order').default;

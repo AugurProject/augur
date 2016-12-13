@@ -4,9 +4,9 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
-import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/my-positions/actions/update-account-trades-data';
+import { UPDATE_ACCOUNT_TRADES_DATA } from 'modules/my-positions/actions/update-account-trades-data';
 
 describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
