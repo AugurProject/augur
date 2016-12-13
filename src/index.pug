@@ -77,6 +77,28 @@ html(lang='en')
 
 		script(src='//www.google-analytics.com/analytics.js', defer='')
 
+		//- Hotjar Tracking Codes
+		//- 	https://augur-dev.firebaseapp.com/ -- site id: 360493
+		script(type='text/javascript').
+	    (function(h,o,t,j,a,r){
+	        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+	        h._hjSettings={hjid:360493,hjsv:5};
+	        a=o.getElementsByTagName('head')[0];
+	        r=o.createElement('script');r.async=1;
+	        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+	        a.appendChild(r);
+	    })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+		//- 	http://app.augur.net/ -- site id: 360502
+		script
+	    (function(h,o,t,j,a,r){
+	        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+	        h._hjSettings={hjid:360502,hjsv:5};
+	        a=o.getElementsByTagName('head')[0];
+	        r=o.createElement('script');r.async=1;
+	        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+	        a.appendChild(r);
+	    })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+
 		script(type='text/javascript').
 			UserVoice=window.UserVoice||[],function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://widget.uservoice.com/CDL6e6K1fQciGvhFmwEUg.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();
 			UserVoice.push(['addTrigger', '#uservoice-button', {
