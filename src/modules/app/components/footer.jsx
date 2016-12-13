@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Hammer from 'hammerjs';
 
 import Nav from 'modules/app/components/nav';
 
@@ -16,11 +17,17 @@ export default class Footer extends Component {
 		this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
 		this.toggleFooter = this.toggleFooter.bind(this);
 		this.slideFooter = this.slideFooter.bind(this);
+		this.attachTouchHandler = this.attachTouchHandler.bind(this);
+		this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
 	}
 
 	componentDidMount() {
 		window.addEventListener('resize', this.handleWindowResize);
 		this.slideFooter();
+
+		console.log('FOOTER, this.ref -- ', this);
+
+		this.attachTouchHandler();
 	}
 
 	componentDidUpdate(pP, pS) {
@@ -68,6 +75,26 @@ export default class Footer extends Component {
 				verticalOffset: 0,
 				footerHeight: footerHeight - togglerHeight
 			});
+		}
+	}
+
+	// Touch Events
+	attachTouchHandler() {
+		const options = {
+			dragLockToAxis: true,
+			dragBlockHorizontal: true
+		};
+		const hammer = new Hammer(this.footer, options);
+		hammer.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
+
+		hammer.on('swipe', (e) => { this.handleSwipeEvent(e); });
+	}
+
+	handleSwipeEvent(swipe) {
+		if (swipe.deltaY > 0) {
+			this.props.updateIsFooterCollapsed(true);
+		} else {
+			this.props.updateIsFooterCollapsed(false);
 		}
 	}
 

@@ -82,28 +82,23 @@ export default class App extends Component {
 
 	// Touch Events
 	attachTouchHandler() {
-		const mainElement = document.getElementById('main_responsive_state');
-		const hammer = new Hammer(mainElement);
-		hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+		const options = {
+			dragLockToAxis: true,
+			dragBlockHorizontal: true
+		};
+
+		const hammer = new Hammer(this.main, options);
 
 		hammer.on('swipe', (e) => { this.handleSwipeEvent(e); });
 	}
 
 	handleSwipeEvent(swipe) {
-		const threshold = 50;
-
 		if (this.state.isSideBarAllowed) {
-			if (swipe.deltaX > threshold) {
+			if (swipe.deltaX > 0) {
 				this.setState({ isSideBarCollapsed: false });
 			} else {
 				this.setState({ isSideBarCollapsed: true });
 			}
-		}
-
-		if (swipe.deltaY > -threshold) {
-			this.setState({ isFooterCollapsed: true });
-		} else {
-			this.setState({ isFooterCollapsed: false });
 		}
 	}
 
