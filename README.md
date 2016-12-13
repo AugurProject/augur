@@ -57,6 +57,8 @@ Start off by [installing geth](https://github.com/ethereum/go-ethereum/wiki/Buil
 
 Depending on how you'll be running Augur (Development OR Production), follow the corresponding steps below:
 
+*NOTE --* You can't be running an Ethereum client (mist/wallet) at the same time you attempt to run geth.
+
 ### Development -- Testnet (Morden)
 
 Create an Ethereum account (if needed):
@@ -95,7 +97,7 @@ Additional resources:
 Additional points of note:
 * The value supplied to `--unlock` should correspond to the account you'd like to be using for Augur transactions.  
   * To get a list of accounts and their numerical value run `geth account list`.
-* The values supplied to `--rpccorsdomain` and `--wsorigins` should correspond to the server's domain which is running the instance of Augur.
+* The values supplied to `--rpccorsdomain` and `--wsorigins` should correspond to the server's domain which is running the instance of Augur.  **BE SPECIFIC + DO NOT USE A WILDCARD**
 
 ## Documentation
 
