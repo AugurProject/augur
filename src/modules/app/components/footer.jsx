@@ -24,9 +24,6 @@ export default class Footer extends Component {
 	componentDidMount() {
 		window.addEventListener('resize', this.handleWindowResize);
 		this.slideFooter();
-
-		console.log('FOOTER, this.ref -- ', this);
-
 		this.attachTouchHandler();
 	}
 
