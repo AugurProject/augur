@@ -30,6 +30,7 @@
     "classnames": "^2.2.5",
     "core-js": "^2.4.1",
     "express": "^4.14.0",
+    "hammerjs": "^2.0.8",
     "helmet": "^2.3.0",
     "memoizerific": "^1.8.4",
     "moment": "^2.17.1",

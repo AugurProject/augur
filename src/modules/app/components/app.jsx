@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
+import Hammer from 'hammerjs';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
@@ -32,7 +33,8 @@ export default class App extends Component {
 
 		this.toggleChat = this.toggleChat.bind(this);
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
-		this.handleSwipe = this.handleSwipe.bind(this);
+		this.attachTouchHandler = this.attachTouchHandler.bind(this);
+		this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
 		this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
 		this.updateFooterHeight = this.updateFooterHeight.bind(this);
 		this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
@@ -43,6 +45,8 @@ export default class App extends Component {
 			this.main.style.willChange = 'auto'; // reset
 			this.toggleSideBar();
 		}
+
+		this.attachTouchHandler();
 	}
 
 	componentDidUpdate(pP, pS) {
@@ -76,7 +80,16 @@ export default class App extends Component {
 		this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
 	}
 
-	handleSwipe(swipe) {
+	// Touch Events
+	attachTouchHandler() {
+		const mainElement = document.getElementById('main_responsive_state');
+		const hammer = new Hammer(mainElement);
+		hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
+		hammer.on('swipe', (e) => { this.handleSwipeEvent(e); });
+	}
+
+	handleSwipeEvent(swipe) {
 		const threshold = 50;
 
 		if (this.state.isSideBarAllowed) {
@@ -133,7 +146,7 @@ export default class App extends Component {
 		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
 		return (
 			<main id="main_responsive_state" ref={(main) => { this.main = main; }}>
-				{!!p &&
+				{p &&
 					<div id="app_container" >
 						{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 							<SidebarMask

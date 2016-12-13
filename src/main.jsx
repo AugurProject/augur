@@ -1,18 +1,21 @@
-require('core-js/fn/array/find');
-require('core-js/fn/string/starts-with');
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
+
+/* eslint-disable import/no-extraneous-dependencies */
+import { AppContainer } from 'react-hot-loader'; // Excluded from linting due to being dev only
+/* eslint-disable import/no-extraneous-dependencies */
+
 import App from 'modules/app/components/app';
-
-import selectors from './selectors';
-import AugurJS from './services/augurjs';
-
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
-import store from './store';
+import selectors from 'src/selectors';
+import store from 'src/store';
+
+import AugurJS from 'services/augurjs';
+
+require('core-js/fn/array/find');
+require('core-js/fn/string/starts-with');
 
 if (process.env.NODE_ENV === 'development') {
 	Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
@@ -20,12 +23,12 @@ if (process.env.NODE_ENV === 'development') {
 	window.App = App;
 	window.augurjs = AugurJS;
 	console.log(`
-		*********************************************
- 			DEVELOPMENT MODE
- 			window.selectors
- 			window.state
- 			window.augurjs
- 		*********************************************
+*********************************************
+			DEVELOPMENT MODE
+	window.state		-- all data state
+	window.selectors 	-- component data
+	window.augurjs 		-- Augur API methods
+*********************************************
 	`);
 }
 
