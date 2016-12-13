@@ -2,8 +2,8 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, stubUpdateExistingTransaction } from '../constants';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, stubUpdateExistingTransaction } from 'test/trade/constants';
 
 describe('modules/trade/actions/process-ask.js', () => {
 	proxyquire.noPreserveCache();

@@ -5,7 +5,7 @@ import {
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import realSelector from '../../../src/modules/trade/selectors/trade-in-progress';
+import realSelector from 'modules/trade/selectors/trade-in-progress';
 
 describe(`modules/trade/selectors/trade-in-progress.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import store from '../src/store';
+import store from 'src/store';
 /*
 ==================================
 |      expectedInitialState      |

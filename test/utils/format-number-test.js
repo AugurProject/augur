@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import * as formatNumber from '../../src/utils/format-number';
+import * as formatNumber from 'utils/format-number';
 
 describe('utils/format-number.js', () => {
 	const	num = 1000.100;

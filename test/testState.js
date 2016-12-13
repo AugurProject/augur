@@ -1,9 +1,9 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from '../src/env.json';
+import env from 'src/env.json';
 
-import { formatNumber, formatShares } from '../src/utils/format-number';
-import { formatDate } from '../src/utils/format-date';
+import { formatNumber, formatShares } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
 
 const testState = {
 	activeView: 'markets',

@@ -5,8 +5,8 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { BUY, SELL } from '../../../src/modules/trade/constants/types';
-import testState from '../../testState';
+import { BUY, SELL } from 'modules/trade/constants/types';
+import testState from 'test/testState';
 
 describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

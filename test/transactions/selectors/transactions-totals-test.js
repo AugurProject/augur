@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as selector from '../../../src/modules/transactions/selectors/transactions-totals';
-import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
+import * as selector from 'modules/transactions/selectors/transactions-totals';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
 import transactionsTotalsAssertions from 'assertions/transactions-totals';
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {

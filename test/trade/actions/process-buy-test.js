@@ -2,9 +2,9 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from '../constants';
-import { abi } from '../../../src/services/augurjs';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from 'test/trade/constants';
+import { abi } from 'services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
 	proxyquire.noPreserveCache();

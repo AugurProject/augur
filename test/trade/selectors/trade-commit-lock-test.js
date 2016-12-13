@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as fakeStore from '../../mockStore';
+import * as fakeStore from 'test/mockStore';
 
 describe('modules/trade/selectors/trade-commit-lock.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

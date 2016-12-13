@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 import transactionsAssertions from 'assertions/transactions';
 
 describe(`modules/transactions/selectors/transactions.js`, () => {

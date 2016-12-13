@@ -2,8 +2,8 @@ import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import { augur, abi, constants } from '../../../../src/services/augurjs';
-import { ZERO } from '../../../../src/modules/trade/constants/numbers';
+import { augur, abi, constants } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/trade/actions/helpers/short-sell.js', () => {
 	proxyquire.noPreserveCache();

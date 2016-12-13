@@ -2,9 +2,9 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import reportableOutcomesAssertions from 'assertions/reportable-outcomes';
 
-import { selectReportableOutcomes } from '../../../src/modules/reports/selectors/reportable-outcomes';
-import { BINARY, CATEGORICAL } from '../../../src/modules/markets/constants/market-types';
-import { BINARY_NO_ID, BINARY_NO_OUTCOME_NAME, BINARY_YES_ID, BINARY_YES_OUTCOME_NAME } from '../../../src/modules/markets/constants/market-outcomes';
+import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
+import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
+import { BINARY_NO_ID, BINARY_NO_OUTCOME_NAME, BINARY_YES_ID, BINARY_YES_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
 
 describe('modules/reports/selectors/reportable-outcomes.js', () => {
 	let actual;

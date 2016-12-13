@@ -4,9 +4,9 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
-import { augur } from '../../../src/services/augurjs';
-import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from '../constants';
+import testState from 'test/testState';
+import { augur } from 'services/augurjs';
+import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from 'test/trade/constants';
 
 describe('modules/trade/actions/update-trades-in-progress.js', () => {
 	describe('should update a trade in progress for a binary market', () => {

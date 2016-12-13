@@ -5,7 +5,7 @@ import {
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { formatNumber } from '../../../src/utils/format-number';
+import { formatNumber } from 'utils/format-number';
 
 describe(`modules/user-open-orders/selectors/user-open-orders-summary.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

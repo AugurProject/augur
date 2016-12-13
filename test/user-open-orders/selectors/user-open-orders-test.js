@@ -5,8 +5,8 @@ import {
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { CANCELLED } from '../../../src/modules/bids-asks/constants/order-status';
-import { formatEther, formatShares, formatNone } from '../../../src/utils/format-number';
+import { CANCELLED } from 'modules/bids-asks/constants/order-status';
+import { formatEther, formatShares, formatNone } from 'utils/format-number';
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

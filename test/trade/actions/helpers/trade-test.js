@@ -2,10 +2,10 @@ import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../../mockStore';
-import { augur, abi, constants } from '../../../../src/services/augurjs';
-import { tradeTestState, tradeConstOrderBooks } from '../../constants';
-import { ZERO } from '../../../../src/modules/trade/constants/numbers';
+import * as mocks from 'test/mockStore';
+import { augur, abi, constants } from 'services/augurjs';
+import { tradeTestState, tradeConstOrderBooks } from 'test/trade/constants';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/trade/actions/helpers/trade.js', () => {
 	proxyquire.noPreserveCache();

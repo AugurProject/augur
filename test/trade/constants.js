@@ -1,10 +1,10 @@
 import { assert } from 'chai';
-import { formatPercent, formatShares, formatEther, formatRealEther } from '../../src/utils/format-number';
-import { abi } from '../../src/services/augurjs';
+import { formatPercent, formatShares, formatEther, formatRealEther } from 'utils/format-number';
+import { abi } from 'services/augurjs';
 
-export { BINARY, SCALAR, CATEGORICAL } from '../../src/modules/markets/constants/market-types';
-export { BUY, SELL } from '../../src/modules/trade/constants/types';
-export { BID, ASK } from '../../src/modules/bids-asks/constants/bids-asks-types';
+export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
+export { BUY, SELL } from 'modules/trade/constants/types';
+export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 
 export const tradeTestState = {
 	loginAccount: {

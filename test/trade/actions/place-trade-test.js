@@ -2,8 +2,8 @@ import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { BUY, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from '../constants';
+import * as mocks from 'test/mockStore';
+import { BUY, tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubAddTradeTransaction, stubAddAskTransaction, stubAddShortAskTransaction, stubAddShortSellTransaction, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from 'test/trade/constants';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
 	proxyquire.noPreserveCache();

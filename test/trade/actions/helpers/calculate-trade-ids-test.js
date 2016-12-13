@@ -2,7 +2,7 @@ import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import { abi } from '../../../../src/services/augurjs';
+import { abi } from 'services/augurjs';
 
 describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	proxyquire.noPreserveCache();

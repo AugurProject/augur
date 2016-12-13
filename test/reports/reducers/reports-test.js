@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import {
 	UPDATE_REPORTS,
 	CLEAR_REPORTS
-} from '../../../src/modules/reports/actions/update-reports';
-import testState from '../../testState';
-import reducer from '../../../src/modules/reports/reducers/reports';
+} from 'modules/reports/actions/update-reports';
+import testState from 'test/testState';
+import reducer from 'modules/reports/reducers/reports';
 
 describe(`modules/reports/reducers/reports.js`, () => {
 	let action;
