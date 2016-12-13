@@ -124,7 +124,7 @@ export default class AccountPage extends Component {
 									<th className="title">Account Address:</th>
 									<td className="item">
 										<span>
-											{p.account.id && p.account.id.indexOf('0x') === 0 && p.account.id.replace('0x', '')}
+											{p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
 										</span>
 									</td>
 								</tr>

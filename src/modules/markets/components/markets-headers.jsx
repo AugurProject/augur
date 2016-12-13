@@ -9,10 +9,10 @@ const MarketsHeaders = p => (
 				<h2>Markets</h2>
 			</div>
 			<div className="view-header-group">
-				{p.loginAccount && p.loginAccount.id &&
+				{p.loginAccount && p.loginAccount.address &&
 					<Link
 						className="button imperative navigational"
-						disabled={!p.loginAccount.id}
+						disabled={!p.loginAccount.address}
 						{...p.createMarketLink}
 					>
 						+ Create New Market

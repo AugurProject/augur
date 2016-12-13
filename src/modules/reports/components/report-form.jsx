@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 
 import Checkbox from 'modules/common/components/checkbox';
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 
 export default class ReportForm extends Component {
 	// TODO -- Prop Validations
@@ -49,6 +49,7 @@ export default class ReportForm extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
+		const indeterminateValue = p.type === BINARY ? '1.5' : '0.5';
 
 		let outcomeOptions;
 		if (p.type === SCALAR) {
@@ -115,7 +116,10 @@ export default class ReportForm extends Component {
 						className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
 						text="Yes, this question is indeterminate"
 						isChecked={!!s.isIndeterminate}
-						onClick={(!s.isReported && (() => this.setState({ isIndeterminate: !s.isIndeterminate }))) || null}
+						onClick={(!s.isReported && (() => this.setState({
+							isIndeterminate: !s.isIndeterminate,
+							reportedOutcomeID: indeterminateValue
+						}))) || null}
 					/>
 				</div>
 

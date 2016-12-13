@@ -161,7 +161,7 @@ export default class App extends Component {
 								{s.isSideBarAllowed && !s.isSideBarCollapsed &&
 									<div className="core-stats-bumper" />
 								}
-								{p.loginAccount && p.loginAccount.id &&
+								{p.loginAccount && p.loginAccount.address &&
 									<CoreStats coreStats={p.coreStats} />
 								}
 							</div>
@@ -179,7 +179,7 @@ export default class App extends Component {
 										<div className="core-stats-bumper" />
 									}
 									<div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-										{p.loginAccount && p.loginAccount.id &&
+										{p.loginAccount && p.loginAccount.address &&
 											<CoreStats coreStats={p.coreStats} />
 										}
 									</div>

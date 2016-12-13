@@ -24,7 +24,7 @@ const MarketBasics = p => (
 				}
 			</div>
 			<div className="market-basics-header-group-2">
-				{p.loginAccount && p.loginAccount.id && p.onClickToggleFavorite &&
+				{p.loginAccount && p.loginAccount.address && p.onClickToggleFavorite &&
 					<button
 						className={classnames('button unstyled favorite-button', { on: p.isFavorite })}
 						onClick={p.onClickToggleFavorite}
