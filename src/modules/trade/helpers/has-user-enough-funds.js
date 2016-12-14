@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import memoizerific from 'memoizerific';
 import BigNumber from 'bignumber.js';
 import { ZERO } from '../constants/numbers';

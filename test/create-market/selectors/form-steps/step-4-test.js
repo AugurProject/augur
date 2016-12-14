@@ -1,11 +1,9 @@
-import {
-	assert
-} from 'chai';
-import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
-} from '../../../../src/modules/markets/constants/market-types';
+import { describe, it, before, beforeEach, after } from 'mocha';
+import { assert } from 'chai';
+import sinon from 'sinon';
+import proxyquire from 'proxyquire';
+
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import {
 	TAKER_FEE_DEFAULT,
 	INITIAL_LIQUIDITY_DEFAULT,
@@ -15,34 +13,31 @@ import {
 	PRICE_WIDTH_DEFAULT,
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
-} from '../../../../src/modules/create-market/constants/market-values-constraints';
+} from 'modules/create-market/constants/market-values-constraints';
 
-import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
-import * as validateTakerFee from '../../../../src/modules/create-market/validators/validate-taker-fee';
-import * as validateMakerFee from '../../../../src/modules/create-market/validators/validate-maker-fee';
-import * as validateInitialLiquidity from '../../../../src/modules/create-market/validators/validate-initial-liquidity';
-import * as validateInitialFairPrices from '../../../../src/modules/create-market/validators/validate-initial-fair-prices';
-import * as validateBestStartingQuantity from '../../../../src/modules/create-market/validators/validate-best-starting-quantity';
-import * as validateStartingQuantity from '../../../../src/modules/create-market/validators/validate-starting-quantity';
-import * as validatePriceWidth from '../../../../src/modules/create-market/validators/validate-price-width';
-
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
+import * as selector from 'modules/create-market/selectors/form-steps/step-4';
+import * as validateTakerFee from 'modules/create-market/validators/validate-taker-fee';
+import * as validateMakerFee from 'modules/create-market/validators/validate-maker-fee';
+import * as validateInitialLiquidity from 'modules/create-market/validators/validate-initial-liquidity';
+import * as validateInitialFairPrices from 'modules/create-market/validators/validate-initial-fair-prices';
+import * as validateBestStartingQuantity from 'modules/create-market/validators/validate-best-starting-quantity';
+import * as validateStartingQuantity from 'modules/create-market/validators/validate-starting-quantity';
+import * as validatePriceWidth from 'modules/create-market/validators/validate-price-width';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We implicitly tested `initialFairPrices` via the `select` test.
 
-	let formState,
-		out,
-		stubbedValidateTakerFee = sinon.stub(validateTakerFee, 'default', () => false),
-		stubbedValidateMakerFee = sinon.stub(validateMakerFee, 'default', () => false),
-		stubbedValidateInitialLiquidity = sinon.stub(validateInitialLiquidity, 'default', () => false),
-		stubbedValidateInitialFairPrices = sinon.stub(validateInitialFairPrices, 'default', () => false),
-		stubbedValidateBestStartingQuantity = sinon.stub(validateBestStartingQuantity, 'default', () => false),
-		stubbedValidateStartingQuantity = sinon.stub(validateStartingQuantity, 'default', () => false),
-		stubbedValidatePriceWidth = sinon.stub(validatePriceWidth, 'default', () => false);
+	let formState;
+	let out;
+	const stubbedValidateTakerFee = sinon.stub(validateTakerFee, 'default', () => false);
+	const stubbedValidateMakerFee = sinon.stub(validateMakerFee, 'default', () => false);
+	const stubbedValidateInitialLiquidity = sinon.stub(validateInitialLiquidity, 'default', () => false);
+	const stubbedValidateInitialFairPrices = sinon.stub(validateInitialFairPrices, 'default', () => false);
+	const stubbedValidateBestStartingQuantity = sinon.stub(validateBestStartingQuantity, 'default', () => false);
+	const stubbedValidateStartingQuantity = sinon.stub(validateStartingQuantity, 'default', () => false);
+	const stubbedValidatePriceWidth = sinon.stub(validatePriceWidth, 'default', () => false);
 
-	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-4', {
+	const proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-4', {
 		'../../validators/validate-taker-fee': stubbedValidateTakerFee,
 		'../../validators/validate-maker-fee': stubbedValidateMakerFee,
 		'../../validators/validate-initial-liquidity': stubbedValidateInitialLiquidity,
@@ -337,7 +332,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 	describe('errors', () => {
 		proxyquire.noCallThru();
-    
+
 		before(() => {
 			formState = {
 				takerFee: TAKER_FEE_DEFAULT,
@@ -356,31 +351,31 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 			proxiedSelector.errors(formState);
 		});
-    
+
 		it('calls validateTakerFee', () => {
 			assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
 		});
-    
+
 		it('calls validateMakerFee', () => {
 			assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
 		});
-    
+
 		it('calls validateInitialLiquidity', () => {
 			assert(stubbedValidateInitialLiquidity.calledOnce, 'validateInitialLiquidity was not called once');
 		});
-    
+
 		it('calls validateInitialFairPrices', () => {
 			assert(stubbedValidateInitialFairPrices.calledOnce, 'validateInitialFairPrices was not called once');
 		});
-    
+
 		it('calls validateBestStartingQuantity', () => {
 			assert(stubbedValidateBestStartingQuantity.calledOnce, 'validateBestStartingQuantity was not called once');
 		});
-    
+
 		it('calls validateStartingQuantity', () => {
 			assert(stubbedValidateStartingQuantity.calledOnce, 'validateStartingQuantity was not called once');
 		});
-    
+
 		it('calls validatePriceWidth', () => {
 			assert(stubbedValidatePriceWidth.calledOnce, 'validatePriceWidth was not called once');
 		});

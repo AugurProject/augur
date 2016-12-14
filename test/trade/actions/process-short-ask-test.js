@@ -1,9 +1,10 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubUpdateExistingTransaction, stubLoadAccountTrades } from '../constants';
-import { augur, abi } from '../../../src/services/augurjs';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, tradeConstOrderBooks, stubUpdateExistingTransaction, stubLoadAccountTrades } from 'test/trade/constants';
+import { augur, abi } from 'services/augurjs';
 
 describe('modules/trade/actions/process-short-ask.js', () => {
 	proxyquire.noPreserveCache();
@@ -11,9 +12,9 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 	const testState = Object.assign({}, state, tradeTestState);
 	testState.orderBooks = tradeConstOrderBooks;
 	const store = mockStore(testState);
-	const mockAugurJS = { augur: {...augur} };
+	const mockAugurJS = { augur: { ...augur } };
 	sinon.stub(mockAugurJS.augur, 'shortAsk', (arg) => {
-		const { amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed } = arg;
+		const { onSent, onSuccess, onFailed } = arg;
 		onSent();
 		onSuccess({
 			hash: 'testhash',
@@ -435,10 +436,10 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 
 	const expectedGenericFail = [{
 		type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data: {
+		transactionID: 'trans1',
+		data: {
 			status: 'failed',
-      message: 'There was an issue processesing the Short Ask trade.'
+			message: 'There was an issue processesing the Short Ask trade.'
 		}
 	}];
 
@@ -467,23 +468,23 @@ describe('modules/trade/actions/process-short-ask.js', () => {
 	it('should handle a numShares that is undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processShortAsk('trans1', 'testBinaryMarketID', '2', undefined, '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.5" or shares "undefined"' } }], `processShortAsk produced unexpected actions when given a undefined numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.5" or shares "undefined"' } }], `processShortAsk produced unexpected actions when given a undefined numShares`);
 
 		store.clearActions();
 
 		store.dispatch(action.processShortAsk('trans1', 'testBinaryMarketID', '2', null, '0.5', '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.5" or shares "null"' } }], `processShortAsk produced unexpected actions when given a null numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.5" or shares "null"' } }], `processShortAsk produced unexpected actions when given a null numShares`);
 	});
 
 	it('should handle a limitPrice that is undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processShortAsk('trans1', 'testBinaryMarketID', '2', '10', undefined, '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "undefined" or shares "10"' } }], `processShortAsk produced unexpected actions when given a undefined limitPrice`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "undefined" or shares "10"' } }], `processShortAsk produced unexpected actions when given a undefined limitPrice`);
 
 		store.clearActions();
 
 		store.dispatch(action.processShortAsk('trans1', 'testBinaryMarketID', '2', '10', null, '-10.01', '0.01', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "null" or shares "10"' } }], `processShortAsk produced unexpected actions when given a null limitPrice`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "null" or shares "10"' } }], `processShortAsk produced unexpected actions when given a null limitPrice`);
 	});
 
 	it('should handle a totalEthWithFee that is undefined or null', () => {

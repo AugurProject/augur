@@ -33,11 +33,11 @@ export const select = (formState) => {
 		obj = {
 			...obj,
 			initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-			initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
+			initialFairPrices: formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 			startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 			bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 			priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-			halfPriceWidth: !!formState.priceWidth ? abi.bignum(formState.priceWidth).dividedBy(TWO).toNumber() : abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO).toNumber(),
+			halfPriceWidth: formState.priceWidth ? abi.bignum(formState.priceWidth).dividedBy(TWO).toNumber() : abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO).toNumber(),
 			priceDepth: PRICE_DEPTH_DEFAULT,
 			isSimulation: formState.isSimulation || IS_SIMULATION
 		};
@@ -81,21 +81,21 @@ export const initialFairPrices = (formState) => {
 	};
 	const labels = [];
 	switch (formState.type) {
-	case BINARY:
-		return setInitialFairPrices(['Yes', 'No']);
-	case SCALAR:
-		return setInitialFairPrices(['⇧', '⇩']);
-	case CATEGORICAL:
+		case BINARY:
+			return setInitialFairPrices(['Yes', 'No']);
+		case SCALAR:
+			return setInitialFairPrices(['⇧', '⇩']);
+		case CATEGORICAL:
 
-		formState.categoricalOutcomes.map((val, i) => {
-			labels[i] = val;
-			return val;
-		});
+			formState.categoricalOutcomes.map((val, i) => {
+				labels[i] = val;
+				return val;
+			});
 
-		return setInitialFairPrices(labels);
+			return setInitialFairPrices(labels);
 
-	default:
-		break;
+		default:
+			break;
 	}
 };
 

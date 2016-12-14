@@ -1,14 +1,13 @@
-import {
-    assert
-} from 'chai';
-import { MAKER_FEE_MIN } from '../../../src/modules/create-market/constants/market-values-constraints';
-import { formatPercent } from '../../../src/utils/format-number';
-import validateMakerFee from '../../../src/modules/create-market/validators/validate-maker-fee';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
+import { MAKER_FEE_MIN } from 'modules/create-market/constants/market-values-constraints';
+import { formatPercent } from 'utils/format-number';
+import validateMakerFee from 'modules/create-market/validators/validate-maker-fee';
 
 describe('modules/create-market/validators/validate-maker-fee.js', () => {
-	let makerFee,
-		takerFee,
-		out;
+	let makerFee;
+	let takerFee;
+	let out;
 
 	beforeEach(() => {
 		makerFee = null;
@@ -33,7 +32,7 @@ describe('modules/create-market/validators/validate-maker-fee.js', () => {
 	it('should validate bounds', () => {
 		makerFee = MAKER_FEE_MIN - 0.1;
 
-		out = `Maker fee must be between ${ formatPercent(MAKER_FEE_MIN, true).full } and ${ formatPercent(takerFee / 2, true).full }`;
+		out = `Maker fee must be between ${formatPercent(MAKER_FEE_MIN, true).full} and ${formatPercent(takerFee / 2, true).full}`;
 
 		assert.deepEqual(validateMakerFee(makerFee, takerFee), out, 'less than lower bound value state was not validated correctly');
 

@@ -1,0 +1,47 @@
+.checkbox-container {
+	display: flex;
+	flex: 1;
+}
+
+.checkbox {
+	cursor: default;
+	flex: 1;
+
+	&:disabled {
+		opacity: 0.4;
+	}
+
+	&.checked {
+		.checkbox-box::before {
+			color: rgba(45, 45, 75, 1);
+			content: '\f00c';
+			font-family: 'Font Awesome';
+			font-size: 1rem;
+			font-weight: 500;
+			left: 0;
+			position: absolute;
+			top: -0.2rem;
+		}
+	}
+
+	.checkbox-box {
+
+		.border(true);
+
+		background: #fafafa;
+		display: inline-block;
+		height: 0.8rem;
+		margin-right: 0.5rem;
+		position: relative;
+		vertical-align: middle;
+		width: 0.8rem;
+	}
+
+	.checkbox-label,
+	.checkbox-label2 {
+		display: inline-block;
+		margin-left: 0.25em;
+		position: relative;
+		vertical-align: middle;
+	}
+}

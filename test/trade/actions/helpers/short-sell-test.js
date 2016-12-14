@@ -1,15 +1,16 @@
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import { augur, abi, constants } from '../../../../src/services/augurjs';
-import { ZERO } from '../../../../src/modules/trade/constants/numbers';
+import { augur, abi, constants } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/trade/actions/helpers/short-sell.js', () => {
 	proxyquire.noPreserveCache();
 	const mockAugur = { augur: { ...augur }, abi: { ...abi }, constants: { ...constants } };
 
 	sinon.stub(mockAugur.augur, 'short_sell', (args) => {
-		const { max_amount, buyer_trade_id, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
+		const { onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed } = args;
 		// console.log('mock short_sell called');
 		// console.log(args);
 		onTradeHash('tradeHash1');
@@ -17,62 +18,60 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 		if (mockAugur.augur.short_sell.callCount !== 3) {
 			onCommitSuccess({ gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
-		 	onNextBlock({ hash: 'tradeHash1', callReturn: '1' });
-		 	onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
+			onNextBlock({ hash: 'tradeHash1', callReturn: '1' });
+			onTradeSent({ hash: 'tradeHash1', callReturn: '1' });
 		}
 		// console.log('short_sell callcount:', mockAugur.augur.short_sell.callCount);
 		switch (mockAugur.augur.short_sell.callCount) {
-		case 2:
-			onTradeFailed({ error: 'error', message: 'error message' });
-			break;
-		case 3:
-			onCommitFailed({ error: 'error', message: 'error message' });
-			break;
-		case 4:
-			onTradeSuccess({
-				sharesBought: ZERO,
-				cashFromTrade: abi.bignum('10'),
-				matchedShares: abi.bignum('10'),
-				unmatchedShares: abi.bignum('40'),
-				unmatchedCash: ZERO,
-				tradingFees: abi.bignum('0.01'),
-				gasFees: abi.bignum('0.01450404'),
-				hash: 'testhash',
-				timestamp: 1500000000
-			});
-			break;
-		case 5:
-			onTradeSuccess({
-				sharesBought: ZERO,
-				cashFromTrade: abi.bignum('15'),
-				matchedShares: abi.bignum('15'),
-				unmatchedShares: abi.bignum('25'),
-				unmatchedCash: ZERO,
-				tradingFees: abi.bignum('0.01'),
-				gasFees: abi.bignum('0.01450404'),
-				hash: 'testhash',
-				timestamp: 1500000000
-			});
-			break;
-		case 6:
-			onTradeSuccess({
-				sharesBought: ZERO,
-				cashFromTrade: abi.bignum('25'),
-				matchedShares: abi.bignum('25'),
-				unmatchedShares: abi.bignum('0'),
-				unmatchedCash: ZERO,
-				tradingFees: abi.bignum('0.01'),
-				gasFees: abi.bignum('0.01450404'),
-				hash: 'testhash',
-				timestamp: 1500000000
-			});
-			break;
-		default:
-			onTradeSuccess({ sharesBought: ZERO, cashFromTrade: abi.bignum('10.00'), unmatchedShares: ZERO, unmatchedCash: ZERO, tradingFees: abi.bignum('0.01'), gasFees: abi.bignum('0.01450404'), hash: 'testhash', timestamp:1500000000 });
-			break;
+			case 2:
+				onTradeFailed({ error: 'error', message: 'error message' });
+				break;
+			case 3:
+				onCommitFailed({ error: 'error', message: 'error message' });
+				break;
+			case 4:
+				onTradeSuccess({
+					sharesBought: ZERO,
+					cashFromTrade: abi.bignum('10'),
+					matchedShares: abi.bignum('10'),
+					unmatchedShares: abi.bignum('40'),
+					unmatchedCash: ZERO,
+					tradingFees: abi.bignum('0.01'),
+					gasFees: abi.bignum('0.01450404'),
+					hash: 'testhash',
+					timestamp: 1500000000
+				});
+				break;
+			case 5:
+				onTradeSuccess({
+					sharesBought: ZERO,
+					cashFromTrade: abi.bignum('15'),
+					matchedShares: abi.bignum('15'),
+					unmatchedShares: abi.bignum('25'),
+					unmatchedCash: ZERO,
+					tradingFees: abi.bignum('0.01'),
+					gasFees: abi.bignum('0.01450404'),
+					hash: 'testhash',
+					timestamp: 1500000000
+				});
+				break;
+			case 6:
+				onTradeSuccess({
+					sharesBought: ZERO,
+					cashFromTrade: abi.bignum('25'),
+					matchedShares: abi.bignum('25'),
+					unmatchedShares: abi.bignum('0'),
+					unmatchedCash: ZERO,
+					tradingFees: abi.bignum('0.01'),
+					gasFees: abi.bignum('0.01450404'),
+					hash: 'testhash',
+					timestamp: 1500000000
+				});
+				break;
+			default:
+				onTradeSuccess({ sharesBought: ZERO, cashFromTrade: abi.bignum('10.00'), unmatchedShares: ZERO, unmatchedCash: ZERO, tradingFees: abi.bignum('0.01'), gasFees: abi.bignum('0.01450404'), hash: 'testhash', timestamp: 1500000000 });
+				break;
 		}
-
-
 	});
 
 	const mockCBStatus = sinon.stub();
@@ -109,11 +108,11 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		}), `Didn't call cbStatus with a filled status`);
 
 		assert(mockCB.calledWithExactly(null, {
-		  remainingShares: ZERO,
-		  filledShares: ZERO,
-		  filledEth: abi.bignum('10'),
-		  tradingFees: abi.bignum('0.01'),
-		  gasFees: abi.bignum('0.02900808')
+			remainingShares: ZERO,
+			filledShares: ZERO,
+			filledEth: abi.bignum('10'),
+			tradingFees: abi.bignum('0.01'),
+			gasFees: abi.bignum('0.02900808')
 		}), `Didn't produce the expected object passed back to callback`);
 
 		assert.deepEqual(mockCBStatus.callCount, 5, `Didn't call status callback 5 times as expected`);
@@ -194,7 +193,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	it('should handle an empty array of tradeIDs', () => {
 		// marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb
-		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [ ], mockCBStatus, mockCB);
+		helper.shortSell('testBinaryMarketID', '2', '10', 'taker1', () => [], mockCBStatus, mockCB);
 		assert(mockCB.calledOnce, `the callback wasn't called once as expected`);
 		assert(mockCB.calledWithExactly(null, {
 			remainingShares: abi.bignum(10),

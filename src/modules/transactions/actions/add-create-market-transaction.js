@@ -8,7 +8,7 @@ export const makeCreateMarketTransaction = (marketData, gas, etherWithoutGas, di
 		gas,
 		ether: etherWithoutGas,
 		data: marketData,
-		action: (transactionID) => dispatch(createMarket(transactionID, marketData))
+		action: transactionID => dispatch(createMarket(transactionID, marketData))
 	};
 	return obj;
 };

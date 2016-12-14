@@ -1,10 +1,7 @@
-/*
- * Author: priecint
- */
-
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import formatTimePassed from '../../src/utils/format-time-passed';
+import formatTimePassed from 'utils/format-time-passed';
 
 describe('utils/format-time-passed.js', () => {
 	it('should format time passed', () => {

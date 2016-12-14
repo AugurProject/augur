@@ -1,8 +1,9 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, stubUpdateExistingTransaction } from '../constants';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, stubUpdateExistingTransaction } from 'test/trade/constants';
 
 describe('modules/trade/actions/process-bid.js', () => {
 	proxyquire.noPreserveCache();
@@ -10,7 +11,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 	const testState = Object.assign({}, state, tradeTestState);
 	const store = mockStore(testState);
 	const mockAugur = { augur: { buy: () => {} } };
-	sinon.stub(mockAugur.augur, "buy", (argsObj) => {
+	sinon.stub(mockAugur.augur, 'buy', (argsObj) => {
 		assert.isString(argsObj.amount, `Didn't pass the amount as a string as expected`);
 		assert.isString(argsObj.price, `Didn't pass the price as string as expected`);
 		assert.isString(argsObj.market, `Didn't pass a string for the market ID as expected`);
@@ -24,7 +25,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 		assert.isString(marketID, `didn't pass a marketID as a string to loadBidsAsks`);
 		cb(undefined, store.getState().orderBooks[marketID]);
 		return { type: 'LOAD_BIDS_ASKS' };
-	})
+	});
 	const mockUpdateExisitngTransaction = { updateExistingTransaction: () => {} };
 	sinon.stub(mockUpdateExisitngTransaction, 'updateExistingTransaction', stubUpdateExistingTransaction);
 
@@ -43,103 +44,103 @@ describe('modules/trade/actions/process-bid.js', () => {
 	});
 
 	it('should process a bid for a binary market', () => {
-			store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', '0.005'));
-			assert.deepEqual(store.getActions(), [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTION',
-					transactionID: 'transid1',
-					data: {
-						status: 'placing bid...',
-						message: 'bidding 10 shares for 0.0123 ETH/share',
-						freeze: {
-							verb: 'freezing',
-							noFeeCost: {
-								value: 0.0234,
-								formattedValue: 0.0234,
-								formatted: '0.0234',
-								roundedValue: 0.0234,
-								rounded: '0.0234',
-								minimized: '0.0234',
-								denomination: ' ETH',
-								full: '0.0234 ETH'
-							},
-							tradingFees: {
-								value: 0.1,
-								formattedValue: 0.1,
-								formatted: '0.1000',
-								roundedValue: 0.1,
-								rounded: '0.1000',
-								minimized: '0.1',
-								denomination: ' ETH',
-								full: '0.1000 ETH'
-							}
+		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', '0.005'));
+		assert.deepEqual(store.getActions(), [
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: {
+					status: 'placing bid...',
+					message: 'bidding 10 shares for 0.0123 ETH/share',
+					freeze: {
+						verb: 'freezing',
+						noFeeCost: {
+							value: 0.0234,
+							formattedValue: 0.0234,
+							formatted: '0.0234',
+							roundedValue: 0.0234,
+							rounded: '0.0234',
+							minimized: '0.0234',
+							denomination: ' ETH',
+							full: '0.0234 ETH'
 						},
-						gasFees: {
-							value: 0.005,
-							formattedValue: 0.005,
-							formatted: '0.0050',
-							roundedValue: 0.005,
-							rounded: '0.0050',
-							minimized: '0.005',
-							denomination: ' real ETH (estimated)',
-							full: '0.0050 real ETH (estimated)'
-						}
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTION',
-					transactionID: 'transid1',
-					data: {
-						hash: 'testHash',
-						timestamp: 1480000000,
-						status: 'updating order book',
-						message: 'bid 10 shares for 0.0123 ETH/share',
-						freeze: {
-							verb: 'froze',
-							noFeeCost: {
-								value: 0.0234,
-								formattedValue: 0.0234,
-								formatted: '0.0234',
-								roundedValue: 0.0234,
-								rounded: '0.0234',
-								minimized: '0.0234',
-								denomination: ' ETH',
-								full: '0.0234 ETH'
-							},
-							tradingFees: {
-								value: 0.1,
-								formattedValue: 0.1,
-								formatted: '0.1000',
-								roundedValue: 0.1,
-								rounded: '0.1000',
-								minimized: '0.1',
-								denomination: ' ETH',
-								full: '0.1000 ETH'
-							}
-						},
-						gasFees: {
+						tradingFees: {
 							value: 0.1,
 							formattedValue: 0.1,
 							formatted: '0.1000',
 							roundedValue: 0.1,
 							rounded: '0.1000',
 							minimized: '0.1',
-							denomination: ' real ETH',
-							full: '0.1000 real ETH'
+							denomination: ' ETH',
+							full: '0.1000 ETH'
 						}
+					},
+					gasFees: {
+						value: 0.005,
+						formattedValue: 0.005,
+						formatted: '0.0050',
+						roundedValue: 0.005,
+						rounded: '0.0050',
+						minimized: '0.005',
+						denomination: ' real ETH (estimated)',
+						full: '0.0050 real ETH (estimated)'
 					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTION',
-					transactionID: 'transid1',
-					data: { status: 'success'}
-				},
-				{ type: 'LOAD_BIDS_ASKS' },
-				{ type: 'UPDATE_EXISTING_TRANSACTION',
-  				transactionID: 'transid1',
-  				data: { status: 'failed', message: 'this is an error' }
 				}
-			], `Actions Dispatched didn't match up with expectations`);
+			},
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: {
+					hash: 'testHash',
+					timestamp: 1480000000,
+					status: 'updating order book',
+					message: 'bid 10 shares for 0.0123 ETH/share',
+					freeze: {
+						verb: 'froze',
+						noFeeCost: {
+							value: 0.0234,
+							formattedValue: 0.0234,
+							formatted: '0.0234',
+							roundedValue: 0.0234,
+							rounded: '0.0234',
+							minimized: '0.0234',
+							denomination: ' ETH',
+							full: '0.0234 ETH'
+						},
+						tradingFees: {
+							value: 0.1,
+							formattedValue: 0.1,
+							formatted: '0.1000',
+							roundedValue: 0.1,
+							rounded: '0.1000',
+							minimized: '0.1',
+							denomination: ' ETH',
+							full: '0.1000 ETH'
+						}
+					},
+					gasFees: {
+						value: 0.1,
+						formattedValue: 0.1,
+						formatted: '0.1000',
+						roundedValue: 0.1,
+						rounded: '0.1000',
+						minimized: '0.1',
+						denomination: ' real ETH',
+						full: '0.1000 real ETH'
+					}
+				}
+			},
+			{
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: { status: 'success' }
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{ type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'transid1',
+				data: { status: 'failed', message: 'this is an error' }
+			}
+		], `Actions Dispatched didn't match up with expectations`);
 	});
 
 	it('should process a bid for a categorical market', () => {
@@ -232,7 +233,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'transid2',
-				data: { status: 'success'}
+				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
@@ -332,7 +333,7 @@ describe('modules/trade/actions/process-bid.js', () => {
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'transid3',
-				data: { status: 'success'}
+				data: { status: 'success' }
 			},
 			{ type: 'LOAD_BIDS_ASKS' },
 			{ type: 'UPDATE_EXISTING_TRANSACTION',
@@ -354,147 +355,195 @@ describe('modules/trade/actions/process-bid.js', () => {
 	it(`should fail gracefully if totalEthWithFee is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', undefined, '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "0.5" or total "undefined"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or total "undefined"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', null, '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "0.5" or total "null"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or total "null"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 	});
 
 	it(`should fail gracefully if limitPrice is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', undefined, '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "undefined" or total "0.1234"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "undefined" or total "0.1234"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', null, '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "null" or total "0.1234"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "null" or total "0.1234"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 	});
 
 	it(`should fail gracefully if limitPrice and totalEthWithFee are both null or both undefined`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', null, null, '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "null" or total "null"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "null" or total "null"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', undefined, undefined, '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'invalid limit price "undefined" or total "undefined"' } } ], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "undefined" or total "undefined"'
+			}
+		}], `Didn't dispatch a failed UPDATE_EXISTING_TRANSACTION action object`);
 	});
 
 	it(`Should fail gracefully if marketID is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', undefined, '2', '10', '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', null, '2', '10', '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if outcomeID is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', undefined, '10', '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', null, '10', '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if numShares is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', undefined, '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', null, '0.5', '0.1234', '0.1', '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if tradingFeesEth is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', undefined, '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', null, '0.005'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 	});
 
 	it(`Should fail gracefully if gasFeesRealEth is undefined or null`, () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', undefined));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 
 		store.clearActions();
 		store.dispatch(action.processBid('transid1', 'testBinaryMarketID', '2', '10', '0.5', '0.1234', '0.1', null));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-		transactionID: 'transid1',
-		data:
-		 { status: 'failed',
-			 message: 'There was an issue processing your bid order.' } } ], `Didn't dispatch the failed transaction action object`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'transid1',
+			data: {
+				status: 'failed',
+				message: 'There was an issue processing your bid order.'
+			}
+		}], `Didn't dispatch the failed transaction action object`);
 	});
 });

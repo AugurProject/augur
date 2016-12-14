@@ -1,6 +1,4 @@
-/*
- * Author: priecint
- */
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', () => {

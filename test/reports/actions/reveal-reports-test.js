@@ -1,3 +1,4 @@
+import { describe, it, beforeEach } from 'mocha';
 import {
 	assert
 } from 'chai';
@@ -5,13 +6,12 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe('modules/reports/actions/reveal-reports.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
 	const reports = {
 		[testState.branch.id]: {
 			test1: {
@@ -61,7 +61,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			}
 		}
 	};
-	let state = Object.assign({}, testState, {
+	const state = Object.assign({}, testState, {
 		loginAccount: {
 			...testState.loginAccount,
 			ether: 100,
@@ -70,16 +70,14 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		},
 		reports
 	});
-	store = mockStore(state);
+	const store = mockStore(state);
 
-	let mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
-	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) => {
-		return (dispatch, getState) => {
-			callback(null);
-		};
+	const mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
+	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) => (dispatch, getState) => {
+		callback(null);
 	});
 
-	action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
+	const action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
 		'../../transactions/actions/add-reveal-report-transaction': mockAddRevealReportTransaction
 	});
 
@@ -88,7 +86,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	});
 
 	it('should reveal reports', () => {
-		let out = [{
+		const out = [{
 			type: 'UPDATE_REPORTS',
 			reports: {
 				[testState.branch.id]: {

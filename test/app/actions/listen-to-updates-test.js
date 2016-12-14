@@ -1,18 +1,18 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/app/actions/listen-to-updates.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockAugurJS = {
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockAugurJS = {
 		augur: {
 			filters: { listen: () => {} },
 			CompositeGetters: { getPositionInMarket: () => {} }
@@ -22,13 +22,13 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			bignum: () => {}
 		}
 	};
-	let mockUpdateBlockchain = {};
-	let mockUpdateBranch = {};
-	let mockUpdateAssets = {};
-	let mockOutcomePrice = {};
-	let mockLoadBidsAsks = {};
-	let mockLoadAccountTrades = {};
-	let mockLoadMarketsInfo = {
+	const mockUpdateBlockchain = {};
+	const mockUpdateBranch = {};
+	const mockUpdateAssets = {};
+	const mockOutcomePrice = {};
+	const mockLoadBidsAsks = {};
+	const mockLoadAccountTrades = {};
+	const mockLoadMarketsInfo = {
 		loadMarketsInfo: () => {}
 	};
 	mockUpdateAssets.updateAssets = sinon.stub().returns({
@@ -52,12 +52,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockLoadAccountTrades.loadAccountTrades = sinon.stub().returns({
 		type: 'UPDATE_ACCOUNT_TRADES_DATA'
 	});
-	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', (marketID) => {
-		return {
-			type: 'LOAD_BASIC_MARKET',
-			marketID
-		};
-	});
+	sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', marketID => ({
+		type: 'LOAD_BASIC_MARKET',
+		marketID
+	}));
 	mockAugurJS.abi.number = sinon.stub().returns([0, 1]);
 	sinon.stub(mockAugurJS.augur.filters, 'listen', (cb) => {
 		cb.block('blockhash');
@@ -75,7 +73,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		cb(['0x0', '0x1']);
 	});
 
-	action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
+	const action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../app/actions/update-branch': mockUpdateBranch,
 		'../../app/actions/update-blockchain': mockUpdateBlockchain,
@@ -96,7 +94,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
 	it(`should listen for new updates`, () => {
 		store.dispatch(action.listenToUpdates());
-		out = [{
+		const out = [{
 			type: 'UPDATE_ASSETS'
 		}, {
 			type: 'SYNC_BLOCKCHAIN'

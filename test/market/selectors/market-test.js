@@ -1,25 +1,24 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
-import assertions from 'augur-ui-react-components/lib/assertions';
-
 import sinon from 'sinon';
+
+import * as mockStore from 'test/mockStore';
+import marketAssertions from 'assertions/market';
 
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector,
-		actual;
-	let { store } = mockStore.default;
+	const { store } = mockStore.default;
 
 	const { loginAccount } = store.getState();
 	const stubbedSelectors = { loginAccount };
 
-	let stubbedAugurJS = {
+	const stubbedAugurJS = {
 		getMarketCreatorFeesCollected: () => {},
-		abi: { bignum: (n) => { return n; } }
+		abi: { bignum: n => n }
 	};
 	sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
 
-	selector = proxyquire('../../../src/modules/market/selectors/market.js', {
+	const selector = proxyquire('../../../src/modules/market/selectors/market.js', {
 		'../../../store': store,
 		// make selectors/user-open-orders-summary use the same store as selectors/market.js
 		'../../user-open-orders/selectors/user-open-orders-summary': proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders-summary', {
@@ -40,7 +39,7 @@ describe(`modules/market/selectors/market.js`, () => {
 	});
 
 	it(`should return the expected values to components`, () => {
-		actual = selector.default();
-		assertions.market(actual);
+		const actual = selector.default();
+		marketAssertions(actual);
 	});
 });

@@ -1,0 +1,63 @@
+.order-book() {
+	background: white;
+	border-radius: 1px;
+	margin: 0.25rem;
+	min-width: 400px;
+
+	h5 {
+		border-bottom: 1px solid @color-border;
+		font-size: 1.3em;
+		font-weight: 700;
+		margin-bottom: 0.5em;
+		text-align: center;
+		text-transform: uppercase;
+
+		.name-header {
+			display: inline-block;
+		}
+
+		.bids-header {
+			display: inline-block;
+			font-size: 0.65em;
+			font-weight: 400;
+			padding-right: 2rem;
+			text-align: right;
+		}
+
+		.asks-header {
+			display: inline-block;
+			font-size: 0.65em;
+			font-weight: 400;
+			padding-left: 2rem;
+			text-align: left;
+		}
+	}
+
+	.bids {
+		border-right: 1px solid @color-border;
+		display: inline-block;
+		padding-right: 0.5em;
+		text-align: right;
+		vertical-align: top;
+
+		.bid {
+			.value-denomination.price {
+				margin-left: 1em;
+			}
+		}
+	}
+
+	.asks {
+		border-left: 1px solid @color-border;
+		display: inline-block;
+		padding-left: 0.5em;
+		text-align: left;
+		vertical-align: top;
+
+		.ask {
+			.value-denomination.price {
+				margin-right: 1em;
+			}
+		}
+	}
+}

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
@@ -13,9 +14,6 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 	const test = (t) => {
 		it(t.description, () => {
 			const store = mockStore(t.state);
-			const AddCommitReportTransaction = {
-				addCommitReportTransaction: () => {}
-			};
 			const AugurJS = {
 				augur: {
 					claimMarketsProceeds: () => {}
@@ -48,26 +46,18 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
 				cb(null, markets);
 			});
-			sinon.stub(AugurJS.abi, 'bignum', (n) => {
-				return new BigNumber(n, 10);
+			sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
+			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
+				cb(null);
 			});
-			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
-					cb(null);
-				};
+			sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+				cb(null);
 			});
-			sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
-					cb(null);
-				};
-			});
-			sinon.stub(LoadBidsAsks, 'loadBidsAsks', (marketID, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
-					cb(null);
-				};
+			sinon.stub(LoadBidsAsks, 'loadBidsAsks', (marketID, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+				cb(null);
 			});
 			UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
 			UpdateExistingTransaction.updateExistingTransaction = sinon.stub().returns({ type: 'UPDATE_EXISTING_TRANSACTION' });
@@ -110,7 +100,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				}
@@ -178,12 +168,12 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				}
@@ -229,17 +219,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				},
 				'0xa3': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				}
@@ -294,17 +284,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				},
 				'0xa3': {
-					'2': {
+					2: {
 						sharesPurchased: 1
 					}
 				}

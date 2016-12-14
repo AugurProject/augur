@@ -1,18 +1,17 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import BigNumber from 'bignumber.js';
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/app/actions/update-branch.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState, {
+	const state = Object.assign({}, testState, {
 		branch: {
 			currentPeriod: 20,
 			currentPeriodProgress: 52,
@@ -21,10 +20,10 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			periodLength: 900
 		}
 	});
-	let store = mockStore(state);
-	let mockAugurJS = { augur: {}, abi: { bignum: () => {} } };
-	let mockCheckPeriod = { checkPeriod: () => {} };
-	let mockClaimProceeds = {};
+	const store = mockStore(state);
+	const mockAugurJS = { augur: {}, abi: { bignum: () => {} } };
+	const mockCheckPeriod = { checkPeriod: () => {} };
+	const mockClaimProceeds = {};
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
 	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
 	mockAugurJS.augur.getVotePeriod = sinon.stub().yields(19);
@@ -35,14 +34,12 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		if (n == null) return null;
 		return new BigNumber(n, 10);
 	});
-	sinon.stub(mockCheckPeriod, 'checkPeriod', (unlock, cb) => {
-		return (dispatch, getState) => {
-			const reportPeriod = 19;
-			dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });
-			cb(null, reportPeriod);
-		};
+	sinon.stub(mockCheckPeriod, 'checkPeriod', (unlock, cb) => (dispatch, getState) => {
+		const reportPeriod = 19;
+		dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });
+		cb(null, reportPeriod);
 	});
-	let action = proxyquire('../../../src/modules/app/actions/update-branch.js', {
+	const action = proxyquire('../../../src/modules/app/actions/update-branch.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../reports/actions/check-period': mockCheckPeriod,
 		'../../my-positions/actions/claim-proceeds': mockClaimProceeds
@@ -58,12 +55,12 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		mockCheckPeriod.checkPeriod.reset();
 	});
 	it('should update our local state to match blockchain if chain is up-to-date', () => {
-		let mockCB = () => {
+		const mockCB = () => {
 			store.dispatch({
 				type: 'MOCK_CB_CALLED'
-			})
+			});
 		};
-		let out = [{
+		const out = [{
 			type: 'UPDATE_BRANCH',
 			branch: {
 				currentPeriod: 20,
@@ -80,12 +77,12 @@ describe(`modules/app/actions/update-branch.js`, () => {
 	});
 	it(`should increment branch if the branch is behind`, () => {
 		mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(42);
-		let mockCB = () => {
+		const mockCB = () => {
 			store.dispatch({
 				type: 'MOCK_CB_CALLED'
-			})
+			});
 		};
-		let out = [{
+		const out = [{
 			type: 'UPDATE_BRANCH',
 			branch: {
 				currentPeriod: 20,
@@ -112,7 +109,7 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
 	it(`should collect fees and reveal reports if we're in the second half of the reporting period`, () => {
-		let state = Object.assign({}, testState, {
+		const state = Object.assign({}, testState, {
 			branch: {
 				currentPeriod: 20,
 				currentPeriodProgress: 49,
@@ -121,14 +118,14 @@ describe(`modules/app/actions/update-branch.js`, () => {
 				periodLength: 900
 			}
 		});
-		let store = mockStore(state);
+		const store = mockStore(state);
 		mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
-		let mockCB = () => {
+		const mockCB = () => {
 			store.dispatch({
 				type: 'MOCK_CB_CALLED'
 			});
 		};
-		let out = [{
+		const out = [{
 			type: 'UPDATE_BRANCH',
 			branch: {
 				currentPeriod: 20,

@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { abi } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 

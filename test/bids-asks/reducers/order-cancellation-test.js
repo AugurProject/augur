@@ -1,12 +1,9 @@
-/*
- * Author: priecint
- */
-
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import orderCancellationReducer from '../../../src/modules/bids-asks/reducers/order-cancellation'
-import { ABORT_CANCEL_ORDER_CONFIRMATION, SHOW_CANCEL_ORDER_CONFIRMATION } from '../../../src/modules/bids-asks/actions/cancel-order';
-import { UPDATE_ORDER_STATUS } from '../../../src/modules/bids-asks/actions/update-order-status';
-import { CANCELLATION_CONFIRMATION } from '../../../src/modules/bids-asks/constants/order-status';
+import orderCancellationReducer from 'modules/bids-asks/reducers/order-cancellation';
+import { ABORT_CANCEL_ORDER_CONFIRMATION, SHOW_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
+import { UPDATE_ORDER_STATUS } from 'modules/bids-asks/actions/update-order-status';
+import { CANCELLATION_CONFIRMATION } from 'modules/bids-asks/constants/order-status';
 
 describe('modules/bids-asks/reducers/order-cancellation.js', () => {
 	it('should react to UPDATE_ORDER_STATUS action', () => {

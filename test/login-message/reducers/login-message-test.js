@@ -1,9 +1,7 @@
-/*
- * Author: priecint
- */
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import loginMessageReducer from '../../../src/modules/login-message/reducers/login-message';
-import { UPDATE_LOGIN_MESSAGE_VERSION_READ } from '../../../src/modules/login-message/actions/update-user-login-message-version-read';
+import loginMessageReducer from 'modules/login-message/reducers/login-message';
+import { UPDATE_LOGIN_MESSAGE_VERSION_READ } from 'modules/login-message/actions/update-user-login-message-version-read';
 
 describe('modules/login-message/reducers/login-message.js', () => {
 	it('should react to default action', () => {

@@ -1,0 +1,25 @@
+.dropdown {
+	background-color: @color-white;
+	border: 1px solid @color-border;
+	display: flex;
+	position: relative;
+
+	select {
+		appearance: none;
+		background-color: transparent;
+		border: none;
+		padding: 1em 2.2em 1em 1em;
+	}
+
+	i {
+
+		.font-size-medium();
+
+		cursor: default;
+		pointer-events: none;
+		position: absolute;
+		right: 1em;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+}

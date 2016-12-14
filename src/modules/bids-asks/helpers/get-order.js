@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 /**
  *
  * @param {String} orderID

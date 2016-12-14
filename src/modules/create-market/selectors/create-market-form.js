@@ -33,7 +33,7 @@ export const selectCreateMarketForm =
 		};
 
 		// next step handler
-		formState.onValuesUpdated = (newValues) => dispatch(updateMakeInProgress(newValues));
+		formState.onValuesUpdated = newValues => dispatch(updateMakeInProgress(newValues));
 
 		// init
 		if (!formState.step || !(formState.step >= 1)) {

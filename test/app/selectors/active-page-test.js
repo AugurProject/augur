@@ -1,9 +1,10 @@
-import assertions from 'augur-ui-react-components/lib/assertions';
-import selector from '../../../src/modules/app/selectors/active-view';
+import { describe, it } from 'mocha';
+import activeViewAssertions from 'assertions/active-view';
+import selector from 'modules/app/selectors/active-view';
 
 describe(`modules/app/selectors/active-page.js`, () => {
 	it(`should get active page from store`, () => {
-		let actual = selector();
-		assertions.activeView(actual);
+		const actual = selector();
+		activeViewAssertions(actual);
 	});
 });

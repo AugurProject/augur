@@ -1,89 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="fragment" content="!">
+  <head>
+    <title>Augur | Decentralized Prediction Markets</title>
 
-	<title>Decentralized Prediction Markets | Augur</title>
+    <meta charset="utf-8">
+    <meta name="fragment" content="!">
 
-	<meta name="description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
-	<meta property="og:title" content="Augur | Decentralized Prediction Markets">
-	<meta property="og:description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
-	<meta property="og:site_name" content="Augur | Decentralized Prediction Markets">
-	<meta property="og:url" content="http://www.app.augur.net">
-	<meta property="og:image" content="/2.0.0/assets/images/apple-touch-icon-152x152.png">
-	<meta property="article:tag" content="Augur">
-	<meta property="article:tag" content="Prediction Markets">
-	<meta property="article:tag" content="Predictive Markets">
-	<meta property="article:tag" content="Market Predictions">
-	<meta property="article:tag" content="Share Market">
-	<meta property="article:tag" content="Bet Predictions">
-	<meta property="article:tag" content="Prediction Site">
-	<meta property="article:tag" content="Decentralized">
-	<meta property="article:published_time" content="2016-10-10T04:21:28+00:00">
-	<meta name="twitter:card" content="Augur | Decentralized Prediction Markets">
-	<meta name="twitter:description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
-	<meta name="twitter:title" content="Augur | Decentralized Prediction Markets">
-	<meta name="twitter:domain" content="Augur">
-	<meta name="twitter:image" content="/2.0.0/assets/images/apple-touch-icon-152x152.png">
+    <meta name="description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
 
-	<!-- icons -->
-	<!-- 	iOS icons (iOS 10+) -->
-	<link rel="apple-touch-icon" sizes="152x152" href="/${build_folder}/assets/images/apple-touch-icon-152x152.png"> <!-- 152x152 is catchall icon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="/${build_folder}/assets/images/apple-touch-icon-180x180.png">
-	<!-- 	Android -->
-	<meta name="theme-color" content="#5F2652">
-	<link rel="manifest" href="/${build_folder}/manifest.json">
-	<!-- 	Safari -->
-	<link rel="mask-icon" href="/${build_folder}/assets/images/safari-pinned-tab.svg" color="#5F2652">
-	<!-- 	MS -->
-	<meta name="msapplication-TileColor" content="#5F2652" />
-	<meta name="application-name" content="Augur" />
-	<meta name="msapplication-square70x70logo" content="/${build_folder}/assets/images/augur-tile-small.png" />
-	<meta name="msapplication-square150x150logo" content="/${build_folder}/assets/images/augur-tile-medium.png" />
-	<meta name="msapplication-wide310x150logo" content="/${build_folder}/assets/images/augur-tile-wide.png" />
-	<meta name="msapplication-square310x310logo" content="/${build_folder}/assets/images/augur-tile-large.png" />
-	<!-- 	If favicon.ico isn't picked up -->
-	<link rel="icon" type="image/png" sizes="16x16" href="/${build_folder}/assets/images/favicon-16x16.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/${build_folder}/assets/images/favicon-32x32.png">
+		<!-- Open Graph -->
+    <meta property="og:title" content="Augur | Decentralized Prediction Markets">
+    <meta property="og:description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
+    <meta property="og:site_name" content="Augur | Decentralized Prediction Markets">
+    <meta property="og:url" content="http://www.app.augur.net">
+    <meta property="og:image" content="/assets/images/apple-touch-icon-152x152.png">
+    <meta property="article:tag" content="Augur">
+    <meta property="article:tag" content="Prediction Markets">
+    <meta property="article:tag" content="Predictive Markets">
+    <meta property="article:tag" content="Market Predictions">
+    <meta property="article:tag" content="Share Market">
+    <meta property="article:tag" content="Bet Predictions">
+    <meta property="article:tag" content="Prediction Site">
+    <meta property="article:tag" content="Decentralized">
+    <meta property="article:published_time" content="2016-10-10T04:21:28+00:00">
 
-	<meta name="HandheldFriendly" content="True">
-	<meta name="MobileOptimized" content="320">
-	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui,user-scalable=0">
-	<meta name="e840127dba35b2939858e9ed30d25cb70b353e25" content="117ae21d29f8732b0bde7381da50aa67b1548bd9" />
+		<!-- Twitter -->
+    <meta name="twitter:card" content="Augur | Decentralized Prediction Markets">
+    <meta name="twitter:description" content="Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.">
+    <meta name="twitter:title" content="Augur | Decentralized Prediction Markets">
+    <meta name="twitter:domain" content="Augur">
+    <meta name="twitter:image" content="/assets/images/apple-touch-icon-152x152.png">
 
-	<link rel="stylesheet" type="text/css" href="/${build_folder}/splash.css" inline>
-	<link rel="stylesheet" type="text/css" href="/${build_folder}/styles.css">
+		<!-- Favicons -->
+		<!-- 	iOS 10+ -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180.png">
+		<!-- 	Android -->
+    <meta name="theme-color" content="#5F2652">
+    <link rel="manifest" href="/config/manifest.json">
+		<!-- 	Safari -->
+    <link rel="mask-icon" href="/assets/images/safari-pinned-tab.svg" color="#5F2652">
+		<!-- 	Windows 10 Tiles -->
+    <meta name="msapplication-TileColor" content="#5F2652">
+    <meta name="application-name" content="Augur">
+    <meta name="msapplication-square70x70logo" content="/assets/images/augur-tile-small.png">
+    <meta name="msapplication-square150x150logo" content="/assets/images/augur-tile-medium.png">
+    <meta name="msapplication-wide310x150logo" content="/assets/images/augur-tile-wide.png">
+    <meta name="msapplication-square310x310logo" content="/assets/images/augur-tile-large.png">
+		<!-- 	fallback if favicon.ico isn't utilized -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
 
-	<script src="/${build_folder}/build.js" async></script>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui,user-scalable=0">
+    <meta name="e840127dba35b2939858e9ed30d25cb70b353e25" content="117ae21d29f8732b0bde7381da50aa67b1548bd9">
 
-	<script src="//www.google-analytics.com/analytics.js" defer></script>
+		<link rel="stylesheet" type="text/css" href="/assets/styles/splash.css">
 
-	<script>document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch-enabled' : ' touch-disabled');</script>
-	<script>
-		// Redirect /blog/ links to augur.strikingly.com/blog
-		if (window.location.pathname.match(/\/blog\//)) {
-			window.location = "http://augur.strikingly.com" + window.location.pathname;
-		}
-	</script>
-</head>
-<body>
-	<div id="app"><div id="splash"><span id="splash-text"></span></div></div>
-	<button id="uservoice-button" style="position:fixed;bottom:0;left:5%;font-size:14px;background:#2C2C2C;color:#FFFFFF;padding:10px 20px;border-radius:5px 5px 0 0;font-weight:400;z-index:100;visibility:visible !important;cursor:pointer;margin:0;">Feedback</button>
-	<script type="text/javascript">
-	 UserVoice=window.UserVoice||[],function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://widget.uservoice.com/CDL6e6K1fQciGvhFmwEUg.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();
-	 UserVoice.push(['addTrigger', '#uservoice-button', {
-	 	mode: 'smartvote',
-	 	trigger_style: 'tab',
-	 	trigger_position: 'left',
-	 	strings: {
-	 		post_suggestion_title: 'Have an idea for Augur?',
-	 		post_suggestion_body: 'Submit your thoughts to have the community join in!',
-	 		post_suggestion_message_placeholder: 'Functionality improvements, new feature requests, etc.',
-	 		contact_menu_label: 'Want to send the team a message?',
-	 		contact_message_placeholder: 'Need help, have a question, or need to contact the team? Let us know here.'
-	 	}
-	 }]);
-	</script>
-</body>
+    <script>
+      document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch-enabled' : ' touch-disabled');
+    </script>
+    <script>
+      if (window.location.pathname.match(/\/blog\//)) {
+      	window.location = "http://augur.strikingly.com" + window.location.pathname;
+      }
+    </script>
+	</head>
+  <body>
+    <div id="app"> <!-- attachment point for the app -->
+      <div id="splash">
+				<span id="splash-text"></span>
+			</div>
+    </div>
+
+		<!-- Hotjar Analytics -->
+    <script type="text/javascript">
+      (function(h,o,t,j,a,r){
+          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+          h._hjSettings={hjid:360502,hjsv:5};
+          a=o.getElementsByTagName('head')[0];
+          r=o.createElement('script');r.async=1;
+          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+          a.appendChild(r);
+      })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+
+    </script>
+
+		<!-- Google Analytics -->
+    <script src="//www.google-analytics.com/analytics.js" defer=""></script>
+
+		<!-- Uservoice -->
+    <button id="uservoice-button" style="position:fixed;bottom:0;left:5%;font-size:14px;background:#2C2C2C;color:#FFFFFF;padding:10px 20px;border-radius:5px 5px 0 0;font-weight:400;z-index:100;visibility:visible !important;cursor:pointer;margin:0">Feedback</button>
+    <script type="text/javascript">
+      UserVoice=window.UserVoice||[],function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://widget.uservoice.com/CDL6e6K1fQciGvhFmwEUg.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}();
+      UserVoice.push(['addTrigger', '#uservoice-button', {
+      	mode: 'smartvote',
+      	trigger_style: 'tab',
+      	trigger_position: 'left',
+      	strings: {
+      		post_suggestion_title: 'Have an idea for Augur?',
+      		post_suggestion_body: 'Submit your thoughts to have the community join in!',
+      		post_suggestion_message_placeholder: 'Functionality improvements, new feature requests, etc.',
+      		contact_menu_label: 'Want to send the team a message?',
+      		contact_message_placeholder: 'Need help, have a question, or need to contact the team? Let us know here.'
+      	}
+      }]);
+    </script>
+
+		<!-- NOTE: all relevant entry scripts are automatically appended here during build -->
+	</body>
 </html>

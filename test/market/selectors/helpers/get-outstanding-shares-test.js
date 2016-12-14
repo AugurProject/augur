@@ -1,13 +1,11 @@
-/*
- * Author: priecint
- */
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import mocks from '../../../mockStore'
+import mocks from 'test/mockStore';
 
 describe('modules/market/selectors/helpers/get-outstanding-shares.js', () => {
 	const getOutstandingShares = require('../../../../src/modules/market/selectors/helpers/get-outstanding-shares').default;
 	it('should return outstanding shares', () => {
-		const outstandingShares = getOutstandingShares(mocks.state.outcomesData['testMarketID']);
+		const outstandingShares = getOutstandingShares(mocks.state.outcomesData.testMarketID);
 
 		assert.strictEqual(outstandingShares, 372);
 	});

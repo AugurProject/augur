@@ -1,13 +1,11 @@
-/*
- * Author: priecint
- */
+import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import mocks from '../../mockStore';
-import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
-import { CANCEL_ORDER } from "../../../src/modules/transactions/constants/types";
-import { formatShares, formatEther } from '../../../src/utils/format-number'
+import mocks from 'test/mockStore';
+import { BID } from 'modules/bids-asks/constants/bids-asks-types';
+import { CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { formatShares, formatEther } from 'utils/format-number';
 
 describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 	proxyquire.noPreserveCache().noCallThru();

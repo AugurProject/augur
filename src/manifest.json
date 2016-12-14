@@ -2,7 +2,7 @@
 	"name": "Augur",
 	"icons": [
 		{
-			"src": "${build_folder}\/assets\/images\/android-chrome-192x192.png",
+			"src": "\/assets\/images\/android-chrome-192x192.png",
 			"sizes": "192x192",
 			"type": "image\/png"
 		}

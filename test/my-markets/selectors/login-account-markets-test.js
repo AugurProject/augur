@@ -1,11 +1,12 @@
+import { describe, it, before, after } from 'mocha';
 import { assert } from 'chai';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import loginAccountMarketsAssertions from 'assertions/login-account-markets';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import * as selectMyMarkets from '../../../src/modules/my-markets/selectors/my-markets';
-import * as selectMyMarketsSummary from '../../../src/modules/my-markets/selectors/my-markets-summary';
+import * as selectMyMarkets from 'modules/my-markets/selectors/my-markets';
+import * as selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
 
 describe('modules/my-markets/selectors/login-account-markets', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -39,6 +40,6 @@ describe('modules/my-markets/selectors/login-account-markets', () => {
 	});
 
 	it('should return the correct object to augur-ui-react-components', () => {
-		assertions.loginAccountMarkets(actual);
+		loginAccountMarketsAssertions(actual);
 	});
 });

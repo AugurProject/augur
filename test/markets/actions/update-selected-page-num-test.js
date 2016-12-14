@@ -1,9 +1,9 @@
-import {
-	assert
-} from 'chai';
-import * as mockStore from '../../mockStore';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import * as mockStore from 'test/mockStore';
 // import configureMockStore from 'redux-mock-store';
 // import thunk from 'redux-thunk';
 // import testState from '../../testState';
@@ -12,15 +12,12 @@ import sinon from 'sinon';
 describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let { state, store } = mockStore.default;
-	let out, action;
-	let mockUpdateURL = { updateURL: () => {} };
+	const { store } = mockStore.default;
+	const mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockUpdateURL, 'updateURL', (href) => {
-		return { type: 'UPDATE_URL', href };
-	});
+	sinon.stub(mockUpdateURL, 'updateURL', href => ({ type: 'UPDATE_URL', href }));
 
-	action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
+	const action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
 		'../../link/actions/update-url': mockUpdateURL,
 		'../../../selectors': proxyquire('../../../src/selectors', {
 			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
@@ -49,7 +46,7 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	});
 
 	it(`should return a func. which dispatches UPDATE_SELECTED_PAGE_NUM and UPDATE_URL actions`, () => {
-		out = [{
+		const out = [{
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 2
 		}, {

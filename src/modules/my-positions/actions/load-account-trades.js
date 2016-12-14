@@ -24,12 +24,12 @@ export function loadAccountTrades(marketID, cb) {
 						callback(null, positionsPlusAsks);
 					});
 				},
-				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
+				trades: callback => augur.getAccountTrades(account, options, (trades) => {
 					if (!trades || trades.error) return callback(trades);
 					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
 				}),
-				completeSetsBought: (callback) => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
+				completeSetsBought: callback => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
 					if (err) return callback(err);
 					const completeSetsBought = augur.parseCompleteSetsLogs(logs);
 					dispatch(updateCompleteSetsBought(completeSetsBought, marketID));
@@ -42,8 +42,6 @@ export function loadAccountTrades(marketID, cb) {
 				}
 				dispatch(sellCompleteSets(marketID, cb));
 			});
-		} else {
-			if (cb) cb();
-		}
+		} else if (cb) cb();
 	};
 }

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -16,9 +17,6 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				augur: {
 					getEthicReport: () => {}
 				}
-			};
-			const DecryptReport = {
-				decryptReport: () => {}
 			};
 			const action = proxyquire('../../../src/modules/reports/actions/load-report-descriptors', {
 				'../../../services/augurjs': AugurJS
@@ -343,7 +341,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
 				}
 			}]);
 		}
-	});	
+	});
 	test({
 		description: 'scalar market, indeterminate, not unethical',
 		eventID: '0xe1',

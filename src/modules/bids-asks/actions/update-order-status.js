@@ -1,6 +1,3 @@
-/*
- * Author: priecint
- */
 import getOrder from '../../bids-asks/helpers/get-order';
 import store from '../../../store';
 

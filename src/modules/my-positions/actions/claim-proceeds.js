@@ -50,7 +50,7 @@ export function claimProceeds() {
 					dispatch(updateAssets());
 					console.log('claimed proceeds from markets:', claimedMarkets);
 				}, (transactionID, marketID) => {
-					const closedMarket = closedMarketsWithShares.find((market) => market.id === marketID);
+					const closedMarket = closedMarketsWithShares.find(market => market.id === marketID);
 					dispatch(updateExistingTransaction(transactionID, {
 						message: `closing out ${formatShares(closedMarket.shares).full} for ${formatEther(closedMarket.shares).full}`
 					}));

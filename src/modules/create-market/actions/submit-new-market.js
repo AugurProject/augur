@@ -12,7 +12,7 @@ import { submitGenerateOrderBook } from '../../create-market/actions/generate-or
 import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 export function submitNewMarket(newMarket) {
-	return dispatch => {
+	return (dispatch) => {
 		selectTransactionsLink(dispatch).onClick();
 		dispatch(addCreateMarketTransaction(newMarket));
 	};

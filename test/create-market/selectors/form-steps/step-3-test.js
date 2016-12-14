@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import {
 	TAGS_MAX_NUM,
 	TAGS_MAX_LENGTH,
@@ -8,11 +7,12 @@ import {
 	RESOURCES_MAX_LENGTH,
 	EXPIRY_SOURCE_GENERIC,
 	EXPIRY_SOURCE_SPECIFIC
-} from '../../../../src/modules/create-market/constants/market-values-constraints';
-import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-3';
+} from 'modules/create-market/constants/market-values-constraints';
+import * as selector from 'modules/create-market/selectors/form-steps/step-3';
 
 describe(`modules/create-market/selectors/form-steps/step-3.js`, () => {
-	let formState, out;
+	let formState;
+	let out;
 
 	it('should handle returning correct data shape', () => {
 		out = {

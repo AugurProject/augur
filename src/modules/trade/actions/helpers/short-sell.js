@@ -19,8 +19,8 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 			max_amount: res.remainingShares.toFixed(),
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
-			onTradeHash: (data) => cbStatus({ status: 'submitting' }),
-			onCommitSent: (data) => cbStatus({ status: 'committing' }),
+			onTradeHash: data => cbStatus({ status: 'submitting' }),
+			onCommitSent: data => cbStatus({ status: 'committing' }),
 			onCommitSuccess: (data) => {
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				cbStatus({
@@ -34,7 +34,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				console.log('commit failed:', err);
 				nextMatchingID(err);
 			},
-			onNextBlock: (data) => console.log('short_sell-onNextBlock', data),
+			onNextBlock: data => console.log('short_sell-onNextBlock', data),
 			onTradeSent: (data) => {
 				console.debug('trade sent', data);
 				cbStatus({ status: 'filling' });

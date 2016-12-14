@@ -1,11 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 import {
 	updateLoginAccount
 } from '../../../src/modules/auth/actions/update-login-account';
@@ -21,9 +20,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeUpdateBranch = { syncBranch: () => {} };
 	const fakeCollectFees = {};
 	const fakeLoadMarketsInfo = {};
-	let action, store;
-	let thisTestState = Object.assign({}, testState, { loginAccount: {} });
-	store = mockStore(thisTestState);
+	const thisTestState = Object.assign({}, testState, { loginAccount: {} });
+	const store = mockStore(thisTestState);
 	fakeAugurJS.loadLoginAccount = (env, cb) => {
 		cb(null, { address: 123456789 });
 	};
@@ -33,34 +31,28 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeAugurJS.augur.getRegisterBlockNumber = (account, cb) => {
 		cb(null, 10000);
 	};
-	fakeUpdateAssets.updateAssets = () => {
-		return (dispatch, getState) => {
-			let ether = 500,
-				rep = 25,
-				realEther = 100;
-			dispatch(updateLoginAccount({ ether }));
-			dispatch(updateLoginAccount({ rep }));
-			dispatch(updateLoginAccount({ realEther }));
-		};
+	fakeUpdateAssets.updateAssets = () => (dispatch, getState) => {
+		const ether = 500;
+		const rep = 25;
+		const realEther = 100;
+		dispatch(updateLoginAccount({ ether }));
+		dispatch(updateLoginAccount({ rep }));
+		dispatch(updateLoginAccount({ realEther }));
 	};
-	fakeLoadMarketsInfo.loadMarketsInfo = () => {
-		return (dispatch, getState) => {
-			dispatch({ type: 'UPDATE_MARKETS_INFO' });
-		};
+	fakeLoadMarketsInfo.loadMarketsInfo = () => (dispatch, getState) => {
+		dispatch({ type: 'UPDATE_MARKETS_INFO' });
 	};
-	sinon.stub(fakeUpdateBranch, 'syncBranch', (cb) => {
-		return (dispatch, getState) => {
-			const reportPeriod = 19;
-			dispatch({ type: 'SYNC_BRANCH', data: { reportPeriod } });
-			if (cb) cb(null);
-		};
+	sinon.stub(fakeUpdateBranch, 'syncBranch', cb => (dispatch, getState) => {
+		const reportPeriod = 19;
+		dispatch({ type: 'SYNC_BRANCH', data: { reportPeriod } });
+		if (cb) cb(null);
 	});
 
 	fakeLoadAcctTrades.loadAccountTrades = sinon.stub().returns({
 		type: 'LOAD_ACCOUNT_TRADES'
 	});
 
-	action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
+	const action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../auth/actions/update-assets': fakeUpdateAssets,
 		'../../markets/actions/load-markets-info': fakeLoadMarketsInfo,
@@ -100,7 +92,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			type: 'CLEAR_REPORTS'
 		}, {
 			type: 'SYNC_BRANCH',
-			data:  { reportPeriod: 19 }
+			data: { reportPeriod: 19 }
 		}];
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
 		const actual = store.getActions();

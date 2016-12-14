@@ -1,11 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	proxyquire.noPreserveCache();
@@ -42,20 +41,23 @@ describe(`modules/auth/actions/process-transfer-funds.js`, () => {
 	});
 
 	sinon.stub(fakeAugurJS.abi, 'format_address', (string) => {
-		return string.indexOf('0x') === 0 ? `0x${string}` : string;
+		if (string.indexOf('0x')) {
+			return `0x${string}`;
+		}
+
+		return string;
 	});
 
-	sinon.stub(fakeUpdateTrans, 'updateExistingTransaction', (transID, data) => {
-		return { type: 'UPDATE_EXISTING_TRANSACTIONS', data: { ...data}};
-	});
+	sinon.stub(fakeUpdateTrans, 'updateExistingTransaction', (transID, data) => ({
+		type: 'UPDATE_EXISTING_TRANSACTIONS',
+		data: {
+			...data
+		}
+	}));
 
-	sinon.stub(fakeUpdateAssets, 'updateAssets', () => {
-		return { type: 'UPDATE_ASSETS' };
-	});
+	sinon.stub(fakeUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
 
-	sinon.stub(fakeFormatRealEther, 'formatRealEther', (gas) => {
-		return gas;
-	});
+	sinon.stub(fakeFormatRealEther, 'formatRealEther', gas => gas);
 
 	beforeEach(() => {
 		store.clearActions();

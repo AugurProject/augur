@@ -43,7 +43,7 @@ export default function () {
 export const selectAccountLink = memoizerific(1)((dispatch) => {
 	const obj = {
 		href: makeLocation({ page: ACCOUNT }).url,
-		onClick: (href) => dispatch(updateURL(href))
+		onClick: href => dispatch(updateURL(href))
 	};
 	return obj;
 });
@@ -51,7 +51,7 @@ export const selectAccountLink = memoizerific(1)((dispatch) => {
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {
 		href: makeLocation({ page: MARKETS }).url,
-		onClick: (href) => dispatch(updateURL(href))
+		onClick: href => dispatch(updateURL(href))
 	};
 	return obj;
 });
@@ -63,13 +63,13 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 		}
 
 		switch (authType) {
-		case IMPORT:
-			return makeLocation({ page: IMPORT }).url;
-		case LOGIN:
-			return makeLocation({ page: LOGIN }).url;
-		case REGISTER:
-		default:
-			return makeLocation({ page: REGISTER }).url;
+			case IMPORT:
+				return makeLocation({ page: IMPORT }).url;
+			case LOGIN:
+				return makeLocation({ page: LOGIN }).url;
+			case REGISTER:
+			default:
+				return makeLocation({ page: REGISTER }).url;
 		}
 	};
 
@@ -78,7 +78,7 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	return {
 		href,
 		onClick: () => {
-			if (!!alsoLogout) {
+			if (alsoLogout) {
 				dispatch(logout());
 			}
 
@@ -99,7 +99,7 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
 	}
 }));
 
-export const selectAirbitzOnLoad = memoizerific(1)((dispatch) => ({
+export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
 	onLoad: () => {
 		const abcContext = require('../../../selectors').abc.abcContext;
 		const usernames = abcContext.listUsernames();
@@ -153,14 +153,14 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
 			const { marketsHeader } = require('../../../selectors');
 
 			switch (subSet) {
-			case (FAVORITES):
-				dispatch(marketsHeader.onClickFavorites);
-				break;
-			case (PENDING_REPORTS):
-				dispatch(marketsHeader.onClickPendingReports);
-				break;
-			default:
-				dispatch(marketsHeader.onClickAllMarkets);
+				case (FAVORITES):
+					dispatch(marketsHeader.onClickFavorites);
+					break;
+				case (PENDING_REPORTS):
+					dispatch(marketsHeader.onClickPendingReports);
+					break;
+				default:
+					dispatch(marketsHeader.onClickAllMarkets);
 			}
 
 			dispatch(updateURL(href));

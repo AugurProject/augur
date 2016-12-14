@@ -6,8 +6,8 @@ export function listWordsUnderLength(str, maxLength) {
 		return wordsList;
 	}
 
-	str.toString().split(' ').some(word => {
-		const cleanWord = word.replace(/[^a-zA-Z0-9\-]/ig, '');
+	str.toString().split(' ').some((word) => {
+		const cleanWord = word.replace(/[^a-zA-Z0-9-]/ig, '');
 
 		if (!cleanWord || !cleanWord.length) {
 			return false;

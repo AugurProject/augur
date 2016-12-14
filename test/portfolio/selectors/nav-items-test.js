@@ -1,19 +1,20 @@
+import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import portfolioNavItemsAssertions from 'assertions/portfolio-nav-items';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
-import { formatNumber, formatEther, formatRep } from '../../../src/utils/format-number';
+import { formatNumber, formatEther, formatRep } from 'utils/format-number';
 
-import * as selector from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
+import * as selector from 'modules/portfolio/selectors/portfolio-nav-items';
 
 describe('modules/portfolio/selectors/nav-items', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let actual, expected;
+	let actual;
 
 	const stubbedSelectors = {
 		links: {
@@ -77,7 +78,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
 		'../../../selectors': stubbedSelectors
 	});
 
-	expected = [
+	const expected = [
 		{
 			label: 'Positions',
 			link: {
@@ -151,6 +152,6 @@ describe('modules/portfolio/selectors/nav-items', () => {
 	it('should deliver the expected shape to augur-ui-react-components', () => {
 		actual = selector.default();
 
-		assertions.portfolioNavItems(actual);
+		portfolioNavItemsAssertions(actual);
 	});
 });

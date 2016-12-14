@@ -32,12 +32,12 @@ export function importAccount(name, password, rememberMe, keystore) {
 				if (links && links.marketsLink)	{
 					return links.marketsLink.onClick(links.marketsLink.href);
 				}
-				return;
+
 			});
 		} catch (e) {
 			console.error(e);
 			dispatch(authError(e));
-			return;
+
 		}
 	};
 }

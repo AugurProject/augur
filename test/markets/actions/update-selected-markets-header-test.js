@@ -1,5 +1,6 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import * as action from '../../../src/modules/markets/actions/update-selected-markets-header';
+import * as action from 'modules/markets/actions/update-selected-markets-header';
 
 describe(`modules/markets/actions/update-selected-markets-header.js`, () => {
 	it(`should update the selected Market header`, () => {

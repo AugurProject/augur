@@ -34,13 +34,13 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
 
 	function isOfType(market, type) {
 		switch (type) {
-		case (FILTER_TYPE_CLOSED):
-			return isMarketDataExpired(market, currentTime);
-		case (FILTER_TYPE_REPORTED):
-			return isMarketDataExpired(market, currentTime) && !!market.result;
-		case (FILTER_TYPE_OPEN):
-		default:
-			return !isMarketDataExpired(market, currentTime);
+			case (FILTER_TYPE_CLOSED):
+				return isMarketDataExpired(market, currentTime);
+			case (FILTER_TYPE_REPORTED):
+				return isMarketDataExpired(market, currentTime) && !!market.result;
+			case (FILTER_TYPE_OPEN):
+			default:
+				return !isMarketDataExpired(market, currentTime);
 		}
 	}
 

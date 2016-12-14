@@ -37,7 +37,7 @@ export function reportingCycle(periodLength, timestamp) {
 // Synchronize front-end branch state with blockchain branch state.
 export function syncBranch(cb) {
 	return (dispatch, getState) => {
-		const callback = cb || ((e) => e && console.log('syncBranch:', e));
+		const callback = cb || (e => e && console.log('syncBranch:', e));
 		const { blockchain, branch, loginAccount } = getState();
 		if (!branch.periodLength) return callback(null);
 		const reportingCycleInfo = reportingCycle(branch.periodLength, blockchain.currentBlockTimestamp);

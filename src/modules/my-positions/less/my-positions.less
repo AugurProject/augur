@@ -1,0 +1,80 @@
+.positions-market-overview,
+.positions-list {
+	display: table;
+	font-size: 1.2rem;
+	line-height: 1.9rem;
+	margin: 1vmin 0 0 4%;
+	width: 92%;
+
+	.complete-sets {
+		.close-position-button {
+			float: left;
+			margin-top: 10px;
+		}
+	}
+
+	.position {
+		display: table-row;
+
+		&:not(:first-child) {
+			border-top: 1px solid @color-border;
+		}
+
+		.position-group {
+			display: table-cell;
+			padding: 0.5em 0;
+			text-align: right;
+			vertical-align: middle;
+
+			.position-pair {
+				display: inline-block;
+				line-height: 1.1em;
+				min-width: 7.8em;
+				white-space: nowrap;
+
+				&.realized-net,
+				&.unrealized-net,
+				&.total-net {
+					.colorize();
+				}
+
+				> * {
+					display: block;
+					margin-left: 0.5em;
+				}
+
+				.title {
+					font-size: 0.8em;
+				}
+			}
+		}
+
+		.main-group {
+			text-align: left;
+			.colorize();
+
+			> * {
+				display: inline-block;
+				margin-right: 1em;
+				vertical-align: middle;
+			}
+
+			.position-pair {
+				white-space: nowrap;
+			}
+
+			.position-name {
+				min-width: 4.5em;
+				text-transform: uppercase;
+			}
+		}
+	}
+}
+
+.positions-market-overview {
+	.position {
+		.description {
+			padding-left: 0;
+		}
+	}
+}

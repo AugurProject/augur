@@ -1,18 +1,20 @@
-import {
-	assert
-} from 'chai';
-import testState from '../../testState';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import testState from 'test/testState';
 import {
 	UPDATE_TRANSACTIONS_DATA
-} from '../../../src/modules/transactions/actions/update-transactions-data';
+} from 'modules/transactions/actions/update-transactions-data';
 import {
 	CLEAR_LOGIN_ACCOUNT
-} from '../../../src/modules/auth/actions/update-login-account';
-import reducer from '../../../src/modules/transactions/reducers/transactions-data';
+} from 'modules/auth/actions/update-login-account';
+import reducer from 'modules/transactions/reducers/transactions-data';
 
 describe(`modules/transactions/reducers/transactions-data.js`, () => {
-	let action, out, test;
-	let state = Object.assign({}, testState);
+	let action;
+	let out;
+	let test;
+
+	const state = Object.assign({}, testState);
 
 	it(`should update transactions data in state`, () => {
 		action = {
@@ -26,7 +28,7 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
 				}
 			}
 		};
-		out = {...state.transactionsData,
+		out = { ...state.transactionsData,
 			test: {
 				example: 'example',
 				id: 'test'

@@ -1,3 +1,4 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -24,15 +25,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 				'../../../utils/bytes-to-hex': BytesToHex,
 				'../../reports/actions/next-report-page': NextReportPage
 			});
-			sinon.stub(AddCommitReportTransaction, 'addCommitReportTransaction', (market, reportedOutcomeID, isUnethical, isIndeterminate) => {
-				return {
-					type: 'ADD_COMMIT_REPORT_TRANSACTION',
-					market,
-					reportedOutcomeID,
-					isUnethical,
-					isIndeterminate
-				};
-			});
+			sinon.stub(AddCommitReportTransaction, 'addCommitReportTransaction', (market, reportedOutcomeID, isUnethical, isIndeterminate) => ({
+				type: 'ADD_COMMIT_REPORT_TRANSACTION',
+				market,
+				reportedOutcomeID,
+				isUnethical,
+				isIndeterminate
+			}));
 			AugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
 			AugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef');
 			BytesToHex.bytesToHex = sinon.stub().returns('0x1337');

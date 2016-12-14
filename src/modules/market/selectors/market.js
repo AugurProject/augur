@@ -177,26 +177,26 @@ export function assembleMarket(
 			const now = new Date();
 
 			switch (market.type) {
-			case BINARY:
-				market.isBinary = true;
-				market.isCategorical = false;
-				market.isScalar = false;
-				break;
-			case CATEGORICAL:
-				market.isBinary = false;
-				market.isCategorical = true;
-				market.isScalar = false;
-				break;
-			case SCALAR:
-				market.isBinary = false;
-				market.isCategorical = false;
-				market.isScalar = true;
-				break;
-			default:
-				break;
+				case BINARY:
+					market.isBinary = true;
+					market.isCategorical = false;
+					market.isScalar = false;
+					break;
+				case CATEGORICAL:
+					market.isBinary = false;
+					market.isCategorical = true;
+					market.isScalar = false;
+					break;
+				case SCALAR:
+					market.isBinary = false;
+					market.isCategorical = false;
+					market.isScalar = true;
+					break;
+				default:
+					break;
 			}
 
-			market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+			market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null;
 			market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';
 			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
@@ -232,7 +232,7 @@ export function assembleMarket(
 
 			let marketTradeOrders = [];
 
-			market.outcomes = Object.keys(marketOutcomesData || {}).map(outcomeID => {
+			market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeID) => {
 				const outcomeData = marketOutcomesData[outcomeID];
 				const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
@@ -263,12 +263,10 @@ export function assembleMarket(
 							zeroStyled: true
 						});
 					}
+				} else if (outcome.lastPrice.value) {
+					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
 				} else {
-					if (outcome.lastPrice.value) {
-						outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
-					} else {
-						outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
-					}
+					outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
 				}
 
 				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
@@ -286,7 +284,7 @@ export function assembleMarket(
 				return outcome;
 			}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-			market.tags = (market.tags || []).map(tag => {
+			market.tags = (market.tags || []).map((tag) => {
 				const obj = {
 					name: tag && tag.toString().toLowerCase().trim(),
 					onClick: () => dispatch(toggleTag(tag))
@@ -309,7 +307,7 @@ export function assembleMarket(
 			market.tradeSummary = generateTradeSummary(marketTradeOrders);
 			market.tradeSummary.hasUserEnoughFunds = hasUserEnoughFunds(market.outcomes.map(outcome => outcome.trade), loginAccount);
 
-			if (!!marketAccountTrades) {
+			if (marketAccountTrades) {
 				market.myPositionsSummary = generateMarketsPositionsSummary([market]);
 				if (market.myPositionsSummary) {
 					market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;

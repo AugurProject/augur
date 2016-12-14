@@ -1,10 +1,11 @@
+import { describe, it } from 'mocha';
 import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import realSelector from '../../../src/modules/trade/selectors/trade-in-progress';
+import realSelector from 'modules/trade/selectors/trade-in-progress';
 
 describe(`modules/trade/selectors/trade-in-progress.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -13,13 +14,12 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
 	const testState = {
 		selectedMarketID: 'testmarket',
 		tradesInProgress: {
-			'testmarket': 'this is a test'
+			testmarket: 'this is a test'
 		}
 	};
-	let selector, store;
-	store = mockStore(testState);
+	const store = mockStore(testState);
 
-	selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
+	const selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
 		'../../../store': store
 	});
 

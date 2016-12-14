@@ -14,7 +14,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 		return [];
 	}
 
-	return Object.keys(marketsData).map(marketID => {
+	return Object.keys(marketsData).map((marketID) => {
 		if (!marketID || !marketsData[marketID]) {
 			return {};
 		}

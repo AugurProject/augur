@@ -29,7 +29,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
-			loginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
+			loginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
 			loginAccount.settings = loginAccount.settings || {};
 			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));

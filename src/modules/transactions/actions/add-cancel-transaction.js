@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { processCancelOrder } from '../../bids-asks/actions/cancel-order';
 import { CANCEL_ORDER } from '../../transactions/constants/types';
@@ -34,6 +30,6 @@ export function makeCancelTransaction(order, market, outcome, ether, gas, dispat
 			},
 			outcome
 		},
-		action: (transactionID) => dispatch(processCancelOrder(transactionID, order.id))
+		action: transactionID => dispatch(processCancelOrder(transactionID, order.id))
 	};
 }

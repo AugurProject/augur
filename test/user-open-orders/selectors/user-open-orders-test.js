@@ -1,14 +1,12 @@
-/*
- * Author: priecint
- */
+import { describe, it } from 'mocha';
 import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { CANCELLED } from '../../../src/modules/bids-asks/constants/order-status';
-import { formatEther, formatShares, formatNone } from '../../../src/utils/format-number';
+import { CANCELLED } from 'modules/bids-asks/constants/order-status';
+import { formatEther, formatShares, formatNone } from 'utils/format-number';
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -20,7 +18,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 			address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
 		},
 		orderCancellation: {
-			'order8': CANCELLED
+			order8: CANCELLED
 		}
 	};
 	const store = mockStore(state);
@@ -39,7 +37,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 
 		const marketOrderBook = {
 			buy: {
-				'order1': {
+				order1: {
 					id: 'order1',
 					price: '10',
 					amount: '1',
@@ -48,7 +46,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 				}
 			},
 			sell: {
-				'order4': {
+				order4: {
 					id: 'order4',
 					price: '40',
 					amount: '4',
@@ -68,31 +66,37 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 	it(`should return empty user open orders if there are no matching orders`, () => {
 		const nonMatchingMarketOrderBook = {
 			buy: {
-				'order1': {
+				order1: {
 					id: 'order1',
 					price: '10',
 					amount: '1',
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '2'
 				},
-				'order2': {
+				order2: {
 					id: 'order2',
 					price: '20',
 					amount: '2',
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '3'
 				},
-				'order3': {id: 'order3', price: '30', amount: '3', owner: 'some other address', outcome: '1'}
+				order3: {
+					id: 'order3',
+					price: '30',
+					amount: '3',
+					owner: 'some other address',
+					outcome: '1'
+				}
 			},
 			sell: {
-				'order7': {
+				order7: {
 					id: 'order7',
 					price: '70',
 					amount: '7',
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '3'
 				},
-				'order8': {
+				order8: {
 					id: 'order8',
 					price: '80',
 					amount: '8',
@@ -107,7 +111,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 	it(`should return user open orders for logged-in user who has orders`, () => {
 		const marketOrderBook = {
 			buy: {
-				'order2': {
+				order2: {
 					id: 'order2',
 					market: 'testMarketId',
 					price: '20',
@@ -115,7 +119,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order1': {
+				order1: {
 					id: 'order1',
 					market: 'testMarketId',
 					price: '10',
@@ -123,7 +127,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order4': {
+				order4: {
 					id: 'order4',
 					market: 'testMarketId',
 					price: '40',
@@ -131,7 +135,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: 'some other address',
 					outcome: '1'
 				},
-				'order3': {
+				order3: {
 					id: 'order3',
 					market: 'testMarketId',
 					price: '30',
@@ -139,7 +143,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '2'
 				},
-				'order5': {
+				order5: {
 					id: 'order5',
 					market: 'testMarketId',
 					price: '50',
@@ -147,7 +151,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order6': {
+				order6: {
 					id: 'order6',
 					market: 'testMarketId',
 					price: '60',
@@ -157,7 +161,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 				}
 			},
 			sell: {
-				'order7': {
+				order7: {
 					id: 'order7',
 					market: 'testMarketId',
 					price: '70',
@@ -165,7 +169,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order10': {
+				order10: {
 					id: 'order10',
 					market: 'testMarketId',
 					price: '100',
@@ -173,7 +177,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order8': {
+				order8: {
 					id: 'order8',
 					market: 'testMarketId',
 					price: '80',
@@ -181,7 +185,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1',
 				},
-				'order9': {
+				order9: {
 					id: 'order9',
 					market: 'testMarketId',
 					price: '90',
@@ -189,7 +193,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
 					owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
 					outcome: '1'
 				},
-				'order11': {
+				order11: {
 					id: 'order11',
 					market: 'testMarketId',
 					price: '110',

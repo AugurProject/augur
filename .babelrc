@@ -1,8 +1,22 @@
 {
-    "env": {
-        "production": {
-            "plugins": ["babel-plugin-transform-remove-console"]
-        }
-    },
-    "presets": ["es2015", "stage-0"]
+	"env": {
+		"test": {
+			"presets": ["es2015", "stage-0", "react"]
+		}
+	},
+	"presets": [["es2015", {"modules": false}], "stage-0", "react"],
+	"plugins": [
+		"react-hot-loader/babel",
+		["module-resolver", {
+			"root": ["./src", "./test"],
+			"alias": {
+				"src": "./src",
+				"test": "./test",
+				"modules": "modules",
+				"utils": "utils",
+				"services": "services"
+			},
+			"extensions": [".js", ".jsx"]
+		}]
+	]
 }
