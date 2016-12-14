@@ -29,7 +29,7 @@ let config = {
 		publicPath: '/'
 	},
 	resolve: {
-		extensions: ['.pug', '.less', '.js', '.jsx', '.json'],
+		extensions: ['.html', '.less', '.js', '.jsx', '.json'],
 		alias: {
 			modules: path.resolve(PATHS.APP, 'modules'),
 			utils: path.resolve(PATHS.APP, 'utils')
@@ -38,8 +38,11 @@ let config = {
 	module: {
 		loaders: [
 			{
-				test: /\.pug/,
-				loader: 'pug-loader'
+				test: /\.html/,
+				loader: 'html-loader',
+				query: {
+					minimize: true
+				}
 			},
 			{
 				test: /\.woff/,
@@ -96,7 +99,7 @@ let config = {
 			filename: 'assets/scripts/common.js'
 		}),
 		new HtmlWebpackPlugin({
-			template: path.resolve(PATHS.APP, 'index.pug')
+			template: path.resolve(PATHS.APP, 'index.html')
 		}),
 		new webpack.DefinePlugin({
 			'process.env': {
@@ -113,7 +116,7 @@ let config = {
 };
 
 // DEVELOPMENT SPECIFIC CONFIG
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
 	config = merge(config, {
 		entry: {
 			main: [
@@ -136,10 +139,8 @@ if (process.env.NODE_ENV !== 'production') {
 			new webpack.NoErrorsPlugin(),
 		]
 	});
-}
-
 // PRODUCTION SPECIFIC CONFIG
-if (process.env.NODE_ENV === 'production') {
+} else {
 	config = merge(config, {
 		entry: {
 			main: `${PATHS.APP}/main`
