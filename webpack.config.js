@@ -20,7 +20,9 @@ let config = {
 			'react',
 			'react-dom',
 			'redux',
-			'redux-thunk'
+			'redux-thunk',
+			'moment',
+			'react-datetime'
 		]
 	},
 	output: {
@@ -59,7 +61,7 @@ let config = {
 		]
 	},
 	plugins: [
-		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.optimize.OccurrenceOrderPlugin(true),
 		new CopyWebpackPlugin([
 			{
 				from: path.resolve(PATHS.APP, 'splash.css'),
@@ -99,7 +101,12 @@ let config = {
 			filename: 'assets/scripts/common.js'
 		}),
 		new HtmlWebpackPlugin({
-			template: path.resolve(PATHS.APP, 'index.html')
+			template: path.resolve(PATHS.APP, 'index.html'),
+			chunksSortMode: (a, b) => {
+				const order = ['common', 'assets/scripts/vendor', 'assets/styles/styles', 'main'];
+
+				return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
+			}
 		}),
 		new webpack.DefinePlugin({
 			'process.env': {
