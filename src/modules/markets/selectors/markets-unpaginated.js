@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 
-import { POSITIONS } from '../../app/constants/views';
+import { MY_POSITIONS } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import store from '../../../store';
@@ -27,7 +27,7 @@ export const selectPositions = memoizerific(1)(markets =>
 );
 
 export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
-	if (activeView === POSITIONS) {
+	if (activeView === MY_POSITIONS) {
 		return selectPositions(allMarkets);
 	}
 

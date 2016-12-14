@@ -1,4 +1,4 @@
-// Main Viewx
+// Main Views
 export const M = 'm';
 export const MARKETS = 'markets';
 export const MAKE = 'make';
