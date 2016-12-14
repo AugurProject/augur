@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-/* eslint-disable import/no-extraneous-dependencies */
-import { AppContainer } from 'react-hot-loader'; // Excluded from linting due to being dev only
-/* eslint-disable import/no-extraneous-dependencies */
+import { AppContainer } from 'react-hot-loader'; // eslint-disable-line import/no-extraneous-dependencies
 
 import App from 'modules/app/components/app';
 import { initAugur } from 'modules/app/actions/init-augur';
@@ -25,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 	console.log(`
 *********************************************
 			DEVELOPMENT MODE
-	window.state		-- all data state
+	window.state		-- all state data
 	window.selectors 	-- component data
 	window.augurjs 		-- Augur API methods
 *********************************************
@@ -54,7 +51,7 @@ window.onpopstate = (e) => {
 };
 
 if (module.hot) {
-	module.hot.accept('modules/app/components/app', () => {
+	module.hot.accept('./modules/app/components/app', () => {
 		render(appElement, selectors);
 	});
 }
