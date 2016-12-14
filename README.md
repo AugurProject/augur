@@ -57,9 +57,9 @@ Start off by [installing geth](https://github.com/ethereum/go-ethereum/wiki/Buil
 
 Depending on how you'll be running Augur (Development OR Production), follow the corresponding steps below:
 
-*NOTE --* You can't be running an Ethereum client (mist/wallet) at the same time you attempt to run geth.
+*NOTE --* Unless you have a specific reason for doing so, generally you should not simultaneously run geth and another Ethereum client (such as Mist or Parity).
 
-### Development -- Testnet (Morden)
+### Development -- Testnet (Ropsten)
 
 Create an Ethereum account (if needed):
 ```
@@ -77,6 +77,9 @@ Additional points of note:
   * To get a list of accounts and their numerical value run `geth account list`.
 
 ### Production -- Main Network
+
+Important note: the Augur contracts have **not** yet been uploaded to the live Ethereum network, and therefore Augur is not yet available on the mainnet.  The following instructions are here as a placeholder for when our contracts are uploaded to the mainnet.
+
 Create an Ethereum account (if needed):
 ```
 geth account new
