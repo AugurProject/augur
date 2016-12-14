@@ -21,3 +21,4 @@ parts:
     source: .
     plugin: nodejs
     npm-run: [build]
+    build-packages: [g++, make, python]
