@@ -96,7 +96,7 @@ let config = {
 		]),
 		new webpack.optimize.CommonsChunkPlugin({
 			name: 'common',
-			filename: 'assets/scripts/common.[chunkhash].js'
+			filename: 'assets/scripts/common.js'
 		}),
 		new HtmlWebpackPlugin({
 			template: path.resolve(PATHS.APP, 'index.html')
