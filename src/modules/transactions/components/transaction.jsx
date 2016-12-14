@@ -90,7 +90,7 @@ const Transaction = (p) => {
 					<br className="hide-in-tx-display" />
 					<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.data.marketDescription)}
 					<br className="hide-in-trade-summary-display" />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -106,7 +106,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.data.marketDescription)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />

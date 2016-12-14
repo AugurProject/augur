@@ -58,15 +58,8 @@ const MarketBasics = p => (
 // 	takerFeePercent: PropTypes.object,
 // 	volume: PropTypes.object,
 // 	tags: PropTypes.array,
-// 	lastUpdatedBefore: PropTypes.string,
 // 	updateData: PropTypes.func,
-// 	isMarketDataLoading: PropTypes.bool,
-// 	updateIntervalSecs: PropTypes.number,
-// 	isUpdaterVisible: PropTypes.bool,
-// 	marketDataAge: React.PropTypes.shape({
-// 		lastUpdatedBefore: PropTypes.string.isRequired,
-// 		isMarketDataLoading: PropTypes.bool.isRequired
-// 	})
+// 	isMarketDataLoading: PropTypes.bool
 // };
 
 export default MarketBasics;
