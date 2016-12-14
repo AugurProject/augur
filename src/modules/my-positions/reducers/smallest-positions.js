@@ -2,12 +2,12 @@ import { UPDATE_SMALLEST_POSITIONS } from '../../my-positions/actions/update-acc
 
 export default function (smallestPositions = {}, action) {
 	switch (action.type) {
-	case UPDATE_SMALLEST_POSITIONS:
-		return {
-			...smallestPositions,
-			[action.marketID]: action.smallestPosition
-		};
-	default:
-		return smallestPositions;
+		case UPDATE_SMALLEST_POSITIONS:
+			return {
+				...smallestPositions,
+				[action.marketID]: action.smallestPosition
+			};
+		default:
+			return smallestPositions;
 	}
 }

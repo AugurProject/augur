@@ -1,15 +1,15 @@
+import { describe, it, beforeEach, afterEach, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
-import * as setTitle from '../../../src/utils/set-title';
+import * as mockStore from 'test/mockStore';
+import * as setTitle from 'utils/set-title';
 
 describe(`modules/link/actions/update-url.js`, () => {
-	let { state, store } = mockStore.default;
-	let out, action;
+	const { store } = mockStore.default;
 	const URL = '/test?search=example';
 
-	let mockFullMarket = {};
+	const mockFullMarket = {};
 	mockFullMarket.loadFullMarket = sinon.stub().returns({
 		type: 'UPDATE_URL',
 		value: 'loadFullMarket has been called, this is a stub.'
@@ -17,7 +17,7 @@ describe(`modules/link/actions/update-url.js`, () => {
 
 	sinon.spy(setTitle, 'default');
 
-	action = proxyquire('../../../src/modules/link/actions/update-url', {
+	const action = proxyquire('../../../src/modules/link/actions/update-url', {
 		'../../market/actions/load-full-market': mockFullMarket
 	});
 
@@ -67,7 +67,7 @@ describe(`modules/link/actions/update-url.js`, () => {
 
 	it(`should dispatch a UPDATE_URL action type with a parsed URL`, () => {
 		store.dispatch(action.updateURL(URL));
-		out = [{
+		const out = [{
 			type: 'UPDATE_URL',
 			parsedURL: {
 				searchParams: {

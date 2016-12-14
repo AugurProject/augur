@@ -1,21 +1,22 @@
-import * as selector from '../../../src/modules/my-positions/selectors/my-positions-summary';
-import assertions from 'augur-ui-react-components/lib/assertions';
-import { abi } from '../../../src/services/augurjs';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import * as selector from 'modules/my-positions/selectors/my-positions-summary';
+import positionsSummaryAssertions from 'assertions/positions-summary';
+import { abi } from 'services/augurjs';
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
-	let actual;
-
-	const randomNum = () => abi.bignum(Math.random() * 10);
-
 	it(`should return a summary of positions`, () => {
-		let numPositions = randomNum();
-		let qtyShares = randomNum();
-		let meanTradeValue = randomNum();
-		let realizedNet = randomNum();
-		let unrealizedNet = randomNum();
+		const randomNum = () => abi.bignum(Math.random() * 10);
+		const numPositions = randomNum();
+		const qtyShares = randomNum();
+		const meanTradeValue = randomNum();
+		const realizedNet = randomNum();
+		const unrealizedNet = randomNum();
 
-		actual = selector.generatePositionsSummary(numPositions, qtyShares, meanTradeValue, realizedNet, unrealizedNet);
+		const actual = selector.generatePositionsSummary(numPositions, qtyShares, meanTradeValue, realizedNet, unrealizedNet);
 
-		assertions.positionsSummary(actual);
+		assert.isDefined(actual);  // TOOD -- tmp placeholder
+
+		positionsSummaryAssertions(actual);
 	});
 });

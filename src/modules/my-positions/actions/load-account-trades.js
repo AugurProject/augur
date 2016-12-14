@@ -24,7 +24,7 @@ export function loadAccountTrades(marketID, cb) {
 						callback(null, positionsPlusAsks);
 					});
 				},
-				trades: (callback) => augur.getAccountTrades(account, options, (trades) => {
+				trades: callback => augur.getAccountTrades(account, options, (trades) => {
 					if (!trades || trades.error) return callback(trades);
 					console.log('trades:', trades);
 					dispatch(updateAccountTradesData(trades, marketID));
@@ -55,8 +55,6 @@ export function loadAccountTrades(marketID, cb) {
 				}
 				dispatch(sellCompleteSets(marketID, cb));
 			});
-		} else {
-			if (cb) cb();
-		}
+		} else if (cb) cb();
 	};
 }

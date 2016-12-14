@@ -1,17 +1,14 @@
-/*
- * Author: priecint
- */
-
+import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from '../../mockStore';
-import { CANCEL_ORDER } from '../../../src/modules/transactions/constants/types';
-import { BID, ASK } from '../../../src/modules/bids-asks/constants/bids-asks-types';
-import { CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
-import { CANCELLING_ORDER } from '../../../src/modules/transactions/constants/statuses';
-import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from '../../../src/modules/bids-asks/actions/cancel-order';
+import mocks from 'test/mockStore';
+import { CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+import { CANCELLING } from 'modules/bids-asks/constants/order-status';
+import { CANCELLING_ORDER } from 'modules/transactions/constants/statuses';
+import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -30,7 +27,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		'../../transactions/actions/add-cancel-transaction': { addCancelTransaction },
 		'../../../services/augurjs': {
 			augur,
-			abi: { bignum: sinon.stub().returns(new BigNumber("1", 10)) },
+			abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
 		},
 		'../../bids-asks/actions/update-order-status': { updateOrderStatus },
 		'../../transactions/actions/update-existing-transaction': { updateExistingTransaction }
@@ -112,7 +109,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		it('should produce action', () => {
 			store.dispatch(cancelOrderModule.abortCancelOrderConfirmation('orderID'));
 			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID'}])
+			assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
 		});
 	});
 
@@ -120,7 +117,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		it('should produce action', () => {
 			store.dispatch(cancelOrderModule.showCancelOrderConfirmation('orderID'));
 			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID'}])
+			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
 		});
 	});
 });

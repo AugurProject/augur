@@ -1,7 +1,8 @@
+import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import { abi } from '../../../../src/services/augurjs';
+import { abi } from 'services/augurjs';
 
 describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	proxyquire.noPreserveCache();
@@ -20,12 +21,12 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 		switch (traderOrderType) {
 			case 'buy':
 				if (abi.bignum(limitPrice).gte('0.4')) {
-					returnValue = [ { id: 3 }, { id: 4 } ];
+					returnValue = [{ id: 3 }, { id: 4 }];
 				}
 				break;
 			default:
 				if (abi.bignum(limitPrice).lte('0.45')) {
-					returnValue = [ { id: 1 }, { id: 2 } ];
+					returnValue = [{ id: 1 }, { id: 2 }];
 				}
 				break;
 		}
@@ -41,15 +42,15 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 		'../../../../services/augurjs': mockAugur
 	});
 	const orderBook = {
-		'market1': {
+		market1: {
 			buy: {
-				'order1': {
+				order1: {
 					id: 1,
 					price: '0.45',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order2': {
+				order2: {
 					id: 2,
 					price: '0.45',
 					outcome: '1',
@@ -57,13 +58,13 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 				}
 			},
 			sell: {
-				'order3': {
+				order3: {
 					id: 3,
 					price: '0.4',
 					outcome: '1',
 					owner: 'owner1'
 				},
-				'order4': {
+				order4: {
 					id: 4,
 					price: '0.4',
 					outcome: '1',
@@ -74,7 +75,7 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	};
 
 	it('should calculate trade ids for a Buy', () => {
-		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', orderBook, 'taker1'), [ 3, 4 ], `Didn't return the expected tradeIDs`);
+		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', orderBook, 'taker1'), [3, 4], `Didn't return the expected tradeIDs`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
 			order3: {
@@ -93,7 +94,7 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	});
 
 	it('should return an empty array if the trade ids for a buy at that rate are not found', () => {
-		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [ ], `Didn't return an empty array of tradeIDs as expected`);
+		assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
 			order3: {
@@ -112,7 +113,7 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	});
 
 	it('should calculate trade ids for a Sell', () => {
-		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [ 1, 2 ], `Didn't return the expected tradeIDs`);
+		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [1, 2], `Didn't return the expected tradeIDs`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
 			order1: {
@@ -131,7 +132,7 @@ describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
 	});
 
 	it('should return an empty array if the trade IDs for a sell at the rate passed in are not found', () => {
-		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', orderBook, 'taker1'), [ ], `Didn't return an empty array of tradeIDs as expected`);
+		assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
 		assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
 			order1: {

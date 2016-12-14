@@ -13,15 +13,15 @@ export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
 	const tagCounts = {};
 
 	// count matches for each filter and tag
-	markets.forEach(market => {
-		market.tags.forEach(tag => {
+	markets.forEach((market) => {
+		market.tags.forEach((tag) => {
 			tagCounts[tag.name] = tagCounts[tag.name] || 0;
-			tagCounts[tag.name]++;
+			tagCounts[tag.name] += 1;
 		});
 	});
 
 	// make sure all selected tags are displayed, even if markets haven't loaded yet
-	Object.keys(selectedTags).forEach(selectedTag => {
+	Object.keys(selectedTags).forEach((selectedTag) => {
 		if (!tagCounts[selectedTag]) {
 			tagCounts[selectedTag] = 0;
 		}
@@ -31,7 +31,7 @@ export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
 		.filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
 		.sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
 		.slice(0, 50)
-		.map(tag => {
+		.map((tag) => {
 			const obj = {
 				name: tag,
 				value: tag,

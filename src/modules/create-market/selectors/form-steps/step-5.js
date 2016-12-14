@@ -35,7 +35,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
 	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
 
-	if (!!o.isCreatingOrderBook) {
+	if (o.isCreatingOrderBook) {
 		const formattedFairPrices = [];
 
 		o.initialFairPrices.values.map((cV, i) => {
@@ -73,16 +73,16 @@ export const selectOutcomesFromForm = (
 	scalarSmallNum,
 	scalarBigNum) => {
 	switch (type) {
-	case BINARY:
-		return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
-	case CATEGORICAL:
-		return categoricalOutcomes.map((outcome, i) => {
-			const obj = { id: i, name: outcome };
-			return obj;
-		});
-	case SCALAR:
-		return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
-	default:
-		break;
+		case BINARY:
+			return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+		case CATEGORICAL:
+			return categoricalOutcomes.map((outcome, i) => {
+				const obj = { id: i, name: outcome };
+				return obj;
+			});
+		case SCALAR:
+			return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+		default:
+			break;
 	}
 };

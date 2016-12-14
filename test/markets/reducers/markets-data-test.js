@@ -1,6 +1,7 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import reducer from '../../../src/modules/markets/reducers/markets-data';
-import { UPDATE_MARKETS_DATA } from '../../../src/modules/markets/actions/update-markets-data';
+import reducer from 'modules/markets/reducers/markets-data';
+import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data';
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
 	it(`should update Markets Data`, () => {

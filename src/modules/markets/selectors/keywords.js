@@ -1,6 +1,3 @@
-/**
- * Author: priecint
- */
 import memoizerific from 'memoizerific';
 import { updateKeywords } from '../../markets/actions/update-keywords';
 import store from '../../../store';
@@ -13,6 +10,6 @@ export default function () {
 	};
 }
 
-export const selectOnChangeKeywords = memoizerific(1)((dispatch) =>
-	(keywords) => dispatch(updateKeywords(keywords))
+export const selectOnChangeKeywords = memoizerific(1)(dispatch =>
+	keywords => dispatch(updateKeywords(keywords))
 );

@@ -29,7 +29,7 @@ export const makeAskTransaction = (marketID, outcomeID, marketType, marketDescri
 		gasFees: formatRealEther(gasFeesRealEth)
 	};
 
-	transaction.action = (transactionID) => dispatch(processAsk(
+	transaction.action = transactionID => dispatch(processAsk(
 		transactionID,
 		marketID,
 		outcomeID,

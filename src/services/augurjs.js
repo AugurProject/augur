@@ -47,7 +47,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		const account = JSON.parse(localStorageRef.getItem('account'));
 		if (account && account.privateKey) {
 			// local storage account exists, load it spawn the callback using augur.web.account
-			augur.web.loadLocalLoginAccount(account, (loginAccount) =>
+			augur.web.loadLocalLoginAccount(account, loginAccount =>
 				cb(null, { ...augur.web.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.

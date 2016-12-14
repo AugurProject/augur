@@ -1,21 +1,20 @@
-import {
-    assert
-} from 'chai';
+import { describe, it, before, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import {
     INITIAL_LIQUIDITY_DEFAULT,
     STARTING_QUANTITY_DEFAULT,
     BEST_STARTING_QUANTITY_DEFAULT,
     PRICE_WIDTH_DEFAULT,
     INITIAL_LIQUIDITY_MIN
-} from '../../../src/modules/create-market/constants/market-values-constraints';
-import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
-import { formatEther } from '../../../src/utils/format-number';
-import validateInitialLiquidity from '../../../src/modules/create-market/validators/validate-initial-liquidity';
+} from 'modules/create-market/constants/market-values-constraints';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { formatEther } from 'utils/format-number';
+import validateInitialLiquidity from 'modules/create-market/validators/validate-initial-liquidity';
 
 describe('modules/create-market/validators/validate-initial-liquidity.js', () => {
-	let obj,
-		out,
-        types = [ BINARY, CATEGORICAL, SCALAR ];
+	let obj;
+	let out;
+	const types = [BINARY, CATEGORICAL, SCALAR];
 
 	before(() => {
 		obj = {
@@ -32,7 +31,7 @@ describe('modules/create-market/validators/validate-initial-liquidity.js', () =>
 		out = null;
 	});
 
-	types.map((type) => {
+	types.forEach((type) => {
 		it(`should validate a null or undefined state for ${type} market`, () => {
 			obj.initialLiquidity = null;
 
@@ -60,13 +59,13 @@ describe('modules/create-market/validators/validate-initial-liquidity.js', () =>
 		it(`should validate bounds for ${type} market`, () => {
 			obj.initialLiquidity = INITIAL_LIQUIDITY_MIN - 0.1;
 
-			out = `Initial liquidity must be at least ${ formatEther(INITIAL_LIQUIDITY_MIN).full }`;
+			out = `Initial liquidity must be at least ${formatEther(INITIAL_LIQUIDITY_MIN).full}`;
 
 			assert.deepEqual(callValidateInitialLiquidity(type, obj), out, 'less than lower bound value state was not validated correctly');
 		});
 	});
 
-	function callValidateInitialLiquidity(type, obj){
+	function callValidateInitialLiquidity(type, obj) {
 		return validateInitialLiquidity(type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
 	}
 });

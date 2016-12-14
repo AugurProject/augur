@@ -1,9 +1,9 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
 
 describe('modules/reports/actions/load-reports.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -40,23 +40,17 @@ describe('modules/reports/actions/load-reports.js', () => {
 			sinon.stub(AugurJS.augur, 'getMarket', (eventID, index, cb) => {
 				cb(t.blockchain.eventToMarket[eventID]);
 			});
-			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
-					if (cb) cb();
-				};
+			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
+				if (cb) cb();
 			});
-			sinon.stub(LoadReport, 'loadReport', (branchID, period, eventID, marketID, cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_REPORT' });
-					cb(null);
-				};
+			sinon.stub(LoadReport, 'loadReport', (branchID, period, eventID, marketID, cb) => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_REPORT' });
+				cb(null);
 			});
-			sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', (cb) => {
-				return (dispatch, getState) => {
-					dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
-					cb(null);
-				};
+			sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', cb => (dispatch, getState) => {
+				dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
+				cb(null);
 			});
 			store.dispatch(action.loadReports((e, marketIDs) => {
 				assert.isNull(e);

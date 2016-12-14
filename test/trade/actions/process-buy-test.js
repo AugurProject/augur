@@ -1,9 +1,10 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from '../constants';
-import { abi } from '../../../src/services/augurjs';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, tradeConstOrderBooks, stubAddBidTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateBuyTradeIDs } from 'test/trade/constants';
+import { abi } from 'services/augurjs';
 
 describe('modules/trade/actions/process-buy.js', () => {
 	proxyquire.noPreserveCache();
@@ -15,62 +16,62 @@ describe('modules/trade/actions/process-buy.js', () => {
 	sinon.stub(mockTrade, 'trade', (...args) => {
 		args[5]();
 		switch (args[0]) {
-		case 'testBinaryMarketID':
-			args[7]({
-				status: 'success',
-				hash: 'testhash',
-				timestamp: 1500000000,
-				tradingFees: '0.01',
-				gasFees: '0.01450404',
-				remainingEth: '500.0',
-				filledShares: '10'
-			});
-			args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-			args[8](undefined, {
-				remainingEth: abi.bignum('500.0'),
-				filledShares: abi.bignum('10'),
-				tradingFees: abi.bignum('0.01'),
-				gasFees: abi.bignum('0.01450404')
-			});
-			break;
-		case 'testCategoricalMarketID':
-			args[7]({
-				status: 'success',
-				hash: 'testhash',
-				timestamp: 1500000000,
-				tradingFees: '0.004999999999999995',
-				gasFees: '0.01450404',
-				remainingEth: '50.0',
-				filledShares: '10'
-			});
-			args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-			args[8](undefined, {
-				remainingEth: abi.bignum('50.0'),
-				filledShares: abi.bignum('10'),
-				tradingFees: abi.bignum('004999999999999995'),
-				gasFees: abi.bignum('0.01450404')
-			});
-			break;
-		case 'testScalarMarketID':
-			args[7]({
-				status: 'success',
-				hash: 'testhash',
-				timestamp: 1500000000,
-				tradingFees: '5.36982248520710025',
-				gasFees: '0.01450404',
-				remainingEth: '50.0',
-				filledShares: '10'
-			});
-			args[8]({ type: 'testError', message: 'this error is a test.'}, undefined);
-			args[8](undefined, {
-				remainingEth: abi.bignum('50.0'),
-				filledShares: abi.bignum('10'),
-				tradingFees: abi.bignum('5.36982248520710025'),
-				gasFees: abi.bignum('0.01450404')
-			});
-			break;
-		default:
-			break;
+			case 'testBinaryMarketID':
+				args[7]({
+					status: 'success',
+					hash: 'testhash',
+					timestamp: 1500000000,
+					tradingFees: '0.01',
+					gasFees: '0.01450404',
+					remainingEth: '500.0',
+					filledShares: '10'
+				});
+				args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+				args[8](undefined, {
+					remainingEth: abi.bignum('500.0'),
+					filledShares: abi.bignum('10'),
+					tradingFees: abi.bignum('0.01'),
+					gasFees: abi.bignum('0.01450404')
+				});
+				break;
+			case 'testCategoricalMarketID':
+				args[7]({
+					status: 'success',
+					hash: 'testhash',
+					timestamp: 1500000000,
+					tradingFees: '0.004999999999999995',
+					gasFees: '0.01450404',
+					remainingEth: '50.0',
+					filledShares: '10'
+				});
+				args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+				args[8](undefined, {
+					remainingEth: abi.bignum('50.0'),
+					filledShares: abi.bignum('10'),
+					tradingFees: abi.bignum('004999999999999995'),
+					gasFees: abi.bignum('0.01450404')
+				});
+				break;
+			case 'testScalarMarketID':
+				args[7]({
+					status: 'success',
+					hash: 'testhash',
+					timestamp: 1500000000,
+					tradingFees: '5.36982248520710025',
+					gasFees: '0.01450404',
+					remainingEth: '50.0',
+					filledShares: '10'
+				});
+				args[8]({ type: 'testError', message: 'this error is a test.' }, undefined);
+				args[8](undefined, {
+					remainingEth: abi.bignum('50.0'),
+					filledShares: abi.bignum('10'),
+					tradingFees: abi.bignum('5.36982248520710025'),
+					gasFees: abi.bignum('0.01450404')
+				});
+				break;
+			default:
+				break;
 		}
 	});
 	const mockAddBidTransaction = { addBidTransaction: () => {} };
@@ -740,17 +741,17 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			},
 			{
-			type: 'UPDATE_EXISTING_TRANSACTION',
-			transactionID: 'trans1',
-			data: {
-				status: 'success'
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: {
+					status: 'success'
+				}
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testBinaryMarketID'
 			}
-		},
-		{ type: 'LOAD_BIDS_ASKS' },
-		{
-			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: 'testBinaryMarketID'
-		}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
@@ -954,17 +955,17 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			},
 			{
-			type: 'UPDATE_EXISTING_TRANSACTION',
-			transactionID: 'trans1',
-			data: {
-				status: 'success'
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: {
+					status: 'success'
+				}
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testBinaryMarketID'
 			}
-		},
-		{ type: 'LOAD_BIDS_ASKS' },
-		{
-			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: 'testBinaryMarketID'
-		}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
@@ -1168,17 +1169,17 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			},
 			{
-			type: 'UPDATE_EXISTING_TRANSACTION',
-			transactionID: 'trans1',
-			data: {
-				status: 'success'
+				type: 'UPDATE_EXISTING_TRANSACTION',
+				transactionID: 'trans1',
+				data: {
+					status: 'success'
+				}
+			},
+			{ type: 'LOAD_BIDS_ASKS' },
+			{
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: 'testBinaryMarketID'
 			}
-		},
-		{ type: 'LOAD_BIDS_ASKS' },
-		{
-			type: 'LOAD_ACCOUNT_TRADES',
-			marketID: 'testBinaryMarketID'
-		}
 		], `Didn't return the expected actions and calculations triggered`);
 	});
 
@@ -1264,7 +1265,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 				}
 			},
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
-		  {
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
 				data: {
@@ -1272,7 +1273,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					message: 'this error is a test.'
 				}
 			},
-		  { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
+			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: false },
 			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans2',
@@ -2885,7 +2886,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					full: '0.0145 real ETH'
 				}
 			},
-				{
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: {
@@ -3097,7 +3098,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					full: '0.0145 real ETH'
 				}
 			},
-				{
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: {
@@ -3309,7 +3310,7 @@ describe('modules/trade/actions/process-buy.js', () => {
 					full: '0.0145 real ETH'
 				}
 			},
-				{
+			{
 				type: 'UPDATE_EXISTING_TRANSACTION',
 				transactionID: 'trans3',
 				data: {
@@ -3380,39 +3381,52 @@ describe('modules/trade/actions/process-buy.js', () => {
 	it('should handle a limitPrice of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', null, '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "null" or total "5.01"' } } ], `Didn't fail out as expected given a null limitPrice`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data:
+			{
+				status: 'failed',
+				message: 'invalid limit price "null" or total "5.01"'
+			}
+		}], `Didn't fail out as expected given a null limitPrice`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', undefined, '5.01', '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "undefined" or total "5.01"' } } ], `Didn't fail out as expected given a undefined limitPrice`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "undefined" or total "5.01"'
+			}
+		}], `Didn't fail out as expected given a undefined limitPrice`);
 	});
 
 	it('should handle a totalEthWithFee of undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', null, '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "0.5" or total "null"' } } ], `Didn't fail out as expected given a null totalEthWithFee`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or total "null"'
+			}
+		}], `Didn't fail out as expected given a null totalEthWithFee`);
 
 		store.clearActions();
 
 		store.dispatch(action.processBuy('trans1', 'testBinaryMarketID', '2', '10', '0.5', undefined, '0.01', '0.01450404'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data:
-     { status: 'failed',
-       message: 'invalid limit price "0.5" or total "undefined"' } } ], `Didn't fail out as expected given a undefined totalEthWithFee`);
+		assert.deepEqual(store.getActions(), [{
+			type: 'UPDATE_EXISTING_TRANSACTION',
+			transactionID: 'trans1',
+			data: {
+				status: 'failed',
+				message: 'invalid limit price "0.5" or total "undefined"'
+			}
+		}], `Didn't fail out as expected given a undefined totalEthWithFee`);
 	});
 
 	it('should handle a tradingFeesEth of undefined or null', () => {

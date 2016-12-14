@@ -22,7 +22,7 @@ export function login(secureLoginID, password, rememberMe) {
 				...account,
 				loginID: account.loginID || account.secureLoginID,
 				settings: {},
-				onUpdateAccountSettings: (settings) => dispatch(updateAccountSettings(settings))
+				onUpdateAccountSettings: settings => dispatch(updateAccountSettings(settings))
 			};
 			if (!loginAccount || !loginAccount.address) {
 				return;

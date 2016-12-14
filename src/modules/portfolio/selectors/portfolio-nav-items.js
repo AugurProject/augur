@@ -22,18 +22,18 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
 			link: links.myPositionsLink,
 			page: MY_POSITIONS,
 			leadingTitle: 'Total Number of Positions',
-			leadingValue: positionsSummary && positionsSummary.numPositions || 0,
+			leadingValue: (positionsSummary && positionsSummary.numPositions) || 0,
 			trailingTitle: 'Total Profit/Loss',
-			trailingValue: positionsSummary && positionsSummary.totalNet || 0
+			trailingValue: (positionsSummary && positionsSummary.totalNet) || 0
 		},
 		{
 			label: 'Markets',
 			link: links.myMarketsLink,
 			page: MY_MARKETS,
 			leadingTitle: 'Total Markets',
-			leadingValue: formatNumber((marketsSummary && marketsSummary.numMarkets || 0), { denomination: 'markets' }),
+			leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'markets' }),
 			trailingTitle: 'Total Gain/Loss',
-			trailingValue: formatEther((marketsSummary && marketsSummary.totalValue || 0), { denomination: 'eth' })
+			trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0), { denomination: 'eth' })
 		},
 		{
 			label: 'Reports',

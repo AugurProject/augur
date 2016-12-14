@@ -1,9 +1,9 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from '../src/env.json';
+import env from 'src/env.json';
 
-import { formatNumber, formatShares, formatEther } from '../src/utils/format-number';
-import { formatDate } from '../src/utils/format-date';
+import { formatNumber, formatShares } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
 
 const testState = {
 	activeView: 'markets',
@@ -88,7 +88,7 @@ const testState = {
 					price: '0.42',
 					type: 'buy'
 				},
-				'buyOrder2ID': {
+				buyOrder2ID: {
 					amount: '10',
 					block: 1234,
 					id: 'buyOrder2ID',
@@ -98,7 +98,7 @@ const testState = {
 					price: '0.42',
 					type: 'buy'
 				},
-				'buyOrder3ID': {
+				buyOrder3ID: {
 					amount: '10',
 					block: 1234,
 					id: 'buyOrder3ID',
@@ -108,7 +108,7 @@ const testState = {
 					price: '0.42',
 					type: 'buy'
 				},
-				'buyOrder4ID': {
+				buyOrder4ID: {
 					amount: '10',
 					block: 1234,
 					id: 'buyOrder4ID',
@@ -130,7 +130,7 @@ const testState = {
 					price: '0.58',
 					type: 'sell'
 				},
-				'sellOrder2ID': {
+				sellOrder2ID: {
 					amount: '20',
 					block: 1235,
 					id: 'sellOrder2ID',
@@ -148,25 +148,25 @@ const testState = {
 	},
 	outcomesData: {
 		testMarketID: {
-			'1': {
+			1: {
 				id: '1',
 				outstandingShares: '47',
 				name: 'testOutcome',
 				price: 35
 			},
-			'2': {
+			2: {
 				id: '2',
 				outstandingShares: '156',
 				name: 'testOutcome 2',
 				price: 50
 			},
-			'3': {
+			3: {
 				id: '3',
 				outstandingShares: '13',
 				name: 'testOutcome 3',
 				price: 48
 			},
-			'4': {
+			4: {
 				id: '4',
 				outstandingShares: '156',
 				name: 'testOutcome 4',

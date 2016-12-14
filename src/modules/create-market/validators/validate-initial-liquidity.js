@@ -9,18 +9,16 @@ export default function validateInitialLiquidity(type, liquidity, start, best, h
 	let priceDepth;
 	if (isNaN(parsed)) {
 		priceDepth = NaN;
-	} else {
-		if (type === SCALAR) {
-			priceDepth = abi.bignum(start)
+	} else if (type === SCALAR) {
+		priceDepth = abi.bignum(start)
 				.times(abi.bignum(scalarMin).plus(abi.bignum(scalarMax)).minus(abi.bignum(halfWidth)))
 				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
 				.toNumber();
-		} else {
-			priceDepth = abi.bignum(start)
+	} else {
+		priceDepth = abi.bignum(start)
 				.times(ONE.minus(abi.bignum(halfWidth)))
 				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
 				.toNumber();
-		}
 	}
 
 	if (!liquidity) {

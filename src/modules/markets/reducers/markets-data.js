@@ -5,15 +5,15 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-o
 
 export default function (marketsData = {}, action) {
 	switch (action.type) {
-	case UPDATE_MARKETS_DATA:
-		return {
-			...marketsData,
-			...processMarketsData(action.marketsData, marketsData)
-		};
-	case CLEAR_MARKETS_DATA:
-		return {};
-	default:
-		return marketsData;
+		case UPDATE_MARKETS_DATA:
+			return {
+				...marketsData,
+				...processMarketsData(action.marketsData, marketsData)
+			};
+		case CLEAR_MARKETS_DATA:
+			return {};
+		default:
+			return marketsData;
 	}
 }
 

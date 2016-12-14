@@ -1,15 +1,16 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
-import * as mockStore from '../../mockStore';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+import * as mockStore from 'test/mockStore';
+import isTransactionsWorkingAssertions from 'assertions/is-transactions-working';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let expected, actual, selector;
-	let { state, store } = mockStore.default;
+	let actual;
 
-	selector = proxyquire('../../../src/modules/transactions/selectors/is-transactions-working', {
+	const { state, store } = mockStore.default;
+	const selector = proxyquire('../../../src/modules/transactions/selectors/is-transactions-working', {
 		'../../../store': store
 	});
 
@@ -54,7 +55,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 		};
 		actual = selector.selectIsWorking(data);
 
-		assertions.isTransactionsWorking(actual);
+		isTransactionsWorkingAssertions(actual);
 		assert.isTrue(actual, `Didn't mark the transaction as working when status was test.`);
 	});
 

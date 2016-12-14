@@ -40,7 +40,7 @@ export function loadLoginAccountDependents(cb) {
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return dispatch => {
+	return (dispatch) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
@@ -57,7 +57,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 			dispatch(updateFavorites(localState.favorites));
 		}
 		if (localState.scalarMarketsShareDenomination) {
-			Object.keys(localState.scalarMarketsShareDenomination).forEach(marketID => {
+			Object.keys(localState.scalarMarketsShareDenomination).forEach((marketID) => {
 				dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
 			});
 		}
@@ -69,7 +69,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 			dispatch(updateReports(localState.reports));
 		}
 		if (localState.transactionsData) {
-			Object.keys(localState.transactionsData).forEach(key => {
+			Object.keys(localState.transactionsData).forEach((key) => {
 				if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
 					localState.transactionsData[key].status = INTERRUPTED;
 					localState.transactionsData[key].message = 'unknown if completed';
@@ -109,12 +109,12 @@ export function loadLoginAccount() {
 			if (!localLoginAccount || !localLoginAccount.address) {
 				return;
 			}
-			localLoginAccount.onUpdateAccountSettings = (settings) => dispatch(updateAccountSettings(settings));
+			localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
 
 			dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
-			return;
+
 		});
 	};
 }

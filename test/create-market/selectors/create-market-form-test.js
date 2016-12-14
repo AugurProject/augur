@@ -1,69 +1,60 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, before, after } from 'mocha';
+import { assert } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
-import assertions from 'augur-ui-react-components/lib/assertions';
-import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
+import testState from 'test/testState';
+import createMarketFormAssertions from 'assertions/create-market-form';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
-import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
-import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
-import * as actualStep4 from '../../../src/modules/create-market/selectors/form-steps/step-4';
-import * as actualStep5 from '../../../src/modules/create-market/selectors/form-steps/step-5';
+import * as actualStep2 from 'modules/create-market/selectors/form-steps/step-2';
+import * as actualStep3 from 'modules/create-market/selectors/form-steps/step-3';
+import * as actualStep4 from 'modules/create-market/selectors/form-steps/step-4';
+import * as actualStep5 from 'modules/create-market/selectors/form-steps/step-5';
 
-let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
+	let test;
+	let fullTestState;
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
+	const types = [BINARY, CATEGORICAL, SCALAR];
+	const returnObj = {};
+	const state = Object.assign({}, testState);
 
-	let store,
-		selector,
-		test,
-		steps,
-		step2,
-		step3,
-		step4,
-		step5,
-		types = [ BINARY, CATEGORICAL, SCALAR ],
-		returnObj = {},
-		state = Object.assign({}, testState);
+	const store = mockStore(state);
 
-	store = mockStore(state);
-
-	steps = {
-		select: (formState) => true,
+	const steps = {
+		select: formState => true,
 		errors: () => {},
-		isValid: (formState) => true
+		isValid: formState => true
 	};
 
-	step2 = sinon.stub(Object.assign({}, steps, {
+	const step2 = sinon.stub(Object.assign({}, steps, {
 		initialFairPrices: () => {}
 	}));
 	step2.isValid.returns(true);
 	step2.select.returns(returnObj);
 	step2.initialFairPrices.returns({});
 
-	step3 = sinon.stub(Object.assign({}, steps, {
-		select: (formState) => returnObj
+	const step3 = sinon.stub(Object.assign({}, steps, {
+		select: formState => returnObj
 	}));
 	step3.isValid.returns(true);
 	step3.select.returns(returnObj);
 
-	step4 = sinon.stub(Object.assign({}, steps, {
-		select: (formState) => returnObj
+	const step4 = sinon.stub(Object.assign({}, steps, {
+		select: formState => returnObj
 	}));
 	step4.isValid.returns(true);
 	step4.select.returns(returnObj);
 
-	step5 = sinon.stub(Object.assign({}, steps));
+	const step5 = sinon.stub(Object.assign({}, steps));
 	step5.isValid.returns(true);
 
-	selector = proxyquire('../../../src/modules/create-market/selectors/create-market-form', {
+	const selector = proxyquire('../../../src/modules/create-market/selectors/create-market-form', {
 		'../../../store': store,
 		'../../create-market/selectors/form-steps/step-2': step2,
 		'../../create-market/selectors/form-steps/step-3': step3,
@@ -71,7 +62,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		'../../create-market/selectors/form-steps/step-5': step5
 	});
 
-	createMarketForm = selector.default;
+	// const createMarketForm = selector.default;
 
 	describe('step 1', () => {
 		before(() => {
@@ -88,7 +79,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			assertions.createMarketForm(state.createMarketInProgress);
+			createMarketFormAssertions(state.createMarketInProgress);
 		});
 	});
 
@@ -137,10 +128,10 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			types.map((cV) => {
+			types.forEach((cV) => {
 				state.createMarketInProgress.type = cV;
 
-				if(cV === SCALAR){
+				if (cV === SCALAR) {
 					state.createMarketInProgress = {
 						...state.createMarketInProgress,
 						scalarSmallNum: 10,
@@ -148,14 +139,16 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 					};
 				}
 
-				let fullTestState = {
+				fullTestState = {
 					...test,
 					...state.createMarketInProgress,
 					...actualStep2.initialFairPrices(state.createMarketInProgress),
 					...actualStep2.select(state.createMarketInProgress)
 				};
 
-				assertions.createMarketForm(fullTestState);
+				assert.isDefined(fullTestState); // TODO --remove
+
+				createMarketFormAssertions(fullTestState);
 			});
 		});
 	});
@@ -190,12 +183,12 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			let fullTestState = {
+			fullTestState = {
 				...state.createMarketInProgress,
 				...actualStep3.select(state.createMarketInProgress)
 			};
 
-			assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 
@@ -235,12 +228,12 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			let fullTestState = {
+			fullTestState = {
 				...state.createMarketInProgress,
 				...actualStep4.select(state.createMarketInProgress)
 			};
 
-			assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 
@@ -262,7 +255,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			let fullTestState = {
+			fullTestState = {
 				...state.createMarketInProgress,
 				...actualStep5.select(
 					state.createMarketInProgress,
@@ -272,9 +265,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				)
 			};
 
-			assertions.createMarketForm(fullTestState);
+			createMarketFormAssertions(fullTestState);
 		});
 	});
 });
-
-export default createMarketForm;

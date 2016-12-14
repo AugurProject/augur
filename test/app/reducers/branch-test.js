@@ -1,18 +1,16 @@
-import {
-	assert
-} from 'chai';
-import testState from '../../testState';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import testState from 'test/testState';
 import {
 	UPDATE_BRANCH
-} from '../../../src/modules/app/actions/update-branch';
-import reducer from '../../../src/modules/app/reducers/branch';
+} from 'modules/app/actions/update-branch';
+import reducer from 'modules/app/reducers/branch';
 
 describe(`modules/app/reducers/branch.js`, () => {
-	let action;
-	let thisTestState = Object.assign({}, testState);
+	const thisTestState = Object.assign({}, testState);
 
 	it(`should update the branch object in state`, () => {
-		action = {
+		const action = {
 			type: UPDATE_BRANCH,
 			branch: {
 				description: 'testing!',

@@ -1,8 +1,9 @@
+import memoizerific from 'memoizerific';
+
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
 import { addTransferFunds } from '../../transactions/actions/add-transfer-funds-transaction';
-import memoizerific from 'memoizerific';
 
 export default function () {
 	const { loginAccount } = store.getState();
@@ -52,7 +53,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 		downloadAccountFileName,
 		downloadAccountDataString,
 		transferFunds: (amount, currency, toAddress) => dispatch(addTransferFunds(amount, currency, toAddress)),
-		editName: (name) => dispatch(changeAccountName(name)),
+		editName: name => dispatch(changeAccountName(name)),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
 		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })

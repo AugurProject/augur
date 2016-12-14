@@ -5,7 +5,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 
 export function collectFees(cb) {
 	return (dispatch, getState) => {
-		const callback = cb || ((e) => e && console.log('collectFees:', e));
+		const callback = cb || (e => e && console.log('collectFees:', e));
 		const { branch, loginAccount } = getState();
 		if (!loginAccount.address || !branch.isReportRevealPhase) {
 			return callback(null);

@@ -1,10 +1,10 @@
-import {
-	assert
-} from 'chai';
-import validator from '../../../src/modules/create-market/validators/validate-scalar-big-num';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import validator from 'modules/create-market/validators/validate-scalar-big-num';
 
 describe(`modules/market/validators/validate-scalar-big-num.js`, () => {
-	let test, out;
+	let test;
+	let out;
 
 	it(`should make sure the user has provided a maximum number`, () => {
 		test = validator(100, null);

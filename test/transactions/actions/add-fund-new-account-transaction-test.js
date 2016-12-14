@@ -1,9 +1,10 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/transactions/actions/add-fund-new-account-transaction.js`, () => {
 	proxyquire.noPreserveCache();
@@ -13,13 +14,16 @@ describe(`modules/transactions/actions/add-fund-new-account-transaction.js`, () 
 	const fakeProcessFundNewAccount = { processFundNewAccount: () => {} };
 	const fakeAddTransactions = { addTransaction: () => {} };
 
-	sinon.stub(fakeProcessFundNewAccount, 'processFundNewAccount', (transID, address) => {
-		return { type: 'FUND_NEW_ACCOUNT', transID, address };
-	});
+	sinon.stub(fakeProcessFundNewAccount, 'processFundNewAccount', (transID, address) => ({
+		type: 'FUND_NEW_ACCOUNT',
+		transID,
+		address
+	}));
 
-	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => {
-		return { type: 'ADD_TRANSACTION', ...data };
-	});
+	sinon.stub(fakeAddTransactions, 'addTransaction', data => ({
+		type: 'ADD_TRANSACTION',
+		...data
+	}));
 
 	beforeEach(() => {
 		store.clearActions();
@@ -42,7 +46,7 @@ describe(`modules/transactions/actions/add-fund-new-account-transaction.js`, () 
 			{
 				type: 'fund_account',
 				address: 'testAddress123',
-				action:  store.getActions()[0].action
+				action: store.getActions()[0].action
 			},
 			{
 				type: 'FUND_NEW_ACCOUNT',

@@ -1,25 +1,24 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/app/actions/update-blockchain.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState, {
+	const state = Object.assign({}, testState, {
 		blockchain: {
 			currentBlockMillisSinceEpoch: 12344,
 			currentBlockTimestamp: 4886718335,
 			currentBlockNumber: 9999
 		}
 	});
-	let store = mockStore(state);
-	let mockAugurJS = {
+	const store = mockStore(state);
+	const mockAugurJS = {
 		rpc: {
 			block: { number: 10000 },
 			blockNumber: () => {},
@@ -32,7 +31,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	sinon.stub(mockAugurJS.rpc, 'getBlock', (blockNumber, cb) => {
 		cb({ timestamp: '0x123456789' });
 	});
-	let action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
+	const action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
 		'../../../services/augurjs': mockAugurJS
 	});
 	beforeEach(() => {
@@ -45,7 +44,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	});
 	it('rpc.block not set: should sync with blockchain using rpc.blockNumber', () => {
 		mockAugurJS.rpc.block = null;
-		let out = [{
+		const out = [{
 			type: 'UPDATE_BLOCKCHAIN',
 			data: {
 				currentBlockNumber: 10000,
@@ -59,7 +58,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	});
 	it('rpc.block set: should sync with blockchain using rpc.block.number', () => {
 		mockAugurJS.rpc.block = { number: 10000, timestamp: '0x123456789' };
-		let out = [{
+		const out = [{
 			type: 'UPDATE_BLOCKCHAIN',
 			data: {
 				currentBlockNumber: 10000,

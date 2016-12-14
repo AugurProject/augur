@@ -1,7 +1,6 @@
-import {
-	assert
-} from 'chai';
-import * as action from '../../../src/modules/my-positions/actions/update-account-trades-data';
+import { describe, it } from 'mocha';
+// import { assert } from 'chai';
+// import * as action from '../../../src/modules/my-positions/actions/update-account-trades-data';
 
 describe(`modules/my-positions/actions/update-account-trades-data.js`, () => {
 	it(`TODO -- should return a UPDATE_ACCOUNT_TRADES_DATA action type with data payload.`);

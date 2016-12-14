@@ -13,10 +13,10 @@ export default function () {
 
 export const selectMarketsTotals = memoizerific(1)((allMarkets, filteredMarketsLength, unpaginatedMarketsLength, favoriteMarketsLength) => {
 	const totals = allMarkets.reduce((p, market) => {
-		p.numAll++;
+		p.numAll += 1;
 
 		if (market.isPendingReport) {
-			p.numPendingReports++;
+			p.numPendingReports += 1;
 		}
 
 		return p;

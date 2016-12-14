@@ -1,0 +1,24 @@
+.input {
+	.border(true);
+
+	input {
+		.border(false);
+	}
+
+	&.clearable {
+		.box {
+			padding-right: 2em;
+		}
+	}
+
+	&.input-error {
+		border-color: @color-red-light;
+	}
+
+	.box {
+		font-size: inherit;
+		height: 100%;
+		padding: 0.5em;
+		width: 100%;
+	}
+}

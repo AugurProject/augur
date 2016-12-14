@@ -125,6 +125,6 @@ export function listenToUpdates() {
 					dispatch(claimProceeds());
 				}
 			}
-		}, (filters) => console.log('### Listening to filters:', filters));
+		}, filters => console.log('### Listening to filters:', filters));
 	};
 }

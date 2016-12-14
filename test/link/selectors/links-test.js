@@ -1,13 +1,13 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import * as mockStore from 'test/mockStore';
+import linksAssertions from 'assertions/links';
 
 describe(`modules/link/selectors/links.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, actual;
-	let { state, store } = mockStore.default;
+	const { store } = mockStore.default;
 
-	selector = proxyquire('../../../src/modules/link/selectors/links', {
+	const selector = proxyquire('../../../src/modules/link/selectors/links', {
 		'../../../store': store
 	});
 
@@ -21,8 +21,8 @@ describe(`modules/link/selectors/links.js`, () => {
 	});
 
 	it(`should have the expected shape`, () => {
-		actual = selector.default();
+		const actual = selector.default();
 		// console.log(actual);
-		assertions.links(actual);
+		linksAssertions(actual);
 	});
 });

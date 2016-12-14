@@ -1,19 +1,19 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import assertions from 'augur-ui-react-components/lib/assertions';
-import * as mockStore from '../../mockStore';
-
-import { formatNumber, formatShares, formatEther } from '../../../src/utils/format-number';
-import { formatDate } from '../../../src/utils/format-date';
-
-import { abi } from '../../../src/services/augurjs';
-
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
+
+import myMarketsAssertions from 'assertions/my-markets';
+import * as mockStore from 'test/mockStore';
+
+import { formatNumber, formatEther } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+
+import { abi } from 'services/augurjs';
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let actual, expected;
 	const { store, state } = mockStore.default;
 	state.marketCreatorFees = {
 		'0xMARKET1': abi.bignum('10'),
@@ -34,27 +34,27 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 		}
 	));
 
-	let stubbedSelectors = {
+	const stubbedSelectors = {
 		loginAccount,
 		allMarkets
 	};
 
-	let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+	const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
 		'../../link/selectors/links': mockedLinks,
 		'../../../selectors': stubbedSelectors,
 		'../../../store': store
 	});
 
-	actual = proxiedSelector.default();
+	let actual = proxiedSelector.default();
 
-	expected = [
+	const expected = [
 		{
 			id: '0xMARKET1',
 			marketLink: {
-				className: "test-class",
-				href: "/fake/path",
+				className: 'test-class',
+				href: '/fake/path',
 				onClick: 'fake function for testing',
-				text: "test"
+				text: 'test'
 			},
 			description: 'test-market-1',
 			endDate: formatDate(new Date('2017/12/12')),
@@ -67,10 +67,10 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 		{
 			id: '0xMARKET2',
 			marketLink: {
-				className: "test-class",
-				href: "/fake/path",
+				className: 'test-class',
+				href: '/fake/path',
 				onClick: 'fake function for testing',
-				text: "test"
+				text: 'test'
 			},
 			description: 'test-market-2',
 			endDate: formatDate(new Date('2017/12/12')),
@@ -87,13 +87,13 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 	});
 
 	it('should deliver the expected shape to augur-ui-react-components', () => {
-		let proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+		const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
 			'../../../selectors': stubbedSelectors,
 			'../../../store': store
 		});
 
 		actual = proxiedSelector.default();
 
-		assertions.myMarkets(actual);
+		myMarketsAssertions(actual);
 	});
 });

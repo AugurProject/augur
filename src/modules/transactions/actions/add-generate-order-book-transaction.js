@@ -11,7 +11,7 @@ export const makeGenerateOrderBookTransaction = (marketData, dispatch) => {
 	return obj;
 };
 
-export const addGenerateOrderBookTransaction = (marketData) =>
+export const addGenerateOrderBookTransaction = marketData =>
 	dispatch =>
 		dispatch(
 			addTransaction(

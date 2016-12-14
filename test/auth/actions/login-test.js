@@ -1,11 +1,10 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/auth/actions/login.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -28,12 +27,10 @@ describe(`modules/auth/actions/login.js`, () => {
 	};
 	const updtLoginAccStub = {};
 	const ldLoginAccStub = {};
-	const autoStub = {};
-	let action, store;
-	let thisTestState = Object.assign({}, testState, {
+	const thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
 	});
-	store = mockStore(thisTestState);
+	const store = mockStore(thisTestState);
 
 	fakeAugurJS.augur.web.login = sinon.stub().yields({
 		address: 'test',
@@ -53,15 +50,15 @@ describe(`modules/auth/actions/login.js`, () => {
 	fakeSelectors.links.marketsLink.onClick = sinon.stub();
 	fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
 
-	let updateTestString = 'updateLoginAccount(loginAccount) called.';
-	let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-	let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+	const updateTestString = 'updateLoginAccount(loginAccount) called.';
+	const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
+	const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({type: updateTestString });
-	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({type: ldLoginAccLSTestString });
+	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
+	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({ type: ldLoginAccDepTestString });
+	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
-	action = proxyquire('../../../src/modules/auth/actions/login', {
+	const action = proxyquire('../../../src/modules/auth/actions/login', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../../selectors': fakeSelectors,
 		'../../auth/actions/update-login-account': updtLoginAccStub,
@@ -74,7 +71,7 @@ describe(`modules/auth/actions/login.js`, () => {
 
 	it(`should attempt to login an account given user/pass`, () => {
 		store.dispatch(action.login('test', 'test'));
-		const expectedOutput = [{ type: ldLoginAccLSTestString}, { type: updateTestString}, { type: ldLoginAccDepTestString}];
+		const expectedOutput = [{ type: ldLoginAccLSTestString }, { type: updateTestString }, { type: ldLoginAccDepTestString }];
 		// assert(updtLoginAccStub.updateLoginAccount.calledOnce, `updateLoginAccount() wasn't called once as expected.`);
 		// assert(ldLoginAccStub.loadLoginAccountDependents.calledOnce, `loadLoginAccountDependents() wasn't called once as expected`);
 		// assert(ldLoginAccStub.loadLoginAccountLocalStorage.calledOnce, `loadLoginAccountLocalStorage() wasn't called once as expected`);

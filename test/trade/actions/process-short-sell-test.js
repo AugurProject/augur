@@ -1,9 +1,10 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mocks from '../../mockStore';
-import { tradeTestState, tradeConstOrderBooks, stubAddShortAskTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateSellTradeIDs } from '../constants';
-import { abi } from '../../../src/services/augurjs';
+import * as mocks from 'test/mockStore';
+import { tradeTestState, tradeConstOrderBooks, stubAddShortAskTransaction, stubUpdateExistingTransaction, stubLoadAccountTrades, stubCalculateSellTradeIDs } from 'test/trade/constants';
+import { abi } from 'services/augurjs';
 
 describe('modules/trade/actions/process-short-sell.js', () => {
 	proxyquire.noPreserveCache();
@@ -41,7 +42,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		assert.isFunction(cbStatus, `cbStatus passed to shortSell isn't a function`);
 		assert.isFunction(cb, `cb passed to shortSell isn't a function`);
 		let tradingFees;
-		switch(marketID) {
+		switch (marketID) {
 			case 'testBinaryMarketID':
 				tradingFees = '0.01536';
 				break;
@@ -55,7 +56,7 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 				tradingFees = '0';
 				break;
 		}
-		cbStatus({ status: 'Testing', hash: 'testhash', timestamp: 1500000000, tradingFees, gasFees: '0.02791268' })
+		cbStatus({ status: 'Testing', hash: 'testhash', timestamp: 1500000000, tradingFees, gasFees: '0.02791268' });
 		cb({ code: 0, message: 'test error' }, undefined);
 		cb(undefined, {
 			filledEth: abi.bignum('0'),
@@ -401,65 +402,65 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		},
 		{ type: 'short_ask',
 			data:
-			 { marketID: 'testCategoricalMarketID',
-				 outcomeID: '1',
-				 marketType: 'categorical',
-				 marketDescription: 'test categorical market',
-				 outcomeName: 'Democratic' },
+			{ marketID: 'testCategoricalMarketID',
+				outcomeID: '1',
+				marketType: 'categorical',
+				marketDescription: 'test categorical market',
+				outcomeName: 'Democratic' },
 			numShares:
-			 { value: 20,
-				 formattedValue: 20,
-				 formatted: '20',
-				 roundedValue: 20,
-				 rounded: '20.00',
-				 minimized: '20',
-				 denomination: ' shares',
-				 full: '20 shares' },
+			{ value: 20,
+				formattedValue: 20,
+				formatted: '20',
+				roundedValue: 20,
+				rounded: '20.00',
+				minimized: '20',
+				denomination: ' shares',
+				full: '20 shares' },
 			noFeePrice:
-			 { value: 0.4,
-				 formattedValue: 0.4,
-				 formatted: '0.4000',
-				 roundedValue: 0.4,
-				 rounded: '0.4000',
-				 minimized: '0.4',
-				 denomination: ' ETH',
-				 full: '0.4000 ETH' },
+			{ value: 0.4,
+				formattedValue: 0.4,
+				formatted: '0.4000',
+				roundedValue: 0.4,
+				rounded: '0.4000',
+				minimized: '0.4',
+				denomination: ' ETH',
+				full: '0.4000 ETH' },
 			avgPrice:
-			 { value: 0.0003839999999999996,
-				 formattedValue: 0.000384,
-				 formatted: '0.0003840',
-				 roundedValue: 0.0004,
-				 rounded: '0.0004',
-				 minimized: '0.000384',
-				 denomination: ' ETH',
-				 full: '0.0003840 ETH' },
+			{ value: 0.0003839999999999996,
+				formattedValue: 0.000384,
+				formatted: '0.0003840',
+				roundedValue: 0.0004,
+				rounded: '0.0004',
+				minimized: '0.000384',
+				denomination: ' ETH',
+				full: '0.0003840 ETH' },
 			tradingFees:
-			 { value: 0.007679999999999992,
-				 formattedValue: 0.0077,
-				 formatted: '0.0077',
-				 roundedValue: 0.0077,
-				 rounded: '0.0077',
-				 minimized: '0.0077',
-				 denomination: ' ETH',
-				 full: '0.0077 ETH' },
+			{ value: 0.007679999999999992,
+				formattedValue: 0.0077,
+				formatted: '0.0077',
+				roundedValue: 0.0077,
+				rounded: '0.0077',
+				minimized: '0.0077',
+				denomination: ' ETH',
+				full: '0.0077 ETH' },
 			feePercent:
-			 { value: 0.09980039920159671,
-				 formattedValue: 0.1,
-				 formatted: '0.1',
-				 roundedValue: 0,
-				 rounded: '0',
-				 minimized: '0.1',
-				 denomination: '%',
-				 full: '0.1%' },
+			{ value: 0.09980039920159671,
+				formattedValue: 0.1,
+				formatted: '0.1',
+				roundedValue: 0,
+				rounded: '0',
+				minimized: '0.1',
+				denomination: '%',
+				full: '0.1%' },
 			gasFees:
-			 { value: 0.02791268,
-				 formattedValue: 0.0279,
-				 formatted: '0.0279',
-				 roundedValue: 0.0279,
-				 rounded: '0.0279',
-				 minimized: '0.0279',
-				 denomination: ' real ETH',
-				 full: '0.0279 real ETH' } },
+			{ value: 0.02791268,
+				formattedValue: 0.0279,
+				formatted: '0.0279',
+				roundedValue: 0.0279,
+				rounded: '0.0279',
+				minimized: '0.0279',
+				denomination: ' real ETH',
+				full: '0.0279 real ETH' } },
 		{ type: 'UPDATE_EXISTING_TRANSACTION',
 			transactionID: 'trans2',
 			data: { status: 'success' } },
@@ -698,10 +699,10 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 
 	const expectedGenericFail = [{
 		type: 'UPDATE_EXISTING_TRANSACTION',
-    transactionID: 'trans1',
-    data: {
+		transactionID: 'trans1',
+		data: {
 			status: 'failed',
-      message: 'There was an issue processesing the Short Sell trade.'
+			message: 'There was an issue processesing the Short Sell trade.'
 		}
 	}];
 
@@ -741,23 +742,23 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 	it('should handle a numShares that is undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processShortSell('trans1', 'testBinaryMarketID', '2', undefined, '0.4', '-20.01536', '0.01536', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.4" or shares "undefined"' } }], `processShortSell produced unexpected actions when given a undefined numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.4" or shares "undefined"' } }], `processShortSell produced unexpected actions when given a undefined numShares`);
 
 		store.clearActions();
 
 		store.dispatch(action.processShortSell('trans1', 'testBinaryMarketID', '2', null, '0.4', '-20.01536', '0.01536', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.4" or shares "null"' } }], `processShortSell produced unexpected actions when given a null numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "0.4" or shares "null"' } }], `processShortSell produced unexpected actions when given a null numShares`);
 	});
 
 	it('should handle a limitPrice that is undefined or null', () => {
 		// transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth
 		store.dispatch(action.processShortSell('trans1', 'testBinaryMarketID', '2', '20', undefined, '-20.01536', '0.01536', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "undefined" or shares "20"' } }], `processShortSell produced unexpected actions when given a undefined numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "undefined" or shares "20"' } }], `processShortSell produced unexpected actions when given a undefined numShares`);
 
 		store.clearActions();
 
 		store.dispatch(action.processShortSell('trans1', 'testBinaryMarketID', '2', '20', null, '-20.01536', '0.01536', '0.02791268'));
-		assert.deepEqual(store.getActions(), [ { type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "null" or shares "20"' } }], `processShortSell produced unexpected actions when given a null numShares`);
+		assert.deepEqual(store.getActions(), [{ type: 'UPDATE_EXISTING_TRANSACTION', transactionID: 'trans1', data: { status: 'failed', message: 'invalid limit price "null" or shares "20"' } }], `processShortSell produced unexpected actions when given a null numShares`);
 	});
 
 	it('should handle a totalEthWithFee that is undefined or null', () => {

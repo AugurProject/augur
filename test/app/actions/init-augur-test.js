@@ -1,16 +1,14 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import mocks from '../../mockStore';
+import mocks from 'test/mockStore';
 
 describe(`modules/app/actions/init-augur.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let action, out;
 	const { store } = mocks;
 
-	let mockAugurJS = {
+	const mockAugurJS = {
 		augur: {
 			loadBranch: () => {}
 		}
@@ -45,7 +43,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		type: 'REGISTER_TRANSACTION_RELAY'
 	});
 
-	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
+	const action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../auth/actions/load-login-account': mockLoadLoginAccount,
 		'../../reports/actions/reporting-test-setup': mockReportingTestSetup,
@@ -60,7 +58,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		store.clearActions();
 		global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
 		const requests = global.requests = [];
-		global.XMLHttpRequest.onCreate = function (xhr) {
+		global.XMLHttpRequest.onCreate = (xhr) => {
 			requests.push(xhr);
 		};
 	});
@@ -71,7 +69,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	});
 
 	it(`should initiate the augur app`, () => {
-		out = [{type: 'UPDATE_ENV', env: { reportingTest: false } }, {
+		const out = [{ type: 'UPDATE_ENV', env: { reportingTest: false } }, {
 			isConnected: {
 				connect: 'test'
 			},

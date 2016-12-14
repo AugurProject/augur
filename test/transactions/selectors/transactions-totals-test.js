@@ -1,14 +1,16 @@
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as selector from '../../../src/modules/transactions/selectors/transactions-totals';
-import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import * as selector from 'modules/transactions/selectors/transactions-totals';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+import transactionsTotalsAssertions from 'assertions/transactions-totals';
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let actual, expected, mockSelector, selectors;
+	let actual;
+	let expected;
 
-	selectors = {
+	const selectors = {
 		transactions: [{
 			id: 'fake',
 			status: PENDING
@@ -24,7 +26,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 		}]
 	};
 
-	mockSelector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
+	const mockSelector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
 		'../../../selectors': selectors
 	});
 
@@ -56,7 +58,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
-		assertions.transactionsTotals(actual);
+		transactionsTotalsAssertions(actual);
 		assert.deepEqual(actual, expected, `Didn't return total info on transactions`);
-	})
+	});
 });

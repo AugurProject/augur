@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { POSITIONS } from '../../app/constants/views';
+import { MY_POSITIONS } from '../../app/constants/views';
 import { PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
@@ -12,7 +12,7 @@ export default function () {
 
 	let markets;
 
-	if (activeView !== POSITIONS && selectedMarketsHeader !== PENDING_REPORTS) {
+	if (activeView !== MY_POSITIONS && selectedMarketsHeader !== PENDING_REPORTS) {
 		markets = selectPaginated(unpaginatedMarkets, pagination.selectedPageNum, pagination.numPerPage);
 	} else {
 		markets = unpaginatedMarkets;

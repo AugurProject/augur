@@ -14,7 +14,7 @@ import filteredMarkets from './modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from './modules/markets/selectors/markets-unpaginated';
 import orderCancellation from './modules/bids-asks/selectors/order-cancellation';
 import market from './modules/market/selectors/market';
-import selectedOutcome from './modules/outcome/selectors/selected-outcome';
+import selectedOutcome from './modules/outcomes/selectors/selected-outcome';
 import tags from './modules/markets/selectors/tags';
 import filterSort from './modules/markets/selectors/filter-sort';
 import keywords from './modules/markets/selectors/keywords';
@@ -35,7 +35,7 @@ import marketDataNavItems from './modules/market/selectors/market-data-nav-items
 import marketUserDataNavItems from './modules/market/selectors/market-user-data-nav-items';
 import scalarShareDenomination from './modules/market/selectors/scalar-share-denomination';
 import marketReportingNavItems from './modules/market/selectors/market-reporting-nav-items';
-import outcomeTradeNavItems from './modules/outcome/selectors/outcome-trade-nav-items';
+import outcomeTradeNavItems from './modules/outcomes/selectors/outcome-trade-nav-items';
 
 const selectors = {
 	activeView,

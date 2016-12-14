@@ -1,26 +1,27 @@
+import { describe, it, before, after } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import * as mockStore from 'test/mockStore';
+import loginAccountAssertions from 'assertions/login-account';
 
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let actual, selector;
-	let { state, store } = mockStore.default;
+	const { store } = mockStore.default;
 
-	selector = proxyquire('../../../src/modules/auth/selectors/login-account', {
+	const selector = proxyquire('../../../src/modules/auth/selectors/login-account', {
 		'../../../store': store
 	});
 
-	beforeEach(() => {
+	before(() => {
 		store.clearActions();
 	});
 
-	afterEach(() => {
+	after(() => {
 		store.clearActions();
 	});
 
 	it(`should login an account`, () => {
-		actual = selector.default();
-		assertions.loginAccount(actual);
+		const actual = selector.default();
+
+		loginAccountAssertions(actual);
 	});
 });

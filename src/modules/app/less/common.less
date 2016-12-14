@@ -1,0 +1,183 @@
+// General
+// app wide common styles
+// rule of thumb: 	If EVERY instance of that class/element has the same style, they go here;
+// 					otherwise, they go in their respective stylesheets
+
+//		Tags
+html,
+body {
+
+	.font-defaults(); // NOTE -- font-size denominated in `rem` so user preferences are maintained.
+
+	background: linear-gradient(to right, @color-white-subtle 0%, @color-app-background 50%, @color-white-subtle 	100%);
+	color: @color-text-dark;
+	margin: 0;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	color: inherit;
+	cursor: pointer;
+	text-decoration: none;
+
+	&:visited {
+		color: inherit;
+	}
+
+	&[disabled] {
+		cursor: default;
+		opacity: 0.3;
+	}
+}
+
+strong {
+
+	.font-weight-normal();
+}
+
+i {
+
+	.fa();
+}
+
+h3 { // Content Headers
+	.font-size-medium();
+	.font-weight-normal();
+}
+
+h4 { // Internal Headers
+
+	.font-size-normal();
+	.font-weight-normal();
+
+	margin: 0;
+}
+
+th {
+	font-size: 0.8em;
+	font-weight: 700;
+	padding: 0 0.5em;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+hr {
+	border-color: @color-border;
+}
+
+input,
+select,
+textarea {
+
+	.border(true);
+
+	border-radius: 1px;
+	box-sizing: border-box;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	padding: 0.7rem 1rem;
+}
+
+input,
+textarea {
+	background: @color-input-background;
+	resize: both;
+
+	&:focus {
+
+		.border(true);
+	}
+}
+
+button {
+	cursor: pointer;
+}
+
+// 		Classes
+.link {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.displayNone {
+	display: none !important;
+}
+
+.fade {
+	opacity: 0.25;
+}
+
+.unfade {
+	opacity: 1;
+}
+
+.component-header {
+	display: flex;
+	padding: 1vmin 0 0;
+	width: 100%;
+
+	.header-bar {
+		background: white;
+		display: flex;
+		flex: 2;
+		font-size: 1.6rem;
+		font-weight: @font-weight-normal;
+		margin-left: 1vmin;
+		padding: 0 0 0 5vmin;
+		width: 100%;
+	}
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+//		Pseudo
+::selection {
+	background-color: #6f6f6f;
+	color: white;
+}
+
+*:focus {
+	outline-color: @color-border;
+	outline-style: dotted;
+	outline-width: 0;
+}
+
+::placeholder {
+	color: @color-plain-hover;
+}
+
+//		Selectors
+[contenteditable=true] {
+	cursor: text;
+	outline: 1px solid @color-border;
+	outline-offset: 1px;
+
+	&:empty::before {
+		color: #dddddd;
+		content: attr(placeholder);
+		display: block;
+	}
+}
+
+[type=button],
+[type=submit],
+[type=file] {
+	cursor: pointer;
+}
+
+[type="search"]::-webkit-search-decoration,
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-results-button,
+[type="search"]::-webkit-search-results-decoration {
+	display: none;
+}

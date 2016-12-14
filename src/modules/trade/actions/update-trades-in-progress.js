@@ -14,7 +14,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
-		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
+		const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) || {};
 		const market = marketsData[marketID];
 		// if nothing changed, exit
 		if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
@@ -26,7 +26,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		if ((numShares === '' || parseFloat(numShares) === 0) && limitPrice === null) { // numShares cleared
 			return dispatch({
-				type: UPDATE_TRADE_IN_PROGRESS, data: {
+				type: UPDATE_TRADE_IN_PROGRESS,
+				data: {
 					marketID,
 					outcomeID,
 					details: {
@@ -40,7 +41,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		if ((limitPrice === '' || (parseFloat(limitPrice) === 0 && market.type !== SCALAR)) && numShares === null) { // limitPrice cleared
 			return dispatch({
-				type: UPDATE_TRADE_IN_PROGRESS, data: {
+				type: UPDATE_TRADE_IN_PROGRESS,
+				data: {
 					marketID,
 					outcomeID,
 					details: {
@@ -67,7 +69,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const bignumShares = abi.bignum(numShares);
 		const bignumLimit = abi.bignum(limitPrice);
 		// clean num shares
-		const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : numShares && bignumShares.abs().toFixed() || outcomeTradeInProgress.numShares || '0';
+		const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : (numShares && bignumShares.abs().toFixed()) || outcomeTradeInProgress.numShares || '0';
 
 		// if current trade order limitPrice is equal to the best price, make sure it's equal to that; otherwise, use what the user has entered
 		let cleanLimitPrice;
@@ -76,18 +78,14 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		if (limitPrice && bignumLimit.toFixed() === '0') {
 			cleanLimitPrice = '0';
+		} else if (limitPrice && bignumLimit.toFixed()) {
+			cleanLimitPrice = bignumLimit.toFixed();
+		} else if (cleanSide === BUY && outcomeTradeInProgress.limitPrice === topBidPrice) {
+			cleanLimitPrice = topAskPrice;
+		} else if (cleanSide === SELL && outcomeTradeInProgress.limitPrice === topAskPrice) {
+			cleanLimitPrice = topBidPrice;
 		} else {
-			if (limitPrice && bignumLimit.toFixed()) {
-				cleanLimitPrice = bignumLimit.toFixed();
-			} else {
-				if (cleanSide === BUY && outcomeTradeInProgress.limitPrice === topBidPrice) {
-					cleanLimitPrice = topAskPrice;
-				} else if (cleanSide === SELL && outcomeTradeInProgress.limitPrice === topAskPrice) {
-					cleanLimitPrice = topBidPrice;
-				} else {
-					cleanLimitPrice = outcomeTradeInProgress.limitPrice;
-				}
-			}
+			cleanLimitPrice = outcomeTradeInProgress.limitPrice;
 		}
 
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== '0') {
@@ -113,7 +111,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				if (!sharesPurchased || sharesPurchased.error) {
 					console.error('getParticipantSharesPurchased:', sharesPurchased);
 					return dispatch({
-						type: UPDATE_TRADE_IN_PROGRESS, data: {
+						type: UPDATE_TRADE_IN_PROGRESS,
+						data: {
 							marketID,
 							outcomeID,
 							details: newTradeDetails
@@ -125,13 +124,13 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 					newTradeDetails.side,
 					newTradeDetails.numShares,
 					newTradeDetails.limitPrice,
-					market && market.takerFee || 0,
-					market && market.makerFee || 0,
+					(market && market.takerFee) || 0,
+					(market && market.makerFee) || 0,
 					loginAccount.address,
 					position && position.toFixed(),
 					outcomeID,
 					market.cumulativeScale,
-					orderBooks && orderBooks[marketID] || {},
+					(orderBooks && orderBooks[marketID]) || {},
 					(market.type === SCALAR) ? {
 						minValue: market.minValue,
 						maxValue: market.maxValue
@@ -164,7 +163,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				}
 				console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
 				dispatch({
-					type: UPDATE_TRADE_IN_PROGRESS, data: {
+					type: UPDATE_TRADE_IN_PROGRESS,
+					data: {
 						marketID,
 						outcomeID,
 						details: newTradeDetails
@@ -173,7 +173,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 			});
 		} else {
 			dispatch({
-				type: UPDATE_TRADE_IN_PROGRESS, data: {
+				type: UPDATE_TRADE_IN_PROGRESS,
+				data: {
 					marketID,
 					outcomeID,
 					details: newTradeDetails

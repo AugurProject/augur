@@ -1,0 +1,26 @@
+.outcome-trade-summary {
+	& > div {
+		display: flex;
+		margin: 1em 0 1em 1em;
+
+		& > span:first-child {
+			flex: 1;
+		}
+
+		& > span {
+			display: flex;
+			flex: 5;
+
+			.value-denomination {
+				display: flex;
+				flex: 2;
+				justify-content: flex-end;
+
+				& + span {
+					flex: 1;
+					padding-left: 1em;
+				}
+			}
+		}
+	}
+}

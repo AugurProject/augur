@@ -1,10 +1,9 @@
-import {
-	assert
-} from 'chai';
-import reducer from '../../../src/modules/markets/reducers/keywords';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import reducer from 'modules/markets/reducers/keywords';
 import {
 	UPDATE_KEYWORDS
-} from '../../../src/modules/markets/actions/update-keywords';
+} from 'modules/markets/actions/update-keywords';
 
 describe(`modules/markets/reducers/keywords.js`, () => {
 	it(`should return a string of keywords`, () => {

@@ -6,32 +6,31 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_Y
 
 export default function (outcomesData = {}, action) {
 	switch (action.type) {
-	case UPDATE_MARKETS_DATA:
-		return {
-			...outcomesData,
-			...parseOutcomes(action.marketsData, outcomesData)
-		};
+		case UPDATE_MARKETS_DATA:
+			return {
+				...outcomesData,
+				...parseOutcomes(action.marketsData, outcomesData)
+			};
 
-	case UPDATE_OUTCOME_PRICE:
-		if (!outcomesData || !outcomesData[action.marketID] || !outcomesData[action.marketID][action.outcomeID]) {
-			return outcomesData;
-		}
-		return {
-			...outcomesData,
-			[action.marketID]: {
-				...outcomesData[action.marketID],
-				[action.outcomeID]: {
-					...outcomesData[action.marketID][action.outcomeID],
-					price: action.price
-				}
+		case UPDATE_OUTCOME_PRICE:
+			if (!outcomesData || !outcomesData[action.marketID] || !outcomesData[action.marketID][action.outcomeID]) {
+				return outcomesData;
 			}
-		};
+			return {
+				...outcomesData,
+				[action.marketID]: {
+					...outcomesData[action.marketID],
+					[action.outcomeID]: {
+						...outcomesData[action.marketID][action.outcomeID],
+						price: action.price
+					}
+				}
+			};
 
-	default:
-		return outcomesData;
+		default:
+			return outcomesData;
 	}
 }
-
 
 function parseOutcomes(newMarketsData, outcomesData) {
 	return Object.keys(newMarketsData).reduce((p, marketID) => {
@@ -42,30 +41,30 @@ function parseOutcomes(newMarketsData, outcomesData) {
 		}
 
 		switch (marketData.type) {
-		case BINARY:
-			p[marketID] = {
-				...outcomesData[marketID],
-				...parseBinaryOutcomes(marketData)
-			};
-			return p;
+			case BINARY:
+				p[marketID] = {
+					...outcomesData[marketID],
+					...parseBinaryOutcomes(marketData)
+				};
+				return p;
 
-		case CATEGORICAL:
-			p[marketID] = {
-				...outcomesData[marketID],
-				...parseCategoricalOutcomes(marketData, marketID)
-			};
-			return p;
+			case CATEGORICAL:
+				p[marketID] = {
+					...outcomesData[marketID],
+					...parseCategoricalOutcomes(marketData, marketID)
+				};
+				return p;
 
-		case SCALAR:
-			p[marketID] = {
-				...outcomesData[marketID],
-				...parseScalarOutcomes(marketData, marketID)
-			};
-			return p;
+			case SCALAR:
+				p[marketID] = {
+					...outcomesData[marketID],
+					...parseScalarOutcomes(marketData, marketID)
+				};
+				return p;
 
-		default:
-			console.warn('Unknown market type:', marketID, marketData.type, marketData);
-			return p;
+			default:
+				console.warn('Unknown market type:', marketID, marketData.type, marketData);
+				return p;
 		}
 	}, {});
 
@@ -113,4 +112,3 @@ function parseOutcomes(newMarketsData, outcomesData) {
 		}, {});
 	}
 }
-

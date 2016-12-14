@@ -28,30 +28,30 @@ export const selectErrMsg = (err) => {
 	}
 
 	switch (err.code) {
-	case INVALID_USERNAME_OR_PASSWORD:
-		return 'invalid username or password';
-	case USERNAME_REQUIRED:
-		return 'username is required';
-	case PASSWORDS_DO_NOT_MATCH:
-		return 'passwords do not match';
-	case PASSWORD_TOO_SHORT:
-		return err.message; // use message so we dont have to update length requiremenets here
-	case PASSWORD_NEEDS_LOWERCASE:
-		return err.message;
-	case PASSWORD_NEEDS_UPPERCASE:
-		return err.message;
-	case PASSWORD_NEEDS_NUMBER:
-		return err.message;
-	case USERNAME_TAKEN:
-		return 'username already registered';
-	default:
-		return err.message;
+		case INVALID_USERNAME_OR_PASSWORD:
+			return 'invalid username or password';
+		case USERNAME_REQUIRED:
+			return 'username is required';
+		case PASSWORDS_DO_NOT_MATCH:
+			return 'passwords do not match';
+		case PASSWORD_TOO_SHORT:
+			return err.message; // use message so we dont have to update length requiremenets here
+		case PASSWORD_NEEDS_LOWERCASE:
+			return err.message;
+		case PASSWORD_NEEDS_UPPERCASE:
+			return err.message;
+		case PASSWORD_NEEDS_NUMBER:
+			return err.message;
+		case USERNAME_TAKEN:
+			return 'username already registered';
+		default:
+			return err.message;
 	}
 };
 
 export const selectRegister = (auth, loginAccount, dispatch) => {
 	let errMsg = selectErrMsg(auth.err);
-	let newAccountMessage = undefined;
+	let newAccountMessage;
 	if (loginAccount.loginID) {
 		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.* Your Login ID has been generated below. Please click on the box to automatically copy the Login ID or click on the "Copy Login ID" button. It is critical to save this Login ID somewhere safe as it will allow you to login to your Augur Account from any device however it cannot be recovered if lost or forgotten. Click "Sign Up" to complete registration.';
 		errMsg = null;
@@ -162,14 +162,14 @@ export const selectImportAccount = (auth, dispatch) => {
 
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
-	case REGISTER:
-		return selectRegister(auth, loginAccount, dispatch);
-	case LOGIN:
-		return selectLogin(auth, dispatch);
-	case IMPORT:
-		return selectImportAccount(auth, dispatch);
-	default:
-		return;
+		case REGISTER:
+			return selectRegister(auth, loginAccount, dispatch);
+		case LOGIN:
+			return selectLogin(auth, dispatch);
+		case IMPORT:
+			return selectImportAccount(auth, dispatch);
+		default:
+
 	}
 };
 

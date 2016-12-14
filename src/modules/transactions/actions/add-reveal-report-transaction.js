@@ -22,16 +22,12 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				} else {
 					outcome = { name: INDETERMINATE_OUTCOME_NAME };
 				}
+			} else if (reportedOutcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
+				outcome = { name: INDETERMINATE_OUTCOME_NAME };
+			} else if (isScalar) {
+				outcome = outcomesData ? outcomesData[1] : {};
 			} else {
-				if (reportedOutcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
-					outcome = { name: INDETERMINATE_OUTCOME_NAME };
-				} else {
-					if (isScalar) {
-						outcome = outcomesData ? outcomesData[1] : {};
-					} else {
-						outcome = outcomesData ? outcomesData[reportedOutcomeID] : {};
-					}
-				}
+				outcome = outcomesData ? outcomesData[reportedOutcomeID] : {};
 			}
 			const description = eventDescription && eventDescription.length ?
 				eventDescription.split('~|>')[0] :
@@ -51,7 +47,7 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
 			};
 			console.info(REVEAL_REPORT, transaction.data);
-			transaction.action = (transactionID) => dispatch(processRevealReport(
+			transaction.action = transactionID => dispatch(processRevealReport(
 				transactionID,
 				eventID,
 				reportedOutcomeID,

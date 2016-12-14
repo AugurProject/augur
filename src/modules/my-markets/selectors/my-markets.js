@@ -16,7 +16,7 @@ export default function () {
 	return loginAccountMarkets;
 }
 
-export const selectMyMarket = market => {
+export const selectMyMarket = (market) => {
 	const { loginAccount } = require('../../../selectors');
 
 	if (!market || !loginAccount || !loginAccount.address || !market.author || market.author !== loginAccount.address) return [];
@@ -27,7 +27,7 @@ export const selectMyMarket = market => {
 
 export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
 
-export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
+export const selectLoginAccountMarkets = memoizerific(1)((authorOwnedMarkets) => {
 	const { marketTrades, priceHistory, marketCreatorFees } = store.getState();
 
 	const markets = [];
@@ -56,7 +56,7 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	return markets;
 });
 
-export const selectNumberOfTrades = memoizerific(1)(trades => {
+export const selectNumberOfTrades = memoizerific(1)((trades) => {
 	if (!trades) {
 		return 0;
 	}
@@ -64,12 +64,12 @@ export const selectNumberOfTrades = memoizerific(1)(trades => {
 	return Object.keys(trades).reduce((p, outcome) => (p + trades[outcome].length), 0);
 });
 
-export const selectOpenVolume = market => {
+export const selectOpenVolume = (market) => {
 	let openVolume = ZERO;
 
-	market.outcomes.forEach(outcome => {
-		Object.keys(outcome.orderBook).forEach(orderType => {
-			outcome.orderBook[orderType].forEach(type => {
+	market.outcomes.forEach((outcome) => {
+		Object.keys(outcome.orderBook).forEach((orderType) => {
+			outcome.orderBook[orderType].forEach((type) => {
 				openVolume = openVolume.plus(abi.bignum(type.shares.value));
 			});
 		});
@@ -78,7 +78,7 @@ export const selectOpenVolume = market => {
 	return openVolume;
 };
 
-export const selectAverageTradeSize = memoizerific(1)(marketPriceHistory => {
+export const selectAverageTradeSize = memoizerific(1)((marketPriceHistory) => {
 	if (!marketPriceHistory) {
 		return 0;
 	}

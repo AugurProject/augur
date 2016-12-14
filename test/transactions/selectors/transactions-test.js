@@ -1,18 +1,15 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import testState from 'test/testState';
+import transactionsAssertions from 'assertions/transactions';
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, selector, expected, actual;
-	let state = Object.assign({}, testState, {
+	const state = Object.assign({}, testState, {
 		transactionsData: {
 			testtransaction12345: {
 				id: 'testtransaction12345',
@@ -29,16 +26,15 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 			}
 		}
 	});
-	store = mockStore(state);
+	const store = mockStore(state);
 
-	selector = proxyquire('../../../src/modules/transactions/selectors/transactions', {
+	const selector = proxyquire('../../../src/modules/transactions/selectors/transactions', {
 		'../../../store': store
 	});
 
 
 	it(`should return data on all transactions`, () => {
-		actual = selector.default();
-		assertions.transactions(actual);
+		const actual = selector.default();
+		transactionsAssertions(actual);
 	});
-
 });

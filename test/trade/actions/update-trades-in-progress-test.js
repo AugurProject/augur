@@ -1,11 +1,12 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
-import { augur } from '../../../src/services/augurjs';
-import { BINARY, CATEGORICAL, SCALAR, BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from '../constants';
+import testState from 'test/testState';
+import { augur } from 'services/augurjs';
+import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from 'test/trade/constants';
 
 describe('modules/trade/actions/update-trades-in-progress.js', () => {
 	describe('should update a trade in progress for a binary market', () => {
@@ -14,10 +15,10 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		const mockStore = configureMockStore(middlewares);
 		const state = Object.assign({}, testState, tradeTestState);
 		const store = mockStore(state);
-		const mockAugurJS = { augur: {...augur} };
-		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields("0");
+		const mockAugurJS = { augur: { ...augur } };
+		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
 		const mockSelectMarket = {};
-		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData['testBinaryMarketID']);
+		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID);
 
 		const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
 			'../../../store': store,
@@ -144,8 +145,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
 			store.getState().tradesInProgress = {
-				'testBinaryMarketID': {
-					'2': {
+				testBinaryMarketID: {
+					2: {
 						side: BUY,
 						numShares: '10',
 						limitPrice: '0.5',
@@ -212,7 +213,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						limitPrice: '0',
 						totalFee: '0',
 						totalCost: '0',
-						tradeActions: [ {
+						tradeActions: [{
 							action: 'BID',
 							avgPrice: '0',
 							costEth: '0',
@@ -221,13 +222,13 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 							gasEth: '0.01450404',
 							noFeePrice: '0',
 							shares: '10'
-						} ],
+						}],
 						tradingFeesEth: '0',
 						gasFeesRealEth: '0.01450404',
 						feePercent: 'NaN'
 					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 
 		it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
@@ -258,7 +259,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						feePercent: '0.199203187250996016'
 					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 
 		it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
@@ -289,7 +290,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						feePercent: '0.199203187250996016'
 					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 	});
 
@@ -299,10 +300,10 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		const mockStore = configureMockStore(middlewares);
 		const state = Object.assign({}, testState, tradeTestState);
 		const store = mockStore(state);
-		const mockAugurJS = { augur: {...augur} };
-		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields("0");
+		const mockAugurJS = { augur: { ...augur } };
+		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
 		const mockSelectMarket = {};
-		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData['testCategoricalMarketID']);
+		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketID);
 
 		const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
 			'../../../store': store,
@@ -430,8 +431,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
 			store.getState().tradesInProgress = {
-				'testCategoricalMarketID': {
-					'1': {
+				testCategoricalMarketID: {
+					1: {
 						side: BUY,
 						numShares: '10',
 						limitPrice: '0.5',
@@ -498,7 +499,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						limitPrice: '0',
 						totalFee: '0',
 						totalCost: '0',
-						tradeActions: [ {
+						tradeActions: [{
 							action: 'BID',
 							avgPrice: '0',
 							costEth: '0',
@@ -507,13 +508,13 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 							gasEth: '0.01450404',
 							noFeePrice: '0',
 							shares: '10'
-						} ],
+						}],
 						tradingFeesEth: '0',
 						gasFeesRealEth: '0.01450404',
 						feePercent: 'NaN'
 					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 
 		it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
@@ -529,7 +530,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						limitPrice: '0.5',
 						totalFee: '0.012499999999999987',
 						totalCost: '12.512499999999999987',
-						tradeActions: [ {
+						tradeActions: [{
 							action: 'BID',
 							shares: '25',
 							gasEth: '0.01450404',
@@ -538,13 +539,13 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 							costEth: '12.512499999999999987',
 							avgPrice: '0.500499999999999999',
 							noFeePrice: '0.5'
-						} ],
+						}],
 						tradingFeesEth: '0.012499999999999987',
 						gasFeesRealEth: '0.01450404',
 						feePercent: '0.099800399201596703'
-			 		}
+					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 
 		it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
@@ -560,7 +561,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 						limitPrice: '0.5',
 						totalFee: '0.012499999999999987',
 						totalCost: '12.512499999999999987',
-						tradeActions: [ {
+						tradeActions: [{
 							action: 'BID',
 							shares: '25',
 							gasEth: '0.01450404',
@@ -569,13 +570,13 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 							costEth: '12.512499999999999987',
 							avgPrice: '0.500499999999999999',
 							noFeePrice: '0.5'
-						} ],
+						}],
 						tradingFeesEth: '0.012499999999999987',
 						gasFeesRealEth: '0.01450404',
 						feePercent: '0.099800399201596703'
-			 		}
+					}
 				}
-			},`Didn't produce the expected tradeDetails object`);
+			}, "Didn't produce the expected tradeDetails object");
 		});
 	});
 
@@ -585,10 +586,10 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 		const mockStore = configureMockStore(middlewares);
 		const state = Object.assign({}, testState, tradeTestState);
 		const store = mockStore(state);
-		const mockAugurJS = { augur: {...augur} };
-		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields("0");
+		const mockAugurJS = { augur: { ...augur } };
+		mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
 		const mockSelectMarket = {};
-		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData['testScalarMarketID']);
+		mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketID);
 
 		const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
 			'../../../store': store,
@@ -718,28 +719,29 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 
 		it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
-			store.getState().tradesInProgress = { 'testScalarMarketID': {
-				'1': {
-					side: BUY,
-					numShares: '10',
-					limitPrice: '55',
-					totalFee: '5.36982248520710025',
-					totalCost: '555.36982248520710025',
-					tradeActions: [
-						{
-							action: 'BID',
-							shares: '10',
-							gasEth: '0.01450404',
-							feeEth: '5.36982248520710025',
-							feePercent: '0.9763313609467455',
-							costEth: '555.36982248520710025',
-							avgPrice: '55.536982248520710025',
-							noFeePrice: '55'
-						}
-					],
-					tradingFeesEth: '5.36982248520710025',
-					gasFeesRealEth: '0.01450404',
-					feePercent: '0.95763203714451532'
+			store.getState().tradesInProgress = {
+				testScalarMarketID: {
+					1: {
+						side: BUY,
+						numShares: '10',
+						limitPrice: '55',
+						totalFee: '5.36982248520710025',
+						totalCost: '555.36982248520710025',
+						tradeActions: [
+							{
+								action: 'BID',
+								shares: '10',
+								gasEth: '0.01450404',
+								feeEth: '5.36982248520710025',
+								feePercent: '0.9763313609467455',
+								costEth: '555.36982248520710025',
+								avgPrice: '55.536982248520710025',
+								noFeePrice: '55'
+							}
+						],
+						tradingFeesEth: '5.36982248520710025',
+						gasFeesRealEth: '0.01450404',
+						feePercent: '0.95763203714451532'
 					}
 				}
 			};

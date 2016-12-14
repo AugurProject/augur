@@ -1,6 +1,5 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+// import { assert } from 'chai';
 // import proxyquire from 'proxyquire';
 // import sinon from 'sinon';
 // import configureMockStore from 'redux-mock-store';
@@ -29,7 +28,7 @@ describe(`modules/market/actions/load-full-market.js`, () => {
 	//   '../../markets/actions/update-markets-data': mockMarketsData
 	// });
 
-	it(`[UNDER CONSTRUCTION] - should load full the full market`);
+	it(`TODO - should load full the full market`);
 	// it(`should be able to load a market given an marketID`, () => {
 	//   out = [{
 	//     type: 'UPDATE_MARKETS_DATA',

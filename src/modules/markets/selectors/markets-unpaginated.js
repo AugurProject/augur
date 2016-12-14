@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 
-import { POSITIONS } from '../../app/constants/views';
+import { MY_POSITIONS } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import store from '../../../store';
@@ -18,16 +18,16 @@ export default function () {
 	);
 }
 
-export const selectPendingReports = memoizerific(1)((markets) =>
+export const selectPendingReports = memoizerific(1)(markets =>
 	markets.filter(market => !!market.isPendingReport)
 );
 
-export const selectPositions = memoizerific(1)((markets) =>
+export const selectPositions = memoizerific(1)(markets =>
 	markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
 );
 
 export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
-	if (activeView === POSITIONS) {
+	if (activeView === MY_POSITIONS) {
 		return selectPositions(allMarkets);
 	}
 

@@ -1,33 +1,29 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/transactions/actions/update-existing-transaction.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockUpdateTransData = {};
-	let mockUpdateAssets = {};
-	let mockFunc = () => {
-		return {
-			type: 'UPDATE_TRANSACTION_DATA'
-		};
-	};
+	let out;
+	let test;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const mockUpdateTransData = {};
+	const mockUpdateAssets = {};
+	const mockFunc = () => ({ type: 'UPDATE_TRANSACTION_DATA' });
 
 	mockUpdateTransData.updateTransactionsData = sinon.stub().returns(mockFunc());
 	mockUpdateAssets.updateAssets = sinon.stub().returns({
 		type: 'UPDATE_ASSETS'
 	});
 
-	action = proxyquire('../../../src/modules/transactions/actions/update-existing-transaction', {
+	const action = proxyquire('../../../src/modules/transactions/actions/update-existing-transaction', {
 		'../../transactions/actions/update-transactions-data': mockUpdateTransData,
 		'../../auth/actions/update-assets': mockUpdateAssets
 	});

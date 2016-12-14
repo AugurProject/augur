@@ -7,7 +7,7 @@ export default function () {
 	return selectIsWorking(transactionsData);
 }
 
-export const selectIsWorking = memoizerific(1)((transactionsData) =>
+export const selectIsWorking = memoizerific(1)(transactionsData =>
 	Object.keys(transactionsData || {}).some(id =>
 		[PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0)
 );

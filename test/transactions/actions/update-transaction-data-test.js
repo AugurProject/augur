@@ -1,28 +1,27 @@
-import {
-	assert
-} from 'chai';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
 describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let fakeAction = {
+	let out;
+	const state = Object.assign({}, testState);
+	const store = mockStore(state);
+	const fakeAction = {
 		type: 'PROCESS_TRANSACTIONS',
 		data: 'test'
 	};
-	let mock = {};
+	const mock = {};
 
 	mock.processTransactions = sinon.stub().returns(fakeAction);
 
-	action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data', {
+	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data', {
 		'../../transactions/actions/process-transactions': mock
 	});
 

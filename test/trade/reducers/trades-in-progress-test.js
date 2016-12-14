@@ -1,21 +1,9 @@
-import {
-	assert
-} from 'chai';
-import reducer
-from '../../../src/modules/trade/reducers/trades-in-progress';
-//import constants used by reducer
-import {
-	UPDATE_TRADE_IN_PROGRESS,
-	CLEAR_TRADE_IN_PROGRESS
-}
-from '../../../src/modules/trade/actions/update-trades-in-progress';
-import {
-	CLEAR_LOGIN_ACCOUNT
-} from '../../../src/modules/auth/actions/update-login-account';
-import {
-	UPDATE_URL
-}
-from '../../../src/modules/link/actions/update-url';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import reducer from 'modules/trade/reducers/trades-in-progress';
+import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from 'modules/trade/actions/update-trades-in-progress';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
 
 describe(`modules/trade/reducers/trade-in-progress.js`, () => {
 	const testState = {
@@ -45,13 +33,13 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
 			MarketID: {
 				MarketID: 'testStateMarketID',
 				OutcomeID: {
-					'test': 1
+					test: 1
 				}
 			},
 			MarketID2: {
 				MarketID2: 'testStateMarketID2',
 				OutcomeID: {
-					'test': 2
+					test: 2
 				}
 			}
 		};

@@ -18,7 +18,7 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
 	return generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized);
 });
 
-export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
+export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
 	if (!markets || !markets.length) {
 		return null;
 	}
@@ -26,8 +26,8 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 	let totalRealizedNet = ZERO;
 	let totalUnrealizedNet = ZERO;
 	const positionOutcomes = [];
-	markets.forEach(market => {
-		market.outcomes.forEach(outcome => {
+	markets.forEach((market) => {
+		market.outcomes.forEach((outcome) => {
 			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
 				return;
 			}

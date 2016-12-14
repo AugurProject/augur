@@ -1,27 +1,25 @@
-import {
-	assert
-} from 'chai';
+import { describe, it, beforeEach, afterEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from 'test/testState';
 
-let markets;
 describe(`modules/markets/selectors/markets.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState, {
+	let test;
+
+	const state = Object.assign({}, testState, {
 		selectedMarketsHeader: 'pending reports',
 		pagination: {
 			numPerPage: 5,
 			selectedPageNum: 1
 		}
 	});
-	store = mockStore(state);
-	let mockSelectors = {
+	const store = mockStore(state);
+	const mockSelectors = {
 		unpaginatedMarkets: [{
 			id: 'test1',
 			isFavorite: true,
@@ -92,12 +90,10 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		}]
 	};
 
-	selector = proxyquire('../../../src/modules/markets/selectors/markets.js', {
+	const selector = proxyquire('../../../src/modules/markets/selectors/markets.js', {
 		'../../../store': store,
 		'../../../selectors': mockSelectors
 	});
-
-	markets = selector;
 
 	beforeEach(() => {
 		store.clearActions();
@@ -122,7 +118,7 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		state.activePage = testState.activePage;
 		state.selectedMarketsHeader = 'test';
 		test = selector.default();
-		out = [{
+		const out = [{
 			id: 'test1',
 			isFavorite: true,
 			isPendingReport: false,
@@ -182,5 +178,3 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		assert.deepEqual(test, out, `Didn't return only markets that are pending reports`);
 	});
 });
-
-export default markets;

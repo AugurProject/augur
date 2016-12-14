@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 import store from '../../../store';
 import { cancelOrder, showCancelOrderConfirmation, abortCancelOrderConfirmation } from '../../bids-asks/actions/cancel-order';
 import { CANCELLATION_CONFIRMATION, CANCELLATION_FAILED, CANCELLED, CANCELLING } from '../../bids-asks/constants/order-status';

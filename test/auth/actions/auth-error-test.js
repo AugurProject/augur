@@ -1,7 +1,6 @@
-import {
-	assert
-} from 'chai';
-import * as action from '../../../src/modules/auth/actions/auth-error';
+import { describe, it } from 'mocha';
+import { assert } from 'chai';
+import * as action from 'modules/auth/actions/auth-error';
 
 describe(`modules/auth/actions/auth-error.js`, () => {
 	it(`should return a AUTH_ERROR action with err provided`, () => {

@@ -1,31 +1,29 @@
+import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import * as mockStore from '../../mockStore';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import * as mockStore from 'test/mockStore';
+import marketsHeaderAssertions from 'assertions/markets-header';
 
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, actual, expected;
-	let { state, store } = mockStore.default;
+	const { store } = mockStore.default;
 
-	let mockSelect = {};
+	const mockSelect = {};
 	mockSelect.marketsTotals = {
 		numFiltered: 10,
 		numFavorites: 100,
 		numPendingReports: 25
 	};
-	let mockHeader = {
+	const mockHeader = {
 		updateSelectedMarketsHeader: () => {}
 	};
-	sinon.stub(mockHeader, 'updateSelectedMarketsHeader', (arg) => {
-		return {
-			type: 'UPDATE_SELECTED_MARKETS_HEADER',
-			header: arg
-		}
-	});
+	sinon.stub(mockHeader, 'updateSelectedMarketsHeader', arg => ({
+		type: 'UPDATE_SELECTED_MARKETS_HEADER',
+		header: arg
+	}));
 
-	selector = proxyquire('../../../src/modules/markets/selectors/markets-header.js', {
+	const selector = proxyquire('../../../src/modules/markets/selectors/markets-header.js', {
 		'../../../selectors': mockSelect,
 		'../../../store': store,
 		'../../markets/actions/update-selected-markets-header': mockHeader
@@ -42,8 +40,8 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 	// marketsHeader = selector.default;
 
 	it(`should select the correct Markets Header`, () => {
-		actual = selector.default();
-		expected = [{
+		const actual = selector.default();
+		const expected = [{
 			type: 'UPDATE_SELECTED_MARKETS_HEADER',
 			header: null
 		}, {
@@ -54,7 +52,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		assertions.marketsHeader(actual)
+		marketsHeaderAssertions(actual);
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();

@@ -1,9 +1,10 @@
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 
-import * as setTitle from '../../src/utils/set-title';
+import * as setTitle from 'utils/set-title';
 
-import * as pages from '../../src/modules/app/constants/views';
-import * as titles from '../../src/modules/app/constants/page-titles';
+import * as pages from 'modules/app/constants/views';
+import * as titles from 'modules/app/constants/page-titles';
 
 describe('utils/set-title.js', () => {
 	beforeEach(() => {
@@ -16,14 +17,14 @@ describe('utils/set-title.js', () => {
 		assert.strictEqual(global.document.title, 'testing | Augur', 'title not set to expected value');
 	});
 
-	Object.keys(pages).forEach(page => {
+	Object.keys(pages).forEach((page) => {
 		const currentPage = pages[page];
 
 		it(`should correctly set the page title for the ${currentPage} page`, () => {
-			if(currentPage !== pages.M){
+			if (currentPage !== pages.M) {
 				setTitle.default(null, { page: currentPage });
 
-				testPageTitle(currentPage)
+				testPageTitle(currentPage);
 			} else {
 				describe('market pages', () => {
 					const page = pages.M;
@@ -58,9 +59,9 @@ describe('utils/set-title.js', () => {
 });
 
 function testPageTitle(page, description, long) {
-	let expected,
-		appended = ' | Augur',
-		title = global.document.title || '';
+	let expected;
+	const appended = ' | Augur';
+	const	title = global.document.title || '';
 
 	switch (page) {
 		case pages.M: {
@@ -70,16 +71,14 @@ function testPageTitle(page, description, long) {
 				expected = titles.MARKET;
 
 				assert.strictEqual(title, expected + appended, `title for ${page} page WITHOUT description not set to expected value`);
+			} else if (long) {
+				expected = 'Some title here that is fairly long as...'; // Specifically tests appropriate truncation when final word is added that causes string to be longer than 40 characters
+
+				assert.strictEqual(title, expected + appended, `title for ${page} page WITH long description not set to expected value`);
 			} else {
-				if(!!long){
-					expected = 'Some title here that is fairly long as...'; // Specifically tests appropriate truncation when final word is added that causes string to be longer than 40 characters
+				expected = 'Some title here?';
 
-					assert.strictEqual(title, expected + appended, `title for ${page} page WITH long description not set to expected value`);
-				} else {
-					expected = 'Some title here?';
-
-					assert.strictEqual(title, expected + appended, `title for ${page} page WITH short description not set to expected value`);
-				}
+				assert.strictEqual(title, expected + appended, `title for ${page} page WITH short description not set to expected value`);
 			}
 			break;
 		}

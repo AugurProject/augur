@@ -1,15 +1,16 @@
+import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-import assertions from 'augur-ui-react-components/lib/assertions';
+import myMarketsSummaryAssertions from 'assertions/my-markets-summary';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
-import * as mockStore from '../../mockStore';
+import * as mockStore from 'test/mockStore';
 
 describe('modules/my-markets/selectors/my-markets-summary', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	let actual, expected;
+	let actual;
 
 	const { store } = mockStore.default;
 	const { loginAccount, allMarkets } = store.getState();
@@ -27,7 +28,7 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
 		'../../../modules/my-markets/selectors/my-markets': proxiedMyMarkets
 	});
 
-	expected = {
+	const expected = {
 		numMarkets: 2,
 		totalValue: 21
 	};
@@ -45,6 +46,6 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
 	});
 
 	it('should return the correct object to augur-ui-react-components', () => {
-		assertions.myMarketsSummary(actual);
+		myMarketsSummaryAssertions(actual);
 	});
 });
