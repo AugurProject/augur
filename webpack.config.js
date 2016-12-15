@@ -1,11 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
+"use strict";
+
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-/* eslint-disable import/no-extraneous-dependencies */
 
 const PATHS = {
 	BUILD: path.resolve(__dirname, 'build'),

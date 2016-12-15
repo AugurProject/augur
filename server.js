@@ -1,8 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const webpack = require('webpack');
 const devMiddleware = require('webpack-dev-middleware');
 const hotMiddleware = require('webpack-hot-middleware');
-/* eslint-disable import/no-extraneous-dependencies */
 
 const express = require('express');
 const helmet = require('helmet');
