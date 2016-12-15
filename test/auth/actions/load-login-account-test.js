@@ -88,7 +88,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			type: 'CLEAR_REPORTS'
 		}, {
 			type: 'SYNC_BRANCH',
-			data:  { reportPeriod: 19 }
+			data: { reportPeriod: 19 }
 		}, {
 			type: 'CLEAR_ACCOUNT_TRADES'
 		}, {

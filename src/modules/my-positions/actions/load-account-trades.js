@@ -30,19 +30,19 @@ export function loadAccountTrades(marketID, cb) {
 					dispatch(updateAccountTradesData(trades, marketID));
 					callback(null, trades);
 				}),
-				bidsAsks: (callback) => augur.getAccountBidsAsks(account, options, (err, bidsAsks) => {
+				bidsAsks: callback => augur.getAccountBidsAsks(account, options, (err, bidsAsks) => {
 					if (err) return callback(err);
 					console.log('bidsAsks:', bidsAsks);
 					dispatch(updateAccountBidsAsksData(bidsAsks, marketID));
 					callback(null, bidsAsks);
 				}),
-				cancels: (callback) => augur.getAccountCancels(account, options, (err, cancels) => {
+				cancels: callback => augur.getAccountCancels(account, options, (err, cancels) => {
 					if (err) return callback(err);
 					console.log('cancels:', cancels);
 					dispatch(updateAccountCancelsData(cancels, marketID));
 					callback(null, cancels);
 				}),
-				completeSetsBought: (callback) => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
+				completeSetsBought: callback => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
 					if (err) return callback(err);
 					const completeSetsBought = augur.parseCompleteSetsLogs(logs);
 					dispatch(updateCompleteSetsBought(completeSetsBought, marketID));
