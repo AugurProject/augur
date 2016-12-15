@@ -224,7 +224,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: 'testBinaryMarketID' },
+				marketID: 'testBinaryMarketID'
+			},
 			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected actions and calculations`);
 		});
