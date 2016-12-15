@@ -1,19 +1,17 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const path = require('path');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-/* eslint-disable import/no-extraneous-dependencies */
+var path = require('path');
+var webpack = require('webpack');
+var merge = require('webpack-merge');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const PATHS = {
+var PATHS = {
 	BUILD: path.resolve(__dirname, 'build'),
 	APP: path.resolve(__dirname, 'src')
 };
 
 // COMMON CONFIG
-let config = {
+var config = {
 	entry: {
 		'assets/styles/styles': `${PATHS.APP}/styles`,
 		'assets/scripts/vendor': [
@@ -171,6 +169,6 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
-const WEBPACK_CONFIG = config;
+var WEBPACK_CONFIG = config;
 
 module.exports = WEBPACK_CONFIG;
