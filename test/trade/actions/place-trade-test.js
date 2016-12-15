@@ -222,8 +222,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 					denomination: ' real ETH',
 					full: '0.0145 real ETH'
 				}
-			},
-			{ type: 'CLEAR_TRADE_IN_PROGRESS',
+			}, {
+				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID' },
 			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected actions and calculations`);
