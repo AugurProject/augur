@@ -171,6 +171,6 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
-var WEBPACK_CONFIG = config;
+const WEBPACK_CONFIG = config;
 
 module.exports = WEBPACK_CONFIG;
