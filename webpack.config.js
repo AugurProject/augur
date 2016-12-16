@@ -1,5 +1,12 @@
 "use strict";
 
+// Workaround for Windows Based Development/Build
+try {
+  require('os').networkInterfaces()
+} catch (e) {
+  require('os').networkInterfaces = () => ({})
+}
+
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
