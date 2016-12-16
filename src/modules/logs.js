@@ -341,6 +341,7 @@ module.exports = {
                         outcome = parseInt(parsed[3]);
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
+                            sequenceNumber: i,
                             type: 2,
                             price: abi.unfix(abi.hex(parsed[0], true), "string"),
                             shares: abi.unfix(parsed[1], "string"),
@@ -356,6 +357,7 @@ module.exports = {
                         outcome = parseInt(parsed[4]);
                         if (!trades[market][outcome]) trades[market][outcome] = [];
                         trades[market][outcome].push({
+                            sequenceNumber: i,
                             type: parseInt(parsed[0], 16),
                             price: abi.unfix(abi.hex(parsed[1], true), "string"),
                             shares: abi.unfix(parsed[2], "string"),
