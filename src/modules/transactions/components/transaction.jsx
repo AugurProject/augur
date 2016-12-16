@@ -204,7 +204,7 @@ const Transaction = (p) => {
 					<span className="of">of</span>
 					<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.data.marketDescription)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
