@@ -1,0 +1,24 @@
+name: augur-ui
+version: master
+summary: Augur front-end
+description: |
+  Augur is a decentralized prediction market platform built on Ethereum. This
+  is the reference client. It runs locally in your browser and communicates
+  directly with the ethereum network, without going through intermediate
+  servers.
+
+grade: devel
+confinement: strict
+
+apps:
+  server:
+    command: sh -c \"cd $SNAP/lib/node_modules/augur-ui && npm start\"
+    plugs: [network, network-bind]
+    daemon: simple
+
+parts:
+  augur:
+    source: .
+    plugin: nodejs
+    npm-run: [build]
+    build-packages: [g++, make, python]
