@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
+// import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
@@ -9,8 +9,8 @@ import { loadAccountTrades } from '../../my-positions/actions/load-account-trade
 import { updateReports, clearReports } from '../../reports/actions/update-reports';
 import { syncBranch } from '../../app/actions/update-branch';
 import { updateFavorites } from '../../markets/actions/update-favorites';
-import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
-import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+// import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
+// import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
@@ -61,22 +61,22 @@ export function loadLoginAccountLocalStorage(accountID) {
 				dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
 			});
 		}
-		if (localState.accountTrades) {
-			dispatch(clearAccountTrades());
-			dispatch(updateAccountTradesData(localState.accountTrades));
-		}
+		// if (localState.accountTrades) {
+		// 	dispatch(clearAccountTrades());
+		// 	dispatch(updateAccountTradesData(localState.accountTrades));
+		// }
 		if (localState.reports && Object.keys(localState.reports).length) {
 			dispatch(updateReports(localState.reports));
 		}
-		if (localState.transactionsData) {
-			Object.keys(localState.transactionsData).forEach((key) => {
-				if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
-					localState.transactionsData[key].status = INTERRUPTED;
-					localState.transactionsData[key].message = 'unknown if completed';
-				}
-			});
-			dispatch(updateTransactionsData(localState.transactionsData));
-		}
+		// if (localState.transactionsData) {
+		// 	Object.keys(localState.transactionsData).forEach((key) => {
+		// 		if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
+		// 			localState.transactionsData[key].status = INTERRUPTED;
+		// 			localState.transactionsData[key].message = 'unknown if completed';
+		// 		}
+		// 	});
+		// 	dispatch(updateTransactionsData(localState.transactionsData));
+		// }
 		if (localState.settings) {
 			dispatch(updateAccountSettings(localState.settings));
 		}
