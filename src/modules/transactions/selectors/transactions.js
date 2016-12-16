@@ -23,8 +23,8 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
 			return 0;
 		})
 		.map((id) => {
-			let marketLink = null;
-			if (transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
+			let marketLink = transactionsData[id].data && transactionsData[id].data.marketLink || null;
+			if (!marketLink && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
 				marketLink = selectMarketLink(
 					{
 						id: transactionsData[id].data.id || transactionsData[id].data.marketID,
@@ -40,10 +40,8 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
 					marketLink
 				},
 				gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
-				ether: transactionsData[id].etherWithoutGas &&
-				formatEther(transactionsData[id].etherWithoutGas),
-				shares: transactionsData[id].sharesChange &&
-				formatShares(transactionsData[id].sharesChange),
+				ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
+				shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
 				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
 			};
 		})
