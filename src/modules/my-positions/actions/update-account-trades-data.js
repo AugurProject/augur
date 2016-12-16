@@ -28,7 +28,7 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 
 export function marketConvertToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
-		const { marketsData, outcomesData, transactionsData } = getState();
+		const { marketsData, outcomesData } = getState();
 		let outcomeID;
 		let trade;
 		let numTrades;
@@ -56,28 +56,21 @@ export function marketConvertToTransactions(label, data, marketID) {
 						switch (label) {
 							case 'log_fill_tx': {
 								const hash = trade.transactionHash;
+								const transactionID = `${hash}-${trade.sequenceNumber}`;
 								const type = trade.type === 1 ? 'buy' : 'sell';
 								const perfectType = trade.type === 1 ? 'bought' : 'sold';
 								const price = formatEther(trade.price);
 								const shares = formatShares(trade.shares);
 								const bnPrice = abi.bignum(trade.price);
-								let tradingFees = abi.bignum(trade.takerFee);
-								let bnShares = abi.bignum(trade.shares);
-								let totalCost = bnPrice.times(bnShares).plus(tradingFees);
-								let totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-								let rawPrice;
-								if (transactionsData[hash]) {
-									tradingFees = tradingFees.plus(transactionsData[hash].rawTradingFees);
-									bnShares = bnShares.plus(transactionsData[hash].rawNumShares);
-									totalCost = totalCost.plus(transactionsData[hash].rawTotalCost);
-									totalReturn = totalReturn.plus(transactionsData[hash].rawTotalReturn);
-									rawPrice = bnPrice.times(abi.bignum(trade.shares)).plus(transactionsData[hash].rawPrice.times(transactionsData[hash].rawNumShares)).dividedBy(bnShares);
-								}
+								const tradingFees = abi.bignum(trade.takerFee);
+								const bnShares = abi.bignum(trade.shares);
+								const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+								const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 								const totalCostPerShare = totalCost.dividedBy(bnShares);
 								const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-								rawPrice = bnPrice;
+								const rawPrice = bnPrice;
 								utd = {
-									[hash]: {
+									[transactionID]: {
 										type,
 										hash,
 										status: SUCCESS,
@@ -101,13 +94,10 @@ export function marketConvertToTransactions(label, data, marketID) {
 										rawTotalCost: totalCost,
 										rawTotalReturn: totalReturn,
 										totalCost: trade.type === 1 ? formatEther(totalCost) : undefined,
-										totalReturn: trade.type === 2 ? formatEther(totalReturn) : undefined
+										totalReturn: trade.type === 2 ? formatEther(totalReturn) : undefined,
+										sequenceNumber: trade.sequenceNumber
 									}
 								};
-								if (marketID === '0x2975c2448e19eabb0cb92620542e13bb581f64b1a5995b00ae044284a1b95084') {
-									console.log('TRADE:', JSON.stringify(trade, null, 2));
-									console.log('UTD:', JSON.stringify(utd, null, 2));
-								}
 								break;
 							}
 							case 'log_add_tx': {
@@ -210,6 +200,7 @@ export function marketConvertToTransactions(label, data, marketID) {
 							default:
 								break;
 						}
+						console.log('utd:', utd);
 						dispatch(updateTransactionsData(utd));
 					}
 				}
