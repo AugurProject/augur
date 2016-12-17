@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cp src/sitemap.xml build/sitemap.xml
 git commit -am "${1}"
 git push origin master
 firebase deploy

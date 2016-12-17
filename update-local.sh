@@ -3,6 +3,6 @@
 
 git stash
 git pull origin master
-npm install
-npm run build:dev
+yarn
+yarn build
 sudo service augur restart

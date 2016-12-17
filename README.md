@@ -11,9 +11,16 @@ There are several ways to run it:
 * Balanced: **one-click azure install (coming soon)**
 * Best: [run ethereum locally](#eth_local)
 
-## Build From Source
+## Requirements
+[Git](https://git-scm.com/)  
+[Node](https://nodejs.org/)
 
-Install [Node.js](https://nodejs.org/), then:
+*A Note to Windows 10 Users:*  
+Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.  
+Run all subsequent commands within the bash command prompt.  
+It's also recommend that you use a Debian based workflow for the installation of packages (makes things much easier).
+
+## Build From Source
 
 ```
 git clone https://github.com/AugurProject/augur.git

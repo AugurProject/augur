@@ -1,5 +1,12 @@
 "use strict";
 
+// Workaround for Windows Based Development/Build
+try {
+  require('os').networkInterfaces()
+} catch (e) {
+  require('os').networkInterfaces = () => ({})
+}
+
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
@@ -109,9 +116,10 @@ let config = {
 			}
 		}),
 		new webpack.DefinePlugin({
-			'process.env': {
-				NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-			},
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+				GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD)
+      }
 		}),
 	],
 	node: {

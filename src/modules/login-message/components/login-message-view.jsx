@@ -53,13 +53,139 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 16, 2016</h3>
+			<ol>
+				<li>
+    				The log_add_tx event API now includes a timestamp field.
+    			</li>
+    			<li>
+    				Trade log objects now include an augur.js-generated sequence number.
+    			</li>
+    			<li>
+    				Market links now work correctly in transactions generated from trade logs.
+    			</li>
+				<li>
+    				The new build system now works correctly on Linux.
+    			</li>
+    			<li>
+    				Fixes/improvements to Windows builds.
+    			</li>
+    		</ol>
+    		<h3>December 15, 2016</h3>
+			<ol>
+				<li>
+					Several fixes/improvements to the new build system.
+				</li>
+				<li>
+    				Fixed several visual and messaging bugs in transactions auto-generated from trade logs.
+    			</li>
+				<li>
+    				Added Snapcraft file to augur repository.
+    			</li>
+    			<li>
+    				Removed deprecated files associated with the old market update timer (market-data-age and market-data-updater).
+    			</li>
+    			<li>
+    				Fixed missing property error thrown during market creation.
+    			</li>
+    			<li>
+    				Fixed hot-module-reload.
+    			</li>
+    			<li>
+    				Market descriptions now display properly in the transactions display.
+    			</li>
+    		</ol>
+			<h3>December 14, 2016</h3>
+			<ol>
+				<li>
+    				Merged the augur-ui-react-components (AURC) repository into the augur (UI) repository.  AURC is now deprecated; all UI development will take place in the augur repository.
+    			</li>
+    			<li>
+    				Added support for yarn (in addition to npm); see updated README for details.
+    			</li>
+    			<li>
+    				Migrated build system from a collection of ad hoc scripts to webpack.
+    			</li>
+    			<li>
+    				Added hot-module-reload (HMR) support to the build system.  HMR propagates changes to the source code to the browser automatically, without requiring a page refresh.
+    			</li>
+    		</ol>
+    		<h3>December 13, 2016</h3>
+			<ol>
+				<li>
+    				Auto-update trades converted to transactions for trades with matching hashes.
+    			</li>
+    			<li>
+    				Event unit testing progress.
+    			</li>
+    			<li>
+    				Implemented hotjar tracking for augur-dev.firebaseapp.com and app.augur.net.
+    			</li>
+    		</ol>
+    		<h3>December 12, 2016</h3>
+			<ol>
+				<li>
+    				Fixed trade converted to transaction total cost and returns messages.
+    			</li>
+    			<li>
+    				Automatically convert incoming bids/asks and trade cancellation logs (from loadAccountTrades) to transactions formatted for display during the trade data update action.  Bids, asks, and cancel transactions are now loaded directly from the blockchain.
+    			</li>
+    			<li>
+    				Removed deprecated market-data-age and market-data-updater selectors.
+    			</li>
+    			<li>
+    				Added total return per share calculation to trade transaction conversion.
+    			</li>
+    			<li>
+    				Restructured bids/asks and cancels objects to match trade logs structure.
+    			</li>
+    		</ol>
+    		<h3>December 11, 2016</h3>
+			<ol>
+				<li>
+    				Added bids/asks and cancel log getters to modules/logs.
+    			</li>
+    			<li>
+    				Added account bids/asks and cancels data to loadAccountTrades.
+    			</li>
+    			<li>
+    				Automatically convert incoming trade logs (from loadAccountTrades) to transactions formatted for display during the trade data update action.  Trade transactions are now loaded directly from the blockchain (so your trade history is portable across browsers).
+    			</li>
+    		</ol>
+			<h3>December 10, 2016</h3>
+			<ol>
+				<li>
+    				Added timestamp to log_add_tx and log_cancel.
+    			</li>
+    			<li>
+    				Added timestamp to complete sets logs.
+    			</li>
+    			<li>
+    				Added basic trade transaction reconstruction from logs to update-account-trades-data.
+    			</li>
+    			<li>
+    				Added takerFee, makerFee, transactionHash, and timestamp fields to account trade return value.
+    			</li>
+    			<li>
+    				Renamed tradeid -> trade_id in getMarketPriceHistory for consistency.
+    			</li>
+    			<li>
+    				Added trade ID to getMarketPriceHistory results.
+    			</li>
+    		</ol>
 			<h3>December 9, 2016</h3>
 			<ol>
+				<li>
+					Added isIndeterminate field to getReport default return.
+				</li>
 				<li>
 					Removed redundant (and broken) getMarketTrades method from augur.js.  Please use getMarketPriceHistory instead, a function that is not broken and retrieves the same information.
 				</li>
 				<li>
 					All fixed-point fields in the log_fill_tx event logs are now auto-converted to regular (stringified) numbers.  Note that log_fill_tx and log_add_tx are the only two filters where fixed-point conversions is automatically performed.
+				</li>
+				<li>
+					Updated load-report and load-reports tests.
 				</li>
 			</ol>
 			<h3>December 8, 2016</h3>
