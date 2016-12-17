@@ -128,7 +128,7 @@ const LoginMessagePage = p => (
     				Fixed trade converted to transaction total cost and returns messages.
     			</li>
     			<li>
-    				Convert bids/asks and cancel event logs to transactions.
+    				Automatically convert incoming bids/asks and trade cancellation logs (from loadAccountTrades) to transactions formatted for display during the trade data update action.  Bids, asks, and cancel transactions are now loaded directly from the blockchain.
     			</li>
     			<li>
     				Removed deprecated market-data-age and market-data-updater selectors.
@@ -140,7 +140,7 @@ const LoginMessagePage = p => (
     				Restructured bids/asks and cancels objects to match trade logs structure.
     			</li>
     		</ol>
-    		<h3>December 10, 2016</h3>
+    		<h3>December 11, 2016</h3>
 			<ol>
 				<li>
     				Added bids/asks and cancel log getters to modules/logs.
@@ -149,7 +149,7 @@ const LoginMessagePage = p => (
     				Added account bids/asks and cancels data to loadAccountTrades.
     			</li>
     			<li>
-    				Added convertToTransactions method to update-account-trades-data.
+    				Automatically convert incoming trade logs (from loadAccountTrades) to transactions formatted for display during the trade data update action.  Trade transactions are now loaded directly from the blockchain (so your trade history is portable across browsers).
     			</li>
     		</ol>
 			<h3>December 10, 2016</h3>
