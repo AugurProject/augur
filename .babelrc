@@ -18,5 +18,6 @@
 			},
 			"extensions": [".js", ".jsx"]
 		}]
-	]
+	],
+	"compact": false
 }
