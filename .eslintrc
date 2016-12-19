@@ -25,10 +25,10 @@
     "prefer-template": 0,
     "space-infix-ops": 0,
 		"import/prefer-default-export": 0,
+		"no-underscore-dangle": 0,
 		"no-prototype-builtins": 0, # This one should possibly be bumped up to 2 at some point, unsure at this point
 		# Errors
 		"no-useless-rename": 2,
-		"no-underscore-dangle": 2,
 		"prefer-arrow-callback": 2,
 		"eqeqeq": [2, "allow-null"],
 		"indent": [2, "tab", { "SwitchCase": 1 }],
