@@ -38,3 +38,6 @@ build/Release
 # IDEs
 .idea
 *.iml
+
+# webpack build stats
+stats.json
