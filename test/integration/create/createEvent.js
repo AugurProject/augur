@@ -6,7 +6,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var _ = require("lodash");
 var abi = require("augur-abi");
 var tools = require("../../tools");
 require('it-each')({ testPerIteration: true });
@@ -23,7 +22,7 @@ describe("CreateMarket.createEvent", function () {
     var resolution = "https://www.google.com";
     describe("Creating " + numEvents + " events", function () {
         var events = [];
-        it.each(_.range(0, numEvents), "create event %s", ['element'], function (element, next) {
+        it.each(new Array(numEvents), "create event %s", ['element'], function (element, next) {
             this.timeout(tools.TIMEOUT);
             var description = "€" + Math.random().toString(36).substring(4);
             augur.createEvent({
