@@ -56,6 +56,10 @@ if (module.hot) {
 	module.hot.accept('./modules/app/components/app', () => {
 		handleRender();
 	});
+
+	module.hot.accept('./modules/app/actions/init-augur');
+	module.hot.accept('./modules/link/actions/update-url');
+	module.hot.accept('./services/augurjs');
 }
 
 function handleRender() {
