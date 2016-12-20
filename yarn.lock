@@ -368,28 +368,28 @@ augur-abi@0.6.4:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.5.2.tgz#afdb9de26b1bb933d077838362dbc0d0aaa71323"
+augur-contracts@2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.5.3.tgz#5264dceba588b6382c062760f72f3a0b8c699b6f"
   dependencies:
     clone "1.0.2"
 
-augur.js@^3.3.9:
-  version "3.3.9"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.3.9.tgz#3d5e8d25a7ad71999ed72514acd3067a1699c7c1"
+augur.js@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.4.0.tgz#cf4951980dbd5ff1724dd90cad4e46c9bbbd73b6"
   dependencies:
     async "1.5.2"
     augur-abi "0.6.4"
-    augur-contracts "2.5.2"
+    augur-contracts "2.5.3"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "1.3.10"
+    ethereumjs-connect "1.3.11"
     ethereumjs-tx "1.1.1"
     ethereumjs-util "4.4.1"
-    ethrpc "2.2.8"
+    ethrpc "2.2.9"
     keythereum "0.3.2"
     locks "0.2.2"
     request "2.74.0"
@@ -2832,13 +2832,13 @@ ethereumjs-abi@0.6.2:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-connect@1.3.10:
-  version "1.3.10"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-1.3.10.tgz#b547edb61e826fe87e208fa7406f0c0de7c93742"
+ethereumjs-connect@1.3.11:
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-1.3.11.tgz#a069ef5248d608b38ddbd4a8e3cdae08d09e01d6"
   dependencies:
     async "1.5.2"
-    augur-contracts "2.5.2"
-    ethrpc "2.2.8"
+    augur-contracts "2.5.3"
+    ethrpc "2.2.9"
 
 ethereumjs-tx@1.1.1:
   version "1.1.1"
@@ -2867,13 +2867,13 @@ ethereumjs-util@4.4.1, ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0:
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
-ethrpc@2.2.8:
-  version "2.2.8"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.2.8.tgz#f5db62285cad490a7c67430847658753b0401dba"
+ethrpc@2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.2.9.tgz#1026bbde719cbd1a9479c5f4aa690bbea7055647"
   dependencies:
     async "1.5.2"
     augur-abi "0.6.4"
-    augur-contracts "2.5.2"
+    augur-contracts "2.5.3"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"

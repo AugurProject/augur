@@ -1,3 +1,5 @@
+import { combineReducers } from 'redux';
+
 import env from './modules/app/reducers/env';
 import requests from './modules/app/reducers/requests';
 import blockchain from './modules/app/reducers/blockchain';
@@ -49,55 +51,57 @@ import loginMessage from './modules/login-message/reducers/login-message';
 
 import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
 
-module.exports = {
-	env,
-	requests,
-	blockchain,
-	branch,
-	connection,
-	url,
+export function createReducer() {
+	return combineReducers({
+		env,
+		requests,
+		blockchain,
+		branch,
+		connection,
+		url,
 
-	auth,
-	loginAccount,
-	activeView,
+		auth,
+		loginAccount,
+		activeView,
 
-	marketsData,
-	marketDataTimestamps,
-	outcomesData,
-	favorites,
-	pagination,
+		marketsData,
+		marketDataTimestamps,
+		outcomesData,
+		favorites,
+		pagination,
 
-	reports,
-	oldestLoadedEventPeriod,
-	eventsWithAccountReport,
+		reports,
+		oldestLoadedEventPeriod,
+		eventsWithAccountReport,
 
-	selectedMarketID,
-	selectedMarketsHeader,
-	keywords,
-	selectedTags,
-	selectedFilterSort,
-	priceHistory,
-	selectedOutcomeID,
-	loginMessage,
+		selectedMarketID,
+		selectedMarketsHeader,
+		keywords,
+		selectedTags,
+		selectedFilterSort,
+		priceHistory,
+		selectedOutcomeID,
+		loginMessage,
 
-	tradesInProgress,
-	tradeCommitLock,
-	sellCompleteSetsLock,
-	smallestPositions,
-	createMarketInProgress,
+		tradesInProgress,
+		tradeCommitLock,
+		sellCompleteSetsLock,
+		smallestPositions,
+		createMarketInProgress,
 
-	orderBooks,
-	orderCancellation,
-	marketTrades,
-	accountTrades,
-	accountPositions,
-	completeSetsBought,
-	netEffectiveTrades,
-	transactionsData,
-	scalarMarketsShareDenomination,
+		orderBooks,
+		orderCancellation,
+		marketTrades,
+		accountTrades,
+		accountPositions,
+		completeSetsBought,
+		netEffectiveTrades,
+		transactionsData,
+		scalarMarketsShareDenomination,
 
-	settings,
-	chatMessages,
+		settings,
+		chatMessages,
 
-	marketCreatorFees
-};
+		marketCreatorFees
+	});
+}
