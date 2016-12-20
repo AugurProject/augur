@@ -154,8 +154,10 @@ module.exports = function () {
         },
         parse_event_message: function (label, msg, onMessage) {
             var i;
-            console.log("parse_event_message label:", label);
-            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
+						if (augur.options.debug.filters) {
+	            console.log("parse_event_message label:", label);
+	            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
+						}
             if (msg) {
                 switch (msg.constructor) {
                     case Array:

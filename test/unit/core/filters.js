@@ -177,7 +177,7 @@ describe("parse_event_message", function () {
                     assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "tradingFeeUpdated") {
-                    console.log('tfu:', parsed);
+                    if (DEBUG) console.log('tfu:', parsed);
                     assert.property(parsed, "marketID");
                     assert.property(parsed, "tradingFee");
                     assert.deepEqual(parsed.marketID, "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b");
