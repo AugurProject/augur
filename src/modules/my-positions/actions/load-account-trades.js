@@ -1,6 +1,7 @@
 import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { updateAccountPositionsData, updateAccountTradesData, updateAccountBidsAsksData, updateAccountCancelsData, updateCompleteSetsBought } from '../../../modules/my-positions/actions/update-account-trades-data';
+import { updateLogsData } from '../../../modules/transactions/actions/convert-logs-to-transactions';
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positions-plus-asks';
@@ -49,11 +50,39 @@ export function loadAccountTrades(marketID, cb) {
 					callback(null, completeSetsBought);
 				})
 			}, (err, data) => {
-				if (err) return console.error('loadAccountTrades error:', err);
+				if (err) console.error('loadAccountTrades error:', err);
 				if (augur.options.debug.trading) {
 					console.log('loadAccountTrades data:', data);
 				}
 				dispatch(sellCompleteSets(marketID, cb));
+				const params = { sender: account };
+				if (loginAccount.registerBlockNumber) {
+					params.fromBlock = loginAccount.registerBlockNumber;
+				}
+				async.eachLimit([
+					// 'Approval',
+					'collectedFees',
+					// 'deposit',
+					'marketCreated',
+					'payout',
+					'penalizationCaughtUp',
+					'penalize',
+					'submittedReport',
+					'submittedReportHash',
+					'registration',
+					// 'tradingFeeUpdated',
+					// 'Transfer',
+					// 'withdraw'
+				], 5, (label, nextLabel) => {
+					augur.getLogs(label, params, null, (err, logs) => {
+						console.log(label, err, logs);
+						if (err) return nextLabel(err);
+						if (logs && logs.length) dispatch(updateLogsData(label, logs));
+						nextLabel();
+					});
+				}, (err) => {
+					if (err) console.error('loadAccountTrades (each) error:', err);
+				});
 			});
 		} else if (cb) cb();
 	};
