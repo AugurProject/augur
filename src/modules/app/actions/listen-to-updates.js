@@ -32,6 +32,50 @@ export function listenToUpdates() {
 				dispatch(syncBranch());
 			},
 
+			collectedFees: (msg) => {
+				if (msg) {
+					console.debug('collectedFees:', msg);
+				}
+			},
+
+			payout: (msg) => {
+				if (msg) {
+					console.debug('payout:', msg);
+				}
+			},
+
+			penalizationCaughtUp: (msg) => {
+				if (msg) {
+					console.debug('penalizationCaughtUp:', msg);
+				}
+			},
+
+			// Reporter penalization
+			penalize: (msg) => {
+				if (msg) {
+					console.debug('penalize:', msg);
+					dispatch(updateAssets());
+				}
+			},
+
+			submittedReport: (msg) => {
+				if (msg) {
+					console.debug('submittedReport:', msg);
+				}
+			},
+
+			submittedReportHash: (msg) => {
+				if (msg) {
+					console.debug('submittedReportHash:', msg);
+				}
+			},
+
+			registration: (msg) => {
+				if (msg) {
+					console.debug('registration:', msg);
+				}
+			},
+
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
 				console.debug('log_fill_tx:', msg);
@@ -96,14 +140,6 @@ export function listenToUpdates() {
 				}
 			},
 
-			// Reporter penalization (debugging-only)
-			penalize: (msg) => {
-				if (msg) {
-					console.debug('penalize:', msg);
-					dispatch(updateAssets());
-				}
-			},
-
 			// Reputation transfer
 			Transfer: (msg) => {
 				if (msg) {
@@ -122,7 +158,7 @@ export function listenToUpdates() {
 			closeMarket_logReturn: (msg) => {
 				if (msg && msg.returnValue && parseInt(msg.returnValue, 16) === 1) {
 					console.debug('closeMarket_logReturn:', msg);
-					dispatch(claimProceeds());
+					if (getState().loginAccount.address) dispatch(claimProceeds());
 				}
 			}
 		}, filters => console.log('### Listening to filters:', filters));
