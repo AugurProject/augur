@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import store from '../../../store';
+import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
@@ -23,8 +23,8 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
 			return 0;
 		})
 		.map((id) => {
-			let marketLink = transactionsData[id].data && transactionsData[id].data.marketLink || null;
-			if (!marketLink && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
+			let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
+			if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
 				marketLink = selectMarketLink(
 					{
 						id: transactionsData[id].data.id || transactionsData[id].data.marketID,
