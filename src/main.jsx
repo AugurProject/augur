@@ -56,18 +56,6 @@ if (module.hot) {
 	module.hot.accept('./modules/app/components/app', () => {
 		handleRender();
 	});
-
-	module.hot.accept('./selectors', () => {
-		console.log('MAIN -- selectors hot accept');
-	});
-
-	module.hot.status((status) => {
-		console.log('MAIN -- status: ', status);
-
-		// if (status === 'idle') {
-		// 	handleRender();
-		// }
-	});
 }
 
 function handleRender() {

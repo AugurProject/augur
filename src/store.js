@@ -5,7 +5,7 @@ import {
 } from 'redux';
 import thunk from 'redux-thunk';
 
-import reducers from './reducers';
+import { createReducer } from './reducers';
 
 const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
@@ -44,4 +44,13 @@ if (process.env.NODE_ENV !== 'production') {
 	middleWare = applyMiddleware(thunk, localStorageMiddleware);
 }
 // middleware
-export default createStore(combineReducers(reducers), middleWare);
+const store = createStore(createReducer(), middleWare);
+
+if (module.hot) {
+	module.hot.accept('./reducers', (changed) => {
+		const hotReducer = require('./reducers').createReducer;
+		store.replaceReducer(hotReducer());
+	});
+}
+
+export default store;

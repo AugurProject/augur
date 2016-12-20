@@ -12,11 +12,7 @@ if (module.hot) {
 	module.hot.accept();
 
 	module.hot.accept('./selectors-raw', () => {
-		console.log('SELECTORS -- accept selectors raw accept self');
-
 		const hotSelectors = require('src/selectors-raw').default;
-
-		console.log('hotSelectors -- ', hotSelectors);
 
 		module.exports = {};
 

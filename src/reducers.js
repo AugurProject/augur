@@ -50,59 +50,6 @@ import selectedOutcomeID from './modules/outcomes/reducers/selected-outcome-id';
 import loginMessage from './modules/login-message/reducers/login-message';
 
 import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
-//
-// module.exports = {
-// 	env,
-// 	requests,
-// 	blockchain,
-// 	branch,
-// 	connection,
-// 	url,
-//
-// 	auth,
-// 	loginAccount,
-// 	activeView,
-//
-// 	marketsData,
-// 	marketDataTimestamps,
-// 	outcomesData,
-// 	favorites,
-// 	pagination,
-//
-// 	reports,
-// 	oldestLoadedEventPeriod,
-// 	eventsWithAccountReport,
-//
-// 	selectedMarketID,
-// 	selectedMarketsHeader,
-// 	keywords,
-// 	selectedTags,
-// 	selectedFilterSort,
-// 	priceHistory,
-// 	selectedOutcomeID,
-// 	loginMessage,
-//
-// 	tradesInProgress,
-// 	tradeCommitLock,
-// 	sellCompleteSetsLock,
-// 	smallestPositions,
-// 	createMarketInProgress,
-//
-// 	orderBooks,
-// 	orderCancellation,
-// 	marketTrades,
-// 	accountTrades,
-// 	accountPositions,
-// 	completeSetsBought,
-// 	netEffectiveTrades,
-// 	transactionsData,
-// 	scalarMarketsShareDenomination,
-//
-// 	settings,
-// 	chatMessages,
-//
-// 	marketCreatorFees
-// };
 
 export function createReducer() {
 	return combineReducers({
