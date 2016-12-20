@@ -163,6 +163,5 @@ export function placeTrade(marketID, outcomeID) {
 			}
 		});
 		dispatch(clearTradeInProgress(marketID));
-		selectTransactionsLink(dispatch).onClick();
 	};
 }
