@@ -44,7 +44,7 @@ function render(appElement, selectors) {
 }
 // store.dispatch(MarketsActions.listenToMarkets());
 
-store.subscribe(handleRender); // eslint-disable-line new-cap
+store.subscribe(handleRender);
 
 window.onpopstate = (e) => {
 	store.dispatch(updateURL(window.location.pathname + window.location.search));
