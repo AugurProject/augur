@@ -3,7 +3,6 @@
 var assert = require("chai").assert;
 var augur = require("../../../src");
 var abi = require("augur-abi");
-var contracts = require('augur-contracts');
 var utils = require("../../../src/utilities");
 
 describe("Markets Unit Tests", function() {
@@ -29,7 +28,7 @@ describe("Markets Unit Tests", function() {
 			assert.deepEqual(tx.signature, ['int256']);
 			assert.equal(tx.returns, 'number[]');
 			// tx.to should point to the markets contract.
-			assert.deepEqual(tx.to, contracts['2']['Markets']);
+			assert.deepEqual(tx.to, augur.tx.Markets.getWinningOutcomes.to);
 			assert.equal(tx.params, 'marketID');
 
 			switch(fireCallCount) {

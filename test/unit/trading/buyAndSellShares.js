@@ -4,7 +4,6 @@ var assert = require("chai").assert;
 var augur = require("../../../src");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
-var contracts = require('augur-contracts');
 
 // 58 tests total
 describe("buyAndSellShares Unit Tests", function() {
@@ -12,6 +11,7 @@ describe("buyAndSellShares Unit Tests", function() {
 	function noop() {};
 	var transactCallCount = 0;
 	var transact = augur.transact;
+	var currentMethod = '';
 	var shrinkScalarPrice = augur.shrinkScalarPrice;
 	function sharedTransactMock(tx, onSent, onSuccess, onFailed) {
 		// inc the call count...
@@ -34,7 +34,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		assert.deepEqual(tx.signature, ["int256", "int256", "int256", "int256"], "tx.signature didn't contain the expected values");
 
 		assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
-		assert.deepEqual(tx.to, contracts["2"]["BuyAndSellShares"], "tx.to didn't point to the BuyAndSellShares contract");
+		assert.deepEqual(tx.to, augur.tx.BuyAndSellShares[currentMethod].to, "tx.to didn't point to the BuyAndSellShares contract");
 
 		assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 		// handles different expected params based on inputs...
@@ -79,6 +79,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		var test = function (t) {
 			it(t.description, function() {
 				//assertions aren't provied since we are testing in transact since there is no output of the cancel function.
+				currentMethod = 'cancel';
 				augur.cancel(t.trade_id, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
@@ -98,7 +99,7 @@ describe("buyAndSellShares Unit Tests", function() {
 				assert.deepEqual(tx.signature, ["int256"], "tx.signature didn't contain the expected values");
 
 				assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
-				assert.deepEqual(tx.to, contracts["2"]["BuyAndSellShares"], "tx.to didn't point to the BuyAndSellShares contract");
+				assert.deepEqual(tx.to, augur.tx.BuyAndSellShares[currentMethod].to, "tx.to didn't point to the BuyAndSellShares contract");
 				assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
 				assert.deepEqual(tx.params, ["tradeID"], "tx.params didn't contain the expected values");
@@ -157,6 +158,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		// 18 tests total
 		var test = function (t) {
 			it(t.description, function() {
+				currentMethod = 'buy';
 				augur.buy(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
@@ -329,6 +331,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		// 18 tests total
 		var test = function (t) {
 			it(t.description, function() {
+				currentMethod = 'sell';
 				augur.sell(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
@@ -501,6 +504,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		// 18 tests total
 		var test = function (t) {
 			it(t.description, function() {
+				currentMethod = 'shortAsk';
 				augur.shortAsk(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};

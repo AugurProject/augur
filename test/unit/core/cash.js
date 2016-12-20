@@ -168,7 +168,7 @@ describe("cash", function() {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');
 				assert.deepEqual(out.send, true);
-				assert.deepEqual(out.to, '0xa470f24e2f44b1373a201b8b876361352a5044ca');
+				assert.deepEqual(out.to, augur.tx.Cash.depositEther.to);
 				assert.deepEqual(out.value, '0x56e7d367e17b24000');
 			}
 		});
@@ -182,7 +182,7 @@ describe("cash", function() {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');
 				assert.deepEqual(out.send, true);
-				assert.deepEqual(out.to, '0xa470f24e2f44b1373a201b8b876361352a5044ca');
+				assert.deepEqual(out.to, augur.tx.Cash.depositEther.to);
 				assert.deepEqual(out.value, '0x3f86535310ec4b000');
 			}
 		});
@@ -196,7 +196,7 @@ describe("cash", function() {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');
 				assert.deepEqual(out.send, true);
-				assert.deepEqual(out.to, '0xa470f24e2f44b1373a201b8b876361352a5044ca');
+				assert.deepEqual(out.to, augur.tx.Cash.depositEther.to);
 				assert.deepEqual(out.value, '0x4c9bb827f36e44000');
 			}
 		});
