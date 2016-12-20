@@ -44,14 +44,30 @@ function render(appElement, selectors) {
 }
 // store.dispatch(MarketsActions.listenToMarkets());
 
-store.subscribe(() => render(appElement, selectors)); // eslint-disable-line new-cap
+store.subscribe(handleRender);
 
 window.onpopstate = (e) => {
 	store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
 if (module.hot) {
+	module.hot.accept();
+
 	module.hot.accept('./modules/app/components/app', () => {
-		render(appElement, selectors);
+		handleRender();
 	});
+
+	module.hot.accept('./modules/app/actions/init-augur');
+	module.hot.accept('./modules/link/actions/update-url');
+	module.hot.accept('./services/augurjs');
+}
+
+function handleRender() {
+	let currentSelectors;
+	if (process.env.NODE_ENV === 'development') {
+		currentSelectors = require('./selectors');
+	} else {
+		currentSelectors = selectors;
+	}
+	render(appElement, currentSelectors);
 }
