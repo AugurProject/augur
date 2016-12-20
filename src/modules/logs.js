@@ -268,6 +268,107 @@ module.exports = {
         return a.blockNumber - b.blockNumber;
     },
 
+    // payout
+    // penalizationCaughtUp
+    // penalize
+    // submittedReport
+    // submittedReportHash
+    // registration
+
+    buildTopicsList: function (event, params) {
+        var topics = [event.signature];
+        var inputs = event.inputs;
+        for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
+            if (inputs[i].indexed) {
+                if (params[inputs[i].name]) {
+                    topics.push(abi.format_int256(params[inputs[i].name]));
+                } else {
+                    topics.push(null);
+                }
+            }
+        }
+        return topics;
+    },
+
+    parametrizeFilter: function (event, params) {
+        return {
+            fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+            toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
+            address: this.contracts[event.contract],
+            topics: this.buildTopicsList(event, params),
+            timeout: constants.GET_LOGS_TIMEOUT
+        };
+    },
+
+    // warning: mutates processedLogs
+    insertIndexedLog: function (processedLogs, parsed, index, log) {
+        if (index.constructor === Array) {
+            if (index.length === 1) {
+                if (!processedLogs[parsed[index[0]]]) {
+                    processedLogs[parsed[index[0]]] = [];
+                }
+                processedLogs[parsed[index[0]]].push(parsed);
+            } else if (index.length === 2) {
+                if (!processedLogs[parsed[index[0]]]) {
+                    processedLogs[parsed[index[0]]] = {};
+                }
+                if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
+                    processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
+                }
+                processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
+            }
+        } else {
+            if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];
+            processedLogs[parsed[index]].push(parsed);
+        }
+    },
+
+    processLogs: function (label, index, logs) {
+        var processedLogs = (index) ? {} : [];
+        var parsed;
+        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+            if (!logs[i].removed) {
+                parsed = this.filters.parse_event_message(label, logs[i]);
+                parsed.transactionHash = logs[i].transactionHash;
+                if (index) {
+                    this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
+                } else {
+                    processedLogs.push(parsed);
+                }
+            }
+        }
+        return processedLogs;
+    },
+
+    getFilteredLogs: function (label, params, callback) {
+        if (!callback && utils.is_function(params)) {
+            callback = params;
+            params = null;
+        }
+        var filter = this.parametrizeFilter(this.api.events[label], params || {});
+        if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+        this.rpc.getLogs(filter, function (logs) {
+            if (!logs || !logs.length) return callback(null, []);
+            if (logs && logs.error) return callback(logs, null);
+            callback(null, logs);
+        });
+    },
+
+    getLogs: function (label, params, index, callback) {
+        var self = this;
+        if (!callback && utils.is_function(params)) {
+            callback = params;
+            params = null;
+        }
+        if (!utils.is_function(callback)) {
+            return this.processLogs(label, index, this.getFilteredLogs(label, params || {}));
+        }
+        this.getFilteredLogs(label, params || {}, function (err, logs) {
+            if (err) return callback(err);
+            callback(null, self.processLogs(label, index, logs));
+        });
+    },
+
     getAccountBidsAsks: function (account, options, callback) {
         var self = this;
         if (!callback && utils.is_function(options)) {
