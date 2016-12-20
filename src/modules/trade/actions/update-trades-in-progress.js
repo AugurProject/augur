@@ -10,7 +10,7 @@ import { selectMarket } from '../../market/selectors/market';
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 
-// Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
+// Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
 		const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();

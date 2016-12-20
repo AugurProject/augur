@@ -1,22 +1,23 @@
 import memoizerific from 'memoizerific';
 
-import { formatEther, formatShares, formatRealEther } from '../../../../utils/format-number';
-import { augur, abi } from '../../../../services/augurjs';
+import { formatEther, formatShares, formatRealEther } from 'utils/format-number';
+import { augur, abi } from 'services/augurjs';
 
-import { calculateMaxPossibleShares } from '../../../market/selectors/helpers/calculate-max-possible-shares';
+import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 
-import { BUY, SELL } from '../../../trade/constants/types';
-import { BID, ASK } from '../../../bids-asks/constants/bids-asks-types';
-import { ZERO } from '../../../trade/constants/numbers';
-import * as TRANSACTIONS_TYPES from '../../../transactions/constants/types';
+import { BUY, SELL } from 'modules/trade/constants/types';
+import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
+import { ZERO } from 'modules/trade/constants/numbers';
+import * as TRANSACTIONS_TYPES from 'modules/transactions/constants/types';
 
-import { updateTradesInProgress } from '../../../trade/actions/update-trades-in-progress';
-import { makeTradeTransaction } from '../../../transactions/actions/add-trade-transaction';
-import { makeShortSellTransaction } from '../../../transactions/actions/add-short-sell-transaction';
+import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
+import { makeTradeTransaction } from 'modules/transactions/actions/add-trade-transaction';
+import { makeShortSellTransaction } from 'modules/transactions/actions/add-short-sell-transaction';
 
-import { selectAggregateOrderBook } from '../../../bids-asks/helpers/select-order-book';
+import { selectAggregateOrderBook } from 'modules/bids-asks/helpers/select-order-book';
 
-import store from '../../../../store';
+import store from 'src/store';
 
 /**
  * @param {Object} market
@@ -77,7 +78,7 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 const totalSharesUpToOrder = memoizerific(5)((marketID, outcomeID, side, orderIndex, orderBooks) => {
 	const { orderCancellation } = store.getState();
 
-	const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? 'bids' : 'asks']; // NOTE -- due to the way the order book was generated (no constants used for keys), have to explicitly define.  TODO -- clean up bid, ask, buy, sell constants cross-app
+	const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? BIDS : ASKS];
 
 	return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0);
 });

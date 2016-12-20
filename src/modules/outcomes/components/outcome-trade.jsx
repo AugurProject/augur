@@ -9,6 +9,7 @@ import EmDash from 'modules/common/components/em-dash';
 
 import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations';
 import { BUY } from 'modules/outcomes/constants/trade-types';
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -66,9 +67,18 @@ export default class OutcomeTrade extends Component {
 	updateSelectedNav(selectedTradeSide, id) {
 		this.props.updateSelectedTradeSide(selectedTradeSide, id);
 
+		const availableOrderType = selectedTradeSide === BUY ? ASKS : BIDS;
+		const orderBookSide = getValue(this.props, `selectedOutcome.orderBook.${availableOrderType}`);
+		const bestOrderPrice = getValue(orderBookSide[0], 'price.value') || '';
+
 		const trade = getValue(this.props, 'selectedOutcome.trade');
 		if (trade && trade.updateTradeOrder) {
-			trade.updateTradeOrder(null, null, selectedTradeSide);
+			if (bestOrderPrice === '') {
+				trade.updateTradeOrder(null, bestOrderPrice, selectedTradeSide); // Clears order
+				trade.updateTradeOrder(null, null, selectedTradeSide); // Sets to default
+			} else {
+				trade.updateTradeOrder(null, bestOrderPrice, selectedTradeSide); // Updates to best
+			}
 		}
 	}
 
@@ -90,6 +100,8 @@ export default class OutcomeTrade extends Component {
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
 
+		// console.log('trade --', trade);
+		// console.log('tradeOrder --', tradeOrder);
 
 		return (
 			<article className="outcome-trade market-content-scrollable">
