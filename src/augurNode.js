@@ -24,7 +24,7 @@ module.exports  = function () {
         bootstrap: function (cache_nodes, cb) {
             var self = this;
             cb = cb || noop;
-            if (cache_nodes.constructor === Array) {
+            if (cache_nodes && cache_nodes.constructor === Array) {
                 self.nodes = cache_nodes;
             }
             return cb();
