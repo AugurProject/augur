@@ -38,76 +38,160 @@ module.exports = function () {
         format_trade_type: function (type) {
             return (parseInt(type, 16) === 1) ? "buy" : "sell";
         },
+        format_common_fields: function (msg) {
+            var fmt = clone(msg);
+            if (msg.sender) fmt.sender = abi.format_address(msg.sender);
+            if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
+            if (msg.type) fmt.type = this.format_trade_type(msg.type);
+            if (msg.price) fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+            if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
+            return fmt;
+        },
         format_event_message: function (label, msg) {
             var fmt;
             switch (label) {
-            case "tradingFeeUpdated":
-                fmt = clone(msg);
-                fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-                return fmt;
-            case "log_fill_tx":
-                fmt = clone(msg);
-                fmt.type = this.format_trade_type(msg.type);
-                fmt.taker = abi.format_address(msg.sender);
-                fmt.maker = abi.format_address(msg.owner);
-                fmt.amount = abi.unfix(msg.amount, "string");
-                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
-                fmt.takerFee = abi.unfix(msg.takerFee, "string");
-                fmt.makerFee = abi.unfix(msg.makerFee, "string");
-                fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
-                fmt.outcome = parseInt(msg.outcome, 16);
-                fmt.timestamp = parseInt(msg.timestamp, 16);
-                delete fmt.sender;
-                delete fmt.owner;
-                return fmt;
-            case "log_add_tx":
-                fmt = clone(msg);
-                fmt.type = this.format_trade_type(msg.type);
-                fmt.maker = abi.format_address(msg.sender);
-                fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
-                fmt.amount = abi.unfix(msg.amount, "string");
-                fmt.outcome = parseInt(msg.outcome, 16);
-                delete fmt.sender;
-                return fmt;
-            default:
-                return msg;
+                case "Approval":
+                    fmt = clone(msg);
+                    fmt._owner = abi.format_address(msg._owner);
+                    fmt._spender = abi.format_address(msg._spender);
+                    fmt.value = abi.unfix(msg.value);
+                    return fmt;
+                case "collectedFees":
+                    fmt = this.format_common_fields(msg);
+                    fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
+                    fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
+                    fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
+                    fmt.repGain = abi.unfix(abi.hex(msg.repGain, true), "string");
+                    fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+                    fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
+                    fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
+                    fmt.period = parseInt(msg.period, 16);
+                    return fmt;
+                case "deposit":
+                    fmt = this.format_common_fields(msg);
+                    fmt.value = abi.unfix(msg.value, "string");
+                    return fmt;
+                case "log_add_tx":
+                    fmt = this.format_common_fields(msg);
+                    fmt.maker = abi.format_address(msg.sender);
+                    fmt.outcome = parseInt(msg.outcome, 16);
+                    delete fmt.sender;
+                    return fmt;
+                case "log_cancel":
+                    fmt = this.format_common_fields(msg);
+                    fmt.maker = abi.format_address(msg.sender);
+                    fmt.outcome = parseInt(msg.outcome, 16);
+                    fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
+                    delete fmt.sender;
+                    return fmt;
+                case "log_fill_tx":
+                case "log_short_fill_tx":
+                    fmt = this.format_common_fields(msg);
+                    fmt.taker = abi.format_address(msg.sender);
+                    fmt.maker = abi.format_address(msg.owner);
+                    fmt.takerFee = abi.unfix(msg.takerFee, "string");
+                    fmt.makerFee = abi.unfix(msg.makerFee, "string");
+                    fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
+                    fmt.outcome = parseInt(msg.outcome, 16);
+                    delete fmt.sender;
+                    delete fmt.owner;
+                    return fmt;
+                case "marketCreated":
+                    fmt = this.format_common_fields(msg);
+                    fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
+                    fmt.eventBond = abi.unfix(msg.eventBond, "string");
+                    return fmt;
+                case "payout":
+                    fmt = this.format_common_fields(msg);
+                    fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
+                    fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+                    fmt.shares = abi.unfix(msg.shares, "string");
+                    return fmt;
+                case "penalizationCaughtUp":
+                    fmt = this.format_common_fields(msg);
+                    fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
+                    fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+                    fmt.repLost = abi.unfix(abi.hex(msg.repLost, true)).neg().toFixed();
+                    fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+                    return fmt;
+                case "penalize":
+                    fmt = this.format_common_fields(msg);
+                    fmt.outcome = abi.unfix(abi.hex(msg.outcome, true), "string");
+                    fmt.oldrep = abi.unfix(msg.oldrep, "string");
+                    fmt.repchange = abi.unfix(msg.repchange, "string");
+                    fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
+                    fmt.p = abi.unfix(msg.p, "string");
+                    fmt.reportValue = abi.unfix(abi.hex(msg.reportValue, true), "string");
+                    fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+                    return fmt;
+                case "submittedReport":
+                    fmt = this.format_common_fields(msg);
+                    fmt.report = abi.unfix(abi.hex(msg.report, true), "string");
+                    fmt.ethics = abi.unfix(msg.ethics, "string");
+                    return fmt;
+                case "submittedReportHash":
+                    fmt = this.format_common_fields(msg);
+                    fmt.ethics = abi.unfix(msg.ethics, "string");
+                    return fmt;
+                case "tradingFeeUpdated":
+                    fmt = this.format_common_fields(msg);
+                    fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
+                    return fmt;
+                case "Transfer":
+                    fmt = clone(msg);
+                    fmt._from = abi.format_address(msg._from);
+                    fmt._to = abi.format_address(msg._to);
+                    fmt._value = abi.unfix(msg._value);
+                    return fmt;
+                case "withdraw":
+                    fmt = this.format_common_fields(msg);
+                    fmt.to = abi.format_address(msg.to);
+                    fmt.value = abi.unfix(msg.value, "string");
+                    return fmt;
+                default:
+                    return this.format_common_fields(msg);
             }
         },
         parse_event_message: function (label, msg, onMessage) {
             var i;
+            console.log("parse_event_message label:", label);
+            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
             if (msg) {
                 switch (msg.constructor) {
-                case Array:
-                    for (i = 0; i < msg.length; ++i) {
-                        this.parse_event_message(label, msg[i], onMessage);
-                    }
-                    break;
-                case Object:
-                    if (!msg.error && msg.topics && msg.data) {
-                        var inputs = augur.api.events[label].inputs;
-                        var parsed = {};
-                        var topicIndex = 0;
-                        var dataIndex = 0;
-                        var topics = msg.topics;
-                        var numIndexed = topics.length - 1;
-                        var data = augur.rpc.unmarshal(msg.data);
-                        if (data && data.constructor !== Array) data = [data];
-                        for (i = 0; i < inputs.length; ++i) {
-                            parsed[inputs[i].name] = 0;
-                            if (inputs[i].indexed) {
-                                parsed[inputs[i].name] = topics[topicIndex + 1];
-                                ++topicIndex;
-                            } else {
-                                parsed[inputs[i].name] = data[dataIndex];
-                                ++dataIndex;
-                            }
+                    case Array:
+                        for (i = 0; i < msg.length; ++i) {
+                            this.parse_event_message(label, msg[i], onMessage);
                         }
-                        parsed.blockNumber = parseInt(msg.blockNumber, 16);
-                        onMessage(this.format_event_message(label, parsed));
-                    }
-                    break;
-                default:
-                    console.error("unknown event message:", msg);
+                        break;
+                    case Object:
+                        if (!msg.error && msg.topics && msg.data) {
+                            var inputs = augur.api.events[label].inputs;
+                            var parsed = {};
+                            var topicIndex = 0;
+                            var dataIndex = 0;
+                            var topics = msg.topics;
+                            var numIndexed = topics.length - 1;
+                            var data = augur.rpc.unmarshal(msg.data);
+                            if (data && data.constructor !== Array) data = [data];
+                            for (i = 0; i < inputs.length; ++i) {
+                                parsed[inputs[i].name] = 0;
+                                if (inputs[i].indexed) {
+                                    parsed[inputs[i].name] = topics[topicIndex + 1];
+                                    ++topicIndex;
+                                } else {
+                                    parsed[inputs[i].name] = data[dataIndex];
+                                    ++dataIndex;
+                                }
+                            }
+                            parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                            if (!onMessage) {
+                                return this.format_event_message(label, parsed);
+                            }
+                            onMessage(this.format_event_message(label, parsed));
+                        }
+                        break;
+                    default:
+                        console.error("unknown event message:", msg);
                 }
             }
         },
@@ -142,20 +226,20 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
-                case "contracts":
-                    callback = function (msg) {
-                        self.parse_contracts_message(msg, onMessage);
-                    };
-                    break;
-                case "block":
-                    callback = function (msg) {
-                        self.parse_block_message(msg, onMessage);
-                    };
-                    break;
-                default:
-                    callback = function (msg) {
-                        self.parse_event_message(label, msg, onMessage);
-                    };
+                    case "contracts":
+                        callback = function (msg) {
+                            self.parse_contracts_message(msg, onMessage);
+                        };
+                        break;
+                    case "block":
+                        callback = function (msg) {
+                            self.parse_block_message(msg, onMessage);
+                        };
+                        break;
+                    default:
+                        callback = function (msg) {
+                            self.parse_event_message(label, msg, onMessage);
+                        };
                 }
                 augur.rpc.getFilterChanges(this.filter[label].id, callback);
             }
@@ -293,20 +377,20 @@ module.exports = function () {
                     if (utils.is_function(cb[label])) {
                         var callback = cb[label];
                         switch (label) {
-                        case "contracts":
-                            cb[label] = function (msg) {
-                                self.parse_contracts_message(msg, callback);
-                            };
-                            break;
-                        case "block":
-                            cb[label] = function (msg) {
-                                self.parse_block_message(msg, callback);
-                            };
-                            break;
-                        default:
-                            cb[label] = function (msg) {
-                                self.parse_event_message(label, msg, callback);
-                            };
+                            case "contracts":
+                                cb[label] = function (msg) {
+                                    self.parse_contracts_message(msg, callback);
+                                };
+                                break;
+                            case "block":
+                                cb[label] = function (msg) {
+                                    self.parse_block_message(msg, callback);
+                                };
+                                break;
+                            default:
+                                cb[label] = function (msg) {
+                                    self.parse_event_message(label, msg, callback);
+                                };
                         }
                         augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
                         next();
@@ -320,25 +404,25 @@ module.exports = function () {
 
             function listenHelper(callback, label, next) {
                 switch (label) {
-                case "contracts":
-                    self.start_contracts_listener(function () {
-                        self.pacemaker({contracts: callback});
-                        next(null, [label, self.filter[label].id]);
-                    });
-                    break;
-                case "block":
-                    self.start_block_listener(function () {
-                        self.pacemaker({block: callback});
-                        next(null, [label, self.filter[label].id]);
-                    });
-                    break;
-                default:
-                    self.start_event_listener(label, function () {
-                        var p = {};
-                        p[label] = callback;
-                        self.pacemaker(p);
-                        next(null, [label, self.filter[label].id]);
-                    });
+                    case "contracts":
+                        self.start_contracts_listener(function () {
+                            self.pacemaker({contracts: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    case "block":
+                        self.start_block_listener(function () {
+                            self.pacemaker({block: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    default:
+                        self.start_event_listener(label, function () {
+                            var p = {};
+                            p[label] = callback;
+                            self.pacemaker(p);
+                            next(null, [label, self.filter[label].id]);
+                        });
                 }
             }
 

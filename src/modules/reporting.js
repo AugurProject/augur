@@ -45,7 +45,9 @@ module.exports = {
             if (!rawReport || rawReport.error) {
                 return callback(rawReport || self.errors.REPORT_NOT_FOUND);
             }
-            if (!parseInt(rawReport, 16)) return callback({report: "0"});
+            if (!parseInt(rawReport, 16)) {
+                return callback({report: "0", isIndeterminate: false});
+            }
             var report = self.unfixReport(rawReport, minValue, maxValue, type);
             if (self.options.debug.reporting) {
                 console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);

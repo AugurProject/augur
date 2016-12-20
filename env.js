@@ -6,17 +6,15 @@ global.path = require("path");
 global.join = require("path").join;
 global.fs = require("fs");
 global.BigNumber = require("bignumber.js");
-global.uuid = require("node-uuid");
 global.assert = require("chai").assert;
-global.chalk = require("chalk");
 global.EthTx = require("ethereumjs-tx");
 global.EthUtil = require("ethereumjs-util");
 global.contracts = require("augur-contracts");
+global.chalk = require("chalk");
 global.abi = require("augur-abi");
 global.constants = require("./src/constants");
 global.utils = require("./src/utilities");
 global.tools = require("./test/tools");
-global.Tx = contracts.Tx;
 global.augur = (global.reload = function () {
     return tools.setup(tools.reset("./src/index"), process.argv.slice(2));
 })();
