@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>Decembter 18, 2016</h3>
+			<ol>
+				<li>
+					Added logs to several reporting-related functions, so that the UI can reconstruct a full transaction history for the user to view: submittedReportHash (submitReportHash), submittedReport (submitReport), penalizationCaughtUp (penalizationCatchup),  payout (oneOutcome and twoOutcomes), and collectedFees (collectFees).
+				</li>
+				<li>
+					The marketCreated and tradingFeeUpdated logs now include an indexed sender field as well as a timestamp.  The tradingFeeUpdated market field is now indexed as well.
+				</li>
+			</ol>
 			<h3>December 16, 2016</h3>
 			<ol>
 				<li>
