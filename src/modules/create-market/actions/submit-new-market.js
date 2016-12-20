@@ -43,7 +43,7 @@ export function createMarket(transactionID, newMarket) {
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'sending...',
 			marketCreationFee: newMarket.marketCreationFee,
-			eventBond: newMarket.eventBond,
+			bond: { label: 'event activation', value: newMarket.eventBond },
 			gasFees: newMarket.gasFees
 		}));
 

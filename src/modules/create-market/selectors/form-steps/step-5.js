@@ -17,7 +17,6 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 								currentBlockNumber,
 								currentBlockMillisSinceEpoch);
 
-	// o.tradingFee = formState.tradingFeePercent / 100;
 	o.takerFeePercent = formatPercent(formState.takerFee);
 	o.makerFeePercent = formatPercent(formState.makerFee);
 	o.volume = formatNumber(0);
@@ -31,7 +30,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
 	o.isFavorite = false;
-	o.eventBond = formatEther(0); // 0 for testing
+	o.eventBond = formatEther(0);
 	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
 	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
 

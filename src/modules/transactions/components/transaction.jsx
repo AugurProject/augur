@@ -315,12 +315,12 @@ const Transaction = (p) => {
 								<br />
 							</span>
 						}
-						{!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
+						{!!p.bond && !!p.bond.value &&
 							<span>
 								<ValueDenomination
-									className="eventBond-message"
-									{...p.eventBond}
-									prefix="event creation bond:"
+									className="bond-message"
+									{...p.bond.value}
+									prefix={`${p.bond.label} bond:`}
 								/>
 								<br />
 							</span>
@@ -390,6 +390,16 @@ const Transaction = (p) => {
 							<br />
 						</span>
 					}
+					{!!p.bond && !!p.bond.value &&
+						<span>
+							<ValueDenomination
+								className="bond-message"
+								{...p.bond.value}
+								prefix={`${p.bond.label} bond:`}
+							/>
+							<br />
+						</span>
+					}
 					{!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
 						<span>
 							<ValueDenomination
@@ -420,7 +430,7 @@ Transaction.propTypes = {
 	gasFees: React.PropTypes.object,
 	tradingFees: React.PropTypes.object,
 	marketCreationFee: React.PropTypes.object,
-	eventBond: React.PropTypes.object,
+	bond: React.PropTypes.object,
 	totalCost: React.PropTypes.object,
 	totalReturn: React.PropTypes.object,
 	timestamp: React.PropTypes.object
