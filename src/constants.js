@@ -38,6 +38,9 @@ module.exports = {
     // milliseconds to wait before the rpc.getLogs method times out
     GET_LOGS_TIMEOUT: 480000,
 
+    GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
+    GET_LOGS_DEFAULT_TO_BLOCK: "latest",
+
     // int256 type codes for log filters
     LOG_TYPE_CODES: {
         buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
