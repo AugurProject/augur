@@ -9,5 +9,21 @@ Object.keys(rawSelectors).forEach(selectorKey =>
 ));
 
 if (module.hot) {
-	module.hot.accept('./selectors-raw');
+	module.hot.accept();
+
+	module.hot.accept('./selectors-raw', () => {
+		console.log('SELECTORS -- accept selectors raw accept self');
+
+		const hotSelectors = require('src/selectors-raw').default;
+
+		console.log('hotSelectors -- ', hotSelectors);
+
+		module.exports = {};
+
+		Object.keys(hotSelectors).forEach(selectorKey =>
+			Object.defineProperty(module.exports,
+				selectorKey,
+				{ get: hotSelectors[selectorKey], enumerable: true }
+		));
+	});
 }

@@ -44,14 +44,38 @@ function render(appElement, selectors) {
 }
 // store.dispatch(MarketsActions.listenToMarkets());
 
-store.subscribe(() => render(appElement, selectors)); // eslint-disable-line new-cap
+store.subscribe(handleRender); // eslint-disable-line new-cap
 
 window.onpopstate = (e) => {
 	store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
 if (module.hot) {
+	module.hot.accept();
+
 	module.hot.accept('./modules/app/components/app', () => {
-		render(appElement, selectors);
+		handleRender();
 	});
+
+	module.hot.accept('./selectors', () => {
+		console.log('MAIN -- selectors hot accept');
+	});
+
+	module.hot.status((status) => {
+		console.log('MAIN -- status: ', status);
+
+		// if (status === 'idle') {
+		// 	handleRender();
+		// }
+	});
+}
+
+function handleRender() {
+	let currentSelectors;
+	if (process.env.NODE_ENV === 'development') {
+		currentSelectors = require('./selectors');
+	} else {
+		currentSelectors = selectors;
+	}
+	render(appElement, currentSelectors);
 }
