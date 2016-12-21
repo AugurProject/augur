@@ -111,7 +111,7 @@ module.exports = {
         return {
             salt: salt,
             report: this.decryptReport(arr[0], secret.derivedKey, salt),
-            ethics: (arr.length >= 2) ? arr[2] : false
+            ethics: (arr.length > 2) ? arr[2] : false
         };
     },
 
