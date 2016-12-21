@@ -18,12 +18,22 @@
 	&.is-incrementable {
 		display: flex;
 
+		.box {
+			width: 80%;
+		}
+
 		input[type='number'] {
 			appearance: textfield;
 		}
 
+		input[type=number]::-webkit-outer-spin-button,
+		input[type=number]::-webkit-inner-spin-button {
+		    -webkit-appearance: none;
+		    margin: 0;
+		}
+
 		input {
-			flex: 1;
+			flex: 1 1 auto;
 		}
 
 		.value-incrementers {
@@ -47,7 +57,6 @@
 
 	.box {
 		font-size: inherit;
-		height: 100%;
 		padding: 0.5em;
 		width: 100%;
 	}
