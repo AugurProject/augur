@@ -55,7 +55,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		if (loginAccount.derivedKey) {
 			const derivedKey = loginAccount.derivedKey;
 			encryptedReport = augur.encryptReport(fixedReport, derivedKey, report.salt);
-			encryptedSalt = augur.encryptReport(report.salt, derivedKey, loginAccount.keystore.crypto.kdfparams.salt);
+			encryptedSalt = augur.encryptReport(report.salt, derivedKey);
 		}
 		console.log('encryptedReport:', encryptedReport, encryptedSalt);
 		const outcomeName = report.isScalar ?
