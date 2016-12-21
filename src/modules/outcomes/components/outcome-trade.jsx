@@ -82,14 +82,19 @@ export default class OutcomeTrade extends Component {
 	}
 
 	validatePrice(value, trade) {
+		let isLimitPriceValueValid;
+
 		if (value != null) {
 			if ((value >= parseFloat(this.state.minLimitPrice) && value <= parseFloat(this.state.maxLimitPrice)) || value === '') {
+				console.log('price is valid');
+				isLimitPriceValueValid = true;
 				trade.updateTradeOrder(null, value, trade.side);
-				this.setState({ isLimitPriceValueValid: true });
 			} else {
-				this.setState({ isLimitPriceValueValid: false });
+				isLimitPriceValueValid = false;
 			}
 		}
+
+		this.setState({ isLimitPriceValueValid });
 	}
 
 	render() {
@@ -153,12 +158,10 @@ export default class OutcomeTrade extends Component {
 								isIncrementable
 								incrementAmount={s.incrementAmount}
 								updateValue={(value) => {
-									console.log('value -- ', value.toString());
-									// trade.updateTradeOrder(null, value.toString(), trade.side);
+									console.log('updateValue called- - ', value, value.toString());
 									this.validatePrice(value, trade);
 								}}
 								onChange={(value) => {
-									console.log('onChange handler');
 									this.validatePrice(value, trade);
 								}}
 							/>

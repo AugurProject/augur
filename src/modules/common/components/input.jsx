@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
-import { abi } from 'services/augurjs';
+import BigNumber from 'bignumber.js';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
@@ -15,7 +16,10 @@ export default class Input extends Component {
 		isClearable: PropTypes.bool,
 		debounceMS: PropTypes.number,
 		onChange: PropTypes.func,
-		onBlur: PropTypes.func
+		onBlur: PropTypes.func,
+		isIncrementable: PropTypes.bool,
+		incrementAmount: PropTypes.number,
+		updateValue: PropTypes.func
 	};
 
 	constructor(props) {
@@ -66,11 +70,11 @@ export default class Input extends Component {
 	};
 
 	render() {
-		const { isClearable, ...p } = this.props;
+		const { isClearable, isIncrementable, incrementAmount, updateValue, ...p } = this.props;
 		const s = this.state;
 
 		return (
-			<div className={classNames('input', p.className, { 'is-incrementable': p.isIncrementable })} >
+			<div className={classNames('input', p.className, { 'is-incrementable': isIncrementable })} >
 				{!p.isMultiline &&
 					<input
 						{...p}
@@ -97,14 +101,25 @@ export default class Input extends Component {
 					</button>
 				}
 
-				{p.isIncrementable &&
+				{isIncrementable &&
 					<div className="value-incrementers">
 						<button
 							className="increment-value unstyled"
 							onClick={() => {
-								const updatedValue = abi.bignum(p.value || p.min).plus(abi.bignum(p.incrementAmount));
+								let newValue = new BigNumber(s.value) || ZERO;
 
-								p.updateValue(updatedValue);
+								if (newValue > p.max) {
+									newValue = new BigNumber(p.max);
+								} else if (newValue < p.min) {
+									newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+								} else {
+									newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+									if (newValue > p.max) {
+										newValue = new BigNumber(p.max);
+									}
+								}
+
+								updateValue(newValue);
 							}}
 						>
 							<i></i>
@@ -112,8 +127,20 @@ export default class Input extends Component {
 						<button
 							className="decrement-value unstyled"
 							onClick={() => {
-								const updatedValue = abi.bignum(p.value || p.min).minus(abi.bignum(p.incrementAmount));
-								p.updateValue(updatedValue);
+								let newValue = new BigNumber(s.value) || ZERO;
+
+								if (newValue > p.max) {
+									newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
+								} else if (newValue < p.min) {
+									newValue = new BigNumber(p.min);
+								} else {
+									newValue = newValue.minus(new BigNumber(incrementAmount));
+									if (newValue < p.min) {
+										newValue = new BigNumber(p.min);
+									}
+								}
+
+								updateValue(newValue);
 							}}
 						>
 							<i></i>
