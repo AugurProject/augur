@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import BigNumber from 'bignumber.js';
-import { ZERO } from 'modules/trade/constants/numbers';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
@@ -106,7 +105,7 @@ export default class Input extends Component {
 						<button
 							className="increment-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value) || ZERO;
+								let newValue = new BigNumber(s.value || 0);
 
 								if (newValue > p.max) {
 									newValue = new BigNumber(p.max);
@@ -127,7 +126,7 @@ export default class Input extends Component {
 						<button
 							className="decrement-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value) || ZERO;
+								let newValue = new BigNumber(s.value || 0);
 
 								if (newValue > p.max) {
 									newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));

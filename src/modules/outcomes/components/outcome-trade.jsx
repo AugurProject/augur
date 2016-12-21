@@ -31,6 +31,7 @@ export default class OutcomeTrade extends Component {
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
 		this.handleSharesInput = this.handleSharesInput.bind(this);
+		this.validateShares = this.validateShares.bind(this);
 		this.validatePrice = this.validatePrice.bind(this);
 	}
 
@@ -86,7 +87,6 @@ export default class OutcomeTrade extends Component {
 
 		if (value != null) {
 			if ((value >= parseFloat(this.state.minLimitPrice) && value <= parseFloat(this.state.maxLimitPrice)) || value === '') {
-				console.log('price is valid');
 				isLimitPriceValueValid = true;
 				trade.updateTradeOrder(null, value, trade.side);
 			} else {
@@ -95,6 +95,17 @@ export default class OutcomeTrade extends Component {
 		}
 
 		this.setState({ isLimitPriceValueValid });
+	}
+
+	validateShares(value, trade) {
+		if (value != null) {
+			if (value >= 0 || value === '') {
+				this.handleSharesInput(value);
+				this.setState({ isSharesValueValid: true });
+			} else {
+				this.setState({ isSharesValueValid: false });
+			}
+		}
 	}
 
 	render() {
@@ -135,15 +146,13 @@ export default class OutcomeTrade extends Component {
 								value={s.sharesDenominated}
 								min="0"
 								step="any"
+								isIncrementable
+								incrementAmount={s.incrementAmount}
+								updateValue={(value) => {
+									this.validateShares(value, trade);
+								}}
 								onChange={(value) => {
-									if (value != null) {
-										if (value >= 0 || value === '') {
-											this.handleSharesInput(value);
-											this.setState({ isSharesValueValid: true });
-										} else {
-											this.setState({ isSharesValueValid: false });
-										}
-									}
+									this.validateShares(value, trade);
 								}}
 							/>
 							<span>@</span>
