@@ -68,7 +68,7 @@ const LoginMessagePage = p => (
 			<h3>December 19, 2016</h3>
 			<ol>
 				<li>
-					Heroku builds (app.augur.net) were failing due to changes encompassed within the migration to a unified code base and webpack as the primary bundler.  Resolved those issues and deployed an updated build.  Subsequent builds will be automatic upon pushes to master.
+					Heroku builds (app.augur.net) were failing due to changes encompassed within the migration to a unified code base with webpack as the primary bundler.  Resolved those issues and deployed an updated build.
 				</li>
 			</ol>
 			<h3>December 16, 2016</h3>
