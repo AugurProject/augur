@@ -7,6 +7,7 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
+import { updateLogsData } from '../../transactions/actions/convert-logs-to-transactions';
 
 export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
@@ -35,18 +36,24 @@ export function listenToUpdates() {
 			collectedFees: (msg) => {
 				if (msg) {
 					console.debug('collectedFees:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('collectedFees', [msg]));
 				}
 			},
 
 			payout: (msg) => {
 				if (msg) {
 					console.debug('payout:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('payout', [msg]));
 				}
 			},
 
 			penalizationCaughtUp: (msg) => {
 				if (msg) {
 					console.debug('penalizationCaughtUp:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('penalizationCaughtUp', [msg]));
 				}
 			},
 
@@ -55,24 +62,31 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('penalize:', msg);
 					dispatch(updateAssets());
+					dispatch(updateLogsData('penalize', [msg]));
 				}
 			},
 
 			submittedReport: (msg) => {
 				if (msg) {
 					console.debug('submittedReport:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('submittedReport', [msg]));
 				}
 			},
 
 			submittedReportHash: (msg) => {
 				if (msg) {
 					console.debug('submittedReportHash:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('submittedReportHash', [msg]));
 				}
 			},
 
 			registration: (msg) => {
 				if (msg) {
 					console.debug('registration:', msg);
+					dispatch(updateAssets());
+					dispatch(updateLogsData('registration', [msg]));
 				}
 			},
 
@@ -115,6 +129,8 @@ export function listenToUpdates() {
 				if (msg && msg.marketID) {
 					console.debug('marketCreated:', msg);
 					dispatch(loadMarketsInfo([msg.marketID]));
+					dispatch(updateAssets());
+					dispatch(updateLogsData('marketCreated', [msg]));
 				}
 			},
 
@@ -123,6 +139,8 @@ export function listenToUpdates() {
 				console.debug('tradingFeeUpdated:', msg);
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
+					dispatch(updateAssets());
+					dispatch(updateLogsData('tradingFeeUpdated', [msg]));
 				}
 			},
 
@@ -130,6 +148,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('deposit:', msg);
 					dispatch(updateAssets());
+					dispatch(updateLogsData('deposit', [msg]));
 				}
 			},
 
@@ -137,6 +156,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('withdraw:', msg);
 					dispatch(updateAssets());
+					dispatch(updateLogsData('withdraw', [msg]));
 				}
 			},
 
@@ -145,6 +165,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('Transfer:', msg);
 					dispatch(updateAssets());
+					dispatch(updateLogsData('Transfer', [msg]));
 				}
 			},
 
@@ -152,6 +173,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('Approval:', msg);
 					dispatch(updateAssets());
+					dispatch(updateLogsData('Approval', [msg]));
 				}
 			},
 
