@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import Link from 'modules/link/components/link';
 import AugurLogoFull from 'modules/common/components/augur-logo-full';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
@@ -20,7 +21,7 @@ const Nav = p => (
 				className="app-nav-link unstyled"
 				onClick={p.toggleSideBar}
 			>
-				{p.isSideBarCollapsed ? <i></i> : <i></i>}
+				{p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i></i>}
 			</button>
 		}
 		<Link
