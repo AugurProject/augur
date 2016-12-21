@@ -1,6 +1,6 @@
 // LAYOUT
 // parent level structural styling
-// These classes may also have presentational styling housed in separate stylesheets
+// NOTE -- These classes may also have presentational styling housed in separate stylesheets
 
 html {
 	height: 100vh;
@@ -15,12 +15,6 @@ main,
 	height: 100%;
 }
 
-.contained {
-	margin: 0 auto;
-	max-width: @max-app-width;
-	overflow-x: hidden;
-}
-
 #app_container {
 	display: flex;
 	flex-direction: column;
@@ -31,16 +25,10 @@ main,
 		z-index: @above-all-content;
 
 		.site-header .app-nav {
-
-			.contained();
-
 			padding: 0 1em;
 		}
 
 		.sub-header {
-
-			.contained();
-
 			display: flex;
 			overflow-x: visible; // Allows for the display of the box shadow
 
@@ -71,9 +59,6 @@ main,
 		}
 
 		#app_view_container {
-
-			.contained();
-
 			display: flex;
 			flex: 1;
 			width: 100%;
