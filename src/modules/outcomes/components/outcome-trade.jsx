@@ -158,7 +158,6 @@ export default class OutcomeTrade extends Component {
 								isIncrementable
 								incrementAmount={s.incrementAmount}
 								updateValue={(value) => {
-									console.log('updateValue called- - ', value, value.toString());
 									this.validatePrice(value, trade);
 								}}
 								onChange={(value) => {
