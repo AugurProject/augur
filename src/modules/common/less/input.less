@@ -15,6 +15,38 @@
 		border-color: @color-red-light;
 	}
 
+	&.is-incrementable {
+		display: flex;
+
+		input[type='number']::-webkit-inner-spin-button,
+		input[type='number']::-webkit-outer-spin-button {
+		  appearance: none;
+		  margin: 0;
+		}
+
+		input {
+			flex: 1;
+		}
+
+		.value-incrementers {
+
+			.border(true, @border-left);
+
+			display: flex;
+			flex-direction: column;
+
+			i {
+				cursor: default;
+				flex: 1;
+				padding: 0 0.2em;
+
+				&:active {
+					background-color: @color-gray;
+				}
+			}
+		}
+	}
+
 	.box {
 		font-size: inherit;
 		height: 100%;

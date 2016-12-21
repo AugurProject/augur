@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import { abi } from 'services/augurjs';
+
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Input extends Component {
@@ -68,7 +70,7 @@ export default class Input extends Component {
 		const s = this.state;
 
 		return (
-			<div className={classNames('input', p.className)} >
+			<div className={classNames('input', p.className, { 'is-incrementable': p.isIncrementable })} >
 				{!p.isMultiline &&
 					<input
 						{...p}
@@ -93,6 +95,30 @@ export default class Input extends Component {
 					<button type="button" className="button-text-only" onClick={this.handleClear}>
 						<i></i>
 					</button>
+				}
+
+				{p.isIncrementable &&
+					<div className="value-incrementers">
+						<button
+							className="increment-value unstyled"
+							onClick={() => {
+								const updatedValue = abi.bignum(p.value || p.min).plus(abi.bignum(p.incrementAmount));
+
+								p.updateValue(updatedValue);
+							}}
+						>
+							<i></i>
+						</button>
+						<button
+							className="decrement-value unstyled"
+							onClick={() => {
+								const updatedValue = abi.bignum(p.value || p.min).minus(abi.bignum(p.incrementAmount));
+								p.updateValue(updatedValue);
+							}}
+						>
+							<i></i>
+						</button>
+					</div>
 				}
 			</div>
 		);
