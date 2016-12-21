@@ -53,6 +53,24 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 20, 2016</h3>
+			<ol>
+				<li>
+					An enhancement to the development workflow (HMR - Hot Module Reload) was not functioning properly and required some reconfiguration to properly handle live changes.  With the fixes in place, modules now update in real time, removing the requirement to either refresh the browser or restart the development server.
+				</li>
+				<li>
+					Refined the UX surrounding the trade order creation process.  Previously the price would remain static if a value had been input, even when switching sides (Buy/Sell).  The price will now update automatically to the best avaialable price based on available orders whenever the trade side is changed.
+				</li>
+				<li>
+					Placing a trade not longer automatically navigates you to the transactions view, but rather will leave you on the market view.
+				</li>
+			</ol>
+			<h3>December 19, 2016</h3>
+			<ol>
+				<li>
+					Heroku builds (app.augur.net) were failing due to changes encompassed within the migration to a unified code base and webpack as the primary bundler.  Resolved those issues and deployed an updated build.  Subsequent builds will be automatic upon pushes to master.
+				</li>
+			</ol>
 			<h3>December 16, 2016</h3>
 			<ol>
 				<li>
