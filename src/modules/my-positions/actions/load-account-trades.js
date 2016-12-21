@@ -8,7 +8,7 @@ import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positi
 
 export function loadAccountTrades(marketID, cb) {
 	return (dispatch, getState) => {
-		const { loginAccount } = getState();
+		const { branch, loginAccount } = getState();
 		const account = loginAccount.address;
 		if (account) {
 			const options = { market: marketID };
@@ -55,7 +55,7 @@ export function loadAccountTrades(marketID, cb) {
 					console.log('loadAccountTrades data:', data);
 				}
 				dispatch(sellCompleteSets(marketID, cb));
-				const params = { sender: account };
+				const params = { sender: account, branch: branch.id };
 				if (loginAccount.registerBlockNumber) {
 					params.fromBlock = loginAccount.registerBlockNumber;
 				}
@@ -75,7 +75,6 @@ export function loadAccountTrades(marketID, cb) {
 					// 'withdraw'
 				], 5, (label, nextLabel) => {
 					augur.getLogs(label, params, null, (err, logs) => {
-						console.log(label, err, logs);
 						if (err) return nextLabel(err);
 						if (logs && logs.length) dispatch(updateLogsData(label, logs));
 						nextLabel();
