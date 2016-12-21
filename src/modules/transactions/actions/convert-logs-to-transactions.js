@@ -1,3 +1,4 @@
+import async from 'async';
 import { abi, augur, constants } from '../../../services/augurjs';
 import { SUCCESS } from '../../transactions/constants/statuses';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
@@ -25,7 +26,7 @@ export function getOutcomeName(outcomeID, eventType, outcomesData = {}) {
 	} else if (eventType === SCALAR) {
 		outcomeName = outcomeID;
 	} else {
-		outcomeName = outcomesData[outcomeID].name;
+		outcomeName = outcomesData[outcomeID] ? outcomesData[outcomeID].name : outcomeID;
 	}
 	return outcomeName;
 }
@@ -33,9 +34,7 @@ export function getOutcomeName(outcomeID, eventType, outcomesData = {}) {
 export function selectMarketIDFromEventID(eventID, marketsData) {
 	const marketIDs = Object.keys(marketsData);
 	const numMarkets = marketIDs.length;
-	console.log('marketIDs:', marketIDs);
 	for (let i = 0; i < numMarkets; ++i) {
-		console.log('checking:', marketIDs[i], marketsData[marketIDs[i]]);
 		if (eventID === marketsData[marketIDs[i]].eventID) {
 			return marketIDs[i];
 		}
@@ -62,14 +61,10 @@ export function convertLogsToTransactions(label, logs) {
 	return (dispatch, getState) => {
 		console.log('convertLogsToTransactions', label);
 		console.log('logs:', logs);
-		const { loginAccount, marketsData } = getState();
-		const numLogs = logs.length;
-		let log;
-		let utd;
-		for (let i = 0; i < numLogs; ++i) {
-			log = logs[i];
+		const { loginAccount } = getState();
+		async.each(logs, (log, nextLog) => {
 			const hash = log.transactionHash;
-			utd = { [hash]: { hash, status: SUCCESS, data: {} } };
+			const utd = { [hash]: { hash, status: SUCCESS, data: {} } };
 			if (log.timestamp) utd[hash].timestamp = formatDate(new Date(log.timestamp * 1000));
 			switch (label) {
 				case 'Approval':
@@ -79,7 +74,7 @@ export function convertLogsToTransactions(label, logs) {
 					break;
 				case 'collectedFees':
 					utd[hash].type = `Collect Reporting Fees`;
-					utd[hash].data.description = `Collect Reporting fees for cycle ${log.period}: ${formatRep(log.lastPeriodRepBalance).full} of ${formatRep(log.totalRepReporting).full}`;
+					utd[hash].data.description = `Cycle ${log.period}: ${formatRep(log.lastPeriodRepBalance).full} of ${formatRep(log.totalRepReporting).full} total`;
 					if (log.cashFeesCollected !== '0') {
 						utd[hash].message = `${formatEther(log.cashFeesCollected, { positiveSign: true }).full} (balance: ${formatEther(log.newCashBalance).full})`;
 						if (log.repGain !== '0') {
@@ -96,55 +91,107 @@ export function convertLogsToTransactions(label, logs) {
 					utd[hash].data.description = 'Convert Ether to tradeable Ether token';
 					utd[hash].message = `deposited ${formatEther(log.value).full}`;
 					break;
-				case 'marketCreated':
+				case 'marketCreated': {
 					utd[hash].type = 'Create Market';
-					utd[hash].data.description = marketsData[log.marketID] ? marketsData[log.marketID].description : log.marketID.replace('0x', '');
+					const market = getState().marketsData[log.marketID];
+					if (!market) {
+						return dispatch(loadMarketsInfo([log.marketID], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					utd[hash].data.description = market ? market.description : log.marketID.replace('0x', '');
+					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: utd[hash].data.description }, dispatch);
 					utd[hash].marketCreationFee = formatEther(log.marketCreationFee);
-					utd[hash].bond = { label: 'event activation', value: formatEther(log.eventBond) };
+					utd[hash].bond = { label: 'event validity', value: formatEther(log.eventBond) };
 					break;
-				case 'payout':
+				}
+				case 'payout': {
 					utd[hash].type = 'Claim Trading Payout';
-					utd[hash].data.description = marketsData[log.market].description;
-					utd[hash].message = `closed out ${formatShares(log.shares).full} for ${formatEther(log.cash).full}`;
+					const market = getState().marketsData[log.market];
+					if (!market) {
+						return dispatch(loadMarketsInfo([log.market], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					utd[hash].data.description = market.description;
+					utd[hash].data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
+					utd[hash].message = `closed out ${formatShares(log.shares).full}`;
+					utd[hash].totalReturn = formatEther(log.cashPayout);
 					break;
+				}
 				case 'penalizationCaughtUp':
 					utd[hash].type = 'Reporting Cycle Catch-Up';
 					utd[hash].data.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
+					// TODO link to this cycle in My Reports
 					utd[hash].message = `${formatRep(log.repLost).full} (balance: ${formatRep(log.newRepBalance).full})`;
 					break;
 				case 'penalize': {
 					utd[hash].type = 'Compare Report To Consensus';
+					const { marketsData, outcomesData } = getState();
 					const marketID = selectMarketIDFromEventID(log.event, marketsData);
-					const outcomesData = getState().outcomesData[marketID];
+					if (!marketID) return nextLog();
 					const market = marketsData[marketID];
-					const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, outcomesData);
+					console.debug('penalize log:', log);
+					console.debug('market:', market);
+					if (!market) {
+						return dispatch(loadMarketsInfo([marketID], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					const marketOutcomes = outcomesData[marketID];
+					const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, marketOutcomes);
 					utd[hash].data.description = market.description;
+					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 					if (log.reportValue === log.outcome) {
 						utd[hash].message = `reported outcome ${formattedReport} matches the consensus outcome`;
 					} else {
-						utd[hash].message = `reported outcome ${formattedReport} does not match the consensus outcome ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomesData)}`;
+						utd[hash].message = `reported outcome ${formattedReport} does not match the consensus outcome ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
 					}
 					break;
 				}
 				case 'submittedReport': {
 					utd[hash].type = 'Reveal Report';
+					const { marketsData, outcomesData } = getState();
 					const marketID = selectMarketIDFromEventID(log.event, marketsData);
-					const outcomesData = getState().outcomesData[marketID];
+					if (!marketID) return nextLog();
 					const market = marketsData[marketID];
+					if (!market) {
+						return dispatch(loadMarketsInfo([marketID], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					const marketOutcomes = outcomesData[marketID];
 					utd[hash].data.description = market.description;
-					utd[hash].message = `revealed report: ${formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, outcomesData)}`;
+					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+					utd[hash].message = `revealed report: ${formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
 					break;
 				}
 				case 'submittedReportHash': {
 					utd[hash].type = 'Commit Report';
+					const { marketsData, outcomesData } = getState();
 					const marketID = selectMarketIDFromEventID(log.event, marketsData);
-					const outcomesData = getState().outcomesData[marketID];
+					if (!marketID) return nextLog();
 					const market = marketsData[marketID];
+					if (!market) {
+						return dispatch(loadMarketsInfo([marketID], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					const marketOutcomes = outcomesData[marketID];
 					utd[hash].data.description = market.description;
+					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 					utd[hash].message = `committed to report`;
 					if (loginAccount.derivedKey) {
-						const report = abi.unfix(abi.hex(augur.decryptReport(log.encryptedReport, loginAccount.derivedKey, log.encryptedSalt), true), 'string');
-						utd[hash].message = `${utd[hash].message}: ${formatReportedOutcome(report, log.ethics, market.minValue, market.maxValue, market.type, outcomesData)}`;
+						const report = augur.parseAndDecryptReport([
+							log.encryptedReport,
+							log.encryptedSalt
+						], { derivedKey: loginAccount.derivedKey }).report;
+						utd[hash].message = `${utd[hash].message}: ${formatReportedOutcome(report, log.ethics, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
 					}
 					break;
 				}
@@ -153,11 +200,21 @@ export function convertLogsToTransactions(label, logs) {
 					utd[hash].data.description = `Register account ${log.sender.replace('0x', '')}`;
 					utd[hash].message = `registration timestamp saved`;
 					break;
-				case 'tradingFeeUpdated':
+				case 'tradingFeeUpdated': {
 					utd[hash].type = 'Trading Fee Updated';
-					utd[hash].data.description = marketsData[log.marketID].description;
+					const { marketsData } = getState();
+					const market = marketsData[log.marketID];
+					if (!market) {
+						return dispatch(loadMarketsInfo([log.marketID], () => {
+							dispatch(convertLogsToTransactions(label, [log]));
+							nextLog();
+						}));
+					}
+					utd[hash].data.description = market.description;
+					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
 					utd[hash].message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
 					break;
+				}
 				case 'Transfer':
 					utd[hash].type = 'Transfer Reputation';
 					utd[hash].data.description = `Transfer Reputation from ${log._from} to ${log._to}`;
@@ -176,7 +233,10 @@ export function convertLogsToTransactions(label, logs) {
 			}
 			console.log('utd:', utd);
 			dispatch(updateTransactionsData(utd));
-		}
+			nextLog();
+		}, (err) => {
+			if (err) console.error(err);
+		});
 	};
 }
 
