@@ -177,7 +177,6 @@ describe("parse_event_message", function () {
                     assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "tradingFeeUpdated") {
-                    console.log('tfu:', parsed);
                     assert.property(parsed, "marketID");
                     assert.property(parsed, "tradingFee");
                     assert.deepEqual(parsed.marketID, "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b");
@@ -331,6 +330,7 @@ describe("parse_event_message", function () {
             topics: [
                 "0xb8c735cc6495f8dac2581d532413dea78d7e03e0ff0880c32b4648c2145fba41",
                 "0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+                "0x00000000000000000000000000000000000000000000000000000000000f69b5",
                 "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b"
             ],
             transactionHash: "0xdd394f14b92162c5b29011512513fff0188c5cff9b4d0d453b40175db6f9e868",
