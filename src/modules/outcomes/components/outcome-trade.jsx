@@ -217,11 +217,11 @@ function denominateShares(shares, fromDenomination, toDenomination) {
 	if (fromValue === toValue) {
 		return shares;
 	} else	if (fromValue < toValue) {
-		return shares * Math.pow(1000, toValue - fromValue);
+		return shares * (1000**(toValue - fromValue));
 	}
 
 	// fromValue > toValue
-	return shares / Math.pow(1000, Math.abs(toValue - fromValue));
+	return shares / (1000**Math.abs(toValue - fromValue));
 }
 
 function generateShareInputPlaceholder(denomination) {

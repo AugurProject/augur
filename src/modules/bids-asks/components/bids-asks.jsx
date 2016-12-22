@@ -6,12 +6,12 @@ const BidsAsks = p => (
 		{
 			p.market.outcomes.map(outcome =>
 				(
-				<OrderBook
-					key={`order-book-${outcome.id}`}
-					outcome={outcome}
-					bids={outcome.orderBook.bids}
-					asks={outcome.orderBook.asks}
-				/>
+					<OrderBook
+						key={`order-book-${outcome.id}`}
+						outcome={outcome}
+						bids={outcome.orderBook.bids}
+						asks={outcome.orderBook.asks}
+					/>
 				)
 			)
 		}

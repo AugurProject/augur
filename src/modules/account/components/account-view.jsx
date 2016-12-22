@@ -14,7 +14,7 @@ export default class AccountPage extends Component {
 		settings: PropTypes.object,
 		// siteHeader: PropTypes.object
 		// authLink: PropTypes.object
-	};
+	}
 
 	constructor(props) {
 		super(props);
