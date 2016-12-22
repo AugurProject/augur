@@ -40,7 +40,7 @@
 		}
 
 		.msg {
-			color: @color-danger-dark;
+			color: @color-red;
 			display: inline-block;
 			font-size: 80%;
 			font-weight: 700;
@@ -49,7 +49,7 @@
 			position: relative;
 
 			&.success {
-				color: @color-success-normal;
+				color: @color-green;
 			}
 		}
 
@@ -65,8 +65,10 @@
 		}
 
 		.account-info-container {
+
+			.border();
+
 			background: white;
-			border: 1px solid @color-border-dark;
 			border-radius: 1px;
 			display: flex;
 			flex-flow: row wrap;
@@ -110,7 +112,7 @@
 
 		.top-link {
 			bottom: 0.5vmin;
-			color: fade(@color-dark-normal, 50%);
+			color: @color-black-extra-light;
 			display: inline-block;
 			font-size: 60%;
 			position: absolute;
@@ -123,7 +125,7 @@
 			flex-flow: row-reverse nowrap;
 
 			.bottom-link {
-				color: fade(@color-dark-normal, 50%);
+				color: @color-black-extra-light;
 				font-size: 80%;
 				margin-right: 1.5vmin;
 			}

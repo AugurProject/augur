@@ -3,8 +3,10 @@
 }
 
 .rdtPicker {
+
+	.border();
+
 	background: white;
-	border: 1px solid @color-border-dark;
 	border-radius: 1px;
 	display: none;
 	margin-top: 1px;
@@ -13,7 +15,9 @@
 }
 
 .rdt.rdtOpen > input.form-control {
-	border: 1px solid @color-border-dark;
+
+	.border();
+
 	border-radius: 1px;
 	width: 300px;
 }
@@ -63,30 +67,29 @@
 .rdtPicker td.rdtMinute:hover,
 .rdtPicker td.rdtSecond:hover,
 .rdtPicker .rdtTimeToggle:hover {
-	// background: #eeeeee;
-	background: @color-primary-lightest;
+	background: @color-gray-extra-light;
 	cursor: pointer;
 }
 
 .rdtPicker td.rdtOld,
 .rdtPicker td.rdtNew {
-	color: @color-muted-normal;
+	color: @color-gray-light;
 }
 
 .rdtPicker td.rdtToday {
-	color: @color-muted-active;
+	color: @color-gray-muted;
 	font-style: italic;
 	position: relative;
 }
 
 .rdtPicker td.rdtActive {
-	background-color: @color-primary-active;
+	background-color: @color-blue;
 	color: white;
 	font-weight: bold;
 }
 
 .rdtPicker td.rdtActive:hover {
-	background-color: @color-primary-hover;
+	background-color: @color-blue-subtle;
 }
 
 .rdtPicker td.rdtActive.rdtToday::before {
@@ -96,23 +99,23 @@
 .rdtPicker td.rdtDisabled,
 .rdtPicker td.rdtDisabled:hover {
 	background: none;
-	color: @color-muted-normal;
+	color: @color-gray-muted;
 	cursor: not-allowed;
 }
 
 .rdtPicker td span.rdtOld {
-	color: @color-muted-normal;
+	color: @color-gray-muted;
 }
 
 .rdtPicker td span.rdtDisabled,
 .rdtPicker td span.rdtDisabled:hover {
 	background: none;
-	color: @color-muted-normal;
+	color: @color-gray-muted;
 	cursor: not-allowed;
 }
 
 .rdtPicker th {
-	border-bottom: 1px solid @color-border-dark;
+	.border(true, @border-bottom);
 }
 
 .rdtPicker .dow {
@@ -139,7 +142,7 @@
 .rdtPicker th.rdtDisabled,
 .rdtPicker th.rdtDisabled:hover {
 	background: none;
-	color: @color-muted-normal;
+	color: @color-gray-muted;
 	cursor: not-allowed;
 }
 
@@ -148,7 +151,7 @@
 }
 
 .rdtPicker tfoot {
-	border-top: 1px solid @color-border-dark;
+	.border(true, @border-top);
 }
 
 .rdtPicker button {
@@ -158,7 +161,7 @@
 }
 
 .rdtPicker button:hover {
-	background: @color-primary-lightest;
+	background: @color-gray-extra-light;
 }
 
 .rdtPicker thead button {
@@ -175,7 +178,7 @@ td.rdtYear {
 
 td.rdtMonth:hover,
 td.rdtYear:hover {
-	background: @color-primary-lightest;
+	background: @color-gray-extra-light;
 }
 
 .rdtCounters {
@@ -204,7 +207,7 @@ td.rdtYear:hover {
 }
 
 .rdtCounter .rdtBtn:hover {
-	background: @color-primary-lightest;
+	background: @color-gray-extra-light;
 }
 
 .rdtCounter .rdtCount {

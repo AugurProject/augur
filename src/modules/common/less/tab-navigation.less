@@ -5,10 +5,12 @@
 	width: 100%;
 
 	.nav-item {
+
+		.border();
+
 		align-items: center;
-		background: white;
-		border: 1px solid @color-border-dark;
-		color: black;
+		background: @color-white;
+		color: @color-black;
 		display: flex;
 		flex: 1;
 		flex-direction: column;
@@ -16,12 +18,12 @@
 
 		&:hover,
 		&:active {
-			background: @color-light-hover;
+			background: @color-white-muted;
 		}
 
 		&.active {
-			background: @color-dark-hover;
-			color: @color-light-normal;
+			background: @color-black-light;
+			color: @color-white-muted;
 		}
 
 		&:not(:last-of-type) {

@@ -21,28 +21,28 @@
 				&.failed,
 				&.interrupted {
 					animation-name: unset;
-					background: fade(@color-danger-normal, 6%);
+					background: @color-red-extra-light;
 
 					.status-and-message {
-						color: @color-danger-normal;
+						color: @color-red;
 					}
 				}
 
 				&.pending {
 					animation-name: unset;
-					background: fade(@color-light-normal, 50%);
+					background: @color-white-muted;
 
 					.status-and-message {
-						color: @color-dark-normal;
+						color: @color-black-muted;
 					}
 				}
 
 				&.success {
 					animation-name: unset;
-					background: fade(@color-success-normal, 6%);
+					background: @color-green-extra-light;
 
 					.status-and-message {
-						color: @color-success-normal;
+						color: @color-green-dark-light;
 					}
 				}
 
@@ -152,7 +152,7 @@
 		}
 
 		.feel-free {
-			color: @color-plain-active;
+			color: @color-gray-muted;
 			display: block;
 			font-size: 1.1rem;
 			font-style: italic;
