@@ -5,10 +5,11 @@ process.env.NODE_ENV = 'test';
 
 const spinner = ora('Running Tests').start();
 
-shell.exec('mocha --require babel-register', (code, stdout, stderr) => {
+shell.exec('mocha --require babel-register', (code) => {
 	if (code !== 0) {
 		spinner.text = 'Tests Failing';
 		spinner.fail();
+
 		shell.exit(code);
 	}
 
