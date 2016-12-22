@@ -13,5 +13,6 @@ shell.exec('mocha --require babel-register', (code) => {
 		shell.exit(code);
 	}
 
+	spinner.text = 'All Tests Passed';
 	spinner.succeed();
 });
