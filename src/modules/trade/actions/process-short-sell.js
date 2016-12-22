@@ -8,6 +8,7 @@ import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-l
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
@@ -82,7 +83,7 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				// update user's position
 				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(loadBidsAsks(marketID, () => {
-						dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+						dispatch(deleteTransaction(transactionID));
 					}));
 				}));
 			}

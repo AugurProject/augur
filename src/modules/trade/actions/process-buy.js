@@ -7,6 +7,7 @@ import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-l
 import { trade } from '../../trade/actions/helpers/trade';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 
 export function processBuy(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
@@ -89,7 +90,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				}
 				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(loadBidsAsks(marketID, () => {
-						dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+						dispatch(deleteTransaction(transactionID));
 					}));
 				}));
 			}

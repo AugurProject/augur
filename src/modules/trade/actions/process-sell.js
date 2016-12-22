@@ -7,6 +7,7 @@ import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-l
 import { trade } from '../../trade/actions/helpers/trade';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
@@ -149,7 +150,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				}
 				dispatch(loadAccountTrades(marketID, () => {
 					dispatch(loadBidsAsks(marketID, () => {
-						dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+						dispatch(deleteTransaction(transactionID));
 					}));
 				}));
 			}
