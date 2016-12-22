@@ -22,7 +22,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			console.error('processBuy has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
-				message: 'There was an issue processesing the buy trade.'
+				message: 'There was an issue processing the buy trade.'
 			}));
 		}
 		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
