@@ -1,4 +1,3 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -18,8 +17,10 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 	const action = proxyquire('../../../src/modules/markets/actions/update-keywords', {
 		'../../link/actions/update-url': mockUpdateURL,
 		'../../../selectors': proxyquire('../../../src/selectors', {
-			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-				'../../../store': store
+			'./selectors-raw': proxyquire('../../../src/selectors-raw', {
+				'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+					'../../../store': store
+				})
 			})
 		})
 	});

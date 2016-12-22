@@ -1,6 +1,7 @@
 {
 	"env": {
-		"browser": true
+		"browser": true,
+		"mocha": true
 	},
 	"extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "parser": "babel-eslint",
