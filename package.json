@@ -86,7 +86,6 @@
     "normalize.css": "5.0.0",
     "npm-check-updates": "2.8.0",
     "onchange": "2.5.0",
-    "ora": "0.4.0",
     "postcss-loader": "1.2.0",
     "proxyquire": "1.7.10",
     "react-hot-loader": "3.0.0-beta.6",
