@@ -271,8 +271,6 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 							case 'log_fill_tx': {
 								const hash = trade.transactionHash;
 								const transactionID = `${hash}-${trade.sequenceNumber}`;
-								const type = trade.type === 1 ? 'buy' : 'sell';
-								const perfectType = trade.type === 1 ? 'bought' : 'sold';
 								const price = formatEther(trade.price);
 								const shares = formatShares(trade.shares);
 								const bnPrice = abi.bignum(trade.price);
@@ -282,6 +280,23 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 								const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 								const totalCostPerShare = totalCost.dividedBy(bnShares);
 								const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+								let type;
+								let perfectType;
+								let formattedTotalCost;
+								let formattedTotalReturn;
+								if (trade.maker) {
+									type = trade.type === 2 ? 'buy' : 'sell';
+									perfectType = trade.type === 2 ? 'bought' : 'sold';
+									formattedTotalCost = trade.type === 2 ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = trade.type === 1 ? formatEther(totalReturn) : undefined;
+								} else {
+									type = trade.type === 1 ? 'buy' : 'sell';
+									perfectType = trade.type === 1 ? 'bought' : 'sold';
+									formattedTotalCost = trade.type === 1 ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = trade.type === 2 ? formatEther(totalReturn) : undefined;
+								}
+								let message = `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`;
+								if (trade.maker) message = `matched ${message}`;
 								const rawPrice = bnPrice;
 								utd = {
 									[transactionID]: {
@@ -295,7 +310,7 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 											outcomeID,
 											marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 										},
-										message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
+										message,
 										rawNumShares: bnShares,
 										numShares: shares,
 										rawPrice,
@@ -307,8 +322,8 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 										feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
 										rawTotalCost: totalCost,
 										rawTotalReturn: totalReturn,
-										totalCost: trade.type === 1 ? formatEther(totalCost) : undefined,
-										totalReturn: trade.type === 2 ? formatEther(totalReturn) : undefined,
+										totalCost: formattedTotalCost,
+										totalReturn: formattedTotalReturn,
 										sequenceNumber: trade.sequenceNumber
 									}
 								};
