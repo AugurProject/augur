@@ -5,6 +5,10 @@ const Listr = require('listr');
 const srcPath = path.resolve(__dirname, '../src');
 const testPath = path.resolve(__dirname, '../test');
 
+shell.echo(`
+== Running Augur Linting ==
+`);
+
 const lintSource = new Promise((resolve, reject) => {
 	shell.exec(`eslint --ext .js,.jsx ${srcPath}`, (code) => {
 		if (code !== 0) {
