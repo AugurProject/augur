@@ -2,6 +2,8 @@
 // parent level structural styling
 // NOTE -- These classes may also have presentational styling housed in separate stylesheets
 
+@side-bar-max-width: 300px;
+
 html {
 	height: 100vh;
 	overflow-x: hidden;
@@ -34,6 +36,7 @@ main,
 
 			.core-stats-bumper {
 				flex: 1;
+				max-width: @side-bar-max-width;
 
 				@media @breakpoint-mobile {
 					& {
@@ -66,6 +69,7 @@ main,
 			#side_bar {
 				display: flex;
 				flex: 1;
+				max-width: @side-bar-max-width;
 
 				@media @breakpoint-mobile {
 					position: fixed;
