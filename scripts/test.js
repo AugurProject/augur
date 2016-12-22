@@ -1,18 +1,24 @@
 const shell = require('shelljs');
-const ora = require('ora');
+const Listr = require('listr');
 
 process.env.NODE_ENV = 'test';
 
-const spinner = ora('Running Tests').start();
+const tests = new Promise((resolve, reject) => {
+	shell.exec('mocha --require babel-register', (code, stdout, stderr) => {
+		if (code !== 0) {
+			reject(new Error());
+			shell.exit(code);
+		}
 
-shell.exec('mocha --require babel-register', (code) => {
-	if (code !== 0) {
-		spinner.text = 'Tests Failing';
-		spinner.fail();
-
-		shell.exit(code);
-	}
-
-	spinner.text = 'All Tests Passed';
-	spinner.succeed();
+		resolve();
+	});
 });
+
+const tasks = new Listr([
+	{
+		title: 'Running Tests',
+		task: () => tests
+	}
+]);
+
+tasks.run().catch((err) => {});
