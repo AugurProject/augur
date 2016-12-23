@@ -1,10 +1,11 @@
 {
 	"env": {
-		"browser": true
+		"browser": true,
+		"mocha": true
 	},
+	"parser": "babel-eslint",
 	"extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
-  "parser": "babel-eslint",
-	"plugins": ["react"],
+	"plugins": ["react", "import"],
 	"parserOptions": {
     "ecmaFeatures": {
       "jsx": true

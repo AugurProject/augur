@@ -35,7 +35,6 @@
     "memoizerific": "1.8.4",
     "moment": "2.17.1",
     "prerender-node": "2.4.0",
-		"shelljs": "0.7.5",
     "rc-progress": "2.0.3",
     "react": "15.4.1",
     "react-datetime": "2.7.5",
@@ -44,7 +43,8 @@
     "react-tooltip": "3.2.2",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
-    "secure-random": "1.1.1"
+    "secure-random": "1.1.1",
+    "shelljs": "0.7.5"
   },
   "devDependencies": {
     "autoprefixer": "6.5.3",
@@ -63,7 +63,7 @@
     "css-loader": "0.26.1",
     "cssnano": "3.8.1",
     "derequire": "2.0.3",
-    "eslint": "3.12.1",
+    "eslint": "3.12.2",
     "eslint-config-airbnb": "13.0.0",
     "eslint-import-resolver-babel-module": "2.2.1",
     "eslint-plugin-import": "2.2.0",
@@ -80,6 +80,7 @@
     "json-loader": "0.5.4",
     "less": "2.7.1",
     "less-loader": "2.2.3",
+    "listr": "0.9.0",
     "mocha": "3.0.2",
     "mocha-lcov-reporter": "1.2.0",
     "normalize.css": "5.0.0",

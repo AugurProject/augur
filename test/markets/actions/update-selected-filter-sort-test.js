@@ -18,8 +18,10 @@ describe('modules/markets/actions/update-selected-filter-sort', () => {
 	const action = proxyquire('../../../src/modules/markets/actions/update-selected-filter-sort', {
 		'../../link/actions/update-url': mockUpdateURL,
 		'../../../selectors': proxyquire('../../../src/selectors', {
-			'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-				'../../../store': store
+			'./selectors-raw': proxyquire('../../../src/selectors-raw', {
+				'./modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+					'../../../store': store
+				})
 			})
 		})
 	});
