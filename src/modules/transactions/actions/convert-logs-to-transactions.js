@@ -2,60 +2,13 @@ import async from 'async';
 import { abi, augur, constants } from '../../../services/augurjs';
 import { SUCCESS } from '../../transactions/constants/statuses';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
-import { BINARY_NO_OUTCOME_NAME, BINARY_YES_OUTCOME_NAME, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { selectMarketLink } from '../../link/selectors/links';
-
-export const UPDATE_LOGS_DATA = 'UPDATE_LOGS_DATA';
-
-export function getOutcomeName(outcomeID, eventType, outcomesData = {}) {
-	let outcomeName;
-	if (eventType === BINARY) {
-		if (outcomeID === '1') {
-			outcomeName = BINARY_NO_OUTCOME_NAME;
-		} else if (outcomeID === '2') {
-			outcomeName = BINARY_YES_OUTCOME_NAME;
-		} else {
-			outcomeName = INDETERMINATE_OUTCOME_NAME;
-		}
-	} else if (outcomeID === CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID) {
-		outcomeName = INDETERMINATE_OUTCOME_NAME;
-	} else if (eventType === SCALAR) {
-		outcomeName = outcomeID;
-	} else {
-		outcomeName = outcomesData[outcomeID] ? outcomesData[outcomeID].name : outcomeID;
-	}
-	return outcomeName;
-}
-
-export function selectMarketIDFromEventID(eventID, marketsData) {
-	const marketIDs = Object.keys(marketsData);
-	const numMarkets = marketIDs.length;
-	for (let i = 0; i < numMarkets; ++i) {
-		if (eventID === marketsData[marketIDs[i]].eventID) {
-			return marketIDs[i];
-		}
-	}
-	return null;
-}
-
-export function formatReportedOutcome(rawReportedOutcome, isEthical, minValue, maxValue, eventType, outcomesData = {}) {
-	const report = augur.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
-	if (report.isIndeterminate) return INDETERMINATE_OUTCOME_NAME;
-	const outcomeName = getOutcomeName(report.report, eventType, outcomesData || {});
-	if (isEthical) return outcomeName;
-	return `${outcomeName} and Unethical`;
-}
-
-export function updateLogsData(label, logs) {
-	return (dispatch, getState) => {
-		dispatch(convertLogsToTransactions(label, logs));
-		dispatch({ type: UPDATE_LOGS_DATA, label, logs });
-	};
-}
+import { selectMarketIDFromEventID } from '../../market/selectors/market';
+import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
 
 export function convertLogsToTransactions(label, logs) {
 	return (dispatch, getState) => {
@@ -240,7 +193,7 @@ export function convertLogsToTransactions(label, logs) {
 	};
 }
 
-export function convertTradingLogToTransaction(label, data, marketID) {
+export function convertTradeLogToTransaction(label, data, marketID) {
 	return (dispatch, getState) => {
 		const { marketsData, outcomesData } = getState();
 		let outcomeID;
@@ -274,7 +227,7 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 								const price = formatEther(trade.price);
 								const shares = formatShares(trade.shares);
 								const bnPrice = abi.bignum(trade.price);
-								const tradingFees = abi.bignum(trade.takerFee);
+								const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
 								const bnShares = abi.bignum(trade.shares);
 								const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 								const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
@@ -285,7 +238,7 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 								let formattedTotalCost;
 								let formattedTotalReturn;
 								if (trade.maker) {
-									type = trade.type === 2 ? 'buy' : 'sell';
+									type = trade.type === 2 ? 'match_bid' : 'match_ask';
 									perfectType = trade.type === 2 ? 'bought' : 'sold';
 									formattedTotalCost = trade.type === 2 ? formatEther(totalCost) : undefined;
 									formattedTotalReturn = trade.type === 1 ? formatEther(totalReturn) : undefined;
@@ -295,8 +248,6 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 									formattedTotalCost = trade.type === 1 ? formatEther(totalCost) : undefined;
 									formattedTotalReturn = trade.type === 2 ? formatEther(totalReturn) : undefined;
 								}
-								let message = `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`;
-								if (trade.maker) message = `matched ${message}`;
 								const rawPrice = bnPrice;
 								utd = {
 									[transactionID]: {
@@ -310,7 +261,7 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 											outcomeID,
 											marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 										},
-										message,
+										message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
 										rawNumShares: bnShares,
 										numShares: shares,
 										rawPrice,
@@ -438,7 +389,7 @@ export function convertTradingLogToTransaction(label, data, marketID) {
 	};
 }
 
-export function convertTradingLogsToTransactions(label, data, marketID) {
+export function convertTradeLogsToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
 		console.log('convertLogsToTransactions', label);
 		console.log('data:', data);
@@ -447,10 +398,10 @@ export function convertTradingLogsToTransactions(label, data, marketID) {
 		const numMarkets = marketIDs.length;
 		for (let i = 0; i < numMarkets; ++i) {
 			if (marketsData[marketIDs[i]]) {
-				dispatch(convertTradingLogToTransaction(label, data, marketIDs[i]));
+				dispatch(convertTradeLogToTransaction(label, data, marketIDs[i]));
 			}
 			dispatch(loadMarketsInfo([marketIDs[i]], () => {
-				dispatch(convertTradingLogToTransaction(label, data, marketIDs[i]));
+				dispatch(convertTradeLogToTransaction(label, data, marketIDs[i]));
 			}));
 		}
 	};
