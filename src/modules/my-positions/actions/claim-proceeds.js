@@ -4,6 +4,7 @@ import { SUCCESS } from '../../transactions/constants/statuses';
 import { ZERO } from '../../trade/constants/numbers';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
@@ -63,9 +64,7 @@ export function claimProceeds() {
 					dispatch(loadMarketsInfo([marketID], () => {
 						dispatch(loadAccountTrades(marketID, () => {
 							dispatch(loadBidsAsks(marketID, () => {
-								dispatch(updateExistingTransaction(transactionID, {
-									status: SUCCESS
-								}));
+								dispatch(deleteTransaction(transactionID));
 							}));
 						}));
 					}));

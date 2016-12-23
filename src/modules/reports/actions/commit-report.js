@@ -8,6 +8,7 @@ import { addCommitReportTransaction } from '../../transactions/actions/add-commi
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateReport } from '../../reports/actions/update-reports';
 import { nextReportPage } from '../../reports/actions/next-report-page';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
@@ -80,13 +81,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			onSuccess: (res) => {
 				console.log('eventID:', eventID);
 				console.log('marketID:', market.id);
-				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
-					message: `committed to report outcome ${outcomeName}`,
-					hash: res.hash,
-					timestamp: res.timestamp,
-					gasFees: formatRealEther(res.gasFees)
-				}));
+				dispatch(deleteTransaction(transactionID));
 				const branchReports = getState().reports[branch.id] || {};
 				console.log('updating branchReports:', branchReports);
 				dispatch(updateReport(branch.id, eventID, {

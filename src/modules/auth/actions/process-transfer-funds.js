@@ -2,6 +2,7 @@ import { augur } from '../../../services/augurjs';
 import { formatRealEther } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 
 export function processTransferFunds(transactionID, fromAddress, amount, currency, toAddress) {
@@ -18,13 +19,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, currenc
 			}));
 		};
 		const success = (data) => {
-			dispatch(updateExistingTransaction(transactionID, {
-				status: SUCCESS,
-				message: `Transfer of ${amount} ${currency} to ${toAddress} Complete.`,
-				hash: data.hash,
-				timestamp: data.timestamp,
-				gasFees: formatRealEther(data.gasFees)
-			}));
+			dispatch(deleteTransaction(transactionID));
 			dispatch(updateAssets());
 		};
 		const failed = (failedTransaction) => {

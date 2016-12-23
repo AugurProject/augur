@@ -4,6 +4,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 
 export function processFundNewAccount(transactionID, address) {
 	return (dispatch, getState) => {
@@ -34,14 +35,7 @@ export function processFundNewAccount(transactionID, address) {
 						console.log('augur.Register.register sent:', r);
 					},
 					onSuccess: (r) => {
-						dispatch(updateExistingTransaction(transactionID, {
-							status: SUCCESS,
-							message: `Received free Ether and Reputation.<br />
-								Registration timestamp saved.`,
-							hash: r.hash,
-							timestamp: r.timestamp,
-							gasFees: formatRealEther(r.gasFees)
-						}));
+						dispatch(deleteTransaction(transactionID));
 						const { loginAccount } = getState();
 						loginAccount.registerBlockNumber = r.blockNumber;
 						dispatch(updateLoginAccount(loginAccount));

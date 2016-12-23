@@ -3,13 +3,13 @@ import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-type
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
 import { BRANCH_ID } from '../../app/constants/network';
-
 import { augur } from '../../../services/augurjs';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addCreateMarketTransaction } from '../../transactions/actions/add-create-market-transaction';
 import { selectTransactionsLink } from '../../link/selectors/links';
 import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book';
 import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 
 export function submitNewMarket(newMarket) {
 	return (dispatch) => {
@@ -66,16 +66,7 @@ export function createMarket(transactionID, newMarket) {
 			},
 			onSuccess: (res) => {
 				console.log('success:', res);
-				dispatch(updateExistingTransaction(transactionID, {
-					data: {
-						...transactionsData[transactionID].data,
-						id: res.callReturn
-					},
-					hash: res.hash,
-					timestamp: res.timestamp,
-					gasFees: formatRealEther(res.gasFees),
-					status: SUCCESS
-				}));
+				dispatch(deleteTransaction(transactionID));
 				dispatch(clearMakeInProgress());
 				if (newMarket.isCreatingOrderBook) {
 					dispatch(submitGenerateOrderBook({

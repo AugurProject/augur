@@ -1,4 +1,4 @@
-import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatRealEtherEstimate } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, BINARY_NO_OUTCOME_NAME, BINARY_YES_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
@@ -7,6 +7,7 @@ import { REVEAL_REPORT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 
 export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) {
 	return (dispatch, getState) => {
@@ -94,13 +95,7 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 			},
 			onSuccess: (r) => {
 				console.debug('submitReport success:', r);
-				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
-					hash: r.hash,
-					timestamp: r.timestamp,
-					message: `revealed reported outcome: ${outcomeName}`,
-					gasFees: formatRealEther(r.gasFees)
-				}));
+				dispatch(deleteTransaction(transactionID));
 				dispatch(updateAssets());
 				if (callback) callback(null);
 			},

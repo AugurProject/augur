@@ -6,6 +6,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { augur, abi } from '../../../services/augurjs';
 
 export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
@@ -37,13 +38,7 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 				},
 				onSuccess: (r) => {
 					console.debug('sellCompleteSets success:', r);
-					dispatch(updateExistingTransaction(transactionID, {
-						status: SUCCESS,
-						hash: r.hash,
-						timestamp: r.timestamp,
-						message: `redeemed ${fmtNumShares.formatted} complete sets`,
-						gasFees: formatRealEther(r.gasFees)
-					}));
+					dispatch(deleteTransaction(transactionID));
 					dispatch(updateAssets());
 					dispatch(loadAccountTrades(marketID));
 					dispatch(updateSellCompleteSetsLock(marketID, false));
