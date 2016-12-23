@@ -1,11 +1,9 @@
 import { augur, abi } from '../../../services/augurjs';
-import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
 import { FAILED } from '../../transactions/constants/statuses';
 import { SCALAR } from '../../markets/constants/market-types';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 
 const noop = () => {};
 
@@ -49,26 +47,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 			outcome: outcomeID,
 			scalarMinMax,
 			onSent: noop,
-			onSuccess: (res) => {
-				dispatch(updateExistingTransaction(transactionID, {
-					hash: res.hash,
-					timestamp: res.timestamp,
-					status: 'updating order book',
-					message: `short ask ${formatShares(numShares).full} for ${formatEther(avgPrice).full}/share`,
-					freeze: {
-						verb: 'froze',
-						noFeeCost: formatEther(totalEthWithoutFee),
-						tradingFees: formatEther(tradingFeesEth)
-					},
-					gasFees: formatRealEther(res.gasFees)
-				}));
-				dispatch(loadBidsAsks(marketID, () => {
-					dispatch(updateExistingTransaction(transactionID, {
-						status: 'updating position'
-					}));
-					dispatch(loadAccountTrades(marketID, () => dispatch(deleteTransaction(transactionID))));
-				}));
-			},
+			onSuccess: () => dispatch(deleteTransaction(transactionID)),
 			onFailed: err => dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
 				message: err.message

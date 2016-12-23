@@ -22,4 +22,3 @@ export function loadCreateMarketHistory(marketID, cb) {
 		}, callback);
 	};
 }
-
