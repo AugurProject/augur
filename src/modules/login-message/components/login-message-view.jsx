@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 23, 2016</h3>
+			<ol>
+				<li>
+					Adjustments to the NPM scripts to improve the messaging during command execution.
+				</li>
+				<li>
+					The reporting form is now encompassed within a tab in the market view rather than being a discrete view.  This is so that users may continue to trade and so that reporters can reference relevant market data.
+				</li>
+				<li>
+					The header in the markets view now updates to indicate when you are on the favorites or pending reports views.
+				</li>
+				<li>
+					A slight adjustment to the Augur logo so that it remains centered in the header.  Previously the nav items would push the logo off center.
+				</li>
+			</ol>
 			<h3>Decembter 22, 2016</h3>
 			<ol>
 				<li>
@@ -72,6 +87,15 @@ const LoginMessagePage = p => (
 				</li>
 				<li>
 					Fees for maker trades no longer incorrectly display the taker fee.
+				</li>
+				<li>
+					The trade inputs were incorrectly reporting invalid values via the hover title.  This is now fixed, along with a custom value incrementer implemented on the input.
+				</li>
+				<li>
+					The app is now a full width app!  All components will scale out to whatever window width is available.
+				</li>
+				<li>
+					Adjustments to the colors utilized due to a recent base color change.  Also included in this set of changes was a removal of some legacy colors no longer used.
 				</li>
 			</ol>
 			{p.marketsLink &&
