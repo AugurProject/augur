@@ -105,13 +105,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
 	sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
 
-	const mockSelectTransactionsLink = { selectTransactionsLink: () => {} };
-	sinon.stub(mockSelectTransactionsLink, 'selectTransactionsLink', dispatch => ({
-		onClick: () => dispatch({
-			type: 'UPDATE_URL',
-			url: 'transactions-link'
-		})
-	}));
 	const mockAugur = { augur: { getParticipantSharesPurchased: () => {} } };
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
 		console.log('callcount:', mockAugur.augur.getParticipantSharesPurchased.callCount);
@@ -134,7 +127,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		'../../market/selectors/market': mockSelectMarket,
 		'../../transactions/actions/add-trade-transaction': mockAddTradeTransaction,
 		'../../transactions/actions/add-bid-transaction': mockAddBidTransaction,
-		'../../link/selectors/links': mockSelectTransactionsLink,
 		'../../transactions/actions/add-ask-transaction': mockAddAskTransaction,
 		'../../transactions/actions/add-short-ask-transaction': mockAddShortAskTransaction,
 		'../../transactions/actions/add-short-sell-transaction': mockAddShortSellTransaction,
@@ -225,9 +217,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID'
-			},
-			{ type: 'UPDATE_URL', url: 'transactions-link' }
-			], `Didn't produce the expected actions and calculations`);
+			}], `Didn't produce the expected actions and calculations`);
 		});
 
 		it('should place a BID trade for a binary market', () => {
@@ -326,9 +316,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected actions or calculations`);
 		});
 
@@ -427,9 +414,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			},
 			{ type: 'CLEAR_TRADE_IN_PROGRESS',
-				marketID: 'testBinaryMarketID' },
-			{ type: 'UPDATE_URL', url: 'transactions-link' }
-			], `Didn't produce the expected Actions or Calculations`);
+				marketID: 'testBinaryMarketID'
+			}], `Didn't produce the expected Actions or Calculations`);
 		});
 
 		it('should place a ASK and SHORT_ASK trade for a binary market', () => {
@@ -576,7 +562,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			},
 			{ type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID' },
-			{ type: 'UPDATE_URL', url: 'transactions-link' }
 			], `Didn't produce the expected Actions or Calculations`);
 		});
 
@@ -678,9 +663,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected actions or calculations`);
 		});
 
@@ -779,9 +761,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected actions and calculations`);
 		});
 
@@ -884,9 +863,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testBinaryMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Calculations`);
 		});
 	});
@@ -969,9 +945,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Calculations`);
 		});
 
@@ -1071,9 +1044,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Calculations");
 		});
 
@@ -1173,9 +1143,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Calculations");
 		});
 
@@ -1322,9 +1289,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Calculations");
 		});
 
@@ -1427,9 +1391,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Calculations`);
 		});
 
@@ -1529,9 +1490,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Calculations`);
 		});
 
@@ -1634,9 +1592,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testCategoricalMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Calculations");
 		});
 	});
@@ -1719,9 +1674,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -1821,9 +1773,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -1923,9 +1872,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -2072,9 +2018,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -2177,9 +2120,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -2279,9 +2219,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], "Didn't produce the expected Actions or Caclculations");
 		});
 
@@ -2384,9 +2321,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			}, {
 				type: 'CLEAR_TRADE_IN_PROGRESS',
 				marketID: 'testScalarMarketID'
-			}, {
-				type: 'UPDATE_URL',
-				url: 'transactions-link'
 			}], `Didn't produce the expected Actions or Caclculations`);
 		});
 	});
@@ -2395,9 +2329,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		{
 			type: 'CLEAR_TRADE_IN_PROGRESS',
 			marketID: 'testBinaryMarketID'
-		}, {
-			type: 'UPDATE_URL',
-			url: 'transactions-link'
 		}
 	];
 

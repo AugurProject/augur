@@ -15,9 +15,48 @@
 		border-color: @color-red-light;
 	}
 
+	&.is-incrementable {
+		display: flex;
+
+		.box {
+			width: 80%;
+		}
+
+		input[type='number'] {
+			appearance: textfield;
+		}
+
+		input[type=number]::-webkit-outer-spin-button,
+		input[type=number]::-webkit-inner-spin-button {
+			appearance: none;
+			margin: 0;
+		}
+
+		input {
+			flex: 1 1 auto;
+		}
+
+		.value-incrementers {
+
+			.border(true, @border-left);
+
+			display: flex;
+			flex-direction: column;
+
+			button {
+				cursor: default;
+				flex: 1;
+				padding: 0 0.2em;
+
+				&:active {
+					background-color: @color-gray;
+				}
+			}
+		}
+	}
+
 	.box {
 		font-size: inherit;
-		height: 100%;
 		padding: 0.5em;
 		width: 100%;
 	}

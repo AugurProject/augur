@@ -9,6 +9,7 @@ import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-
 import { PRICE } from 'modules/order-book/constants/order-book-value-types';
 import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
 import { BID } from 'modules/transactions/constants/types';
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
@@ -63,15 +64,20 @@ export default class MarketActive extends Component {
 
 		if (outcomes) {
 			const outcome = outcomes.find(outcome => outcome.id === outcomeID);
-			const orderBookSide = getValue(outcome, `orderBook.${side === BID ? 'bids' : 'asks'}`);
+			const orderBookSide = getValue(outcome, `orderBook.${side === BID ? BIDS : ASKS}`);
 			const order = (orderBookSide && orderBookSide[orderIndex]) || null;
-			const price = getValue(order, 'price.value') || null;
+			const price = getValue(order, 'price.value') || '';
 			const trade = outcome.trade;
 			const tradeSide = side === BID ? SELL : BUY;
 
 			if (orderValueType === PRICE) {
 				trade.updateTradeOrder(0, null, tradeSide); // Clear Shares
-				trade.updateTradeOrder(null, price, tradeSide);
+				if (price === '') {
+					trade.updateTradeOrder(null, price, tradeSide);
+					trade.updateTradeOrder(null, null, tradeSide);
+				} else {
+					trade.updateTradeOrder(null, price, tradeSide);
+				}
 			} else {
 				const shares = trade.totalSharesUpToOrder(orderIndex, side);
 

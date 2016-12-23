@@ -65,6 +65,9 @@ const LoginMessagePage = p => (
 					Refactored load-account-trades into composable loaders: deposit-withdraw, bids-asks, create-market, account-trades, and reporting.
 				</li>
 				<li>
+					Placing a trade not longer automatically navigates you to the transactions view, but rather will leave you on the market view.
+				</li>
+				<li>
 					Added final deleteTransaction call to trade process actions.
 				</li>
 				<li>
