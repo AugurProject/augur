@@ -1,8 +1,9 @@
 import { augur, abi } from '../../../services/augurjs';
 import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../transactions/constants/statuses';
 import { SCALAR } from '../../markets/constants/market-types';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 
@@ -65,11 +66,7 @@ export function processShortAsk(transactionID, marketID, outcomeID, numShares, l
 					dispatch(updateExistingTransaction(transactionID, {
 						status: 'updating position'
 					}));
-					dispatch(loadAccountTrades(marketID, () => {
-						dispatch(updateExistingTransaction(transactionID, {
-							status: SUCCESS
-						}));
-					}));
+					dispatch(loadAccountTrades(marketID, () => dispatch(deleteTransaction(transactionID))));
 				}));
 			},
 			onFailed: err => dispatch(updateExistingTransaction(transactionID, {

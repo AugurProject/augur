@@ -1,6 +1,6 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { abi, constants } from '../../../services/augurjs';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../transactions/constants/statuses';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';

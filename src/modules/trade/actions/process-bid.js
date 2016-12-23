@@ -1,8 +1,9 @@
 import { augur, abi } from '../../../services/augurjs';
 import { formatEther, formatShares, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../transactions/constants/statuses';
 import { SCALAR } from '../../markets/constants/market-types';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
@@ -18,7 +19,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 			console.error('processBid has failed:', transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth);
 			return dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
-				message: 'There was an issue processing your bid order.'
+				message: 'there was an issue placing your bid order'
 			}));
 		}
 		const totalEthWithoutFee = abi.bignum(totalEthWithFee).minus(abi.bignum(tradingFeesEth));
@@ -58,11 +59,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 					},
 					gasFees: formatRealEther(res.gasFees)
 				}));
-				dispatch(loadBidsAsks(marketID, () => {
-					dispatch(updateExistingTransaction(transactionID, {
-						status: SUCCESS
-					}));
-				}));
+				dispatch(loadBidsAsks(marketID, () => dispatch(deleteTransaction(transactionID))));
 			},
 			onFailed: err => dispatch(updateExistingTransaction(transactionID, {
 				status: FAILED,
