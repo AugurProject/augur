@@ -237,16 +237,22 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 								let perfectType;
 								let formattedTotalCost;
 								let formattedTotalReturn;
+								let tradeType;
+								if (trade.type === 2 || trade.type === 'sell') {
+									tradeType = 'sell';
+								} else{
+									tradeType = 'buy';
+								}
 								if (trade.maker) {
-									type = trade.type === 2 ? 'match_bid' : 'match_ask';
-									perfectType = trade.type === 2 ? 'bought' : 'sold';
-									formattedTotalCost = trade.type === 2 ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = trade.type === 1 ? formatEther(totalReturn) : undefined;
+									type = tradeType === 'sell' ? 'match_bid' : 'match_ask';
+									perfectType = tradeType === 'sell' ? 'bought' : 'sold';
+									formattedTotalCost = tradeType === 'sell' ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = tradeType === 'buy' ? formatEther(totalReturn) : undefined;
 								} else {
-									type = trade.type === 1 ? 'buy' : 'sell';
-									perfectType = trade.type === 1 ? 'bought' : 'sold';
-									formattedTotalCost = trade.type === 1 ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = trade.type === 2 ? formatEther(totalReturn) : undefined;
+									type = tradeType === 'buy' ? 'buy' : 'sell';
+									perfectType = tradeType === 'buy' ? 'bought' : 'sold';
+									formattedTotalCost = tradeType === 'buy' ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = tradeType === 'sell' ? formatEther(totalReturn) : undefined;
 								}
 								const rawPrice = bnPrice;
 								utd = {
