@@ -6,7 +6,6 @@ import { addTradeTransaction } from '../../transactions/actions/add-trade-transa
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
-import { selectTransactionsLink } from '../../link/selectors/links';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
@@ -163,6 +162,5 @@ export function placeTrade(marketID, outcomeID) {
 			}
 		});
 		dispatch(clearTradeInProgress(marketID));
-		selectTransactionsLink(dispatch).onClick();
 	};
 }
