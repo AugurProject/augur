@@ -27,10 +27,13 @@ export default class OutcomeTrade extends Component {
 			maxLimitPrice: props.marketType && props.marketType === SCALAR ? props.maxLimitPrice : 1,
 			isSharesValueValid: true,
 			isLimitPriceValueValid: true,
+			incrementAmount: 0.1
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
 		this.handleSharesInput = this.handleSharesInput.bind(this);
+		this.validateShares = this.validateShares.bind(this);
+		this.validatePrice = this.validatePrice.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -89,6 +92,32 @@ export default class OutcomeTrade extends Component {
 		trade.updateTradeOrder(valueDenominated, null, trade.side);
 	}
 
+	validatePrice(value, trade) {
+		let isLimitPriceValueValid;
+
+		if (value != null) {
+			if ((value >= parseFloat(this.state.minLimitPrice) && value <= parseFloat(this.state.maxLimitPrice)) || value === '') {
+				isLimitPriceValueValid = true;
+				trade.updateTradeOrder(null, value, trade.side);
+			} else {
+				isLimitPriceValueValid = false;
+			}
+		}
+
+		this.setState({ isLimitPriceValueValid });
+	}
+
+	validateShares(value, trade) {
+		if (value != null) {
+			if (value >= 0 || value === '') {
+				this.handleSharesInput(value);
+				this.setState({ isSharesValueValid: true });
+			} else {
+				this.setState({ isSharesValueValid: false });
+			}
+		}
+	}
+
 	render() {
 		const p = this.props;
 		const s = this.state;
@@ -128,36 +157,32 @@ export default class OutcomeTrade extends Component {
 								type="number"
 								value={s.sharesDenominated}
 								min="0"
-								step="0.1"
+								step="any"
+								isIncrementable
+								incrementAmount={s.incrementAmount}
+								updateValue={(value) => {
+									this.validateShares(value, trade);
+								}}
 								onChange={(value) => {
-									if (value != null) {
-										if (value >= 0 || value === '') {
-											this.handleSharesInput(value);
-											this.setState({ isSharesValueValid: true });
-										} else {
-											this.setState({ isSharesValueValid: false });
-										}
-									}
+									this.validateShares(value, trade);
 								}}
 							/>
 							<span>@</span>
 							<Input
-								className={classNames({ 'input-error': !s.isLimitPriceValueValid })}
+								className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
 								placeholder="Price"
 								type="number"
 								value={trade.limitPrice}
-								step="0.1"
+								step="any"
 								min={s.minLimitPrice}
 								max={s.maxLimitPrice}
+								isIncrementable
+								incrementAmount={s.incrementAmount}
+								updateValue={(value) => {
+									this.validatePrice(value, trade);
+								}}
 								onChange={(value) => {
-									if (value != null) {
-										if ((value >= parseFloat(s.minLimitPrice) && value <= parseFloat(s.maxLimitPrice)) || value === '') {
-											trade.updateTradeOrder(null, value, trade.side);
-											this.setState({ isLimitPriceValueValid: true });
-										} else {
-											this.setState({ isLimitPriceValueValid: false });
-										}
-									}
+									this.validatePrice(value, trade);
 								}}
 							/>
 						</div>
