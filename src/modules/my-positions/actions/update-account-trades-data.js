@@ -1,4 +1,4 @@
-import { convertTradingLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
+import { convertTradeLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -17,19 +17,19 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 
 export function updateAccountBidsAsksData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertTradingLogsToTransactions('log_add_tx', data, marketID));
+		dispatch(convertTradeLogsToTransactions('log_add_tx', data, marketID));
 	};
 }
 
 export function updateAccountCancelsData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertTradingLogsToTransactions('log_cancel', data, marketID));
+		dispatch(convertTradeLogsToTransactions('log_cancel', data, marketID));
 	};
 }
 
 export function updateAccountTradesData(data, marketID) {
 	return (dispatch, getState) => {
-		dispatch(convertTradingLogsToTransactions('log_fill_tx', data, marketID));
+		dispatch(convertTradeLogsToTransactions('log_fill_tx', data, marketID));
 		dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data, marketID });
 	};
 }
