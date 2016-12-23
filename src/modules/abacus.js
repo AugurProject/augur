@@ -327,6 +327,16 @@ module.exports = {
         return maxValue.minus(price).toFixed();
     },
 
+    roundToPrecision: function (value, minimum, round, roundingMode) {
+        if (value.lt(minimum || constants.PRECISION.zero)) return null;
+        if (value.lt(constants.PRECISION.limit)) {
+            value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
+        } else {
+            value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
+        }
+        return value;
+    },
+
     parseTradeInfo: function (trade) {
         var type, round, roundingMode;
         if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
@@ -347,29 +357,22 @@ module.exports = {
             return null;
         }
 
-        var amount = abi.unfix(trade[3]);
-        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
-        if (amount.lt(constants.PRECISION.limit)) {
-            amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        } else {
-            amount = amount.times(constants.PRECISION.multiple).floor().dividedBy(constants.PRECISION.multiple).toFixed();
-        }
+        var fullPrecisionAmount = abi.unfix(trade[3]);
+        var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
+        if (amount === null) return null;
 
-        var price = abi.unfix(abi.hex(trade[4], true));
-        if (price.lt(constants.PRECISION.zero)) return null;
-        if (price.lt(constants.PRECISION.limit)) {
-            price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
-        } else {
-            price = price.times(constants.PRECISION.multiple)[round]().dividedBy(constants.PRECISION.multiple).toFixed();
-        }
+        var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
+        var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+        if (price === null) return null;
 
         return {
             id: trade[0],
             type: type,
             market: trade[2],
             amount: amount,
+            fullPrecisionAmount: fullPrecisionAmount.toFixed(),
             price: price,
-            fullPrecisionPrice: abi.unfix(abi.hex(trade[4], true), "string"),
+            fullPrecisionPrice: fullPrecisionPrice.toFixed(),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
