@@ -1,6 +1,5 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
 import { abi, augur } from '../../../services/augurjs';
-import { SUCCESS } from '../../transactions/constants/statuses';
 import { ZERO } from '../../trade/constants/numbers';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';

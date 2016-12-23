@@ -1,9 +1,8 @@
 import secureRandom from 'secure-random';
-import { formatRealEther } from '../../../utils/format-number';
 import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { SUCCESS, FAILED, SUBMITTED } from '../../transactions/constants/statuses';
+import { FAILED, SUBMITTED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-commit-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateReport } from '../../reports/actions/update-reports';

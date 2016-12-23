@@ -1,5 +1,5 @@
-import { formatShares, formatEther, formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
-import { SUBMITTED, SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { formatShares, formatEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { SUBMITTED, FAILED } from '../../transactions/constants/statuses';
 import { SELL_COMPLETE_SETS } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';

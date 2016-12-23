@@ -1,6 +1,6 @@
 import { formatRealEther } from '../../../utils/format-number';
 import { augur, fundNewAccount } from '../../../services/augurjs';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';

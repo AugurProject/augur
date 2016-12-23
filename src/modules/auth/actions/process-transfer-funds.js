@@ -1,6 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { formatRealEther } from '../../../utils/format-number';
-import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';

@@ -240,7 +240,7 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 								let tradeType;
 								if (trade.type === 2 || trade.type === 'sell') {
 									tradeType = 'sell';
-								} else{
+								} else {
 									tradeType = 'buy';
 								}
 								if (trade.maker) {

@@ -1,13 +1,12 @@
-import { formatEther, formatRealEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatEther, formatShares, formatRealEtherEstimate } from '../../../utils/format-number';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
 import { augur } from '../../../services/augurjs';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
-import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { CANCELLING_ORDER, FAILED } from '../../transactions/constants/statuses';
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 
@@ -60,14 +59,6 @@ export function processCancelOrder(transactionID, orderID) {
 			onSuccess: (res) => {
 				console.log('augur.cancel success: %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
-					message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
-					hash: res.hash,
-					timestamp: res.timestamp,
-					totalReturn: formatEther(res.cashRefund),
-					gasFees: formatRealEther(res.gasFees)
-				}));
 				dispatch(deleteTransaction(transactionID));
 			},
 			onFailed: (res) => {

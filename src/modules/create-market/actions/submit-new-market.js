@@ -1,6 +1,5 @@
-import { formatRealEther } from '../../../utils/format-number';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
+import { FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
 import { BRANCH_ID } from '../../app/constants/network';
 import { augur } from '../../../services/augurjs';
@@ -20,7 +19,7 @@ export function submitNewMarket(newMarket) {
 
 export function createMarket(transactionID, newMarket) {
 	return (dispatch, getState) => {
-		const { branch, transactionsData } = getState();
+		const { branch } = getState();
 
 		if (newMarket.type === BINARY) {
 			newMarket.minValue = 1;
