@@ -5,6 +5,7 @@ const Listr = require('listr');
 const SERVER = path.resolve(__dirname, '../server.js');
 
 process.env.NODE_ENV = 'development';
+process.env.FORCE_COLOR = true;
 
 // START DEVELOPMENT SERVER
 //	NOTE -- this will also automatically spin up webpack w/ HMR (Hot Module Reload)
@@ -32,6 +33,9 @@ const tasks = new Listr([
 		title: 'Development Server',
 		task: () => devServer
 	}
-]);
+],
+{
+	renderer: 'verbose'
+});
 
 tasks.run().catch((err) => {});
