@@ -58,6 +58,18 @@ const LoginMessagePage = p => (
 				<li>
 					Converted maker trade transactions now have distinct messaging from normal (taker) trade transactions.
 				</li>
+				<li>
+					Removed unnecessary registration filter.
+				</li>
+				<li>
+					Refactored load-account-trades into composable loaders: deposit-withdraw, bids-asks, create-market, account-trades, and reporting.
+				</li>
+				<li>
+					Added final deleteTransaction call to trade process actions.
+				</li>
+				<li>
+					Fees for maker trades no longer incorrectly display the taker fee.
+				</li>
 			</ol>
 			{p.marketsLink &&
 				<Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
