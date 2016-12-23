@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import * as setTitle from 'utils/set-title';
 
 import * as pages from 'modules/app/constants/views';
-import * as titles from 'modules/app/constants/page-titles';
+import * as titles from 'modules/app/constants/view-titles';
 
 describe('utils/set-title.js', () => {
 	beforeEach(() => {
