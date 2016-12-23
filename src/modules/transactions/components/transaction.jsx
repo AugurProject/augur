@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'modules/link/components/link';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
@@ -53,6 +53,8 @@ const Transaction = (p) => {
 		case ASK:
 		case SHORT_SELL:
 		case SHORT_ASK:
+		case MATCH_BID:
+		case MATCH_ASK:
 			switch (p.type) {
 				case BUY:
 					nodes.action = 'BUY';
@@ -71,6 +73,12 @@ const Transaction = (p) => {
 					break;
 				case SHORT_ASK:
 					nodes.action = 'SHORT ASK';
+					break;
+				case MATCH_BID:
+					nodes.action = 'FILLED BID';
+					break;
+				case MATCH_ASK:
+					nodes.action = 'FILLED ASK';
 					break;
 				default:
 					break;
