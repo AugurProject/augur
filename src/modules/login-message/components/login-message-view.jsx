@@ -68,7 +68,7 @@ const LoginMessagePage = p => (
 					A slight adjustment to the Augur logo so that it remains centered in the header.  Previously the nav items would push the logo off center.
 				</li>
 			</ol>
-			<h3>Decembter 22, 2016</h3>
+			<h3>December 22, 2016</h3>
 			<ol>
 				<li>
 					Converted maker trade transactions now have distinct messaging from normal (taker) trade transactions.
