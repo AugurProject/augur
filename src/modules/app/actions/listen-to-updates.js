@@ -7,7 +7,7 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
-import { updateLogsData } from '../../transactions/actions/convert-logs-to-transactions';
+import { convertLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
 
 export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
@@ -37,7 +37,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('collectedFees:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('collectedFees', [msg]));
+					dispatch(convertLogsToTransactions('collectedFees', [msg]));
 				}
 			},
 
@@ -45,7 +45,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('payout:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('payout', [msg]));
+					dispatch(convertLogsToTransactions('payout', [msg]));
 				}
 			},
 
@@ -53,7 +53,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('penalizationCaughtUp:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('penalizationCaughtUp', [msg]));
+					dispatch(convertLogsToTransactions('penalizationCaughtUp', [msg]));
 				}
 			},
 
@@ -62,7 +62,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('penalize:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('penalize', [msg]));
+					dispatch(convertLogsToTransactions('penalize', [msg]));
 				}
 			},
 
@@ -70,7 +70,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('submittedReport:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('submittedReport', [msg]));
+					dispatch(convertLogsToTransactions('submittedReport', [msg]));
 				}
 			},
 
@@ -78,15 +78,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('submittedReportHash:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('submittedReportHash', [msg]));
-				}
-			},
-
-			registration: (msg) => {
-				if (msg) {
-					console.debug('registration:', msg);
-					dispatch(updateAssets());
-					dispatch(updateLogsData('registration', [msg]));
+					dispatch(convertLogsToTransactions('submittedReportHash', [msg]));
 				}
 			},
 
@@ -130,7 +122,7 @@ export function listenToUpdates() {
 					console.debug('marketCreated:', msg);
 					dispatch(loadMarketsInfo([msg.marketID]));
 					dispatch(updateAssets());
-					dispatch(updateLogsData('marketCreated', [msg]));
+					dispatch(convertLogsToTransactions('marketCreated', [msg]));
 				}
 			},
 
@@ -140,7 +132,7 @@ export function listenToUpdates() {
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
 					dispatch(updateAssets());
-					dispatch(updateLogsData('tradingFeeUpdated', [msg]));
+					dispatch(convertLogsToTransactions('tradingFeeUpdated', [msg]));
 				}
 			},
 
@@ -148,7 +140,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('deposit:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('deposit', [msg]));
+					dispatch(convertLogsToTransactions('deposit', [msg]));
 				}
 			},
 
@@ -156,7 +148,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('withdraw:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('withdraw', [msg]));
+					dispatch(convertLogsToTransactions('withdraw', [msg]));
 				}
 			},
 
@@ -165,7 +157,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('Transfer:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('Transfer', [msg]));
+					dispatch(convertLogsToTransactions('Transfer', [msg]));
 				}
 			},
 
@@ -173,7 +165,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('Approval:', msg);
 					dispatch(updateAssets());
-					dispatch(updateLogsData('Approval', [msg]));
+					dispatch(convertLogsToTransactions('Approval', [msg]));
 				}
 			},
 
