@@ -2,11 +2,10 @@ import { formatEther, formatRealEther, formatShares, formatRealEtherEstimate } f
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateAssets } from '../../auth/actions/update-assets';
 import getOrder from '../../bids-asks/helpers/get-order';
 import { augur } from '../../../services/augurjs';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
@@ -69,10 +68,7 @@ export function processCancelOrder(transactionID, orderID) {
 					totalReturn: formatEther(res.cashRefund),
 					gasFees: formatRealEther(res.gasFees)
 				}));
-				dispatch(loadBidsAsks(transaction.data.market.id, () => {
-					dispatch(updateAssets());
-					dispatch(loadAccountTrades(transaction.data.market.id));
-				}));
+				dispatch(deleteTransaction(transactionID));
 			},
 			onFailed: (res) => {
 				console.log('augur.cancel failed: %o', res);
@@ -90,10 +86,7 @@ export function processCancelOrder(transactionID, orderID) {
  * @return {{type: string, orderID: *}}
  */
 export function showCancelOrderConfirmation(orderID) {
-	return {
-		type: SHOW_CANCEL_ORDER_CONFIRMATION,
-		orderID
-	};
+	return { type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID };
 }
 
 /**
@@ -102,8 +95,5 @@ export function showCancelOrderConfirmation(orderID) {
  * @return {{type: string, orderID: *}}
  */
 export function abortCancelOrderConfirmation(orderID) {
-	return {
-		type: ABORT_CANCEL_ORDER_CONFIRMATION,
-		orderID
-	};
+	return { type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID };
 }
