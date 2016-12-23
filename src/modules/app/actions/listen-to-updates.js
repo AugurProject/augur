@@ -2,12 +2,13 @@ import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { syncBlockchain } from '../../app/actions/update-blockchain';
 import { syncBranch } from '../../app/actions/update-branch';
+import { addOrder, removeOrder, fillOrder } from '../../bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
-import { convertLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
+import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 
 export function refreshMarket(marketID) {
 	return (dispatch, getState) => {
@@ -34,7 +35,8 @@ export function listenToUpdates() {
 			},
 
 			collectedFees: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('collectedFees:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('collectedFees', [msg]));
@@ -42,7 +44,8 @@ export function listenToUpdates() {
 			},
 
 			payout: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('payout:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('payout', [msg]));
@@ -50,7 +53,8 @@ export function listenToUpdates() {
 			},
 
 			penalizationCaughtUp: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('penalizationCaughtUp:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('penalizationCaughtUp', [msg]));
@@ -59,7 +63,8 @@ export function listenToUpdates() {
 
 			// Reporter penalization
 			penalize: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('penalize:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('penalize', [msg]));
@@ -67,7 +72,8 @@ export function listenToUpdates() {
 			},
 
 			submittedReport: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('submittedReport:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('submittedReport', [msg]));
@@ -75,7 +81,8 @@ export function listenToUpdates() {
 			},
 
 			submittedReportHash: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('submittedReportHash:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('submittedReportHash', [msg]));
@@ -87,7 +94,12 @@ export function listenToUpdates() {
 				console.debug('log_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshMarket(msg.market));
+					dispatch(convertTradeLogToTransaction('log_fill_tx', msg, msg.market));
+					dispatch(fillOrder(msg));
+					const { address } = getState().loginAccount;
+					if (msg.maker === address || msg.taker === address) {
+						dispatch(updateAssets());
+					}
 				}
 			},
 
@@ -96,7 +108,12 @@ export function listenToUpdates() {
 				console.debug('log_short_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshMarket(msg.market));
+					dispatch(convertTradeLogToTransaction('log_short_fill_tx', msg, msg.market));
+					dispatch(fillOrder({ ...msg, type: 'sell' }));
+					const { address } = getState().loginAccount;
+					if (msg.maker === address || msg.taker === address) {
+						dispatch(updateAssets());
+					}
 				}
 			},
 
@@ -104,7 +121,11 @@ export function listenToUpdates() {
 			log_add_tx: (msg) => {
 				console.debug('log_add_tx:', msg);
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadBidsAsks(msg.market));
+					dispatch(addOrder(msg));
+					const { address } = getState().loginAccount;
+					if (msg.maker === address) {
+						dispatch(updateAssets());
+					}
 				}
 			},
 
@@ -112,7 +133,11 @@ export function listenToUpdates() {
 			log_cancel: (msg) => {
 				console.debug('log_cancel:', msg);
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadBidsAsks(msg.market));
+					dispatch(removeOrder(msg));
+					const { address } = getState().loginAccount;
+					if (msg.maker === address) {
+						dispatch(updateAssets());
+					}
 				}
 			},
 
@@ -137,7 +162,8 @@ export function listenToUpdates() {
 			},
 
 			deposit: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('deposit:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('deposit', [msg]));
@@ -145,7 +171,8 @@ export function listenToUpdates() {
 			},
 
 			withdraw: (msg) => {
-				if (msg) {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
 					console.debug('withdraw:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('withdraw', [msg]));
@@ -156,16 +183,12 @@ export function listenToUpdates() {
 			Transfer: (msg) => {
 				if (msg) {
 					console.debug('Transfer:', msg);
-					dispatch(updateAssets());
-					dispatch(convertLogsToTransactions('Transfer', [msg]));
 				}
 			},
 
 			Approval: (msg) => {
 				if (msg) {
 					console.debug('Approval:', msg);
-					dispatch(updateAssets());
-					dispatch(convertLogsToTransactions('Approval', [msg]));
 				}
 			},
 
