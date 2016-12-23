@@ -94,10 +94,12 @@ export function listenToUpdates() {
 				console.debug('log_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(convertTradeLogToTransaction('log_fill_tx', msg, msg.market));
 					dispatch(fillOrder(msg));
 					const { address } = getState().loginAccount;
 					if (msg.maker === address || msg.taker === address) {
+						dispatch(convertTradeLogToTransaction('log_fill_tx', {
+							[msg.market]: { [msg.outcome]: [msg] }
+						}, msg.market));
 						dispatch(updateAssets());
 					}
 				}
@@ -108,10 +110,12 @@ export function listenToUpdates() {
 				console.debug('log_short_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(convertTradeLogToTransaction('log_short_fill_tx', msg, msg.market));
 					dispatch(fillOrder({ ...msg, type: 'sell' }));
 					const { address } = getState().loginAccount;
 					if (msg.maker === address || msg.taker === address) {
+						dispatch(convertTradeLogToTransaction('log_fill_tx', {
+							[msg.market]: { [msg.outcome]: [msg] }
+						}, msg.market));
 						dispatch(updateAssets());
 					}
 				}
@@ -124,6 +128,9 @@ export function listenToUpdates() {
 					dispatch(addOrder(msg));
 					const { address } = getState().loginAccount;
 					if (msg.maker === address) {
+						dispatch(convertTradeLogToTransaction('log_add_tx', {
+							[msg.market]: { [msg.outcome]: [msg] }
+						}, msg.market));
 						dispatch(updateAssets());
 					}
 				}
@@ -136,6 +143,9 @@ export function listenToUpdates() {
 					dispatch(removeOrder(msg));
 					const { address } = getState().loginAccount;
 					if (msg.maker === address) {
+						dispatch(convertTradeLogToTransaction('log_cancel', {
+							[msg.market]: { [msg.outcome]: [msg] }
+						}, msg.market));
 						dispatch(updateAssets());
 					}
 				}
