@@ -119,6 +119,17 @@ export const selectMarketFromEventID = (eventID) => {
 	);
 };
 
+export const selectMarketIDFromEventID = (eventID, marketsData) => {
+	const marketIDs = Object.keys(marketsData);
+	const numMarkets = marketIDs.length;
+	for (let i = 0; i < numMarkets; ++i) {
+		if (eventID === marketsData[marketIDs[i]].eventID) {
+			return marketIDs[i];
+		}
+	}
+	return null;
+};
+
 const assembledMarketsCache = {};
 
 export function assembleMarket(
