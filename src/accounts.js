@@ -365,21 +365,21 @@ module.exports = function () {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
                     if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
                         (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
-                        packaged.nonce = augur.rpc.rawTxMaxNonce + 1;
+                        packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
                         if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
                             console.debug("[augur.js] duplicate nonce, incremented:",
-                                packaged.nonce, augur.rpc.rawTxMaxNonce);
+                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
                         }
                         break;
                     }
                 }
-                if (packaged.nonce <= augur.rpc.rawTxMaxNonce) {
-                    packaged.nonce = ++augur.rpc.rawTxMaxNonce;
+                if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
+                    packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
                 } else {
-                    augur.rpc.rawTxMaxNonce = packaged.nonce;
+                    augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
                 }
                 if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
+                    console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
@@ -437,7 +437,7 @@ module.exports = function () {
                     console.debug('[augur.js] txCount:', parseInt(txCount, 16));
                 }
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
-                    packaged.nonce = parseInt(txCount, 16);
+                    packaged.nonce = abi.hex(txCount);
                 }
                 self.submitTx(packaged, cb);
             });
@@ -465,9 +465,15 @@ module.exports = function () {
             // parse and serialize transaction parameters
             var packaged = augur.rpc.packageRequest(payload);
             packaged.from = this.account.address;
-            packaged.nonce = payload.nonce || 0;
+            packaged.nonce = payload.nonce || "0x0";
             packaged.value = payload.value || "0x0";
-            packaged.gasLimit = payload.gasLimit || (augur.rpc.block && augur.rpc.block.gasLimit) || constants.DEFAULT_GAS;
+            if (payload.gasLimit) {
+                packaged.gasLimit = abi.hex(payload.gasLimit);
+            } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
+                packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
+            } else {
+                packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
+            }
             if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }

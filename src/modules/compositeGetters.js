@@ -146,6 +146,12 @@ module.exports = {
             callback);
     },
 
+    adjustScalarOrder: function (order, minValue) {
+        order.price = this.expandScalarPrice(minValue, order.price);
+        order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
+        return order;
+    },
+
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
         var minValue, order;
@@ -158,10 +164,7 @@ module.exports = {
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (order) {
-                if (isScalar) {
-                    order.price = this.expandScalarPrice(minValue, order.price);
-                    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
-                }
+                if (isScalar) order = this.adjustScalarOrder(order, minValue);
                 orderBook[order.type][order.id] = order;
             }
         }
