@@ -16769,6 +16769,11 @@ module.exports={
           "type": "int256"
         }, 
         {
+          "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
           "indexed": false, 
           "name": "marketID", 
           "type": "int256"
@@ -16789,8 +16794,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "marketCreated(int256,int256,int256,int256,int256)", 
-      "signature": "0x8f9d87fc01c4c1a9057249423e7e9c38c4f8899a494502d7aaa64c0b7c40cf9e"
+      "name": "marketCreated(int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x80dc2c0162323f3305cee66776c5a51c1475ee8c4d8c6798df60e80d8c8c907b"
     }, 
     "payout": {
       "contract": "Payout", 
@@ -16881,6 +16886,11 @@ module.exports={
         }, 
         {
           "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
           "name": "event", 
           "type": "int256"
         }, 
@@ -16925,8 +16935,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xa865e521626cec7891279a54f112b20abe52888a42df585b51ca9ff03c4249b7"
+      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xc06628844b88265d7d67648aa987a952cb724513c59dcf14014706b266041de7"
     }, 
     "registration": {
       "contract": "Register", 
@@ -17068,6 +17078,11 @@ module.exports={
         }, 
         {
           "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
           "name": "marketID", 
           "type": "int256"
         }, 
@@ -17082,8 +17097,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "tradingFeeUpdated(int256,int256,int256,int256)", 
-      "signature": "0x00adcc8aa683a6eb4db9d3921b0f4290b7040da7493508cf549c69450f22b4b0"
+      "name": "tradingFeeUpdated(int256,int256,int256,int256,int256)", 
+      "signature": "0xcd5a359787987cf4975171bed45d96e380d985598c913dc5a76c6aca1d1fccfb"
     }, 
     "withdraw": {
       "contract": "Cash", 
@@ -22216,41 +22231,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0xddacacafe6de1502836b4b341319428558d908e5", 
-        "Branches": "0xd76aeb88aebe15a73fc574b70317d0613135c26c", 
-        "BuyAndSellShares": "0x5092807fbace598231b22fe8ed960e812306cfd4", 
-        "Cash": "0x8ffd658f846474e572a6b750028e7e09c1dc2318", 
-        "CloseMarket": "0x5117731a8d5227af7b9d3b707ee12d78b877c1e8", 
-        "CollectFees": "0x6af6152a699cfd7a804e8e3ae07232ea1fa6f2f4", 
-        "CompleteSets": "0x593eb36e1edbd82f038369a4140cb02262d614e7", 
-        "CompositeGetters": "0x947a8fb94d1d5c9b8df4468f0e0aa0c60ce04984", 
-        "Consensus": "0x223f1873a72ac0efe7b430e60b0d0c0c74c41a64", 
-        "ConsensusData": "0x5d2b0081722d0aa0e13370a8fb177b87027acda1", 
-        "CreateBranch": "0x354db2b78b0fe06931d944614faf013a3345a84a", 
-        "CreateMarket": "0x28aa50539f8b521d9bbcb535154c80bb26c4bec3", 
-        "EventResolution": "0x91f71004c5bfa938b82b0b4aff02dbbce7e6012b", 
-        "Events": "0xca388cab585782eb1254b724309bc4aee65da476", 
-        "ExpiringEvents": "0x364c9477df8d47f8944af91548b4f7f0943ef170", 
-        "Faucets": "0xdbdbf802d70a1cd5e1f5710a92880d77d477595b", 
-        "ForkPenalize": "0x42f6320a5ae60c312df93670a1a0b147e22084c7", 
-        "Forking": "0x99ab8b34aed9e246362b7ad0fca660f09d018611", 
-        "FxpFunctions": "0xac03897e0f09622fc85b9e0113ee7e9866a329ad", 
-        "Info": "0x9ad75565307467d498e105ea1d43d53a28362c76", 
-        "MakeReports": "0x99794354167b113265f4ff204019b4c9c61de885", 
-        "Markets": "0x6cca1ca04d4e825dda36a66b4a9540b4c832d41c", 
-        "Payout": "0xedfcb9c66fc330015b964add01c2032e31efad89", 
-        "PenalizationCatchup": "0x0d4273ecf798237390cb08f7436005f21051a307", 
-        "PenalizeNotEnoughReports": "0xd198d096fee0be0928f6ea46df8f445ba72f7466", 
-        "ProportionCorrect": "0x2e3002571236ac2c733b1db2467f66eb38f16e45", 
-        "Register": "0x1ccf2a21b12ac4a831d193c75a987b126c536509", 
-        "Reporting": "0x1695e9423090df0780309955ab09c25856f75e3f", 
-        "ReportingThreshold": "0x2448ecb0a0e1c2d1baad354b7481a18036efd3ce", 
-        "RoundTwo": "0xf005edc628952fe0821019344da11787b9224ae1", 
-        "RoundTwoPenalize": "0x9a7220d050796550cb72da6146d759a3a3d6b911", 
-        "SendReputation": "0x0609458b8f1426439c7fdbc90862129c1ddcaad8", 
-        "SlashRep": "0x464aa78157c6b775cb135cf14bab7b8fdd9f94a9", 
-        "Trade": "0x5a1cc7b9257ea6961ecaecf58a051e3f081946d3", 
-        "Trades": "0x3b5ad15512399aeddab594e7195081d6bbd12982"
+        "Backstops": "0x017a3f0917d43840b28c89671b2328ec9f58d53d", 
+        "Branches": "0x787b8d0030a4de6d62c1805ecb1a85c0aaaf6de0", 
+        "BuyAndSellShares": "0xb489d3aaf2a0a3b29efcd2027903f20ad514e1de", 
+        "Cash": "0xb06d7455d0bd7f53e2d487c95ae68626683f285f", 
+        "CloseMarket": "0x2c452a8592b56759a49fd5b49c158ba661595ae5", 
+        "CollectFees": "0xb6ca441b3cbcf33f133c91a2cc1585eee644ba22", 
+        "CompleteSets": "0xbf91d748f94408d6d66ac45669501d7e879c5bac", 
+        "CompositeGetters": "0xb84c03a0b4efcc68810b1940f212b5032ceb3930", 
+        "Consensus": "0x85c8d384a239e52e851ba56fff62d194ea561894", 
+        "ConsensusData": "0xa18aef3fc69f47e487f08e43ba59616fa003976a", 
+        "CreateBranch": "0xe1a2ea3ebfee1228d16ad453db1cf6cefed42554", 
+        "CreateMarket": "0x0c8516602ce9117b01b484d644db4294d5c68a9d", 
+        "EventResolution": "0x824a94c01c4038d54c438317894a50a6a5fe3163", 
+        "Events": "0xa7247ba0b6aaa9b8e335b90beb124b2eeb507c27", 
+        "ExpiringEvents": "0x39eae01133d83500c7ffb2a29bac4900505ea4a2", 
+        "Faucets": "0x34ec10825c3db9cc4e2d60f490a31010153ef149", 
+        "ForkPenalize": "0xcd117d674a63304829ccde088ad464e345c47cb6", 
+        "Forking": "0xf419769205c553e8ad9d583354d891f588ac4d95", 
+        "FxpFunctions": "0x1af28b519de52b59982f1eaf7bdc6849ecc5404f", 
+        "Info": "0x71641929320a6680b67828e56f70c873a5690f24", 
+        "MakeReports": "0xc145a01a2b555d44e8f485c35db1fafac4822d94", 
+        "Markets": "0x0944a6298d5191b0f45abc72762b6e24c2ffcf32", 
+        "Payout": "0x30838c4a3526524dfed25056d170b9e50f3905dd", 
+        "PenalizationCatchup": "0x889835407055cb6a25b672d0c8a4df44eeacccef", 
+        "PenalizeNotEnoughReports": "0xb897353dac7b5daf6920b4b47871e18f3ab566f6", 
+        "ProportionCorrect": "0xa126500e9edc6afea7dcaa70824df1ced72c1a17", 
+        "Register": "0xfbe86e9f9dcdb8d6bce0ccad8b4331328bdf66b2", 
+        "Reporting": "0x828a5c2da0c3e1d314b266edb10aae4a744eb7af", 
+        "ReportingThreshold": "0x2729d36a6f80deaa40fadb2fff505d8f642711e9", 
+        "RoundTwo": "0xac8c12c43213f98158ab616628a6fa213da8ab13", 
+        "RoundTwoPenalize": "0x4178f0e71b7cd929c3fa9518926c2f3c2ab16e23", 
+        "SendReputation": "0x4edd75cd15117e164ec899269fa67d1bd3b6674a", 
+        "SlashRep": "0x07440b7282267fae98a829cee1ac385500dbe32e", 
+        "Trade": "0xe23a06c44a10494d4e21feb6a7da099b097e360c", 
+        "Trades": "0xe95229977b12a25081836dce78d8cecd3ad4ce81"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -40284,21 +40299,21 @@ module.exports = function () {
                     if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
                     if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
                         (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
-                        packaged.nonce = augur.rpc.rawTxMaxNonce + 1;
+                        packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
                         if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
                             console.debug("[augur.js] duplicate nonce, incremented:",
-                                packaged.nonce, augur.rpc.rawTxMaxNonce);
+                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
                         }
                         break;
                     }
                 }
-                if (packaged.nonce <= augur.rpc.rawTxMaxNonce) {
-                    packaged.nonce = ++augur.rpc.rawTxMaxNonce;
+                if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
+                    packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
                 } else {
-                    augur.rpc.rawTxMaxNonce = packaged.nonce;
+                    augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
                 }
                 if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                    console.debug("[augur.js] nonce:", packaged.nonce, augur.rpc.rawTxMaxNonce);
+                    console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
                 }
                 mutex.unlock();
                 if (augur.rpc.debug.broadcast) {
@@ -40356,7 +40371,7 @@ module.exports = function () {
                     console.debug('[augur.js] txCount:', parseInt(txCount, 16));
                 }
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
-                    packaged.nonce = parseInt(txCount, 16);
+                    packaged.nonce = abi.hex(txCount);
                 }
                 self.submitTx(packaged, cb);
             });
@@ -40384,9 +40399,15 @@ module.exports = function () {
             // parse and serialize transaction parameters
             var packaged = augur.rpc.packageRequest(payload);
             packaged.from = this.account.address;
-            packaged.nonce = payload.nonce || 0;
+            packaged.nonce = payload.nonce || "0x0";
             packaged.value = payload.value || "0x0";
-            packaged.gasLimit = payload.gasLimit || (augur.rpc.block && augur.rpc.block.gasLimit) || constants.DEFAULT_GAS;
+            if (payload.gasLimit) {
+                packaged.gasLimit = abi.hex(payload.gasLimit);
+            } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
+                packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
+            } else {
+                packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
+            }
             if (augur.rpc.debug.broadcast) {
                 console.log("[augur.js] payload:", payload);
             }
@@ -41533,7 +41554,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.4.1";
+    this.version = "3.4.2";
 
     this.options = {
         debug: {
@@ -41917,6 +41938,16 @@ module.exports = {
         return maxValue.minus(price).toFixed();
     },
 
+    roundToPrecision: function (value, minimum, round, roundingMode) {
+        if (value.lt(minimum || constants.PRECISION.zero)) return null;
+        if (value.lt(constants.PRECISION.limit)) {
+            value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
+        } else {
+            value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
+        }
+        return value;
+    },
+
     parseTradeInfo: function (trade) {
         var type, round, roundingMode;
         if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
@@ -41937,29 +41968,22 @@ module.exports = {
             return null;
         }
 
-        var amount = abi.unfix(trade[3]);
-        if (amount.lt(constants.MINIMUM_TRADE_SIZE)) return null;
-        if (amount.lt(constants.PRECISION.limit)) {
-            amount = amount.toPrecision(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        } else {
-            amount = amount.times(constants.PRECISION.multiple).floor().dividedBy(constants.PRECISION.multiple).toFixed();
-        }
+        var fullPrecisionAmount = abi.unfix(trade[3]);
+        var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
+        if (amount === null) return null;
 
-        var price = abi.unfix(abi.hex(trade[4], true));
-        if (price.lt(constants.PRECISION.zero)) return null;
-        if (price.lt(constants.PRECISION.limit)) {
-            price = price.toPrecision(constants.PRECISION.decimals, roundingMode);
-        } else {
-            price = price.times(constants.PRECISION.multiple)[round]().dividedBy(constants.PRECISION.multiple).toFixed();
-        }
+        var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
+        var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+        if (price === null) return null;
 
         return {
             id: trade[0],
             type: type,
             market: trade[2],
             amount: amount,
+            fullPrecisionAmount: fullPrecisionAmount.toFixed(),
             price: price,
-            fullPrecisionPrice: abi.unfix(abi.hex(trade[4], true), "string"),
+            fullPrecisionPrice: fullPrecisionPrice.toFixed(),
             owner: abi.format_address(trade[5]),
             block: parseInt(trade[6], 16),
             outcome: abi.string(trade[7])
@@ -42412,6 +42436,12 @@ module.exports = {
             callback);
     },
 
+    adjustScalarOrder: function (order, minValue) {
+        order.price = this.expandScalarPrice(minValue, order.price);
+        order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
+        return order;
+    },
+
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
         var minValue, order;
@@ -42424,10 +42454,7 @@ module.exports = {
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (order) {
-                if (isScalar) {
-                    order.price = this.expandScalarPrice(minValue, order.price);
-                    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
-                }
+                if (isScalar) order = this.adjustScalarOrder(order, minValue);
                 orderBook[order.type][order.id] = order;
             }
         }
@@ -48589,13 +48616,13 @@ module.exports = {
             from: tx.from,
             to: tx.to,
             data: abi.encode(tx),
-            gas: tx.gas || this.DEFAULT_GAS
+            gas: tx.gas ? abi.hex(tx.gas) : this.DEFAULT_GAS
         };
-        if (tx.gasPrice) packaged.gasPrice = tx.gasPrice;
-        if (tx.timeout) packaged.timeout = tx.timeout;
-        if (tx.value) packaged.value = tx.value;
+        if (tx.gasPrice) packaged.gasPrice = abi.hex(tx.gasPrice);
+        if (tx.timeout) packaged.timeout = abi.hex(tx.timeout);
+        if (tx.value) packaged.value = abi.hex(tx.value);
         if (tx.returns) packaged.returns = tx.returns;
-        if (tx.nonce) packaged.nonce = tx.nonce;
+        if (tx.nonce) packaged.nonce = abi.hex(tx.nonce);
         return packaged;
     },
 
