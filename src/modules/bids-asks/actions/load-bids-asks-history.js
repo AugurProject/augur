@@ -11,12 +11,12 @@ export function loadBidsAsksHistory(marketID, cb) {
 			params.fromBlock = loginAccount.registerBlockNumber;
 		}
 		async.parallel([
-			next => augur.getLogs('log_add_tx', params, ['market', 'outcome'], (err, logs) => {
+			next => augur.getLogs('log_add_tx', params, { index: ['market', 'outcome'] }, (err, logs) => {
 				if (err) return next(err);
 				dispatch(updateAccountBidsAsksData(logs, marketID));
 				next();
 			}),
-			next => augur.getLogs('log_cancel', params, ['market', 'outcome'], (err, logs) => {
+			next => augur.getLogs('log_cancel', params, { index: ['market', 'outcome'] }, (err, logs) => {
 				if (err) return next(err);
 				dispatch(updateAccountCancelsData(logs, marketID));
 				next();
