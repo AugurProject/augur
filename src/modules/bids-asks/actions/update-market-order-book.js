@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { abi, augur, constants } from '../../../services/augurjs';
+import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
+import { updateMarketTradesData } from '../../portfolio/actions/update-market-trades-data';
 
 export const UPDATE_MARKET_ORDER_BOOK = 'UPDATE_MARKET_ORDER_BOOK';
 export const CLEAR_MARKET_ORDER_BOOK = 'CLEAR_MARKET_ORDER_BOOK';
@@ -50,7 +52,8 @@ export function removeOrder(log) {
 
 export function fillOrder(log) {
 	return (dispatch, getState) => {
-		const orderBook = { ...getState().orderBooks[log.market] };
+		const { orderBooks, priceHistory } = getState();
+		const orderBook = { ...orderBooks[log.market] };
 		if (orderBook) {
 			const orderBookSide = orderBook[log.type];
 			if (orderBookSide) {
@@ -72,6 +75,11 @@ export function fillOrder(log) {
 				}
 			}
 		}
+		const marketPriceHistory = priceHistory[log.market] ? { ...priceHistory[log.market] } : {};
+		if (!marketPriceHistory[log.outcome]) marketPriceHistory[log.outcome] = [];
+		marketPriceHistory[log.outcome].push(log);
+		dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
+		dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
 	};
 }
 
