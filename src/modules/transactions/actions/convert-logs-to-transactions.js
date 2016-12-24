@@ -10,6 +10,19 @@ import { selectMarketLink } from '../../link/selectors/links';
 import { selectMarketIDFromEventID } from '../../market/selectors/market';
 import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
 
+export function loadMarketThenRetryConversion(marketID, label, log, callback) {
+	return (dispatch, getState) => {
+		dispatch(loadMarketsInfo([marketID], () => {
+			if (!getState().marketsData[marketID]) {
+				if (callback) callback(marketID);
+			} else {
+				dispatch(convertLogsToTransactions(label, [log]));
+				if (callback) callback();
+			}
+		}));
+	};
+}
+
 export function convertLogsToTransactions(label, logs) {
 	return (dispatch, getState) => {
 		console.log('convertLogsToTransactions', label);
@@ -27,7 +40,7 @@ export function convertLogsToTransactions(label, logs) {
 					break;
 				case 'collectedFees':
 					utd[hash].type = `Collect Reporting Fees`;
-					utd[hash].data.description = `Cycle ${log.period}: ${formatRep(log.lastPeriodRepBalance).full} of ${formatRep(log.totalRepReporting).full} total`;
+					utd[hash].data.description = `Cycle ${log.period}: ${formatRep(log.lastPeriodRepBalance).full} of ${formatRep(log.totalReportingRep).full} total`;
 					if (log.cashFeesCollected !== '0') {
 						utd[hash].message = `${formatEther(log.cashFeesCollected, { positiveSign: true }).full} (balance: ${formatEther(log.newCashBalance).full})`;
 						if (log.repGain !== '0') {
@@ -48,10 +61,7 @@ export function convertLogsToTransactions(label, logs) {
 					utd[hash].type = 'Create Market';
 					const market = getState().marketsData[log.marketID];
 					if (!market) {
-						return dispatch(loadMarketsInfo([log.marketID], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(log.marketID, label, log, nextLog));
 					}
 					utd[hash].data.description = market ? market.description : log.marketID.replace('0x', '');
 					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: utd[hash].data.description }, dispatch);
@@ -63,10 +73,7 @@ export function convertLogsToTransactions(label, logs) {
 					utd[hash].type = 'Claim Trading Payout';
 					const market = getState().marketsData[log.market];
 					if (!market) {
-						return dispatch(loadMarketsInfo([log.market], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(log.market, label, log, nextLog));
 					}
 					utd[hash].data.description = market.description;
 					utd[hash].data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
@@ -89,10 +96,7 @@ export function convertLogsToTransactions(label, logs) {
 					console.debug('penalize log:', log);
 					console.debug('market:', market);
 					if (!market) {
-						return dispatch(loadMarketsInfo([marketID], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
 					}
 					const marketOutcomes = outcomesData[marketID];
 					const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, marketOutcomes);
@@ -112,10 +116,7 @@ export function convertLogsToTransactions(label, logs) {
 					if (!marketID) return nextLog();
 					const market = marketsData[marketID];
 					if (!market) {
-						return dispatch(loadMarketsInfo([marketID], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
 					}
 					const marketOutcomes = outcomesData[marketID];
 					utd[hash].data.description = market.description;
@@ -130,10 +131,7 @@ export function convertLogsToTransactions(label, logs) {
 					if (!marketID) return nextLog();
 					const market = marketsData[marketID];
 					if (!market) {
-						return dispatch(loadMarketsInfo([marketID], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
 					}
 					const marketOutcomes = outcomesData[marketID];
 					utd[hash].data.description = market.description;
@@ -158,10 +156,7 @@ export function convertLogsToTransactions(label, logs) {
 					const { marketsData } = getState();
 					const market = marketsData[log.marketID];
 					if (!market) {
-						return dispatch(loadMarketsInfo([log.marketID], () => {
-							dispatch(convertLogsToTransactions(label, [log]));
-							nextLog();
-						}));
+						return dispatch(loadMarketThenRetryConversion(log.marketID, label, log, nextLog));
 					}
 					utd[hash].data.description = market.description;
 					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
@@ -223,12 +218,12 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 						switch (label) {
 							case 'log_fill_tx': {
 								const hash = trade.transactionHash;
-								const transactionID = `${hash}-${trade.sequenceNumber}`;
+								const transactionID = `${hash}-${trade.tradeid}`;
 								const price = formatEther(trade.price);
-								const shares = formatShares(trade.shares);
+								const shares = formatShares(trade.amount);
 								const bnPrice = abi.bignum(trade.price);
 								const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-								const bnShares = abi.bignum(trade.shares);
+								const bnShares = abi.bignum(trade.amount);
 								const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 								const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 								const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -237,22 +232,16 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 								let perfectType;
 								let formattedTotalCost;
 								let formattedTotalReturn;
-								let tradeType;
-								if (trade.type === 2 || trade.type === 'sell') {
-									tradeType = 'sell';
-								} else {
-									tradeType = 'buy';
-								}
 								if (trade.maker) {
-									type = tradeType === 'sell' ? 'match_bid' : 'match_ask';
-									perfectType = tradeType === 'sell' ? 'bought' : 'sold';
-									formattedTotalCost = tradeType === 'sell' ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = tradeType === 'buy' ? formatEther(totalReturn) : undefined;
+									type = trade.type === 'sell' ? 'match_bid' : 'match_ask';
+									perfectType = trade.type === 'sell' ? 'bought' : 'sold';
+									formattedTotalCost = trade.type === 'sell' ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = trade.type === 'buy' ? formatEther(totalReturn) : undefined;
 								} else {
-									type = tradeType === 'buy' ? 'buy' : 'sell';
-									perfectType = tradeType === 'buy' ? 'bought' : 'sold';
-									formattedTotalCost = tradeType === 'buy' ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = tradeType === 'sell' ? formatEther(totalReturn) : undefined;
+									type = trade.type === 'buy' ? 'buy' : 'sell';
+									perfectType = trade.type === 'buy' ? 'bought' : 'sold';
+									formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
+									formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
 								}
 								const rawPrice = bnPrice;
 								utd = {
@@ -280,20 +269,20 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 										rawTotalCost: totalCost,
 										rawTotalReturn: totalReturn,
 										totalCost: formattedTotalCost,
-										totalReturn: formattedTotalReturn,
-										sequenceNumber: trade.sequenceNumber
+										totalReturn: formattedTotalReturn
 									}
 								};
 								break;
 							}
 							case 'log_add_tx': {
+								const market = marketsData[marketID];
 								const type = trade.type === 'buy' ? 'bid' : 'ask';
 								const price = formatEther(trade.price);
 								const shares = formatShares(trade.amount);
-								const makerFee = marketsData[marketID].makerFee;
-								const takerFee = marketsData[marketID].takerFee;
-								const maxValue = abi.bignum(marketsData[marketID].maxValue);
-								const minValue = abi.bignum(marketsData[marketID].minValue);
+								const makerFee = market.makerFee;
+								const takerFee = market.takerFee;
+								const maxValue = abi.bignum(market.maxValue);
+								const minValue = abi.bignum(market.minValue);
 								const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
 								const adjustedFees = augur.calculateFxpMakerTakerFees(
 									augur.calculateFxpAdjustedTradingFee(
