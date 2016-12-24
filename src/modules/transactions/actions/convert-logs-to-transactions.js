@@ -179,7 +179,6 @@ export function convertLogsToTransactions(label, logs) {
 					utd[hash].message = hash;
 					break;
 			}
-			console.log('utd:', utd);
 			dispatch(updateTransactionsData(utd));
 			nextLog();
 		}, (err) => {
@@ -375,7 +374,6 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 							default:
 								break;
 						}
-						console.log('utd:', utd);
 						dispatch(updateTransactionsData(utd));
 					}
 				}
