@@ -104,7 +104,7 @@ export function listenToUpdates() {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(fillOrder(msg));
 					const { address } = getState().loginAccount;
-					if (msg.maker === address || msg.taker === address) {
+					if (msg.sender === address || msg.owner === address) {
 						dispatch(convertTradeLogToTransaction('log_fill_tx', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
@@ -120,7 +120,7 @@ export function listenToUpdates() {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(fillOrder({ ...msg, type: 'sell' }));
 					const { address } = getState().loginAccount;
-					if (msg.maker === address || msg.taker === address) {
+					if (msg.sender === address || msg.owner === address) {
 						dispatch(convertTradeLogToTransaction('log_fill_tx', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
@@ -135,7 +135,7 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(addOrder(msg));
 					const { address } = getState().loginAccount;
-					if (msg.maker === address) {
+					if (msg.sender === address) {
 						dispatch(convertTradeLogToTransaction('log_add_tx', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
@@ -150,7 +150,7 @@ export function listenToUpdates() {
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(removeOrder(msg));
 					const { address } = getState().loginAccount;
-					if (msg.maker === address) {
+					if (msg.sender === address) {
 						dispatch(convertTradeLogToTransaction('log_cancel', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
