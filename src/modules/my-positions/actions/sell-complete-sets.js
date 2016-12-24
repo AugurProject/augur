@@ -58,14 +58,15 @@ function sellCompleteSetsMarket(marketID, callback) {
 		if (loginAccount.address && !sellCompleteSetsLock[marketID]) {
 			dispatch(completeSetsCheck(marketID, (err, smallestPosition) => {
 				if (err) {
-					return callback(null, marketID);
+					if (callback) callback(null, marketID);
+				} else {
+					dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
+					if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
+						dispatch(updateSellCompleteSetsLock(marketID, true));
+						dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed()));
+					}
+					if (callback) callback(null);
 				}
-				dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
-				if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
-					dispatch(updateSellCompleteSetsLock(marketID, true));
-					dispatch(addSellCompleteSetsTransaction(marketID, smallestPosition.toFixed()));
-				}
-				if (callback) callback(null);
 			}));
 		} else if (callback) callback(null);
 	};
