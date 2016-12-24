@@ -100,7 +100,7 @@ module.exports = {
     },
 
     finishLoadBranch: function (branch, callback) {
-        if (branch.periodLength && branch.description) {
+        if (branch.periodLength && branch.description && branch.baseReporters) {
             callback(null, branch);
         }
     },
@@ -116,6 +116,11 @@ module.exports = {
         this.getDescription(branchID, function (description) {
             if (!description || description.error) return callback(description);
             branch.description = description;
+            self.finishLoadBranch(branch, callback);
+        });
+        this.getBaseReporters(branchID, function (baseReporters) {
+            if (!baseReporters || baseReporters.error) return callback(baseReporters);
+            branch.baseReporters = parseInt(baseReporters, 10);
             self.finishLoadBranch(branch, callback);
         });
     },
