@@ -14,7 +14,10 @@ if (process.env.NODE_ENV === 'development') {
 
 	// Hot Module Reload
 	app.use(devMiddleware(compiler, {
-		publicPath: config.output.publicPath
+		publicPath: config.output.publicPath,
+		stats: {
+			colors: true
+		}
 	}));
 
 	app.use(hotMiddleware(compiler));

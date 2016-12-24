@@ -6,6 +6,7 @@ const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
 process.env.NODE_ENV = 'production';
+process.env.FORCE_COLOR = true;
 
 shell.echo(`
 == Building Augur ==
@@ -67,6 +68,9 @@ const tasks = new Listr([
 		title: 'Build Augur',
 		task: () => buildAugur
 	}
-]);
+],
+{
+	renderer: 'verbose'
+});
 
 tasks.run().catch((err) => {});

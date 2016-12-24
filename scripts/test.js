@@ -2,6 +2,7 @@ const shell = require('shelljs');
 const Listr = require('listr');
 
 process.env.NODE_ENV = 'test';
+process.env.FORCE_COLOR = true;
 
 shell.echo(`
 == Running Augur Tests ==
@@ -23,6 +24,9 @@ const tasks = new Listr([
 		title: 'Running Tests',
 		task: () => tests
 	}
-]);
+],
+{
+	renderer: 'verbose'
+});
 
 tasks.run().catch((err) => {});
