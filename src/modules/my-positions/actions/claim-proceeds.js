@@ -55,17 +55,10 @@ export function claimProceeds() {
 						message: `closing out ${formatShares(closedMarket.shares).full} for ${formatEther(closedMarket.shares).full}`
 					}));
 				}, (transactionID, marketID, payout) => {
-					dispatch(updateExistingTransaction(transactionID, {
-						status: 'updating position',
-						message: `closed out ${formatShares(payout.shares).full} for ${formatEther(payout.cash).full}`
-					}));
+					dispatch(deleteTransaction(transactionID));
 					dispatch(updateAssets());
 					dispatch(loadMarketsInfo([marketID], () => {
-						dispatch(loadAccountTrades(marketID, () => {
-							dispatch(loadBidsAsks(marketID, () => {
-								dispatch(deleteTransaction(transactionID));
-							}));
-						}));
+						dispatch(loadAccountTrades(marketID, () => dispatch(loadBidsAsks(marketID))));
 					}));
 				});
 			}
