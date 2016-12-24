@@ -1,12 +1,19 @@
 import React, { PropTypes } from 'react';
 import MarketsFilterSort from 'modules/markets/components/markets-filter-sort';
 import Link from 'modules/link/components/link';
+import EmDash from 'modules/common/components/em-dash';
+
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
 
 const MarketsHeaders = p => (
 	<article>
 		<div className="view-header">
 			<div className="view-header-group">
-				<h2>Markets</h2>
+				<h2>
+					Markets
+					{p.marketsHeader.selectedMarketsHeader === FAVORITES && <span> <EmDash /> Favorites</span>}
+					{p.marketsHeader.selectedMarketsHeader === PENDING_REPORTS && <span> <EmDash /> Pending Reports</span>}
+				</h2>
 			</div>
 			<div className="view-header-group">
 				{p.loginAccount && p.loginAccount.address &&

@@ -8,7 +8,7 @@ const ComponentNav = p => (
 		{Object.keys(p.navItems || {}).map(nav => (
 			<Link
 				key={nav}
-				className={classNames({ selected: p.selectedNav === nav, 'mobile-only': p.navItems[nav].mobileOnly })}
+				className={classNames({ selected: p.selectedNav === nav, 'mobile-only': p.navItems[nav].isMobile })}
 				onClick={() => { p.updateSelectedNav(nav); }}
 			>
 				<li className={`${p.selectedNav === nav && 'selected'}`} >

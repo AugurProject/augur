@@ -5,6 +5,8 @@ const Listr = require('listr');
 const srcPath = path.resolve(__dirname, '../src');
 const testPath = path.resolve(__dirname, '../test');
 
+process.env.FORCE_COLOR = true;
+
 shell.echo(`
 == Running Augur Linting ==
 `);
@@ -56,7 +58,8 @@ const tasks = new Listr([
 		task: () => lintStyles
 	},
 ], {
-	concurrent: true
+	concurrent: true,
+	renderer: 'verbose'
 });
 
 tasks.run().catch((err) => {});
