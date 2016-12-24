@@ -83,6 +83,7 @@ module.exports = function () {
                 case "log_fill_tx":
                 case "log_short_fill_tx":
                     fmt = this.format_common_fields(msg);
+                    if (!fmt.type) fmt.type = "sell";
                     fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
