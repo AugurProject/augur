@@ -479,15 +479,15 @@ module.exports = {
     calculateTradePL: function (PL, trade) {
         if (trade.isCompleteSet) {
             if (trade.type === 1) {
-                // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.shares, JSON.stringify(PL.tradeQueue));
-                return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
+                // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+                return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
             }
-            // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.shares, JSON.stringify(PL.tradeQueue));
-            return this.sellCompleteSetsPL(PL, abi.bignum(trade.shares), abi.bignum(trade.price));
+            // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+            return this.sellCompleteSetsPL(PL, abi.bignum(trade.amount), abi.bignum(trade.price));
         } else if (trade.maker) {
-            return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
+            return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
         }
-        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.shares));
+        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
     },
 
     calculateTradesPL: function (PL, trades) {
