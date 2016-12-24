@@ -300,7 +300,7 @@ module.exports = {
                 effectivePrice = effectivePrices[completeSetsType][marketID];
                 if (shareTotal && effectivePrice) {
                     netEffectiveTrades[marketID][completeSetsType] = {
-                        type: completeSetsType === "sellCompleteSets" ? 2 : 1,
+                        type: completeSetsType === "sellCompleteSets" ? "sell" : "buy",
                         price: effectivePrice,
                         shares: shareTotal.abs()
                     };
@@ -450,7 +450,7 @@ module.exports = {
     calculateMakerPL: function (PL, type, price, shares) {
 
         // Sell: matched user's bid order
-        if (type === 2) {
+        if (type === "sell") {
             // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
             return this.longerPositionPL(PL, shares, price);
         }
@@ -466,7 +466,7 @@ module.exports = {
     calculateTakerPL: function (PL, type, price, shares) {
 
         // Buy order
-        if (type === 1) {
+        if (type === "buy") {
             // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
             return this.longerPositionPL(PL, shares, price);
         }
@@ -478,7 +478,7 @@ module.exports = {
 
     calculateTradePL: function (PL, trade) {
         if (trade.isCompleteSet) {
-            if (trade.type === 1) {
+            if (trade.type === "buy") {
                 // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
                 return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
             }
