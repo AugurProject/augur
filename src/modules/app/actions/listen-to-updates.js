@@ -71,6 +71,14 @@ export function listenToUpdates() {
 				}
 			},
 
+			registration: (msg) => {
+				const { address } = getState().loginAccount;
+				if (msg && msg.sender === address) {
+					console.debug('registration:', msg);
+					dispatch(convertLogsToTransactions('registration', [msg]));
+				}
+			},
+
 			submittedReport: (msg) => {
 				const { address } = getState().loginAccount;
 				if (msg && msg.sender === address) {
