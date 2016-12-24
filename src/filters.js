@@ -73,28 +73,21 @@ module.exports = function () {
                     return fmt;
                 case "log_add_tx":
                     fmt = this.format_common_fields(msg);
-                    fmt.maker = abi.format_address(msg.sender);
                     fmt.outcome = parseInt(msg.outcome, 16);
-                    delete fmt.sender;
                     return fmt;
                 case "log_cancel":
                     fmt = this.format_common_fields(msg);
-                    fmt.maker = abi.format_address(msg.sender);
                     fmt.outcome = parseInt(msg.outcome, 16);
                     fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
-                    delete fmt.sender;
                     return fmt;
                 case "log_fill_tx":
                 case "log_short_fill_tx":
                     fmt = this.format_common_fields(msg);
-                    fmt.taker = abi.format_address(msg.sender);
-                    fmt.maker = abi.format_address(msg.owner);
+                    fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
                     fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                     fmt.outcome = parseInt(msg.outcome, 16);
-                    delete fmt.sender;
-                    delete fmt.owner;
                     return fmt;
                 case "marketCreated":
                     fmt = this.format_common_fields(msg);
@@ -178,6 +171,8 @@ module.exports = function () {
                                 }
                             }
                             parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                            parsed.transactionHash = msg.transactionHash;
+                            parsed.removed = msg.removed;
                             if (!onMessage) {
                                 return this.format_event_message(label, parsed);
                             }
