@@ -25,19 +25,19 @@ export function loadAccountTrades(marketID, cb) {
 					next(null);
 				});
 			},
-			next => augur.getAccountTrades(account, options, (trades) => {
-				if (!trades || trades.error) return next(trades);
+			next => augur.getAccountTrades(account, options, (err, trades) => {
+				if (err) return next(err);
 				dispatch(updateAccountTradesData(trades, marketID));
 				next(null);
 			}),
-			next => augur.getLogs('payout', options, (err, logs) => {
+			next => augur.getLogs('payout', options, (err, payouts) => {
 				if (err) return next(err);
-				if (logs && logs.length) dispatch(convertLogsToTransactions('payout', logs));
+				if (payouts && payouts.length) dispatch(convertLogsToTransactions('payout', payouts));
 				next(null);
 			}),
-			next => augur.getBuyCompleteSetsLogs(account, options, (err, logs) => {
+			next => augur.getBuyCompleteSetsLogs(account, options, (err, completeSets) => {
 				if (err) return next(err);
-				dispatch(updateCompleteSetsBought(augur.parseCompleteSetsLogs(logs), marketID));
+				dispatch(updateCompleteSetsBought(augur.parseCompleteSetsLogs(completeSets), marketID));
 				next(null);
 			})
 		], (err) => {
