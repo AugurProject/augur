@@ -1,7 +1,5 @@
-import { formatEther, formatRep } from '../../../utils/format-number';
-import { abi, augur } from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
 export function collectFees(cb) {
 	return (dispatch, getState) => {
@@ -19,29 +17,7 @@ export function collectFees(cb) {
 			},
 			onSuccess: (res) => {
 				console.log('collectFees success:', res.callReturn);
-				if (res.callReturn === '1') {
-					const { loginAccount } = getState();
-					const initialRepBalance = loginAccount.rep;
-					const initialEthBalance = loginAccount.ether;
-					let repMessage;
-					let ethMessage;
-					dispatch(updateAssets((err, balances) => {
-						console.log('update assets:', balances);
-						if (err) return callback(err);
-						if (balances.rep) {
-							const changeRep = abi.bignum(balances.rep).minus(initialRepBalance);
-							repMessage = `${formatRep(changeRep).full}`;
-						} else if (balances.ether) {
-							const changeEth = abi.bignum(balances.ether).minus(initialEthBalance);
-							ethMessage = `${formatEther(changeEth).full}`;
-						}
-						if (repMessage && ethMessage) {
-							dispatch(updateExistingTransaction(res.hash, {
-								message: `${repMessage} and ${ethMessage}`
-							}));
-						}
-					}));
-				}
+				if (res.callReturn === '1') dispatch(updateAssets());
 				callback(null);
 			},
 			onFailed: (err) => {
