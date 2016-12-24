@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import MarketHeader from 'modules/market/components/market-header';
 import ComponentNav from 'modules/common/components/component-nav';
@@ -6,18 +6,49 @@ import Outcomes from 'modules/outcomes/components/outcomes';
 import OrderBook from 'modules/order-book/components/order-book';
 import MarketChart from 'modules/market/components/market-chart';
 import MarketDetails from 'modules/market/components/market-details';
+import ReportForm from 'modules/reports/components/report-form';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views';
 
 export default class MarketData extends Component {
+	static propTypes = {
+		marketDataNavItems: PropTypes.object,
+		isPendingReport: PropTypes.bool
+	};
+
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			marketDataNavItems: props.marketDataNavItems,
 			selectedNav: MARKET_DATA_NAV_OUTCOMES
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
+		this.setMarketDataNavItems = this.setMarketDataNavItems.bind(this);
+	}
+
+	componentWillMount() {
+		this.setMarketDataNavItems();
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.isPendingReport !== nextProps.isPendingReport) {
+			this.setMarketDataNavItems();
+		}
+	}
+
+	setMarketDataNavItems() {
+		if (!this.props.isPendingReport) {
+			const marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
+				if (this.props.marketDataNavItems[nav].isPendingReport !== true) {
+					prev[nav] = this.props.marketDataNavItems[nav];
+				}
+				return prev;
+			}, {});
+
+			this.setState({ marketDataNavItems });
+		}
 	}
 
 	updateSelectedNav(selectedNav) {
@@ -37,7 +68,7 @@ export default class MarketData extends Component {
 					updateSelectedShareDenomination={p.updateSelectedShareDenomination}
 				/>
 				<ComponentNav
-					navItems={p.marketDataNavItems}
+					navItems={s.marketDataNavItems}
 					selectedNav={s.selectedNav}
 					updateSelectedNav={this.updateSelectedNav}
 				/>
@@ -76,6 +107,13 @@ export default class MarketData extends Component {
 						{...p.market}
 						selectedShareDenomination={p.selectedShareDenomination}
 						shareDenominations={p.shareDenominations}
+					/>
+				}
+				{s.selectedNav === MARKET_DATA_NAV_REPORT &&
+					<ReportForm
+						{...p.market}
+						isReported={p.market.isReported || p.market.isReportSubmitted}
+						onClickSubmit={p.market.report.onSubmitReport}
 					/>
 				}
 			</article>

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import MarketActive from 'modules/market/components/market-active';
-import MarketReporting from 'modules/market/components/market-reporting';
 import MarketReported from 'modules/market/components/market-reported';
 import NullStateMessage from 'modules/common/components/null-state-message';
 
@@ -18,7 +17,12 @@ const MarketView = (p) => {
 		<section id="market_view">
 			{!isAvailable && <NullStateMessage message={nullMessage} />}
 			{isAvailable && isOpen && !isPendingReport && <MarketActive {...p} />}
-			{isAvailable && isPendingReport && <MarketReporting {...p} />}
+			{isAvailable && isPendingReport &&
+				<MarketActive
+					{...p}
+					isPendingReport
+				/>
+			}
 			{isAvailable && !isOpen && !isPendingReport && <MarketReported {...p} />}
 		</section>
 	);
