@@ -7,7 +7,7 @@ import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-
 
 import { submitNewMarket } from '../../../create-market/actions/submit-new-market';
 
-export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) => {
+export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, dispatch) => {
 	const o = { ...formState };
 
 	o.type = formState.type;
@@ -30,7 +30,10 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
 	o.isFavorite = false;
-	o.eventBond = formatEther(0);
+
+	const tradingFee = augur.calculateTradingFees(formState.makerFee, formState.takerFee).tradingFee;
+	const validityBond = augur.calculateValidityBond(tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod);
+	o.eventBond = formatEther(validityBond);
 	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
 	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
 

@@ -12,11 +12,15 @@ import * as Step4 from '../../create-market/selectors/form-steps/step-4';
 import * as Step5 from '../../create-market/selectors/form-steps/step-5';
 
 export default function () {
-	const { createMarketInProgress, blockchain } = store.getState();
+	const { createMarketInProgress, blockchain, branch } = store.getState();
 	return selectCreateMarketForm(
 		createMarketInProgress,
 		blockchain.currentBlockNumber,
 		blockchain.currentBlockMillisSinceEpoch,
+		branch.periodLength,
+		branch.baseReporters,
+		branch.numEventsCreatedInPast24Hours,
+		branch.numEventsInReportPeriod,
 		store.dispatch);
 }
 
@@ -25,6 +29,10 @@ export const selectCreateMarketForm =
 	createMarketInProgress,
 	currentBlockNumber,
 	currentBlockMillisSinceEpoch,
+	periodLength,
+	baseReporters,
+	numEventsCreatedInPast24Hours,
+	numEventsInReportPeriod,
 	dispatch) => {
 		let formState = {
 			...createMarketInProgress,
@@ -96,7 +104,16 @@ export const selectCreateMarketForm =
 		// step 5
 		return {
 			...formState,
-			...Step5.select(formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch),
+			...Step5.select(
+				formState,
+				currentBlockNumber,
+				currentBlockMillisSinceEpoch,
+				periodLength,
+				baseReporters,
+				numEventsCreatedInPast24Hours,
+				numEventsInReportPeriod,
+				dispatch
+			),
 			step: 5
 		};
 	});
