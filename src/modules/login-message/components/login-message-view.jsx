@@ -53,6 +53,57 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 24, 2016</h3>
+			<ol>
+				<li>
+					Added minimumTradeSize parameter to buy, sell, and shortAsk on contract and in augur.js.
+				</li>
+				<li>
+					Fixed event validity bond calculation on the createMarket contract.
+				</li>
+				<li>
+					Added a client-side (augur.js) method to calculate the validity bond, so that this can be displayed to the market creator prior to creating the market.
+				</li>
+				<li>
+					Added event validity bond calculation to step 5 of create market; added new arguments to step 5 of create market: period length, base reporters, number of events created in the past 24 hours, number of events in this reporting period.
+				</li>
+				<li>
+					Removed unnecessary field renaming in filters API: sender/owner are no longer changed to maker/taker in log_fill_tx, log_add_tx, and log_cancel.
+				</li>
+				<li>
+					Logs and filters now behave consistently and use the same field names everywhere.  (In augur.js, the augur.filters formatters are now used to parse logs in modules/logs.js.)
+				</li>
+				<li>
+					Added getBaseReporters lookup to loadBranch (in augur.js), and added getPast24 and getNumberEvents lookups to syncBranch (in the UI).  These values are attached to the branch state in the UI.
+				</li>
+				<li>
+					Log-lookup callback arguments are now consistent, and take an error as the first callback argument.
+				</li>
+				<li>
+					Replaced most special-purpose log-lookup methods with calls to augur.getLogs.  A lot of semi-repeated code in modules/logs in augur.js has been removed as a result of this.
+				</li>
+				<li>
+					Added registration log loader to the front-end.
+				</li>
+				<li>
+					Removed deprecated code associated with market data updater timestamps.
+				</li>
+				<li>
+					Price time series construction now uses logged timestamp instead of converting from block number.
+				</li>
+				<li>
+					Removed onSuccess calculations from collectFees, since values are now pulled from the event log.
+				</li>
+				<li>
+					Check if transaction already has status success before running onSuccess relay.
+				</li>
+				<li>
+					The total amount of reputation reporting for the cycle is now displayed correctly in the collect fees transaction panel.
+				</li>
+				<li>
+					The fillOrder action now updates market trades data and price history automatically.
+				</li>
+			</ol>
 			<h3>December 23, 2016</h3>
 			<ol>
 				<li>
