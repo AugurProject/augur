@@ -2248,7 +2248,7 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 1 @ 2], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: false
@@ -2267,7 +2267,7 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 1 @ 1], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2286,7 +2286,7 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 1 @ 3], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "3",
                     maker: false
@@ -2305,7 +2305,7 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 3], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "3",
                     maker: false
@@ -2324,7 +2324,7 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 1], last price 1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "1",
                     maker: false
@@ -2343,12 +2343,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 1, sell 1 @ 1], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2367,12 +2367,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 1, sell 1 @ 2], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: false
@@ -2391,12 +2391,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 1, sell 2 @ 2], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "2",
                     maker: false
@@ -2415,17 +2415,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 1, sell 1 @ 1, sell 1 @ 2], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: false
@@ -2444,17 +2444,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 1, sell 1 @ 1, sell 1 @ 2], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: false
@@ -2473,17 +2473,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 1, sell 1 @ 2, sell 1 @ 1], last price 2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2502,17 +2502,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 1, sell 1 @ 2, sell 1 @ 1], last price 1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2531,17 +2531,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 1, sell 1 @ 3, sell 1 @ 1], last price 1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "3",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2560,12 +2560,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 2, sell 1 @ 1], last price 1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
@@ -2584,17 +2584,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 3 @ 2, sell 1 @ 1, sell 2 @ 2], last price 1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "3",
                     price: "2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "2",
                     maker: false
@@ -2613,12 +2613,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 100 @ 0.5, sell 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "100",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2637,17 +2637,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.5, buy 90 @ 0.5, sell 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "90",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2666,12 +2666,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.4, sell 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.4",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2690,12 +2690,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.6",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.4",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2714,12 +2714,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.3",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.4",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2738,12 +2738,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.4, buy 10 @ 0.5], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.4",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: false
@@ -2762,17 +2762,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.1, buy 10 @ 0.5, sell 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -2791,17 +2791,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 15 @ 0.1, buy 5 @ 0.5, sell 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "15",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -2820,17 +2820,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 15 @ 0.1, buy 5 @ 0.5, sell 10 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "15",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.5",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -2849,22 +2849,22 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.1, sell 5 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.1",
                     maker: false
@@ -2883,22 +2883,22 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.1, sell 5 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.2",
                     maker: false
@@ -2917,22 +2917,22 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.1, sell 5 @ 0.1, buy 10 @ 0.2, sell 5 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.2",
                     maker: false
@@ -2951,22 +2951,22 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.1, sell 5 @ 0.2, buy 10 @ 0.2, sell 5 @ 0.3], last price 0.3",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.3",
                     maker: false
@@ -2985,12 +2985,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, sell 10 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
@@ -3009,12 +3009,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, sell 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -3033,12 +3033,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, sell 10 @ 0.2], last price 0.3",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -3057,12 +3057,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
@@ -3081,12 +3081,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -3105,12 +3105,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.2, buy 10 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
@@ -3129,18 +3129,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 10], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2"
                 }],
@@ -3158,18 +3158,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.2, buy 10 @ 0.1, sell complete sets 10], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2"
                 }],
@@ -3187,18 +3187,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 5], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.2"
                 }],
@@ -3216,23 +3216,23 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, sell complete sets 2, sell complete sets 3], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "0.2"
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "0.2"
                 }],
@@ -3250,18 +3250,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.2"
                 }],
@@ -3280,7 +3280,7 @@ describe("positions", function () {
                 description: "trades: [buy complete sets 5 @ 0.5], last price 0.2",
                 trades: [{
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.5"
                 }],
@@ -3298,18 +3298,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.2, buy 10 @ 0.2, buy complete sets 1 @ 0.25], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.25"
                 }],
@@ -3327,18 +3327,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.2, buy complete sets 5 @ 0.5], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.5"
                 }],
@@ -3357,12 +3357,12 @@ describe("positions", function () {
                 description: "trades: [buy complete sets 5, sell complete sets 5], last price 0.2",
                 trades: [{
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.2"
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.2"
                 }],
@@ -3380,12 +3380,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.05], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.05",
                     maker: false
@@ -3404,18 +3404,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 10 @ 0.05, sell complete sets 10], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.05",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10"
                 }],
                 lastPrice: "0.05",
@@ -3432,12 +3432,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 1 @ 0.1, buy 1 @ 0.05], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
@@ -3456,12 +3456,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 2 @ 0.1, buy 1 @ 0.05], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
@@ -3480,12 +3480,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 2 @ 0.05, sell 1 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "0.05",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "0.1",
                     maker: false
@@ -3504,12 +3504,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 5 @ 0.05], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.05",
                     maker: false
@@ -3528,12 +3528,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 5 @ 0.15], last price 0.15",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.15",
                     maker: false
@@ -3552,12 +3552,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 20 @ 0.15], last price 0.15",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "20",
                     price: "0.15",
                     maker: false
@@ -3576,18 +3576,18 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 5 @ 0.05, sell complete sets 5], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.05",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: 5,
                     price: "0.2"
                 }],
@@ -3605,17 +3605,17 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.05], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "4",
                     price: "0.05",
                     maker: false
@@ -3634,23 +3634,23 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.05, sell complete sets 5], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "4",
                     price: "0.05",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.05"
                 }],
@@ -3668,17 +3668,17 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.1], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "4",
                     price: "0.1",
                     maker: false
@@ -3697,23 +3697,23 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, buy 1 @ 0.05, buy 4 @ 0.1, sell complete sets 5], last price 0.05",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "0.05",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "4",
                     price: "0.1",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.1"
                 }],
@@ -3731,17 +3731,17 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, sell 10 @ 0.2, buy 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
@@ -3760,23 +3760,23 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.1, sell 10 @ 0.2, buy 10 @ 0.2, sell complete sets 10], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2"
                 }],
@@ -3794,17 +3794,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell 10 @ 0.48, sell 10 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
@@ -3823,12 +3823,12 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell 20 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52",
                     maker: false
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "20",
                     price: "0.48",
                     maker: false
@@ -3847,17 +3847,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell complete sets 10 @ 0.48, sell 10 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48"
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
@@ -3877,16 +3877,16 @@ describe("positions", function () {
                 description: "trades: [buy complete sets 10 @ 0.52, sell complete sets 10 @ 0.48, sell 10 @ 0.48], last price 0.48",
                 trades: [{
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52"
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48"
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
@@ -3905,17 +3905,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell 5 @ 0.48, sell complete sets 5 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52"
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.48",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.48"
                 }],
@@ -3933,11 +3933,11 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell 6 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52"
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "6",
                     price: "0.48",
                     maker: false
@@ -3956,17 +3956,17 @@ describe("positions", function () {
             test({
                 description: "trades: [buy 10 @ 0.52, sell 5 @ 0.48, sell complete sets 1 @ 0.48], last price 0.48",
                 trades: [{
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52"
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.48",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "0.48"
                 }],
@@ -3984,17 +3984,17 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.48, buy 10 @ 0.52, buy 10 @ 0.52], last price 0.52",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.52",
                     maker: false
@@ -4013,12 +4013,12 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.48, buy 20 @ 0.52], last price 0.52",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "20",
                     price: "0.52",
                     maker: false
@@ -4037,13 +4037,13 @@ describe("positions", function () {
             test({
                 description: "trades: [sell 10 @ 0.48, buy complete sets 20 @ 0.52], last price 0.52",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.48",
                     maker: false
                 }, {
                     isCompleteSet: true,
-                    type: 1,
+                    type: "buy",
                     amount: "20",
                     price: "0.52"
                 }],
@@ -4064,7 +4064,7 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 1 @ 2], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "2",
                     maker: true
@@ -4083,7 +4083,7 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 1 @ 1], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4102,7 +4102,7 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 1 @ 3], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "1",
                     price: "3",
                     maker: true
@@ -4121,7 +4121,7 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 3], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "3",
                     maker: true
@@ -4140,7 +4140,7 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 1], last price 1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "1",
                     maker: true
@@ -4159,12 +4159,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 1, bid 1 @ 1], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4183,12 +4183,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 1, bid 1 @ 2], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: true
@@ -4207,12 +4207,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 1, bid 2 @ 2], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "2",
                     maker: true
@@ -4231,17 +4231,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 2 @ 1, bid 1 @ 1, bid 1 @ 2], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "2",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: true
@@ -4260,17 +4260,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 1, bid 1 @ 1, bid 1 @ 2], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: true
@@ -4289,17 +4289,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 1, bid 1 @ 2, bid 1 @ 1], last price 2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4318,17 +4318,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 1, bid 1 @ 2, bid 1 @ 1], last price 1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4347,17 +4347,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 1, bid 1 @ 3, bid 1 @ 1], last price 1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "3",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4376,12 +4376,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 2, bid 1 @ 1], last price 1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
@@ -4400,17 +4400,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 3 @ 2, bid 1 @ 1, bid 2 @ 2], last price 1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "3",
                     price: "2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "1",
                     price: "1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "2",
                     price: "2",
                     maker: true
@@ -4429,12 +4429,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 100 @ 0.5, bid 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "100",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4453,17 +4453,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.5, ask 90 @ 0.5, bid 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "90",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4482,12 +4482,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.4, bid 10 @ 0.5], last price 0.5",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.4",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4506,12 +4506,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.6",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.4",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4530,12 +4530,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.3",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.4",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4554,12 +4554,12 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.4, ask 10 @ 0.5], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.4",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: true
@@ -4578,17 +4578,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.1, ask 10 @ 0.5, bid 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: true
@@ -4607,17 +4607,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 15 @ 0.1, ask 5 @ 0.5, bid 10 @ 0.2], last price 0.2",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "15",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: true
@@ -4636,17 +4636,17 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 15 @ 0.1, ask 5 @ 0.5, bid 10 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "15",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "5",
                     price: "0.5",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "10",
                     price: "0.2",
                     maker: true
@@ -4665,22 +4665,22 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.1, bid 5 @ 0.1], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.1",
                     maker: true
@@ -4699,22 +4699,22 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.1, bid 5 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.2",
                     maker: true
@@ -4733,22 +4733,22 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.1, bid 5 @ 0.1, ask 10 @ 0.2, bid 5 @ 0.2], last price 0.1",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.2",
                     maker: true
@@ -4767,22 +4767,22 @@ describe("positions", function () {
             test({
                 description: "trades: [ask 10 @ 0.1, bid 5 @ 0.2, ask 10 @ 0.2, bid 5 @ 0.3], last price 0.3",
                 trades: [{
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.1",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.2",
                     maker: true
                 }, {
-                    type: 2,
+                    type: "sell",
                     amount: "10",
                     price: "0.2",
                     maker: true
                 }, {
-                    type: 1,
+                    type: "buy",
                     amount: "5",
                     price: "0.3",
                     maker: true
