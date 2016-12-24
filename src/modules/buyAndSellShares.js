@@ -83,7 +83,13 @@ module.exports = {
             price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
         }
         var tx = clone(this.tx.BuyAndSellShares.buy);
-        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.params = [
+            abi.fix(amount, "hex"),
+            abi.fix(price, "hex"),
+            market,
+            outcome,
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+        ];
         tx.description = "Bid " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
@@ -112,7 +118,13 @@ module.exports = {
             price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
         }
         var tx = clone(this.tx.BuyAndSellShares.sell);
-        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.params = [
+            abi.fix(amount, "hex"),
+            abi.fix(price, "hex"),
+            market,
+            outcome,
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+        ];
         tx.description = "Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
@@ -141,7 +153,13 @@ module.exports = {
             price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
         }
         var tx = clone(this.tx.BuyAndSellShares.shortAsk);
-        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        tx.params = [
+            abi.fix(amount, "hex"),
+            abi.fix(price, "hex"),
+            market,
+            outcome,
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+        ];
         tx.description = "Short Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
