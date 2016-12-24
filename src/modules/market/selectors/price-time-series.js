@@ -1,9 +1,5 @@
 import memoizerific from 'memoizerific';
 
-import store from '../../../store';
-
-import { blockToDate } from '../../../utils/date-to-block-to-date';
-
 /**
  * Prepares data structure for Highcharts
  *
@@ -12,8 +8,6 @@ import { blockToDate } from '../../../utils/date-to-block-to-date';
  * @return {Array}
  */
 export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHistory) => {
-	const { blockchain } = store.getState();
-
 	if (marketPriceHistory == null) {
 		return [];
 	}
@@ -23,12 +17,10 @@ export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHisto
 
 		return {
 			name: outcome.name,
-			data: outcomePriceHistory.map(priceTimePoint =>
-				[
-					blockToDate(priceTimePoint.blockNumber, blockchain.currentBlockNumber).getTime(),
-					Number(priceTimePoint.price)
-				]
-			)
+			data: outcomePriceHistory.map(priceTimePoint => [
+				priceTimePoint.timestamp * 1000,
+				Number(priceTimePoint.price)
+			])
 		};
 	});
 });

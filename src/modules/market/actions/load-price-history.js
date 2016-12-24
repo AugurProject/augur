@@ -4,13 +4,9 @@ import { updateMarketTradesData } from '../../portfolio/actions/update-market-tr
 
 export function loadPriceHistory(marketID) {
 	return (dispatch, getState) => {
-		augur.getMarketPriceHistory(marketID, (priceHistory) => {
-			if (priceHistory && priceHistory.error) {
-				return console.warn('ERROR: loadPriceHistory()', priceHistory);
-			}
-			dispatch(updateMarketTradesData({
-				[marketID]: priceHistory
-			}));
+		augur.getMarketPriceHistory(marketID, (err, priceHistory) => {
+			if (err) return console.error('loadPriceHistory:', err);
+			dispatch(updateMarketTradesData({ [marketID]: priceHistory }));
 			dispatch(updateMarketPriceHistory(marketID, priceHistory));
 		});
 	};
