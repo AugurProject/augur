@@ -95,12 +95,6 @@ const LoginMessagePage = p => (
 					Fees for maker trades no longer incorrectly display the taker fee.
 				</li>
 				<li>
-					Added final deleteTransaction call to trade process actions.
-				</li>
-				<li>
-					Fees for maker trades no longer incorrectly display the taker fee.
-				</li>
-				<li>
 					The trade inputs were incorrectly reporting invalid values via the hover title.  This is now fixed, along with a custom value incrementer implemented on the input.
 				</li>
 				<li>
