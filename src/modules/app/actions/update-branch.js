@@ -46,7 +46,6 @@ export function syncBranch(cb) {
 		if (branch.reportPeriod && (!loginAccount.address || !isChangedReportPhase)) {
 			return callback(null);
 		}
-		console.log('syncBranch: report phase changed');
 		augur.getVotePeriod(branch.id, (period) => {
 			if (!period || period.error) {
 				return callback(period || 'could not look up report period');
@@ -57,12 +56,12 @@ export function syncBranch(cb) {
 				if (!past24 || past24.error) {
 					return callback(past24 || 'could not look up past 24');
 				}
-				dispatch(updateBranch({ past24: parseInt(past24, 10) }));
+				dispatch(updateBranch({ numEventsCreatedInPast24Hours: parseInt(past24, 10) }));
 				augur.getNumberEvents(branch.id, period, (numberEvents) => {
 					if (!numberEvents || numberEvents.error) {
 						return callback(numberEvents || 'could not look up number of events');
 					}
-					dispatch(updateBranch({ numberEvents: parseInt(numberEvents, 10) }));
+					dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
 					if (loginAccount.address) dispatch(claimProceeds());
 
 					// check if period needs to be incremented / penalizeWrong
