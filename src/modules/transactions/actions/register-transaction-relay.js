@@ -10,7 +10,8 @@ export function registerTransactionRelay() {
 		rpc.registerTxRelay((tx) => {
 			if (tx && tx.response && tx.data) {
 				const hash = tx.response.hash;
-				if (hash) {
+				const { transactionsData } = getState();
+				if (hash && (!transactionsData[hash] || transactionsData[hash].status !== 'success')) {
 					if (!tx.data.description && tx.data.inputs) {
 						const params = tx.data.params.slice();
 						if (tx.data.fixed) {
@@ -29,7 +30,6 @@ export function registerTransactionRelay() {
 						formatRealEtherEstimate(augur.getTxGasEth({
 							...tx.data
 						}, rpc.gasPrice));
-					const { transactionsData } = getState();
 					if (transactionsData[hash] && transactionsData[hash].disableAutoMessage) {
 						return dispatch(updateTransactionsData({
 							[hash]: { ...tx, timestamp, gasFees, hash }
