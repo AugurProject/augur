@@ -56,6 +56,12 @@ const LoginMessagePage = p => (
 			<h3>December 23, 2016</h3>
 			<ol>
 				<li>
+					Added single-order add/remove/fill actions and used for targeted, no-RPC order book updates from filters.
+				</li>
+				<li>
+					Offloaded trades and bids/asks update logic in trade process methods onto filters.
+				</li>
+				<li>
 					Adjustments to the NPM scripts to improve the messaging during command execution.
 				</li>
 				<li>
