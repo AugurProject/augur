@@ -6,19 +6,19 @@ export function loadBidsAsksHistory(marketID, cb) {
 	return (dispatch, getState) => {
 		const callback = cb || (e => console.log('loadBidsAsksHistory:', e));
 		const { loginAccount } = getState();
-		const options = { market: marketID };
+		const params = { market: marketID, sender: loginAccount.address };
 		if (loginAccount.registerBlockNumber) {
-			options.fromBlock = loginAccount.registerBlockNumber;
+			params.fromBlock = loginAccount.registerBlockNumber;
 		}
 		async.parallel([
-			next => augur.getAccountBidsAsks(loginAccount.address, options, (err, bidsAsks) => {
+			next => augur.getLogs('log_add_tx', params, ['market', 'outcome'], (err, logs) => {
 				if (err) return next(err);
-				dispatch(updateAccountBidsAsksData(bidsAsks, marketID));
+				dispatch(updateAccountBidsAsksData(logs, marketID));
 				next();
 			}),
-			next => augur.getAccountCancels(loginAccount.address, options, (err, cancels) => {
+			next => augur.getLogs('log_cancel', params, ['market', 'outcome'], (err, logs) => {
 				if (err) return next(err);
-				dispatch(updateAccountCancelsData(cancels, marketID));
+				dispatch(updateAccountCancelsData(logs, marketID));
 				next();
 			})
 		], callback);
