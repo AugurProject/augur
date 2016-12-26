@@ -66,6 +66,8 @@ export default class Routes extends Component {
 				break;
 			case TRANSACTIONS:
 				viewProps = {
+					branch: p.branch,
+					loginAccount: p.loginAccount,
 					transactions: p.transactions,
 					transactionsTotals: p.transactionsTotals
 				};
