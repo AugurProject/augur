@@ -12,10 +12,9 @@ export function loadMarketsInfo(marketIDs, cb) {
 			const stepEnd = stepStart + MARKETS_PER_BATCH;
 			const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
 			const { loginAccount } = getState();
-			console.log('batchGetMarketInfo:', marketsToLoad);
 			augur.batchGetMarketInfo(marketsToLoad, loginAccount.address, (marketsData) => {
 				if (!marketsData || marketsData.error) {
-					return console.error('ERROR loadMarketsInfo()', marketsData);
+					console.error('ERROR loadMarketsInfo()', marketsData);
 				} else {
 					const branchID = getState().branch.id;
 					let marketInfoIDs = Object.keys(marketsData);
@@ -30,7 +29,6 @@ export function loadMarketsInfo(marketIDs, cb) {
 						dispatch(updateMarketsData(marketsData));
 						marketInfoIDs.forEach((marketID) => {
 							dispatch(updateEventMarketsMap(marketsData[marketID].events[0].id, [marketID]));
-							console.log('eventMarketsMap:', getState().eventMarketsMap);
 							if (marketsData[marketID].author === loginAccount.address) {
 								dispatch(loadFullMarket(marketID));
 								dispatch(loadMarketCreatorFees(marketID));

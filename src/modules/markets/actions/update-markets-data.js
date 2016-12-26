@@ -11,6 +11,5 @@ export function clearMarketsData() {
 }
 
 export function updateEventMarketsMap(eventID, marketIDs) {
-	console.log('updateEventMarketsMap:', eventID, marketIDs);
 	return { type: UPDATE_EVENT_MARKETS_MAP, eventID, marketIDs };
 }
