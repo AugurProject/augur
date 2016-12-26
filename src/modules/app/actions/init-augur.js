@@ -1,8 +1,8 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur, connect } from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 import { updateEnv } from '../../app/actions/update-env';
 import { updateConnectionStatus } from '../../app/actions/update-connection';
+import { updateAssets } from '../../auth/actions/update-assets';
 import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
@@ -23,14 +23,38 @@ export function initAugur() {
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
 				const env = JSON.parse(xhttp.responseText);
 				dispatch(updateEnv(env));
-				AugurJS.connect(env, (err, connected) => {
+				connect(env, (err, connected) => {
 					if (err) return console.error('connect failure:', err);
 					dispatch(updateConnectionStatus(connected));
 					dispatch(registerTransactionRelay());
 					dispatch(loadChatMessages('augur'));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
-						dispatch(reportingTestSetup(env.branchID));
+
+						// 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
+						if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1' && env.reportingTest === true) {
+							augur.getBranches((branches) => {
+								console.debug(window.location.hostname, branches[branches.length - 1]);
+								env.branchID = branches[branches.length - 1];
+								env.reportingTest = false;
+								if (getState().loginAccount.address) {
+									augur.fundNewAccount(env.branchID, augur.utils.noop, () => {
+										dispatch(updateAssets());
+										dispatch(loadBranch(env.branchID || BRANCH_ID));
+										const { loginAccount, loginMessage } = getState();
+										if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
+											const { links } = require('../../../selectors');
+											links.loginMessageLink.onClick();
+										}
+									}, e => console.error(e));
+								} else {
+									dispatch(loadBranch(env.branchID || BRANCH_ID));
+								}
+							});
+
+						} else {
+							dispatch(reportingTestSetup(env.branchID));
+						}
 					} else {
 						dispatch(loadBranch(env.branchID || BRANCH_ID));
 						const { loginAccount, loginMessage } = getState();
