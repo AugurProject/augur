@@ -7,15 +7,16 @@ import {
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
 import { authError } from '../../auth/actions/auth-error';
 
-export function loginWithEthereumWallet(airbitzAccount, ethereumWallet) {
+export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAccount) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 
 		const masterPrivateKey = ethereumWallet.keys.ethereumKey;
 		augur.web.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
-			console.log(account);
+			console.log('loginWithMasterKey:', account);
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to login' }));
 			} else if (account.error) {
@@ -32,7 +33,11 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet) {
 					return console.error('loadLoginAccountDependents:', err);
 				}
 				if (!balances.ether || abi.bignum(balances.ether).eq(constants.ZERO)) {
-					augur.fundNewAccount(getState().branch.id, augur.utils.noop, () => dispatch(updateAssets()), e => console.error(e));
+					if (isNewAccount) {
+						dispatch(addFundNewAccount(loginAccount.address));
+					} else {
+						augur.fundNewAccount(getState().branch.id, augur.utils.noop, () => dispatch(updateAssets()), e => console.error(e));
+					}
 				}
 			}));
 			if (links && links.marketsLink)	{
