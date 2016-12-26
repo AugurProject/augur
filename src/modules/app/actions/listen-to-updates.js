@@ -35,8 +35,7 @@ export function listenToUpdates() {
 			},
 
 			collectedFees: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('collectedFees:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('collectedFees', [msg]));
@@ -44,8 +43,7 @@ export function listenToUpdates() {
 			},
 
 			payout: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('payout:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('payout', [msg]));
@@ -53,8 +51,7 @@ export function listenToUpdates() {
 			},
 
 			penalizationCaughtUp: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('penalizationCaughtUp:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('penalizationCaughtUp', [msg]));
@@ -63,8 +60,7 @@ export function listenToUpdates() {
 
 			// Reporter penalization
 			penalize: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('penalize:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('penalize', [msg]));
@@ -72,16 +68,14 @@ export function listenToUpdates() {
 			},
 
 			registration: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('registration:', msg);
 					dispatch(convertLogsToTransactions('registration', [msg]));
 				}
 			},
 
 			submittedReport: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('submittedReport:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('submittedReport', [msg]));
@@ -89,8 +83,7 @@ export function listenToUpdates() {
 			},
 
 			submittedReportHash: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('submittedReportHash:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('submittedReportHash', [msg]));
@@ -106,7 +99,10 @@ export function listenToUpdates() {
 					const { address } = getState().loginAccount;
 					if (msg.sender === address || msg.owner === address) {
 						dispatch(convertTradeLogToTransaction('log_fill_tx', {
-							[msg.market]: { [msg.outcome]: [msg] }
+							[msg.market]: { [msg.outcome]: [{
+								...msg,
+								maker: msg.owner === address
+							}] }
 						}, msg.market));
 						dispatch(updateAssets());
 					}
@@ -120,9 +116,14 @@ export function listenToUpdates() {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
 					dispatch(fillOrder(msg));
 					const { address } = getState().loginAccount;
+
+					// if the user is either the maker or taker, add it to the transaction display
 					if (msg.sender === address || msg.owner === address) {
 						dispatch(convertTradeLogToTransaction('log_fill_tx', {
-							[msg.market]: { [msg.outcome]: [msg] }
+							[msg.market]: { [msg.outcome]: [{
+								...msg,
+								maker: msg.owner === address
+							}] }
 						}, msg.market));
 						dispatch(updateAssets());
 					}
@@ -134,8 +135,9 @@ export function listenToUpdates() {
 				console.debug('log_add_tx:', msg);
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(addOrder(msg));
-					const { address } = getState().loginAccount;
-					if (msg.sender === address) {
+
+					// if this is the user's order, then add it to the transaction display
+					if (msg.sender === getState().loginAccount.address) {
 						dispatch(convertTradeLogToTransaction('log_add_tx', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
@@ -149,8 +151,9 @@ export function listenToUpdates() {
 				console.debug('log_cancel:', msg);
 				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(removeOrder(msg));
-					const { address } = getState().loginAccount;
-					if (msg.sender === address) {
+
+					// if this is the user's order, then add it to the transaction display
+					if (msg.sender === getState().loginAccount.address) {
 						dispatch(convertTradeLogToTransaction('log_cancel', {
 							[msg.market]: { [msg.outcome]: [msg] }
 						}, msg.market));
@@ -164,8 +167,10 @@ export function listenToUpdates() {
 				if (msg && msg.marketID) {
 					console.debug('marketCreated:', msg);
 					dispatch(loadMarketsInfo([msg.marketID]));
-					dispatch(updateAssets());
-					dispatch(convertLogsToTransactions('marketCreated', [msg]));
+					if (msg.sender === getState().loginAccount.address) {
+						dispatch(updateAssets());
+						dispatch(convertLogsToTransactions('marketCreated', [msg]));
+					}
 				}
 			},
 
@@ -180,8 +185,7 @@ export function listenToUpdates() {
 			},
 
 			deposit: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('deposit:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('deposit', [msg]));
@@ -189,8 +193,7 @@ export function listenToUpdates() {
 			},
 
 			withdraw: (msg) => {
-				const { address } = getState().loginAccount;
-				if (msg && msg.sender === address) {
+				if (msg && msg.sender === getState().loginAccount.address) {
 					console.debug('withdraw:', msg);
 					dispatch(updateAssets());
 					dispatch(convertLogsToTransactions('withdraw', [msg]));
@@ -201,12 +204,22 @@ export function listenToUpdates() {
 			Transfer: (msg) => {
 				if (msg) {
 					console.debug('Transfer:', msg);
+					const { address } = getState().loginAcocunt;
+					if (msg._owner === address || msg._spender === address) {
+						dispatch(updateAssets());
+						dispatch(convertLogsToTransactions('Transfer', [msg]));
+					}
 				}
 			},
 
 			Approval: (msg) => {
 				if (msg) {
 					console.debug('Approval:', msg);
+					const { address } = getState().loginAcocunt;
+					if (msg.sender === address || msg.to === address) {
+						dispatch(updateAssets());
+						dispatch(convertLogsToTransactions('Approval', [msg]));
+					}
 				}
 			},
 
