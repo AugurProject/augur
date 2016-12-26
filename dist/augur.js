@@ -22237,41 +22237,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x017a3f0917d43840b28c89671b2328ec9f58d53d", 
-        "Branches": "0x787b8d0030a4de6d62c1805ecb1a85c0aaaf6de0", 
-        "BuyAndSellShares": "0xb489d3aaf2a0a3b29efcd2027903f20ad514e1de", 
-        "Cash": "0xb06d7455d0bd7f53e2d487c95ae68626683f285f", 
-        "CloseMarket": "0x2c452a8592b56759a49fd5b49c158ba661595ae5", 
-        "CollectFees": "0xb6ca441b3cbcf33f133c91a2cc1585eee644ba22", 
-        "CompleteSets": "0xbf91d748f94408d6d66ac45669501d7e879c5bac", 
-        "CompositeGetters": "0xb84c03a0b4efcc68810b1940f212b5032ceb3930", 
-        "Consensus": "0x85c8d384a239e52e851ba56fff62d194ea561894", 
-        "ConsensusData": "0xa18aef3fc69f47e487f08e43ba59616fa003976a", 
-        "CreateBranch": "0xe1a2ea3ebfee1228d16ad453db1cf6cefed42554", 
-        "CreateMarket": "0x0c8516602ce9117b01b484d644db4294d5c68a9d", 
-        "EventResolution": "0x824a94c01c4038d54c438317894a50a6a5fe3163", 
-        "Events": "0xa7247ba0b6aaa9b8e335b90beb124b2eeb507c27", 
-        "ExpiringEvents": "0x39eae01133d83500c7ffb2a29bac4900505ea4a2", 
-        "Faucets": "0x34ec10825c3db9cc4e2d60f490a31010153ef149", 
-        "ForkPenalize": "0xcd117d674a63304829ccde088ad464e345c47cb6", 
-        "Forking": "0xf419769205c553e8ad9d583354d891f588ac4d95", 
-        "FxpFunctions": "0x1af28b519de52b59982f1eaf7bdc6849ecc5404f", 
-        "Info": "0x71641929320a6680b67828e56f70c873a5690f24", 
-        "MakeReports": "0xc145a01a2b555d44e8f485c35db1fafac4822d94", 
-        "Markets": "0x0944a6298d5191b0f45abc72762b6e24c2ffcf32", 
-        "Payout": "0x30838c4a3526524dfed25056d170b9e50f3905dd", 
-        "PenalizationCatchup": "0x889835407055cb6a25b672d0c8a4df44eeacccef", 
-        "PenalizeNotEnoughReports": "0xb897353dac7b5daf6920b4b47871e18f3ab566f6", 
-        "ProportionCorrect": "0xa126500e9edc6afea7dcaa70824df1ced72c1a17", 
-        "Register": "0xfbe86e9f9dcdb8d6bce0ccad8b4331328bdf66b2", 
-        "Reporting": "0x828a5c2da0c3e1d314b266edb10aae4a744eb7af", 
-        "ReportingThreshold": "0x2729d36a6f80deaa40fadb2fff505d8f642711e9", 
-        "RoundTwo": "0xac8c12c43213f98158ab616628a6fa213da8ab13", 
-        "RoundTwoPenalize": "0x4178f0e71b7cd929c3fa9518926c2f3c2ab16e23", 
-        "SendReputation": "0x4edd75cd15117e164ec899269fa67d1bd3b6674a", 
-        "SlashRep": "0x07440b7282267fae98a829cee1ac385500dbe32e", 
-        "Trade": "0xe23a06c44a10494d4e21feb6a7da099b097e360c", 
-        "Trades": "0xe95229977b12a25081836dce78d8cecd3ad4ce81"
+        "Backstops": "0xf98433baed629d674b4edbccee99174880b23ee2", 
+        "Branches": "0xc03a3c28dfed38089af056e4bf35c8908fa4bd45", 
+        "BuyAndSellShares": "0xafac0bbf36c49e051385f6a50f85063dbe8d1244", 
+        "Cash": "0x77f414b273aa94bb2b982e75e4ce1c3a943eed3b", 
+        "CloseMarket": "0x6275252f77c8d12773151056e72194bbfb33666d", 
+        "CollectFees": "0x3066fa2e912277ff5bcff3ee86caefbb5da22f0c", 
+        "CompleteSets": "0x74ce7a4caef08fddb3a63b47df0e40f652d86940", 
+        "CompositeGetters": "0x8063829544f1dbbf096d6753c7b7c1897612ad97", 
+        "Consensus": "0xec382a34c5269d59562d82bab9db2443ed479c66", 
+        "ConsensusData": "0xc5f61e1b4195d467318338f2a437697c533b131d", 
+        "CreateBranch": "0x8f074312d95f9849088479e13609eae96df8fb1d", 
+        "CreateMarket": "0xdf09ce2f39990c84a2672e10a96d5855245abffb", 
+        "EventResolution": "0xcad638aa688f2fd2fff44a3c3f24f6d39d303d95", 
+        "Events": "0x2d0e2482986e1fca0ba4cd2893e5a6fe23e8e958", 
+        "ExpiringEvents": "0x0c51b225dd2da9fd64eb8ca365ec4e31ff804d3b", 
+        "Faucets": "0x0f68d03f77acb454cd06b22f827910f56c06d1f2", 
+        "ForkPenalize": "0x970de2dc06629765b10118092994fb924f61f1c3", 
+        "Forking": "0x21943a7cf5a00ddab8183d08be0ce909784cdbeb", 
+        "FxpFunctions": "0x38b22377db8caa06fe6434a904d0281be4abddab", 
+        "Info": "0x1dcbeca25ce15e9ff6381a533ba8793c1db9913b", 
+        "MakeReports": "0xd71383a1e6213ffa52d0b8deb151f602824149d7", 
+        "Markets": "0x54428d2bd9d7a751e19cdac52dcf2e000ab574b9", 
+        "Payout": "0x79dc8962a756fb77c97961dd3ccfda490e83f041", 
+        "PenalizationCatchup": "0x544ef31a840a0c9777fe22635a0321bda9d5d629", 
+        "PenalizeNotEnoughReports": "0xdb1c4931c411691022e5719861295bdfbf524b5e", 
+        "ProportionCorrect": "0xe8cee357ae503ef36898483daca54b18c34b39fd", 
+        "Register": "0xf59c3a039845b2ab7df6146df72f8fad193dfc67", 
+        "Reporting": "0x47f6402eb6951e28444963b9f08ee751d8c8480c", 
+        "ReportingThreshold": "0xd885c3331d6d5b084ff92c24af4fe3fdccd8ab3e", 
+        "RoundTwo": "0x3ca1d1634e1adaf16e564da66419ced32744917b", 
+        "RoundTwoPenalize": "0x30e8fb2d0683e97ab4298b3c39a1e078cf5eb3be", 
+        "SendReputation": "0x3cbea69af0c473fbde3bdf3f005cd94d0d61b589", 
+        "SlashRep": "0x98081763dd3fcfc7bbcfbf5dde8ec35fb019e0f5", 
+        "Trade": "0xaa8451d481931b6215a399d54c47b167179d6834", 
+        "Trades": "0x48978adadaea5e7049cae3ecb9793c94a7fe50b5"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -41558,7 +41558,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.4.4";
+    this.version = "3.4.5";
 
     this.options = {
         debug: {
@@ -45015,27 +45015,40 @@ module.exports = {
             }
             if (markets && markets.error) return callback(markets);
             async.eachSeries(markets, function (market, nextMarket) {
-                self.closeMarket({
-                    branch: branch,
-                    market: market,
-                    sender: sender,
-                    description: description,
-                    onSent: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("[closeExtraMarkets] closeMarket sent:", market, r);
-                        }
-                        if (onSent) onSent(r.hash, market, "closeMarket");
-                    },
-                    onSuccess: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
-                        }
-                        if (onSuccess) onSuccess(r.hash, market, "closeMarket");
-                        nextMarket(null);
-                    },
-                    onFailed: function (e) {
-                        console.error("[closeExtraMarkets] closeMarket failed:", market, e);
-                        nextMarket(e);
+                self.getWinningOutcomes(market, function (winningOutcomes) {
+                    console.log("winning outcomes for", market, winningOutcomes);
+                    if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
+                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                        self.closeMarket({
+                            branch: branch,
+                            market: market,
+                            sender: sender,
+                            description: description,
+                            onSent: function (r) {
+                                if (self.options.debug.reporting) {
+                                    console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                                }
+                                if (onSent) onSent(r.hash, market, "closeMarket");
+                            },
+                            onSuccess: function (r) {
+                                if (self.options.debug.reporting) {
+                                    console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                                }
+                                if (onSuccess) onSuccess(r.hash, market, "closeMarket");
+                                nextMarket(null);
+                            },
+                            onFailed: function (e) {
+                                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
+                                self.getWinningOutcomes(market, function (winningOutcomes) {
+                                    if (!winningOutcomes) return nextMarket(e);
+                                    if (winningOutcomes.error) return nextMarket(winningOutcomes);
+                                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                                        return nextMarket(winningOutcomes);
+                                    }
+                                    nextMarket(null);
+                                });
+                            }
+                        });
                     }
                 });
             }, function (e) {
