@@ -32,9 +32,9 @@ export function loadLoginAccountDependents(cb) {
 			// clear and load reports for any markets that have been loaded
 			// (partly to handle signing out of one account and into another)
 			dispatch(clearReports());
+			dispatch(loadReportingHistory());
 			dispatch(syncBranch((err) => {
 				if (err) console.error('syncBranch:', err);
-				dispatch(loadReportingHistory());
 				dispatch(loadEventsWithSubmittedReport());
 			}));
 		});
