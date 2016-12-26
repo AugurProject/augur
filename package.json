@@ -25,7 +25,7 @@
   "dependencies": {
     "airbitz-core-js-ui": "0.0.14",
     "async": "1.5.2",
-    "augur.js": "3.4.4",
+    "augur.js": "3.4.6",
     "bignumber.js": "2.3.0",
     "classnames": "2.2.5",
     "core-js": "2.4.1",
