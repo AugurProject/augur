@@ -127,9 +127,9 @@ export function convertLogsToTransactions(label, logs, isRetry) {
 					const marketOutcomes = outcomesData[marketID];
 					const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, marketOutcomes);
 					if (log.reportValue === log.outcome) {
-						utd[hash].message = `✔ report ${formattedReport} matches the consensus`;
+						utd[hash].message = `✔ report ${formattedReport} matches consensus`;
 					} else {
-						utd[hash].message = `✘ report ${formattedReport} does not match the consensus ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
+						utd[hash].message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
 					}
 					utd[hash].data.description = market.description;
 					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
