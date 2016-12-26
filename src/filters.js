@@ -111,7 +111,7 @@ module.exports = function () {
                 case "penalize":
                     fmt = this.format_common_fields(msg);
                     fmt.oldrep = abi.unfix(msg.oldrep, "string");
-                    fmt.repchange = abi.unfix(msg.repchange, "string");
+                    fmt.repchange = abi.unfix(abi.hex(msg.repchange, true), "string");
                     fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
                     fmt.p = abi.unfix(msg.p, "string");
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
