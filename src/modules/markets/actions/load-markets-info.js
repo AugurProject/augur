@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { updateMarketsData } from '../../markets/actions/update-markets-data';
+import { updateMarketsData, updateEventMarketsMap } from '../../markets/actions/update-markets-data';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 import { loadMarketCreatorFees } from '../../my-markets/actions/load-market-creator-fees';
 
@@ -12,9 +12,10 @@ export function loadMarketsInfo(marketIDs, cb) {
 			const stepEnd = stepStart + MARKETS_PER_BATCH;
 			const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
 			const { loginAccount } = getState();
+			console.log('batchGetMarketInfo:', marketsToLoad);
 			augur.batchGetMarketInfo(marketsToLoad, loginAccount.address, (marketsData) => {
 				if (!marketsData || marketsData.error) {
-					console.error('ERROR loadMarketsInfo()', marketsData);
+					return console.error('ERROR loadMarketsInfo()', marketsData);
 				} else {
 					const branchID = getState().branch.id;
 					let marketInfoIDs = Object.keys(marketsData);
@@ -27,10 +28,12 @@ export function loadMarketsInfo(marketIDs, cb) {
 					marketInfoIDs = Object.keys(marketsData);
 					if (marketInfoIDs.length) {
 						dispatch(updateMarketsData(marketsData));
-						marketInfoIDs.forEach((marketId) => {
-							if (marketsData[marketId].author === loginAccount.address) {
-								dispatch(loadFullMarket(marketId));
-								dispatch(loadMarketCreatorFees(marketId));
+						marketInfoIDs.forEach((marketID) => {
+							dispatch(updateEventMarketsMap(marketsData[marketID].events[0].id, [marketID]));
+							console.log('eventMarketsMap:', getState().eventMarketsMap);
+							if (marketsData[marketID].author === loginAccount.address) {
+								dispatch(loadFullMarket(marketID));
+								dispatch(loadMarketCreatorFees(marketID));
 							}
 						});
 					}
