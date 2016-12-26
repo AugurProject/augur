@@ -266,27 +266,40 @@ module.exports = {
             }
             if (markets && markets.error) return callback(markets);
             async.eachSeries(markets, function (market, nextMarket) {
-                self.closeMarket({
-                    branch: branch,
-                    market: market,
-                    sender: sender,
-                    description: description,
-                    onSent: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("[closeExtraMarkets] closeMarket sent:", market, r);
-                        }
-                        if (onSent) onSent(r.hash, market, "closeMarket");
-                    },
-                    onSuccess: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
-                        }
-                        if (onSuccess) onSuccess(r.hash, market, "closeMarket");
-                        nextMarket(null);
-                    },
-                    onFailed: function (e) {
-                        console.error("[closeExtraMarkets] closeMarket failed:", market, e);
-                        nextMarket(e);
+                self.getWinningOutcomes(market, function (winningOutcomes) {
+                    console.log("winning outcomes for", market, winningOutcomes);
+                    if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
+                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                        self.closeMarket({
+                            branch: branch,
+                            market: market,
+                            sender: sender,
+                            description: description,
+                            onSent: function (r) {
+                                if (self.options.debug.reporting) {
+                                    console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                                }
+                                if (onSent) onSent(r.hash, market, "closeMarket");
+                            },
+                            onSuccess: function (r) {
+                                if (self.options.debug.reporting) {
+                                    console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                                }
+                                if (onSuccess) onSuccess(r.hash, market, "closeMarket");
+                                nextMarket(null);
+                            },
+                            onFailed: function (e) {
+                                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
+                                self.getWinningOutcomes(market, function (winningOutcomes) {
+                                    if (!winningOutcomes) return nextMarket(e);
+                                    if (winningOutcomes.error) return nextMarket(winningOutcomes);
+                                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                                        return nextMarket(winningOutcomes);
+                                    }
+                                    nextMarket(null);
+                                });
+                            }
+                        });
                     }
                 });
             }, function (e) {
