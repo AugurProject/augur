@@ -30,7 +30,7 @@ export function loadAccountTrades(marketID, cb) {
 				dispatch(updateAccountTradesData(trades, marketID));
 				next(null);
 			}),
-			next => augur.getLogs('payout', options, (err, payouts) => {
+			next => augur.getLogs('payout', { fromBlock: options.fromBlock, sender: account }, (err, payouts) => {
 				if (err) return next(err);
 				if (payouts && payouts.length) dispatch(convertLogsToTransactions('payout', payouts));
 				next(null);
