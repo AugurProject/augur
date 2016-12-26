@@ -13,6 +13,7 @@ import activeView from './modules/app/reducers/active-view';
 
 import marketsData from './modules/markets/reducers/markets-data';
 import outcomesData from './modules/markets/reducers/outcomes-data';
+import eventMarketsMap from './modules/markets/reducers/event-markets-map';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
@@ -65,6 +66,7 @@ export function createReducer() {
 
 		marketsData,
 		outcomesData,
+		eventMarketsMap,
 		favorites,
 		pagination,
 

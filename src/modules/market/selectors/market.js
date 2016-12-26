@@ -112,23 +112,13 @@ export const selectMarket = (marketID) => {
 		store.dispatch);
 };
 
-export const selectMarketFromEventID = (eventID) => {
-	const { marketsData } = store.getState();
-	return selectMarket(Object.keys(marketsData).find(marketID =>
-		marketsData[marketID].eventID === eventID)
-	);
-};
-
-export const selectMarketIDFromEventID = (eventID, marketsData) => {
-	const marketIDs = Object.keys(marketsData);
-	const numMarkets = marketIDs.length;
-	for (let i = 0; i < numMarkets; ++i) {
-		if (eventID === marketsData[marketIDs[i]].eventID) {
-			return marketIDs[i];
-		}
-	}
+export const selectMarketIDFromEventID = (eventID) => {
+	const marketIDs = store.getState().eventMarketsMap[eventID];
+	if (marketIDs && marketIDs.length) return marketIDs[0];
 	return null;
 };
+
+export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));
 
 const assembledMarketsCache = {};
 

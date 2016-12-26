@@ -52,9 +52,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 				dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
 				cb(null);
 			});
-			store.dispatch(action.loadReports((e, marketIDs) => {
+			store.dispatch(action.loadReports((e) => {
 				assert.isNull(e);
-				t.assertions(store.getActions(), marketIDs);
+				t.assertions(store.getActions());
 				store.clearActions();
 				done();
 			}));
@@ -87,11 +87,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 			},
 			reports: {}
 		},
-		assertions: (actions, marketIDs) => {
+		assertions: (actions) => {
 			assert.isArray(actions);
-			assert.isArray(marketIDs);
 			assert.lengthOf(actions, 0);
-			assert.lengthOf(marketIDs, 0);
 		}
 	});
 	test({
@@ -125,7 +123,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 			},
 			reports: {}
 		},
-		assertions: (actions, marketIDs) => {
+		assertions: (actions) => {
 			assert.deepEqual(actions, [{
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
@@ -134,7 +132,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
-			assert.deepEqual(marketIDs, ['0xf1']);
 		}
 	});
 	test({
@@ -170,7 +167,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 			},
 			reports: {}
 		},
-		assertions: (actions, marketIDs) => {
+		assertions: (actions) => {
 			assert.deepEqual(actions, [{
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
@@ -184,7 +181,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
-			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
 		}
 	});
 	test({
@@ -226,7 +222,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 				}
 			}
 		},
-		assertions: (actions, marketIDs) => {
+		assertions: (actions) => {
 			assert.deepEqual(actions, [{
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
@@ -240,7 +236,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
-			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
 		}
 	});
 	test({
@@ -280,7 +275,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 			},
 			reports: {}
 		},
-		assertions: (actions, marketIDs) => {
+		assertions: (actions) => {
 			assert.deepEqual(actions, [{
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
@@ -294,7 +289,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 			}, {
 				type: 'LOAD_REPORT_DESCRIPTORS'
 			}]);
-			assert.deepEqual(marketIDs, ['0xf1', '0xf2']);
 		}
 	});
 });
