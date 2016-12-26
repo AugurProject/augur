@@ -17,6 +17,8 @@ export function clearMarketOrderBook(marketId) {
 export function addOrder(log) {
 	return (dispatch, getState) => {
 		const orderBook = { ...getState().orderBooks[log.market] };
+		console.log('adding order:', log);
+		console.log('orderbook:', orderBook);
 		if (orderBook) {
 			const orderBookSide = orderBook[log.type];
 			if (orderBookSide) {
@@ -24,6 +26,7 @@ export function addOrder(log) {
 				if (outcomeOrders) {
 					outcomeOrders[log.tradeid] = convertAddTxLogToOrder(log, getState().marketsData[log.market]);
 					console.log('adding to order book:', outcomeOrders[log.tradeid]);
+					console.log('updated order book:', orderBook);
 					dispatch(updateMarketOrderBook(log.market, orderBook));
 				}
 			}
@@ -34,6 +37,8 @@ export function addOrder(log) {
 export function removeOrder(log) {
 	return (dispatch, getState) => {
 		const orderBook = { ...getState().orderBooks[log.market] };
+		console.log('removing order:', log);
+		console.log('orderbook:', orderBook);
 		if (orderBook) {
 			const orderBookSide = orderBook[log.type];
 			if (orderBookSide) {
@@ -42,6 +47,7 @@ export function removeOrder(log) {
 					if (outcomeOrders[log.tradeid]) {
 						console.log('removing order:', outcomeOrders[log.tradeid]);
 						delete outcomeOrders[log.tradeid];
+						console.log('updated order book:', orderBook);
 						dispatch(updateMarketOrderBook(log.market, orderBook));
 					}
 				}
@@ -54,8 +60,11 @@ export function fillOrder(log) {
 	return (dispatch, getState) => {
 		const { orderBooks, priceHistory } = getState();
 		const orderBook = { ...orderBooks[log.market] };
+		console.log('filling order:', log);
+		console.log('orderbook:', orderBook);
 		if (orderBook) {
-			const orderBookSide = orderBook[log.type];
+			const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+			const orderBookSide = orderBook[matchedType];
 			if (orderBookSide) {
 				const outcomeOrders = orderBookSide[log.outcome];
 				if (outcomeOrders) {
@@ -70,6 +79,7 @@ export function fillOrder(log) {
 							order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
 							console.log('updated order:', order);
 						}
+						console.log('updated order book:', orderBook);
 						dispatch(updateMarketOrderBook(log.market, orderBook));
 					}
 				}
