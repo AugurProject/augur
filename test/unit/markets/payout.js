@@ -17,7 +17,6 @@ var sharedMockTransact = function(tx, onSent, onSuccess, onFailed) {
 	currentAssertions(tx);
 };
 
-
 describe("payout.closeMarket", function() {
 	var test = function(t) {
 		it(t.testDescription, function() {
@@ -81,7 +80,7 @@ describe("payout.claimProceeds", function() {
 	var test = function(t) {
 		it(t.testDescription, function() {
 			currentAssertions = t.assertions;
-			augur.closeMarket(t.branch, t.market, t.sender, t.description, t.onSent, t.onSuccess, t.onFailed);
+			augur.claimProceeds(t.branch, t.market, t.description, t.onSent, t.onSuccess, t.onFailed);
 		});
 	};
 
@@ -93,4 +92,6 @@ describe("payout.claimProceeds", function() {
 	after(function() {
 		augur.transact = transact;
 	});
+
+	
 });

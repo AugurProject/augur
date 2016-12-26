@@ -20,18 +20,10 @@ describe("buyAndSellShares Unit Tests", function() {
 		assert.isNumber(tx.gas, "tx.gas sent to this.transact isn't a number as expected");
 		assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
 
-		assert.deepEqual(tx.inputs, [ "amount", "price", "market", "outcome" ], "tx.inputs didn't contain the expected values");
+		assert.deepEqual(tx.inputs, [ "amount", "price", "market", "outcome", "minimumTradeSize" ], "tx.inputs didn't contain the expected values");
 
 		assert.isString(tx.method, "tx.method sent to this.transact isn't an String as expected");
-		assert.isBoolean(tx.mutable, "tx.mutable sent to this.transact isn't a Boolean as expected");
-		assert.isString(tx.returns, "tx.returns sent to this.transact isn't an String as expected");
-		// if it's not a shortAsk method then we are going to look for send also
-		if (tx.method !== 'shortAsk') assert.isBoolean(tx.send, "tx.send sent to this.transact isn't a Boolean as expected");
-
-
-		assert.isArray(tx.signature, "tx.signature sent to this.transact isn't an Array as expected");
-
-		assert.deepEqual(tx.signature, ["int256", "int256", "int256", "int256"], "tx.signature didn't contain the expected values");
+		assert.deepEqual(tx.method, currentMethod, "tx.method sent to this.transact isn't the expected method");
 
 		assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
 		assert.deepEqual(tx.to, augur.tx.BuyAndSellShares[currentMethod].to, "tx.to didn't point to the BuyAndSellShares contract");
@@ -46,7 +38,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		case 11:
 		case 12:
 			// adjust for scalar calcs...
-			assert.deepEqual(tx.params, [abi.fix(10, "hex"), abi.fix(65, "hex"), 'testScalarMarketID', '1'], "tx.params didn't contain the expected values");
+			assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"], "tx.params didn't contain the expected values");
 			break;
 		case 13:
 		case 14:
@@ -55,10 +47,10 @@ describe("buyAndSellShares Unit Tests", function() {
 		case 17:
 		case 18:
 			// adjust for categorical tests...
-			assert.deepEqual(tx.params, [abi.fix(10, "hex"), abi.fix(0.5, "hex"), 'testCategoricalMarketID', '1'], "tx.params didn't contain the expected values");
+			assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"], "tx.params didn't contain the expected values");
 			break;
 		default:
-			assert.deepEqual(tx.params, [abi.fix(10, "hex"), abi.fix(0.5, "hex"), 'testBinaryMarketID', '1'], "tx.params didn't contain the expected values");
+			assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"], "tx.params didn't contain the expected values");
 			break;
 		}
 
