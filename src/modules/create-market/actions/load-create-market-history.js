@@ -1,5 +1,5 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
+import { augur, constants } from '../../../services/augurjs';
 import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
 
 export function loadCreateMarketHistory(marketID, cb) {
@@ -10,10 +10,11 @@ export function loadCreateMarketHistory(marketID, cb) {
 		if (loginAccount.registerBlockNumber) {
 			params.fromBlock = loginAccount.registerBlockNumber;
 		}
-		async.each([
+		async.eachLimit([
 			'marketCreated',
 			'tradingFeeUpdated'
-		], (label, nextLabel) => {
+		], constants.PARALLEL_LIMIT, (label, nextLabel) => {
+			console.log(label, params);
 			augur.getLogs(label, params, null, (err, logs) => {
 				if (err) return nextLabel(err);
 				if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));

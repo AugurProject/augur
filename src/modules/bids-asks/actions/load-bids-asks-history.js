@@ -1,5 +1,5 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
+import { augur, constants } from '../../../services/augurjs';
 import { updateAccountBidsAsksData, updateAccountCancelsData } from '../../../modules/my-positions/actions/update-account-trades-data';
 
 export function loadBidsAsksHistory(marketID, cb) {
@@ -10,7 +10,7 @@ export function loadBidsAsksHistory(marketID, cb) {
 		if (loginAccount.registerBlockNumber) {
 			params.fromBlock = loginAccount.registerBlockNumber;
 		}
-		async.parallel([
+		async.parallelLimit([
 			next => augur.getLogs('log_add_tx', params, { index: ['market', 'outcome'] }, (err, logs) => {
 				if (err) return next(err);
 				dispatch(updateAccountBidsAsksData(logs, marketID));
@@ -21,6 +21,6 @@ export function loadBidsAsksHistory(marketID, cb) {
 				dispatch(updateAccountCancelsData(logs, marketID));
 				next();
 			})
-		], callback);
+		], constants.PARALLEL_LIMIT, callback);
 	};
 }
