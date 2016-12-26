@@ -41,6 +41,8 @@ module.exports = {
     GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
     GET_LOGS_DEFAULT_TO_BLOCK: "latest",
 
+    COST_PER_REPORTER: new BigNumber("0.0000000000035", 10),
+
     // int256 type codes for log filters
     LOG_TYPE_CODES: {
         buy: "0x0000000000000000000000000000000000000000000000000000000000000001",

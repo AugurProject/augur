@@ -73,28 +73,22 @@ module.exports = function () {
                     return fmt;
                 case "log_add_tx":
                     fmt = this.format_common_fields(msg);
-                    fmt.maker = abi.format_address(msg.sender);
                     fmt.outcome = parseInt(msg.outcome, 16);
-                    delete fmt.sender;
                     return fmt;
                 case "log_cancel":
                     fmt = this.format_common_fields(msg);
-                    fmt.maker = abi.format_address(msg.sender);
                     fmt.outcome = parseInt(msg.outcome, 16);
                     fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
-                    delete fmt.sender;
                     return fmt;
                 case "log_fill_tx":
                 case "log_short_fill_tx":
                     fmt = this.format_common_fields(msg);
-                    fmt.taker = abi.format_address(msg.sender);
-                    fmt.maker = abi.format_address(msg.owner);
+                    if (!fmt.type) fmt.type = "sell";
+                    fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
                     fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
                     fmt.outcome = parseInt(msg.outcome, 16);
-                    delete fmt.sender;
-                    delete fmt.owner;
                     return fmt;
                 case "marketCreated":
                     fmt = this.format_common_fields(msg);
@@ -117,7 +111,7 @@ module.exports = function () {
                 case "penalize":
                     fmt = this.format_common_fields(msg);
                     fmt.oldrep = abi.unfix(msg.oldrep, "string");
-                    fmt.repchange = abi.unfix(msg.repchange, "string");
+                    fmt.repchange = abi.unfix(abi.hex(msg.repchange, true), "string");
                     fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
                     fmt.p = abi.unfix(msg.p, "string");
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
@@ -180,6 +174,8 @@ module.exports = function () {
                                 }
                             }
                             parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                            parsed.transactionHash = msg.transactionHash;
+                            parsed.removed = msg.removed;
                             if (!onMessage) {
                                 return this.format_event_message(label, parsed);
                             }

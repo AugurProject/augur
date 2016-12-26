@@ -143,30 +143,30 @@ describe("parse_event_message", function () {
                 if (t.label === "log_fill_tx") {
                     assert.property(parsed, "market");
                     assert.property(parsed, "type");
-                    assert.property(parsed, "taker");
-                    assert.property(parsed, "maker");
+                    assert.property(parsed, "sender");
+                    assert.property(parsed, "owner");
                     assert.property(parsed, "price");
                     assert.property(parsed, "tradeid");
                     assert.property(parsed, "outcome");
                     assert.property(parsed, "blockNumber");
                     assert.strictEqual(t.msg[0].topics[1], parsed.market);
-                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.taker);
-                    assert.strictEqual(abi.format_address(t.msg[0].topics[3]), parsed.maker);
+                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.sender);
+                    assert.strictEqual(abi.format_address(t.msg[0].topics[3]), parsed.owner);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "log_add_tx") {
                     assert.property(parsed, "market");
-                    assert.property(parsed, "maker");
+                    assert.property(parsed, "sender");
                     assert.property(parsed, "type");
                     assert.property(parsed, "price");
                     assert.property(parsed, "amount");
                     assert.property(parsed, "outcome");
                     assert.property(parsed, "blockNumber");
                     assert.strictEqual(t.msg[0].topics[1], parsed.market);
-                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
+                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.sender);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "log_cancel") {
                     assert.property(parsed, "market");
-                    assert.property(parsed, "maker");
+                    assert.property(parsed, "sender");
                     assert.property(parsed, "type");
                     assert.property(parsed, "price");
                     assert.property(parsed, "amount");
@@ -174,7 +174,7 @@ describe("parse_event_message", function () {
                     assert.property(parsed, "cashRefund");
                     assert.property(parsed, "blockNumber");
                     assert.strictEqual(t.msg[0].topics[1], parsed.market);
-                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.maker);
+                    assert.strictEqual(abi.format_address(t.msg[0].topics[2]), parsed.sender);
                     assert.strictEqual(parseInt(t.msg[0].blockNumber, 16), parsed.blockNumber);
                 } else if (t.label === "tradingFeeUpdated") {
                     if (DEBUG) console.log('tfu:', parsed);
@@ -194,17 +194,19 @@ describe("parse_event_message", function () {
     test({
         label: "log_add_tx",
         msg: [{
-            address: "0x8d28df956673fa4a8bc30cd0b3cb657445bc820e",
-            blockHash: "0xf0bf95c2829ab839253a40cb9c048209f6ce296b92195d6d563dc632d1bc6408",
-            blockNumber: "0x11940f",
-            data: "0x0000000000000000000000007c0d52faab596c08f484e3478aebc6205f3f5d8c0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000851eb851eb851eb800000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000001ab0e4dde7838418cb19b273a86530e1a99121fc56311c5e69149f853fb96f11d",
-            logIndex: "0x0",
+            address: "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
             topics: [
-                "0x8dbed7bffe37a9907a92186110f23d8104f5967a71fb059f3b907ca9001fd160",
-                "0xebb0d4c04bc87d3b401a5baad3b093a5e7cc3f4e996dc53e36db78c8b374cc9a"
+                "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c",
+                "0xf3efc5085628de2b511a0243bdc9dc7b50ee2440398e626d93280601e3a15634",
+                "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df"
             ],
-            transactionHash: "0x66556e5b7c3cb708ca6d807518eaf4ee3f5f0c3512262fae585fbb7d173d6593",
-            transactionIndex: "0x0"
+            data: "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000002018696fb83c9b609f9b34afc4df42249f2530953fcd019098c70044c9fa1d95400000000000000000000000000000000000000000000000000000000585e00fa",
+            blockNumber: "0xc0",
+            transactionIndex: "0x0",
+            transactionHash: "0x3be9cc70b44bdb25829849f2d2150b5f932b744307ba5b2257e745db6af684de",
+            blockHash: "0xf0d3b933c550a39ced64969f856575a3e7876e89288f427d0d876168c9645d3c",
+            logIndex: "0x0",
+            removed: false
         }]
     });
     test({
@@ -571,82 +573,61 @@ describe("parse_event_message", function () {
             "removed": false
         }]
     });
+    test({
+        label: "payout",
+        msg: [{
+            "address": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+            "topics": [
+                "0xa2bf9dad859f137c8894b41a4e89182a27fa82c48ed42019e924af83fefc1f81",
+                "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df",
+                "0x2d188fb421d31f83588166fa468fa586fb26d4aa9109e94d27f634dfd8ea9996"
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000021e1bda8d65207980000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000585e0748",
+            "blockNumber": "0x228",
+            "transactionIndex": "0x0",
+            "transactionHash": "0xdf7f0d87052df1aea3c1ea070cb397c19592624498a33c56f9ca32a34b64ea6b",
+            "blockHash": "0x4c9931dd6f0a87dfa921bd21b32c3d35f99dfcb9a318231d550062cab905f0c7",
+            "logIndex": "0x0",
+            "removed": false
+        }]
+    });
+    test({
+        label: "payout",
+        msg: [{
+            "address": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+            "topics": [
+                "0xa2bf9dad859f137c8894b41a4e89182a27fa82c48ed42019e924af83fefc1f81",
+                "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df",
+                "0x2d188fb421d31f83588166fa468fa586fb26d4aa9109e94d27f634dfd8ea9996"
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000021e1bda8d65207980000000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000585e0748",
+            "blockNumber": "0x228",
+            "transactionIndex": "0x0",
+            "transactionHash": "0xdf7f0d87052df1aea3c1ea070cb397c19592624498a33c56f9ca32a34b64ea6b",
+            "blockHash": "0x4c9931dd6f0a87dfa921bd21b32c3d35f99dfcb9a318231d550062cab905f0c7",
+            "logIndex": "0x0",
+            "removed": false
+        }]
+    });
+    test({
+        label: "payout",
+        msg: [{
+            "address": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+            "topics": [
+                "0xa2bf9dad859f137c8894b41a4e89182a27fa82c48ed42019e924af83fefc1f81",
+                "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df",
+                "0x91a0f3cfb3834980593065f33b7e53e4b97a95ba25a1132f152f94baa6df8b62"
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000006f05b59d3b2000000000000000000000000000000000000000000000000021f99bcd92e298e000000000000000000000000000000000000000000000000000006f05b59d3b2000000000000000000000000000000000000000000000000000000000000585e074d",
+            "blockNumber": "0x22a",
+            "transactionIndex": "0x0",
+            "transactionHash": "0x4d220ec50b26c7b666583249cf00ca2d5be103c0281a6ee1835877000240f907",
+            "blockHash": "0x31fa26fe8e496bfd80f5754f811d046f830795c714d1682887907d5a65f8367b",
+            "logIndex": "0x0",
+            "removed": false
+        }]
+    });
 });
-
-// describe("parse_log_fill_tx_message", function () {
-//     var test = function (msg) {
-//         it(JSON.stringify(msg), function (done) {
-//             augur.filters.parse_log_fill_tx_message(msg, function (parsed) {
-//                 assert.property(parsed, "market");
-//                 assert.property(parsed, "type");
-//                 assert.property(parsed, "taker");
-//                 assert.property(parsed, "maker");
-//                 assert.property(parsed, "price");
-//                 assert.property(parsed, "tradeid");
-//                 assert.property(parsed, "outcome");
-//                 assert.property(parsed, "blockNumber");
-//                 assert.strictEqual(msg[0].topics[1], parsed.market);
-//                 assert.strictEqual(abi.format_address(msg[0].topics[2]), parsed.taker);
-//                 assert.strictEqual(abi.format_address(msg[0].topics[3]), parsed.maker);
-//                 assert.strictEqual(parseInt(msg[0].blockNumber, 16), parsed.blockNumber);
-//                 done();
-//             });
-//         });
-//     };
-//     test([{
-//         address: "0x13cef2d86d4024f102e480627239359b5cb7bf52",
-//         blockHash: "0x8171815b23ee1e0cf62e331f283c6d977689a93e3574b2ca35f75c19804914ef",
-//         blockNumber: "0x11941e",
-//         data: "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000de0b6b3a7640000640ce61af3b560a54f2f41dcba10ef6337df02e650c30f651789a090b02c312f0000000000000000000000000000000000000000000000000000000000000001",
-//         logIndex: "0x0",
-//         topics: [
-//             "0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6",
-//             "0xebb0d4c04bc87d3b401a5baad3b093a5e7cc3f4e996dc53e36db78c8b374cc9a",
-//             "0x0000000000000000000000007c0d52faab596c08f484e3478aebc6205f3f5d8c",
-//             "0x00000000000000000000000015f6400a88fb320822b689607d425272bea2175f"
-//         ],
-//         transactionHash: "0xf9d3dd428f4d27c6ee14c6a08d877f777bc0365d29fad06ddc0f9dce11dbb9ce",
-//         transactionIndex: "0x0"
-//     }]);
-//     test([{
-//         address: "0x13cef2d86d4024f102e480627239359b5cb7bf52",
-//         blockHash: "0x0a383bf904a7156d840dbf7ebd0b30ff79dce4950dfa4b5b80bdb619070085d1",
-//         blockNumber: "0x11964b",
-//         data: "0x00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000001d7dd185ffffff8d0000000000000000000000000000000000000000000000001d7dd185ffffff8d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002",
-//         logIndex: "0x1",
-//         topics:
-//          [ "0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6",
-//            "0xbbc704ce88ff685a56a6a8e708cec54f981d750d8fe83a53d8c4ffb2d4bf4ddd",
-//            "0x000000000000000000000000ae1ba9370f9c3d64894ed9a101079fd17bf10448",
-//            "0x000000000000000000000000dfb3458ad28f9ce1a6405e8c85daa8c8bdefb24b" ],
-//         transactionHash: "0x6becec25bcb68824ad1904ed3424bdd056055413b96a4195b803c7a1b32b6c1e",
-//         transactionIndex: "0x2"
-//     }]);
-// });
-
-// describe("parse_tradingFeeUpdated_message", function () {
-//     var test = function (msg) {
-//         it(JSON.stringify(msg), function (done) {
-//             augur.filters.parse_tradingFeeUpdated_message(msg, function (parsed) {
-//                 assert.property(parsed, "marketID");
-//                 assert.property(parsed, "tradingFee");
-//                 assert.deepEqual(parsed.marketID, "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b");
-//                 if (DEBUG) console.log("parse_tradingFeeUpdated_message:", parsed);
-//                 done();
-//             });
-//         });
-//     };
-//     test([{
-//         address: "0x181ab5cfb79c3a4edd7b4556412b40453edeec32",
-//         blockHash: "0x5f725f19f6e8d250ebaffdc3e9ce898dfd1c1aca2f33d760015148110df16e25",
-//         blockNumber: "0x15074b",
-//         data: "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b000000000000000000000000000000000000000000000000009c51c4521e0000",
-//         logIndex: "0x0",
-//         topics: [ "0xb8c735cc6495f8dac2581d532413dea78d7e03e0ff0880c32b4648c2145fba41" ],
-//         transactionHash: "0xdd394f14b92162c5b29011512513fff0188c5cff9b4d0d453b40175db6f9e868",
-//         transactionIndex: "0x0"
-//     }]);
-// });
 
 describe("listen", function () {
     it("ignores invalid label", function (done) {
