@@ -53,6 +53,48 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 25, 2016</h3>
+			<ol>
+				<li>
+					Removed the (unused) reporting period branch Reputation balance from the collectedFees log.
+				</li>
+				<li>
+					Added a check of whether market has already been closed (winning outcomes already set) both before and after the closeMarket function is called from augur.js.
+				</li>
+				<li>
+					Reporting cycle bar is now displayed at the top of the transactions page as well as the markets page.
+				</li>
+				<li>
+					Removed unused reporting outcome display block.
+				</li>
+				<li>
+					Load reporting history before branch sync (for logged in users).
+				</li>
+				<li>
+					Added a special startup sequence to init-augur to allow semi-automated multi-user/single-machine reporting tests.
+				</li>
+				<li>
+					Fixed payout lookup parameters in the account trade history log-loader.
+				</li>
+				<li>
+					Used async.eachLimit instead of async.each in all log loaders to keep from overwhelming the receiving RPC server.
+				</li>
+				<li>
+					Registration timestamps are now only recorded during the initial Airbitz account creation, not ordinary logins.
+				</li>
+				<li>
+					Added an event-to-market lookup table to the front-end data store.
+				</li>
+				<li>
+					Ad hoc balance and balance changes messaging in the transaction component have been replaced by a new balances array in the data field of any transaction that alters one or more balances.
+				</li>
+				<li>
+					Each transaction conversion will now only retry once, if the required market data is not available.
+				</li>
+				<li>
+					The fillOrder function now uses the correct side of order book.
+				</li>
+			</ol>
 			<h3>December 24, 2016</h3>
 			<ol>
 				<li>

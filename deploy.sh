@@ -1,5 +1,8 @@
 #!/bin/bash
+# Augur deployment for incredibly lazy people.
+# (c) Jack Peterson (jack@tinybike.net)
 
+git add build/*
 git commit -am "${1}"
 git push origin master
 firebase deploy
