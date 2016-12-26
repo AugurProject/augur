@@ -241,13 +241,13 @@ const Transaction = (p) => {
 	if (!!p.data && !!p.data.balances && !!p.data.balances.length) {
 		balancesMessage = p.data.balances.map(b => (
 			<li key={`${p.hash}-${b.change && b.change.full}-${b.balance && b.balance.full}`}>
-				{!!b.change && b.change.value > 0 && 
+				{!!b.change && b.change.value > 0 &&
 					<ValueDenomination
 						className="balance-message balance-change"
 						{...b.change}
 					/>
 				}
-				{!!b.balance && b.change.value > 0 && 
+				{!!b.balance && b.change.value > 0 &&
 					<ValueDenomination
 						className="balance-message"
 						{...b.balance}
@@ -373,9 +373,9 @@ const Transaction = (p) => {
 
 			{p.status && p.hash ?
 				<Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
-					{statusAndMessage}
+					{ statusAndMessage }
 				</Link> :
-				{statusAndMessage}
+				{ statusAndMessage }
 			}
 		</article>
 	);
