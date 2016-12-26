@@ -237,6 +237,19 @@ const Transaction = (p) => {
 			break;
 	}
 
+	let balancesMessage;
+	if (!!p.data && !!p.data.balances && !!p.data.balances.length) {
+		balancesMessage = p.data.balances.map(b => (
+			<li key={`${p.hash}-${b.change.full}-${b.balance.full}`}>
+				<ValueDenomination className="balance-message balance-change" {...b.change} />
+				<ValueDenomination className="balance-message" {...b.balance} prefix=" [ balance:" postfix="]" />
+			</li>
+		));
+		balancesMessage = <ul>{balancesMessage}</ul>;
+	} else {
+		balancesMessage = <span />;
+	}
+
 	return (
 		<article className={classnames('transaction-item', p.className, p.status)}>
 			{p.index &&
@@ -274,6 +287,7 @@ const Transaction = (p) => {
 								<br />
 							</span>
 						}
+						{balancesMessage}
 						{!!p.freeze &&
 							<span className="freeze-message">
 								{p.freeze.noFeeCost &&
@@ -359,6 +373,7 @@ const Transaction = (p) => {
 							<br />
 						</span>
 					}
+					{balancesMessage}
 					{!!p.freeze &&
 						<span className="freeze-message">
 							{p.freeze.noFeeCost &&
