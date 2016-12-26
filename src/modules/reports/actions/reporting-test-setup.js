@@ -10,7 +10,7 @@ export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';
 
 export function reportingTestSetup(branchID) {
 	return (dispatch, getState) => {
-		const periodLength = 300;
+		const periodLength = 400;
 		console.warn('Found reportingTest=true in env.json');
 		console.info('*** STARTING REPORTING SETUP SEQUENCE ***');
 		dispatch({ type: REPORTING_TEST_SETUP, data: { periodLength } });
