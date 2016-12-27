@@ -14,7 +14,6 @@ export function loadCreateMarketHistory(marketID, cb) {
 			'marketCreated',
 			'tradingFeeUpdated'
 		], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-			console.log(label, params);
 			augur.getLogs(label, params, null, (err, logs) => {
 				if (err) return nextLabel(err);
 				if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));

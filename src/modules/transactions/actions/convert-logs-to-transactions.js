@@ -24,222 +24,321 @@ export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 	};
 }
 
-export function convertLogsToTransactions(label, logs, isRetry) {
+export function lookupEventMarketsThenRetryConversion(eventID, label, log, callback) {
 	return (dispatch, getState) => {
-		console.log('convertLogsToTransactions', label);
-		console.log('logs:', logs);
-		const { loginAccount } = getState();
-		async.eachLimit(logs, constants.PARALLEL_LIMIT, (log, nextLog) => {
-			const hash = log.transactionHash;
-			if (!hash) return nextLog();
-			const utd = { [hash]: { hash, status: SUCCESS, data: {} } };
-			if (log.timestamp) utd[hash].timestamp = formatDate(new Date(log.timestamp * 1000));
-			switch (label) {
-				case 'Approval':
-					utd[hash].type = 'Approved to Send Reputation';
-					utd[hash].data.description = `Approve ${log._spender} to send Reputation`;
-					utd[hash].message = `approved`;
-					break;
-				case 'collectedFees': {
-					const repGain = abi.bignum(log.repGain);
-					const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
-					utd[hash].type = `Collect Reporting Fees`;
-					utd[hash].message = `reported using ${formatRep(initialRepBalance).full}`;
-					const totalReportingRep = abi.bignum(log.totalReportingRep);
-					if (!totalReportingRep.eq(constants.ZERO)) {
-						const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100));
-						utd[hash].message = `${utd[hash].message} (${percentRep.full})`;
-					}
-					utd[hash].data.description = `Reporting cycle #${log.period}`;
-					utd[hash].data.balances = [{
-						change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-						balance: formatEther(log.newCashBalance)
-					}, {
-						change: formatRep(log.repGain, { positiveSign: true }),
-						balance: formatRep(log.newRepBalance)
-					}];
-					utd[hash].bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
-					break;
-				}
-				case 'deposit':
-					utd[hash].type = 'Deposit Ether';
-					utd[hash].data.description = 'Convert Ether to tradeable Ether token';
-					utd[hash].message = `deposited ${formatEther(log.value).full}`;
-					break;
-				case 'marketCreated': {
-					console.log('marketCreated:', log);
-					utd[hash].type = 'Create Market';
-					const market = getState().marketsData[log.marketID];
-					if (!market) {
-						if (isRetry) return nextLog(log);
-						return dispatch(loadMarketThenRetryConversion(log.marketID, label, log, nextLog));
-					}
-					utd[hash].data.description = market ? market.description : log.marketID.replace('0x', '');
-					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: utd[hash].data.description }, dispatch);
-					utd[hash].marketCreationFee = formatEther(log.marketCreationFee);
-					utd[hash].bond = { label: 'event validity', value: formatEther(log.eventBond) };
-					break;
-				}
-				case 'payout': {
-					utd[hash].type = 'Claim Trading Payout';
-					const market = getState().marketsData[log.market];
-					if (!market) {
-						if (isRetry) return nextLog(log);
-						return dispatch(loadMarketThenRetryConversion(log.market, label, log, nextLog));
-					}
-					utd[hash].message = `closed out ${formatShares(log.shares).full}`;
-					utd[hash].data.description = market.description;
-					utd[hash].data.balances = [{
-						change: formatEther(log.cashPayout, { positiveSign: true }),
-						balance: formatEther(log.cashBalance)
-					}];
-					utd[hash].data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
-					// utd[hash].totalReturn = formatEther(log.cashPayout);
-					break;
-				}
-				case 'penalizationCaughtUp':
-					utd[hash].type = 'Reporting Cycle Catch-Up';
-					utd[hash].data.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
-					// TODO link to this cycle in My Reports
-					utd[hash].data.balances = [{
-						change: formatRep(log.repLost, { positiveSign: true }),
-						balance: formatRep(log.newRepBalance)
-					}];
-					utd[hash].message = `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`;
-					break;
-				case 'penalize': {
-					utd[hash].type = 'Compare Report To Consensus';
-					const { marketsData, outcomesData } = getState();
-					const marketID = selectMarketIDFromEventID(log.event);
-					if (!marketID) {
-						if (isRetry) return nextLog(log);
-						return augur.getMarkets(log.event, (markets) => {
-							if (markets && markets.length) {
-								dispatch(updateEventMarketsMap(log.event, markets));
-								dispatch(loadMarketThenRetryConversion(markets[0], label, log, nextLog));
-							}
-						});
-					}
-					const market = marketsData[marketID];
-					if (!market) {
-						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
-					}
-					const marketOutcomes = outcomesData[marketID];
-					const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, marketOutcomes);
-					if (log.reportValue === log.outcome) {
-						utd[hash].message = `✔ report ${formattedReport} matches consensus`;
-					} else {
-						utd[hash].message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
-					}
-					utd[hash].data.description = market.description;
-					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-					utd[hash].data.balances = [{
-						change: formatRep(log.repchange, { positiveSign: true }),
-						balance: formatRep(log.newafterrep)
-					}];
-					break;
-				}
-				case 'registration':
-					utd[hash].type = 'Register New Account';
-					utd[hash].data.description = `Register account ${log.sender.replace('0x', '')}`;
-					utd[hash].message = `registration timestamp saved`;
-					break;
-				case 'submittedReport': {
-					utd[hash].type = 'Reveal Report';
-					const { marketsData, outcomesData } = getState();
-					const marketID = selectMarketIDFromEventID(log.event);
-					if (!marketID) {
-						if (isRetry) return nextLog(log);
-						console.debug('market ID not found, retrying...');
-						return augur.getMarkets(log.event, (markets) => {
-							if (markets && markets.length) {
-								dispatch(updateEventMarketsMap(log.event, markets));
-								dispatch(loadMarketThenRetryConversion(markets[0], label, log, nextLog));
-							}
-						});
-					}
-					const market = marketsData[marketID];
-					if (!market) {
-						if (isRetry) return nextLog(log);
-						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
-					}
-					const marketOutcomes = outcomesData[marketID];
-					utd[hash].data.description = market.description;
-					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-					utd[hash].message = `revealed report: ${formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
-					break;
-				}
-				case 'submittedReportHash': {
-					utd[hash].type = 'Commit Report';
-					const { marketsData, outcomesData } = getState();
-					const marketID = selectMarketIDFromEventID(log.event);
-					if (!marketID) {
-						if (isRetry) return nextLog(log);
-						return augur.getMarkets(log.event, (markets) => {
-							if (markets && markets.length) {
-								dispatch(updateEventMarketsMap(log.event, markets));
-								dispatch(loadMarketThenRetryConversion(markets[0], label, log, nextLog));
-							}
-						});
-					}
-					const market = marketsData[marketID];
-					if (!market) {
-						if (isRetry) return nextLog(log);
-						return dispatch(loadMarketThenRetryConversion(marketID, label, log, nextLog));
-					}
-					const marketOutcomes = outcomesData[marketID];
-					utd[hash].data.description = market.description;
-					utd[hash].data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-					utd[hash].message = `committed to report`;
-					if (loginAccount.derivedKey) {
-						const report = augur.parseAndDecryptReport([
-							log.encryptedReport,
-							log.encryptedSalt
-						], { derivedKey: loginAccount.derivedKey }).report;
-						utd[hash].message = `${utd[hash].message}: ${formatReportedOutcome(report, log.ethics, market.minValue, market.maxValue, market.type, marketOutcomes)}`;
-					}
-					break;
-				}
-				case 'tradingFeeUpdated': {
-					utd[hash].type = 'Trading Fee Updated';
-					const { marketsData } = getState();
-					const market = marketsData[log.marketID];
-					if (!market) {
-						if (isRetry) return nextLog(log);
-						return dispatch(loadMarketThenRetryConversion(log.marketID, label, log, nextLog));
-					}
-					utd[hash].data.description = market.description;
-					utd[hash].data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
-					utd[hash].message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
-					break;
-				}
-				case 'Transfer':
-					utd[hash].type = 'Transfer Reputation';
-					utd[hash].message = `transferred ${formatRep(log._value).full}`;
-					utd[hash].data.description = `Transfer Reputation from ${log._from} to ${log._to}`;
-					utd[hash].data.balances = [{
-						change: formatRep(log._value, { positiveSign: true })
-					}];
-					break;
-				case 'withdraw':
-					utd[hash].type = 'Withdraw Ether';
-					utd[hash].message = `withdrew ${formatEther(log.value).full}`;
-					utd[hash].data.description = 'Convert tradeable Ether token to Ether';
-					break;
-				default:
-					utd[hash].type = label;
-					utd[hash].message = hash;
-					utd[hash].data.description = JSON.stringify(log);
-					break;
+		augur.getMarkets(eventID, (markets) => {
+			if (markets && markets.length) {
+				dispatch(updateEventMarketsMap(eventID, markets));
+				dispatch(loadMarketThenRetryConversion(markets[0], label, log, callback));
 			}
-			console.log('updated transactions data:', utd);
-			dispatch(updateTransactionsData(utd));
-			nextLog();
-		}, (err) => {
-			if (err) console.error(err);
 		});
 	};
 }
+
+export function constructBasicTransaction(hash, status, blockNumber, timestamp) {
+	const transaction = { hash, status };
+	if (blockNumber) transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
+	if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
+	return transaction;
+}
+
+export function constructApprovalTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Approved to Send Reputation';
+	transaction.description = `Approve ${log._spender} to send Reputation`;
+	transaction.message = `approved`;
+	return transaction;
+}
+
+export function constructCollectedFeesTransaction(log) {
+	console.debug('&&&&&&&&&&&&&collect fees tx:', log);
+	const transaction = { data: {} };
+	const repGain = abi.bignum(log.repGain);
+	const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+	transaction.type = `Reporting Payment`;
+	transaction.message = `reported using ${formatRep(initialRepBalance).full}`;
+	const totalReportingRep = abi.bignum(log.totalReportingRep);
+	if (!totalReportingRep.eq(constants.ZERO)) {
+		const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100));
+		transaction.message = `${transaction.message} (${percentRep.full})`;
+	}
+	transaction.description = `Reporting cycle #${log.period}`;
+	transaction.data.balances = [{
+		change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+		balance: formatEther(log.newCashBalance)
+	}, {
+		change: formatRep(log.repGain, { positiveSign: true }),
+		balance: formatRep(log.newRepBalance)
+	}];
+	console.log('transaction.data.balances:', transaction.data.balances);
+	transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
+	return transaction;
+}
+
+export function constructDepositTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Deposit Ether';
+	transaction.description = 'Convert Ether to tradeable Ether token';
+	transaction.message = `deposited ${formatEther(log.value).full}`;
+	return transaction;
+}
+
+export function constructRegistrationTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Register New Account';
+	transaction.description = `Register account ${log.sender.replace('0x', '')}`;
+	transaction.message = `registration timestamp saved`;
+	return transaction;
+}
+
+export function constructPenalizationCatchupTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Reporting Cycle Catch-Up';
+	transaction.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
+	// TODO link to this cycle in My Reports
+	transaction.data.balances = [{
+		change: formatRep(log.repLost, { positiveSign: true }),
+		balance: formatRep(log.newRepBalance)
+	}];
+	transaction.message = `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`;
+	return transaction;
+}
+
+export function constructTransferTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Transfer Reputation';
+	transaction.message = `transferred ${formatRep(log._value).full}`;
+	transaction.description = `Transfer Reputation from ${log._from} to ${log._to}`;
+	transaction.data.balances = [{
+		change: formatRep(log._value, { positiveSign: true })
+	}];
+	return transaction;
+}
+
+export function constructWithdrawTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Withdraw Ether';
+	transaction.message = `withdrew ${formatEther(log.value).full}`;
+	transaction.description = 'Convert tradeable Ether token to Ether';
+	return transaction;
+}
+
+export function constructDefaultTransaction(label, log) {
+	const transaction = { data: {} };
+	transaction.type = label;
+	transaction.message = log.transactionHash;
+	transaction.description = JSON.stringify(log);
+	return transaction;
+}
+
+export function constructMarketCreatedTransaction(log, market, dispatch) {
+	const transaction = { data: {} };
+	transaction.type = 'create_market';
+	transaction.description = market ? market.description : log.marketID.replace('0x', '');
+	transaction.marketCreationFee = formatEther(log.marketCreationFee);
+	transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
+	transaction.data.bond = { label: 'event validity', value: formatEther(log.eventBond) };
+	return transaction;
+}
+
+export function constructPayoutTransaction(log, market, dispatch) {
+	const transaction = { data: {} };
+	transaction.type = 'Claim Trading Payout';
+	transaction.message = `closed out ${formatShares(log.shares).full}`;
+	transaction.description = market.description;
+	transaction.data.balances = [{
+		change: formatEther(log.cashPayout, { positiveSign: true }),
+		balance: formatEther(log.cashBalance)
+	}];
+	transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
+	return transaction;
+}
+
+export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
+	const transaction = { data: {} };
+	transaction.description = market.description;
+	transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
+	transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
+	return transaction;
+}
+
+export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
+	const transaction = { data: {} };
+	transaction.type = 'Compare Report To Consensus';
+	const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, outcomes);
+	if (log.reportValue === log.outcome) {
+		transaction.message = `✔ report ${formattedReport} matches consensus`;
+	} else {
+		transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, outcomes)}`;
+	}
+	transaction.description = market.description;
+	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+	transaction.data.balances = [{
+		change: formatRep(log.repchange, { positiveSign: true }),
+		balance: formatRep(log.newafterrep)
+	}];
+	return transaction;
+}
+
+export function constructSubmittedReportHashTransaction(log, marketID, market, outcomes, decryptionKey, dispatch) {
+	const transaction = { data: {} };
+	transaction.type = 'commit_report';
+	transaction.description = market.description;
+	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+	transaction.data.market = market;
+	transaction.data.isUnethical = !log.ethics;
+	transaction.message = `committed to report`;
+	if (decryptionKey) {
+		const report = augur.parseAndDecryptReport([
+			log.encryptedReport,
+			log.encryptedSalt
+		], { derivedKey: decryptionKey }).report;
+		const formattedReport = formatReportedOutcome(report, log.ethics, market.minValue, market.maxValue, market.type, outcomes);
+		transaction.data.reportedOutcomeID = formattedReport;
+		transaction.data.outcome = { name: formattedReport };
+		transaction.message = `${transaction.message}: ${formattedReport}`;
+	}
+	return transaction;
+}
+
+export function constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch) {
+	const transaction = { data: {} };
+	transaction.type = 'reveal_report';
+	transaction.description = market.description;
+	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+	transaction.data.market = market;
+	transaction.data.isUnethical = !log.ethics;
+	const formattedReport = formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, outcomes);
+	transaction.data.reportedOutcomeID = formattedReport;
+	transaction.data.outcome = { name: formattedReport };
+	transaction.message = `revealed report: ${formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, outcomes)}`;
+	return transaction;
+}
+
+export function loadDataForMarketTransaction(label, log, isRetry, callback) {
+	return (dispatch, getState) => {
+		const marketID = log.marketID || log.market;
+		const market = getState().marketsData[marketID];
+		if (!market) {
+			if (isRetry) return callback(log);
+			return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
+		}
+		return market;
+	};
+}
+
+export function loadDataForReportingTransaction(label, log, isRetry, callback) {
+	return (dispatch, getState) => {
+		const { marketsData, outcomesData } = getState();
+		const marketID = selectMarketIDFromEventID(log.event);
+		if (!marketID) {
+			if (isRetry) return callback(log);
+			return dispatch(lookupEventMarketsThenRetryConversion(log.event, label, log, callback));
+		}
+		const market = marketsData[marketID];
+		if (!market) {
+			if (isRetry) return callback(log);
+			return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
+		}
+		return { marketID, market, outcomes: outcomesData[marketID] };
+	};
+}
+
+export function constructMarketTransaction(label, log, marketID, market) {
+	return (dispatch, getState) => {
+		switch (label) {
+			case 'marketCreated':
+				return constructMarketCreatedTransaction(log, marketID, market, dispatch);
+			case 'payout':
+				return constructPayoutTransaction(log, marketID, market, dispatch);
+			case 'tradingFeeUpdated':
+				return constructTradingFeeUpdatedTransaction(log, marketID, market, dispatch);
+			default:
+				return null;
+		}
+	};
+}
+
+export function constructReportingTransaction(label, log, marketID, market, outcomes) {
+	return (dispatch, getState) => {
+		switch (label) {
+			case 'penalize':
+				return constructPenalizeTransaction(log, marketID, market, outcomes);
+			case 'submittedReport':
+				return constructSubmittedReportTransaction(log, marketID, market, outcomes);
+			case 'submittedReportHash':
+				return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, getState().loginAccount.derivedKey);
+			default:
+				return null;
+		}
+	};
+}
+
+export function constructTransaction(label, log, isRetry, callback) {
+	return (dispatch, getState) => {
+		switch (label) {
+			case 'Approval':
+				return constructApprovalTransaction(log);
+			case 'collectedFees':
+				return constructCollectedFeesTransaction(log);
+			case 'deposit':
+				return constructDepositTransaction(log);
+			case 'penalizationCaughtUp':
+				return constructPenalizationCatchupTransaction(log);
+			case 'registration':
+				return constructRegistrationTransaction(log);
+			case 'Transfer':
+				return constructTransferTransaction(log);
+			case 'withdraw':
+				return constructWithdrawTransaction(log);
+			case 'marketCreated':
+			case 'payout':
+			case 'tradingFeeUpdated': {
+				const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
+				if (!market) break;
+				return dispatch(constructMarketTransaction(label, log, market));
+			}
+			case 'penalize':
+			case 'submittedReport':
+			case 'submittedReportHash': {
+				const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
+				if (!aux) break;
+				return dispatch(constructReportingTransaction(label, log, aux.marketID, aux.market, aux.outcomes));
+			}
+			default:
+				return constructDefaultTransaction(label, log);
+		}
+	};
+}
+
+export function convertLogToTransaction(label, log, status, isRetry, cb) {
+	return (dispatch, getState) => {
+		console.log('convertLogToTransaction', label);
+		console.log(log);
+		const callback = cb || (e => console.log('convertLogToTransaction:', e));
+		const hash = log.transactionHash;
+		if (hash) {
+			const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
+			if (transaction) {
+				dispatch(updateTransactionsData({
+					[hash]: {
+						...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp),
+						...transaction
+					}
+				}));
+				return callback();
+			}
+		}
+	};
+}
+
+export const convertLogsToTransactions = (label, logs, isRetry) => (
+	(dispatch, getState) => (
+		async.eachLimit(logs, constants.PARALLEL_LIMIT, (log, nextLog) => (
+			dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
+		), err => (err && console.error(err)))
+	)
+);
 
 export function convertTradeLogToTransaction(label, data, marketID) {
 	return (dispatch, getState) => {
@@ -268,7 +367,6 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 							outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
 						}
 						let utd = {};
-						console.log('converting trading log:', trade);
 						switch (label) {
 							case 'log_fill_tx': {
 								const hash = trade.transactionHash;
@@ -298,14 +396,13 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 									formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
 								}
 								const rawPrice = bnPrice;
-								console.log('trade:', trade);
 								utd = {
 									[transactionID]: {
 										type,
 										hash,
 										status: SUCCESS,
+										description,
 										data: {
-											marketDescription: description,
 											marketType: marketsData[marketID].type,
 											outcomeName: outcomeName || outcomeID,
 											outcomeID,
@@ -375,8 +472,8 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 									[trade.transactionHash]: {
 										type,
 										status: SUCCESS,
+										description,
 										data: {
-											marketDescription: description,
 											marketType: marketsData[marketID].type,
 											outcomeName: outcomeName || outcomeID,
 											outcomeID,
@@ -408,9 +505,9 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 									[trade.transactionHash]: {
 										type: 'cancel_order',
 										status: SUCCESS,
+										description,
 										data: {
 											order: { type: trade.type, shares },
-											marketDescription: description,
 											marketType: marketsData[marketID] && marketsData[marketID].type,
 											outcome: { name: outcomeName || outcomeID },
 											outcomeID,
@@ -430,7 +527,7 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 							default:
 								break;
 						}
-						console.log('updated transactions data:', utd);
+						// console.log('updated transactions data:', utd);
 						dispatch(updateTransactionsData(utd));
 					}
 				}
@@ -441,8 +538,8 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 
 export function convertTradeLogsToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
-		console.log('convertLogsToTransactions', label);
-		console.log('data:', data);
+		// console.log('convertTradeLogsToTransactions', label);
+		// console.log('data:', data);
 		const { marketsData } = getState();
 		const marketIDs = Object.keys(data);
 		const numMarkets = marketIDs.length;
