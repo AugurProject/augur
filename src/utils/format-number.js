@@ -267,11 +267,11 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	}
 
 	if (positiveSign && !bigUnitPostfix) {
-		if (o.formattedValue > 0) {
+		if (o.formattedValue >= 0) {
 			o.formatted = `+${o.formatted}`;
 			o.minimized = `+${o.minimized}`;
 		}
-		if (o.roundedValue > 0) {
+		if (o.roundedValue >= 0) {
 			o.rounded = `+${o.rounded}`;
 		}
 	}
