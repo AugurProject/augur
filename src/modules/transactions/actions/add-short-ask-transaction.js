@@ -14,11 +14,11 @@ export const makeShortAskTransaction = (marketID, outcomeID, marketType, marketD
 	console.log('short ask transaction:', marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: SHORT_ASK,
+		description: marketDescription,
 		data: {
 			marketID,
 			outcomeID,
 			marketType,
-			marketDescription,
 			outcomeName
 		},
 		numShares: formatShares(numShares),

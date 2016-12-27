@@ -16,10 +16,8 @@ export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
 		const fmtValue = formatEther(abi.bignum(numShares).times(abi.bignum(marketData.cumulativeScale)));
 		const transaction = {
 			type: SELL_COMPLETE_SETS,
-			data: {
-				marketID,
-				marketDescription: marketData.description
-			},
+			description: marketData.description,
+			data: { marketID },
 			numShares: fmtNumShares,
 			value: fmtValue,
 			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))

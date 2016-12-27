@@ -8,12 +8,12 @@ export const makeCommitReportTransaction =
 (market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas, dispatch) => {
 	const obj = {
 		type: COMMIT_REPORT,
+		description: market.description,
 		gas,
 		ether: etherWithoutGas,
 		data: {
 			market,
 			marketID: market.id,
-			description: market.description,
 			outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
 			reportedOutcomeID,
 			isUnethical,

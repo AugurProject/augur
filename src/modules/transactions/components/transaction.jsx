@@ -6,8 +6,7 @@ import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
-
-function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
+import TransactionMessage from 'modules/transactions/components/transaction-message';
 
 const Transaction = (p) => {
 	const nodes = {};
@@ -98,7 +97,7 @@ const Transaction = (p) => {
 					<br className="hide-in-tx-display" />
 					<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
 					<br />
-					{buildDescription(p.data.marketDescription)}
+					{buildDescription(p.description)}
 					<br className="hide-in-trade-summary-display" />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -114,7 +113,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.data.marketDescription)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -124,7 +123,7 @@ const Transaction = (p) => {
 			break;
 
 		case FUND_ACCOUNT:
-			nodes.action = 'REGISTER NEW ACCOUNT';
+			nodes.action = 'Register New Account';
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
@@ -139,12 +138,12 @@ const Transaction = (p) => {
 			break;
 
 		case CREATE_MARKET:
-			nodes.action = 'Create market';
+			nodes.action = 'Create Market';
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -155,20 +154,8 @@ const Transaction = (p) => {
 
 		case COMMIT_REPORT:
 		case REVEAL_REPORT: {
-			let isScalar;
-			switch (p.type) {
-				case COMMIT_REPORT:
-					nodes.action = 'Commit report';
-					isScalar = p.data.market.type === SCALAR;
-					break;
-				case REVEAL_REPORT:
-					nodes.action = 'Reveal report';
-					isScalar = p.data.isScalar;
-					break;
-				default:
-					break;
-			}
-			const reportedOutcome = isScalar ?
+			nodes.action = p.type === COMMIT_REPORT ? 'Commit Report' : 'Reveal Report';
+			const reportedOutcome = (p.data.isScalar || (p.data.market && p.data.market.type === SCALAR)) ?
 				p.data.reportedOutcomeID :
 				p.data.outcome && p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
 			nodes.description = (
@@ -179,7 +166,7 @@ const Transaction = (p) => {
 						<strong className="unethical"> and Unethical</strong>
 					}
 					<br />
-					{buildDescription(p.data.description || p.data.marketDescription)}
+					{buildDescription(p.description || p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -194,7 +181,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -212,7 +199,7 @@ const Transaction = (p) => {
 					<span className="of">of</span>
 					<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
 					<br />
-					{buildDescription(p.data.marketDescription)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -227,7 +214,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{p.type}</span>
 					<br />
-					{buildDescription(p.data.description)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -236,118 +223,6 @@ const Transaction = (p) => {
 			);
 			break;
 	}
-
-	let balancesMessage;
-	if (!!p.data && !!p.data.balances && !!p.data.balances.length) {
-		balancesMessage = p.data.balances.map(b => (
-			<li key={`${p.hash}-${b.change && b.change.full}-${b.balance && b.balance.full}`}>
-				{!!b.change && b.change.value > 0 &&
-					<ValueDenomination
-						className="balance-message balance-change"
-						{...b.change}
-					/>
-				}
-				{!!b.balance && b.change.value > 0 &&
-					<ValueDenomination
-						className="balance-message"
-						{...b.balance}
-						prefix=" [ balance:" postfix="]"
-					/>
-				}
-			</li>
-		));
-		balancesMessage = <ul>{balancesMessage}</ul>;
-	} else {
-		balancesMessage = <span />;
-	}
-
-	const statusAndMessage = (
-		<div className="status-and-message">
-			<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
-			<br />
-			{!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
-				<span>
-					<ValueDenomination
-						className="tradingFees-message"
-						{...p.tradingFees}
-						prefix="trading fees:"
-					/>
-					<br />
-				</span>
-			}
-			{balancesMessage}
-			{!!p.freeze &&
-				<span className="freeze-message">
-					{p.freeze.noFeeCost &&
-						<ValueDenomination
-							className="freeze-noFeeCost-message"
-							{...p.freeze.noFeeCost}
-							prefix={p.freeze.verb}
-							postfix="+ "
-						/>
-					}
-					<ValueDenomination
-						className="freeze-tradingFees-message"
-						{...p.freeze.tradingFees}
-						prefix={!p.freeze.noFeeCost && p.freeze.verb}
-						postfix="in potential trading fees"
-					/>
-					<br />
-				</span>
-			}
-			{!!p.totalCost && p.totalCost.value !== null && p.totalCost.value !== undefined &&
-				<span>
-					<ValueDenomination
-						className="totalCost-message"
-						{...p.totalCost}
-						prefix="total cost:"
-					/>
-					<br />
-				</span>
-			}
-			{!!p.totalReturn && p.totalReturn.value !== null && p.totalReturn.value !== undefined &&
-				<span>
-					<ValueDenomination
-						className="totalReturn-message"
-						{...p.totalReturn}
-						prefix="total return:"
-					/>
-					<br />
-				</span>
-			}
-			{!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
-				<span>
-					<ValueDenomination
-						className="marketCreationFee-message"
-						{...p.marketCreationFee}
-						prefix="market creation fee:"
-					/>
-					<br />
-				</span>
-			}
-			{!!p.bond && !!p.bond.value &&
-				<span>
-					<ValueDenomination
-						className="bond-message"
-						{...p.bond.value}
-						prefix={`${p.bond.label} bond:`}
-					/>
-					<br />
-				</span>
-			}
-			{!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
-				<span>
-					<ValueDenomination
-						className="gasFees-message"
-						{...p.gasFees}
-						prefix="gas cost:"
-					/>
-					<br />
-				</span>
-			}
-			<span className="status">{p.status}</span>
-		</div>
-	);
 
 	return (
 		<article className={classnames('transaction-item', p.className, p.status)}>
@@ -373,9 +248,9 @@ const Transaction = (p) => {
 
 			{p.status && p.hash ?
 				<Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
-					{ statusAndMessage }
+					<TransactionMessage {...p} />
 				</Link> :
-				{ statusAndMessage }
+				<TransactionMessage {...p} />
 			}
 		</article>
 	);
@@ -387,6 +262,7 @@ Transaction.propTypes = {
 	type: React.PropTypes.string,
 	status: React.PropTypes.string,
 	data: React.PropTypes.object,
+	description: React.PropTypes.string,
 	shares: React.PropTypes.object,
 	gas: React.PropTypes.object,
 	hash: React.PropTypes.string,

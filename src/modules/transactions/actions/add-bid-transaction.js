@@ -14,11 +14,11 @@ export const makeBidTransaction = (marketID, outcomeID, marketType, marketDescri
 	console.log('bid transaction:', marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type: BID,
+		description: marketDescription,
 		data: {
 			marketID,
 			outcomeID,
 			marketType,
-			marketDescription,
 			outcomeName
 		},
 		numShares: formatShares(numShares),

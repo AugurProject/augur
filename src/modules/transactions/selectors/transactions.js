@@ -24,11 +24,11 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
 		})
 		.map((id) => {
 			let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
-			if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
+			if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
 				marketLink = selectMarketLink(
 					{
 						id: transactionsData[id].data.id || transactionsData[id].data.marketID,
-						description: transactionsData[id].data.description || transactionsData[id].data.marketDescription
+						description: transactionsData[id].description
 					},
 					store.dispatch
 				);

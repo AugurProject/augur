@@ -6,6 +6,7 @@ export const makeGenerateOrderBookTransaction = (marketData, dispatch) => {
 	const obj = {
 		type: GENERATE_ORDER_BOOK,
 		data: marketData,
+		description: marketData.description,
 		action: transactionID => dispatch(createOrderBook(transactionID, marketData))
 	};
 	return obj;

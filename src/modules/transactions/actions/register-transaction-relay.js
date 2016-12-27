@@ -12,7 +12,7 @@ export function registerTransactionRelay() {
 				const hash = tx.response.hash;
 				const { transactionsData } = getState();
 				if (hash && (!transactionsData[hash] || transactionsData[hash].status !== 'success')) {
-					if (!tx.data.description && tx.data.inputs) {
+					if (!tx.description && tx.data.inputs) {
 						const params = tx.data.params.slice();
 						if (tx.data.fixed) {
 							const numFixed = tx.data.fixed.length;
@@ -20,7 +20,7 @@ export function registerTransactionRelay() {
 								params[tx.data.fixed[i]] = abi.unfix(params[tx.data.fixed[i]], 'string');
 							}
 						}
-						tx.data.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
+						tx.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 					}
 					const timestamp = tx.response.timestamp ?
 						formatDate(new Date(tx.response.timestamp * 1000)) :

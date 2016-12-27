@@ -15,11 +15,11 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketType, market
 	const bnNumShares = abi.bignum(numShares);
 	const transaction = {
 		type: SHORT_SELL,
+		description: marketDescription,
 		data: {
 			marketID,
 			outcomeID,
 			marketType,
-			marketDescription,
 			outcomeName
 		},
 		numShares: formatShares(numShares),

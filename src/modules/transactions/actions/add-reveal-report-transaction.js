@@ -35,11 +35,11 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				getState().marketsData[marketID].description;
 			const transaction = {
 				type: REVEAL_REPORT,
+				description,
 				data: {
 					event: eventID,
 					marketID,
 					outcome,
-					description,
 					reportedOutcomeID,
 					isUnethical,
 					isScalar,
@@ -47,7 +47,6 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 				},
 				gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.MakeReports.submitReport }, augur.rpc.gasPrice))
 			};
-			console.info(REVEAL_REPORT, transaction.data);
 			transaction.action = transactionID => dispatch(processRevealReport(
 				transactionID,
 				eventID,
@@ -67,16 +66,6 @@ export function addRevealReportTransaction(eventID, marketID, reportedOutcomeID,
 
 export function processRevealReport(transactionID, eventID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, outcomeName, callback) {
 	return (dispatch, getState) => {
-		console.debug('submitReport:', {
-			event: eventID,
-			report: reportedOutcomeID,
-			salt,
-			ethics: Number(!isUnethical),
-			minValue,
-			maxValue,
-			type,
-			isIndeterminate
-		});
 		augur.submitReport({
 			event: eventID,
 			report: reportedOutcomeID,

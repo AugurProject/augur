@@ -13,11 +13,11 @@ export function makeCancelTransaction(order, market, outcome, ether, gas, dispat
 	const { id, type, amount, price } = order;
 	return {
 		type: CANCEL_ORDER,
+		description: market.description,
 		gas,
 		ether,
 		data: {
 			marketID: market.id,
-			marketDescription: market.description,
 			order: {
 				id,
 				type,

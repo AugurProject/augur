@@ -15,11 +15,11 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketType, mark
 	console.log('trade transaction:', type, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
 	const transaction = {
 		type,
+		description: marketDescription,
 		data: {
 			marketID,
 			outcomeID,
 			marketType,
-			marketDescription,
 			outcomeName
 		},
 		numShares: formatShares(numShares),

@@ -350,9 +350,9 @@ export default function (market) {
 				assert.isString(trade.data.outcomeID);
 			});
 
-			it(`market.tradeSummary.tradeOrders${i}.data.marketDescription`, () => {
-				assert.isDefined(trade.data.marketDescription);
-				assert.isString(trade.data.marketDescription);
+			it(`market.tradeSummary.tradeOrders${i}.description`, () => {
+				assert.isDefined(trade.description);
+				assert.isString(trade.description);
 			});
 
 			it(`market.tradeSummary.tradeOrders${i}.data.outcomeName`, () => {
