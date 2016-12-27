@@ -76,20 +76,17 @@ export function processRevealReport(transactionID, eventID, reportedOutcomeID, s
 			type,
 			isIndeterminate,
 			onSent: (r) => {
-				console.debug('submitReport sent:', r);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: SUBMITTED,
 					message: `revealing reported outcome: ${outcomeName}`
 				}));
 			},
 			onSuccess: (r) => {
-				console.debug('submitReport success:', r);
 				dispatch(deleteTransaction(transactionID));
 				dispatch(updateAssets());
 				if (callback) callback(null);
 			},
 			onFailed: (e) => {
-				console.error('submitReport failed:', e);
 				dispatch(updateExistingTransaction(transactionID, {
 					status: FAILED,
 					message: `transaction failed: ${e.message}`
