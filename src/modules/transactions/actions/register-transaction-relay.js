@@ -12,6 +12,9 @@ export function registerTransactionRelay() {
 				const hash = tx.response.hash;
 				const { transactionsData } = getState();
 				if (hash && (!transactionsData[hash] || transactionsData[hash].status !== 'success')) {
+					if (!tx.description && tx.data.description) {
+						tx.description = tx.data.description;
+					}
 					if (!tx.description && tx.data.inputs) {
 						const params = tx.data.params.slice();
 						if (tx.data.fixed) {
