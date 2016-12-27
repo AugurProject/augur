@@ -39,7 +39,7 @@ export function loadReports(cb) {
 				});
 			}, (err) => {
 				if (err) return callback(err);
-				dispatch(loadReportDescriptors(e => callback));
+				dispatch(loadReportDescriptors(e => callback(e)));
 			});
 		});
 	};
