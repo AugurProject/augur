@@ -235,15 +235,16 @@ module.exports = {
             if (parseInt(rawInfo[index + 8], 16) !== 0) {
                 proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
             }
+            console.log('ethics:', rawInfo[index + 7], abi.hex(rawInfo[index + 7], true));
             var event = {
                 id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
-                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string"),
-                isEthical: abi.unfix(abi.hex(rawInfo[index + 7], true), "number") || undefined
+                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string")
             };
+            if (outcome) event.isEthical = !!abi.unfix(abi.hex(rawInfo[index + 7], true), "number");
             info.reportedOutcome = outcome;
             info.proportionCorrect = proportionCorrect;
 
