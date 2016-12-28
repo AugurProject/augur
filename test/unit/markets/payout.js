@@ -8,8 +8,10 @@ var transact,
 	receipt,
 	Cash,
 	Shares,
-	callReturn;
-// 9 tests total
+	callReturn,
+	winningOutcomes,
+	Complete;
+// 11 tests total
 
 describe("payout.closeMarket", function() {
 	// 2 tests total
@@ -235,5 +237,127 @@ describe("payout.claimProceeds", function() {
 		onFailed: function(res) {
 			assert.deepEqual(res, '0');
 		}
+	});
+});
+
+describe("payout.claimMarketsProceeds", function() {
+	// 2 tests total
+	var test = function(t) {
+		it(t.testDescription, function(done) {
+			callReturn = t.callReturn || "1";
+			Cash = t.receiptCash || [];
+			Shares = t.receiptShares || [];
+			Complete = done;
+			augur.claimMarketsProceeds(t.branch, t.markets, t.callback, t.onSent, t.onSuccess, t.onFailed);
+		});
+	};
+
+	before(function() {
+		var getWinningOutcomesCC = 0;
+		transact = augur.transact;
+		receipt = augur.rpc.receipt;
+		winningOutcomes = augur.getWinningOutcomes;
+		augur.getWinningOutcomes = function(marketid, cb) {
+			// increment callcount.
+			getWinningOutcomesCC++;
+			//simplified return, default to return winningOutcome, conditionally fail for test reasons.
+			switch(getWinningOutcomesCC) {
+			case 5:
+				cb(['0']);
+				break;
+			default:
+				cb(['1']);
+				break;
+			}
+		};
+		augur.transact = function(tx, onSent, onSuccess, onFailed) {
+			// pass back the same hash for simplicity.
+			onSuccess({ callReturn: callReturn, hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055' });
+		};
+		augur.rpc.receipt = function(hash, cb) {
+			var logs = [];
+			for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
+				logs.push({ topics: [augur.api.events.payout.signature], data: [Cash[i], Shares[i]] });
+			}
+			cb({ logs: logs });
+		};
+	});
+
+	after(function() {
+		augur.transact = transact;
+		augur.rpc.receipt = receipt;
+		augur.getWinningOutcomes = winningOutcomes;
+	});
+
+	test({
+		testDescription: 'should claim Proceeds for given markets if user has shares on the winning outcome',
+		receiptCash: [augur.abi.fix('3000')],
+		receiptShares: [augur.abi.fix('100')],
+		branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+		markets: [{
+			id: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+			description: 'Will John Doe actually stick with his New Years Resolution?'
+		}, {
+			id: 'c2a4cee415eb5962401fff2a89fd587e677b1fbcd4652f4edb2ea1f6148c639b',
+			description: 'Who framed Roger Rabbit?'
+		}, {
+			id: '4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0',
+			description: 'Will Augur predict everything in the world by 2093 AD?'
+		}],
+		callback: function(err, markets) {
+			assert.deepEqual(markets, ['9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+		  'c2a4cee415eb5962401fff2a89fd587e677b1fbcd4652f4edb2ea1f6148c639b',
+		  '4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0']);
+			assert.isNull(err);
+			Complete();
+		},
+		onSent: utils.noop,
+		onSuccess: function(hash, id, res) {
+			// onSuccess will act as the assertions function because it is expected to be called. It will assert each market as they move through the series
+			assert.deepEqual(hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+			assert.oneOf(id, ['9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+			'c2a4cee415eb5962401fff2a89fd587e677b1fbcd4652f4edb2ea1f6148c639b',
+			'4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0']);
+			assert.deepEqual(res, {
+					cash: '3000',
+					shares: '100'
+				});
+		},
+		onFailed: utils.noop
+	});
+
+	test({
+		testDescription: 'should claim Proceeds for given markets even if a market returns with no winning outcomes, in this case the 2nd market in the series',
+		receiptCash: [augur.abi.fix('3000')],
+		receiptShares: [augur.abi.fix('100')],
+		branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+		markets: [{
+			id: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+			description: 'Will John Doe actually stick with his New Years Resolution?'
+		}, {
+			id: 'c2a4cee415eb5962401fff2a89fd587e677b1fbcd4652f4edb2ea1f6148c639b',
+			description: 'Who framed Roger Rabbit?'
+		}, {
+			id: '4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0',
+			description: 'Will Augur predict everything in the world by 2093 AD?'
+		}],
+		callback: function(err, markets) {
+			assert.deepEqual(markets, ['9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+		  '4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0'], 'is this failing?');
+			assert.isNull(err);
+			Complete();
+		},
+		onSent: utils.noop,
+		onSuccess: function(hash, id, res) {
+			// onSuccess will act as the assertions function because it is expected to be called. It will assert each market as they move through the series
+			assert.deepEqual(hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+			assert.oneOf(id, ['9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+			'4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0']);
+			assert.deepEqual(res, {
+					cash: '3000',
+					shares: '100'
+				});
+		},
+		onFailed: utils.noop
 	});
 });
