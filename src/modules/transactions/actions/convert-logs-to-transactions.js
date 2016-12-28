@@ -5,7 +5,7 @@ import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
-import { updateEventMarketsMap } from '../../markets/actions/update-markets-data';
+import { updateMarketsData, updateEventMarketsMap } from '../../markets/actions/update-markets-data';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { selectMarketLink } from '../../link/selectors/links';
 import { selectMarketIDFromEventID } from '../../market/selectors/market';
@@ -13,13 +13,10 @@ import { formatReportedOutcome } from '../../reports/selectors/reportable-outcom
 
 export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 	return (dispatch, getState) => {
-		dispatch(loadMarketsInfo([marketID], () => {
-			if (!getState().marketsData[marketID]) {
-				if (callback) callback(`could not load info for market ${marketID}`);
-			} else {
-				dispatch(convertLogsToTransactions(label, [log], true));
-				if (callback) callback();
-			}
+		dispatch(augur.getMarketInfo(marketID, (marketInfo) => {
+			dispatch(updateMarketsData({ [marketID]: marketInfo }));
+			dispatch(convertLogsToTransactions(label, [log], true));
+			if (callback) callback();
 		}));
 	};
 }

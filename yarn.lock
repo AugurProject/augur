@@ -380,9 +380,9 @@ augur-contracts@2.5.7:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.4.7:
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.4.7.tgz#b519427c9e216ee5fd8437b98b1895d009e0a4c3"
+augur.js@3.4.8:
+  version "3.4.8"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.4.8.tgz#1fcafd6127e5d81e8a44bd4104388bf09b065bba"
   dependencies:
     async "1.5.2"
     augur-abi "0.6.4"
