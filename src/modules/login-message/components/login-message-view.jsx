@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 27, 2016</h3>
+			<ol>
+				<li>
+					Fixed the ethicality displayed in converted transaction logs.
+				</li>
+				<li>
+					Rounded off converted Reputation percents for display.
+				</li>
+				<li>
+					Serialized log-to-transaction conversions.
+				</li>
+				<li>
+					Refactored the winning positions lookup done in order to claim trading proceeds from closed markets.
+				</li>
+			</ol>
 			<h3>December 26, 2016</h3>
 			<ol>
 				<li>
