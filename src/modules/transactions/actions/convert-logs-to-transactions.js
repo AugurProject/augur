@@ -51,15 +51,15 @@ export function constructApprovalTransaction(log) {
 }
 
 export function constructCollectedFeesTransaction(log) {
-	console.debug('&&&&&&&&&&&&&collect fees tx:', log);
+	console.debug('collect fees log:', log);
 	const transaction = { data: {} };
 	const repGain = abi.bignum(log.repGain);
 	const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
 	transaction.type = `Reporting Payment`;
-	transaction.message = `reported using ${formatRep(initialRepBalance).full}`;
+	transaction.message = `reported with ${formatRep(initialRepBalance).full}`;
 	const totalReportingRep = abi.bignum(log.totalReportingRep);
 	if (!totalReportingRep.eq(constants.ZERO)) {
-		const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100));
+		const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 		transaction.message = `${transaction.message} (${percentRep.full})`;
 	}
 	transaction.description = `Reporting cycle #${log.period}`;
@@ -334,7 +334,7 @@ export function convertLogToTransaction(label, log, status, isRetry, cb) {
 
 export const convertLogsToTransactions = (label, logs, isRetry) => (
 	(dispatch, getState) => (
-		async.eachLimit(logs, constants.PARALLEL_LIMIT, (log, nextLog) => (
+		async.eachSeries(logs, (log, nextLog) => (
 			dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
 		), err => (err && console.error(err)))
 	)
