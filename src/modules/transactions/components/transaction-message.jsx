@@ -4,29 +4,6 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
 const TransactionMessage = p => (
-	// let balancesMessage;
-	// if (!!p.data && !!p.data.balances && !!p.data.balances.length) {
-	// 	balancesMessage = p.data.balances.map(b => (
-	// 		<li key={`${p.id}-${b.change && b.change.full}-${b.balance && b.balance.full}`}>
-	// 			{!!b.change &&
-	// 				<ValueDenomination
-	// 					className="balance-message balance-change"
-	// 					{...b.change}
-	// 				/>
-	// 			}
-	// 			{!!b.balance &&
-	// 				<ValueDenomination
-	// 					className="balance-message"
-	// 					{...b.balance}
-	// 					prefix=" [ balance:" postfix="]"
-	// 				/>
-	// 			}
-	// 		</li>
-	// 	));
-	// 	balancesMessage = <ul>{balancesMessage}</ul>;
-	// } else {
-	// 	balancesMessage = <span />;
-	// }
 	<div className="status-and-message">
 		{!!p.message &&
 			<span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
