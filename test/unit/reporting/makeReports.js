@@ -437,21 +437,21 @@ describe("makeHash", function () {
     });
     test({
         salt: "1337",
-        report: constants.BINARY_INDETERMINATE,
+        report: abi.hex(constants.BINARY_INDETERMINATE),
         from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
         event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
         expected: "0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c"
     });
     test({
         salt: "1337",
-        report: constants.CATEGORICAL_SCALAR_INDETERMINATE,
+        report: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE),
         from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
         event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
         expected: "0x43c678db38cdc86f109f0c8cccebf300b9fec908dd59ac905191b9c755e26c0a"
     });
     test({
         salt: "1337",
-        report: constants.INDETERMINATE_PLUS_ONE,
+        report: abi.hex(constants.INDETERMINATE_PLUS_ONE),
         from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
         event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
         expected: "0xd8566eb441e5a90f035b72cb3fbd44d783f627b9d1503f5a2bfce7fab5853685"
