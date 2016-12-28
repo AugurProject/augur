@@ -40711,9 +40711,9 @@ module.exports = {
     PARALLEL_LIMIT: 5,
 
     // fixed-point indeterminate: 1.5 * 10^18
-    BINARY_INDETERMINATE: "0x14d1120d7b160000",
-    CATEGORICAL_SCALAR_INDETERMINATE: "0x6f05b59d3b20000",
-    INDETERMINATE_PLUS_ONE: "0x6f05b59d3b20001",
+    BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
+    CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
+    INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
 
     // default gas: 3.135M
     DEFAULT_GAS: 3135000,
@@ -41552,11 +41552,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.4.7";
+    this.version = "3.4.8";
 
     this.options = {
         debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
+            tools: true,       // if true, testing tools (test/tools.js) included
             abi: false,         // debug logging in augur-abi
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
@@ -41844,15 +41844,16 @@ module.exports = {
             if (parseInt(rawInfo[index + 8], 16) !== 0) {
                 proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
             }
+            console.log('ethics:', rawInfo[index + 7], abi.hex(rawInfo[index + 7], true));
             var event = {
                 id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
-                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string"),
-                isEthical: abi.unfix(abi.hex(rawInfo[index + 7], true), "number") || undefined
+                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string")
             };
+            if (outcome) event.isEthical = !!abi.unfix(abi.hex(rawInfo[index + 7], true), "number");
             info.reportedOutcome = outcome;
             info.proportionCorrect = proportionCorrect;
 
@@ -43693,7 +43694,7 @@ module.exports = {
 
             // if report is equal to fix(0.5) but is not indeterminate,
             // then set report to fix(0.5) + 1
-            if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
+            if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
                 fixedReport = constants.INDETERMINATE_PLUS_ONE;
             }
         }
@@ -43701,18 +43702,19 @@ module.exports = {
     },
 
     unfixReport: function (fixedReport, minValue, maxValue, type) {
-        var report, bnMinValue;
-        if (fixedReport === constants.BINARY_INDETERMINATE) {
+        var report, bnMinValue, bnFixedReport;
+        bnFixedReport = abi.bignum(fixedReport);
+        if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
             return {report: "1.5", isIndeterminate: true};
-        } else if (fixedReport === constants.CATEGORICAL_SCALAR_INDETERMINATE) {
+        } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
             return {report: "0.5", isIndeterminate: true};
-        } else if (fixedReport === constants.INDETERMINATE_PLUS_ONE) {
+        } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
             return {report: "0.5", isIndeterminate: false};
         }
         if (type === "binary") {
             report = abi.unfix(fixedReport);
         } else {
-            if (abi.bignum(fixedReport).eq(abi.bignum(1))) {
+            if (bnFixedReport.eq(abi.bignum(1))) {
                 fixedReport = "0";
             }
             // x = (max - min)*y + min
