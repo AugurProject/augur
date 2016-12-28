@@ -67,6 +67,9 @@ const LoginMessagePage = p => (
 				<li>
 					Refactored the winning positions lookup done in order to claim trading proceeds from closed markets.
 				</li>
+				<li>
+					Indeterminate outcomes are now properly displayed in all converted transaction types.
+				</li>
 			</ol>
 			<h3>December 26, 2016</h3>
 			<ol>
