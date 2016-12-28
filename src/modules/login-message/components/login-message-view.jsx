@@ -53,6 +53,30 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 27, 2016</h3>
+			<ol>
+				<li>
+					Fixed the ethicality displayed in converted transaction logs.
+				</li>
+				<li>
+					Rounded off converted Reputation percents for display.
+				</li>
+				<li>
+					Serialized log-to-transaction conversions.
+				</li>
+				<li>
+					Refactored the winning positions lookup done in order to claim trading proceeds from closed markets.
+				</li>
+			</ol>
+			<h3>December 26, 2016</h3>
+			<ol>
+				<li>
+					Refactored the gigantic switch in the generic log-to-transactions converter into a collection of small, composable, testable subroutines.
+				</li>
+				<li>
+					The status-and-message display data is now organized separate from the main Transaction component, in a new TransactionMessage component.
+				</li>
+			</ol>
 			<h3>December 25, 2016</h3>
 			<ol>
 				<li>
