@@ -15,7 +15,7 @@ export function unpackTransactionParameters(tx) {
 	if (fixed && fixed.length) {
 		const numFixed = fixed.length;
 		for (let j = 0; j < numFixed; ++j) {
-			unfixedParams[j] = abi.unfix(abi.hex(params[j], true), "string");
+			unfixedParams[j] = abi.unfix(abi.hex(params[j], true), 'string');
 		}
 	}
 	const unpacked = {};
@@ -35,7 +35,7 @@ export function constructRelayTransaction(tx) {
 			case 'sell':
 				return dispatch(constructTradingTransaction('log_add_tx', { type: 'sell', ...p }, p.market, p.outcome));
 			case 'trade':
-				return; //dispatch(constructTradingTransaction('log_fill_tx', { type: 'buy', ...p }, p.market, p.outcome));
+				return; // dispatch(constructTradingTransaction('log_fill_tx', { type: 'buy', ...p }, p.market, p.outcome));
 			case 'short_sell':
 				return dispatch(constructTradingTransaction('log_fill_tx', { type: 'short', ...p }, p.market, p.outcome));
 			case 'shortAsk':
@@ -44,7 +44,7 @@ export function constructRelayTransaction(tx) {
 				return dispatch(constructTradingTransaction('log_cancel', p, p.market, p.outcome));
 			default: {
 				let transaction;
-				switch (label) {
+				switch (tx.data.method) {
 					case 'submitReport':
 						transaction = dispatch(constructTransaction('submittedReport', p));
 						break;
@@ -84,7 +84,7 @@ export function constructRelayTransaction(tx) {
 						...constructBasicTransaction(tx.response.hash, 'in progress', tx.response.blockNumber, tx.response.timestamp),
 						...transaction
 					}
-				}
+				};
 			}
 		}
 	};
@@ -97,7 +97,7 @@ export function registerTransactionRelay() {
 			if (tx && tx.response && tx.data) {
 				console.log('txRelay:', tx);
 				const hash = tx.response.hash;
-				const { marketsData, transactionsData } = getState();
+				const { transactionsData } = getState();
 				if (hash) {
 					const timestamp = tx.response.timestamp ?
 						formatDate(new Date(tx.response.timestamp * 1000)) :
@@ -143,12 +143,10 @@ export function registerTransactionRelay() {
 						dispatch(updateTransactionsData({
 							[hash]: { ...tx, message, timestamp, gasFees, hash }
 						}));
-					} else {
-						if (tx.data.method !== 'trade') {
-							dispatch(updateTransactionsData({
-								[hash]: { ...tx, timestamp, gasFees, hash }
-							}));
-						}
+					} else if (tx.data.method !== 'trade') {
+						dispatch(updateTransactionsData({
+							[hash]: { ...tx, timestamp, gasFees, hash }
+						}));
 					}
 				}
 			}
