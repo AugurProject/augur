@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
 			<h3>December 28, 2016</h3>
 			<ol>
 				<li>
+					Replaced deprecated bid, ask, and short ask transaction-related code with simple calls to augur.js.  All transaction display updating and messaging is now handled automatically by the transation relay and filters.
+				</li>
+				<li>
 					Added possible events that can be logged by a method call to API maker script.
 				</li>
 				<li>
