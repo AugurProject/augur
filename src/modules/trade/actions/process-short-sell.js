@@ -7,7 +7,7 @@ import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
+// import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -65,18 +65,18 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) {
 					const transactionData = getState().transactionsData[transactionID];
-					dispatch(addShortAskTransaction(
-						transactionData.data.marketID,
-						transactionData.data.outcomeID,
-						transactionData.data.marketType,
-						transactionData.description,
-						transactionData.data.outcomeName,
-						res.remainingShares.toFixed(),
-						limitPrice,
-						actualEthWithFee,
-						tradingFeesEth,
-						transactionData.feePercent.value,
-						gasFeesRealEth));
+					// dispatch(addShortAskTransaction(
+					// 	transactionData.data.marketID,
+					// 	transactionData.data.outcomeID,
+					// 	transactionData.data.marketType,
+					// 	transactionData.description,
+					// 	transactionData.data.outcomeName,
+					// 	res.remainingShares.toFixed(),
+					// 	limitPrice,
+					// 	actualEthWithFee,
+					// 	tradingFeesEth,
+					// 	transactionData.feePercent.value,
+					// 	gasFeesRealEth));
 				}
 				// update user's position
 				dispatch(deleteTransaction(transactionID));

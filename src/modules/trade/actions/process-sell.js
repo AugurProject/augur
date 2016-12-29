@@ -8,8 +8,8 @@ import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-tra
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
-import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
+// import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
+// import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
@@ -85,32 +85,32 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								askShares = position.toFixed();
 								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
 							}
-							dispatch(addAskTransaction(
-								transactionData.data.marketID,
-								transactionData.data.outcomeID,
-								transactionData.data.marketType,
-								transactionData.description,
-								transactionData.data.outcomeName,
-								askShares,
-								limitPrice,
-								totalEthWithFee,
-								tradingFeesEth,
-								transactionData.feePercent.value,
-								gasFeesRealEth));
-							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-								dispatch(addShortAskTransaction(
-									transactionData.data.marketID,
-									transactionData.data.outcomeID,
-									transactionData.data.marketType,
-									transactionData.description,
-									transactionData.data.outcomeName,
-									shortAskShares,
-									limitPrice,
-									totalEthWithFee,
-									tradingFeesEth,
-									transactionData.feePercent.value,
-									gasFeesRealEth));
-							}
+							// dispatch(addAskTransaction(
+							// 	transactionData.data.marketID,
+							// 	transactionData.data.outcomeID,
+							// 	transactionData.data.marketType,
+							// 	transactionData.description,
+							// 	transactionData.data.outcomeName,
+							// 	askShares,
+							// 	limitPrice,
+							// 	totalEthWithFee,
+							// 	tradingFeesEth,
+							// 	transactionData.feePercent.value,
+							// 	gasFeesRealEth));
+							// if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
+							// 	dispatch(addShortAskTransaction(
+							// 		transactionData.data.marketID,
+							// 		transactionData.data.outcomeID,
+							// 		transactionData.data.marketType,
+							// 		transactionData.description,
+							// 		transactionData.data.outcomeName,
+							// 		shortAskShares,
+							// 		limitPrice,
+							// 		totalEthWithFee,
+							// 		tradingFeesEth,
+							// 		transactionData.feePercent.value,
+							// 		gasFeesRealEth));
+							// }
 						} else {
 							dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
 								if (err) console.error('loadBidsAsks:', err);
@@ -130,18 +130,18 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										transactionData.feePercent.value,
 										gasFeesRealEth));
 								} else {
-									dispatch(addShortAskTransaction(
-										transactionData.data.marketID,
-										transactionData.data.outcomeID,
-										transactionData.data.marketType,
-										transactionData.description,
-										transactionData.data.outcomeName,
-										res.remainingShares,
-										limitPrice,
-										totalEthWithFee,
-										tradingFeesEth,
-										transactionData.feePercent.value,
-										gasFeesRealEth));
+									// dispatch(addShortAskTransaction(
+									// 	transactionData.data.marketID,
+									// 	transactionData.data.outcomeID,
+									// 	transactionData.data.marketType,
+									// 	transactionData.description,
+									// 	transactionData.data.outcomeName,
+									// 	res.remainingShares,
+									// 	limitPrice,
+									// 	totalEthWithFee,
+									// 	tradingFeesEth,
+									// 	transactionData.feePercent.value,
+									// 	gasFeesRealEth));
 								}
 							}));
 						}

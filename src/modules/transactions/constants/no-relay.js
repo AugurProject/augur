@@ -1,8 +1,6 @@
 export const NO_RELAY = [
 	'buyCompleteSets',
 	'sellCompleteSets',
-	'sell',
-	'shortAsk',
 	'trade',
 	'short_sell',
 	'cancel',

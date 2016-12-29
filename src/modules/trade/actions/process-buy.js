@@ -6,7 +6,7 @@ import { trade } from '../../trade/actions/helpers/trade';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
+// import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 
 export function processBuy(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -72,18 +72,18 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
 					if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 						const transactionData = getState().transactionsData[transactionID];
-						dispatch(addBidTransaction(
-							transactionData.data.marketID,
-							transactionData.data.outcomeID,
-							transactionData.data.marketType,
-							transactionData.description,
-							transactionData.data.outcomeName,
-							sharesRemaining.toFixed(),
-							limitPrice,
-							res.remainingEth,
-							tradingFeesEth,
-							transactionData.feePercent.value,
-							gasFeesRealEth));
+						// dispatch(addBidTransaction(
+						// 	transactionData.data.marketID,
+						// 	transactionData.data.outcomeID,
+						// 	transactionData.data.marketType,
+						// 	transactionData.description,
+						// 	transactionData.data.outcomeName,
+						// 	sharesRemaining.toFixed(),
+						// 	limitPrice,
+						// 	res.remainingEth,
+						// 	tradingFeesEth,
+						// 	transactionData.feePercent.value,
+						// 	gasFeesRealEth));
 					}
 				}
 				dispatch(deleteTransaction(transactionID));
