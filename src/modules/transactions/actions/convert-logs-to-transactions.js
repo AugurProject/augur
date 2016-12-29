@@ -345,196 +345,201 @@ export const convertLogsToTransactions = (label, logs, isRetry) => (
 	)
 );
 
-export function convertTradeLogToTransaction(label, data, marketID) {
+export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch) {
+	const hash = trade.transactionHash;
+	const transactionID = `${hash}-${trade.tradeid}`;
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	const bnPrice = abi.bignum(trade.price);
+	const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+	const bnShares = abi.bignum(trade.amount);
+	const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+	const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+	const totalCostPerShare = totalCost.dividedBy(bnShares);
+	const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+	let type;
+	let perfectType;
+	let formattedTotalCost;
+	let formattedTotalReturn;
+	if (trade.maker) {
+		type = trade.type === 'sell' ? 'match_bid' : 'match_ask';
+		perfectType = trade.type === 'sell' ? 'bought' : 'sold';
+		formattedTotalCost = trade.type === 'sell' ? formatEther(totalCost) : undefined;
+		formattedTotalReturn = trade.type === 'buy' ? formatEther(totalReturn) : undefined;
+	} else {
+		type = trade.type === 'buy' ? 'buy' : 'sell';
+		perfectType = trade.type === 'buy' ? 'bought' : 'sold';
+		formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
+		formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
+	}
+	const rawPrice = bnPrice;
+	return {
+		[transactionID]: {
+			type,
+			hash,
+			status: SUCCESS,
+			description,
+			data: {
+				marketType,
+				outcomeName: outcomeName || outcomeID,
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
+			rawNumShares: bnShares,
+			numShares: shares,
+			rawPrice,
+			noFeePrice: price,
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			rawTradingFees: tradingFees,
+			tradingFees: formatEther(tradingFees),
+			feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+			rawTotalCost: totalCost,
+			rawTotalReturn: totalReturn,
+			totalCost: formattedTotalCost,
+			totalReturn: formattedTotalReturn
+		}
+	};
+}
+
+export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch) {
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	return {
+		[trade.transactionHash]: {
+			type: 'cancel_order',
+			status: SUCCESS,
+			description,
+			data: {
+				order: { type: trade.type, shares },
+				marketType,
+				outcome: { name: outcomeName || outcomeID },
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
+			numShares: shares,
+			noFeePrice: price,
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			hash: trade.transactionHash,
+			totalReturn: formatEther(trade.cashRefund)
+		}
+	};
+}
+
+export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, dispatch) {
+	const type = trade.type === 'buy' ? 'bid' : 'ask';
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	const makerFee = market.makerFee;
+	const takerFee = market.takerFee;
+	const maxValue = abi.bignum(market.maxValue);
+	const minValue = abi.bignum(market.minValue);
+	const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
+	const adjustedFees = augur.calculateFxpMakerTakerFees(
+		augur.calculateFxpAdjustedTradingFee(
+			fees.tradingFee,
+			abi.fix(trade.price),
+			abi.fix(maxValue.minus(minValue))
+		),
+		fees.makerProportionOfFee,
+		false,
+		true
+	);
+	const fxpShares = abi.fix(trade.amount);
+	const fxpPrice = abi.fix(trade.price);
+	const tradingFees = adjustedFees.maker.times(fxpShares)
+		.dividedBy(constants.ONE)
+		.floor()
+		.times(fxpPrice)
+		.dividedBy(constants.ONE)
+		.floor();
+	const noFeeCost = fxpPrice.times(fxpShares)
+		.dividedBy(constants.ONE)
+		.floor();
+	const totalCost = noFeeCost.plus(tradingFees);
+	const totalCostPerShare = totalCost.dividedBy(fxpShares)
+		.times(constants.ONE)
+		.floor();
+	const totalReturn = fxpPrice.times(fxpShares)
+		.dividedBy(constants.ONE)
+		.floor()
+		.minus(tradingFees);
+	const totalReturnPerShare = totalReturn.dividedBy(fxpShares)
+		.times(constants.ONE)
+		.floor();
+	return {
+		[trade.transactionHash]: {
+			type,
+			status: SUCCESS,
+			description,
+			data: {
+				marketType,
+				outcomeName: outcomeName || outcomeID,
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `${type} ${shares.full} for ${formatEther(abi.unfix(trade.type === 'buy' ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+			numShares: shares,
+			noFeePrice: price,
+			freeze: {
+				verb: 'froze',
+				noFeeCost: trade.type === 'buy' ? formatEther(abi.unfix(noFeeCost)) : undefined,
+				tradingFees: formatEther(abi.unfix(tradingFees))
+			},
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			hash: trade.transactionHash,
+			tradingFees: formatEther(abi.unfix(tradingFees)),
+			feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
+			totalCost: trade.type === 'buy' ? formatEther(abi.unfix(totalCost)) : undefined,
+			totalReturn: trade.type === 'sell' ? formatEther(abi.unfix(totalReturn)) : undefined
+		}
+	};
+}
+
+export function constructTradingTransaction(label, trade, marketID, outcomeID) {
 	return (dispatch, getState) => {
 		const { marketsData, outcomesData } = getState();
-		let outcomeID;
-		let trade;
-		let numTrades;
+		const market = marketsData[marketID];
+		const marketOutcomesData = outcomesData[marketID];
+		const marketType = market.type;
+		const description = market.description;
 		let outcomeName;
-		let marketType;
-		let marketOutcomesData;
+		if (marketType === BINARY || marketType === SCALAR) {
+			outcomeName = null;
+		} else {
+			outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
+		}
+		switch (label) {
+			case 'log_fill_tx': {
+				return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch);
+			}
+			case 'log_add_tx': {
+				return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, dispatch);
+			}
+			case 'log_cancel': {
+				return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch);
+			}
+			default:
+				return null;
+		}
+	};
+}
+
+export function convertTradeLogToTransaction(label, data, marketID) {
+	return (dispatch, getState) => {
 		const outcomeIDs = Object.keys(data[marketID]);
 		const numOutcomes = outcomeIDs.length;
-		if (marketsData[marketID]) {
-			const description = marketsData[marketID].description;
-			for (let j = 0; j < numOutcomes; ++j) {
-				outcomeID = outcomeIDs[j];
-				numTrades = data[marketID][outcomeID].length;
-				marketOutcomesData = outcomesData[marketID];
-				if (numTrades) {
-					for (let k = 0; k < numTrades; ++k) {
-						trade = data[marketID][outcomeID][k];
-						marketType = marketsData[marketID] && marketsData[marketID].type;
-						if (marketType === BINARY || marketType === SCALAR) {
-							outcomeName = null;
-						} else {
-							outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
-						}
-						let utd = {};
-						switch (label) {
-							case 'log_fill_tx': {
-								const hash = trade.transactionHash;
-								const transactionID = `${hash}-${trade.tradeid}`;
-								const price = formatEther(trade.price);
-								const shares = formatShares(trade.amount);
-								const bnPrice = abi.bignum(trade.price);
-								const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-								const bnShares = abi.bignum(trade.amount);
-								const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-								const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
-								const totalCostPerShare = totalCost.dividedBy(bnShares);
-								const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-								let type;
-								let perfectType;
-								let formattedTotalCost;
-								let formattedTotalReturn;
-								if (trade.maker) {
-									type = trade.type === 'sell' ? 'match_bid' : 'match_ask';
-									perfectType = trade.type === 'sell' ? 'bought' : 'sold';
-									formattedTotalCost = trade.type === 'sell' ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = trade.type === 'buy' ? formatEther(totalReturn) : undefined;
-								} else {
-									type = trade.type === 'buy' ? 'buy' : 'sell';
-									perfectType = trade.type === 'buy' ? 'bought' : 'sold';
-									formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
-									formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
-								}
-								const rawPrice = bnPrice;
-								utd = {
-									[transactionID]: {
-										type,
-										hash,
-										status: SUCCESS,
-										description,
-										data: {
-											marketType: marketsData[marketID].type,
-											outcomeName: outcomeName || outcomeID,
-											outcomeID,
-											marketLink: selectMarketLink({ id: marketID, description }, dispatch)
-										},
-										message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
-										rawNumShares: bnShares,
-										numShares: shares,
-										rawPrice,
-										noFeePrice: price,
-										avgPrice: price,
-										timestamp: formatDate(new Date(trade.timestamp * 1000)),
-										rawTradingFees: tradingFees,
-										tradingFees: formatEther(tradingFees),
-										feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-										rawTotalCost: totalCost,
-										rawTotalReturn: totalReturn,
-										totalCost: formattedTotalCost,
-										totalReturn: formattedTotalReturn
-									}
-								};
-								break;
-							}
-							case 'log_add_tx': {
-								const market = marketsData[marketID];
-								const type = trade.type === 'buy' ? 'bid' : 'ask';
-								const price = formatEther(trade.price);
-								const shares = formatShares(trade.amount);
-								const makerFee = market.makerFee;
-								const takerFee = market.takerFee;
-								const maxValue = abi.bignum(market.maxValue);
-								const minValue = abi.bignum(market.minValue);
-								const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
-								const adjustedFees = augur.calculateFxpMakerTakerFees(
-									augur.calculateFxpAdjustedTradingFee(
-										fees.tradingFee,
-										abi.fix(trade.price),
-										abi.fix(maxValue.minus(minValue))
-									),
-									fees.makerProportionOfFee,
-									false,
-									true
-								);
-								const fxpShares = abi.fix(trade.amount);
-								const fxpPrice = abi.fix(trade.price);
-								const tradingFees = adjustedFees.maker.times(fxpShares)
-									.dividedBy(constants.ONE)
-									.floor()
-									.times(fxpPrice)
-									.dividedBy(constants.ONE)
-									.floor();
-								const noFeeCost = fxpPrice.times(fxpShares)
-									.dividedBy(constants.ONE)
-									.floor();
-								const totalCost = noFeeCost.plus(tradingFees);
-								const totalCostPerShare = totalCost.dividedBy(fxpShares)
-									.times(constants.ONE)
-									.floor();
-								const totalReturn = fxpPrice.times(fxpShares)
-									.dividedBy(constants.ONE)
-									.floor()
-									.minus(tradingFees);
-								const totalReturnPerShare = totalReturn.dividedBy(fxpShares)
-									.times(constants.ONE)
-									.floor();
-								utd = {
-									[trade.transactionHash]: {
-										type,
-										status: SUCCESS,
-										description,
-										data: {
-											marketType: marketsData[marketID].type,
-											outcomeName: outcomeName || outcomeID,
-											outcomeID,
-											marketLink: selectMarketLink({ id: marketID, description }, dispatch)
-										},
-										message: `${type} ${shares.full} for ${formatEther(abi.unfix(trade.type === 'buy' ? totalCostPerShare : totalReturnPerShare)).full} / share`,
-										numShares: shares,
-										noFeePrice: price,
-										freeze: {
-											verb: 'froze',
-											noFeeCost: trade.type === 'buy' ? formatEther(abi.unfix(noFeeCost)) : undefined,
-											tradingFees: formatEther(abi.unfix(tradingFees))
-										},
-										avgPrice: price,
-										timestamp: formatDate(new Date(trade.timestamp * 1000)),
-										hash: trade.transactionHash,
-										tradingFees: formatEther(abi.unfix(tradingFees)),
-										feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-										totalCost: trade.type === 'buy' ? formatEther(abi.unfix(totalCost)) : undefined,
-										totalReturn: trade.type === 'sell' ? formatEther(abi.unfix(totalReturn)) : undefined
-									}
-								};
-								break;
-							}
-							case 'log_cancel': {
-								const price = formatEther(trade.price);
-								const shares = formatShares(trade.amount);
-								utd = {
-									[trade.transactionHash]: {
-										type: 'cancel_order',
-										status: SUCCESS,
-										description,
-										data: {
-											order: { type: trade.type, shares },
-											marketType: marketsData[marketID] && marketsData[marketID].type,
-											outcome: { name: outcomeName || outcomeID },
-											outcomeID,
-											marketLink: selectMarketLink({ id: marketID, description }, dispatch)
-										},
-										message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
-										numShares: shares,
-										noFeePrice: price,
-										avgPrice: price,
-										timestamp: formatDate(new Date(trade.timestamp * 1000)),
-										hash: trade.transactionHash,
-										totalReturn: formatEther(trade.cashRefund)
-									}
-								};
-								break;
-							}
-							default:
-								break;
-						}
-						// console.log('updated transactions data:', utd);
-						dispatch(updateTransactionsData(utd));
-					}
+		for (let j = 0; j < numOutcomes; ++j) {
+			const outcomeID = outcomeIDs[j];
+			const numTrades = data[marketID][outcomeID].length;
+			if (numTrades) {
+				for (let k = 0; k < numTrades; ++k) {
+					const transaction = dispatch(constructTradingTransaction(label, data[marketID][outcomeID][k], marketID, outcomeID));
+					if (transaction) dispatch(updateTransactionsData(transaction));
 				}
 			}
 		}
@@ -543,8 +548,6 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 
 export function convertTradeLogsToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
-		// console.log('convertTradeLogsToTransactions', label);
-		// console.log('data:', data);
 		const { marketsData } = getState();
 		const marketIDs = Object.keys(data);
 		const numMarkets = marketIDs.length;
