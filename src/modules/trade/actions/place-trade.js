@@ -1,20 +1,23 @@
 import async from 'async';
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
+
+import { SCALAR } from '../../markets/constants/market-types';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+
 import { augur, abi, constants } from '../../../services/augurjs';
 import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
-import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function placeTrade(marketID, outcomeID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
+		const { loginAccount, orderBooks, outcomesData, tradesInProgress } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 		if (!marketTradeInProgress || !market) {
@@ -49,18 +52,27 @@ export function placeTrade(marketID, outcomeID) {
 						outcomeTradeInProgress.feePercent,
 						outcomeTradeInProgress.gasFeesRealEth));
 				} else {
-					dispatch(addBidTransaction(
-						marketID,
-						outcomeID,
-						market.type,
-						market.description,
-						outcomesData[marketID][outcomeID].name,
-						outcomeTradeInProgress.numShares,
-						outcomeTradeInProgress.limitPrice,
-						totalCost,
-						outcomeTradeInProgress.tradingFeesEth,
-						outcomeTradeInProgress.feePercent,
-						outcomeTradeInProgress.gasFeesRealEth));
+					const marketData = getState().marketsData[marketID];
+					const scalarMinMax = {};
+					if (marketData && marketData.type === SCALAR) {
+						scalarMinMax.minValue = marketData.minValue;
+					}
+					augur.buy({
+						amount: outcomeTradeInProgress.numShares,
+						price: outcomeTradeInProgress.limitPrice,
+						market: marketID,
+						outcome: outcomeID,
+						scalarMinMax,
+						onSent: (res) => {
+							console.log('bid sent:', res);
+							dispatch(updateExistingTransaction(res.hash, {
+								type: market.type,
+								description: market.description,
+							}));
+						},
+						onSuccess: res => console.log('bid success:', res),
+						onFailed: err => console.error('bid failed:', err)
+					});
 				}
 				nextOutcome();
 			} else if (outcomeTradeInProgress.side === SELL) {
