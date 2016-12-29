@@ -10,12 +10,15 @@ export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
 	const inputs = tx.data.inputs;
 	const numInputs = inputs.length;
+	// const contracts = augur.contracts;
+	// const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
+	// const fixed = augur.api.functions[contract][tx.data.method].fixed;
 	const fixed = tx.data.fixed;
 	const unfixedParams = params.slice();
 	if (fixed && fixed.length) {
 		const numFixed = fixed.length;
 		for (let j = 0; j < numFixed; ++j) {
-			unfixedParams[j] = abi.unfix(abi.hex(params[j], true), 'string');
+			unfixedParams[fixed[j]] = abi.unfix(abi.hex(params[fixed[j]], true), 'string');
 		}
 	}
 	const unpacked = {};
@@ -27,21 +30,37 @@ export function unpackTransactionParameters(tx) {
 
 export function constructRelayTransaction(tx) {
 	return (dispatch, getState) => {
-		const p = { ...unpackTransactionParameters(tx), transactionHash: tx.response.hash };
+		const p = {
+			...unpackTransactionParameters(tx),
+			transactionHash: tx.response.hash,
+			blockNumber: tx.response.blockNumber,
+			timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10)
+		};
 		console.log('unpacked:', JSON.stringify(p, null, 2));
+		const status = 'in progress';
 		switch (tx.data.method) {
 			case 'buy':
-				return dispatch(constructTradingTransaction('log_add_tx', { type: 'buy', ...p }, p.market, p.outcome));
+				return dispatch(constructTradingTransaction('log_add_tx', {
+					type: 'buy',
+					...p,
+					price: abi.unfix(abi.hex(p.price, true), 'string'),
+					amount: abi.unfix(p.amount, 'string')
+				}, p.market, p.outcome, status));
 			case 'sell':
-				return dispatch(constructTradingTransaction('log_add_tx', { type: 'sell', ...p }, p.market, p.outcome));
+				return dispatch(constructTradingTransaction('log_add_tx', {
+					type: 'sell',
+					...p,
+					price: abi.unfix(abi.hex(p.price, true), 'string'),
+					amount: abi.unfix(p.amount, 'string')
+				}, p.market, p.outcome, status));
 			case 'trade':
 				return; // dispatch(constructTradingTransaction('log_fill_tx', { type: 'buy', ...p }, p.market, p.outcome));
 			case 'short_sell':
-				return dispatch(constructTradingTransaction('log_fill_tx', { type: 'short', ...p }, p.market, p.outcome));
+				return dispatch(constructTradingTransaction('log_fill_tx', { type: 'short', ...p }, p.market, p.outcome, status));
 			case 'shortAsk':
-				return dispatch(constructTradingTransaction('log_add_tx', { type: 'sell', ...p }, p.market, p.outcome));
+				return dispatch(constructTradingTransaction('log_add_tx', { type: 'sell', ...p }, p.market, p.outcome, status));
 			case 'cancel':
-				return dispatch(constructTradingTransaction('log_cancel', p, p.market, p.outcome));
+				return dispatch(constructTradingTransaction('log_cancel', p, p.market, p.outcome, status));
 			default: {
 				let transaction;
 				switch (tx.data.method) {
@@ -81,7 +100,7 @@ export function constructRelayTransaction(tx) {
 				}
 				return {
 					[tx.response.hash]: {
-						...constructBasicTransaction(tx.response.hash, 'in progress', tx.response.blockNumber, tx.response.timestamp),
+						...constructBasicTransaction(tx.response.hash, status, tx.response.blockNumber, tx.response.timestamp),
 						...transaction
 					}
 				};
@@ -123,9 +142,6 @@ export function registerTransactionRelay() {
 							}
 							tx.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 						}
-						// const contracts = augur.contracts;
-						// const contract = Object.keys(contracts).find(c => contracts[c] === tx.to);
-						// const events = augur.api.functions[contract][tx.data.method].events;
 						if (transactionsData[hash] && transactionsData[hash].disableAutoMessage) {
 							return dispatch(updateTransactionsData({
 								[hash]: { ...tx, timestamp, gasFees, hash }
@@ -142,10 +158,6 @@ export function registerTransactionRelay() {
 						}
 						dispatch(updateTransactionsData({
 							[hash]: { ...tx, message, timestamp, gasFees, hash }
-						}));
-					} else if (tx.data.method !== 'trade') {
-						dispatch(updateTransactionsData({
-							[hash]: { ...tx, timestamp, gasFees, hash }
 						}));
 					}
 				}
