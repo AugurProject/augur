@@ -345,7 +345,7 @@ export const convertLogsToTransactions = (label, logs, isRetry) => (
 	)
 );
 
-export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch) {
+export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
 	const hash = trade.transactionHash;
 	const transactionID = `${hash}-${trade.tradeid}`;
 	const price = formatEther(trade.price);
@@ -377,7 +377,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 		[transactionID]: {
 			type,
 			hash,
-			status: SUCCESS,
+			status,
 			description,
 			data: {
 				marketType,
@@ -403,13 +403,13 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 	};
 }
 
-export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch) {
+export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
 	const price = formatEther(trade.price);
 	const shares = formatShares(trade.amount);
 	return {
 		[trade.transactionHash]: {
 			type: 'cancel_order',
-			status: SUCCESS,
+			status,
 			description,
 			data: {
 				order: { type: trade.type, shares },
@@ -429,7 +429,7 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 	};
 }
 
-export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, dispatch) {
+export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch) {
 	const type = trade.type === 'buy' ? 'bid' : 'ask';
 	const price = formatEther(trade.price);
 	const shares = formatShares(trade.amount);
@@ -473,7 +473,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 	return {
 		[trade.transactionHash]: {
 			type,
-			status: SUCCESS,
+			status,
 			description,
 			data: {
 				marketType,
@@ -500,7 +500,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 	};
 }
 
-export function constructTradingTransaction(label, trade, marketID, outcomeID) {
+export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
 	return (dispatch, getState) => {
 		const { marketsData, outcomesData } = getState();
 		const market = marketsData[marketID];
@@ -515,13 +515,13 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID) {
 		}
 		switch (label) {
 			case 'log_fill_tx': {
-				return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch);
+				return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
 			}
 			case 'log_add_tx': {
-				return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, dispatch);
+				return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch);
 			}
 			case 'log_cancel': {
-				return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, dispatch);
+				return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
 			}
 			default:
 				return null;
@@ -538,7 +538,7 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 			const numTrades = data[marketID][outcomeID].length;
 			if (numTrades) {
 				for (let k = 0; k < numTrades; ++k) {
-					const transaction = dispatch(constructTradingTransaction(label, data[marketID][outcomeID][k], marketID, outcomeID));
+					const transaction = dispatch(constructTradingTransaction(label, data[marketID][outcomeID][k], marketID, outcomeID, SUCCESS));
 					if (transaction) dispatch(updateTransactionsData(transaction));
 				}
 			}
