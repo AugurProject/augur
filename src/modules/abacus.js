@@ -235,7 +235,6 @@ module.exports = {
             if (parseInt(rawInfo[index + 8], 16) !== 0) {
                 proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
             }
-            console.log('ethics:', rawInfo[index + 7], abi.hex(rawInfo[index + 7], true));
             var event = {
                 id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
