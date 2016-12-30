@@ -690,11 +690,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 			},
 			{
 				type: 'ask',
+				description: 'test binary market',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market',
 					outcomeName: 'YES'
 				},
 				numShares: {
@@ -897,11 +897,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'ask',
+				description: 'test binary market',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market',
 					outcomeName: 'YES'
 				},
 				numShares: {
@@ -966,11 +966,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test binary market',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market',
 					outcomeName: 'YES'
 				},
 				numShares: {
@@ -1173,11 +1173,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 			},
 			{
 				type: 'short_ask',
+				description: 'test binary market',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market',
 					outcomeName: 'YES'
 				},
 				numShares: {
@@ -1383,11 +1383,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true },
 			{
 				type: 'short_sell',
+				description: 'test binary market',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market',
 					outcomeName: 'YES'
 				},
 				numShares: {
@@ -1740,11 +1740,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'ask',
+				description: 'test categorical market',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1944,11 +1944,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'ask',
+				description: 'test categorical market',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -2013,11 +2013,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test categorical market',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -2217,11 +2217,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test categorical market',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -2423,11 +2423,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true },
 			{
 				type: 'short_sell',
+				description: 'test categorical market',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -2784,11 +2784,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'ask',
+				description: 'test scalar market',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market',
 					outcomeName: ''
 				},
 				numShares: {
@@ -2988,11 +2988,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'ask',
+				description: 'test scalar market',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market',
 					outcomeName: ''
 				},
 				numShares: {
@@ -3057,11 +3057,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test scalar market',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market',
 					outcomeName: ''
 				},
 				numShares: {
@@ -3261,11 +3261,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test scalar market',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market',
 					outcomeName: ''
 				},
 				numShares: {
@@ -3469,11 +3469,11 @@ describe('modules/trade/actions/process-sell.js', () => {
 			{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true },
 			{
 				type: 'short_sell',
+				description: 'test scalar market',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market',
 					outcomeName: ''
 				},
 				numShares: {

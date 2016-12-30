@@ -60,6 +60,7 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 				type: 'commit_report',
 				gas: 1,
 				ether: 5,
+				description: 'the best market ever',
 				data: {
 					market,
 					marketID: 'testMarket',
@@ -68,7 +69,6 @@ describe(`modules/transactions/actions/add-commit-report-transaction.js`, () => 
 					}, {
 						id: 'test2'
 					}],
-					description: 'the best market ever',
 					reportedOutcomeID: 'test1',
 					isUnethical: false,
 					isIndeterminate: false

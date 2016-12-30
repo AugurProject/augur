@@ -47,15 +47,6 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					maxAmount = res.remainingShares;
 					isRemainder = false;
 				}
-				console.log(JSON.stringify({
-					max_value: BigNumber.min(res.remainingEth, bnCashBalance).toFixed(),
-					max_amount: maxAmount.toFixed(),
-					isRemainder,
-					res_remainingShares: res.remainingShares.toFixed(),
-					sharesPurchased: bnSharesPurchased.toFixed(),
-					res_remainingEth: res.remainingEth.toFixed(),
-					balance: bnCashBalance.toFixed()
-				}, null, 2));
 				augur.trade({
 					max_value: BigNumber.min(res.remainingEth, bnCashBalance).toFixed(),
 					max_amount: maxAmount.toFixed(),

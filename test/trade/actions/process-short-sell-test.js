@@ -194,11 +194,11 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			}
 		}, {
 			type: 'short_ask',
+			description: 'test binary market',
 			data: {
 				marketID: 'testBinaryMarketID',
 				outcomeID: '2',
 				marketType: 'binary',
-				marketDescription: 'test binary market',
 				outcomeName: 'YES'
 			},
 			numShares: {
@@ -401,11 +401,11 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 			}
 		},
 		{ type: 'short_ask',
+			description: 'test categorical market',
 			data:
 			{ marketID: 'testCategoricalMarketID',
 				outcomeID: '1',
 				marketType: 'categorical',
-				marketDescription: 'test categorical market',
 				outcomeName: 'Democratic' },
 			numShares:
 			{ value: 20,
@@ -601,11 +601,11 @@ describe('modules/trade/actions/process-short-sell.js', () => {
 		},
 		{
 			type: 'short_ask',
+			description: 'test scalar market',
 			data: {
 				marketID: 'testScalarMarketID',
 				outcomeID: '1',
 				marketType: 'scalar',
-				marketDescription: 'test scalar market',
 				outcomeName: ''
 			},
 			numShares: {

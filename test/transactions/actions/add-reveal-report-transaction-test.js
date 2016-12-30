@@ -91,9 +91,9 @@ describe('modules/transactions/actions/add-reveal-report-transaction.js', () => 
 			type: 'ADD_TRANSACTION',
 			data: {
 				type: 'reveal_report',
+				description: 'some test description',
 				data: {
 					event: 'testEventID',
-					description: 'some test description',
 					outcome: {
 						id: '2',
 						name: 'testOutcome 2',

@@ -2,14 +2,13 @@ import BigNumber from 'bignumber.js';
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { FAILED } from '../../transactions/constants/statuses';
+import { SCALAR } from '../../markets/constants/market-types';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { trade } from '../../trade/actions/helpers/trade';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-// import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
-// import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
@@ -61,17 +60,13 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 						message: err.message
 					}));
 				}
-				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
-				const pricePerShare = res.filledEth.dividedBy(filledShares);
-				dispatch(updateExistingTransaction(transactionID, {
-					status: 'updating position',
-					message: `sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full}/share`,
-					totalReturn: formatEther(res.filledEth),
-					tradingFees: formatEther(res.tradingFees),
-					gasFees: formatRealEther(res.gasFees)
-				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) {
 					augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
+						const scalarMinMax = {};
+						const marketData = getState().marketsData[marketID];
+						if (marketData && marketData.type === SCALAR) {
+							scalarMinMax.minValue = marketData.minValue;
+						}
 						const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
 						const transactionData = getState().transactionsData[transactionID];
 						const remainingShares = abi.bignum(res.remainingShares);
@@ -85,32 +80,28 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 								askShares = position.toFixed();
 								shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
 							}
-							// dispatch(addAskTransaction(
-							// 	transactionData.data.marketID,
-							// 	transactionData.data.outcomeID,
-							// 	transactionData.data.marketType,
-							// 	transactionData.description,
-							// 	transactionData.data.outcomeName,
-							// 	askShares,
-							// 	limitPrice,
-							// 	totalEthWithFee,
-							// 	tradingFeesEth,
-							// 	transactionData.feePercent.value,
-							// 	gasFeesRealEth));
-							// if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-							// 	dispatch(addShortAskTransaction(
-							// 		transactionData.data.marketID,
-							// 		transactionData.data.outcomeID,
-							// 		transactionData.data.marketType,
-							// 		transactionData.description,
-							// 		transactionData.data.outcomeName,
-							// 		shortAskShares,
-							// 		limitPrice,
-							// 		totalEthWithFee,
-							// 		tradingFeesEth,
-							// 		transactionData.feePercent.value,
-							// 		gasFeesRealEth));
-							// }
+							augur.sell({
+								amount: askShares,
+								price: limitPrice,
+								market: transactionData.data.marketID,
+								outcome: transactionData.data.outcomeID,
+								scalarMinMax,
+								onSent: res => console.log('sell sent:', res),
+								onSuccess: res => console.log('sell success:', res),
+								onFailed: err => console.error('sell failed:', err)
+							});
+							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
+								augur.shortAsk({
+									amount: shortAskShares,
+									price: limitPrice,
+									market: transactionData.data.marketID,
+									outcome: transactionData.data.outcomeID,
+									scalarMinMax,
+									onSent: res => console.log('shortAsk sent:', res),
+									onSuccess: res => console.log('shortAsk success:', res),
+									onFailed: err => console.error('shortAsk failed:', err)
+								});
+							}
 						} else {
 							dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
 								if (err) console.error('loadBidsAsks:', err);
@@ -130,18 +121,16 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 										transactionData.feePercent.value,
 										gasFeesRealEth));
 								} else {
-									// dispatch(addShortAskTransaction(
-									// 	transactionData.data.marketID,
-									// 	transactionData.data.outcomeID,
-									// 	transactionData.data.marketType,
-									// 	transactionData.description,
-									// 	transactionData.data.outcomeName,
-									// 	res.remainingShares,
-									// 	limitPrice,
-									// 	totalEthWithFee,
-									// 	tradingFeesEth,
-									// 	transactionData.feePercent.value,
-									// 	gasFeesRealEth));
+									augur.shortAsk({
+										amount: res.remainingShares,
+										price: limitPrice,
+										market: transactionData.data.marketID,
+										outcome: transactionData.data.outcomeID,
+										scalarMinMax,
+										onSent: res => console.log('shortAsk sent:', res),
+										onSuccess: res => console.log('shortAsk success:', res),
+										onFailed: err => console.error('shortAsk failed:', err)
+									});
 								}
 							}));
 						}

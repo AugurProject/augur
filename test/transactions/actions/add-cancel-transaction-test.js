@@ -64,9 +64,9 @@ describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 				type: CANCEL_ORDER,
 				gas,
 				ether,
+				description: 'market description',
 				data: {
 					marketID: 'testMarketID',
-					marketDescription: 'market description',
 					order: {
 						id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
 						type: BID,

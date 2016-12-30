@@ -1,12 +1,12 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
-import { abi, constants } from '../../../services/augurjs';
+import { abi, augur, constants } from '../../../services/augurjs';
 import { FAILED } from '../../transactions/constants/statuses';
+import { SCALAR } from '../../markets/constants/market-types';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { trade } from '../../trade/actions/helpers/trade';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-// import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
 
 export function processBuy(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -58,32 +58,26 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						message: err.message
 					}));
 				}
-				const filledEth = abi.bignum(totalEthWithFee).minus(res.remainingEth);
-				const pricePerShare = filledEth.dividedBy(res.filledShares);
-				dispatch(updateExistingTransaction(transactionID, {
-					status: 'updating position',
-					message: `bought ${formatShares(res.filledShares).full} for ${formatEther(pricePerShare).full}/share`,
-					totalCost: formatEther(filledEth),
-					tradingFees: formatEther(res.tradingFees),
-					gasFees: formatRealEther(res.gasFees)
-				}));
 				const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
 				if (sharesRemaining.gt(constants.PRECISION.zero) && res.remainingEth.gt(constants.PRECISION.zero)) {
 					console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
 					if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 						const transactionData = getState().transactionsData[transactionID];
-						// dispatch(addBidTransaction(
-						// 	transactionData.data.marketID,
-						// 	transactionData.data.outcomeID,
-						// 	transactionData.data.marketType,
-						// 	transactionData.description,
-						// 	transactionData.data.outcomeName,
-						// 	sharesRemaining.toFixed(),
-						// 	limitPrice,
-						// 	res.remainingEth,
-						// 	tradingFeesEth,
-						// 	transactionData.feePercent.value,
-						// 	gasFeesRealEth));
+						const scalarMinMax = {};
+						const marketData = getState().marketsData[marketID];
+						if (marketData && marketData.type === SCALAR) {
+							scalarMinMax.minValue = marketData.minValue;
+						}
+						augur.buy({
+							amount: sharesRemaining.toFixed(),
+							price: limitPrice,
+							market: transactionData.data.marketID,
+							outcome: transactionData.data.outcomeID,
+							scalarMinMax,
+							onSent: res => console.log('bid sent:', res),
+							onSuccess: res => console.log('bid success:', res),
+							onFailed: err => console.error('bid failed:', err)
+						});
 					}
 				}
 				dispatch(deleteTransaction(transactionID));

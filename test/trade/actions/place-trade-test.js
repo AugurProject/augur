@@ -147,11 +147,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [{ type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: true }, {
 				type: 'buy',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -246,11 +246,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -345,11 +345,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -423,11 +423,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			console.log(store.getActions());
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -492,11 +492,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -593,11 +593,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'sell',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -691,11 +691,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -793,11 +793,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'short_sell',
+				description: 'test binary market?',
 				data: {
 					marketID: 'testBinaryMarketID',
 					outcomeID: '2',
 					marketType: 'binary',
-					marketDescription: 'test binary market?',
 					outcomeName: 'Yes'
 				},
 				numShares: {
@@ -875,11 +875,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'buy',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -974,11 +974,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1073,11 +1073,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1150,11 +1150,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1219,11 +1219,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1321,11 +1321,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'sell',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1420,11 +1420,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1522,11 +1522,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'short_sell',
+				description: 'test categorical market?',
 				data: {
 					marketID: 'testCategoricalMarketID',
 					outcomeID: '1',
 					marketType: 'categorical',
-					marketDescription: 'test categorical market?',
 					outcomeName: 'Democratic'
 				},
 				numShares: {
@@ -1604,11 +1604,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'buy',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -1703,11 +1703,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'bid',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -1802,11 +1802,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -1879,11 +1879,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'ask',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -1948,11 +1948,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				}
 			}, {
 				type: 'short_ask',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -2050,11 +2050,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'sell',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -2149,11 +2149,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 			store.dispatch(action.placeTrade('testScalarMarketID', '1'));
 			assert.deepEqual(store.getActions(), [{
 				type: 'short_ask',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {
@@ -2251,11 +2251,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				isLocked: true
 			}, {
 				type: 'short_sell',
+				description: 'test scalar market?',
 				data: {
 					marketID: 'testScalarMarketID',
 					outcomeID: '1',
 					marketType: 'scalar',
-					marketDescription: 'test scalar market?',
 					outcomeName: ''
 				},
 				numShares: {

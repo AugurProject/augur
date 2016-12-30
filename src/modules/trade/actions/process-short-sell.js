@@ -1,13 +1,12 @@
 import { formatEther, formatShares, formatRealEther, formatEtherEstimate, formatRealEtherEstimate } from '../../../utils/format-number';
-import { abi, constants } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
+import { abi, augur, constants } from '../../../services/augurjs';
 import { FAILED } from '../../transactions/constants/statuses';
+import { SCALAR } from '../../markets/constants/market-types';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-// import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, tradingFeesEth, gasFeesRealEth) {
 	return (dispatch, getState) => {
@@ -25,7 +24,6 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 				message: 'There was an issue processesing the Short Sell trade.'
 			}));
 		}
-		let filledEth = ZERO;
 		const avgPrice = abi.bignum(totalEthWithFee).dividedBy(abi.bignum(numShares));
 		dispatch(updateExistingTransaction(transactionID, {
 			status: 'starting...',
@@ -52,31 +50,23 @@ export function processShortSell(transactionID, marketID, outcomeID, numShares, 
 						message: err.message
 					}));
 				}
-				filledEth = filledEth.plus(res.filledEth);
-				const filledShares = abi.bignum(numShares).minus(res.remainingShares);
-				const actualEthWithFee = abi.bignum(filledEth).plus(res.tradingFees);
-				const pricePerShare = filledEth.dividedBy(filledShares);
-				dispatch(updateExistingTransaction(transactionID, {
-					status: 'updating position',
-					message: `short sold ${formatShares(filledShares).full} for ${formatEther(pricePerShare).full} each`,
-					totalCost: formatEther(actualEthWithFee),
-					tradingFees: formatEther(res.tradingFees),
-					gasFees: formatRealEther(res.gasFees)
-				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) {
 					const transactionData = getState().transactionsData[transactionID];
-					// dispatch(addShortAskTransaction(
-					// 	transactionData.data.marketID,
-					// 	transactionData.data.outcomeID,
-					// 	transactionData.data.marketType,
-					// 	transactionData.description,
-					// 	transactionData.data.outcomeName,
-					// 	res.remainingShares.toFixed(),
-					// 	limitPrice,
-					// 	actualEthWithFee,
-					// 	tradingFeesEth,
-					// 	transactionData.feePercent.value,
-					// 	gasFeesRealEth));
+					const marketData = getState().marketsData[marketID];
+					const scalarMinMax = {};
+					if (marketData && marketData.type === SCALAR) {
+						scalarMinMax.minValue = marketData.minValue;
+					}
+					augur.shortAsk({
+						amount: res.remainingShares.toFixed(),
+						price: limitPrice,
+						market: transactionData.data.marketID,
+						outcome: transactionData.data.outcomeID,
+						scalarMinMax,
+						onSent: res => console.log('shortAsk sent:', res),
+						onSuccess: res => console.log('shortAsk success:', res),
+						onFailed: err => console.error('shortAsk failed:', err)
+					});
 				}
 				// update user's position
 				dispatch(deleteTransaction(transactionID));

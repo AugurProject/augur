@@ -49,11 +49,11 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 
 		const expected = [{
 			type: 'buy',
+			description: 'Some Market Description',
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
 				marketType: 'marketType',
-				marketDescription: 'Some Market Description',
 				outcomeName: 'anOutcomeName',
 			},
 			numShares: {
@@ -133,11 +133,11 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 
 		const expected = [{
 			type: 'sell',
+			description: 'Some Market Description',
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
 				marketType: 'marketType',
-				marketDescription: 'Some Market Description',
 				outcomeName: 'anOutcomeName',
 			},
 			numShares: {

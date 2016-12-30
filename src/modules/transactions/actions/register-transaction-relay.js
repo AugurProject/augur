@@ -10,9 +10,6 @@ export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
 	const inputs = tx.data.inputs;
 	const numInputs = inputs.length;
-	// const contracts = augur.contracts;
-	// const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
-	// const fixed = augur.api.functions[contract][tx.data.method].fixed;
 	const fixed = tx.data.fixed;
 	const unfixedParams = params.slice();
 	if (fixed && fixed.length) {
@@ -46,6 +43,7 @@ export function constructRelayTransaction(tx) {
 					price: abi.unfix(abi.hex(p.price, true), 'string'),
 					amount: abi.unfix(p.amount, 'string')
 				}, p.market, p.outcome, status));
+			case 'shortAsk':
 			case 'sell':
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'sell',
@@ -53,12 +51,10 @@ export function constructRelayTransaction(tx) {
 					price: abi.unfix(abi.hex(p.price, true), 'string'),
 					amount: abi.unfix(p.amount, 'string')
 				}, p.market, p.outcome, status));
+			// note: trade and short_sell messaging is done mannually until the next contract update
 			case 'trade':
-				return; // dispatch(constructTradingTransaction('log_fill_tx', { type: 'buy', ...p }, p.market, p.outcome));
 			case 'short_sell':
-				return dispatch(constructTradingTransaction('log_fill_tx', { type: 'short', ...p }, p.market, p.outcome, status));
-			case 'shortAsk':
-				return dispatch(constructTradingTransaction('log_add_tx', { type: 'sell', ...p }, p.market, p.outcome, status));
+				return null;
 			case 'cancel':
 				return dispatch(constructTradingTransaction('log_cancel', p, p.market, p.outcome, status));
 			default: {
