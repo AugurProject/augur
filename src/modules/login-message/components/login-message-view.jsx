@@ -53,6 +53,48 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 31, 2016</h3>
+			<ol>
+				<li>
+					Indeterminate reports are now correctly converted to hexadecimal strings in augur.js fixReport method.
+				</li>
+				<li>
+					Converted main trade logged-transaction loop to async.forEachOfSeries for proper getMarketInfo callback closure.
+				</li>
+				<li>
+					Added initial check if &quot;from&quot; field matches login account address before processing relayed transactions.
+				</li>
+				<li>
+					Fixed a reassignment error in place-trade.
+				</li>
+				<li>
+					Filled in collectFees front-end transaction relayer.
+				</li>
+				<li>
+					Added a check for the second half of the reporting period to the collectFees block of the composite reporting synchronization / updating methods in augur.js.
+				</li>
+				<li>
+					The relayed transaction gasFees field now is included in filtered/converted transactions, if it is available (in-memory).
+				</li>
+			</ol>
+			<h3>December 30, 2016</h3>
+			<ol>
+				<li>
+					Moved collectFees logic to augur.js: fee collection now handled automatically by augur.checkPeriod.
+				</li>
+				<li>
+					The UI sync-branch-with-blockchain logic now looks up the last report cycle penalized and and the fee collection status of the cycle being checked for penalties.  Both of these fields are now attached to the branch data store and available in the front-end.
+				</li>
+				<li>
+					Filled in switch cases for submitReport, submitReportHash, penalizeWrong, and penalizationCatchup in the front-end part of the transaction relayer.
+				</li>
+			</ol>
+			<h3>December 28, 2016</h3>
+			<ol>
+				<li>
+					Fixed/updated all downstream actions from or calling to bid, ask, and short ask.
+				</li>
+			</ol>
 			<h3>December 28, 2016</h3>
 			<ol>
 				<li>
