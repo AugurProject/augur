@@ -25,7 +25,6 @@ describe('modules/reports/actions/check-period.js', () => {
 	const store = mockStore(state);
 	const mockAugurJS = { augur: {} };
 	const mockLoadReports = { loadReports: () => {} };
-	const mockCollectFees = {};
 	const mockRevealReports = {};
 	const mockLoadEventsWithSubmittedReport = { loadEventsWithSubmittedReport: () => {} };
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
@@ -43,9 +42,6 @@ describe('modules/reports/actions/check-period.js', () => {
 	sinon.stub(mockLoadEventsWithSubmittedReport, 'loadEventsWithSubmittedReport', () => (dispatch) => {
 		dispatch({ type: 'LOAD_EVENTS' });
 	});
-	mockCollectFees.collectFees = sinon.stub().returns({
-		type: 'UPDATE_ASSETS'
-	});
 	mockRevealReports.revealReports = sinon.stub().returns({
 		type: 'UPDATE_REPORTS',
 		reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
@@ -54,7 +50,6 @@ describe('modules/reports/actions/check-period.js', () => {
 	const action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../reports/actions/load-reports': mockLoadReports,
-		'../../reports/actions/collect-fees': mockCollectFees,
 		'../../reports/actions/reveal-reports': mockRevealReports,
 		'../../my-reports/actions/load-events-with-submitted-report': mockLoadEventsWithSubmittedReport
 	});

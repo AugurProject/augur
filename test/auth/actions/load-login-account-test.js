@@ -18,7 +18,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeLoadAcctTrades = {};
 	const fakeLoadReports = {};
 	const fakeUpdateBranch = { syncBranch: () => {} };
-	const fakeCollectFees = {};
 	const fakeLoadMarketsInfo = {};
 	const thisTestState = Object.assign({}, testState, { loginAccount: {} });
 	const store = mockStore(thisTestState);
@@ -58,8 +57,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		'../../markets/actions/load-markets-info': fakeLoadMarketsInfo,
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
-		'../../app/actions/update-branch': fakeUpdateBranch,
-		'../../reports/actions/collect-fees': fakeCollectFees
+		'../../app/actions/update-branch': fakeUpdateBranch
 	});
 
 	beforeEach(() => {
