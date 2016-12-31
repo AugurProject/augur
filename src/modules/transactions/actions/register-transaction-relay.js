@@ -130,8 +130,8 @@ export function registerTransactionRelay() {
 			if (tx && tx.response && tx.data) {
 				console.log('txRelay:', tx);
 				const hash = tx.response.hash;
-				const { transactionsData } = getState();
-				if (hash) {
+				const { loginAccount, transactionsData } = getState();
+				if (hash && tx.data.from === loginAccount.address) {
 					const timestamp = tx.response.timestamp ?
 						formatDate(new Date(tx.response.timestamp * 1000)) :
 						formatDate(new Date());
