@@ -5,8 +5,12 @@ import { updateReport } from '../../reports/actions/update-reports';
 export function loadReport(branchID, period, eventID, marketID, callback) {
 	return (dispatch, getState) => {
 		const { loginAccount, marketsData } = getState();
-		const marketData = marketsData[marketID];
-		augur.getReport(branchID, period, eventID, loginAccount.address, marketData.minValue, marketData.maxValue, marketData.type, (report) => {
+		const market = marketsData[marketID];
+		if (!market) {
+			console.error('loadReport failed:', branchID, marketID, market);
+			return callback(null);
+		}
+		augur.getReport(branchID, period, eventID, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
 			console.log('got report:', report);
 			if (!report || !report.report || report.error) {
 				return callback(report || 'getReport failed');
@@ -47,9 +51,9 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
 					if (decryptedReport.reportedOutcomeID) {
 						const { report, isIndeterminate } = augur.unfixReport(
 							decryptedReport.reportedOutcomeID,
-							marketData.minValue,
-							marketData.maxValue,
-							marketData.type);
+							market.minValue,
+							market.maxValue,
+							market.type);
 						decryptedReport.reportedOutcomeID = report;
 						decryptedReport.isIndeterminate = isIndeterminate;
 					}
