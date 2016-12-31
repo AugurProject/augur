@@ -56,6 +56,27 @@ const LoginMessagePage = p => (
 			<h3>December 31, 2016</h3>
 			<ol>
 				<li>
+					Attached id (market ID), minValue, amd maxValue properties to the market info objects fetched by getMarketInfo, getMarketsInfo, and batchGetMarketInfo in augur.js.
+				</li>
+				<li>
+					Fixed two React warnings: 1) Added a new hidePrefix property to the ValueDenomination component and used it instead of conditionally displaying the freeze prefix value. 2) Changed the default null state values in the ReportForm component to undefined.
+				</li>
+				<li>
+					In the branch synchronization sequence, getPenalizedUpTo and getCollectedFees are now only called if the user is logged in.
+				</li>
+				<li>
+					Added a long dash (&mdash;) display in the &quot;end date&quot; column of My Reports if the end date is not available.
+				</li>
+				<li>
+					Outcomes reported as both Indeterminate and Unethical are now displayed correctly in relayed Commit Report transactions.
+				</li>
+				<li>
+					All manual commitReport transaction create/update/delete actions have been replaced by the transaction relay.
+				</li>
+				<li>
+					Added a report encryption wrapper to the front-end.
+				</li>
+				<li>
 					Indeterminate reports are now correctly converted to hexadecimal strings in augur.js fixReport method.
 				</li>
 				<li>
