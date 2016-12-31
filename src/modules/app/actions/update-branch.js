@@ -57,7 +57,7 @@ export function syncBranch(cb) {
 					return callback(penalizedUpTo || 'could not look up last period penalized');
 				}
 				dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
-				augur.getFeesCollected(branch.id, loginAccount.address, reportPeriod - 2, (feesCollected) => {
+				augur.getFeesCollected(branch.id, loginAccount.address, penalizedUpTo, (feesCollected) => {
 					if (!feesCollected || feesCollected.error) {
 						return callback(feesCollected || 'could not look up fees collected');
 					}
