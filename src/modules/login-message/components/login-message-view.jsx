@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 31, 2016</h3>
+			<ol>
+				<li>
+				    Indeterminate reports are now correctly converted to hexadecimal strings in augur.js fixReport method.
+				</li>
+				<li>
+					Converted main trade logged-transaction loop to async.forEachOfSeries for proper getMarketInfo callback closure.
+				</li>
+				<li>
+					Added initial check if &quot;from&quot; field matches login account address before processing relayed transactions.
+				</li>
+				<li>
+				    Fixed a reassignment error in place-trade.
+				</li>
+			</ol>
 			<h3>December 30, 2016</h3>
 			<ol>
 				<li>
