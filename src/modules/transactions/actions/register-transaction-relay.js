@@ -92,9 +92,16 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					}
-					case 'collectFees':
-						transaction = dispatch(constructTransaction('collectedFees', p));
+					case 'collectFees': {
+						const { branch, loginAccount } = getState();
+						transaction = dispatch(constructTransaction('collectedFees', {
+							...p,
+							initialRepBalance: loginAccount.rep,
+							notReportingBond: abi.unfix(tx.data.value, "string"),
+							period: branch.lastPeriodPenalized
+						}));
 						break;
+					}
 					case 'claimProceeds':
 						transaction = dispatch(constructTransaction('payout', p));
 						break;

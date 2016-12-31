@@ -59,7 +59,7 @@ export function constructCollectedFeesTransaction(log) {
 	console.debug('collect fees log:', log);
 	const transaction = { data: {} };
 	const repGain = abi.bignum(log.repGain);
-	const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+	const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
 	transaction.type = `Reporting Payment`;
 	transaction.message = `reported with ${formatRep(initialRepBalance).full}`;
 	const totalReportingRep = abi.bignum(log.totalReportingRep);
@@ -68,14 +68,16 @@ export function constructCollectedFeesTransaction(log) {
 		transaction.message = `${transaction.message} (${percentRep.full})`;
 	}
 	transaction.description = `Reporting cycle #${log.period}`;
-	transaction.data.balances = [{
-		change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-		balance: formatEther(log.newCashBalance)
-	}, {
-		change: formatRep(log.repGain, { positiveSign: true }),
-		balance: formatRep(log.newRepBalance)
-	}];
-	console.log('transaction.data.balances:', transaction.data.balances);
+	if (log.cashFeesCollected && log.repGain) {
+		transaction.data.balances = [{
+			change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+			balance: formatEther(log.newCashBalance)
+		}, {
+			change: formatRep(log.repGain, { positiveSign: true }),
+			balance: formatRep(log.newRepBalance)
+		}];
+		console.log('transaction.data.balances:', transaction.data.balances);
+	}
 	transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
 	return transaction;
 }
