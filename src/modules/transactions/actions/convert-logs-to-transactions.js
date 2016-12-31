@@ -39,10 +39,11 @@ export function lookupEventMarketsThenRetryConversion(eventID, label, log, callb
 	};
 }
 
-export function constructBasicTransaction(hash, status, blockNumber, timestamp) {
+export function constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees) {
 	const transaction = { hash, status };
 	if (blockNumber) transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
 	if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
+	if (gasFees) transaction.gasFees = formatRealEther(gasFees);
 	return transaction;
 }
 
@@ -325,12 +326,14 @@ export function convertLogToTransaction(label, log, status, isRetry, cb) {
 		console.log(log);
 		const callback = cb || (e => console.log('convertLogToTransaction:', e));
 		const hash = log.transactionHash;
+		const transactionData = getState().transactionsData[hash];
+		const gasFees = (transactionData && transactionData.gasFees) ? transactionData.gasFees : null;
 		if (hash) {
 			const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
 			if (transaction) {
 				dispatch(updateTransactionsData({
 					[hash]: {
-						...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp),
+						...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees),
 						...transaction
 					}
 				}));

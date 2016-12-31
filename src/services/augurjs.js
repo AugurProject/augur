@@ -19,7 +19,7 @@ ex.connect = function connect(env, cb) {
 	}
 	if (options.http) augur.rpc.nodes.hosted = [options.http];
 	augur.options.debug.trading = false;
-	augur.options.debug.reporting = false;
+	augur.options.debug.reporting = true;
 	augur.options.debug.nonce = false;
 	augur.rpc.debug.broadcast = false;
 	augur.rpc.debug.tx = false;

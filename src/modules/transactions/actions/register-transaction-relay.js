@@ -4,6 +4,7 @@ import { NO_RELAY } from '../../transactions/constants/no-relay';
 import { formatDate } from '../../../utils/format-date';
 import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 
 export function unpackTransactionParameters(tx) {
@@ -174,6 +175,8 @@ export function registerTransactionRelay() {
 						dispatch(updateTransactionsData({
 							[hash]: { ...tx, message, timestamp, gasFees, hash }
 						}));
+					} else if (transactionsData[hash]) {
+						dispatch(updateExistingTransaction(hash, { gasFees }));
 					}
 				}
 			}
