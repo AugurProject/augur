@@ -20,12 +20,12 @@ describe('modules/reports/actions/load-report.js', () => {
 					unfixReport: () => {}
 				}
 			};
-			const DecryptReport = {
+			const ReportEncryption = {
 				decryptReport: () => {}
 			};
 			const action = proxyquire('../../../src/modules/reports/actions/load-report', {
 				'../../../services/augurjs': AugurJS,
-				'../../reports/actions/decrypt-report': DecryptReport
+				'../../reports/actions/report-encryption': ReportEncryption
 			});
 			sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
 				cb({
@@ -40,7 +40,7 @@ describe('modules/reports/actions/load-report.js', () => {
 				report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
 				isIndeterminate: false
 			}));
-			sinon.stub(DecryptReport, 'decryptReport', (loginAccount, branchID, period, eventID, cb) => {
+			sinon.stub(ReportEncryption, 'decryptReport', (loginAccount, branchID, period, eventID, cb) => {
 				console.log('decryptReport:', loginAccount, branchID, period, eventID);
 				cb(null, {
 					reportedOutcomeID: t.blockchain.encryptedReports[branchID][eventID].reportedOutcomeID,

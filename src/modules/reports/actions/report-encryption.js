@@ -1,10 +1,19 @@
 import { augur } from '../../../services/augurjs';
 
+export function encryptReport(report, encryptionKey, salt) {
+	const encrypted = { report: 0, salt: 0 };
+	if (encryptionKey) {
+		encrypted.report = augur.encryptReport(report, encryptionKey, salt);
+		encrypted.salt = augur.encryptReport(salt, encryptionKey);
+		console.debug('encrypted report:', encrypted);
+	}
+	return encrypted;
+}
+
 export function decryptReport(loginAccount, branchID, period, eventID, callback) {
 	if (!loginAccount.derivedKey) return callback(null);
 	augur.getAndDecryptReport(branchID, period, loginAccount.address, eventID, {
-		derivedKey: loginAccount.derivedKey,
-		salt: loginAccount.keystore.crypto.kdfparams.salt
+		derivedKey: loginAccount.derivedKey
 	}, (plaintext) => {
 		if (!plaintext) return callback('getAndDecryptReport failed');
 		if (!plaintext.report || plaintext.error) {
