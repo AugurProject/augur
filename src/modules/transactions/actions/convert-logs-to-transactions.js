@@ -101,10 +101,12 @@ export function constructPenalizationCatchupTransaction(log) {
 	transaction.type = 'Reporting Cycle Catch-Up';
 	transaction.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
 	// TODO link to this cycle in My Reports
-	transaction.data.balances = [{
-		change: formatRep(log.repLost, { positiveSign: true }),
-		balance: formatRep(log.newRepBalance)
-	}];
+	if (log.repLost && log.newRepBalance) {
+		transaction.data.balances = [{
+			change: formatRep(log.repLost, { positiveSign: true }),
+			balance: formatRep(log.newRepBalance)
+		}];
+	}
 	transaction.message = `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`;
 	return transaction;
 }
@@ -178,10 +180,12 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
 	}
 	transaction.description = market.description;
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-	transaction.data.balances = [{
-		change: formatRep(log.repchange, { positiveSign: true }),
-		balance: formatRep(log.newafterrep)
-	}];
+	if (log.repchange && log.newafterrep) {
+		transaction.data.balances = [{
+			change: formatRep(log.repchange, { positiveSign: true }),
+			balance: formatRep(log.newafterrep)
+		}];
+	}
 	return transaction;
 }
 
