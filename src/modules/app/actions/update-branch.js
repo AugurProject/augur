@@ -52,25 +52,37 @@ export function syncBranch(cb) {
 			}
 			const reportPeriod = parseInt(period, 10);
 			dispatch(updateBranch({ reportPeriod }));
-			augur.getPast24(period, (past24) => {
-				if (!past24 || past24.error) {
-					return callback(past24 || 'could not look up past 24');
+			augur.getPenalizedUpTo(branch.id, loginAccount.address, (penalizedUpTo) => {
+				if (!penalizedUpTo || penalizedUpTo.error) {
+					return callback(penalizedUpTo || 'could not look up last period penalized');
 				}
-				dispatch(updateBranch({ numEventsCreatedInPast24Hours: parseInt(past24, 10) }));
-				augur.getNumberEvents(branch.id, period, (numberEvents) => {
-					if (!numberEvents || numberEvents.error) {
-						return callback(numberEvents || 'could not look up number of events');
-					}
-					dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
-					if (loginAccount.address) dispatch(claimProceeds());
+				dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
+				augur.getFeesCollected(branch.id, loginAccount.address, reportPeriod - 2, (feesCollected) => {
+					if (!feesCollected || feesCollected.error) {
+	                    return callback(feesCollected || 'could not look up fees collected');
+	                }
+	                dispatch(updateBranch({ feesCollected: feesCollected === '1'}));
+					augur.getPast24(period, (past24) => {
+						if (!past24 || past24.error) {
+							return callback(past24 || 'could not look up past 24');
+						}
+						dispatch(updateBranch({ numEventsCreatedInPast24Hours: parseInt(past24, 10) }));
+						augur.getNumberEvents(branch.id, period, (numberEvents) => {
+							if (!numberEvents || numberEvents.error) {
+								return callback(numberEvents || 'could not look up number of events');
+							}
+							dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
+							if (loginAccount.address) dispatch(claimProceeds());
 
-					// check if period needs to be incremented / penalizeWrong
-					// needs to be called
-					dispatch(checkPeriod(true, (err) => {
-						console.log('checkPeriod done', err);
-						if (err) return callback(err);
-						callback(null);
-					}));
+							// check if period needs to be incremented / penalizeWrong
+							// needs to be called
+							dispatch(checkPeriod(true, (err) => {
+								console.log('checkPeriod done', err);
+								if (err) return callback(err);
+								callback(null);
+							}));
+						});
+					});
 				});
 			});
 		});
