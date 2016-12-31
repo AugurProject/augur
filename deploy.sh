@@ -2,6 +2,10 @@
 # Augur deployment for incredibly lazy people.
 # (c) Jack Peterson (jack@tinybike.net)
 
+yarn
+yarn build
+yarn lint
+yarn test
 git add build/*
 git commit -am "${1}"
 git push origin master

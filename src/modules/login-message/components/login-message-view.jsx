@@ -89,7 +89,7 @@ const LoginMessagePage = p => (
 					Filled in switch cases for submitReport, submitReportHash, penalizeWrong, and penalizationCatchup in the front-end part of the transaction relayer.
 				</li>
 			</ol>
-			<h3>December 28, 2016</h3>
+			<h3>December 29, 2016</h3>
 			<ol>
 				<li>
 					Fixed/updated all downstream actions from or calling to bid, ask, and short ask.
