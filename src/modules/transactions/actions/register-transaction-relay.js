@@ -8,16 +8,17 @@ import { constructTradingTransaction, constructTransaction, constructBasicTransa
 
 export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
+	if (!params) return null;
 	const inputs = tx.data.inputs;
 	const numInputs = inputs.length;
-	const fixed = tx.data.fixed;
-	const unfixedParams = params.slice();
-	if (fixed && fixed.length) {
-		const numFixed = fixed.length;
-		for (let j = 0; j < numFixed; ++j) {
-			unfixedParams[fixed[j]] = abi.unfix(abi.hex(params[fixed[j]], true), 'string');
-		}
-	}
+	// const fixed = tx.data.fixed;
+	const unfixedParams = params.constructor === Array ? params.slice() : [params];
+	// if (fixed && fixed.length) {
+	// 	const numFixed = fixed.length;
+	// 	for (let j = 0; j < numFixed; ++j) {
+	// 		unfixedParams[fixed[j]] = abi.unfix(abi.hex(params[fixed[j]], true), 'string');
+	// 	}
+	// }
 	const unpacked = {};
 	for (let i = 0; i < numInputs; ++i) {
 		unpacked[inputs[i]] = unfixedParams[i];
@@ -51,27 +52,44 @@ export function constructRelayTransaction(tx) {
 					price: abi.unfix(abi.hex(p.price, true), 'string'),
 					amount: abi.unfix(p.amount, 'string')
 				}, p.market, p.outcome, status));
-			// note: trade and short_sell messaging is done mannually until the next contract update
+			// note: trade, short_sell, and cancel messaging done manually until the next contract update
 			case 'trade':
 			case 'short_sell':
-				return null;
 			case 'cancel':
-				return dispatch(constructTradingTransaction('log_cancel', p, p.market, p.outcome, status));
+				return null;
 			default: {
 				let transaction;
 				switch (tx.data.method) {
 					case 'submitReport':
-						transaction = dispatch(constructTransaction('submittedReport', p));
+						transaction = dispatch(constructTransaction('submittedReport', {
+							...p, // { event, report, salt }
+							ethics: parseInt(p.ethics, 16)
+						}));
 						break;
 					case 'submitReportHash':
-						transaction = dispatch(constructTransaction('submittedReportHash', p));
+						transaction = dispatch(constructTransaction('submittedReportHash', {
+							...p, // { event, encryptedReport, encryptedSalt }
+							ethics: parseInt(p.ethics, 16)
+						}));
 						break;
-					case 'penalizeWrong':
-						transaction = dispatch(constructTransaction('penalized', p));
+					case 'penalizeWrong': {
+						const { eventsWithSubmittedReport, marketsData } = getState();
+						transaction = dispatch(constructTransaction('penalize', {
+							...p, // { event }
+							reportValue: eventsWithSubmittedReport[p.event].accountReport,
+							outcome: marketsData.reportedOutcome
+						}));
 						break;
-					case 'penalizationCatchup':
-						transaction = dispatch(constructTransaction('penalizationCaughtUp', p));
+					}
+					case 'penalizationCatchup': {
+						const { lastPeriodPenalized, reportPeriod } = getState().branch;
+						transaction = dispatch(constructTransaction('penalizationCaughtUp', {
+							...p,
+							penalizedFrom: lastPeriodPenalized,
+							penalizeUpTo: reportPeriod
+						}));
 						break;
+					}
 					case 'collectFees':
 						transaction = dispatch(constructTransaction('collectedFees', p));
 						break;
