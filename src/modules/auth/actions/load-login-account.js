@@ -33,9 +33,9 @@ export function loadLoginAccountDependents(cb) {
 			// (partly to handle signing out of one account and into another)
 			dispatch(clearReports());
 			dispatch(loadReportingHistory());
+			dispatch(loadEventsWithSubmittedReport());
 			dispatch(syncBranch((err) => {
 				if (err) console.error('syncBranch:', err);
-				dispatch(loadEventsWithSubmittedReport());
 			}));
 		});
 	};
