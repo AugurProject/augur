@@ -73,6 +73,7 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					case 'penalizeWrong': {
+						if (!parseInt(p.event, 16)) return null;
 						const { eventsWithSubmittedReport, marketsData } = getState();
 						transaction = dispatch(constructTransaction('penalize', {
 							...p, // { event }
