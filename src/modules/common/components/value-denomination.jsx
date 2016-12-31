@@ -11,7 +11,7 @@ const ValueDenomination = p => (
 			negative: p.formattedValue < 0
 		})}
 	>
-		{p.prefix &&
+		{p.prefix && !p.hidePrefix &&
 			<span className="prefix">{p.prefix}</span>
 		}
 		{p.formatted && p.fullPrecision &&
@@ -29,7 +29,7 @@ const ValueDenomination = p => (
 		{p.denomination &&
 			<span className="denomination">{p.denomination}</span>
 		}
-		{p.postfix &&
+		{p.postfix && !p.hidePostfix &&
 			<span className="postfix">{p.postfix}</span>
 		}
 		{!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
@@ -46,6 +46,8 @@ ValueDenomination.propTypes = {
 	formatted: PropTypes.string,
 	fullPrecision: PropTypes.string,
 	denomination: PropTypes.string,
+	hidePrefix: PropTypes.bool,
+	hidePostfix: PropTypes.bool,
 	prefix: PropTypes.string,
 	postfix: PropTypes.string
 };
