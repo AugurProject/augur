@@ -6,14 +6,13 @@ import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } 
 import { formatDate } from '../../../utils/format-date';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateMarketsData, updateEventMarketsMap } from '../../markets/actions/update-markets-data';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { selectMarketLink } from '../../link/selectors/links';
 import { selectMarketIDFromEventID } from '../../market/selectors/market';
 import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
 
 export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 	return (dispatch, getState) => {
-		dispatch(augur.getMarketInfo(marketID, (marketInfo) => {
+		augur.getMarketInfo(marketID, (marketInfo) => {
 			if (!marketInfo || marketInfo.error) {
 				if (marketInfo && marketInfo.error) console.error('augur.getMarketInfo:', marketInfo);
 				return callback(`[${label}] couldn't load market info for market ${marketID}: ${JSON.stringify(log)}`);
@@ -21,7 +20,7 @@ export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 			dispatch(updateMarketsData({ [marketID]: marketInfo }));
 			dispatch(convertLogsToTransactions(label, [log], true));
 			if (callback) callback();
-		}));
+		});
 	};
 }
 
@@ -553,15 +552,19 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 export function convertTradeLogsToTransactions(label, data, marketID) {
 	return (dispatch, getState) => {
 		const { marketsData } = getState();
-		const marketIDs = Object.keys(data);
-		const numMarkets = marketIDs.length;
-		for (let i = 0; i < numMarkets; ++i) {
-			if (marketsData[marketIDs[i]]) {
-				dispatch(convertTradeLogToTransaction(label, data, marketIDs[i]));
+		async.forEachOfSeries(data, (marketTrades, marketID, next) => {
+			if (marketsData[marketID]) {
+				dispatch(convertTradeLogToTransaction(label, data, marketID));
 			}
-			dispatch(loadMarketsInfo([marketIDs[i]], () => {
-				dispatch(convertTradeLogToTransaction(label, data, marketIDs[i]));
-			}));
-		}
+			augur.getMarketInfo(marketID, (marketInfo) => {
+				if (!marketInfo || marketInfo.error) {
+					if (marketInfo && marketInfo.error) console.error('augur.getMarketInfo:', marketInfo);
+					return next(`[${label}] couldn't load market info for market ${marketID}: ${JSON.stringify(data)}`);
+				}
+				dispatch(updateMarketsData({ [marketID]: marketInfo }));
+				dispatch(convertTradeLogToTransaction(label, data, marketID));
+				next();
+			});
+		}, err => (err && console.error('convertTradeLogsToTransactions:', err)));
 	};
 }
