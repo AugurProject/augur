@@ -97,7 +97,7 @@ export function constructRelayTransaction(tx) {
 						transaction = dispatch(constructTransaction('collectedFees', {
 							...p,
 							initialRepBalance: loginAccount.rep,
-							notReportingBond: abi.unfix(tx.data.value, "string"),
+							notReportingBond: abi.unfix(tx.data.value, 'string'),
 							period: branch.lastPeriodPenalized
 						}));
 						break;
