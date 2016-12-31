@@ -258,6 +258,8 @@ module.exports = {
             }
             info.type = event.type;
             info.endDate = event.endDate;
+            info.minValue = event.minValue;
+            info.maxValue = event.maxValue;
             info.events = [event];
             index += EVENTS_FIELDS;
 
