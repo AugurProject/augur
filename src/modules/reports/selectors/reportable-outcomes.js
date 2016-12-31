@@ -19,7 +19,7 @@ export const selectReportableOutcomes = (type, outcomes) => {
 	}
 };
 
-export function selectOutcomeName(outcomeID, eventType, outcomesData = {}) {
+export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {}) {
 	let outcomeName;
 	if (eventType === BINARY) {
 		if (outcomeID === '1') {
@@ -34,16 +34,16 @@ export function selectOutcomeName(outcomeID, eventType, outcomesData = {}) {
 	} else if (eventType === SCALAR) {
 		outcomeName = outcomeID;
 	} else {
-		outcomeName = outcomesData[outcomeID] ? outcomesData[outcomeID].name : outcomeID;
+		outcomeName = marketOutcomesData[outcomeID] ? marketOutcomesData[outcomeID].name : outcomeID;
 	}
 	return outcomeName;
 }
 
-export function formatReportedOutcome(rawReportedOutcome, ethics, minValue, maxValue, eventType, outcomesData = {}) {
+export function formatReportedOutcome(rawReportedOutcome, ethics, minValue, maxValue, eventType, marketOutcomesData = {}) {
 	const isEthical = ethics !== '0' && ethics !== 0 && ethics !== false;
 	const report = augur.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
 	if (report.isIndeterminate) return INDETERMINATE_OUTCOME_NAME;
-	const outcomeName = selectOutcomeName(report.report, eventType, outcomesData || {});
+	const outcomeName = selectOutcomeName(report.report, eventType, marketOutcomesData || {});
 	if (isEthical) return outcomeName;
 	return `${outcomeName} and Unethical`;
 }
