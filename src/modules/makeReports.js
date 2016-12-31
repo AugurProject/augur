@@ -19,9 +19,9 @@ module.exports = {
         var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
             if (type === "binary") {
-                fixedReport = constants.BINARY_INDETERMINATE.toFixed();
+                fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
             } else {
-                fixedReport = constants.CATEGORICAL_SCALAR_INDETERMINATE.toFixed();
+                fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
             }
         } else {
             if (type === "binary") {
@@ -42,7 +42,7 @@ module.exports = {
             // if report is equal to fix(0.5) but is not indeterminate,
             // then set report to fix(0.5) + 1
             if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-                fixedReport = constants.INDETERMINATE_PLUS_ONE.toFixed();
+                fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
             }
         }
         return fixedReport;
