@@ -95,13 +95,13 @@ export function placeTrade(marketID, outcomeID) {
 						} else {
 							let askShares;
 							let shortAskShares;
-							const numShares = abi.bignum(numShares);
-							if (position.gt(numShares)) {
+							const bnNumShares = abi.bignum(numShares);
+							if (position.gt(bnNumShares)) {
 								askShares = numShares;
 								shortAskShares = '0';
 							} else {
 								askShares = position.toFixed();
-								shortAskShares = numShares.minus(position).toFixed();
+								shortAskShares = bnNumShares.minus(position).toFixed();
 							}
 							augur.sell({
 								amount: askShares,
