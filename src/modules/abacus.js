@@ -205,6 +205,7 @@ module.exports = {
             var index = 14;
             var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
+                id: abi.format_int256(rawInfo[0]),
                 network: this.network_id,
                 makerFee: fees.maker,
                 takerFee: fees.taker,

@@ -41650,7 +41650,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.5.3";
+    this.version = "3.5.4";
 
     this.options = {
         debug: {
@@ -41912,6 +41912,7 @@ module.exports = {
             var index = 14;
             var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
+                id: abi.format_int256(rawInfo[0]),
                 network: this.network_id,
                 makerFee: fees.maker,
                 takerFee: fees.taker,
@@ -42695,6 +42696,7 @@ module.exports = {
             }
             marketsInfo[marketID] = {
                 sortOrder: i,
+                id: marketID,
                 branchId: branch,
                 tradingPeriod: parseInt(marketsArray[shift + 1], 16),
                 tradingFee: fees.trading,
