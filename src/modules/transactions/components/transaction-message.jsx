@@ -51,7 +51,8 @@ const TransactionMessage = p => (
 				<ValueDenomination
 					className="freeze-tradingFees-message"
 					{...p.freeze.tradingFees}
-					prefix={!p.freeze.noFeeCost && p.freeze.verb}
+					hidePrefix={!!p.freeze.noFeeCost}
+					prefix={p.freeze.verb}
 					postfix="in potential trading fees"
 				/>
 				<br />
