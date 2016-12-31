@@ -59,9 +59,9 @@ export function syncBranch(cb) {
 				dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
 				augur.getFeesCollected(branch.id, loginAccount.address, reportPeriod - 2, (feesCollected) => {
 					if (!feesCollected || feesCollected.error) {
-	                    return callback(feesCollected || 'could not look up fees collected');
-	                }
-	                dispatch(updateBranch({ feesCollected: feesCollected === '1'}));
+						return callback(feesCollected || 'could not look up fees collected');
+					}
+					dispatch(updateBranch({ feesCollected: feesCollected === '1' }));
 					augur.getPast24(period, (past24) => {
 						if (!past24 || past24.error) {
 							return callback(past24 || 'could not look up past 24');
