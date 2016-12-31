@@ -53,6 +53,24 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>December 30, 2016</h3>
+			<ol>
+				<li>
+					Moved collectFees logic to augur.js: fee collection now handled automatically by augur.checkPeriod.
+				</li>
+				<li>
+					The UI sync-branch-with-blockchain logic now looks up the last report cycle penalized and and the fee collection status of the cycle prior to the cycle being checked for penalties.  Both of these fields are now attached to the branch data store and available in the front-end.
+				</li>
+				<li>
+					Filled in switch cases for submitReport, submitReportHash, penalizeWrong, and penalizationCatchup in the front-end part of the transaction relayer.
+				</li>
+			</ol>
+			<h3>December 28, 2016</h3>
+			<ol>
+				<li>
+					Fixed/updated all downstream actions from or calling to bid, ask, and short ask.
+				</li>
+			</ol>
 			<h3>December 28, 2016</h3>
 			<ol>
 				<li>
