@@ -5,7 +5,6 @@ export const NO_RELAY = [
 	'short_sell',
 	'cancel',
 	'commitTrade',
-	'submitReportHash',
 	'submitReport',
 	'register',
 	'fundNewAccount',

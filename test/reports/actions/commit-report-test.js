@@ -13,31 +13,18 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 	const test = (t) => {
 		it(t.description, () => {
 			const store = mockStore(t.state);
-			const AddCommitReportTransaction = {
-				addCommitReportTransaction: () => {}
-			};
 			const AugurJS = { augur: {} };
 			const BytesToHex = {};
 			const NextReportPage = {};
 			const action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
-				'../../transactions/actions/add-commit-report-transaction': AddCommitReportTransaction,
 				'../../../services/augurjs': AugurJS,
 				'../../../utils/bytes-to-hex': BytesToHex,
 				'../../reports/actions/next-report-page': NextReportPage
 			});
-			sinon.stub(AddCommitReportTransaction, 'addCommitReportTransaction', (market, reportedOutcomeID, isUnethical, isIndeterminate) => ({
-				type: 'ADD_COMMIT_REPORT_TRANSACTION',
-				market,
-				reportedOutcomeID,
-				isUnethical,
-				isIndeterminate
-			}));
 			AugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
 			AugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef');
 			BytesToHex.bytesToHex = sinon.stub().returns('0x1337');
-			NextReportPage.nextReportPage = sinon.stub().returns({
-				type: 'NEXT_REPORT_PAGE'
-			});
+			NextReportPage.nextReportPage = sinon.stub().returns({ type: 'NEXT_REPORT_PAGE' });
 			store.dispatch(action.commitReport(t.params.market, t.params.reportedOutcomeID, t.params.isUnethical, t.params.isIndeterminate));
 			t.assertions(store.getActions());
 			store.clearActions();
