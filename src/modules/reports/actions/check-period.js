@@ -30,16 +30,13 @@ export function checkPeriod(unlock, cb) {
 		}
 		if (tracker.checkPeriodLock) return callback(null);
 		tracker.checkPeriodLock = true;
-		augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod, marketsClosed) => {
-			console.log('checkPeriod complete:', err, reportPeriod, marketsClosed);
+		augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
+			console.log('checkPeriod complete:', err, reportPeriod);
 			if (err) {
 				tracker.checkPeriodLock = false;
 				return callback(err);
 			}
 			dispatch(updateBranch({ reportPeriod }));
-			if (marketsClosed && marketsClosed.length) {
-				dispatch(loadMarketsInfo(marketsClosed));
-			}
 			dispatch(loadEventsWithSubmittedReport());
 			dispatch(clearOldReports());
 			dispatch(loadReports((err) => {
