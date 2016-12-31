@@ -43,7 +43,7 @@ export default class ReportForm extends Component {
 
 	handleSubmit() {
 		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
-		this.setState({ reportedOutcomeID: null, isIndeterminate: null, isUnethical: null, isReported: false });
+		this.setState({ reportedOutcomeID: undefined, isIndeterminate: undefined, isUnethical: undefined, isReported: false });
 	}
 
 	render() {
@@ -119,7 +119,7 @@ export default class ReportForm extends Component {
 						onClick={(!s.isReported && (() => this.setState({
 							isIndeterminate: !s.isIndeterminate,
 							reportedOutcomeID: indeterminateValue
-						}))) || null}
+						}))) || undefined}
 					/>
 				</div>
 
@@ -133,7 +133,7 @@ export default class ReportForm extends Component {
 						className={classnames('unethical-checkbox', { disabled: s.isReported })}
 						text="Yes, this question is unethical"
 						isChecked={!!s.isUnethical}
-						onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || null}
+						onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}
 					/>
 				</div>
 
@@ -142,7 +142,7 @@ export default class ReportForm extends Component {
 						<button
 							className="button report"
 							disabled={!s.reportedOutcomeID}
-							onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || null}
+							onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || undefined}
 						>
 							Submit Report
 						</button>
