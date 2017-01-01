@@ -176,11 +176,11 @@ export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
 export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
 	const transaction = { data: {} };
 	transaction.type = 'Compare Report To Consensus';
-	const formattedReport = formatReportedOutcome(log.reportValue, true, market.minValue, market.maxValue, market.type, outcomes);
+	const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
 	if (log.reportValue === log.outcome) {
 		transaction.message = `✔ report ${formattedReport} matches consensus`;
 	} else {
-		transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, true, market.minValue, market.maxValue, market.type, outcomes)}`;
+		transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
 	}
 	transaction.description = market.description;
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
@@ -199,14 +199,13 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
 	transaction.description = market.description;
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 	transaction.data.market = market;
-	transaction.data.isUnethical = !log.ethics;
+	transaction.data.isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
 	transaction.message = `committed to report`;
 	if (decryptionKey) {
-		const report = augur.parseAndDecryptReport([
+		const formattedReport = formatReportedOutcome(augur.parseAndDecryptReport([
 			log.encryptedReport,
 			log.encryptedSalt
-		], { derivedKey: decryptionKey }).report;
-		const formattedReport = formatReportedOutcome(report, log.ethics, market.minValue, market.maxValue, market.type, outcomes);
+		], { derivedKey: decryptionKey }).report, market.minValue, market.maxValue, market.type, outcomes);
 		transaction.data.reportedOutcomeID = formattedReport;
 		transaction.data.outcome = { name: formattedReport };
 		transaction.message = `${transaction.message}: ${formattedReport}`;
@@ -220,11 +219,11 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 	transaction.description = market.description;
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 	transaction.data.market = market;
-	transaction.data.isUnethical = !log.ethics;
-	const formattedReport = formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, outcomes);
+	transaction.data.isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+	const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
 	transaction.data.reportedOutcomeID = formattedReport;
 	transaction.data.outcome = { name: formattedReport };
-	transaction.message = `revealed report: ${formatReportedOutcome(log.report, log.ethics, market.minValue, market.maxValue, market.type, outcomes)}`;
+	transaction.message = `revealed report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
 	return transaction;
 }
 
@@ -276,11 +275,11 @@ export function constructReportingTransaction(label, log, marketID, market, outc
 	return (dispatch, getState) => {
 		switch (label) {
 			case 'penalize':
-				return constructPenalizeTransaction(log, marketID, market, outcomes);
+				return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
 			case 'submittedReport':
-				return constructSubmittedReportTransaction(log, marketID, market, outcomes);
+				return constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch);
 			case 'submittedReportHash':
-				return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, getState().loginAccount.derivedKey);
+				return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, getState().loginAccount.derivedKey, dispatch);
 			default:
 				return null;
 		}
