@@ -7,6 +7,7 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { selectMarketFromEventID } from '../../market/selectors/market';
+import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
 export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
@@ -107,9 +108,12 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					}
-					case 'claimProceeds':
-						transaction = dispatch(constructTransaction('payout', p));
+					case 'claimProceeds': {
+						const winningPositions = selectWinningPositions();
+						const shares = (winningPositions.find(position => position.id === p.market) || {}).shares;
+						transaction = dispatch(constructTransaction('payout', { ...p, shares }));
 						break;
+					}
 					case 'transfer':
 						transaction = dispatch(constructTransaction('Transfer', p));
 						break;

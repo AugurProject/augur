@@ -5,11 +5,9 @@ export const NO_RELAY = [
 	'short_sell',
 	'cancel',
 	'commitTrade',
-	'submitReport',
 	'register',
 	'fundNewAccount',
 	'send',
 	'sendFrom',
-	'sendReputation',
-	'createSingleEventMarket'
+	'sendReputation'
 ];
