@@ -127,7 +127,7 @@ export function constructRelayTransaction(tx) {
 						transaction = dispatch(constructTransaction('Approve', p));
 						break;
 					case 'register':
-						transaction = dispatch(constructTransaction('registration', p));
+						transaction = dispatch(constructTransaction('registration', { ...p, sender: tx.data.from }));
 						break;
 					case 'createMarket':
 					case 'createSingleEventMarket': {
