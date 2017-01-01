@@ -41,4 +41,4 @@ TransactionDescription.propTypes = {
 	marketLink: React.PropTypes.object
 };
 
-return TransactionDescription;
+export default TransactionDescription;
