@@ -47,7 +47,7 @@ function selectTotalSharesInMarket(market) {
 	const numOutcomes = outcomeIDs.length;
 	let totalShares = ZERO;
 	for (let j = 0; j < numOutcomes; ++j) {
-		const bnSharesPurchased = abi.bignum(outcomesData[marketID].sharesPurchased);
+		const bnSharesPurchased = abi.bignum(outcomesData[marketID][outcomeIDs[j]].sharesPurchased);
 		if (bnSharesPurchased.gt(ZERO)) {
 			totalShares = totalShares.plus(bnSharesPurchased);
 		}
