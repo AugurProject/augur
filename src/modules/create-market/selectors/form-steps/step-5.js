@@ -1,7 +1,6 @@
 import { formatNumber, formatPercent, formatRealEtherEstimate, formatEtherEstimate } from '../../../../utils/format-number';
 import { formatDate } from '../../../../utils/format-date';
-import { augur, abi, constants } from '../../../../services/augurjs';
-import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
+import { abi, augur } from '../../../../services/augurjs';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../markets/constants/market-types';
 import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 
