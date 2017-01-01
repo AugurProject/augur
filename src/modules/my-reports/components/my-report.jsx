@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 import EmDash from 'modules/common/components/em-dash';
+import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Report = p => (
 	<div className="portfolio-row">
@@ -57,14 +58,7 @@ const Report = p => (
 							&#xf057;
 						</span>
 					}
-					{!!p.isUnethical &&
-						<span
-							className="fa report-unethical"
-							data-tip="You reported that this market is unethical"
-						>
-							&#xf165;
-						</span>
-					}
+					<ReportEthics isUnethical={p.isUnethical} />
 				</span>
 			</div>
 			<div className="portfolio-pair">

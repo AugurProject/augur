@@ -7,6 +7,7 @@ import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
 import TransactionMessage from 'modules/transactions/components/transaction-message';
+import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Transaction = (p) => {
 	const nodes = {};
@@ -162,11 +163,9 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<strong>{reportedOutcome}</strong>
-					{!!p.data.isUnethical &&
-						<strong className="unethical"> and Unethical</strong>
-					}
+					<ReportEthics isUnethical={p.data.isUnethical} />
 					<br />
-					{buildDescription(p.description || p.description)}
+					{buildDescription(p.description)}
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
