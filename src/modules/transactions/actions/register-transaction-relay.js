@@ -6,6 +6,7 @@ import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
+import { selectMarketIDFromEventID } from '../../market/selectors/market';
 
 export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
@@ -74,12 +75,16 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					case 'penalizeWrong': {
-						if (!parseInt(p.event, 16)) return null;
 						const { eventsWithSubmittedReport, marketsData } = getState();
+						if (!parseInt(p.event, 16) || !eventsWithSubmittedReport || !eventsWithSubmittedReport[p.event]) {
+							return null;
+						}
+						const market = selectMarketFromEventID(p.event);
+						if (!market) return null;
 						transaction = dispatch(constructTransaction('penalize', {
 							...p, // { event }
 							reportValue: eventsWithSubmittedReport[p.event].accountReport,
-							outcome: marketsData.reportedOutcome
+							outcome: market.reportedOutcome
 						}));
 						break;
 					}
