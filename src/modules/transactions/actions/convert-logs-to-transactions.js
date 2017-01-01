@@ -62,10 +62,12 @@ export function constructCollectedFeesTransaction(log) {
 	const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
 	transaction.type = `Reporting Payment`;
 	transaction.message = `reported with ${formatRep(initialRepBalance).full}`;
-	const totalReportingRep = abi.bignum(log.totalReportingRep);
-	if (!totalReportingRep.eq(constants.ZERO)) {
-		const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
-		transaction.message = `${transaction.message} (${percentRep.full})`;
+	if (log.totalReportingRep) {
+		const totalReportingRep = abi.bignum(log.totalReportingRep);
+		if (!totalReportingRep.eq(constants.ZERO)) {
+			const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+			transaction.message = `${transaction.message} (${percentRep.full})`;
+		}
 	}
 	transaction.description = `Reporting cycle #${log.period}`;
 	if (log.cashFeesCollected && log.repGain) {
