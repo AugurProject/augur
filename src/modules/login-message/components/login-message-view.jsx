@@ -56,6 +56,21 @@ const LoginMessagePage = p => (
 			<h3>December 31, 2016</h3>
 			<ol>
 				<li>
+					Fixed the &quot;isUnethical&quot; calculation in constructSubmittedReportTransaction and constructSubmittedReportHashTransaction.
+				</li>
+				<li>
+					Added missing dispatch arguments to constructReportingTransaction cases.
+				</li>
+				<li>
+					Added report styling and unethical report &quot;thumbs-down&quot; icon to the Transaction component.
+				</li>
+				<li>
+					The buildDescription function inside the Transaction component has been replaced with a new TransactionDescription component.
+				</li>
+				<li>
+					Moved report ethicality display into separate ReportEthics component, and replaced ethics displays in My Report and Transaction with ReportEthics component.  Removed report ethicality display logic from formatReportedOutcome.
+				</li>
+				<li>
 					Attached id (market ID), minValue, amd maxValue properties to the market info objects fetched by getMarketInfo, getMarketsInfo, and batchGetMarketInfo in augur.js.
 				</li>
 				<li>
