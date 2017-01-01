@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 1, 2017</h3>
+			<ol>
+				<li>
+					Moved the in-progress display logic for trading payouts (claim-proceeds) to the transaction relayer.  All messaging callbacks have been removed from claimMarketsProceeds in augur.js.
+				</li>
+				<li>
+					Moved the in-progress display logic for market creation to the transaction relayer.
+				</li>
+				<li>
+					Trading payout receipts in augur.js are now parsed using the filters event message parser.
+				</li>
+			</ol>
 			<h3>December 31, 2016</h3>
 			<ol>
 				<li>
