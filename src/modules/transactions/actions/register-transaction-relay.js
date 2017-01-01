@@ -129,10 +129,16 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					case 'approve':
-						transaction = dispatch(constructTransaction('Approve', p));
+						transaction = dispatch(constructTransaction('Approve', {
+							...p,
+							_spender: abi.format_address(p.spender)
+						}));
 						break;
 					case 'register':
-						transaction = dispatch(constructTransaction('registration', { ...p, sender: tx.data.from }));
+						transaction = dispatch(constructTransaction('registration', {
+							...p,
+							sender: tx.data.from
+						}));
 						break;
 					case 'createMarket':
 					case 'createSingleEventMarket': {
