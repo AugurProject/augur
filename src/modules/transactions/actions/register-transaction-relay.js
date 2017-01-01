@@ -39,7 +39,13 @@ export function constructRelayTransaction(tx) {
 		};
 		console.log('unpacked:', JSON.stringify(p, null, 2));
 		const status = 'in progress';
-		switch (tx.data.method) {
+		const hash = tx.response.hash;
+		const method = tx.data.method;
+		const contracts = augur.contracts;
+		const gasFees = augur.getTxGasEth({
+			...augur.api.functions[Object.keys(contracts).find(c => contracts[c] === tx.data.to)][method]
+		}, rpc.gasPrice);
+		switch (method) {
 			case 'buy':
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'buy',
@@ -62,7 +68,7 @@ export function constructRelayTransaction(tx) {
 				return null;
 			default: {
 				let transaction;
-				switch (tx.data.method) {
+				switch (method) {
 					case 'submitReport':
 						transaction = dispatch(constructTransaction('submittedReport', {
 							...p, // { event, report, salt }
@@ -124,15 +130,21 @@ export function constructRelayTransaction(tx) {
 						transaction = dispatch(constructTransaction('registration', p));
 						break;
 					case 'createMarket':
-					case 'createSingleEventMarket':
-						transaction = dispatch(constructTransaction('marketCreated', p));
+					case 'createSingleEventMarket': {
+						const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
+						transaction = dispatch(constructTransaction('marketCreated', {
+							...p,
+							eventBond: augur.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
+							marketCreationFee: abi.unfix(augur.calculateRequiredMarketValue(rpc.gasPrice), 'string')
+						}));
 						break;
+					}
 					default:
 						return null;
 				}
 				return {
-					[tx.response.hash]: {
-						...constructBasicTransaction(tx.response.hash, status, tx.response.blockNumber, tx.response.timestamp),
+					[hash]: {
+						...constructBasicTransaction(hash, status, tx.response.blockNumber, tx.response.timestamp, gasFees),
 						...transaction
 					}
 				};

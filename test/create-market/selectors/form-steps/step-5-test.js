@@ -172,7 +172,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
@@ -320,7 +319,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
@@ -517,7 +515,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
@@ -684,7 +681,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
@@ -850,7 +846,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
@@ -1003,7 +998,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					denomination: '%',
 					full: '1.0%'
 				},
-				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,

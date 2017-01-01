@@ -145,7 +145,11 @@ export function constructDefaultTransaction(label, log) {
 export function constructMarketCreatedTransaction(log, market, dispatch) {
 	const transaction = { data: {} };
 	transaction.type = 'create_market';
-	transaction.description = market ? market.description : log.marketID.replace('0x', '');
+	if (log.description) {
+		transaction.description = log.description.split('~|>')[0];
+	} else {
+		transaction.description = market ? market.description : log.marketID.replace('0x', '');
+	}
 	transaction.marketCreationFee = formatEther(log.marketCreationFee);
 	transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
 	transaction.data.bond = { label: 'event validity', value: formatEther(log.eventBond) };
