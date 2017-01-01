@@ -6,7 +6,7 @@ import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
-import { selectMarketIDFromEventID } from '../../market/selectors/market';
+import { selectMarketFromEventID } from '../../market/selectors/market';
 
 export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
@@ -75,7 +75,7 @@ export function constructRelayTransaction(tx) {
 						}));
 						break;
 					case 'penalizeWrong': {
-						const { eventsWithSubmittedReport, marketsData } = getState();
+						const { eventsWithSubmittedReport } = getState();
 						if (!parseInt(p.event, 16) || !eventsWithSubmittedReport || !eventsWithSubmittedReport[p.event]) {
 							return null;
 						}
