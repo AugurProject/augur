@@ -7,44 +7,11 @@ import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
 import TransactionMessage from 'modules/transactions/components/transaction-message';
+import TransactionDescription from 'modules/transactions/components/transaction-description';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Transaction = (p) => {
 	const nodes = {};
-
-	const buildDescription = (fullDescription) => {
-		if (!fullDescription) return <span />;
-		let shortDescription;
-		if (fullDescription.indexOf('\n') > -1) {
-			shortDescription = fullDescription.split('\n').map(text => <li key={text}>{text}</li>);
-			shortDescription = <ul>{shortDescription}</ul>;
-		} else {
-			shortDescription = fullDescription.substring(0, 100) + ((fullDescription.length > 100 && '...') || '');
-		}
-		const description = (isShortened) => {
-			if (isShortened) {
-				return (
-					<span className="market-description" data-tip={fullDescription}>
-						{shortDescription}
-					</span>
-				);
-			}
-			return (
-				<span className="market-description">
-					{shortDescription}
-				</span>
-			);
-		};
-		const isShortened = shortDescription !== fullDescription;
-		if (shortDescription && p.data.marketLink) {
-			return (
-				<Link href={p.data.marketLink.href} onClick={p.data.marketLink.onClick}>
-					{description(isShortened)}
-				</Link>
-			);
-		}
-		return <span>{description(isShortened)}</span>;
-	};
 
 	switch (p.type) {
 		case BUY:
@@ -98,7 +65,7 @@ const Transaction = (p) => {
 					<br className="hide-in-tx-display" />
 					<ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br className="hide-in-trade-summary-display" />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -114,7 +81,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -144,7 +111,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -165,7 +132,7 @@ const Transaction = (p) => {
 					<strong>{reportedOutcome}</strong>
 					<ReportEthics isUnethical={p.data.isUnethical} />
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -180,7 +147,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{nodes.action}</span>
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -198,7 +165,7 @@ const Transaction = (p) => {
 					<span className="of">of</span>
 					<span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
@@ -213,7 +180,7 @@ const Transaction = (p) => {
 				<span className="description">
 					<span className="action">{p.type}</span>
 					<br />
-					{buildDescription(p.description)}
+					<TransactionDescription description={p.description} marketLink={p.data.marketLink} />
 					<br />
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
