@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 1, 2017</h3>
+			<ol>
+				<li>
+					Moved the in-progress display logic for market creation, trading payouts (claim-proceeds), registration, and REP transfers and approvals to the transaction relayer.
+				</li>
+				<li>
+					All messaging callbacks have been removed from claimMarketsProceeds in augur.js.
+				</li>
+				<li>
+					Trading payout receipts in augur.js are now parsed using the filters event message parser.
+				</li>
+				<li>
+					Updates to the <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/" target="_blank" rel="noopener noreferrer">augur-abi</a> middleware module: added negative number support to the format_int256 method, and added an unfix_signed method to unfix and wrap to negative if needed.
+				</li>
+			</ol>
 			<h3>December 31, 2016</h3>
 			<ol>
 				<li>
