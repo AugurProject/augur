@@ -70,7 +70,7 @@ export function constructCollectedFeesTransaction(log) {
 		}
 	}
 	transaction.description = `Reporting cycle #${log.period}`;
-	if (log.cashFeesCollected && log.repGain) {
+	if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
 		transaction.data.balances = [{
 			change: formatEther(log.cashFeesCollected, { positiveSign: true }),
 			balance: formatEther(log.newCashBalance)
@@ -78,7 +78,6 @@ export function constructCollectedFeesTransaction(log) {
 			change: formatRep(log.repGain, { positiveSign: true }),
 			balance: formatRep(log.newRepBalance)
 		}];
-		console.log('transaction.data.balances:', transaction.data.balances);
 	}
 	transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
 	return transaction;
