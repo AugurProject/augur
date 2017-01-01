@@ -121,7 +121,12 @@ export function constructRelayTransaction(tx) {
 						break;
 					}
 					case 'transfer':
-						transaction = dispatch(constructTransaction('Transfer', p));
+						transaction = dispatch(constructTransaction('Transfer', {
+							...p,
+							_from: tx.data.from,
+							_to: abi.format_address(p.recver),
+							_value: abi.unfix(p.value, 'string')
+						}));
 						break;
 					case 'approve':
 						transaction = dispatch(constructTransaction('Approve', p));
