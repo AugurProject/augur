@@ -39,10 +39,8 @@ export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {})
 	return outcomeName;
 }
 
-export function formatReportedOutcome(rawReportedOutcome, ethics, minValue, maxValue, eventType, marketOutcomesData = {}) {
-	const isEthical = ethics !== '0' && ethics !== 0 && ethics !== false;
+export function formatReportedOutcome(rawReportedOutcome, minValue, maxValue, eventType, marketOutcomesData = {}) {
 	const report = augur.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
 	const outcomeName = report.isIndeterminate ? INDETERMINATE_OUTCOME_NAME : selectOutcomeName(report.report, eventType, marketOutcomesData || {});
-	if (isEthical) return outcomeName;
-	return `${outcomeName} and Unethical`;
+	return outcomeName;
 }
