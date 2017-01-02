@@ -9,12 +9,12 @@ export function claimProceeds() {
 		const { branch, loginAccount } = getState();
 		if (loginAccount.address) {
 			const winningPositions = selectWinningPositions();
-			console.log('closed markets with winning shares:', winningPositions);
+			console.debug('closed markets with winning shares:', winningPositions);
 			if (winningPositions.length) {
 				augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
 					if (err) return console.error('claimMarketsProceeds failed:', err);
 					dispatch(updateAssets());
-					console.log('claimed proceeds from markets:', claimedMarkets);
+					console.debug('claimed proceeds from markets:', claimedMarkets);
 					async.each(claimedMarkets, (marketID, nextMarket) => {
 						console.log('loadAccountTrades for', marketID);
 						dispatch(loadAccountTrades(marketID, () => nextMarket()));

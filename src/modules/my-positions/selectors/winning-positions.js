@@ -18,6 +18,7 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 			const winningShares = market.type === SCALAR ?
 				selectTotalSharesInMarket(market) :
 				selectWinningOutcomeShares(market);
+			console.log('winning shares:', market, winningShares);
 			if (winningShares) {
 				closedMarketsWithWinningShares.push({
 					id: market.id,
@@ -52,6 +53,7 @@ function selectTotalSharesInMarket(market) {
 			totalShares = totalShares.plus(bnSharesPurchased);
 		}
 	}
+	console.log('total shares in market:', market, totalShares.toFixed());
 	return totalShares.toFixed();
 }
 

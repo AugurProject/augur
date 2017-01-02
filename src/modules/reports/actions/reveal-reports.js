@@ -1,6 +1,8 @@
 import async from 'async';
+import { augur } from '../../../services/augurjs';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { updateAssets } from '../../auth/actions/update-assets';
 import { updateReports } from '../../reports/actions/update-reports';
-import { addRevealReportTransaction } from '../../transactions/actions/add-reveal-report-transaction';
 
 const revealReportLock = {};
 
@@ -25,35 +27,42 @@ export function revealReports(cb) {
 			console.log('revealableReports:', revealableReports);
 			if (revealableReports && revealableReports.length && loginAccount.address) {
 				async.eachSeries(revealableReports, (report, nextReport) => {
-					console.log('revealReportLock:', report.eventID, revealReportLock[report.eventID]);
-					if (revealReportLock[report.eventID]) return nextReport();
-					revealReportLock[report.eventID] = true;
+					const eventID = report.eventID;
+					console.log('revealReportLock:', eventID, revealReportLock[eventID]);
+					if (revealReportLock[eventID]) return nextReport();
+					revealReportLock[eventID] = true;
 					let type;
 					if (report.isScalar) {
-						type = 'scalar';
+						type = SCALAR;
 					} else if (report.isCategorical) {
-						type = 'categorical';
+						type = CATEGORICAL;
 					} else {
-						type = 'binary';
+						type = BINARY;
 					}
-					console.log('add reveal report tx:', report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, type, report.isUnethical, report.isIndeterminate);
-					dispatch(addRevealReportTransaction(report.eventID, report.marketID, report.reportedOutcomeID, report.salt, report.minValue, report.maxValue, type, report.isUnethical, report.isIndeterminate, (e) => {
-						revealReportLock[report.eventID] = false;
-						if (e) return nextReport(e);
-						dispatch(updateReports({
-							[branch.id]: {
-								[report.eventID]: {
-									...report,
-									isRevealed: true
+					augur.submitReport({
+						event: eventID,
+						report: report.reportedOutcomeID,
+						salt: report.salt,
+						ethics: Number(!report.isUnethical),
+						minValue: report.minValue,
+						maxValue: report.maxValue,
+						type,
+						isIndeterminate: report.isIndeterminate,
+						onSent: r => console.log('submitReport sent:', r),
+						onSuccess: (r) => {
+							console.log('submitReport success:', r);
+							dispatch(updateAssets());
+							revealReportLock[eventID] = false;
+							dispatch(updateReports({
+								[branch.id]: {
+									[eventID]: { ...report, isRevealed: true }
 								}
-							}
-						}));
-						nextReport();
-					}));
-				}, (e) => {
-					if (e) return callback(e);
-					callback(null);
-				});
+							}));
+							nextReport();
+						},
+						onFailed: e => nextReport(e)
+					});
+				}, e => callback(e));
 			}
 		}
 	};

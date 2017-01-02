@@ -72,13 +72,28 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	});
 	const store = mockStore(state);
 
-	const mockAddRevealReportTransaction = { addRevealReportTransaction: () => {} };
-	sinon.stub(mockAddRevealReportTransaction, 'addRevealReportTransaction', (eventID, marketID, reportedOutcomeID, salt, minValue, maxValue, type, isUnethical, isIndeterminate, callback) => (dispatch, getState) => {
-		callback(null);
+	const mockUpdateAssets = { updateAssets: () => {} };
+	const mockAugurJS = {
+		augur: {
+			submitReport: () => {},
+			getTxGasEth: () => {},
+			rpc: { gasPrice: 10 },
+			tx: { MakeReports: { submitReport: {} } }
+		}
+	};
+
+	sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
+	sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
+	sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
+		const message = 'revealed report: testOutcome 2';
+		const hash = '0xdeadbeef';
+		o.onSent({ status: 'submitted', hash, message });
+		o.onSuccess({ status: 'success', hash, message, gasFees: 1, timestamp: 100 });
 	});
 
 	const action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
-		'../../transactions/actions/add-reveal-report-transaction': mockAddRevealReportTransaction
+		'../../auth/actions/update-assets': mockUpdateAssets,
+		'../../../services/augurjs': mockAugurJS
 	});
 
 	beforeEach(() => {
@@ -99,7 +114,5 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		}];
 		store.dispatch(action.revealReports());
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAddRevealReportTransaction.addRevealReportTransaction.calledOnce, `Didn't call addRevealReportTransaction once as expected`);
 	});
-
 });

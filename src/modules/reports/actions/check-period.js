@@ -50,7 +50,6 @@ export function checkPeriod(unlock, cb) {
 							if (err) {
 								tracker.reportsRevealed = false;
 								tracker.checkPeriodLock = false;
-								console.error('revealReports:', err);
 							}
 						}));
 					}
