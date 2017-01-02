@@ -1,5 +1,6 @@
 import moment from 'moment';
-import { ONE, ZERO } from '../../trade/constants/numbers';
+import { ONE } from '../../trade/constants/numbers';
+import { isZero } from '../../../utils/math';
 import { augur, abi } from '../../../services/augurjs';
 import { checkPeriod } from '../../reports/actions/check-period';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
@@ -88,7 +89,7 @@ export function syncBranch(cb) {
 					dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
 					if (!loginAccount.address) return callback(null);
 					dispatch(claimProceeds());
-					if (abi.bignum(loginAccount.rep).eq(ZERO)) return callback(null);
+					if (!loginAccount.rep || isZero(loginAccount.rep)) return callback(null);
 					dispatch(syncBranchReporter(callback));
 				});
 			});
