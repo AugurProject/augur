@@ -42,9 +42,10 @@ export function constructRelayTransaction(tx) {
 		const hash = tx.response.hash;
 		const method = tx.data.method;
 		const contracts = augur.contracts;
+		const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
 		const gasFees = augur.getTxGasEth({
-			...augur.api.functions[Object.keys(contracts).find(c => contracts[c] === tx.data.to)][method]
-		}, rpc.gasPrice);
+			...augur.api.functions[contract][method]
+		}, rpc.gasPrice).toFixed();
 		switch (method) {
 			case 'buy':
 				return dispatch(constructTradingTransaction('log_add_tx', {
@@ -173,15 +174,12 @@ export function registerTransactionRelay() {
 				const hash = tx.response.hash;
 				const { loginAccount, transactionsData } = getState();
 				if (hash && tx.data.from === loginAccount.address) {
-					const timestamp = tx.response.timestamp ?
-						formatDate(new Date(tx.response.timestamp * 1000)) :
-						formatDate(new Date());
-					const gasFees = tx.response.gasFees ?
-						formatRealEther(tx.response.gasFees) :
-						formatRealEtherEstimate(augur.getTxGasEth({ ...tx.data }, rpc.gasPrice));
+					const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10);
+					const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
 					if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
 						const relayTransaction = dispatch(constructRelayTransaction(tx));
 						if (relayTransaction) {
+							console.log('relayTransaction:', relayTransaction);
 							return dispatch(updateTransactionsData(relayTransaction));
 						}
 						if (!tx.description && tx.data.description) {
@@ -211,10 +209,22 @@ export function registerTransactionRelay() {
 						} else {
 							message = tx.response.callReturn;
 						}
+						console.log('updating tx data:', {
+							...tx,
+							...constructBasicTransaction(hash, 'in progress', tx.response.blockNumber, tx.response.timestamp, gasFees),
+							message,
+							hash
+						});
 						dispatch(updateTransactionsData({
-							[hash]: { ...tx, message, timestamp, gasFees, hash }
+							[hash]: {
+								...tx,
+								...constructBasicTransaction(hash, 'in progress', tx.response.blockNumber, tx.response.timestamp, gasFees),
+								message,
+								hash
+							}
 						}));
 					} else if (transactionsData[hash]) {
+						console.log('updating gasFees:', gasFees);
 						dispatch(updateExistingTransaction(hash, { gasFees }));
 					}
 				}
