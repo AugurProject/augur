@@ -190,17 +190,11 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
 	});
 };
 
-ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
-	if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
-		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address || augur.from, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
-	} else {
-		augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
-	}
-};
-
 ex.augur = augur;
 ex.rpc = augur.rpc;
 ex.abi = augur.abi;
+ex.accounts = augur.web;
 ex.constants = augur.constants;
+ex.utils = augur.utils;
 
 module.exports = ex;
