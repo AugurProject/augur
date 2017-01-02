@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 2, 2017</h3>
+			<ol>
+				<li>
+					Streamlined the conditional fund-new-account and registration timestamp actions during login and registration.
+				</li>
+				<li>
+					Moved the in-progress display logic for new account funding and timestamping to the transaction relayer.
+				</li>
+			</ol>
 			<h3>January 1, 2017</h3>
 			<ol>
 				<li>
