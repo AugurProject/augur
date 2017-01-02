@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { ONE } from '../../trade/constants/numbers';
+import { ONE, ZERO } from '../../trade/constants/numbers';
 import { augur, abi } from '../../../services/augurjs';
 import { checkPeriod } from '../../reports/actions/check-period';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
@@ -34,6 +34,30 @@ export function reportingCycle(periodLength, timestamp) {
 	};
 }
 
+export function syncBranchReporter(cb) {
+	return (dispatch, getState) => {
+		const callback = cb || (e => e && console.log('syncBranchReporter:', e));
+		const { branch, loginAccount } = getState();
+		augur.getPenalizedUpTo(branch.id, loginAccount.address, (penalizedUpTo) => {
+			if (!penalizedUpTo || penalizedUpTo.error) {
+				return callback(penalizedUpTo || 'could not look up last period penalized');
+			}
+			dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
+			augur.getFeesCollected(branch.id, loginAccount.address, penalizedUpTo, (feesCollected) => {
+				if (!feesCollected || feesCollected.error) {
+					return callback(feesCollected || 'could not look up fees collected');
+				}
+				dispatch(updateBranch({ feesCollected: feesCollected === '1' }));
+				dispatch(claimProceeds());
+
+				// check if period needs to be incremented / penalizeWrong
+				// needs to be called
+				dispatch(checkPeriod(true, e => callback(e)));
+			});
+		});
+	};
+}
+
 // Synchronize front-end branch state with blockchain branch state.
 export function syncBranch(cb) {
 	return (dispatch, getState) => {
@@ -63,28 +87,9 @@ export function syncBranch(cb) {
 					}
 					dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
 					if (!loginAccount.address) return callback(null);
-					augur.getPenalizedUpTo(branch.id, loginAccount.address, (penalizedUpTo) => {
-						if (!penalizedUpTo || penalizedUpTo.error) {
-							return callback(penalizedUpTo || 'could not look up last period penalized');
-						}
-						dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
-						augur.getFeesCollected(branch.id, loginAccount.address, penalizedUpTo, (feesCollected) => {
-							if (!feesCollected || feesCollected.error) {
-								return callback(feesCollected || 'could not look up fees collected');
-							}
-							dispatch(updateBranch({ feesCollected: feesCollected === '1' }));
-
-							dispatch(claimProceeds());
-
-							// check if period needs to be incremented / penalizeWrong
-							// needs to be called
-							dispatch(checkPeriod(true, (err) => {
-								console.log('checkPeriod done', err);
-								if (err) return callback(err);
-								callback(null);
-							}));
-						});
-					});
+					dispatch(claimProceeds());
+					if (abi.bignum(loginAccount.rep).eq(ZERO)) return callback(null);
+					dispatch(syncBranchReporter(callback));
 				});
 			});
 		});

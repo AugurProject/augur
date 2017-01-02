@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
 				<li>
 					Verify that user has a winning position with greater than zero shares before calling the trading payout functions in augur.js.
 				</li>
+				<li>
+					Moved the branch synchronization sequence specific to reporters to a separate action, and added a check for non-zero REP balance prior to dispatching this action.
+				</li>
 			</ol>
 			<h3>January 1, 2017</h3>
 			<ol>
