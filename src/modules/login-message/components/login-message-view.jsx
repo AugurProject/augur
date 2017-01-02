@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
 				<li>
 					Moved the in-progress display logic for new account funding and timestamping to the transaction relayer.
 				</li>
+				<li>
+					Verify that user has a winning position with greater than zero shares before calling the trading payout functions in augur.js.
+				</li>
 			</ol>
 			<h3>January 1, 2017</h3>
 			<ol>

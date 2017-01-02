@@ -19,7 +19,7 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 				selectTotalSharesInMarket(market) :
 				selectWinningOutcomeShares(market);
 			console.log('winning shares:', market, winningShares);
-			if (winningShares) {
+			if (winningShares && winningShares.gt(ZERO)) {
 				closedMarketsWithWinningShares.push({
 					id: market.id,
 					description: market.description,
@@ -54,14 +54,14 @@ function selectTotalSharesInMarket(market) {
 		}
 	}
 	console.log('total shares in market:', market, totalShares.toFixed());
-	return totalShares.toFixed();
+	return totalShares;
 }
 
 function selectWinningShares(market, outcomeID, outcomeData) {
 	if (outcomeID.toString() === market.reportedOutcome && outcomeData.sharesPurchased) {
 		const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
 		if (sharesPurchased.gt(ZERO)) {
-			return sharesPurchased.toFixed();
+			return sharesPurchased;
 		}
 	}
 }
