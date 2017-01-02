@@ -5,6 +5,9 @@ import {
 } from '../../auth/actions/load-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { fundNewAccount } from '../../auth/actions/fund-new-account';
+import { registerTimestamp } from '../../auth/actions/register-timestamp';
+import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function importAccount(name, password, rememberMe, keystore) {
 	return (dispatch, getState) => {
@@ -28,16 +31,21 @@ export function importAccount(name, password, rememberMe, keystore) {
 				}
 				dispatch(loadLoginAccountLocalStorage(importedAccount.address));
 				dispatch(updateLoginAccount(importedAccount));
-				dispatch(loadLoginAccountDependents());
+				dispatch(loadLoginAccountDependents((err, balances) => {
+					if (err || !balances) return console.error(err);
+					if (!anyAccountBalancesZero(balances)) return dispatch(registerTimestamp());
+					dispatch(fundNewAccount((err) => {
+						if (err) return console.error(err);
+						dispatch(registerTimestamp());
+					}));
+				}));
 				if (links && links.marketsLink)	{
 					return links.marketsLink.onClick(links.marketsLink.href);
 				}
-
 			});
 		} catch (e) {
 			console.error(e);
 			dispatch(authError(e));
-
 		}
 	};
 }
