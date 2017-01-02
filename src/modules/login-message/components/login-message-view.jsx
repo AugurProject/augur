@@ -67,6 +67,15 @@ const LoginMessagePage = p => (
 				<li>
 					Updates to the <a className="link" href="http://blog.augur.net/faq/how-do-i-savebackup-my-wallet/" target="_blank" rel="noopener noreferrer">augur-abi</a> middleware module: added negative number support to the format_int256 method, and added an unfix_signed method to unfix and wrap to negative if needed.
 				</li>
+				<li>
+					Added status parameter to constructRelayTransaction; assign in-progress/success status depending on if blockHash is set.
+				</li>
+				<li>
+					Gas fees and timestamps now display properly for all relayed transaction types.
+				</li>
+				<li>
+					Fixed gasFees formatting for transactions that are manually updated by the front-end.
+				</li>
 			</ol>
 			<h3>December 31, 2016</h3>
 			<ol>
