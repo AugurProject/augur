@@ -15,37 +15,34 @@ export function importAccount(name, password, rememberMe, keystore) {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 		try {
 			augur.web.importAccount(name, password, keystore, (loginAccount) => {
-				const importedAccount = {
-					...loginAccount,
-					loginID: loginAccount.loginID || loginAccount.secureLoginID
-				};
-				if (!importedAccount || !importedAccount.keystore) {
-					return;
-				}
-				if (rememberMe && localStorageRef && localStorageRef.setItem) {
-					const persistentAccount = Object.assign({}, importedAccount);
-					if (Buffer.isBuffer(persistentAccount.privateKey)) {
-						persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+				const importedAccount = { ...loginAccount };
+				if (importedAccount && importedAccount.keystore) {
+					if (rememberMe && localStorageRef && localStorageRef.setItem) {
+						const persistentAccount = Object.assign({}, importedAccount);
+						if (Buffer.isBuffer(persistentAccount.privateKey)) {
+							persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+						}
+						localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 					}
-					localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-				}
-				dispatch(loadLoginAccountLocalStorage(importedAccount.address));
-				dispatch(updateLoginAccount(importedAccount));
-				dispatch(loadLoginAccountDependents((err, balances) => {
-					if (err || !balances) return console.error(err);
-					if (!anyAccountBalancesZero(balances)) return dispatch(registerTimestamp());
-					dispatch(fundNewAccount((err) => {
-						if (err) return console.error(err);
-						dispatch(registerTimestamp());
+					dispatch(loadLoginAccountLocalStorage(importedAccount.address));
+					dispatch(updateLoginAccount(importedAccount));
+					dispatch(loadLoginAccountDependents((err, balances) => {
+						if (err || !balances) return console.error(err);
+						if (!getState().loginAccount.registerBlockNumber) {
+							dispatch(registerTimestamp());
+						}
+						if (anyAccountBalancesZero(balances)) {
+							dispatch(fundNewAccount(e => e && console.error(e)));
+						}
 					}));
-				}));
-				if (links && links.marketsLink)	{
-					return links.marketsLink.onClick(links.marketsLink.href);
+					if (links && links.marketsLink)	{
+						return links.marketsLink.onClick(links.marketsLink.href);
+					}
 				}
 			});
-		} catch (e) {
-			console.error(e);
-			dispatch(authError(e));
+		} catch (exc) {
+			console.error(exc);
+			dispatch(authError(exc));
 		}
 	};
 }
