@@ -1,3 +1,4 @@
+import { formatRealEther } from '../../../utils/format-number';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { formatDate } from '../../../utils/format-date';
@@ -12,16 +13,23 @@ export function updateExistingTransaction(transactionID, newTransactionData) {
 		if (!transactionID || !newTransactionData || !transactionsData || !transactionsData[transactionID]) {
 			return;
 		}
-		if (newTransactionData.timestamp) {
-			newTransactionData.timestamp = formatDate(new Date(newTransactionData.timestamp * 1000));
+		const updatedTransactionData = { ...newTransactionData };
+		if (updatedTransactionData.timestamp) {
+			updatedTransactionData.timestamp = formatDate(new Date(updatedTransactionData.timestamp * 1000));
 		} else {
-			newTransactionData.timestamp = formatDate(new Date());
+			updatedTransactionData.timestamp = formatDate(new Date());
 		}
-		if (newTransactionData.message) {
-			newTransactionData.disableAutoMessage = true;
+		if (typeof updatedTransactionData.gasFees === 'string') {
+			updatedTransactionData.gasFees = formatRealEther(updatedTransactionData.gasFees);
 		}
+		if (typeof transactionsData[transactionID].gasFees === 'string') {
+			updatedTransactionData.gasFees = formatRealEther(transactionsData[transactionID].gasFees);
+		}
+		// if (updatedTransactionData.message) {
+		// 	updatedTransactionData.disableAutoMessage = true;
+		// }
 
-		dispatch(updateTransactionsData({ [transactionID]: newTransactionData }));
+		dispatch(updateTransactionsData({ [transactionID]: updatedTransactionData }));
 		dispatch(updateAssets());
 	};
 }
