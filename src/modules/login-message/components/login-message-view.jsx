@@ -76,6 +76,12 @@ const LoginMessagePage = p => (
 				<li>
 					Fixed gasFees formatting for transactions that are manually updated by the front-end.
 				</li>
+				<li>
+					Removed deprecated messaging callbacks from checkPeriod.
+				</li>
+				<li>
+					Added a &quot;closedMarket&quot; log to the CloseMarket contract that includes the market ID, branch ID, and sender account address for the market being closed.  The old closeMarket_logReturn filter in the front-end has been replaced with the new closedMarket filter.
+				</li>
 			</ol>
 			<h3>December 31, 2016</h3>
 			<ol>
