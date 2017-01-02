@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-
 import BigNumber from 'bignumber.js';
-
-import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Input extends Component {
 	// TODO -- Prop Validations
@@ -29,15 +26,15 @@ export default class Input extends Component {
 			value: this.props.value || '',
 			timeoutID: ''
 		};
-		this.shouldComponentUpdate = shouldComponentUpdatePure;
-		this.componentWillReceiveProps = (nextProps) => {
-			if ((nextProps.value || nextProps.value === 0) && nextProps.value !== this.state.value && nextProps.value !== this.props.value) {
-				this.setState({ value: nextProps.value });
-			}
-		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleOnBlur = this.handleOnBlur.bind(this);
 		this.handleClear = this.handleClear.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.value !== nextProps.value) {
+			this.setState({ value: nextProps.value });
+		}
 	}
 
 	handleOnChange = (e) => {

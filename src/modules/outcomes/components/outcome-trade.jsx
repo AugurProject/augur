@@ -22,7 +22,7 @@ export default class OutcomeTrade extends Component {
 			timestamp: Date.now(), // Utilized to force a re-render and subsequent update of the input fields' values on `selectedOutcome` change
 			shareInputPlaceholder: generateShareInputPlaceholder(props.selectedShareDenomination),
 			maxSharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.maxNumShares.value', SHARE, props.selectedShareDenomination)), // NOTE -- this value is not currently used in the component, but may be used later, so leaving here until this decision is finalized
-			sharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.numShares'), SHARE, props.selectedShareDenomination),
+			sharesDenominated: denominateShares(getValue(props, 'selectedOutcome.trade.numShares'), SHARE, props.selectedShareDenomination) || '',
 			minLimitPrice: props.marketType && props.marketType === SCALAR ? props.minLimitPrice : 0,
 			maxLimitPrice: props.marketType && props.marketType === SCALAR ? props.maxLimitPrice : 1,
 			isSharesValueValid: true,
@@ -51,18 +51,14 @@ export default class OutcomeTrade extends Component {
 			this.setState({
 				shareInputPlaceholder: generateShareInputPlaceholder(nextProps.selectedShareDenomination),
 				maxSharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.maxNumShares.value', SHARE, nextProps.selectedShareDenomination)),
-				sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination)
+				sharesDenominated: denominateShares(getValue(nextProps, 'selectedOutcome.trade.numShares'), SHARE, nextProps.selectedShareDenomination) || ''
 			});
 		}
 
 		const oldID = getValue(this.props, 'selectedOutcome.id');
 		const newID = getValue(nextProps, 'selectedOutcome.id');
-		const oldPrice = getValue(this.props, 'selectedOutcome.trade.limitPrice');
-		const newPrice = getValue(nextProps, 'selectedOutcome.trade.limitPrice');
-		const oldNumShares = getValue(this.props, 'selectedOutcome.trade.numShares');
-		const newNumShares = getValue(nextProps, 'selectedOutcome.trade.numShares');
 
-		if (oldID !== newID || oldPrice !== newPrice || oldNumShares !== newNumShares) {
+		if (oldID !== newID) {
 			this.setState({ timestamp: Date.now() }); // forces re-render of trade component via key value
 		}
 	}
@@ -93,18 +89,14 @@ export default class OutcomeTrade extends Component {
 	}
 
 	validatePrice(value, trade) {
-		let isLimitPriceValueValid;
-
 		if (value != null) {
 			if ((value >= parseFloat(this.state.minLimitPrice) && value <= parseFloat(this.state.maxLimitPrice)) || value === '') {
-				isLimitPriceValueValid = true;
+				this.setState({ isLimitPriceValueValid: true });
 				trade.updateTradeOrder(null, value, trade.side);
 			} else {
-				isLimitPriceValueValid = false;
+				this.setState({ isLimitPriceValueValid: false });
 			}
 		}
-
-		this.setState({ isLimitPriceValueValid });
 	}
 
 	validateShares(value, trade) {
@@ -128,9 +120,6 @@ export default class OutcomeTrade extends Component {
 		const selectedTradeSide = (selectedID && p.selectedTradeSide[selectedID]) || BUY;
 		const tradeOrder = getValue(p, 'tradeSummary.tradeOrders').find(order => order.data.outcomeID === selectedID);
 		const hasFunds = getValue(p, 'tradeSummary.hasUserEnoughFunds');
-
-		// console.log('trade --', trade);
-		// console.log('tradeOrder --', tradeOrder);
 
 		return (
 			<article className="outcome-trade market-content-scrollable">
