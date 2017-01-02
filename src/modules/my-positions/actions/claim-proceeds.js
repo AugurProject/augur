@@ -1,5 +1,7 @@
+import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
+import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
 export function claimProceeds() {
@@ -13,6 +15,10 @@ export function claimProceeds() {
 					if (err) return console.error('claimMarketsProceeds failed:', err);
 					dispatch(updateAssets());
 					console.log('claimed proceeds from markets:', claimedMarkets);
+					async.each(claimedMarkets, (marketID, nextMarket) => {
+						console.log('loadAccountTrades for', marketID);
+						dispatch(loadAccountTrades(marketID, () => nextMarket()));
+					});
 				});
 			}
 		}
