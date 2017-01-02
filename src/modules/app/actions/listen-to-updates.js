@@ -223,12 +223,17 @@ export function listenToUpdates() {
 				}
 			},
 
-			closeMarket_logReturn: (msg) => {
-				if (msg && msg.returnValue && parseInt(msg.returnValue, 16) === 1) {
-					console.debug('closeMarket_logReturn:', msg);
-					if (getState().loginAccount.address) dispatch(claimProceeds());
+			closedMarket: (msg) => {
+				if (msg && msg.market) {
+					console.debug('closedMarket:', msg);
+					const { branch, loginAccount } = getState();
+					if (branch.id === msg.branch) {
+						dispatch(loadMarketsInfo([msg.market], () => {
+							if (loginAccount.address) dispatch(claimProceeds());
+						}));
+					}
 				}
 			}
-		}, filters => console.log('### Listening to filters:', filters));
+		}, filters => console.log('Listening to filters:', filters));
 	};
 }
