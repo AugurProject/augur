@@ -43,7 +43,7 @@ export default class ReportForm extends Component {
 
 	handleSubmit() {
 		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
-		this.setState({ reportedOutcomeID: undefined, isIndeterminate: undefined, isUnethical: undefined, isReported: false });
+		this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false });
 	}
 
 	render() {
