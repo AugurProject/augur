@@ -17,12 +17,12 @@ import { updateScalarMarketShareDenomination } from '../../../modules/market/act
 export function loadLoginAccountDependents(cb) {
 	return (dispatch, getState) => {
 		const { loginAccount } = getState();
-		dispatch(updateAssets(cb));
 		AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
 			if (!err && blockNumber) {
 				loginAccount.registerBlockNumber = blockNumber;
 				dispatch(updateLoginAccount(loginAccount));
 			}
+			dispatch(updateAssets(cb));
 
 			dispatch(loadAccountTrades());
 			dispatch(loadBidsAsksHistory());
