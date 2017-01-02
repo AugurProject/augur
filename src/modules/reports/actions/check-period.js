@@ -4,7 +4,6 @@ import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
-import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
 const tracker = {
 	checkPeriodLock: false,
