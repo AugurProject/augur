@@ -6,14 +6,13 @@ import {
 	loadLoginAccountLocalStorage
 } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
+import { registerTimestamp } from '../../auth/actions/register-timestamp';
+import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { authError } from '../../auth/actions/auth-error';
 
 export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAccount) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
-
 		const masterPrivateKey = ethereumWallet.keys.ethereumKey;
 		augur.web.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
 			console.log('loginWithMasterKey:', account);
@@ -29,15 +28,12 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAcc
 			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents((err, balances) => {
-				if (err || !balances) {
-					return console.error('loadLoginAccountDependents:', err);
-				}
+				if (err || !balances) return console.error(err);
 				if (!balances.ether || abi.bignum(balances.ether).eq(constants.ZERO)) {
-					if (isNewAccount) {
-						dispatch(addFundNewAccount(loginAccount.address));
-					} else {
-						augur.fundNewAccount(getState().branch.id, augur.utils.noop, () => dispatch(updateAssets()), e => console.error(e));
-					}
+					dispatch(fundNewAccount((err) => {
+						if (err) return console.error(err);
+						if (isNewAccount) dispatch(registerTimestamp());
+					}));
 				}
 			}));
 			if (links && links.marketsLink)	{
