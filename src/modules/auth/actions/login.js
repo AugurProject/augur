@@ -1,4 +1,4 @@
-import { abi, accounts, constants } from '../../../services/augurjs';
+import { accounts } from '../../../services/augurjs';
 import {
 	loadLoginAccountDependents,
 	loadLoginAccountLocalStorage
@@ -8,6 +8,7 @@ import { authError } from '../../auth/actions/auth-error';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
+import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function login(loginID, password, rememberMe) {
 	return (dispatch, getState) => {
@@ -38,9 +39,7 @@ export function login(loginID, password, rememberMe) {
 				dispatch(updateLoginAccount(loginAccount));
 				dispatch(loadLoginAccountDependents((err, balances) => {
 					if (err || !balances) return console.error(err);
-					if (!balances.ether || abi.bignum(balances.ether).eq(constants.ZERO)) {
-						dispatch(fundNewAccount());
-					}
+					if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
 				}));
 
 				// need to load selectors here as they get updated above
