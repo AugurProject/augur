@@ -1,8 +1,6 @@
 import { abi, augur, rpc } from '../../../services/augurjs';
 import { SUCCESS } from '../../transactions/constants/statuses';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
-import { formatDate } from '../../../utils/format-date';
-import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
@@ -14,14 +12,7 @@ export function unpackTransactionParameters(tx) {
 	if (!params) return null;
 	const inputs = tx.data.inputs;
 	const numInputs = inputs.length;
-	// const fixed = tx.data.fixed;
 	const unfixedParams = params.constructor === Array ? params.slice() : [params];
-	// if (fixed && fixed.length) {
-	// 	const numFixed = fixed.length;
-	// 	for (let j = 0; j < numFixed; ++j) {
-	// 		unfixedParams[fixed[j]] = abi.unfix(abi.hex(params[fixed[j]], true), 'string');
-	// 	}
-	// }
 	const unpacked = {};
 	for (let i = 0; i < numInputs; ++i) {
 		unpacked[inputs[i]] = unfixedParams[i];
@@ -29,7 +20,7 @@ export function unpackTransactionParameters(tx) {
 	return unpacked;
 }
 
-export function constructRelayTransaction(tx) {
+export function constructRelayTransaction(tx, status) {
 	return (dispatch, getState) => {
 		const p = {
 			...unpackTransactionParameters(tx),
@@ -38,7 +29,6 @@ export function constructRelayTransaction(tx) {
 			timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10)
 		};
 		console.log('unpacked:', JSON.stringify(p, null, 2));
-		const status = 'in progress';
 		const hash = tx.response.hash;
 		const method = tx.data.method;
 		const contracts = augur.contracts;
@@ -177,9 +167,9 @@ export function registerTransactionRelay() {
 					const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10);
 					const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
 					if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
-						const relayTransaction = dispatch(constructRelayTransaction(tx));
+						const status = tx.response.blockHash ? SUCCESS : 'in progress';
+						const relayTransaction = dispatch(constructRelayTransaction(tx, status));
 						if (relayTransaction) {
-							console.log('relayTransaction:', relayTransaction);
 							return dispatch(updateTransactionsData(relayTransaction));
 						}
 						if (!tx.description && tx.data.description) {
@@ -197,7 +187,11 @@ export function registerTransactionRelay() {
 						}
 						if (transactionsData[hash] && transactionsData[hash].disableAutoMessage) {
 							return dispatch(updateTransactionsData({
-								[hash]: { ...tx, timestamp, gasFees, hash }
+								[hash]: {
+									...tx,
+									...constructBasicTransaction(hash, status, tx.response.blockNumber, timestamp, gasFees),
+									hash
+								}
 							}));
 						}
 						let message;
@@ -209,22 +203,15 @@ export function registerTransactionRelay() {
 						} else {
 							message = tx.response.callReturn;
 						}
-						console.log('updating tx data:', {
-							...tx,
-							...constructBasicTransaction(hash, 'in progress', tx.response.blockNumber, tx.response.timestamp, gasFees),
-							message,
-							hash
-						});
 						dispatch(updateTransactionsData({
 							[hash]: {
 								...tx,
-								...constructBasicTransaction(hash, 'in progress', tx.response.blockNumber, tx.response.timestamp, gasFees),
+								...constructBasicTransaction(hash, status, tx.response.blockNumber, timestamp, gasFees),
 								message,
 								hash
 							}
 						}));
 					} else if (transactionsData[hash]) {
-						console.log('updating gasFees:', gasFees);
 						dispatch(updateExistingTransaction(hash, { gasFees }));
 					}
 				}
