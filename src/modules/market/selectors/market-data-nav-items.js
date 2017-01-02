@@ -6,7 +6,7 @@ export default function () {
 			label: 'Outcomes'
 		},
 		[MARKET_DATA_ORDERS]: {
-			label: 'Orders',
+			label: 'Order Book',
 			isMobile: true
 		},
 		[MARKET_DATA_NAV_CHARTS]: {
