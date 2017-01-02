@@ -205,6 +205,7 @@ module.exports = {
             var index = 14;
             var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
+                id: abi.format_int256(rawInfo[0]),
                 network: this.network_id,
                 makerFee: fees.maker,
                 takerFee: fees.taker,
@@ -257,6 +258,8 @@ module.exports = {
             }
             info.type = event.type;
             info.endDate = event.endDate;
+            info.minValue = event.minValue;
+            info.maxValue = event.maxValue;
             info.events = [event];
             index += EVENTS_FIELDS;
 

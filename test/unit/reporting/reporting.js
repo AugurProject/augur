@@ -261,13 +261,15 @@ describe("periodCatchUp", function () {
     });
 });
 
-describe("penaltyCatchUp", function () {
+describe("feePenaltyCatchUp", function () {
     var test = function (t) {
+        var collectFees = augur.collectFees;
         var getEvents = augur.getEvents;
         var getPenalizedUpTo = augur.getPenalizedUpTo;
         var getEventCanReportOn = augur.getEventCanReportOn;
         var getFeesCollected = augur.getFeesCollected;
         var getNumReportsActual = augur.getNumReportsActual;
+        var getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
         var penalizationCatchup = augur.penalizationCatchup;
         var penalizeWrong = augur.penalizeWrong;
         var getNumMarkets = augur.getNumMarkets;
@@ -278,11 +280,13 @@ describe("penaltyCatchUp", function () {
         var closeExtraMarkets = augur.closeExtraMarkets;
         var getDescription = augur.getDescription;
         after(function () {
+            augur.collectFees = collectFees;
             augur.getEvents = getEvents;
             augur.getPenalizedUpTo = getPenalizedUpTo;
             augur.getEventCanReportOn = getEventCanReportOn;
             augur.getFeesCollected = getFeesCollected;
             augur.getNumReportsActual = getNumReportsActual;
+            augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
             augur.penalizationCatchup = penalizationCatchup;
             augur.penalizeWrong = penalizeWrong;
             augur.getNumMarkets = getNumMarkets;
@@ -296,6 +300,18 @@ describe("penaltyCatchUp", function () {
         it(t.description, function (done) {
             var sequence = [];
             var state = clone(t.state);
+            augur.collectFees = function (o) {
+                sequence.push({
+                    method: "collectFees",
+                    params: {
+                        branch: o.branch,
+                        sender: o.sender,
+                        periodLength: t.params.periodLength
+                    }
+                });
+                state.feesCollected[o.branch][state.reportPeriod[o.branch] - 2] = "1";
+                o.onSuccess({callReturn: "1"});
+            };
             augur.getCurrentPeriod = function (periodLength) {
                 sequence.push({method: "getCurrentPeriod", params: [periodLength]});
                 return state.currentPeriod[t.branchID];
@@ -344,6 +360,9 @@ describe("penaltyCatchUp", function () {
                 });
                 callback("1");
             };
+            augur.getCurrentPeriodProgress = function (periodLength) {
+                return 49;
+            };
             augur.penalizationCatchup = function (o) {
                 sequence.push({
                     method: "penalizationCatchup",
@@ -390,7 +409,7 @@ describe("penaltyCatchUp", function () {
             augur.getDescription = function (id, callback) {
                 callback('description');
             };
-            augur.penaltyCatchUp(t.params.branchID, t.params.periodLength, t.params.periodToCheck, t.params.sender, function (err) {
+            augur.feePenaltyCatchUp(t.params.branchID, t.params.periodLength, t.params.periodToCheck, t.params.sender, function (err) {
                 assert.isNull(err);
                 t.assertions(sequence, t.state, state);
                 done();
@@ -420,7 +439,8 @@ describe("penaltyCatchUp", function () {
             },
             feesCollected: {
                 "0xb1": {
-                    "7": "1",
+                    "6": "1",
+                    "7": "0",
                     "8": "0",
                     "9": "0"
                 }
@@ -461,10 +481,13 @@ describe("penaltyCatchUp", function () {
         assertions: function (sequence, startState, endState) {
             assert.deepEqual(sequence, [{
                 method: "getPenalizedUpTo",
-                params: [
-                    "0xb1",
-                    "0xb0b"
-                ]
+                params: ["0xb1", "0xb0b"]
+            }, {
+                method: "getFeesCollected",
+                params: ["0xb1", "0xb0b", 7]
+            }, {
+                method: "getPenalizedUpTo",
+                params: ["0xb1", "0xb0b"]
             }]);
             assert.deepEqual(startState, endState);
         }
@@ -474,7 +497,8 @@ describe("penaltyCatchUp", function () {
         params: {
             branchID: "0xb1",
             sender: "0xb0b",
-            periodToCheck: 7
+            periodToCheck: 7,
+            periodLength: 100
         },
         state: {
             periodLength: {
@@ -491,7 +515,8 @@ describe("penaltyCatchUp", function () {
             },
             feesCollected: {
                 "0xb1": {
-                    "6": "1",
+                    "5": "1",
+                    "6": "0",
                     "7": "0",
                     "8": "0",
                     "9": "0"
@@ -543,6 +568,9 @@ describe("penaltyCatchUp", function () {
             }, {
                 method: "getFeesCollected",
                 params: ["0xb1", "0xb0b", 6]
+            }, {
+                method: "getPenalizedUpTo",
+                params: ["0xb1", "0xb0b"]
             }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
@@ -602,7 +630,8 @@ describe("penaltyCatchUp", function () {
         params: {
             branchID: "0xb1",
             sender: "0xb0b",
-            periodToCheck: 7
+            periodToCheck: 7,
+            periodLength: 100
         },
         state: {
             periodLength: {
@@ -619,7 +648,8 @@ describe("penaltyCatchUp", function () {
             },
             feesCollected: {
                 "0xb1": {
-                    "6": "1",
+                    "5": "1",
+                    "6": "0",
                     "7": "0",
                     "8": "0",
                     "9": "0"
@@ -669,6 +699,9 @@ describe("penaltyCatchUp", function () {
                 method: "getFeesCollected",
                 params: ["0xb1", "0xb0b", 6]
             }, {
+                method: "getPenalizedUpTo",
+                params: ["0xb1", "0xb0b"]
+            }, {
                 method: "getEvents",
                 params: ["0xb1", 7]
             }, {
@@ -693,7 +726,8 @@ describe("penaltyCatchUp", function () {
         params: {
             branchID: "0xb1",
             sender: "0xb0b",
-            periodToCheck: 7
+            periodToCheck: 7,
+            periodLength: 100
         },
         state: {
             periodLength: {
@@ -710,7 +744,8 @@ describe("penaltyCatchUp", function () {
             },
             feesCollected: {
                 "0xb1": {
-                    "5": "1",
+                    "4": "1",
+                    "5": "0",
                     "6": "0",
                     "7": "0",
                     "8": "0",
@@ -764,6 +799,12 @@ describe("penaltyCatchUp", function () {
         },
         assertions: function (sequence, startState, endState) {
             assert.deepEqual(sequence, [{
+                method: "getPenalizedUpTo",
+                params: ["0xb1", "0xb0b"]
+            }, {
+                method: "getFeesCollected",
+                params: ["0xb1", "0xb0b", 5]
+            }, {
                 method: "getPenalizedUpTo",
                 params: ["0xb1", "0xb0b"]
             }, {

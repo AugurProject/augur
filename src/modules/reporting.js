@@ -83,14 +83,14 @@ module.exports = {
             }
             if (err) return callback(err);
             if (self.options.debug.reporting) {
-                console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
+                console.log("[checkPeriod] calling feePenaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err, marketsClosed) {
+            self.feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
                 if (self.options.debug.reporting) {
-                    console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
+                    console.log("[checkPeriod] feePenaltyCatchUp:", err);
                 }
                 if (err) return callback(err);
-                callback(null, votePeriod, marketsClosed);
+                callback(null, votePeriod);
             });
         });
     },
@@ -128,11 +128,57 @@ module.exports = {
         });
     },
 
-    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback, onSent, onSuccess) {
+    feePenaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
-            console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
+            console.log("[feePenaltyCatchUp] params:", branch, periodToCheck, sender);
         }
+        // If reported last period and called collectfees then call the penalization functions in
+        // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
+        // last period then call penalizationCatchup in order to allow submitReportHash to work.
+        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+            lastPeriodPenalized = parseInt(lastPeriodPenalized);
+            if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+                console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            }
+            self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+                console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
+                if (!feesCollected || feesCollected.error) {
+                    return callback(feesCollected || "couldn't get fees collected");
+                }
+                if (self.options.debug.reporting) {
+                    console.log("[feePenaltyCatchUp] feesCollected:", feesCollected);
+                }
+                if (feesCollected === "1") {
+                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                }
+                if (self.getCurrentPeriodProgress(periodLength) < 50) {
+                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                }
+                self.collectFees({
+                    branch: branch,
+                    sender: sender,
+                    periodLength: periodLength,
+                    onSent: function (r) {
+                        console.log("collectFees sent:", r);
+                    },
+                    onSuccess: function (r) {
+                        console.log("collectFees success:", r);
+                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                    },
+                    onFailed: function (e) {
+                        if (e.error !== "-1") return callback(e);
+                        console.info("collectFees:", e.message);
+                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                    }
+                });
+            });
+        });
+    },
+
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
+        var self = this;
         self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
             lastPeriodPenalized = parseInt(lastPeriodPenalized);
             if (self.options.debug.reporting) {
@@ -154,14 +200,11 @@ module.exports = {
                 return self.penalizationCatchup({
                     branch: branch,
                     sender: sender,
-                    onSent: function (r) {
-                        if (onSent) onSent(r.hash, null, "penalizationCatchup");
-                    },
+                    onSent: utils.noop,
                     onSuccess: function (r) {
                         if (self.options.debug.reporting) {
                             console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
                         }
-                        if (onSuccess) onSuccess(r.hash, null, "penalizationCatchup");
                         callback(null);
                     },
                     onFailed: function (e) {
@@ -170,92 +213,70 @@ module.exports = {
                     }
                 });
             }
-            // If reported last period and called collectfees then call the penalization functions in
-            // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
-            // last period then call penalizationCatchup in order to allow submitReportHash to work.
-            self.getFeesCollected(branch, sender, periodToCheck - 1, function (feesCollected) {
-                if (!feesCollected || feesCollected.error) {
-                    return callback(feesCollected || "couldn't get fees collected");
-                }
-                if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] feesCollected:", feesCollected);
-                }
-                self.getEvents(branch, periodToCheck, function (events) {
-                    if (!events || events.constructor !== Array || !events.length) {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-                        }
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            description: "Empty Reporting cycle",
-                            onSent: function (r) {
-                                if (onSent) onSent(r.hash, 0, "penalizeWrong");
-                            },
-                            onSuccess: function (r) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
-                                }
-                                if (onSuccess) onSuccess(r.hash, 0, "penalizeWrong");
-                                callback(null);
-                            },
-                            onFailed: function (e) {
-                                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                                callback(null);
+            self.getEvents(branch, periodToCheck, function (events) {
+                if (!events || events.constructor !== Array || !events.length) {
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] No events found in period", periodToCheck);
+                    }
+                    self.penalizeWrong({
+                        branch: branch,
+                        event: 0,
+                        description: "Empty Reporting cycle",
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                             }
-                        });
-                    } else {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                            callback(null);
+                        },
+                        onFailed: function (e) {
+                            console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                            callback(null);
                         }
-                        var marketsClosed = [];
-                        async.eachSeries(events, function (event, nextEvent) {
-                            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
-                                }
-                                if (parseInt(canReportOn) === 0) return nextEvent(null);
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizeWrong:", event);
-                                }
-                                self.getDescription(event, function (description) {
-                                    description = description.split("~|>")[0];
-                                    self.penalizeWrong({
-                                        branch: branch,
-                                        event: event,
-                                        description: description,
-                                        onSent: function (r) {
-                                            if (onSent) onSent(r.hash, event, "penalizeWrong");
-                                        },
-                                        onSuccess: function (r) {
-                                            if (self.options.debug.reporting) {
-                                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                            }
-                                            if (onSuccess) onSuccess(r.hash, event, "penalizeWrong");
-                                            self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
-                                                if (err) return nextEvent(err);
-                                                marketsClosed = marketsClosed.concat(markets);
-                                                nextEvent(null);
-                                            }, onSent, onSuccess);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                            nextEvent(null);
+                    });
+                } else {
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                    }
+                    async.eachSeries(events, function (event, nextEvent) {
+                        self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                            }
+                            if (parseInt(canReportOn) === 0) return nextEvent(null);
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizeWrong:", event);
+                            }
+                            self.getDescription(event, function (description) {
+                                description = description.split("~|>")[0];
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: event,
+                                    description: description,
+                                    onSent: utils.noop,
+                                    onSuccess: function (r) {
+                                        if (self.options.debug.reporting) {
+                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                         }
-                                    });
+                                        self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
+                                            if (err) return nextEvent(err);
+                                            nextEvent(null);
+                                        });
+                                    },
+                                    onFailed: function (e) {
+                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                        nextEvent(null);
+                                    }
                                 });
                             });
-                        }, function (e) {
-                            if (e) return callback(e);
-                            callback(null, marketsClosed);
                         });
-                    }
-                });
+                    }, callback);
+                }
             });
         });
     },
 
-    closeExtraMarkets: function (branch, event, description, sender, callback, onSent, onSuccess) {
+    closeExtraMarkets: function (branch, event, description, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
@@ -279,13 +300,11 @@ module.exports = {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket sent:", market, r);
                                 }
-                                if (onSent) onSent(r.hash, market, "closeMarket");
                             },
                             onSuccess: function (r) {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
                                 }
-                                if (onSuccess) onSuccess(r.hash, market, "closeMarket");
                                 nextMarket(null);
                             },
                             onFailed: function (e) {
@@ -302,10 +321,7 @@ module.exports = {
                         });
                     }
                 });
-            }, function (e) {
-                if (e) return callback(e);
-                callback(null, markets);
-            });
+            }, callback);
         });
     },
 

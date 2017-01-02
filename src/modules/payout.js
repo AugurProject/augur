@@ -29,7 +29,7 @@ module.exports = {
     },
 
     // markets: array of market IDs for which to claim proceeds
-    claimMarketsProceeds: function (branch, markets, callback, onSent, onSuccess) {
+    claimMarketsProceeds: function (branch, markets, callback) {
         if (this.options.debug.reporting) {
             console.log("claimMarketsProceeds:", branch, markets);
         }
@@ -58,17 +58,10 @@ module.exports = {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds sent:", market.id, res);
                         }
-                        if (onSent) onSent(res.hash, market.id);
                     },
                     onSuccess: function (res) {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds success:", market.id, res);
-                        }
-                        if (onSuccess) {
-                            onSuccess(res.hash, market.id, {
-                                cash: res.callReturn.cash,
-                                shares: res.callReturn.shares
-                            });
                         }
                         claimedMarkets.push(market.id);
                         nextMarket();
@@ -105,23 +98,16 @@ module.exports = {
             }
             if (res.callReturn !== "1") return onFailed(res.callReturn);
             self.rpc.receipt(res.hash, function (receipt) {
-                var logdata;
-                var cashPayout = constants.ZERO;
-                var shares = constants.ZERO;
                 if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
                     var logs = receipt.logs;
                     var sig = self.api.events.payout.signature;
                     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                         if (logs[i].topics[0] === sig) {
-                            logdata = self.rpc.unmarshal(logs[i].data);
-                            if (logdata && logdata.constructor === Array && logdata.length > 1) {
-                                cashPayout = abi.unfix(abi.hex(logdata[0], true));
-                                shares = abi.unfix(logdata[1]);
-                            }
+                            res.callReturn = self.filters.parse_event_message("payout", logs[i]);
+                            break;
                         }
                     }
                 }
-                res.callReturn = {cash: cashPayout.toFixed(), shares: shares.toFixed()};
                 onSuccess(res);
             });
         }, onFailed);

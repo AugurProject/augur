@@ -276,6 +276,7 @@ module.exports = {
             }
             marketsInfo[marketID] = {
                 sortOrder: i,
+                id: marketID,
                 branchId: branch,
                 tradingPeriod: parseInt(marketsArray[shift + 1], 16),
                 tradingFee: fees.trading,

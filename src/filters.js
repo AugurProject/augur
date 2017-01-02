@@ -183,7 +183,7 @@ module.exports = function () {
                         }
                         break;
                     default:
-                        console.error("unknown event message:", msg);
+                        console.warn("unknown event message:", msg);
                 }
             }
         },

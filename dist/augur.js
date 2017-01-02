@@ -20,7 +20,7 @@ module.exports = {
 
     debug: false,
 
-    version: "0.6.4",
+    version: "1.0.0",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -274,6 +274,7 @@ module.exports = {
         if (s === undefined || s === null || s === "0x") return s;
         if (Buffer.isBuffer(s)) s = s.toString("hex");
         if (s.constructor !== String) s = s.toString(16);
+        if (s.slice(0, 1) === "-") s = this.unfork(s);
         s = this.strip_0x(s);
         if (s.length > 64) {
             if (this.debug) {
@@ -474,6 +475,10 @@ module.exports = {
         } else {
             return n;
         }
+    },
+
+    unfix_signed: function (n, encode) {
+        return this.unfix(this.hex(n, true), encode);
     },
 
     string: function (n, wrap) {
@@ -16382,6 +16387,28 @@ module.exports={
       "name": "closeMarket_logReturn(int256)", 
       "signature": "0x7111c90bbf79fe51a8f95606c2c44137f600abeb3b5631db7d06ed168c13eea7"
     }, 
+    "closedMarket": {
+      "contract": "CloseMarket", 
+      "inputs": [
+        {
+          "indexed": true, 
+          "name": "market", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "sender", 
+          "type": "int256"
+        }
+      ], 
+      "name": "closedMarket(int256,int256,int256)", 
+      "signature": "0x32c2330374d337682bae09f8332c0cc2ca58d413047a81c2282ad2c3641b4d92"
+    }, 
     "collectedFees": {
       "contract": "CollectFees", 
       "inputs": [
@@ -18072,6 +18099,9 @@ module.exports={
         ]
       }, 
       "closeMarket": {
+        "events": [
+          "closedMarket"
+        ], 
         "inputs": [
           "branch", 
           "market", 
@@ -18306,7 +18336,8 @@ module.exports={
       }, 
       "penalizeWrong": {
         "events": [
-          "penalize"
+          "penalize", 
+          "closedMarket"
         ], 
         "inputs": [
           "branch", 
@@ -22331,41 +22362,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x93a2d6e2d168821fd6bb7040982475bd2f52fcf4", 
-        "Branches": "0x9b2a3db117142c272264d1bb4f7360436cde7fc9", 
-        "BuyAndSellShares": "0xa033454e29a85961ada257c635d785dee66f1d9c", 
-        "Cash": "0x0e8480677c7bb09116539f65bbfe09128652e7e1", 
-        "CloseMarket": "0x4a6e4cd0508f233849f45cd6bbe6aadc7bea172c", 
-        "CollectFees": "0xc4ece8891a1675917e1d0ab7268465209cec1d93", 
-        "CompleteSets": "0xeb1b51a9896f50a28e21d37b110ff596964a090d", 
-        "CompositeGetters": "0x5f442aa65b877712940d8f16493adece79f2657c", 
-        "Consensus": "0x9d29eb28aa5555e806fccdc043b38752ed1ac460", 
-        "ConsensusData": "0x6db1041394feec48aa41c65b3c344ce205c9df52", 
-        "CreateBranch": "0xa2d981b71374a7543c285edcd3d24b9742bd43e1", 
-        "CreateMarket": "0x97f1e346fb8627107eb8ddc0a5743396ec877cca", 
-        "EventResolution": "0x6979b583f73835c1f04ee85c56c0d064a6cdf5b4", 
-        "Events": "0x73b20aee9e36d5999b070fc0d976f6236817d71b", 
-        "ExpiringEvents": "0xa568fa657eb5314424dff026d88aa172e7029c3c", 
-        "Faucets": "0x911a64bb0f634bb1ea15f99c20fefde77d914b55", 
-        "ForkPenalize": "0xcf16a46ce0a7964f9b50ba2ed4366db78401d873", 
-        "Forking": "0x0ead31980840128ae388aa1d88c3071e2f9d8194", 
-        "FxpFunctions": "0xff7dd1c0a6fd0bbaf6140b0d671e66b4d26a7750", 
-        "Info": "0xff39c87cd65c5ac74977eb51c59e07ff7e95486a", 
-        "MakeReports": "0xfccdf708aa840e70140e237cb5e95b3c92c1fd7d", 
-        "Markets": "0x5f0c6ff97f4cb9fe665aeb068dafc1158a30d1cb", 
-        "Payout": "0xa28c90003c45d8cebf8eb60b1a43bbee005ea6db", 
-        "PenalizationCatchup": "0x59e4c4d8a4877b18f037f5575e0447d7e3e6e5e4", 
-        "PenalizeNotEnoughReports": "0xffd0545899965f2f62ff994e6bff45ac82fda3d3", 
-        "ProportionCorrect": "0x31ded08af4f4d6757e45cf846734d066a82d6f9d", 
-        "Register": "0x9ee6182698e223b6882cc41416b21bf73937aa49", 
-        "Reporting": "0xd265cbd17199255f6129586b89154a3d63779110", 
-        "ReportingThreshold": "0x745069ceb44c8bb2ac4bef050faa24cfe36dbc91", 
-        "RoundTwo": "0x6815c382d00299b5863ed86bf6b69a418e08880a", 
-        "RoundTwoPenalize": "0x53631deab23bf485447ed8b5d7ed9068360f0602", 
-        "SendReputation": "0xd1c62df27d9c69d149dac386fb03b58a1833e942", 
-        "SlashRep": "0xf1cea7b18b59fba62a2822a8aabb714d0e8bb96f", 
-        "Trade": "0x3efd591afc7ce35c6bc1cd868fe472c6897c3242", 
-        "Trades": "0x73cfdaf7f5b1966d7c79db32be115e01c202884e"
+        "Backstops": "0xbf13b3100d30ff203319ef04a3825ac76948fccb", 
+        "Branches": "0x5c4e1ef4ee5e7ec7ae5cd0703360be599da6e6be", 
+        "BuyAndSellShares": "0x3b3b6f64185c89c2702838dc45821bb95cba7ea1", 
+        "Cash": "0x256bf3dfebcb738e5a105ca8bb7998daa871ca47", 
+        "CloseMarket": "0x4cdf48236bb007bf432f4458d272c00149c476ac", 
+        "CollectFees": "0x9a0d7b4c74b8f8b0fa2fc0404762ad29d4604e94", 
+        "CompleteSets": "0xb68a5bc9c02f6369c71abcf78444b81a539b8ed1", 
+        "CompositeGetters": "0x89e86a4f3659d7bd1c78dd9c499c96ff63fc07bd", 
+        "Consensus": "0xad5bf84afcd679c75674515d7c144533cebae590", 
+        "ConsensusData": "0x9735e26f6db89cb00148d5913c5223e1bb671a1f", 
+        "CreateBranch": "0x1b219aa965ac249b8bf7bfec2f5b33ba0e4cf842", 
+        "CreateMarket": "0x1f7aa12230c32236e0338387df500de20cd07f1f", 
+        "EventResolution": "0x45e426e7ec4d6da03ed46bd0cb7079d10510b3cb", 
+        "Events": "0x0cb246f37171c42a47febea5cd7dfb317c070b10", 
+        "ExpiringEvents": "0x8746063fb232f06917dd24b3c5c42615f59a97fe", 
+        "Faucets": "0x6d62de52473e9f14ba43a45a2b5c0fcd8a7660bc", 
+        "ForkPenalize": "0x0b9f10d4263b1bd04d9d649c4db884c9d5904484", 
+        "Forking": "0xff6693c781bce3e038ac869654e77bf716023e29", 
+        "FxpFunctions": "0x4210e14c1db89cc6b6585506253963ec8c4d06eb", 
+        "Info": "0xe056eda5ccf6f13d79c68b2710ce3d318deef75a", 
+        "MakeReports": "0xc4ac3d1acf15c811860437959b96e34838287839", 
+        "Markets": "0xcd995a4d1a829fb151c46a52efa56fa83c4c8dd7", 
+        "Payout": "0x6fff5cb642443b335d0db8bfbb916b8330fe7ae4", 
+        "PenalizationCatchup": "0xc3907b4acb01ef8f6cd702547ddafb85a7e06557", 
+        "PenalizeNotEnoughReports": "0x97661f6816327ecb2869a75c75a608a716428502", 
+        "ProportionCorrect": "0x0d6d216fa37a87cddca4fd90b7d0319082be4c09", 
+        "Register": "0x46304cf79558ec6465f3fd6d691d5c0c7a393270", 
+        "Reporting": "0xaaf983e676d114495c3c37e73cceccd8365302e4", 
+        "ReportingThreshold": "0xffdd203a3f51412273d6d75f4cf88f448bd14fe6", 
+        "RoundTwo": "0x4cc6ddb201eb5e884ca248386090b804c85d08a8", 
+        "RoundTwoPenalize": "0xfd01599337f400359c4d77dbf86bcb2dca078fdf", 
+        "SendReputation": "0x1f82ab64458a8e943ccf794e95749c646e415217", 
+        "SlashRep": "0xdba480cf81ef6e62c5812f266fdbdf553e090e3a", 
+        "Trade": "0x1ed9cc7c6231fe840956ce8591e2fac9e3de0e05", 
+        "Trades": "0xbd227f1b40663733f0cecd0d630e4d3cbffb14bb"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -40989,8 +41020,6 @@ module.exports = function () {
         },
         parse_event_message: function (label, msg, onMessage) {
             var i;
-            // console.log("parse_event_message label:", label);
-            // console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
             if (msg) {
                 switch (msg.constructor) {
                     case Array:
@@ -41028,7 +41057,7 @@ module.exports = function () {
                         }
                         break;
                     default:
-                        console.error("unknown event message:", msg);
+                        console.warn("unknown event message:", msg);
                 }
             }
         },
@@ -41652,7 +41681,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.4.9";
+    this.version = "3.5.9";
 
     this.options = {
         debug: {
@@ -41914,6 +41943,7 @@ module.exports = {
             var index = 14;
             var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
+                id: abi.format_int256(rawInfo[0]),
                 network: this.network_id,
                 makerFee: fees.maker,
                 takerFee: fees.taker,
@@ -41966,6 +41996,8 @@ module.exports = {
             }
             info.type = event.type;
             info.endDate = event.endDate;
+            info.minValue = event.minValue;
+            info.maxValue = event.maxValue;
             info.events = [event];
             index += EVENTS_FIELDS;
 
@@ -42697,6 +42729,7 @@ module.exports = {
             }
             marketsInfo[marketID] = {
                 sortOrder: i,
+                id: marketID,
                 branchId: branch,
                 tradingPeriod: parseInt(marketsArray[shift + 1], 16),
                 tradingFee: fees.trading,
@@ -43771,9 +43804,9 @@ module.exports = {
         var fixedReport, rescaledReport, bnMinValue;
         if (isIndeterminate) {
             if (type === "binary") {
-                fixedReport = constants.BINARY_INDETERMINATE;
+                fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
             } else {
-                fixedReport = constants.CATEGORICAL_SCALAR_INDETERMINATE;
+                fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
             }
         } else {
             if (type === "binary") {
@@ -43794,7 +43827,7 @@ module.exports = {
             // if report is equal to fix(0.5) but is not indeterminate,
             // then set report to fix(0.5) + 1
             if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-                fixedReport = constants.INDETERMINATE_PLUS_ONE;
+                fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
             }
         }
         return fixedReport;
@@ -44068,7 +44101,7 @@ module.exports = {
     },
 
     // markets: array of market IDs for which to claim proceeds
-    claimMarketsProceeds: function (branch, markets, callback, onSent, onSuccess) {
+    claimMarketsProceeds: function (branch, markets, callback) {
         if (this.options.debug.reporting) {
             console.log("claimMarketsProceeds:", branch, markets);
         }
@@ -44097,17 +44130,10 @@ module.exports = {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds sent:", market.id, res);
                         }
-                        if (onSent) onSent(res.hash, market.id);
                     },
                     onSuccess: function (res) {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds success:", market.id, res);
-                        }
-                        if (onSuccess) {
-                            onSuccess(res.hash, market.id, {
-                                cash: res.callReturn.cash,
-                                shares: res.callReturn.shares
-                            });
                         }
                         claimedMarkets.push(market.id);
                         nextMarket();
@@ -44144,23 +44170,16 @@ module.exports = {
             }
             if (res.callReturn !== "1") return onFailed(res.callReturn);
             self.rpc.receipt(res.hash, function (receipt) {
-                var logdata;
-                var cashPayout = constants.ZERO;
-                var shares = constants.ZERO;
                 if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
                     var logs = receipt.logs;
                     var sig = self.api.events.payout.signature;
                     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
                         if (logs[i].topics[0] === sig) {
-                            logdata = self.rpc.unmarshal(logs[i].data);
-                            if (logdata && logdata.constructor === Array && logdata.length > 1) {
-                                cashPayout = abi.unfix(abi.hex(logdata[0], true));
-                                shares = abi.unfix(logdata[1]);
-                            }
+                            res.callReturn = self.filters.parse_event_message("payout", logs[i]);
+                            break;
                         }
                     }
                 }
-                res.callReturn = {cash: cashPayout.toFixed(), shares: shares.toFixed()};
                 onSuccess(res);
             });
         }, onFailed);
@@ -44927,14 +44946,14 @@ module.exports = {
             }
             if (err) return callback(err);
             if (self.options.debug.reporting) {
-                console.log("[checkPeriod] calling penaltyCatchUp...", branch, votePeriod - 1);
+                console.log("[checkPeriod] calling feePenaltyCatchUp...", branch, votePeriod - 1);
             }
-            self.penaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err, marketsClosed) {
+            self.feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
                 if (self.options.debug.reporting) {
-                    console.log("[checkPeriod] penaltyCatchUp:", err, marketsClosed);
+                    console.log("[checkPeriod] feePenaltyCatchUp:", err);
                 }
                 if (err) return callback(err);
-                callback(null, votePeriod, marketsClosed);
+                callback(null, votePeriod);
             });
         });
     },
@@ -44972,11 +44991,57 @@ module.exports = {
         });
     },
 
-    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback, onSent, onSuccess) {
+    feePenaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
-            console.log("[penaltyCatchUp] params:", branch, periodToCheck, sender);
+            console.log("[feePenaltyCatchUp] params:", branch, periodToCheck, sender);
         }
+        // If reported last period and called collectfees then call the penalization functions in
+        // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
+        // last period then call penalizationCatchup in order to allow submitReportHash to work.
+        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+            lastPeriodPenalized = parseInt(lastPeriodPenalized);
+            if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+                console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+            }
+            self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+                console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
+                if (!feesCollected || feesCollected.error) {
+                    return callback(feesCollected || "couldn't get fees collected");
+                }
+                if (self.options.debug.reporting) {
+                    console.log("[feePenaltyCatchUp] feesCollected:", feesCollected);
+                }
+                if (feesCollected === "1") {
+                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                }
+                if (self.getCurrentPeriodProgress(periodLength) < 50) {
+                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                }
+                self.collectFees({
+                    branch: branch,
+                    sender: sender,
+                    periodLength: periodLength,
+                    onSent: function (r) {
+                        console.log("collectFees sent:", r);
+                    },
+                    onSuccess: function (r) {
+                        console.log("collectFees success:", r);
+                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                    },
+                    onFailed: function (e) {
+                        if (e.error !== "-1") return callback(e);
+                        console.info("collectFees:", e.message);
+                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+                    }
+                });
+            });
+        });
+    },
+
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
+        var self = this;
         self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
             lastPeriodPenalized = parseInt(lastPeriodPenalized);
             if (self.options.debug.reporting) {
@@ -44998,14 +45063,11 @@ module.exports = {
                 return self.penalizationCatchup({
                     branch: branch,
                     sender: sender,
-                    onSent: function (r) {
-                        if (onSent) onSent(r.hash, null, "penalizationCatchup");
-                    },
+                    onSent: utils.noop,
                     onSuccess: function (r) {
                         if (self.options.debug.reporting) {
                             console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
                         }
-                        if (onSuccess) onSuccess(r.hash, null, "penalizationCatchup");
                         callback(null);
                     },
                     onFailed: function (e) {
@@ -45014,92 +45076,70 @@ module.exports = {
                     }
                 });
             }
-            // If reported last period and called collectfees then call the penalization functions in
-            // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
-            // last period then call penalizationCatchup in order to allow submitReportHash to work.
-            self.getFeesCollected(branch, sender, periodToCheck - 1, function (feesCollected) {
-                if (!feesCollected || feesCollected.error) {
-                    return callback(feesCollected || "couldn't get fees collected");
-                }
-                if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] feesCollected:", feesCollected);
-                }
-                self.getEvents(branch, periodToCheck, function (events) {
-                    if (!events || events.constructor !== Array || !events.length) {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-                        }
-                        self.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            description: "Empty Reporting cycle",
-                            onSent: function (r) {
-                                if (onSent) onSent(r.hash, 0, "penalizeWrong");
-                            },
-                            onSuccess: function (r) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
-                                }
-                                if (onSuccess) onSuccess(r.hash, 0, "penalizeWrong");
-                                callback(null);
-                            },
-                            onFailed: function (e) {
-                                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                                callback(null);
+            self.getEvents(branch, periodToCheck, function (events) {
+                if (!events || events.constructor !== Array || !events.length) {
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] No events found in period", periodToCheck);
+                    }
+                    self.penalizeWrong({
+                        branch: branch,
+                        event: 0,
+                        description: "Empty Reporting cycle",
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
                             }
-                        });
-                    } else {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                            callback(null);
+                        },
+                        onFailed: function (e) {
+                            console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+                            callback(null);
                         }
-                        var marketsClosed = [];
-                        async.eachSeries(events, function (event, nextEvent) {
-                            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
-                                }
-                                if (parseInt(canReportOn) === 0) return nextEvent(null);
-                                if (self.options.debug.reporting) {
-                                    console.log("[penaltyCatchUp] penalizeWrong:", event);
-                                }
-                                self.getDescription(event, function (description) {
-                                    description = description.split("~|>")[0];
-                                    self.penalizeWrong({
-                                        branch: branch,
-                                        event: event,
-                                        description: description,
-                                        onSent: function (r) {
-                                            if (onSent) onSent(r.hash, event, "penalizeWrong");
-                                        },
-                                        onSuccess: function (r) {
-                                            if (self.options.debug.reporting) {
-                                                console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                            }
-                                            if (onSuccess) onSuccess(r.hash, event, "penalizeWrong");
-                                            self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
-                                                if (err) return nextEvent(err);
-                                                marketsClosed = marketsClosed.concat(markets);
-                                                nextEvent(null);
-                                            }, onSent, onSuccess);
-                                        },
-                                        onFailed: function (e) {
-                                            console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                            nextEvent(null);
+                    });
+                } else {
+                    if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+                    }
+                    async.eachSeries(events, function (event, nextEvent) {
+                        self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                            }
+                            if (parseInt(canReportOn) === 0) return nextEvent(null);
+                            if (self.options.debug.reporting) {
+                                console.log("[penaltyCatchUp] penalizeWrong:", event);
+                            }
+                            self.getDescription(event, function (description) {
+                                description = description.split("~|>")[0];
+                                self.penalizeWrong({
+                                    branch: branch,
+                                    event: event,
+                                    description: description,
+                                    onSent: utils.noop,
+                                    onSuccess: function (r) {
+                                        if (self.options.debug.reporting) {
+                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                         }
-                                    });
+                                        self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
+                                            if (err) return nextEvent(err);
+                                            nextEvent(null);
+                                        });
+                                    },
+                                    onFailed: function (e) {
+                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                        nextEvent(null);
+                                    }
                                 });
                             });
-                        }, function (e) {
-                            if (e) return callback(e);
-                            callback(null, marketsClosed);
                         });
-                    }
-                });
+                    }, callback);
+                }
             });
         });
     },
 
-    closeExtraMarkets: function (branch, event, description, sender, callback, onSent, onSuccess) {
+    closeExtraMarkets: function (branch, event, description, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
@@ -45123,13 +45163,11 @@ module.exports = {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket sent:", market, r);
                                 }
-                                if (onSent) onSent(r.hash, market, "closeMarket");
                             },
                             onSuccess: function (r) {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
                                 }
-                                if (onSuccess) onSuccess(r.hash, market, "closeMarket");
                                 nextMarket(null);
                             },
                             onFailed: function (e) {
@@ -45146,10 +45184,7 @@ module.exports = {
                         });
                     }
                 });
-            }, function (e) {
-                if (e) return callback(e);
-                callback(null, markets);
-            });
+            }, callback);
         });
     },
 
@@ -49219,8 +49254,622 @@ module.exports = {
 },{"_process":192,"async":272,"augur-abi":273,"augur-contracts":59,"bignumber.js":274,"browser-request":278,"clone":281,"js-sha3":312,"net":115,"request":88,"sync-request":88,"websocket":88}],272:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
 },{"_process":192,"dup":80}],273:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"bignumber.js":274,"buffer":118,"dup":1,"ethereumjs-abi":302,"js-sha3":312}],274:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+var ethabi = require("ethereumjs-abi");
+
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+module.exports = {
+
+    debug: false,
+
+    version: "0.6.4",
+
+    constants: {
+        ONE: new BigNumber(10).toPower(new BigNumber(18)),
+        BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+        // Serpent integers are bounded by [-2^255, 2^255-1]
+        SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+        SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
+        MOD: new BigNumber(2).toPower(new BigNumber(256))
+    },
+
+    abi: ethabi,
+
+    keccak_256: keccak_256,
+
+    // Convert hex to byte array for sha3
+    // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
+    hex_to_bytes: function (s) {
+        var o = [];
+        var alpha = "0123456789abcdef";
+        for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
+            var index1 = alpha.indexOf(s[i]);
+            var index2 = alpha.indexOf(s[i + 1]);
+            if (index1 < 0 || index2 < 0) {
+                throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
+            }
+            o.push(16*index1 + index2);
+        }
+        return o;
+    },
+
+    bytes_to_hex: function (b) {
+        var hexbyte, h = "";
+        for (var i = 0, n = b.length; i < n; ++i) {
+            hexbyte = this.strip_0x(b[i].toString(16));
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            h += hexbyte;
+        }
+        return h;
+    },
+
+    sha3: function (hexstr) {
+        return keccak_256(this.hex_to_bytes(hexstr));
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h, utf8) {
+        var hex = h.toString();
+        if (utf8) {
+            while (hex.slice(-1) === "\u0000") {
+                hex = hex.slice(0, -1);
+            }
+        } else {
+            while (hex.slice(-2) === "00") {
+                hex = hex.slice(0, -2);
+            }
+        }
+        return hex;
+    },
+
+    bytes_to_utf16: function (bytearray) {
+        if (bytearray.constructor === Array) {
+            var tmp = '';
+            for (var i = 0; i < bytearray.length; ++i) {
+                if (bytearray[i] !== undefined && bytearray[i] !== null) {
+                    if (bytearray[i].constructor === String) {
+                        tmp += this.strip_0x(bytearray[i]);
+                    } else if (bytearray[i].constructor === Number) {
+                        tmp += bytearray[i].toString(16);
+                    } else if (Buffer.isBuffer(bytearray[i])) {
+                        tmp += bytearray[i].toString("hex");
+                    }
+                }
+            }
+            bytearray = tmp;
+        }
+        if (bytearray.constructor === String) {
+            bytearray = this.strip_0x(bytearray);
+        }
+        if (!Buffer.isBuffer(bytearray)) {
+            try {
+                bytearray = new Buffer(bytearray, "hex");
+            } catch (ex) {
+                console.log("[augur-abi] bytes_to_utf16:", JSON.stringify(bytearray, null, 2));
+                throw ex;
+            }
+        }
+        return bytearray.toString("utf8");
+    },
+
+    short_string_to_int256: function (shortstring) {
+        var int256 = shortstring;
+        if (int256.length > 32) int256 = int256.slice(0, 32);
+        return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
+    },
+
+    int256_to_short_string: function (int256) {
+        return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str, toArray) {
+        var hexbyte, hex, i, len;
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        len = str.length;
+        if (toArray) {
+            hex = [];
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex.push(this.prefix_hex(hexbyte));
+            }
+        } else {
+            hex = '';
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex += hexbyte;
+            }
+        }
+        return hex;
+    },
+
+    raw_encode_hex: function (str) {
+        return ethabi.rawEncode(["string"], [str]).toString("hex");
+    },
+
+    raw_decode_hex: function (hex) {
+        if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
+        return ethabi.rawDecode(["string"], hex)[0];
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+            var unforked = this.bignum(forked);
+            if (unforked.constructor === BigNumber) {
+                var superforked = unforked.plus(this.constants.MOD);
+                if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                    unforked = superforked;
+                }
+                if (forked.constructor === BigNumber) return unforked;
+                unforked = this.pad_left(unforked.toString(16));
+                if (prefix) unforked = this.prefix_hex(unforked);
+                return unforked;
+            } else {
+                throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+            }
+        } else {
+            throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+        }
+    },
+
+    hex: function (n, wrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", wrap);
+                    break;
+                case BigNumber:
+                    if (wrap) {
+                        h = this.wrap(n.floor()).toString(16);
+                    } else {
+                        h = n.floor().toString(16);
+                    }
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = this.bignum(n, "hex", wrap);
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", wrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", wrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_int256: function (s) {
+        if (s === undefined || s === null || s === "0x") return s;
+        if (Buffer.isBuffer(s)) s = s.toString("hex");
+        if (s.constructor !== String) s = s.toString(16);
+        s = this.strip_0x(s);
+        if (s.length > 64) {
+            if (this.debug) {
+                var overflow = (s.length / 2) - 32;
+                console.warn("input " + overflow + " bytes too large for int256, truncating");
+            }
+            s = s.slice(0, 64);
+        }
+        return this.prefix_hex(this.pad_left(s));
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n === undefined || n === null || n === "") return n;
+        if (n.constructor === Number || n.constructor === BigNumber) {
+            n = n.toString(16);
+        }
+        if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+            if (n.slice(0,1) === '-') {
+                n = "-0x" + n.slice(1);
+            } else {
+                n = "0x" + n;
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, wrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    bn = new BigNumber(n, 10);
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n, 10);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, wrap);
+                    }
+                    break;
+                default:
+                    if (this.is_hex(n)) {
+                        bn = new BigNumber(n, 16);
+                    } else {
+                        bn = new BigNumber(n, 10);
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (wrap) bn = this.wrap(bn);
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.floor().toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    wrap: function (bn) {
+        if (bn === undefined || bn === null) return bn;
+        if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+        if (bn.gt(this.constants.SERPINT_MAX)) {
+            return bn.sub(this.constants.MOD);
+        } else if (bn.lt(this.constants.SERPINT_MIN)) {
+            return bn.plus(this.constants.MOD);
+        }
+        return bn;
+    },
+
+    fix: function (n, encode, wrap) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (wrap) fixed = this.wrap(fixed);
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed.round());
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    string: function (n, wrap) {
+        return this.bignum(n, "string", wrap);
+    },
+
+    number: function (s, wrap) {
+        return this.bignum(s, "number", wrap);
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return this.pad_left(prefix, 8, true);
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || [];
+        return this.prefix_hex(Buffer.concat([
+            ethabi.methodID(tx.method, tx.signature),
+            ethabi.rawEncode(tx.signature, tx.params)
+        ]).toString("hex"));
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":274,"buffer":118,"ethereumjs-abi":302,"js-sha3":312}],274:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
 },{"dup":2}],275:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)

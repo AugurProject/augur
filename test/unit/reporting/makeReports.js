@@ -140,7 +140,7 @@ describe("fixReport / unfixReport", function () {
         report: "1.5",
         type: "binary",
         isIndeterminate: true,
-        expected: constants.BINARY_INDETERMINATE
+        expected: abi.hex(constants.BINARY_INDETERMINATE)
     });
     test({
         report: "0.5",
@@ -148,7 +148,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "scalar",
         isIndeterminate: true,
-        expected: constants.CATEGORICAL_SCALAR_INDETERMINATE
+        expected: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE)
     });
     test({
         report: "0.5",
@@ -156,7 +156,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "scalar",
         isIndeterminate: false,
-        expected: constants.INDETERMINATE_PLUS_ONE
+        expected: abi.hex(constants.INDETERMINATE_PLUS_ONE)
     });
     test({
         report: "0.5",
@@ -164,7 +164,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "scalar",
         isIndeterminate: false,
-        expected: constants.INDETERMINATE_PLUS_ONE
+        expected: abi.hex(constants.INDETERMINATE_PLUS_ONE)
     });
     test({
         report: "1.5",
@@ -172,7 +172,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "binary",
         isIndeterminate: true,
-        expected: constants.BINARY_INDETERMINATE
+        expected: abi.hex(constants.BINARY_INDETERMINATE)
     });
     test({
         report: "0.5",
@@ -180,7 +180,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "scalar",
         isIndeterminate: true,
-        expected: constants.CATEGORICAL_SCALAR_INDETERMINATE
+        expected: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE)
     });
     test({
         report: "0",
@@ -202,7 +202,7 @@ describe("fixReport / unfixReport", function () {
         maxValue: "1",
         type: "scalar",
         isIndeterminate: true,
-        expected: constants.CATEGORICAL_SCALAR_INDETERMINATE
+        expected: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE)
     });
 });
 
