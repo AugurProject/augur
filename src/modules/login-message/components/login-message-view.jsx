@@ -67,6 +67,15 @@ const LoginMessagePage = p => (
 				<li>
 					Moved the branch synchronization sequence specific to reporters to a separate action, and added a check for non-zero REP balance prior to dispatching this action.
 				</li>
+				<li>
+					Logging in to an existing account now triggers free account funding if any balances are zero, instead of only checking if the account&#39;s &quot;ether&quot; balance is zero.
+				</li>
+				<li>
+					Importing an account from file now (conditionally) triggers funding and registration timestmap actions.
+				</li>
+				<li>
+					Reordered loadLoginAccountDependents actions: registration timestamp lookup now happens before updateAssets.
+				</li>
 			</ol>
 			<h3>January 1, 2017</h3>
 			<ol>

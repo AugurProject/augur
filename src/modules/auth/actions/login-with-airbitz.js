@@ -1,5 +1,5 @@
 import secureRandom from 'secure-random';
-import { abi, augur, constants } from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { AIRBITZ_WALLET_TYPE } from '../../auth/constants/auth-types';
 import {
 	loadLoginAccountDependents,
@@ -9,6 +9,7 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { authError } from '../../auth/actions/auth-error';
+import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAccount) {
 	return (dispatch, getState) => {
@@ -29,7 +30,7 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAcc
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents((err, balances) => {
 				if (err || !balances) return console.error(err);
-				if (!balances.ether || abi.bignum(balances.ether).eq(constants.ZERO)) {
+				if (anyAccountBalancesZero(balances)) {
 					dispatch(fundNewAccount((err) => {
 						if (err) return console.error(err);
 						if (isNewAccount) dispatch(registerTimestamp());
