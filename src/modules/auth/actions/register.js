@@ -1,14 +1,13 @@
 import { augur } from '../../../services/augurjs';
-import {
-PASSWORDS_DO_NOT_MATCH,
-} from '../../auth/constants/form-errors';
+import { PASSWORDS_DO_NOT_MATCH } from '../../auth/constants/form-errors';
 import {
 	loadLoginAccountDependents,
 	loadLoginAccountLocalStorage
 } from '../../auth/actions/load-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { addFundNewAccount } from '../../transactions/actions/add-fund-new-account-transaction';
+import { registerTimestamp } from '../../auth/actions/register-timestamp';
+import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
@@ -33,9 +32,10 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			loginAccount.settings = loginAccount.settings || {};
 			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents((err, ether) => {
-				dispatch(addFundNewAccount(loginAccount.address));
-			}));
+			dispatch(loadLoginAccountDependents(() => dispatch(fundNewAccount((err) => {
+				if (err) return console.error(err);
+				dispatch(registerTimestamp());
+			}))));
 
 			// decide if we need to display the loginMessage
 			const { loginMessage } = getState();
