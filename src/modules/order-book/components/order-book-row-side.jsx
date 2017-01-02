@@ -14,12 +14,9 @@ import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-type
 
 const OrderBookRowSide = (p) => {
 	const orders = getValue(p, 'orders');
-	const trade = getValue(p, 'trade');
 	const nullMessage = 'No Orders';
 	const side = p.type || ASK;
 	const shouldHighlight = (side === BID && p.selectedTradeSide[p.id] === SELL) || (side !== BID && p.selectedTradeSide[p.id] === BUY) || (side !== BID && p.selectedTradeSide[p.id] == null);
-
-	// console.log('outcome trade -- ', p);
 
 	return (
 		<article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
@@ -28,9 +25,7 @@ const OrderBookRowSide = (p) => {
 				<div>
 					{(p.orders || []).map((order, i) => {
 						const shares = setShareDenomination(getValue(order, 'shares.formatted'), p.selectedShareDenomination);
-						const sharesValue = getValue(order, 'shares.value');
 						const price = getValue(order, 'price.formatted');
-						const priceValue = getValue(order, 'price.value');
 						const type = p.type || ASK;
 
 						return (
@@ -45,10 +40,7 @@ const OrderBookRowSide = (p) => {
 								<button
 									className="unstyled"
 									onClick={() => {
-										if (side !== BID) {
-											trade.updateTradeOrder('', null, side); // Clear the shares
-										}
-										trade.updateTradeOrder(side === BID ? sharesValue : null, priceValue, side);
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
 									}}
 								>
 									<ValueDenomination formatted={side === BID ? shares : price} />
@@ -56,10 +48,7 @@ const OrderBookRowSide = (p) => {
 								<button
 									className="unstyled"
 									onClick={() => {
-										if (side === BID) {
-											trade.updateTradeOrder('', null, side); // Clear the shares
-										}
-										trade.updateTradeOrder(side === BID ? null : sharesValue, priceValue, side);
+										p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
 									}}
 								>
 									<ValueDenomination formatted={side === BID ? price : shares} />
