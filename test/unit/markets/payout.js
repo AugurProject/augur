@@ -103,7 +103,18 @@ describe("payout.claimProceeds", function() {
 		augur.rpc.receipt = function(hash, cb) {
 			var logs = [];
 			for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
-				logs.push({ topics: [augur.api.events.payout.signature], data: [Cash[i], Shares[i]] });
+				logs.push({
+					topics: [augur.api.events.payout.signature],
+					blockNumber: '1000000000',
+					transactionHash: 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93',
+					removed: false,
+					data: [
+						Cash[i],
+						augur.abi.fix('20000000'),
+						Shares[i],
+						'15000000000',
+					]
+				});
 			}
 			cb({ logs: logs });
 		};
@@ -124,13 +135,11 @@ describe("payout.claimProceeds", function() {
 		onSent: utils.noop,
 		onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
-			assert.deepEqual(res, {
-				callReturn: {
-					cash: '3000',
-					shares: '100'
-				},
-				hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055'
-			});
+			assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+			assert.equal(res.callReturn.cashPayout, '3000');
+			assert.equal(res.callReturn.cashBalance, '20000000');
+			assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
+			assert.equal(res.callReturn.shares, '100');
 		},
 		onFailed: utils.noop
 	});
@@ -145,13 +154,11 @@ describe("payout.claimProceeds", function() {
 		onSent: utils.noop,
 		onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
-			assert.deepEqual(res, {
-				callReturn: {
-					cash: '800',
-					shares: '15'
-				},
-				hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055'
-			});
+			assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+			assert.equal(res.callReturn.cashPayout, '3000');
+			assert.equal(res.callReturn.cashBalance, '20000000');
+			assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
+			assert.equal(res.callReturn.shares, '100');
 		},
 		onFailed: utils.noop
 	});
@@ -164,13 +171,8 @@ describe("payout.claimProceeds", function() {
 		onSent: utils.noop,
 		onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
-			assert.deepEqual(res, {
-				callReturn: {
-					cash: '0',
-					shares: '0'
-				},
-				hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055'
-			});
+			assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+			assert.equal(res.callReturn, '1');
 		},
 		onFailed: utils.noop
 	});
@@ -186,13 +188,11 @@ describe("payout.claimProceeds", function() {
 			onSent: utils.noop,
 			onSuccess: function(res) {
 				// onSuccess will act as the assertions function because it is expected to be called.
-				assert.deepEqual(res, {
-					callReturn: {
-						cash: '1200',
-						shares: '25'
-					},
-					hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055'
-				});
+				assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.equal(res.callReturn.cashPayout, '3000');
+				assert.equal(res.callReturn.cashBalance, '20000000');
+				assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
+				assert.equal(res.callReturn.shares, '100');
 			},
 			onFailed: utils.noop
 		}
@@ -240,7 +240,7 @@ describe("payout.claimProceeds", function() {
 	});
 });
 
-describe("payout.claimMarketsProceeds", function() {
+describe.skip("payout.claimMarketsProceeds", function() {
 	// 2 tests total
 	var test = function(t) {
 		it(t.testDescription, function(done) {
