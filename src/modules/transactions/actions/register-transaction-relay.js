@@ -1,5 +1,5 @@
 import { abi, augur, rpc } from '../../../services/augurjs';
-import { SUCCESS } from '../../transactions/constants/statuses';
+import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -167,7 +167,7 @@ export function registerTransactionRelay() {
 					const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10);
 					const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
 					if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
-						const status = tx.response.blockHash ? SUCCESS : 'in progress';
+						const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
 						const relayTransaction = dispatch(constructRelayTransaction(tx, status));
 						if (relayTransaction) {
 							return dispatch(updateTransactionsData(relayTransaction));
