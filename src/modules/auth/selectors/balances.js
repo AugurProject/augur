@@ -11,3 +11,7 @@ export const allAccountBalancesZero = balances => (
 	(balances.realEther !== undefined && isZero(balances.realEther)) &&
 	(balances.rep !== undefined && isZero(balances.rep))
 );
+
+export const allAssetsLoaded = assets => (
+    assets.ether !== undefined && assets.realEther !== undefined && assets.rep !== undefined
+);
