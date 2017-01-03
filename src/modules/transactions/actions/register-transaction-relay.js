@@ -60,6 +60,9 @@ export function constructRelayTransaction(tx, status) {
 			default: {
 				let transaction;
 				switch (method) {
+					case 'fundNewAccount':
+						transaction = dispatch(constructTransaction('fund_account', { ...p, message: '' }));
+						break;
 					case 'submitReport':
 						transaction = dispatch(constructTransaction('submittedReport', {
 							...p, // { event, report, salt }
