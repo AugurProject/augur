@@ -136,8 +136,8 @@ export function constructWithdrawTransaction(log) {
 export function constructDefaultTransaction(label, log) {
 	const transaction = { data: {} };
 	transaction.type = label;
-	transaction.message = log.transactionHash;
-	transaction.description = JSON.stringify(log);
+	transaction.message = log.message;
+	transaction.description = log.description || JSON.stringify(log);
 	return transaction;
 }
 
