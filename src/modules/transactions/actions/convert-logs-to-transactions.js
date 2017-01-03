@@ -160,10 +160,12 @@ export function constructPayoutTransaction(log, market, dispatch) {
 	transaction.type = 'Claim Trading Payout';
 	transaction.message = `closed out ${formatShares(log.shares).full}`;
 	transaction.description = market.description;
-	transaction.data.balances = [{
-		change: formatEther(log.cashPayout, { positiveSign: true }),
-		balance: formatEther(log.cashBalance)
-	}];
+	if (log.cashPayout) {
+		transaction.data.balances = [{
+			change: formatEther(log.cashPayout, { positiveSign: true }),
+			balance: formatEther(log.cashBalance)
+		}];
+	}
 	transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
 	return transaction;
 }
