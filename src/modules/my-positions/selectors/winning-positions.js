@@ -18,28 +18,18 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 			const winningShares = market.type === SCALAR ?
 				selectTotalSharesInMarket(market) :
 				selectWinningOutcomeShares(market);
-			console.log('winning shares:', market, winningShares);
 			if (winningShares && winningShares.gt(ZERO)) {
+				console.log('winning shares:', market, winningShares.toFixed());
 				closedMarketsWithWinningShares.push({
 					id: market.id,
 					description: market.description,
-					shares: winningShares
+					shares: winningShares.toFixed()
 				});
 			}
 		}
 	}
 	return closedMarketsWithWinningShares;
 });
-
-function selectWinningOutcomeShares(market) {
-	const { outcomesData } = store.getState();
-	const marketID = market.id;
-	const outcomeIDs = Object.keys(outcomesData[marketID]);
-	const numOutcomes = outcomeIDs.length;
-	for (let j = 0; j < numOutcomes; ++j) {
-		return selectWinningShares(market, outcomeIDs[j], outcomesData[marketID][outcomeIDs[j]]);
-	}
-}
 
 function selectTotalSharesInMarket(market) {
 	const { outcomesData } = store.getState();
@@ -57,8 +47,19 @@ function selectTotalSharesInMarket(market) {
 	return totalShares;
 }
 
+function selectWinningOutcomeShares(market) {
+	const { outcomesData } = store.getState();
+	const marketID = market.id;
+	const outcomeIDs = Object.keys(outcomesData[marketID]);
+	const numOutcomes = outcomeIDs.length;
+	for (let j = 0; j < numOutcomes; ++j) {
+		return selectWinningShares(market, outcomeIDs[j], outcomesData[marketID][outcomeIDs[j]]);
+	}
+}
+
 function selectWinningShares(market, outcomeID, outcomeData) {
-	if (outcomeID.toString() === market.reportedOutcome && outcomeData.sharesPurchased) {
+	console.log('selectWinningShares:', market.reportedOutcome, outcomeID, outcomeData);
+	if (abi.bignum(outcomeID).eq(abi.bignum(market.reportedOutcome)) && outcomeData.sharesPurchased) {
 		const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
 		if (sharesPurchased.gt(ZERO)) {
 			return sharesPurchased;
