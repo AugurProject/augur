@@ -99,7 +99,7 @@ export function constructRegistrationTransaction(log) {
 	return transaction;
 }
 
-export function constructPenalizationCatchupTransaction(log) {
+export function constructPenalizationCaughtUpTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Reporting Cycle Catch-Up';
 	transaction.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
@@ -301,7 +301,7 @@ export function constructTransaction(label, log, isRetry, callback) {
 			case 'deposit':
 				return constructDepositTransaction(log);
 			case 'penalizationCaughtUp':
-				return constructPenalizationCatchupTransaction(log);
+				return constructPenalizationCaughtUpTransaction(log);
 			case 'registration':
 				return constructRegistrationTransaction(log);
 			case 'Transfer':
