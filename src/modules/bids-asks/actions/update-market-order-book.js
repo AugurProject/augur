@@ -17,18 +17,11 @@ export function clearMarketOrderBook(marketId) {
 export function addOrder(log) {
 	return (dispatch, getState) => {
 		const orderBook = { ...getState().orderBooks[log.market] };
-		console.log('adding order:', log);
-		console.log('orderbook:', orderBook);
 		if (orderBook) {
 			const orderBookSide = orderBook[log.type];
 			if (orderBookSide) {
-				const outcomeOrders = orderBookSide[log.outcome];
-				if (outcomeOrders) {
-					outcomeOrders[log.tradeid] = convertAddTxLogToOrder(log, getState().marketsData[log.market]);
-					console.log('adding to order book:', outcomeOrders[log.tradeid]);
-					console.log('updated order book:', orderBook);
-					dispatch(updateMarketOrderBook(log.market, orderBook));
-				}
+				orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, getState().marketsData[log.market]);
+				dispatch(updateMarketOrderBook(log.market, orderBook));
 			}
 		}
 	};
@@ -37,19 +30,12 @@ export function addOrder(log) {
 export function removeOrder(log) {
 	return (dispatch, getState) => {
 		const orderBook = { ...getState().orderBooks[log.market] };
-		console.log('removing order:', log);
-		console.log('orderbook:', orderBook);
 		if (orderBook) {
 			const orderBookSide = orderBook[log.type];
 			if (orderBookSide) {
-				const outcomeOrders = orderBookSide[log.outcome];
-				if (outcomeOrders) {
-					if (outcomeOrders[log.tradeid]) {
-						console.log('removing order:', outcomeOrders[log.tradeid]);
-						delete outcomeOrders[log.tradeid];
-						console.log('updated order book:', orderBook);
-						dispatch(updateMarketOrderBook(log.market, orderBook));
-					}
+				if (orderBookSide[log.tradeid]) {
+					delete orderBookSide[log.tradeid];
+					dispatch(updateMarketOrderBook(log.market, orderBook));
 				}
 			}
 		}
@@ -60,28 +46,20 @@ export function fillOrder(log) {
 	return (dispatch, getState) => {
 		const { orderBooks, priceHistory } = getState();
 		const orderBook = { ...orderBooks[log.market] };
-		console.log('filling order:', log);
-		console.log('orderbook:', orderBook);
 		if (orderBook) {
 			const matchedType = log.type === 'buy' ? 'sell' : 'buy';
 			const orderBookSide = orderBook[matchedType];
 			if (orderBookSide) {
-				const outcomeOrders = orderBookSide[log.outcome];
-				if (outcomeOrders) {
-					const order = outcomeOrders[log.tradeid];
-					if (order) {
-						const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
-						if (updatedAmount.lte(constants.PRECISION.zero)) {
-							console.log('deleting', log.tradeid, 'from order book');
-							delete outcomeOrders[log.tradeid];
-						} else {
-							order.fullPrecisionAount = updatedAmount.toFixed();
-							order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
-							console.log('updated order:', order);
-						}
-						console.log('updated order book:', orderBook);
-						dispatch(updateMarketOrderBook(log.market, orderBook));
+				const order = orderBookSide[log.tradeid];
+				if (order) {
+					const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
+					if (updatedAmount.lte(constants.PRECISION.zero)) {
+						delete orderBookSide[log.tradeid];
+					} else {
+						order.fullPrecisionAount = updatedAmount.toFixed();
+						order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
 					}
+					dispatch(updateMarketOrderBook(log.market, orderBook));
 				}
 			}
 		}
@@ -108,12 +86,12 @@ function convertAddTxLogToOrder(log, market) {
 		id: adjustedLog.tradeid,
 		type: adjustedLog.type,
 		market: adjustedLog.market,
-		amount: augur.roundToPrecision(adjustedLog.amount, constants.MINIMUM_TRADE_SIZE),
+		amount: augur.roundToPrecision(abi.bignum(adjustedLog.amount), constants.MINIMUM_TRADE_SIZE),
 		fullPrecisionAmount: adjustedLog.amount,
-		price: augur.roundToPrecision(adjustedLog.price, constants.PRECISION.zero, round, roundingMode),
+		price: augur.roundToPrecision(abi.bignum(adjustedLog.price), constants.PRECISION.zero, round, roundingMode),
 		fullPrecisionPrice: adjustedLog.price,
-		owner: adjustedLog.maker,
+		owner: adjustedLog.sender,
 		block: adjustedLog.blockNumber,
-		outcome: adjustedLog.outcome
+		outcome: adjustedLog.outcome.toString()
 	};
 }
