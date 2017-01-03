@@ -21,7 +21,7 @@ export default class MarketData extends Component {
 
 		this.state = {
 			marketDataNavItems: props.marketDataNavItems,
-			selectedNav: MARKET_DATA_NAV_OUTCOMES
+			selectedNav: props.isPendingReport ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
