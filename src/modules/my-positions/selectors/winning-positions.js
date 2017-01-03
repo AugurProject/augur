@@ -17,9 +17,8 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 		if (!market.isOpen) {
 			const winningShares = market.type === SCALAR ?
 				selectTotalSharesInMarket(market) :
-				selectWinningOutcomeShares(market);
+				selectWinningSharesInMarket(market);
 			if (winningShares && winningShares.gt(ZERO)) {
-				console.log('winning shares:', market, winningShares.toFixed());
 				closedMarketsWithWinningShares.push({
 					id: market.id,
 					description: market.description,
@@ -31,7 +30,7 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 	return closedMarketsWithWinningShares;
 });
 
-function selectTotalSharesInMarket(market) {
+export function selectTotalSharesInMarket(market) {
 	const { outcomesData } = store.getState();
 	const marketID = market.id;
 	const outcomeIDs = Object.keys(outcomesData[marketID]);
@@ -43,26 +42,14 @@ function selectTotalSharesInMarket(market) {
 			totalShares = totalShares.plus(bnSharesPurchased);
 		}
 	}
-	console.log('total shares in market:', market, totalShares.toFixed());
 	return totalShares;
 }
 
-function selectWinningOutcomeShares(market) {
-	const { outcomesData } = store.getState();
-	const marketID = market.id;
-	const outcomeIDs = Object.keys(outcomesData[marketID]);
-	const numOutcomes = outcomeIDs.length;
-	for (let j = 0; j < numOutcomes; ++j) {
-		return selectWinningShares(market, outcomeIDs[j], outcomesData[marketID][outcomeIDs[j]]);
-	}
-}
-
-function selectWinningShares(market, outcomeID, outcomeData) {
-	console.log('selectWinningShares:', market.reportedOutcome, outcomeID, outcomeData);
-	if (abi.bignum(outcomeID).eq(abi.bignum(market.reportedOutcome)) && outcomeData.sharesPurchased) {
+export function selectWinningSharesInMarket(market) {
+	const marketOutcomeData = store.getState().outcomesData[market.id];
+	const outcomeData = marketOutcomeData[market.reportedOutcome];
+	if (outcomeData && outcomeData.sharesPurchased) {
 		const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
-		if (sharesPurchased.gt(ZERO)) {
-			return sharesPurchased;
-		}
+		return sharesPurchased.gt(ZERO) ? sharesPurchased : null;
 	}
 }
