@@ -13,6 +13,7 @@ import SidebarMask from 'modules/common/components/side-bar-mask';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import getValue from 'utils/get-value';
+import debounce from 'utils/debounce';
 
 export default class App extends Component {
 	constructor(props) {
@@ -35,6 +36,7 @@ export default class App extends Component {
 		this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
 		this.attachTouchHandler = this.attachTouchHandler.bind(this);
 		this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
+		this.handleWindowScroll = debounce(this.handleWindowScroll.bind(this));
 		this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
 		this.updateFooterHeight = this.updateFooterHeight.bind(this);
 		this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
@@ -45,6 +47,8 @@ export default class App extends Component {
 			this.main.style.willChange = 'auto'; // reset
 			this.toggleSideBar();
 		}
+
+		window.addEventListener('scroll', this.handleWindowScroll);
 
 		this.attachTouchHandler();
 	}
@@ -73,6 +77,12 @@ export default class App extends Component {
 	//	Footer
 	updateIsFooterCollapsed(isFooterCollapsed) {
 		this.setState({ isFooterCollapsed });
+	}
+
+	handleWindowScroll() {
+		if (!this.state.isFooterCollapsed) {
+			this.updateIsFooterCollapsed(true);
+		}
 	}
 
 	// Chat
