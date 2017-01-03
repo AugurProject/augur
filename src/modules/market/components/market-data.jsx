@@ -13,7 +13,8 @@ import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, M
 export default class MarketData extends Component {
 	static propTypes = {
 		marketDataNavItems: PropTypes.object,
-		isReportTabVisible: PropTypes.bool
+		isReportTabVisible: PropTypes.bool,
+		isPendingReport: PropTypes.bool
 	};
 
 	constructor(props) {
@@ -21,7 +22,7 @@ export default class MarketData extends Component {
 
 		this.state = {
 			marketDataNavItems: props.marketDataNavItems,
-			selectedNav: props.isReportTabVisible ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
+			selectedNav: props.isPendingReport ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
