@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 3, 2017</h3>
+			<ol>
+				<li>
+					The front-end orderbook data store is now properly updated by the trade (log_fill_tx) and bid/ask (log_add_tx) filters.
+				</li>
+				<li>
+					Only show balances in payout transaction display once the transaction has completed.
+				</li>
+				<li>
+					Fixed winning outcome shares selection for categorical markets.
+				</li>
+			</ol>
 			<h3>January 2, 2017</h3>
 			<ol>
 				<li>
