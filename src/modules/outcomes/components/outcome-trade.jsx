@@ -143,7 +143,7 @@ export default class OutcomeTrade extends Component {
 							<Input
 								className={classNames({ 'input-error': !s.isSharesValueValid })}
 								placeholder={s.shareInputPlaceholder}
-								type="number"
+								type="tel"
 								value={s.sharesDenominated}
 								min="0"
 								step="any"
@@ -160,7 +160,7 @@ export default class OutcomeTrade extends Component {
 							<Input
 								className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
 								placeholder="Price"
-								type="number"
+								type="tel"
 								value={trade.limitPrice}
 								step="any"
 								min={s.minLimitPrice}
