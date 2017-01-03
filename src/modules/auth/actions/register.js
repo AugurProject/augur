@@ -32,10 +32,13 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			loginAccount.settings = loginAccount.settings || {};
 			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
 			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents(() => dispatch(fundNewAccount((err) => {
+			dispatch(loadLoginAccountDependents((err) => {
 				if (err) return console.error(err);
-				dispatch(registerTimestamp());
-			}))));
+				dispatch(fundNewAccount((err) => {
+					if (err) return console.error(err);
+					dispatch(registerTimestamp());
+				}));
+			}));
 
 			// decide if we need to display the loginMessage
 			const { loginMessage } = getState();
