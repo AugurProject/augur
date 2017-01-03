@@ -11,19 +11,19 @@ const MarketView = (p) => {
 
 	const isAvailable = getValue(p, 'market.id');
 	const isOpen = getValue(p, 'market.isOpen');
-	const isPendingReport = getValue(p, 'market.isPendingReport');
+	const isReportTabVisible = getValue(p, 'market.isRequiredToReportByAccount') && (getValue(p, 'market.isPendingReport') || getValue(p, 'market.isReported') || getValue(p, 'market.isMissedReport'));
 
 	return (
 		<section id="market_view">
 			{!isAvailable && <NullStateMessage message={nullMessage} />}
-			{isAvailable && isOpen && !isPendingReport && <MarketActive {...p} />}
-			{isAvailable && isPendingReport &&
+			{isAvailable && isOpen && !isReportTabVisible && <MarketActive {...p} />}
+			{isAvailable && isReportTabVisible &&
 				<MarketActive
 					{...p}
-					isPendingReport
+					isReportTabVisible
 				/>
 			}
-			{isAvailable && !isOpen && !isPendingReport && <MarketReported {...p} />}
+			{isAvailable && !isOpen && !isReportTabVisible && <MarketReported {...p} />}
 		</section>
 	);
 };

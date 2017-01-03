@@ -13,7 +13,7 @@ import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, M
 export default class MarketData extends Component {
 	static propTypes = {
 		marketDataNavItems: PropTypes.object,
-		isPendingReport: PropTypes.bool
+		isReportTabVisible: PropTypes.bool
 	};
 
 	constructor(props) {
@@ -21,7 +21,7 @@ export default class MarketData extends Component {
 
 		this.state = {
 			marketDataNavItems: props.marketDataNavItems,
-			selectedNav: props.isPendingReport ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
+			selectedNav: props.isReportTabVisible ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
 		};
 
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
@@ -33,13 +33,13 @@ export default class MarketData extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.isPendingReport !== nextProps.isPendingReport) {
+		if (this.props.isReportTabVisible !== nextProps.isReportTabVisible) {
 			this.setMarketDataNavItems();
 		}
 	}
 
 	setMarketDataNavItems() {
-		if (!this.props.isPendingReport) {
+		if (!this.props.isReportTabVisible) {
 			const marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
 				if (this.props.marketDataNavItems[nav].isPendingReport !== true) {
 					prev[nav] = this.props.marketDataNavItems[nav];
