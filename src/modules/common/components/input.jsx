@@ -102,20 +102,22 @@ export default class Input extends Component {
 						<button
 							className="increment-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value || 0);
+								if (!isNaN(parseFloat(s.value)) && isFinite(s.value)) {
+									let newValue = new BigNumber(s.value || 0);
 
-								if (newValue > p.max) {
-									newValue = new BigNumber(p.max);
-								} else if (newValue < p.min) {
-									newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
-								} else {
-									newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
 									if (newValue > p.max) {
 										newValue = new BigNumber(p.max);
+									} else if (newValue < p.min) {
+										newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+									} else {
+										newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+										if (newValue > p.max) {
+											newValue = new BigNumber(p.max);
+										}
 									}
-								}
 
-								updateValue(newValue);
+									updateValue(newValue);
+								}
 							}}
 						>
 							<i></i>
@@ -123,20 +125,22 @@ export default class Input extends Component {
 						<button
 							className="decrement-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value || 0);
+								if (!isNaN(parseFloat(s.value)) && isFinite(s.value)) {
+									let newValue = new BigNumber(s.value || 0);
 
-								if (newValue > p.max) {
-									newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
-								} else if (newValue < p.min) {
-									newValue = new BigNumber(p.min);
-								} else {
-									newValue = newValue.minus(new BigNumber(incrementAmount));
-									if (newValue < p.min) {
+									if (newValue > p.max) {
+										newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
+									} else if (newValue < p.min) {
 										newValue = new BigNumber(p.min);
+									} else {
+										newValue = newValue.minus(new BigNumber(incrementAmount));
+										if (newValue < p.min) {
+											newValue = new BigNumber(p.min);
+										}
 									}
-								}
 
-								updateValue(newValue);
+									updateValue(newValue);
+								}
 							}}
 						>
 							<i></i>
