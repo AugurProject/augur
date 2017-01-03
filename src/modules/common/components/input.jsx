@@ -102,7 +102,7 @@ export default class Input extends Component {
 						<button
 							className="increment-value unstyled"
 							onClick={() => {
-								if (!isNaN(parseFloat(s.value)) && isFinite(s.value)) {
+								if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
 									let newValue = new BigNumber(s.value || 0);
 
 									if (newValue > p.max) {
@@ -125,7 +125,7 @@ export default class Input extends Component {
 						<button
 							className="decrement-value unstyled"
 							onClick={() => {
-								if (!isNaN(parseFloat(s.value)) && isFinite(s.value)) {
+								if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
 									let newValue = new BigNumber(s.value || 0);
 
 									if (newValue > p.max) {
