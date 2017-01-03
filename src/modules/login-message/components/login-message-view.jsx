@@ -76,6 +76,21 @@ const LoginMessagePage = p => (
 				<li>
 					Reordered loadLoginAccountDependents actions: registration timestamp lookup now happens before updateAssets.
 				</li>
+				<li>
+					Added allAssetsLoaded method to the balances selector.
+				</li>
+				<li>
+					Added fundNewAccount the transaction relayer.
+				</li>
+				<li>
+					The default transaction constructor now allows custom message and description fields.
+				</li>
+				<li>
+					The updateAssets callback now only fires once, after all assets are loaded.
+				</li>
+				<li>
+					The FUND_ACCOUNT header text in the transactions display is now &quot;Fund Account&quot;.
+				</li>
 			</ol>
 			<h3>January 1, 2017</h3>
 			<ol>
