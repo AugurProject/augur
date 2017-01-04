@@ -128,8 +128,28 @@ export function constructTransferTransaction(log) {
 export function constructWithdrawTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Withdraw Ether';
-	transaction.message = `withdrew ${formatEther(log.value).full}`;
 	transaction.description = 'Convert tradeable Ether token to Ether';
+	transaction.message = `withdrew ${formatEther(log.value).full}`;
+	return transaction;
+}
+
+export function constructFundedAccountTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'fund_account';
+	if (log.cashBalance && log.repBalance) {
+		transaction.data.balances = [{
+			change: formatEther(log.cashBalance, { positiveSign: true }),
+			balance: formatEther(log.cashBalance)
+		}, {
+			change: formatRep(log.repBalance, { positiveSign: true }),
+			balance: formatRep(log.repBalance)
+		}];
+	}
+	if (log.inProgress) {
+		transaction.message = 'requesting testnet funding';
+	} else {
+		transaction.message = '';
+	}
 	return transaction;
 }
 
@@ -300,6 +320,8 @@ export function constructTransaction(label, log, isRetry, callback) {
 				return constructCollectedFeesTransaction(log);
 			case 'deposit':
 				return constructDepositTransaction(log);
+			case 'fundedAccount':
+				return constructFundedAccountTransaction(log);
 			case 'penalizationCaughtUp':
 				return constructPenalizationCaughtUpTransaction(log);
 			case 'registration':
