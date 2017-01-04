@@ -3,7 +3,6 @@ export const NO_RELAY = [
 	'sellCompleteSets',
 	'trade',
 	'short_sell',
-	'cancel',
 	'commitTrade',
 	'send',
 	'sendFrom',
