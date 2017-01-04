@@ -47,21 +47,27 @@ export function constructBasicTransaction(hash, status, blockNumber, timestamp, 
 	return transaction;
 }
 
+export function constructDefaultTransaction(label, log) {
+	const transaction = { data: {} };
+	transaction.type = label;
+	transaction.message = log.message;
+	transaction.description = log.description || JSON.stringify(log);
+	return transaction;
+}
+
 export function constructApprovalTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Approved to Send Reputation';
 	transaction.description = `Approve ${log._spender} to send Reputation`;
-	transaction.message = `approved`;
+	transaction.message = log.inProgress ? 'approving' : 'approved';
 	return transaction;
 }
 
 export function constructCollectedFeesTransaction(log) {
-	console.debug('collect fees log:', log);
 	const transaction = { data: {} };
 	const repGain = abi.bignum(log.repGain);
 	const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
 	transaction.type = `Reporting Payment`;
-	transaction.message = `reported with ${formatRep(initialRepBalance).full}`;
 	if (log.totalReportingRep) {
 		const totalReportingRep = abi.bignum(log.totalReportingRep);
 		if (!totalReportingRep.eq(constants.ZERO)) {
@@ -80,6 +86,8 @@ export function constructCollectedFeesTransaction(log) {
 		}];
 	}
 	transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
+	const action = log.inProgress ? 'reporting' : 'reported';
+	transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
 	return transaction;
 }
 
@@ -87,7 +95,8 @@ export function constructDepositTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Deposit Ether';
 	transaction.description = 'Convert Ether to tradeable Ether token';
-	transaction.message = `deposited ${formatEther(log.value).full}`;
+	const action = log.inProgress ? 'depositing' : 'deposited';
+	transaction.message = `${action} ${formatEther(log.value).full}`;
 	return transaction;
 }
 
@@ -95,7 +104,8 @@ export function constructRegistrationTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Register New Account';
 	transaction.description = `Register account ${log.sender.replace('0x', '')}`;
-	transaction.message = `registration timestamp saved`;
+	const action = log.inProgress ? 'saving' : 'saved';
+	transaction.message = `${action} registration timestamp`;
 	return transaction;
 }
 
@@ -110,18 +120,20 @@ export function constructPenalizationCaughtUpTransaction(log) {
 			balance: formatRep(log.newRepBalance)
 		}];
 	}
-	transaction.message = `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`;
+	const action = log.inProgress ? 'catching up' : 'caught up';
+	transaction.message = `${action} ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`;
 	return transaction;
 }
 
 export function constructTransferTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Transfer Reputation';
-	transaction.message = `transferred ${formatRep(log._value).full}`;
 	transaction.description = `Transfer Reputation from ${log._from} to ${log._to}`;
 	transaction.data.balances = [{
 		change: formatRep(log._value, { positiveSign: true })
 	}];
+	const action = log.inProgress ? 'transferring' : 'transferred';
+	transaction.message = `${action} ${formatRep(log._value).full}`;
 	return transaction;
 }
 
@@ -129,7 +141,8 @@ export function constructWithdrawTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Withdraw Ether';
 	transaction.description = 'Convert tradeable Ether token to Ether';
-	transaction.message = `withdrew ${formatEther(log.value).full}`;
+	const action = log.inProgress ? 'withdrawing' : 'withdrew';
+	transaction.message = `${action} ${formatEther(log.value).full}`;
 	return transaction;
 }
 
@@ -145,19 +158,7 @@ export function constructFundedAccountTransaction(log) {
 			balance: formatRep(log.repBalance)
 		}];
 	}
-	if (log.inProgress) {
-		transaction.message = 'requesting testnet funding';
-	} else {
-		transaction.message = '';
-	}
-	return transaction;
-}
-
-export function constructDefaultTransaction(label, log) {
-	const transaction = { data: {} };
-	transaction.type = label;
-	transaction.message = log.message;
-	transaction.description = log.description || JSON.stringify(log);
+	transaction.message = log.inProgress ? 'requesting testnet funding' : '';
 	return transaction;
 }
 
@@ -172,13 +173,14 @@ export function constructMarketCreatedTransaction(log, market, dispatch) {
 	transaction.marketCreationFee = formatEther(log.marketCreationFee);
 	transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
 	transaction.data.bond = { label: 'event validity', value: formatEther(log.eventBond) };
+	const action = log.inProgress ? 'creating' : 'created';
+	transaction.message = `${action} market`;
 	return transaction;
 }
 
 export function constructPayoutTransaction(log, market, dispatch) {
 	const transaction = { data: {} };
 	transaction.type = 'Claim Trading Payout';
-	transaction.message = `closed out ${formatShares(log.shares).full}`;
 	transaction.description = market.description;
 	if (log.cashPayout) {
 		transaction.data.balances = [{
@@ -187,6 +189,8 @@ export function constructPayoutTransaction(log, market, dispatch) {
 		}];
 	}
 	transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
+	const action = log.inProgress ? 'closing out' : 'closed out';
+	transaction.message = `${action} ${formatShares(log.shares).full}`;
 	return transaction;
 }
 
@@ -202,11 +206,6 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
 	const transaction = { data: {} };
 	transaction.type = 'Compare Report To Consensus';
 	const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
-	if (log.reportValue === log.outcome) {
-		transaction.message = `✔ report ${formattedReport} matches consensus`;
-	} else {
-		transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
-	}
 	transaction.description = market.description;
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 	if (log.repchange && log.newafterrep) {
@@ -214,6 +213,15 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
 			change: formatRep(log.repchange, { positiveSign: true }),
 			balance: formatRep(log.newafterrep)
 		}];
+	}
+	if (log.inProgress) {
+		transaction.message = 'comparing report to consensus';
+	} else {
+		if (log.reportValue === log.outcome) {
+			transaction.message = `✔ report ${formattedReport} matches consensus`;
+		} else {
+			transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
+		}
 	}
 	return transaction;
 }
@@ -225,7 +233,8 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
 	transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
 	transaction.data.market = market;
 	transaction.data.isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
-	transaction.message = `committed to report`;
+	const action = log.inProgress ? 'committing' : 'committed';
+	transaction.message = `${action} to report`;
 	if (decryptionKey) {
 		const formattedReport = formatReportedOutcome(augur.parseAndDecryptReport([
 			log.encryptedReport,
@@ -248,7 +257,8 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 	const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
 	transaction.data.reportedOutcomeID = formattedReport;
 	transaction.data.outcome = { name: formattedReport };
-	transaction.message = `revealed report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
+	const action = log.inProgress ? 'revealing' : 'revealed';
+	transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
 	return transaction;
 }
 
