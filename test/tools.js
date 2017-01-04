@@ -239,9 +239,10 @@ module.exports = {
         var makerFee = "0.01";
         var numCategories = 7;
         var categories = new Array(numCategories);
-        for (var i = 0; i < numCategories; ++i) {
-            categories[i] = "Outcome " + i.toString();
+        for (var i = 1; i <= numCategories; ++i) {
+            categories[i - 1] = "Outcome " + i.toString();
         }
+        console.log('creating categories:', categories);
         var markets = {};
 
         // create a binary market

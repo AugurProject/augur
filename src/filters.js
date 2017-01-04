@@ -43,7 +43,7 @@ module.exports = function () {
             if (msg.sender) fmt.sender = abi.format_address(msg.sender);
             if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
             if (msg.type) fmt.type = this.format_trade_type(msg.type);
-            if (msg.price) fmt.price = abi.unfix(abi.hex(msg.price, true), "string");
+            if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
             if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
             return fmt;
         },
@@ -61,7 +61,7 @@ module.exports = function () {
                     fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
                     fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
                     fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
-                    fmt.repGain = abi.unfix(abi.hex(msg.repGain, true), "string");
+                    fmt.repGain = abi.unfix_signed(msg.repGain, "string");
                     fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
                     fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
                     fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
@@ -70,6 +70,11 @@ module.exports = function () {
                 case "deposit":
                     fmt = this.format_common_fields(msg);
                     fmt.value = abi.unfix(msg.value, "string");
+                    return fmt;
+                case "fundedAccount":
+                    fmt = this.format_common_fields(msg);
+                    fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+                    fmt.repBalance = abi.unfix(msg.repBalance, "string");
                     return fmt;
                 case "log_add_tx":
                     fmt = this.format_common_fields(msg);
@@ -87,7 +92,7 @@ module.exports = function () {
                     fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
-                    fmt.onChainPrice = abi.unfix(abi.hex(msg.onChainPrice, true), "string");
+                    fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
                     fmt.outcome = parseInt(msg.outcome, 16);
                     return fmt;
                 case "marketCreated":
@@ -105,13 +110,13 @@ module.exports = function () {
                     fmt = this.format_common_fields(msg);
                     fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-                    fmt.repLost = abi.unfix(abi.hex(msg.repLost, true)).neg().toFixed();
+                    fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
                     fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
                     return fmt;
                 case "penalize":
                     fmt = this.format_common_fields(msg);
                     fmt.oldrep = abi.unfix(msg.oldrep, "string");
-                    fmt.repchange = abi.unfix(abi.hex(msg.repchange, true), "string");
+                    fmt.repchange = abi.unfix_signed(msg.repchange, "string");
                     fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
                     fmt.p = abi.unfix(msg.p, "string");
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
