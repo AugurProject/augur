@@ -450,6 +450,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
 	const price = formatEther(trade.price);
 	const shares = formatShares(trade.amount);
+	const action = trade.inProgress ? 'canceling' : 'canceled';
 	return {
 		[trade.transactionHash]: {
 			type: 'cancel_order',
@@ -462,7 +463,7 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 				outcomeID,
 				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 			},
-			message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
+			message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
 			numShares: shares,
 			noFeePrice: price,
 			avgPrice: price,
