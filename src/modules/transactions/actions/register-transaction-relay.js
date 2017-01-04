@@ -6,6 +6,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
+import selectOrder from '../../bids-asks/selectors/select-order';
 
 export function unpackTransactionParameters(tx) {
 	const params = tx.data.params;
