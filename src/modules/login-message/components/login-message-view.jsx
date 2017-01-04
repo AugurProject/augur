@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+       		<h3>January 4, 2017</h3>
+			<ol>
+				<li>
+					Moved the in-progress display logic for order cancellation to the transaction relayer.  Removed manual transaction display updates from cancel transactions.
+				</li>
+				<li>
+					Added a single order selector (selects an order from the order book using its order ID AKA trade ID) to the bids-asks module.
+				</li>
+			</ol>
 			<h3>January 3, 2017</h3>
 			<ol>
 				<li>
