@@ -15,6 +15,16 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 import getValue from 'utils/get-value';
 
 export default class OutcomeTrade extends Component {
+	static propTypes = {
+		selectedShareDenomination: PropTypes.string,
+		updateSelectedTradeSide: PropTypes.func,
+		marketType: PropTypes.string,
+		minLimitPrice: PropTypes.string,
+		maxLimitPrice: PropTypes.string,
+		submitTrade: PropTypes.func,
+		tradeSummary: PropTypes.object
+	};
+
 	constructor(props) {
 		super(props);
 
@@ -30,6 +40,7 @@ export default class OutcomeTrade extends Component {
 			incrementAmount: 0.1
 		};
 
+		this.updateTimestamp = this.updateTimestamp.bind(this);
 		this.updateSelectedNav = this.updateSelectedNav.bind(this);
 		this.handleSharesInput = this.handleSharesInput.bind(this);
 		this.validateShares = this.validateShares.bind(this);
@@ -58,9 +69,22 @@ export default class OutcomeTrade extends Component {
 		const oldID = getValue(this.props, 'selectedOutcome.id');
 		const newID = getValue(nextProps, 'selectedOutcome.id');
 
-		if (oldID !== newID) {
-			this.setState({ timestamp: Date.now() }); // forces re-render of trade component via key value
+		if (oldID !== newID) { // If the outcome selection changes, re-render trade component
+			this.updateTimestamp();
 		}
+
+		const oldTradeOrders = getValue(this.props, 'tradeSummary.tradeOrders');
+		const newTradeOrders = getValue(nextProps, 'tradeSummary.tradeOrders');
+
+		// Currently whenever a trade is submitted, all market's in-process orders are cleared
+		// Will re-render trade component upon tradeOrders clearing
+		if ((oldTradeOrders.length !== newTradeOrders.length) && newTradeOrders.length === 0) {
+			this.updateTimestamp();
+		}
+	}
+
+	updateTimestamp() { // forces re-render of trade component via key value
+		this.setState({ timestamp: Date.now() });
 	}
 
 	updateSelectedNav(selectedTradeSide, id) {
@@ -197,14 +221,6 @@ export default class OutcomeTrade extends Component {
 		);
 	}
 }
-
-OutcomeTrade.propTypes = {
-	selectedShareDenomination: PropTypes.string,
-	updateSelectedTradeSide: PropTypes.func,
-	marketType: PropTypes.string,
-	minLimitPrice: PropTypes.string,
-	maxLimitPrice: PropTypes.string
-};
 
 function denominateShares(shares, fromDenomination, toDenomination) {
 	if (shares == null || fromDenomination === toDenomination) {
