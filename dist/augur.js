@@ -22407,7 +22407,7 @@ module.exports={
         "EventResolution": "0x344853ce5e6ae35e531d9d88659ad62d38ee5a77", 
         "Events": "0x60e183e98f7f056727f7b15c6a9d5446d2acd491", 
         "ExpiringEvents": "0x6acbe2108ec4598a9eee07f792d167f7b589c61c", 
-        "Faucets": "0x070117e70485aeef78a00cfdfe1b0fe8e98c40f1", 
+        "Faucets": "0x9dae73c0011a77068d4df97b4824c7b22084fd15", 
         "ForkPenalize": "0xdc449eca0da544171347fa10c50c2452f3afd06d", 
         "Forking": "0x7c9245b7c4845165d277d9f3708f0e561c217b16", 
         "FxpFunctions": "0x0116c1d2c5ca940e9010ec3f51101d1723a7a1a2", 
