@@ -1,7 +1,8 @@
 const path = require('path');
 const shell = require('shelljs');
-const chalk = require('chalk');
 const Listr = require('listr');
+
+const { title, notice, dim } = require('./common/colors');
 
 const SERVER = path.resolve(__dirname, '../server.js');
 
@@ -11,10 +12,10 @@ process.env.FORCE_COLOR = true;
 // START DEVELOPMENT SERVER
 //	NOTE -- this will also automatically spin up webpack w/ HMR (Hot Module Reload)
 shell.echo(`
-${chalk.cyan('== Starting Augur Development Server ==')}
+${title('== Starting Augur Development Server ==')}
 
-${chalk.yellow('NOTE')} -- ${chalk.gray(`The initial build takes a while.
-	You'll need to wait until the full build is finished without errors to utilize.`)}
+${notice('NOTE')}	${dim(`| The initial build takes a while.
+	| You'll need to wait until the full build is finished without errors to utilize.`)}
 `
 );
 
