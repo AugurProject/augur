@@ -64,6 +64,12 @@ const LoginMessagePage = p => (
 				<li>
 					Fixed winning outcome shares selection for categorical markets.
 				</li>
+				<li>
+					Transaction messaging now distinguishes between in-progress transactions (present tense) and completed transactions (past tense).
+				</li>
+				<li>
+					Added a new log (fundedAccount) to the faucets contract, so that fundNewAccount transactions are logged and can be loaded into transaction history.
+				</li>
 			</ol>
 			<h3>January 2, 2017</h3>
 			<ol>
