@@ -2,14 +2,14 @@ const path = require('path');
 const shell = require('shelljs');
 const Listr = require('listr');
 
-const { title } = require('./common/colors');
+const colors = require('./common/colors');
 
 const srcPath = path.resolve(__dirname, '../src');
 const testPath = path.resolve(__dirname, '../test');
 
 process.env.FORCE_COLOR = true;
 
-shell.echo(title(`
+shell.echo(colors.title(`
 == Running Augur Linting ==
 `));
 

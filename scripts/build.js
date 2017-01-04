@@ -2,7 +2,7 @@ const path = require('path');
 const shell = require('shelljs');
 const Listr = require('listr');
 
-const { title, notice, dim } = require('./common/colors');
+const colors = require('./common/colors');
 
 const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
@@ -11,9 +11,9 @@ process.env.NODE_ENV = 'production';
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
-${title('== Building Augur ==')}
+${colors.title('== Building Augur ==')}
 
-${notice('NOTE')}	${dim('| This will take some time.')}
+${colors.notice('NOTE')}	${colors.dim('| This will take some time.')}
 `);
 
 const removeBuildDir = new Promise((resolve, reject) => {
