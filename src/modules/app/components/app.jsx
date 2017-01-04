@@ -82,6 +82,8 @@ export default class App extends Component {
 
 	// Touch Events
 	attachTouchHandler() {
+		delete Hammer.defaults.cssProps.userSelect; // Allows for text selection
+
 		const options = {
 			dragLockToAxis: true,
 			dragBlockHorizontal: true,
