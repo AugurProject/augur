@@ -216,12 +216,10 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
 	}
 	if (log.inProgress) {
 		transaction.message = 'comparing report to consensus';
+	} else if (log.reportValue === log.outcome) {
+		transaction.message = `✔ report ${formattedReport} matches consensus`;
 	} else {
-		if (log.reportValue === log.outcome) {
-			transaction.message = `✔ report ${formattedReport} matches consensus`;
-		} else {
-			transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
-		}
+		transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
 	}
 	return transaction;
 }
