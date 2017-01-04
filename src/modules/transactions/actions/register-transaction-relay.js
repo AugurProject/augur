@@ -26,7 +26,8 @@ export function constructRelayTransaction(tx, status) {
 			...unpackTransactionParameters(tx),
 			transactionHash: tx.response.hash,
 			blockNumber: tx.response.blockNumber,
-			timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10)
+			timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
+			inProgress: !tx.response.blockHash
 		};
 		console.log('unpacked:', JSON.stringify(p, null, 2));
 		const hash = tx.response.hash;
@@ -61,7 +62,7 @@ export function constructRelayTransaction(tx, status) {
 				let transaction;
 				switch (method) {
 					case 'fundNewAccount':
-						transaction = dispatch(constructTransaction('fund_account', { ...p, message: '' }));
+						transaction = dispatch(constructTransaction('fundedAccount', p));
 						break;
 					case 'submitReport':
 						transaction = dispatch(constructTransaction('submittedReport', {
