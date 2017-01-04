@@ -53,7 +53,7 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
-       		<h3>January 4, 2017</h3>
+			<h3>January 4, 2017</h3>
 			<ol>
 				<li>
 					Moved the in-progress display logic for order cancellation to the transaction relayer.  Removed manual transaction display updates from cancel transactions.

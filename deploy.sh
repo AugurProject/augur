@@ -4,10 +4,10 @@
 
 yarn
 yarn build
+git add build/*
+git commit -S -am "${1}"
 yarn lint
 yarn test
-git add build/*
-git commit -am "${1}"
 git push origin master
 firebase deploy
 $AUGUR_CORE/load_contracts/update_private_chain_augur.sh
