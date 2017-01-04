@@ -1,5 +1,6 @@
 const path = require('path');
 const shell = require('shelljs');
+const chalk = require('chalk');
 const Listr = require('listr');
 
 const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
@@ -9,9 +10,9 @@ process.env.NODE_ENV = 'production';
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
-== Building Augur ==
+${chalk.cyan('== Building Augur ==')}
 
-NOTE -- This will take some time.
+${chalk.yellow('NOTE')} -- ${chalk.gray('This will take some time.')}
 `);
 
 const removeBuildDir = new Promise((resolve, reject) => {

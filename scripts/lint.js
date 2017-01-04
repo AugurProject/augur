@@ -1,5 +1,6 @@
 const path = require('path');
 const shell = require('shelljs');
+const chalk = require('chalk');
 const Listr = require('listr');
 
 const srcPath = path.resolve(__dirname, '../src');
@@ -7,9 +8,9 @@ const testPath = path.resolve(__dirname, '../test');
 
 process.env.FORCE_COLOR = true;
 
-shell.echo(`
+shell.echo(chalk.cyan(`
 == Running Augur Linting ==
-`);
+`));
 
 const lintSource = new Promise((resolve, reject) => {
 	shell.exec(`eslint --ext .js,.jsx ${srcPath}`, (code) => {
