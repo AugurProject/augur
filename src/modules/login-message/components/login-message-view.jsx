@@ -53,8 +53,35 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 5, 2017</h3>
+			<ol>
+				<li>
+					The messaging for trade, short_sell, and commitTrade transactions is now handled by the transaction relayer.  Deprecated manual transsaction messaging for these functions have been removed.
+				</li>
+				<li>
+					Refactored place-trade: removed dispatcher from placeAsk, placeBid, placeShortAsk, and parametrizeOrder functions, and moved these functions to trade/actions/make-order.
+				</li>
+				<li>
+					Simplified the selectScalarMinimum function and moved it to market/selectors/market.
+				</li>
+			</ol>
 			<h3>January 4, 2017</h3>
 			<ol>
+				<li>
+					Replaced manual transaction processors for trades (buy/sell); refactored and simplified placeTrade.
+				</li>
+				<li>
+					Simplified default message generator in registerTransactionRelay.
+				</li>
+				<li>
+					Removed unused disableAutoMessage transaction property.
+				</li>
+				<li>
+					Fixed bond object in constructMarketCreatedTransaction; fixed constructMarketTransaction parameters; moved marketCreated label out of constructMarketTransaction group.
+				</li>
+				<li>
+					Consolidated create market actions into submitNewMarket; removed manual create market transaction updates.
+				</li>
 				<li>
 					Fixed adjusted-maker-fee calculation in constructLogAddTxTransaction.
 				</li>
