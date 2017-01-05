@@ -50,7 +50,7 @@ const Transaction = (p) => {
 					nodes.action = 'Filled Ask';
 					break;
 				case COMMIT_BUY:
-					nodes.action = 'Commit to Buy'
+					nodes.action = 'Commit to Buy';
 					break;
 				case COMMIT_SELL:
 					nodes.action = 'Commit to Sell';
