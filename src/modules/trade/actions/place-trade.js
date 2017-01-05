@@ -75,7 +75,7 @@ export function placeShortSell(marketID, outcomeID, numShares, limitPrice, total
 		const { loginAccount, orderBooks } = getState();
 		dispatch(updateTradeCommitLock(true));
 		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		shortSell(marketID, outcomeID, numShares, loginAccount.address, getTradeIDs, r => console.debug('cbStatus:', r), (err, res) => {
+		shortSell(marketID, outcomeID, numShares, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('shortSell failed:', err);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
