@@ -388,6 +388,54 @@ export const convertLogsToTransactions = (label, logs, isRetry) => (
 	)
 );
 
+export function constructCommitTradeTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+	console.log('trade:', trade);
+	const hash = trade.transactionHash;
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	const bnPrice = abi.bignum(trade.price);
+	const tradingFees = abi.bignum(trade.takerFee);
+	const bnShares = abi.bignum(trade.amount);
+	const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+	const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+	const totalCostPerShare = totalCost.dividedBy(bnShares);
+	const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+	const type = trade.type === 'buy' ? 'commit_buy' : 'commit_sell';
+	const perfectType = trade.type === 'buy' ? 'committed to buy' : 'committed to sell';
+	const formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
+	const formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
+	const rawPrice = bnPrice;
+	return {
+		[hash]: {
+			type,
+			hash,
+			status,
+			description,
+			data: {
+				marketType,
+				outcomeName: outcomeName || outcomeID,
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `${perfectType} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
+			rawNumShares: bnShares,
+			numShares: shares,
+			rawPrice,
+			noFeePrice: price,
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			rawTradingFees: tradingFees,
+			tradingFees: formatEther(tradingFees),
+			feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+			rawTotalCost: totalCost,
+			rawTotalReturn: totalReturn,
+			totalCost: formattedTotalCost,
+			totalReturn: formattedTotalReturn,
+			gasFees: trade.gasFees ? formatRealEther(trade.gasFees) : null
+		}
+	};
+}
+
 export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
 	const hash = trade.transactionHash;
 	const transactionID = `${hash}-${trade.tradeid}`;
@@ -561,6 +609,9 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID, s
 			}
 			case 'log_cancel': {
 				return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
+			}
+			case 'commitTrade': {
+				return constructCommitTradeTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
 			}
 			default:
 				return null;
