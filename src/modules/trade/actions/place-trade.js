@@ -31,8 +31,10 @@ export function parametrizeOrder(marketID, outcomeID, numShares, limitPrice) {
 
 export function placeBid(marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
+		console.log('placeBid:', marketID, outcomeID, numShares, limitPrice);
+		console.log('parametrized:', ...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)));
 		augur.buy({
-			...parametrizeOrder(marketID, outcomeID, numShares, limitPrice),
+			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
 			onSent: res => console.log('bid sent:', res),
 			onSuccess: res => console.log('bid success:', res),
 			onFailed: err => console.error('bid failed:', err)
@@ -42,8 +44,10 @@ export function placeBid(marketID, outcomeID, numShares, limitPrice) {
 
 export function placeAsk(marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
+		console.log('placeAsk:', marketID, outcomeID, numShares, limitPrice);
+		console.log('parametrized:', ...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)));
 		augur.sell({
-			...parametrizeOrder(marketID, outcomeID, numShares, limitPrice),
+			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
 			onSent: res => console.log('ask sent:', res),
 			onSuccess: res => console.log('ask success:', res),
 			onFailed: err => console.error('ask failed:', err)
@@ -54,7 +58,7 @@ export function placeAsk(marketID, outcomeID, numShares, limitPrice) {
 export function placeShortAsk(marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
 		augur.shortAsk({
-			...parametrizeOrder(marketID, outcomeID, numShares, limitPrice),
+			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
 			onSent: res => console.log('shortAsk sent:', res),
 			onSuccess: res => console.log('shortAsk success:', res),
 			onFailed: err => console.error('shortAsk failed:', err)
