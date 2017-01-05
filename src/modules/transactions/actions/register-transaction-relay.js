@@ -199,15 +199,6 @@ export function registerTransactionRelay() {
 							}
 							tx.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 						}
-						if (transactionsData[hash] && transactionsData[hash].disableAutoMessage) {
-							return dispatch(updateTransactionsData({
-								[hash]: {
-									...tx,
-									...constructBasicTransaction(hash, status, tx.response.blockNumber, timestamp, gasFees),
-									hash
-								}
-							}));
-						}
 						let message;
 						if (tx.response.callReturn && (
 							tx.response.callReturn.constructor === Array ||

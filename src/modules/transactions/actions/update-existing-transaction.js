@@ -25,9 +25,6 @@ export function updateExistingTransaction(transactionID, newTransactionData) {
 		if (typeof transactionsData[transactionID].gasFees === 'string') {
 			updatedTransactionData.gasFees = formatRealEther(transactionsData[transactionID].gasFees);
 		}
-		// if (updatedTransactionData.message) {
-		// 	updatedTransactionData.disableAutoMessage = true;
-		// }
 
 		dispatch(updateTransactionsData({ [transactionID]: updatedTransactionData }));
 		dispatch(updateAssets());
