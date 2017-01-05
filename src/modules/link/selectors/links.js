@@ -41,19 +41,19 @@ export default function () {
 }
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
-	const obj = {
-		href: makeLocation({ page: ACCOUNT }).url,
-		onClick: href => dispatch(updateURL(href))
+	const href = makeLocation({ page: ACCOUNT }).url;
+	return {
+		href,
+		onClick: () => dispatch(updateURL(href))
 	};
-	return obj;
 });
 
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
-	const obj = {
-		href: makeLocation({ page: MARKETS }).url,
-		onClick: href => dispatch(updateURL(href))
+	const href = makeLocation({ page: MARKETS }).url;
+	return {
+		href,
+		onClick: () => dispatch(updateURL(href))
 	};
-	return obj;
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {

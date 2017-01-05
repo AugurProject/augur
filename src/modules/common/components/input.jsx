@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-
 import BigNumber from 'bignumber.js';
-
-import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 
 export default class Input extends Component {
 	// TODO -- Prop Validations
@@ -29,15 +26,15 @@ export default class Input extends Component {
 			value: this.props.value || '',
 			timeoutID: ''
 		};
-		this.shouldComponentUpdate = shouldComponentUpdatePure;
-		this.componentWillReceiveProps = (nextProps) => {
-			if ((nextProps.value || nextProps.value === 0) && nextProps.value !== this.state.value && nextProps.value !== this.props.value) {
-				this.setState({ value: nextProps.value });
-			}
-		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleOnBlur = this.handleOnBlur.bind(this);
 		this.handleClear = this.handleClear.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.value !== nextProps.value) {
+			this.setState({ value: nextProps.value });
+		}
 	}
 
 	handleOnChange = (e) => {
@@ -105,20 +102,22 @@ export default class Input extends Component {
 						<button
 							className="increment-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value || 0);
+								if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+									let newValue = new BigNumber(s.value || 0);
 
-								if (newValue > p.max) {
-									newValue = new BigNumber(p.max);
-								} else if (newValue < p.min) {
-									newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
-								} else {
-									newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
 									if (newValue > p.max) {
 										newValue = new BigNumber(p.max);
+									} else if (newValue < p.min) {
+										newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+									} else {
+										newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+										if (newValue > p.max) {
+											newValue = new BigNumber(p.max);
+										}
 									}
-								}
 
-								updateValue(newValue);
+									updateValue(newValue);
+								}
 							}}
 						>
 							<i></i>
@@ -126,20 +125,22 @@ export default class Input extends Component {
 						<button
 							className="decrement-value unstyled"
 							onClick={() => {
-								let newValue = new BigNumber(s.value || 0);
+								if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+									let newValue = new BigNumber(s.value || 0);
 
-								if (newValue > p.max) {
-									newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
-								} else if (newValue < p.min) {
-									newValue = new BigNumber(p.min);
-								} else {
-									newValue = newValue.minus(new BigNumber(incrementAmount));
-									if (newValue < p.min) {
+									if (newValue > p.max) {
+										newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
+									} else if (newValue < p.min) {
 										newValue = new BigNumber(p.min);
+									} else {
+										newValue = newValue.minus(new BigNumber(incrementAmount));
+										if (newValue < p.min) {
+											newValue = new BigNumber(p.min);
+										}
 									}
-								}
 
-								updateValue(newValue);
+									updateValue(newValue);
+								}
 							}}
 						>
 							<i></i>

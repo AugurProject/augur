@@ -1,6 +1,5 @@
-import memoizerific from 'memoizerific';
 import { updateSelectedFilterSort } from '../../markets/actions/update-selected-filter-sort';
-import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTED } from '../../markets/constants/filter-sort';
+import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
 import store from '../../../store';
 
 export default function () {
@@ -25,12 +24,12 @@ const selectTypeOptions = [
 		value: FILTER_TYPE_OPEN
 	},
 	{
-		label: 'Closed',
-		value: FILTER_TYPE_CLOSED
+		label: 'Reporting',
+		value: FILTER_TYPE_REPORTING
 	},
 	{
-		label: 'Reported',
-		value: FILTER_TYPE_REPORTED
+		label: 'Closed',
+		value: FILTER_TYPE_CLOSED
 	}
 ];
 
@@ -61,7 +60,7 @@ const selectOrderOptions = {
 	isDesc: true
 };
 
-const selectOnChange = memoizerific(2)((type, sort, order) => {
+const selectOnChange = (type, sort, order) => {
 	const { selectedFilterSort } = store.getState();
 
 	const isDesc = order !== null && order !== selectedFilterSort.isDesc ? order : null;
@@ -75,4 +74,4 @@ const selectOnChange = memoizerific(2)((type, sort, order) => {
 	}, {});
 
 	store.dispatch(updateSelectedFilterSort(changes));
-});
+};

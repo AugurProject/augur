@@ -5,5 +5,5 @@ export const FILTER_SORT_ISDESC = true;
 
 // Filter Types
 export const FILTER_TYPE_OPEN = 'open';
+export const FILTER_TYPE_REPORTING = 'reporting';
 export const FILTER_TYPE_CLOSED = 'closed';
-export const FILTER_TYPE_REPORTED = 'reported';
