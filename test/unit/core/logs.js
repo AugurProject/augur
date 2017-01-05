@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 17 tests total
+// 18 tests total
 
 describe("logs.parseShortSellLogs", function() {
 	// 3 tests total
@@ -474,7 +474,7 @@ describe("logs.getMarketPriceHistory", function() {
 });
 
 describe("logs.getShortSellLogs", function() {
-	// 5 tests total
+	// 6 tests total
 	var test = function(t) {
 		it(t.description, function() {
 			var getLogs = augur.rpc.getLogs;
@@ -498,7 +498,7 @@ describe("logs.getShortSellLogs", function() {
 				toBlock: 'latest',
 				address: augur.contracts.Trade,
 				topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
-				timeout: 480000
+				timeout: augur.constants.GET_LOGS_TIMEOUT
 			});
  		}
 	});
@@ -515,7 +515,7 @@ describe("logs.getShortSellLogs", function() {
 				toBlock: '0x0c1',
 				address: augur.contracts.Trade,
 				topics: [augur.api.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
-				timeout: 480000
+				timeout: augur.constants.GET_LOGS_TIMEOUT
 			});
  		}
 	});
@@ -531,7 +531,7 @@ describe("logs.getShortSellLogs", function() {
 				toBlock: '0x0c1',
 				address: augur.contracts.Trade,
 				topics: [augur.api.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12'],
-				timeout: 480000
+				timeout: augur.constants.GET_LOGS_TIMEOUT
 			});
 		},
 		getLogs: function(filter, cb) {
@@ -578,9 +578,201 @@ describe("logs.getShortSellLogs", function() {
 			// assertions for this test are fround in the callback function above.
  		}
 	});
+
+	test({
+		description: 'Should handle a callback passed in the options slot and getLogs returns logs without an error',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs[0], {
+				fromBlock: '0x1',
+				toBlock: 'latest',
+				address: augur.contracts.Trade,
+				topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		},
+		callback: undefined,
+		getLogs: function(filter, cb) {
+			// going to simply return filters in an array to represent "logs" since the logs aren't important to this function.
+			cb([filter]);
+		},
+		assertions: function(o) {
+			// assertions for this test are fround in the callback function above.
+ 		}
+	});
 });
 
-describe.skip("logs.getCompleteSetsLogs", function() {});
+describe("logs.getCompleteSetsLogs", function() {
+	// 5 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			var getLogs = augur.rpc.getLogs;
+			augur.rpc.getLogs = t.getLogs;
+
+			t.assertions(augur.getCompleteSetsLogs(t.account, t.options, t.callback));
+
+			augur.rpc.getLogs = getLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no options, no callback',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: undefined,
+		callback: undefined,
+		getLogs: function(filters) {
+			return filters;
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x1',
+				toBlock: 'latest',
+				address: augur.contracts.CompleteSets,
+				topics: [
+					augur.api.events.completeSets_logReturn.signature,
+					'0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
+					null,
+					null
+				],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle options with shortAsk true but no market or type, no callback',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: true, fromBlock: '0x0b1', toBlock: '0x0b2'},
+		callback: undefined,
+		getLogs: function(filters) {
+			return filters;
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.contracts.BuyAndSellShares,
+				topics: [
+					augur.api.events.completeSets_logReturn.signature,
+					'0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
+					null,
+					null
+				],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle options with shortAsk true, market, and type, no callback',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: true, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+		callback: undefined,
+		getLogs: function(filters) {
+			return filters;
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.contracts.BuyAndSellShares,
+				topics: [
+					augur.api.events.completeSets_logReturn.signature,
+					'0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
+					'0x00000000000000000000000000000000000000000000000000000000000000a1',
+					'0x0000000000000000000000000000000000000000000000000000000000000001'
+				],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle options with shortAsk false, market, and type, no callback',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+		callback: undefined,
+		getLogs: function(filters) {
+			return filters;
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.contracts.CompleteSets,
+				topics: [
+					augur.api.events.completeSets_logReturn.signature,
+					'0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
+					'0x00000000000000000000000000000000000000000000000000000000000000a1',
+					'0x0000000000000000000000000000000000000000000000000000000000000001'
+				],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle options with shortAsk false, market, and type, and a callback',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'sell', market: '0x0a1' },
+		callback: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs[0], {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.contracts.CompleteSets,
+				topics: [
+					augur.api.events.completeSets_logReturn.signature,
+					'0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
+					'0x00000000000000000000000000000000000000000000000000000000000000a1',
+					'0x0000000000000000000000000000000000000000000000000000000000000002'
+				],
+				timeout: augur.constants.GET_LOGS_TIMEOUT
+			});
+		},
+		getLogs: function(filters, cb) {
+			// simply return the filters in an array so we can test that we sent the expected filters to getLogs.
+			cb([filters]);
+		},
+		assertions: function(o) {
+			// callback above will work as the assertion for this test
+		}
+	});
+
+	test({
+		description: 'Should handle options with a callback when logs returns an error object',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+		callback: function(err, logs) {
+			assert.isNull(logs);
+			assert.deepEqual(err, { error: 'this is an error!' });
+		},
+		getLogs: function(filters, cb) {
+			cb({ error: 'this is an error!' });
+		},
+		assertions: function(o) {
+			// callback above will work as the assertion for this test
+		}
+	});
+
+	test({
+		description: 'Should handle options with a callback but getLogs returns undefined',
+		account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+		options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+		callback: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs, []);
+		},
+		getLogs: function(filters, cb) {
+			cb(undefined);
+		},
+		assertions: function(o) {
+			// callback above will work as the assertion for this test
+		}
+	});
+});
+
 describe.skip("logs.sortByBlockNumber", function() {});
 describe.skip("logs.buildTopicsList", function() {});
 describe.skip("logs.parametrizeFilter", function() {});
