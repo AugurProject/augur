@@ -442,34 +442,8 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 			rawTotalCost: totalCost,
 			rawTotalReturn: totalReturn,
 			totalCost: formattedTotalCost,
-			totalReturn: formattedTotalReturn
-		}
-	};
-}
-
-export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
-	const price = formatEther(trade.price);
-	const shares = formatShares(trade.amount);
-	const action = trade.inProgress ? 'canceling' : 'canceled';
-	return {
-		[trade.transactionHash]: {
-			type: 'cancel_order',
-			status,
-			description,
-			data: {
-				order: { type: trade.type, shares },
-				marketType,
-				outcome: { name: outcomeName || outcomeID },
-				outcomeID,
-				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
-			},
-			message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
-			numShares: shares,
-			noFeePrice: price,
-			avgPrice: price,
-			timestamp: formatDate(new Date(trade.timestamp * 1000)),
-			hash: trade.transactionHash,
-			totalReturn: formatEther(trade.cashRefund)
+			totalReturn: formattedTotalReturn,
+			gasFees: trade.gasFees ? formatRealEther(trade.gasFees) : null
 		}
 	};
 }
@@ -483,16 +457,8 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 	const maxValue = abi.bignum(market.maxValue);
 	const minValue = abi.bignum(market.minValue);
 	const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
-	const adjustedFees = augur.calculateFxpMakerTakerFees(
-		augur.calculateFxpAdjustedTradingFee(
-			fees.tradingFee,
-			abi.fix(trade.price),
-			abi.fix(maxValue.minus(minValue))
-		),
-		fees.makerProportionOfFee,
-		false,
-		true
-	);
+	const range = marketType === SCALAR ? abi.fix(maxValue.minus(minValue)) : constants.ONE;
+	const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
 	const fxpShares = abi.fix(trade.amount);
 	const fxpPrice = abi.fix(trade.price);
 	const tradingFees = adjustedFees.maker.times(fxpShares)
@@ -530,7 +496,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 			numShares: shares,
 			noFeePrice: price,
 			freeze: {
-				verb: 'froze',
+				verb: trade.inProgress ? 'freezing' : 'froze',
 				noFeeCost: trade.type === 'buy' ? formatEther(abi.unfix(noFeeCost)) : undefined,
 				tradingFees: formatEther(abi.unfix(tradingFees))
 			},
@@ -540,7 +506,36 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 			tradingFees: formatEther(abi.unfix(tradingFees)),
 			feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
 			totalCost: trade.type === 'buy' ? formatEther(abi.unfix(totalCost)) : undefined,
-			totalReturn: trade.type === 'sell' ? formatEther(abi.unfix(totalReturn)) : undefined
+			totalReturn: trade.type === 'sell' ? formatEther(abi.unfix(totalReturn)) : undefined,
+			gasFees: trade.gasFees ? formatRealEther(trade.gasFees) : null
+		}
+	};
+}
+
+export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	const action = trade.inProgress ? 'canceling' : 'canceled';
+	return {
+		[trade.transactionHash]: {
+			type: 'cancel_order',
+			status,
+			description,
+			data: {
+				order: { type: trade.type, shares },
+				marketType,
+				outcome: { name: outcomeName || outcomeID },
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
+			numShares: shares,
+			noFeePrice: price,
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			hash: trade.transactionHash,
+			totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
+			gasFees: trade.gasFees ? formatRealEther(trade.gasFees) : null
 		}
 	};
 }
