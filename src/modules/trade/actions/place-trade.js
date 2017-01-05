@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
-import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
+import { updateTradeCommitLock } from '../../trade/actions/update-trade-commitment';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { trade } from '../../trade/actions/helpers/trade';
 import { shortSell } from '../../trade/actions/helpers/short-sell';
