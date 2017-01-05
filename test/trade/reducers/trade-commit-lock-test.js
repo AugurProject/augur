@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import reducer from 'modules/trade/reducers/trade-commit-lock';
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commit-lock';
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 describe('src/modules/trade/reducers/trade-commit-lock.js', () => {
 	it('should handle flipping the trade commit lock', () => {
