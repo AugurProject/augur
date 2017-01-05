@@ -199,21 +199,11 @@ export function registerTransactionRelay() {
 							}
 							tx.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 						}
-						let message;
-						if (tx.response.callReturn && (
-							tx.response.callReturn.constructor === Array ||
-							tx.response.callReturn.constructor === Object)
-						) {
-							message = JSON.stringify(tx.response.callReturn);
-						} else {
-							message = tx.response.callReturn;
-						}
 						dispatch(updateTransactionsData({
 							[hash]: {
 								...tx,
 								...constructBasicTransaction(hash, status, tx.response.blockNumber, timestamp, gasFees),
-								message,
-								hash
+								message: tx.response.callReturn && tx.response.callReturn.toString()
 							}
 						}));
 					} else if (transactionsData[hash]) {
