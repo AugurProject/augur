@@ -162,17 +162,13 @@ export function constructFundedAccountTransaction(log) {
 	return transaction;
 }
 
-export function constructMarketCreatedTransaction(log, market, dispatch) {
+export function constructMarketCreatedTransaction(log, description, dispatch) {
 	const transaction = { data: {} };
 	transaction.type = 'create_market';
-	if (log.description) {
-		transaction.description = log.description.split('~|>')[0];
-	} else {
-		transaction.description = market ? market.description : log.marketID.replace('0x', '');
-	}
+	transaction.description = description.split('~|>')[0];
 	transaction.marketCreationFee = formatEther(log.marketCreationFee);
 	transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
-	transaction.data.bond = { label: 'event validity', value: formatEther(log.eventBond) };
+	transaction.bond = { label: 'event validity', value: formatEther(log.eventBond) };
 	const action = log.inProgress ? 'creating' : 'created';
 	transaction.message = `${action} market`;
 	return transaction;
@@ -289,15 +285,13 @@ export function loadDataForReportingTransaction(label, log, isRetry, callback) {
 	};
 }
 
-export function constructMarketTransaction(label, log, marketID, market) {
+export function constructMarketTransaction(label, log, market) {
 	return (dispatch, getState) => {
 		switch (label) {
-			case 'marketCreated':
-				return constructMarketCreatedTransaction(log, marketID, market, dispatch);
 			case 'payout':
-				return constructPayoutTransaction(log, marketID, market, dispatch);
+				return constructPayoutTransaction(log, market.id, market, dispatch);
 			case 'tradingFeeUpdated':
-				return constructTradingFeeUpdatedTransaction(log, marketID, market, dispatch);
+				return constructTradingFeeUpdatedTransaction(log, market.id, market, dispatch);
 			default:
 				return null;
 		}
@@ -338,7 +332,12 @@ export function constructTransaction(label, log, isRetry, callback) {
 				return constructTransferTransaction(log);
 			case 'withdraw':
 				return constructWithdrawTransaction(log);
-			case 'marketCreated':
+			case 'marketCreated': {
+				if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
+				const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
+				if (!market) break;
+				return constructMarketCreatedTransaction(log, market.description, dispatch);
+			}
 			case 'payout':
 			case 'tradingFeeUpdated': {
 				const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
