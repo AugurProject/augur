@@ -1,12 +1,13 @@
 const shell = require('shelljs');
-const chalk = require('chalk');
 const Listr = require('listr');
+
+const colors = require('./common/colors');
 
 process.env.NODE_ENV = 'test';
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
-${ process.argv[2] ? chalk.cyan(`== Running Test: ${process.argv[2]} ==`) : chalk.cyan(`== Running All Augur Tests ==`)}
+${ process.argv[2] ? colors.title(`== Running Test: ${process.argv[2]} ==`) : colors.title(`== Running All Augur Tests ==`)}
 `);
 
 const tests = new Promise((resolve, reject) => {
