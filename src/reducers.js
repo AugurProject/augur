@@ -35,6 +35,7 @@ import selectedMarketsHeader from './modules/markets/reducers/selected-markets-h
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
+import tradeCommitment from './modules/trade/reducers/trade-commitment';
 import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-sets-lock';
 import smallestPositions from './modules/my-positions/reducers/smallest-positions';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
@@ -85,6 +86,7 @@ export function createReducer() {
 
 		tradesInProgress,
 		tradeCommitLock,
+		tradeCommitment,
 		sellCompleteSetsLock,
 		smallestPositions,
 		createMarketInProgress,
