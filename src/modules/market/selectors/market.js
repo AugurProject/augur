@@ -112,6 +112,12 @@ export const selectMarket = (marketID) => {
 		store.dispatch);
 };
 
+export const selectScalarMinimum = (market) => {
+	const scalarMinimum = {};
+	if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
+	return scalarMinimum;
+};
+
 export const selectMarketIDFromEventID = (eventID) => {
 	const marketIDs = store.getState().eventMarketsMap[eventID];
 	if (marketIDs && marketIDs.length) return marketIDs[0];
