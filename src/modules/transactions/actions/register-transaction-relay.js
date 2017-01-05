@@ -47,8 +47,8 @@ export function constructRelayTransaction(tx, status) {
 					amount: abi.unfix(p.amount, 'string'),
 					gasFees
 				}, p.market, p.outcome, status));
-			case 'shortAsk':
 			case 'sell':
+			case 'shortAsk':
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'sell',
 					...p,
@@ -64,10 +64,40 @@ export function constructRelayTransaction(tx, status) {
 					gasFees
 				}, order.market, order.outcome, status));
 			}
-			// note: trade and short_sell messaging done manually until the next contract update
-			case 'trade':
-			case 'short_sell':
-				return null;
+			case 'commitTrade': {
+				const tradeIDs = getState().tradeCommitment;
+				const numTradeIDs = tradeIDs.length;
+				const transactions = new Array(numTradeIDs);
+				const gasFeesPerTrade = abi.bignum(gasFees).dividedBy(numTradeIDs).toFixed();
+				for (let i = 0; i < numTradeIDs; ++i) {
+					const order = selectOrder(tradeIDs[i]);
+					transactions[i] = dispatch(constructTradingTransaction('commitTrade', {
+						...order,
+						gasFees: gasFeesPerTrade
+					}, order.market, order.outcome, status));
+				}
+				return transactions;
+			}
+			case 'short_sell': {
+				const order = selectOrder(p.buyer_trade_id);
+				return dispatch(constructTradingTransaction('log_fill_tx', {
+					...order,
+					gasFees
+				}, order.market, order.outcome, status));
+			}
+			case 'trade': {
+				const numTradeIDs = p.trade_ids.length;
+				const transactions = new Array(numTradeIDs);
+				const gasFeesPerTrade = abi.bignum(gasFees).dividedBy(numTradeIDs).toFixed();
+				for (let i = 0; i < numTradeIDs; ++i) {
+					const order = selectOrder(p.trade_ids[i]);
+					transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
+						...order,
+						gasFees: gasFeesPerTrade
+					}, order.market, order.outcome, status));
+				}
+				return transactions;
+			}
 			default: {
 				let transaction;
 				switch (method) {
