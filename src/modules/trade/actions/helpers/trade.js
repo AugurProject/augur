@@ -3,6 +3,7 @@ import async from 'async';
 import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 import { loadBidsAsks } from '../../../bids-asks/actions/load-bids-asks';
+import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
@@ -52,7 +53,7 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					max_amount: maxAmount.toFixed(),
 					trade_ids: tradeIDs,
 					sender: takerAddress,
-					onTradeHash: data => cbStatus({ status: 'submitting' }),
+					onTradeHash: () => dispatch(updateTradeCommitment(tradeIDs)),
 					onCommitSent: data => cbStatus({ status: 'committing' }),
 					onCommitSuccess: (data) => {
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));

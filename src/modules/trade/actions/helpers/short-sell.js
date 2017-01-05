@@ -2,6 +2,7 @@ import async from 'async';
 import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 import { SUCCESS } from '../../../transactions/constants/statuses';
+import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
 
 export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
 	const res = {
@@ -19,7 +20,7 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 			max_amount: res.remainingShares.toFixed(),
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
-			onTradeHash: data => cbStatus({ status: 'submitting' }),
+			onTradeHash: () => dispatch(updateTradeCommitment([matchingID])),
 			onCommitSent: data => cbStatus({ status: 'committing' }),
 			onCommitSuccess: (data) => {
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
