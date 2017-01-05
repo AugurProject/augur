@@ -798,6 +798,261 @@ var cannedMarkets = [{
             "1": []
         }
     }
+}, {
+    description: "Who will win the NFC Championship?~|>Dallas Cowboys|Atlanta Falcons|Green Bay Packers|Seattle Seahawks|New York Giants|Detriot Lions",
+    expDate: parseInt(new Date("1-22-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 6,
+    numOutcomes: 6,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "200", price: "0.38"},
+                {shares: "150", price: "0.37"},
+                {shares: "200", price: "0.34"}
+            ],
+            "2": [
+                {shares: "50", price: "0.21"},
+                {shares: "100", price: "0.19"},
+                {shares: "150", price: "0.16"}
+            ],
+            "3": [
+                {shares: "100", price: "0.2"},
+                {shares: "150", price: "0.18"},
+                {shares: "100", price: "0.15"}
+            ],
+            "4": [
+                {shares: "100", price: "0.15"},
+                {shares: "200", price: "0.12"},
+                {shares: "300", price: "0.1"}
+            ],
+            "5": [
+                {shares: "100", price: "0.06"},
+                {shares: "500", price: "0.04"},
+                {shares: "1000", price: "0.02"}
+            ],
+            "6": [
+                {shares: "200", price: "0.02"},
+                {shares: "500", price: "0.01"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "100", price: "0.42"},
+                {shares: "150", price: "0.44"},
+                {shares: "200", price: "0.48"}
+            ],
+            "2": [
+                {shares: "100", price: "0.25"},
+                {shares: "200", price: "0.29"},
+                {shares: "250", price: "0.33"}
+            ],
+            "3": [
+                {shares: "150", price: "0.23"},
+                {shares: "250", price: "0.27"},
+                {shares: "200", price: "0.3"}
+            ],
+            "4": [
+                {shares: "50", price: "0.2"},
+                {shares: "150", price: "0.24"},
+                {shares: "100", price: "0.28"}
+            ],
+            "5": [
+                {shares: "350", price: "0.1"},
+                {shares: "500", price: "0.15"},
+                {shares: "400", price: "0.18"}
+            ],
+            "6": [
+                {shares: "300", price: "0.07"},
+                {shares: "1000", price: "0.1"}
+            ]
+        }
+    }
+}, {
+    description: "Will Tiger Woods win the Genesis Open?",
+    expDate: parseInt(new Date("2-19-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["golf", "PGA", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "2": [
+                {shares: "100", price: "0.14"},
+                {shares: "250", price: "0.11"},
+                {shares: "400", price: "0.1"}
+            ],
+            "1": []
+        },
+        sell: {
+            "2": [
+                {shares: "300", price: "0.2"},
+                {shares: "200", price: "0.23"},
+                {shares: "500", price: "0.26"}
+            ],
+            "1": []
+        }
+    }
+}, {
+    description: "Who will the Cleveland Browns select with the first pick in the NFL draft?~|>Myles Garrett|Any Quarterback|Reuben Foster|Trade The Pick",
+    expDate: parseInt(new Date("4-27-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 4,
+    numOutcomes: 4,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "300", price: "0.48"},
+                {shares: "150", price: "0.45"},
+                {shares: "200", price: "0.41"}
+            ],
+            "2": [
+                {shares: "150", price: "0.18"},
+                {shares: "250", price: "0.15"},
+                {shares: "200", price: "0.12"}
+            ],
+            "3": [
+                {shares: "100", price: "0.13"},
+                {shares: "150", price: "0.1"},
+                {shares: "200", price: "0.08"}
+            ],
+            "4": [
+                {shares: "100", price: "0.2"},
+                {shares: "200", price: "0.18"},
+                {shares: "300", price: "0.15"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "150", price: "0.53"},
+                {shares: "200", price: "0.57"},
+                {shares: "250", price: "0.61"}
+            ],
+            "2": [
+                {shares: "100", price: "0.21"},
+                {shares: "100", price: "0.24"},
+                {shares: "200", price: "0.27"}
+            ],
+            "3": [
+                {shares: "150", price: "0.17"},
+                {shares: "250", price: "0.2"},
+                {shares: "150", price: "0.23"}
+            ],
+            "4": [
+                {shares: "150", price: "0.23"},
+                {shares: "100", price: "0.26"},
+                {shares: "300", price: "0.29"}
+            ]
+        }
+    }
+}, {
+    description: "How many total points will be scored in the NFL Pro Bowl Game?",
+    expDate: parseInt(new Date("1-29-2017").getTime() / 1000, 10),
+    minValue: 0,
+    maxValue: 100,
+    numOutcomes: 2,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["football", "NFL", "sports"],
+    extraInfo: "",
+    resolution: "espn.com",
+    orderBook: {
+        buy: {
+            "2": [
+                {shares: "100", price: "44"},
+                {shares: "250", price: "41"},
+                {shares: "300", price: "37"}
+            ],
+            "1": []
+        },
+        sell: {
+            "2": [
+                {shares: "50", price: "50"},
+                {shares: "200", price: "54"},
+                {shares: "250", price: "58"}
+            ],
+            "1": []
+        }
+    }
+}, {
+    description: "What will win the Grammy Award for Album of the Year?~|>Lemonade - Beyonce|Views - Drake|Purpose - Justin Beiber|25 - Adele|A Sailors Guide to Earth - Sturgill Simpson",
+    expDate: parseInt(new Date("2-12-2017").getTime() / 1000, 10),
+    minValue: 1,
+    maxValue: 5,
+    numOutcomes: 5,
+    takerFee: "0.02",
+    makerFee: "0.01",
+    tags: ["music", "Grammys", "award"],
+    extraInfo: "",
+    resolution: "grammy.com",
+    orderBook: {
+        buy: {
+            "1": [
+                {shares: "100", price: "0.27"},
+                {shares: "150", price: "0.25"},
+                {shares: "200", price: "0.23"}
+            ],
+            "2": [
+                {shares: "150", price: "0.17"},
+                {shares: "250", price: "0.15"},
+                {shares: "200", price: "0.12"}
+            ],
+            "3": [
+                {shares: "100", price: "0.13"},
+                {shares: "150", price: "0.1"},
+                {shares: "200", price: "0.08"}
+            ],
+            "4": [
+                {shares: "100", price: "0.32"},
+                {shares: "200", price: "0.28"},
+                {shares: "300", price: "0.25"}
+            ],
+             "5": [
+                {shares: "100", price: "0.08"},
+                {shares: "100", price: "0.05"}
+            ]
+        },
+        sell: {
+            "1": [
+                {shares: "150", price: "0.3"},
+                {shares: "200", price: "0.33"},
+                {shares: "250", price: "0.36"}
+            ],
+            "2": [
+                {shares: "100", price: "0.21"},
+                {shares: "100", price: "0.24"},
+                {shares: "200", price: "0.27"}
+            ],
+            "3": [
+                {shares: "150", price: "0.17"},
+                {shares: "250", price: "0.2"},
+                {shares: "150", price: "0.23"}
+            ],
+            "4": [
+                {shares: "150", price: "0.35"},
+                {shares: "100", price: "0.38"},
+                {shares: "300", price: "0.41"}
+            ],
+             "5": [
+                {shares: "100", price: "0.11"},
+                {shares: "500", price: "0.13"}
+            ]
+        }
+    }
 }];
 
 augur.connect({
