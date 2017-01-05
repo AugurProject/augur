@@ -54,11 +54,13 @@ export function constructRelayTransaction(tx, status) {
 					price: abi.unfix_signed(p.price, 'string'),
 					amount: abi.unfix(p.amount, 'string')
 				}, p.market, p.outcome, status));
-			case 'cancel':
+			case 'cancel': {
+				const order = selectOrder(p.trade_id);
 				return dispatch(constructTradingTransaction('log_cancel', {
 					...p,
-					...selectOrder(p.trade_id)
-				}));
+					...order
+				}, order.market, order.outcome, status));
+			}
 			// note: trade and short_sell messaging done manually until the next contract update
 			case 'trade':
 			case 'short_sell':
