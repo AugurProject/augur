@@ -1,14 +1,15 @@
 const path = require('path');
 const shell = require('shelljs');
-const chalk = require('chalk');
 const Listr = require('listr');
+
+const colors = require('./common/colors');
 
 const srcPath = path.resolve(__dirname, '../src');
 const testPath = path.resolve(__dirname, '../test');
 
 process.env.FORCE_COLOR = true;
 
-shell.echo(chalk.cyan(`
+shell.echo(colors.title(`
 == Running Augur Linting ==
 `));
 
