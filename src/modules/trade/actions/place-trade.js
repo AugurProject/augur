@@ -1,70 +1,14 @@
 import async from 'async';
 import BigNumber from 'bignumber.js';
 import { BUY, SELL } from '../../trade/constants/types';
-import { SCALAR } from '../../markets/constants/market-types';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
-import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
 import { trade } from '../../trade/actions/helpers/trade';
+import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-
-export function selectScalarMinimum(marketID) {
-	return (dispatch, getState) => {
-		const market = getState().marketsData[marketID];
-		const scalarMinimum = {};
-		if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
-		return scalarMinimum;
-	};
-}
-
-export function parametrizeOrder(marketID, outcomeID, numShares, limitPrice) {
-	return (dispatch, getState) => ({
-		amount: numShares,
-		price: limitPrice,
-		market: marketID,
-		outcome: outcomeID,
-		scalarMinMax: dispatch(selectScalarMinimum(marketID))
-	});
-}
-
-export function placeBid(marketID, outcomeID, numShares, limitPrice) {
-	return (dispatch, getState) => {
-		console.log('placeBid:', marketID, outcomeID, numShares, limitPrice);
-		console.log('parametrized:', ...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)));
-		augur.buy({
-			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
-			onSent: res => console.log('bid sent:', res),
-			onSuccess: res => console.log('bid success:', res),
-			onFailed: err => console.error('bid failed:', err)
-		});
-	};
-}
-
-export function placeAsk(marketID, outcomeID, numShares, limitPrice) {
-	return (dispatch, getState) => {
-		console.log('placeAsk:', marketID, outcomeID, numShares, limitPrice);
-		console.log('parametrized:', ...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)));
-		augur.sell({
-			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
-			onSent: res => console.log('ask sent:', res),
-			onSuccess: res => console.log('ask success:', res),
-			onFailed: err => console.error('ask failed:', err)
-		});
-	};
-}
-
-export function placeShortAsk(marketID, outcomeID, numShares, limitPrice) {
-	return (dispatch, getState) => {
-		augur.shortAsk({
-			...dispatch(parametrizeOrder(marketID, outcomeID, numShares, limitPrice)),
-			onSent: res => console.log('shortAsk sent:', res),
-			onSuccess: res => console.log('shortAsk success:', res),
-			onFailed: err => console.error('shortAsk failed:', err)
-		});
-	};
-}
+import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 
 export function placeBuy(marketID, outcomeID, numShares, limitPrice, totalCost) {
 	return (dispatch, getState) => {
@@ -74,7 +18,6 @@ export function placeBuy(marketID, outcomeID, numShares, limitPrice, totalCost) 
 		trade(marketID, outcomeID, 0, totalCost, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
-			console.debug('trade complete:', res);
 			const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
 			if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 				console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
@@ -92,7 +35,6 @@ export function placeSell(marketID, outcomeID, numShares, limitPrice, totalCost)
 		trade(marketID, outcomeID, numShares, 0, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
-			console.debug('trade complete:', res);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
 				augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
 					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
@@ -128,13 +70,18 @@ export function placeSell(marketID, outcomeID, numShares, limitPrice, totalCost)
 	};
 }
 
-// note: placeholder
 export function placeShortSell(marketID, outcomeID, numShares, limitPrice, totalCost) {
 	return (dispatch, getState) => {
-		const { marketsData, outcomesData } = getState();
-		const market = marketsData[marketID];
+		const { loginAccount, orderBooks } = getState();
 		dispatch(updateTradeCommitLock(true));
-		dispatch(addShortSellTransaction(marketID, outcomeID, market.type, market.description, outcomesData[marketID][outcomeID].name, numShares, limitPrice, totalCost, 0, 0, 0));
+		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
+		shortSell(marketID, outcomeID, numShares, loginAccount.address, getTradeIDs, r => console.debug('cbStatus:', r), (err, res) => {
+			dispatch(updateTradeCommitLock(false));
+			if (err) return console.error('shortSell failed:', err);
+			if (res.remainingShares.gt(constants.PRECISION.zero)) {
+				dispatch(placeShortAsk(marketID, outcomeID, res.remainingShares.toFixed(), limitPrice));
+			}
+		});
 	};
 }
 
