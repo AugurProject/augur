@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 18 tests total
+// 29 tests total
 
 describe("logs.parseShortSellLogs", function() {
 	// 3 tests total
@@ -604,7 +604,7 @@ describe("logs.getShortSellLogs", function() {
 });
 
 describe("logs.getCompleteSetsLogs", function() {
-	// 5 tests total
+	// 7 tests total
 	var test = function(t) {
 		it(t.description, function() {
 			var getLogs = augur.rpc.getLogs;
@@ -773,7 +773,51 @@ describe("logs.getCompleteSetsLogs", function() {
 	});
 });
 
-describe.skip("logs.sortByBlockNumber", function() {});
+describe("logs.sortByBlockNumber", function() {
+	// 4 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			t.assertions(augur.sortByBlockNumber(t.a, t.b));
+		});
+	};
+
+	test({
+		description: 'should sort 2 numbers sent as Strings',
+		a: { blockNumber: '3' },
+		b: { blockNumber: '2' },
+		assertions: function(o) {
+			assert.equal(o, '1');
+		}
+	});
+
+	test({
+		description: 'should sort 2 numbers sent as JS Numbers',
+		a: { blockNumber: 50 },
+		b: { blockNumber: 3 },
+		assertions: function(o) {
+			assert.equal(o, 47);
+		}
+	});
+
+	test({
+		description: 'should sort 2 numbers sent as Hex Strings',
+		a: { blockNumber: '0x01' },
+		b: { blockNumber: '0x05' },
+		assertions: function(o) {
+			assert.equal(o, -4);
+		}
+	});
+
+	test({
+		description: 'should sort 2 numbers sent as Big Numbers',
+		a: { blockNumber: abi.bignum('25') },
+		b: { blockNumber: abi.bignum('3') },
+		assertions: function(o) {
+			assert.equal(o, 22);
+		}
+	});
+});
+
 describe.skip("logs.buildTopicsList", function() {});
 describe.skip("logs.parametrizeFilter", function() {});
 describe.skip("logs.insertIndexedLog", function() {});
