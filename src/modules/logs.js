@@ -115,8 +115,8 @@ module.exports = {
             };
             if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
             this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
                 if (logs && logs.error) return callback(logs, null);
+								if (!logs || !logs.length) return callback(null, []);
                 callback(null, logs);
             });
         }
@@ -145,8 +145,8 @@ module.exports = {
             };
             if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
             this.rpc.getLogs(filter, function (logs) {
+								if (logs && logs.error) return callback(logs, null);
                 if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
                 callback(null, logs);
             });
         }
@@ -232,8 +232,8 @@ module.exports = {
         var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
         if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
         this.rpc.getLogs(filter, function (logs) {
+						if (logs && logs.error) return callback(logs, null);
             if (!logs || !logs.length) return callback(null, []);
-            if (logs && logs.error) return callback(logs, null);
             callback(null, logs);
         });
     },
@@ -396,7 +396,7 @@ module.exports = {
             if (err) return callback(err);
             callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
         });
-    },    
+    },
 
     getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
         if (!callback && utils.is_function(options)) {
