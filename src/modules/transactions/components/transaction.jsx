@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'modules/link/components/link';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_BUY, COMMIT_SELL, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
@@ -22,30 +22,38 @@ const Transaction = (p) => {
 		case SHORT_ASK:
 		case MATCH_BID:
 		case MATCH_ASK:
+		case COMMIT_BUY:
+		case COMMIT_SELL:
 			switch (p.type) {
 				case BUY:
-					nodes.action = 'BUY';
+					nodes.action = 'Buy';
 					break;
 				case BID:
-					nodes.action = 'BID';
+					nodes.action = 'Bid';
 					break;
 				case SELL:
-					nodes.action = 'SELL';
+					nodes.action = 'Sell';
 					break;
 				case ASK:
-					nodes.action = 'ASK';
+					nodes.action = 'Ask';
 					break;
 				case SHORT_SELL:
-					nodes.action = 'SHORT SELL';
+					nodes.action = 'Short Sell';
 					break;
 				case SHORT_ASK:
-					nodes.action = 'SHORT ASK';
+					nodes.action = 'Short Ask';
 					break;
 				case MATCH_BID:
-					nodes.action = 'FILLED BID';
+					nodes.action = 'Filled Bid';
 					break;
 				case MATCH_ASK:
-					nodes.action = 'FILLED ASK';
+					nodes.action = 'Filled Ask';
+					break;
+				case COMMIT_BUY:
+					nodes.action = 'Commit to Buy'
+					break;
+				case COMMIT_SELL:
+					nodes.action = 'Commit to Sell';
 					break;
 				default:
 					break;
@@ -76,7 +84,7 @@ const Transaction = (p) => {
 			break;
 
 		case SELL_COMPLETE_SETS:
-			nodes.action = `REDEEM ${p.numShares.formatted} COMPLETE SETS`;
+			nodes.action = `Redeem ${p.numShares.formatted} Complete Sets`;
 			nodes.description = (
 				<span className="description">
 					<span className="action">{nodes.action}</span>
