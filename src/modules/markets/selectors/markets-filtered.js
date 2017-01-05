@@ -37,7 +37,7 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
 			case (FILTER_TYPE_CLOSED):
 				return !isMarketDataOpen(market, currentTime);
 			case (FILTER_TYPE_REPORTING):
-				return isMarketDataExpired(market, currentTime) && !market.reportedOutcome;
+				return isMarketDataExpired(market, currentTime) && isMarketDataOpen(market);
 			case (FILTER_TYPE_OPEN):
 			default:
 				return isMarketDataOpen(market, currentTime);
