@@ -61,6 +61,15 @@ const LoginMessagePage = p => (
 				<li>
 					Added a single order selector (selects an order from the order book using its order ID AKA trade ID) to the bids-asks module.
 				</li>
+				<li>
+					Fixed adjusted-maker-fee calculation in constructLogAddTxTransaction.
+				</li>
+				<li>
+					Added gasFees field to trading transactions in constructRelayTransaction.
+				</li>
+				<li>
+					Added missing arguments to cancel in contructRelayTransaction.
+				</li>
 			</ol>
 			<h3>January 3, 2017</h3>
 			<ol>
