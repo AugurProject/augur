@@ -44,7 +44,8 @@ export function constructRelayTransaction(tx, status) {
 					type: 'buy',
 					...p,
 					price: abi.unfix_signed(p.price, 'string'),
-					amount: abi.unfix(p.amount, 'string')
+					amount: abi.unfix(p.amount, 'string'),
+					gasFees
 				}, p.market, p.outcome, status));
 			case 'shortAsk':
 			case 'sell':
@@ -52,13 +53,15 @@ export function constructRelayTransaction(tx, status) {
 					type: 'sell',
 					...p,
 					price: abi.unfix_signed(p.price, 'string'),
-					amount: abi.unfix(p.amount, 'string')
+					amount: abi.unfix(p.amount, 'string'),
+					gasFees
 				}, p.market, p.outcome, status));
 			case 'cancel': {
 				const order = selectOrder(p.trade_id);
 				return dispatch(constructTradingTransaction('log_cancel', {
 					...p,
-					...order
+					...order,
+					gasFees
 				}, order.market, order.outcome, status));
 			}
 			// note: trade and short_sell messaging done manually until the next contract update
