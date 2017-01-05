@@ -4,7 +4,7 @@ import { ZERO } from '../../../trade/constants/numbers';
 import { SUCCESS } from '../../../transactions/constants/statuses';
 import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
 
-export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, cbStatus, cb) {
+export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
 	const res = {
 		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
