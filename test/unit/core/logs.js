@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 29 tests total
+// 34 tests total
 
 describe("logs.parseShortSellLogs", function() {
 	// 3 tests total
@@ -494,8 +494,8 @@ describe("logs.getShortSellLogs", function() {
 		getLogs: function(filter) { return filter; },
 		assertions: function(o) {
 			assert.deepEqual(o, {
-				fromBlock: '0x1',
-				toBlock: 'latest',
+				fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+				toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
 				address: augur.contracts.Trade,
 				topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
 				timeout: augur.constants.GET_LOGS_TIMEOUT
@@ -585,8 +585,8 @@ describe("logs.getShortSellLogs", function() {
 		options: function(err, logs) {
 			assert.isNull(err);
 			assert.deepEqual(logs[0], {
-				fromBlock: '0x1',
-				toBlock: 'latest',
+				fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+				toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
 				address: augur.contracts.Trade,
 				topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
 				timeout: augur.constants.GET_LOGS_TIMEOUT
@@ -626,8 +626,8 @@ describe("logs.getCompleteSetsLogs", function() {
 		},
 		assertions: function(o) {
 			assert.deepEqual(o, {
-				fromBlock: '0x1',
-				toBlock: 'latest',
+				fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+				toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
 				address: augur.contracts.CompleteSets,
 				topics: [
 					augur.api.events.completeSets_logReturn.signature,
@@ -818,9 +818,134 @@ describe("logs.sortByBlockNumber", function() {
 	});
 });
 
-describe.skip("logs.buildTopicsList", function() {});
-describe.skip("logs.parametrizeFilter", function() {});
-describe.skip("logs.insertIndexedLog", function() {});
+describe("logs.buildTopicsList", function() {
+	// 3 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			t.assertions(augur.buildTopicsList(t.event, t.params));
+		});
+	};
+
+	test({
+		description: 'should handle an event with a single input',
+		event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }]},
+		params: { amount: '50' },
+		assertions: function(o) {
+			assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6' , '0x0000000000000000000000000000000000000000000000000000000000000050']);
+		}
+	});
+
+	test({
+		description: 'should handle an event with a multiple inputs, some indexed some not',
+		event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }, { name: 'unindexed', indexed: false }, { name: 'shares', indexed: true } ]},
+		params: { amount: '50', unindexed: 'this shouldnt be in the topics array out', shares: '10' },
+		assertions: function(o) {
+			assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6' , '0x0000000000000000000000000000000000000000000000000000000000000050',
+			'0x0000000000000000000000000000000000000000000000000000000000000010']);
+		}
+	});
+
+	test({
+		description: 'should handle an event with no inputs',
+		event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: []},
+		params: {},
+		assertions: function(o) {
+			assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6']);
+		}
+	});
+});
+
+describe("logs.parametrizeFilter", function() {
+	// 2 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			t.assertions(augur.parametrizeFilter(t.event, t.params));
+		});
+	};
+
+	test({
+		description: 'should return a prepared filter object',
+		event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
+		params: { amount: '50', market: '0x0a1', numOutcomes: '2' },
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+				toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
+				address: augur.contracts.CompleteSets,
+				topics: [augur.api.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
+				'0x0000000000000000000000000000000000000000000000000000000000000002'],
+				timeout: augur.constants.GET_LOGS_TIMEOUT,
+			});
+		}
+	});
+
+	test({
+		description: 'should return a prepared filter object when given to/from blocks',
+		event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
+		params: { amount: '50', market: '0x0a1', numOutcomes: '2', toBlock: '0x0b2', fromBlock: '0x0b1' },
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.contracts.CompleteSets,
+				topics: [augur.api.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
+				'0x0000000000000000000000000000000000000000000000000000000000000002'],
+				timeout: augur.constants.GET_LOGS_TIMEOUT,
+			});
+		}
+	});
+});
+
+describe("logs.insertIndexedLog", function() {
+	// ? tests total
+	var processedLogs;
+	var test = function(t) {
+		it(t.description, function() {
+			processedLogs = t.processedLogs;
+			t.assertions(augur.insertIndexedLog(t.processedLogs, t.parsed, t.index, t.log));
+		});
+	};
+
+	test({
+		description: 'Should insert an indexed log into the processedLogs passed in',
+		processedLogs: {'0x00c1': '0x000def456'},
+		parsed: {
+			'0x00c1': '0x000abc123',
+		},
+		index: ['0x00c1'],
+		log: undefined,
+		assertions: function(o) {
+			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ], '0x00c1': '0x000def456' });
+		}
+	});
+
+	test({
+		description: 'Should insert an indexed log into the processedLogs passed in as an empty object',
+		processedLogs: {},
+		parsed: {
+			'0x00c1': '0x000abc123',
+		},
+		index: ['0x00c1'],
+		log: undefined,
+		assertions: function(o) {
+			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
+		}
+	});
+
+	test({
+		description: 'Should insert an indexed log, where indexed is a string, into the processedLogs passed in as an empty object',
+		processedLogs: {},
+		parsed: {
+			'0x00c1': '0x000abc123',
+		},
+		index: '0x00c1',
+		log: undefined,
+		assertions: function(o) {
+			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
+		}
+	});
+});
+
 describe.skip("logs.processLogs", function() {});
 describe.skip("logs.getFilteredLogs", function() {});
 describe.skip("logs.getLogs", function() {});
