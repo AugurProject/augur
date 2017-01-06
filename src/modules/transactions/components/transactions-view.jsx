@@ -8,9 +8,9 @@ const TransactionsPage = p => (
 			<Branch {...p.branch} />
 		}
 
-		<header className="page-header">
-			<span className="big-line">{p.transactionsTotals.title}</span>
-		</header>
+		<div className="view-header">
+			<h2>Transactions</h2>
+		</div>
 
 		<div className="page-content">
 			<Transactions
@@ -25,8 +25,7 @@ TransactionsPage.propTypes = {
 	branch: React.PropTypes.object,
 	className: React.PropTypes.string,
 	loginAccount: React.PropTypes.object,
-	transactions: React.PropTypes.array,
-	transactionsTotals: React.PropTypes.object
+	transactions: React.PropTypes.array
 };
 
 export default TransactionsPage;
