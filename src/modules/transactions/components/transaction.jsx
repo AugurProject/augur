@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'modules/link/components/link';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_BUY, COMMIT_SELL, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
@@ -22,8 +22,6 @@ const Transaction = (p) => {
 		case SHORT_ASK:
 		case MATCH_BID:
 		case MATCH_ASK:
-		case COMMIT_BUY:
-		case COMMIT_SELL:
 			switch (p.type) {
 				case BUY:
 					nodes.action = 'Buy';
@@ -44,16 +42,10 @@ const Transaction = (p) => {
 					nodes.action = 'Short Ask';
 					break;
 				case MATCH_BID:
-					nodes.action = 'Filled Bid';
+					nodes.action = 'Bid Filled';
 					break;
 				case MATCH_ASK:
-					nodes.action = 'Filled Ask';
-					break;
-				case COMMIT_BUY:
-					nodes.action = 'Commit to Buy';
-					break;
-				case COMMIT_SELL:
-					nodes.action = 'Commit to Sell';
+					nodes.action = 'Ask Filled';
 					break;
 				default:
 					break;

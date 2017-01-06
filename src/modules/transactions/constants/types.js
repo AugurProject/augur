@@ -10,9 +10,6 @@ export const SHORT_ASK = 'short_ask';
 export const MATCH_BID = 'match_bid';
 export const MATCH_ASK = 'match_ask';
 
-export const COMMIT_BUY = 'commit_buy';
-export const COMMIT_SELL = 'commit_sell';
-
 export const SELL_COMPLETE_SETS = 'sell_complete_sets';
 
 export const CREATE_MARKET = 'create_market';
