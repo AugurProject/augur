@@ -4,9 +4,10 @@ import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
 import { loadBidsAsks } from '../../../bids-asks/actions/load-bids-asks';
 import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
+import selectOrder from '../../../bids-asks/selectors/select-order';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
-export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
 	// undefined/null arguments get zero'ed out to gracefully fail
 	const bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
 	const bnNumShares = abi.bignum(numShares) || ZERO;
@@ -48,31 +49,35 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 					maxAmount = res.remainingShares;
 					isRemainder = false;
 				}
+				const maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
 				augur.trade({
-					max_value: BigNumber.min(res.remainingEth, bnCashBalance).toFixed(),
+					max_value: maxValue.toFixed(),
 					max_amount: maxAmount.toFixed(),
 					trade_ids: tradeIDs,
 					sender: takerAddress,
-					onTradeHash: () => dispatch(updateTradeCommitment(tradeIDs)),
-					onCommitSent: data => cbStatus({ status: 'committing' }),
+					onTradeHash: tradeHash => dispatch(updateTradeCommitment({
+						tradeHash: abi.format_int256(tradeHash),
+						orders: tradeIDs.map(tradeID => selectOrder(tradeID)),
+						maxValue: maxValue.toFixed(),
+						maxAmount: maxAmount.toFixed(),
+						remainingEth: res.remainingEth.toFixed(),
+						remainingShares: res.remainingShares.toFixed(),
+						filledEth: res.filledEth.toFixed(),
+						filledShares: res.filledShares.toFixed(),
+						tradingFees: res.tradingFees.gt(ZERO) ? res.tradingFees.toFixed() : tradingFees,
+						gasFees: res.gasFees.toFixed()
+					})),
+					onCommitSent: data => console.log('commit sent:', data),
 					onCommitSuccess: (data) => {
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-						cbStatus({
-							status: 'sending',
-							hash: data.hash,
-							timestamp: data.timestamp,
-							gasFees: res.gasFees
-						});
+						dispatch(updateTradeCommitment({ gasFees: res.gasFees.toFixed() }));
 					},
 					onCommitFailed: (err) => {
 						console.log('commit failed:', err);
 						nextTrade(err);
 					},
 					onNextBlock: data => console.log('trade-onNextBlock', data),
-					onTradeSent: (data) => {
-						console.log('trade sent:', data);
-						cbStatus({ status: 'filling' });
-					},
+					onTradeSent: data => console.log('trade sent:', data),
 					onTradeSuccess: (data) => {
 						console.log('trade success:', data);
 						res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
@@ -85,17 +90,14 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, takerAddr
 						res.remainingEth = abi.bignum(data.unmatchedCash);
 						res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-						cbStatus({
-							status: 'filled',
-							hash: data.hash,
-							timestamp: data.timestamp,
-							tradingFees: res.tradingFees,
-							gasFees: res.gasFees,
-							filledShares: res.filledShares,
-							filledEth: res.filledEth,
-							remainingShares: res.remainingShares,
-							remainingEth: res.remainingEth
-						});
+						dispatch(updateTradeCommitment({
+							filledShares: res.filledShares.toFixed(),
+							filledEth: res.filledEth.toFixed(),
+							remainingShares: res.remainingShares.toFixed(),
+							remainingEth: res.remainingEth.toFixed(),
+							tradingFees: res.tradingFees.toFixed(),
+							gasFees: res.gasFees.toFixed()
+						}));
 						dispatch(loadBidsAsks(marketID, () => {
 							augur.getParticipantSharesPurchased(marketID, takerAddress, outcomeID, (sharesPurchased) => {
 								bnSharesPurchased = abi.bignum(sharesPurchased);

@@ -1,10 +1,10 @@
 import async from 'async';
 import { augur, abi, constants } from '../../../../services/augurjs';
 import { ZERO } from '../../../trade/constants/numbers';
-import { SUCCESS } from '../../../transactions/constants/statuses';
 import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
+import selectOrder from '../../../bids-asks/selectors/select-order';
 
-export function shortSell(marketID, outcomeID, numShares, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export function shortSell(marketID, outcomeID, numShares, tradingFees, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
 	const res = {
 		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
@@ -16,30 +16,34 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 	console.log('matching trade IDs:', matchingIDs);
 	if (!matchingIDs.length || res.remainingShares.lte(ZERO)) return cb(null, res);
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
+		const maxAmount = res.remainingShares.toFixed();
 		augur.short_sell({
-			max_amount: res.remainingShares.toFixed(),
+			max_amount: maxAmount,
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
-			onTradeHash: () => dispatch(updateTradeCommitment([matchingID])),
+			onTradeHash: tradeHash => dispatch(updateTradeCommitment({
+				tradeHash: abi.format_int256(tradeHash),
+				orders: [selectOrder(matchingID)],
+				maxValue: '0',
+				maxAmount,
+				remainingEth: '0',
+				remainingShares: res.remainingShares.toFixed(),
+				filledEth: res.filledEth.toFixed(),
+				filledShares: res.filledShares.toFixed(),
+				tradingFees: res.tradingFees.gt(ZERO) ? res.tradingFees.toFixed() : tradingFees,
+				gasFees: res.gasFees.toFixed()
+			})),
 			onCommitSent: data => cbStatus({ status: 'committing' }),
 			onCommitSuccess: (data) => {
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-				cbStatus({
-					status: 'sending',
-					hash: data.hash,
-					timestamp: data.timestamp,
-					gasFees: res.gasFees
-				});
+				dispatch(updateTradeCommitment({ gasFees: res.gasFees.toFixed() }));
 			},
 			onCommitFailed: (err) => {
 				console.log('commit failed:', err);
 				nextMatchingID(err);
 			},
 			onNextBlock: data => console.log('short_sell-onNextBlock', data),
-			onTradeSent: (data) => {
-				console.debug('trade sent', data);
-				cbStatus({ status: 'filling' });
-			},
+			onTradeSent: data => console.debug('trade sent', data),
 			onTradeSuccess: (data) => {
 				if (data.unmatchedShares) {
 					res.remainingShares = abi.bignum(data.unmatchedShares);
@@ -54,13 +58,13 @@ export function shortSell(marketID, outcomeID, numShares, takerAddress, getTrade
 				}
 				res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-				cbStatus({
-					status: SUCCESS,
-					hash: data.hash,
-					timestamp: data.timestamp,
-					tradingFees: res.tradingFees,
-					gasFees: res.gasFees
-				});
+				dispatch(updateTradeCommitment({
+					filledShares: res.filledShares.toFixed(),
+					filledEth: res.filledEth.toFixed(),
+					remainingShares: res.remainingShares.toFixed(),
+					tradingFees: res.tradingFees.toFixed(),
+					gasFees: res.gasFees.toFixed()
+				}));
 				if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
