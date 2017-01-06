@@ -1,7 +1,10 @@
 import { abi, augur, rpc } from '../../../services/augurjs';
 import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
+import { ZERO } from '../../trade/constants/numbers';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
+import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { selectMarketFromEventID } from '../../market/selectors/market';
@@ -23,19 +26,19 @@ export function unpackTransactionParameters(tx) {
 
 export function constructRelayTransaction(tx, status) {
 	return (dispatch, getState) => {
+		const hash = tx.response.hash;
 		const p = {
 			...unpackTransactionParameters(tx),
-			transactionHash: tx.response.hash,
+			transactionHash: hash,
 			blockNumber: tx.response.blockNumber,
 			timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
 			inProgress: !tx.response.blockHash
 		};
 		console.log('unpacked:', JSON.stringify(p, null, 2));
-		const hash = tx.response.hash;
 		const method = tx.data.method;
 		const contracts = augur.contracts;
 		const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
-		const gasFees = augur.getTxGasEth({
+		const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
 			...augur.api.functions[contract][method]
 		}, rpc.gasPrice).toFixed();
 		switch (method) {
@@ -65,35 +68,72 @@ export function constructRelayTransaction(tx, status) {
 				}, order.market, order.outcome, status));
 			}
 			case 'commitTrade': {
-				const tradeIDs = getState().tradeCommitment;
-				const numTradeIDs = tradeIDs.length;
+				dispatch(updateTradeCommitment({ transactionHash: hash }));
+				const { tradeHash, orders, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
+				const numTradeIDs = orders.length;
 				const transactions = new Array(numTradeIDs);
-				const gasFeesPerTrade = abi.bignum(gasFees).dividedBy(numTradeIDs).toFixed();
 				for (let i = 0; i < numTradeIDs; ++i) {
-					const order = selectOrder(tradeIDs[i]);
-					transactions[i] = dispatch(constructTradingTransaction('commitTrade', {
-						...order,
-						gasFees: gasFeesPerTrade
-					}, order.market, order.outcome, status));
+					const order = orders[i];
+					const amount = abi.bignum(maxAmount).gt(ZERO) ?
+						maxAmount :
+						abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
+					transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
+						...p,
+						price: order.price,
+						outcome: parseInt(order.outcome, 10),
+						amount,
+						sender: tx.data.from,
+						owner: order.owner,
+						type: order.type === 'buy' ? 'sell' : 'buy',
+						tradeid: order.id,
+						tradeHash,
+						takerFee: tradingFees,
+						gasFees
+					}, order.market, order.outcome, 'committing'));
 				}
+				if (!p.inProgress) return null;
 				return transactions;
 			}
 			case 'short_sell': {
+				const { transactionHash, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
 				const order = selectOrder(p.buyer_trade_id);
+				dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
 				return dispatch(constructTradingTransaction('log_fill_tx', {
-					...order,
+					...p,
+					price: order.price,
+					outcome: parseInt(order.outcome, 10),
+					amount: maxAmount,
+					sender: tx.data.from,
+					owner: order.owner,
+					type: order.type === 'buy' ? 'sell' : 'buy',
+					tradeid: order.id,
+					tradeHash,
+					takerFee: tradingFees,
 					gasFees
 				}, order.market, order.outcome, status));
 			}
 			case 'trade': {
+				const { transactionHash, orders, tradeHash, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
 				const numTradeIDs = p.trade_ids.length;
 				const transactions = new Array(numTradeIDs);
-				const gasFeesPerTrade = abi.bignum(gasFees).dividedBy(numTradeIDs).toFixed();
 				for (let i = 0; i < numTradeIDs; ++i) {
-					const order = selectOrder(p.trade_ids[i]);
+					const order = orders[i];
+					const amount = abi.bignum(maxAmount).gt(ZERO) ?
+						maxAmount :
+						abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
+					dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
 					transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
-						...order,
-						gasFees: gasFeesPerTrade
+						...p,
+						price: order.price,
+						outcome: parseInt(order.outcome, 10),
+						amount,
+						sender: tx.data.from,
+						owner: order.owner,
+						type: order.type === 'buy' ? 'sell' : 'buy',
+						tradeid: order.id,
+						tradeHash,
+						takerFee: tradingFees,
+						gasFees
 					}, order.market, order.outcome, status));
 				}
 				return transactions;
@@ -208,34 +248,20 @@ export function registerTransactionRelay() {
 				const hash = tx.response.hash;
 				const { loginAccount, transactionsData } = getState();
 				if (hash && tx.data.from === loginAccount.address) {
-					const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10);
 					const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
 					if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
 						const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
 						const relayTransaction = dispatch(constructRelayTransaction(tx, status));
 						if (relayTransaction) {
-							return dispatch(updateTransactionsData(relayTransaction));
-						}
-						if (!tx.description && tx.data.description) {
-							tx.description = tx.data.description;
-						}
-						if (!tx.description && tx.data.inputs) {
-							const params = tx.data.params.slice();
-							if (tx.data.fixed) {
-								const numFixed = tx.data.fixed.length;
-								for (let i = 0; i < numFixed; ++i) {
-									params[tx.data.fixed[i]] = abi.unfix(params[tx.data.fixed[i]], 'string');
+							if (relayTransaction.constructor === Object) {
+								return dispatch(updateTransactionsData(relayTransaction));
+							} else if (relayTransaction.constructor === Array) {
+								const numTransactions = relayTransaction.length;
+								for (let i = 0; i < numTransactions; ++i) {
+									dispatch(updateTransactionsData(relayTransaction[i]));
 								}
 							}
-							tx.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
 						}
-						dispatch(updateTransactionsData({
-							[hash]: {
-								...tx,
-								...constructBasicTransaction(hash, status, tx.response.blockNumber, timestamp, gasFees),
-								message: tx.response.callReturn && tx.response.callReturn.toString()
-							}
-						}));
 					} else if (transactionsData[hash]) {
 						dispatch(updateExistingTransaction(hash, { gasFees }));
 					}
