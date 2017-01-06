@@ -10,29 +10,31 @@ import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 
-export function placeBuy(marketID, outcomeID, numShares, limitPrice, totalCost) {
+export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees) {
 	return (dispatch, getState) => {
 		const { loginAccount, orderBooks } = getState();
 		dispatch(updateTradeCommitLock(true));
+		const marketID = market.id;
 		const getTradeIDs = () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		trade(marketID, outcomeID, 0, totalCost, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		trade(marketID, outcomeID, 0, totalCost, tradingFees, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
 			const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
 			if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
 				console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
-				dispatch(placeBid(marketID, outcomeID, sharesRemaining.toFixed(), limitPrice));
+				placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice);
 			}
 		});
 	};
 }
 
-export function placeSell(marketID, outcomeID, numShares, limitPrice, totalCost) {
+export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees) {
 	return (dispatch, getState) => {
 		const { loginAccount, orderBooks } = getState();
 		dispatch(updateTradeCommitLock(true));
+		const marketID = market.id;
 		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		trade(marketID, outcomeID, numShares, 0, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		trade(marketID, outcomeID, numShares, 0, tradingFees, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
@@ -49,18 +51,18 @@ export function placeSell(marketID, outcomeID, numShares, limitPrice, totalCost)
 							askShares = position.toFixed();
 							shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
 						}
-						dispatch(placeAsk(marketID, outcomeID, askShares, limitPrice));
+						placeAsk(market, outcomeID, askShares, limitPrice);
 						if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-							dispatch(placeShortAsk(marketID, outcomeID, shortAskShares, limitPrice));
+							placeShortAsk(market, outcomeID, shortAskShares, limitPrice);
 						}
 					} else {
 						dispatch(loadBidsAsks(marketID, (err, updatedOrderBook) => {
 							if (err) console.error('loadBidsAsks:', err);
 							const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, { [marketID]: updatedOrderBook }, loginAccount.address);
 							if (tradeIDs && tradeIDs.length) {
-								dispatch(placeShortSell(marketID, outcomeID, res.remainingShares, limitPrice, totalCost));
+								dispatch(placeShortSell(market, outcomeID, res.remainingShares, limitPrice, totalCost, tradingFees));
 							} else {
-								dispatch(placeShortAsk(marketID, outcomeID, res.remainingShares, limitPrice));
+								placeShortAsk(market, outcomeID, res.remainingShares, limitPrice);
 							}
 						}));
 					}
@@ -70,16 +72,17 @@ export function placeSell(marketID, outcomeID, numShares, limitPrice, totalCost)
 	};
 }
 
-export function placeShortSell(marketID, outcomeID, numShares, limitPrice, totalCost) {
+export function placeShortSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees) {
 	return (dispatch, getState) => {
 		const { loginAccount, orderBooks } = getState();
 		dispatch(updateTradeCommitLock(true));
+		const marketID = market.id;
 		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		shortSell(marketID, outcomeID, numShares, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		shortSell(marketID, outcomeID, numShares, tradingFees, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('shortSell failed:', err);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
-				dispatch(placeShortAsk(marketID, outcomeID, res.remainingShares.toFixed(), limitPrice));
+				placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice);
 			}
 		});
 	};
@@ -100,12 +103,13 @@ export function placeTrade(marketID, outcomeID) {
 			const totalCost = abi.bignum(tradeInProgress.totalCost).abs().toFixed();
 			const limitPrice = tradeInProgress.limitPrice;
 			const numShares = tradeInProgress.numShares;
+			const tradingFees = tradeInProgress.tradingFeesEth;
 			if (tradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
 				if (tradeIDs && tradeIDs.length) {
-					dispatch(placeBuy(marketID, outcomeID, numShares, limitPrice, totalCost));
+					dispatch(placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees));
 				} else {
-					dispatch(placeBid(marketID, outcomeID, numShares, limitPrice));
+					placeBid(market, outcomeID, numShares, limitPrice);
 				}
 				nextTradeInProgress();
 			} else if (tradeInProgress.side === SELL) {
@@ -121,7 +125,7 @@ export function placeTrade(marketID, outcomeID) {
 					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
 					if (position && position.gt(constants.PRECISION.zero)) {
 						if (tradeIDs && tradeIDs.length) {
-							dispatch(placeSell(marketID, outcomeID, numShares, limitPrice, totalCost));
+							dispatch(placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees));
 						} else {
 							let askShares;
 							let shortAskShares;
@@ -133,15 +137,15 @@ export function placeTrade(marketID, outcomeID) {
 								askShares = position.toFixed();
 								shortAskShares = bnNumShares.minus(position).toFixed();
 							}
-							dispatch(placeAsk(marketID, outcomeID, askShares, limitPrice));
+							placeAsk(market, outcomeID, askShares, limitPrice);
 							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-								dispatch(placeShortAsk(marketID, outcomeID, shortAskShares, limitPrice));
+								placeShortAsk(market, outcomeID, shortAskShares, limitPrice);
 							}
 						}
 					} else if (tradeIDs && tradeIDs.length) {
-						dispatch(placeShortSell(marketID, outcomeID, numShares, limitPrice, totalCost));
+						dispatch(placeShortSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees));
 					} else {
-						dispatch(placeShortAsk(marketID, outcomeID, numShares, limitPrice));
+						placeShortAsk(market, outcomeID, numShares, limitPrice);
 					}
 					nextTradeInProgress();
 				});
