@@ -53,6 +53,36 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 6, 2017</h3>
+			<ol>
+				<li>
+					The Transaction component no longer has separate commit-to-buy/sell types.  These types now simply use the trade type the user is committing to.
+				</li>
+				<li>
+					The transaction relayer now automatically fills in all fields for commit-trade, trade, and short-sell transactions by using the new, more detailed trade info fields attached to the tradeCommitment data store.
+				</li>
+				<li>
+					Default &quot;scaffolding&quot; transaction updates have been removed from the relayer.
+				</li>
+				<li>
+					Fixed in-progress vs completed messages for log_fill_tx.
+				</li>
+				<li>
+					Assignment to the gasFees field now works correctly for relayed and logged trading transactions.
+				</li>
+				<li>
+					Removed unnecessary dispatches from placeTrade and its subroutines.
+				</li>
+				<li>
+					Added trade arguments and orders to the tradeCommitment datastore.
+				</li>
+				<li>
+					The initial funding transaction log is now loaded alongside the registration timestamp transaction log.
+				</li>
+				<li>
+					Replaced the ugly monster header with a &quot;regular&quot; header in the transactions view.
+				</li>
+			</ol>
 			<h3>January 5, 2017</h3>
 			<ol>
 				<li>
