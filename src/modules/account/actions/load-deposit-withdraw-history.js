@@ -11,11 +11,14 @@ export function loadDepositWithdrawHistory(cb) {
 			params.fromBlock = loginAccount.registerBlockNumber;
 		}
 		async.eachLimit([
+			'fundedAccount',
 			'registration',
 			'deposit',
 			'withdraw'
 		], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-			augur.getLogs(label, params, null, (err, logs) => {
+			const p = label === 'fundedAccount' ? { ...params, fromBlock: null } : params;
+			augur.getLogs(label, p, null, (err, logs) => {
+				console.log(label, p, err, logs);
 				if (err) return nextLabel(err);
 				if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
 				nextLabel();
