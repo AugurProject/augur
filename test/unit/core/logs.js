@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 34 tests total
+// 39 tests total
 
 describe("logs.parseShortSellLogs", function() {
 	// 3 tests total
@@ -897,7 +897,7 @@ describe("logs.parametrizeFilter", function() {
 });
 
 describe("logs.insertIndexedLog", function() {
-	// ? tests total
+	// 5 tests total
 	var processedLogs;
 	var test = function(t) {
 		it(t.description, function() {
@@ -907,26 +907,24 @@ describe("logs.insertIndexedLog", function() {
 	};
 
 	test({
-		description: 'Should insert an indexed log into the processedLogs passed in',
+		description: 'Should insert an indexed log, passed as an array, into the processedLogs passed in',
 		processedLogs: {'0x00c1': '0x000def456'},
 		parsed: {
 			'0x00c1': '0x000abc123',
 		},
 		index: ['0x00c1'],
-		log: undefined,
 		assertions: function(o) {
 			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ], '0x00c1': '0x000def456' });
 		}
 	});
 
 	test({
-		description: 'Should insert an indexed log into the processedLogs passed in as an empty object',
+		description: 'Should insert an indexed log, passed as an array, into the processedLogs passed in as an empty object',
 		processedLogs: {},
 		parsed: {
 			'0x00c1': '0x000abc123',
 		},
 		index: ['0x00c1'],
-		log: undefined,
 		assertions: function(o) {
 			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
 		}
@@ -939,9 +937,50 @@ describe("logs.insertIndexedLog", function() {
 			'0x00c1': '0x000abc123',
 		},
 		index: '0x00c1',
-		log: undefined,
 		assertions: function(o) {
 			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
+		}
+	});
+
+	test({
+		description: 'Should insert an indexed log, where indexed is an array of length 2, into the processedLogs passed in as an empty object',
+		processedLogs: {},
+		parsed: {
+			'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002',
+			'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001'
+		},
+		index: ['0x00c1', '0x00a1'],
+		assertions: function(o) {
+			assert.deepEqual(processedLogs, {
+				'0x0000000000000000000000000000000000000000000000000000000000000002': {
+					'0x0000000000000000000000000000000000000000000000000000000000000001': [{
+						'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001',
+						'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002'
+					}]
+				}
+			});
+		}
+	});
+
+	test({
+		description: 'Should insert an indexed log, where indexed is an array of length 2, into the processedLogs passed in',
+		processedLogs: {'0x00c1': '0x00123', '0x00a1': '0x00456'},
+		parsed: {
+			'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002',
+			'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001'
+		},
+		index: ['0x00c1', '0x00a1'],
+		assertions: function(o) {
+			assert.deepEqual(processedLogs, {
+				'0x0000000000000000000000000000000000000000000000000000000000000002': {
+					'0x0000000000000000000000000000000000000000000000000000000000000001': [{
+						'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001',
+						'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002'
+					}],
+				},
+				'0x00a1': '0x00456',
+				'0x00c1': '0x00123'
+			});
 		}
 	});
 });
