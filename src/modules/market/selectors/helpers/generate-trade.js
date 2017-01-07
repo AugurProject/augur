@@ -1,22 +1,14 @@
 import memoizerific from 'memoizerific';
-
-import { formatEther, formatShares, formatRealEther } from 'utils/format-number';
+import { formatPercent, formatEther, formatShares, formatRealEther } from 'utils/format-number';
 import { augur, abi } from 'services/augurjs';
-
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
-
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 import * as TRANSACTIONS_TYPES from 'modules/transactions/constants/types';
-
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
-import { makeTradeTransaction } from 'modules/transactions/actions/add-trade-transaction';
-import { makeShortSellTransaction } from 'modules/transactions/actions/add-short-sell-transaction';
-
 import { selectAggregateOrderBook } from 'modules/bids-asks/helpers/select-order-book';
-
 import store from 'src/store';
 
 /**
@@ -109,43 +101,31 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
 
 export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
 	const tradeActions = outcomeTradeInProgress && outcomeTradeInProgress.tradeActions;
-
 	if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
 		return [];
 	}
-
+	const marketID = market.id;
+	const outcomeID = outcome.id;
+	const marketType = market.type;
+	const outcomeName = outcome.name;
+	const description = market.description;
 	return tradeActions.map((tradeAction) => {
-		const noFeePrice = (market.type === 'scalar') ?
-			outcomeTradeInProgress.limitPrice :
-			tradeAction.noFeePrice;
-		if (tradeAction.action === 'SHORT_SELL') {
-			return makeShortSellTransaction(
-				market.id,
-				outcome.id,
-				market.type,
-				market.description,
-				outcome.name,
-				tradeAction.shares,
-				noFeePrice,
-				abi.bignum(tradeAction.costEth).abs().toFixed(),
-				tradeAction.feeEth,
-				tradeAction.feePercent,
-				tradeAction.gasEth,
-				store.dispatch);
-		}
-		return makeTradeTransaction(
-			TRANSACTIONS_TYPES[tradeAction.action],
-			market.id,
-			outcome.id,
-			market.type,
-			market.description,
-			outcome.name,
-			tradeAction.shares,
-			noFeePrice,
-			abi.bignum(tradeAction.costEth).abs().toFixed(),
-			tradeAction.feeEth,
-			tradeAction.feePercent,
-			tradeAction.gasEth,
-			store.dispatch);
+		const numShares = abi.bignum(tradeAction.shares);
+		const costEth = abi.bignum(tradeAction.costEth).abs();
+		const avgPrice = tradeAction.action === 'SHORT_SELL' ?
+			costEth.minus(numShares).dividedBy(numShares) :
+			abi.bignum(costEth).dividedBy(abi.bignum(numShares));
+		const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
+		return {
+			type: TRANSACTIONS_TYPES[tradeAction.action],
+			data: { marketID, outcomeID, marketType, outcomeName },
+			description,
+			numShares: formatShares(tradeAction.shares),
+			avgPrice: formatEther(avgPrice),
+			noFeePrice: formatEther(noFeePrice),
+			tradingFees: formatEther(tradeAction.feeEth),
+			feePercent: formatPercent(tradeAction.feePercent),
+			gasFees: formatRealEther(tradeAction.gasEth)
+		};
 	});
 });
