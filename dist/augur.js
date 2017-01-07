@@ -22347,7 +22347,7 @@ module.exports={
         "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
         "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "Faucets": "0x2a1a07b5c6ebc235685085cbc60e96a4c09955ba", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
         "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
         "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
         "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
@@ -22407,41 +22407,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x88b56583fc23af3ec1318d21fd5eaef325440ae1", 
-        "Branches": "0xac1b6cb382ddabd0aae48eef12520504cda0e726", 
-        "BuyAndSellShares": "0x8b3fcd6b9522fabccd41953447324ab2f8eab08a", 
-        "Cash": "0x017275bb997cdd7650c0dfaac72dc619f38863d9", 
-        "CloseMarket": "0x39d8a64d3b8c68cd60db8091eb7b7814d97ab312", 
-        "CollectFees": "0x8d7391598a6698856726e1b80b90394b48666471", 
-        "CompleteSets": "0x3e92b8cd5dc6fb2cf897a0c9ca0db9178d22b566", 
-        "CompositeGetters": "0xcfaaac1a6ad2f7df028984d2220351eca94369eb", 
-        "Consensus": "0x8c93ff4dfcbf21457933d55c064cfeda1ab09d8b", 
-        "ConsensusData": "0xabdbd378564985db49c775bc059211c9123fb35c", 
-        "CreateBranch": "0xef3bc6ee2996b554eebfd430b22d6f4388665852", 
-        "CreateMarket": "0xd1334746e0a3d254d038eb0ed382b3a469a92fee", 
-        "EventResolution": "0x0b170618629c3e051d07eb8390ec78d3f73b25fe", 
-        "Events": "0x111dbeca87ae3844699b6c0adb7887f8be1f3008", 
-        "ExpiringEvents": "0xa82ffcaedfb0fd1849d2a35e86734b67aab712f5", 
-        "Faucets": "0x0421e8680d13dfa68dde67ce4f594765ad47be15", 
-        "ForkPenalize": "0x9c91cc2a34966e3744469b210356dfb6fa2816e6", 
-        "Forking": "0x25cd5bb4b6499ac932828b39533281e4eafd9d67", 
-        "FxpFunctions": "0xed44b63829931204dbb74e3eb8a55ffd3b232103", 
-        "Info": "0x607a879bb5fda69933bc4b7d76785bba0947e3de", 
-        "MakeReports": "0x08d74050508108443ce15743c3b6e5f958f518ef", 
-        "Markets": "0xda351fbae17431e4b7906b445bfc7d484b7d297d", 
-        "Payout": "0x87d2fcf99a5335240f4e28dd16218e297b8798a3", 
-        "PenalizationCatchup": "0x52f19b7588421b47b939c1443d74fddbe4da2e92", 
-        "PenalizeNotEnoughReports": "0x9917b7c1a0e468a8dca91cd49e147b4a55b35928", 
-        "ProportionCorrect": "0xd69f471ca2c9745828a0504f1f1e022ebacfff5e", 
-        "Register": "0x03eb63234b279c12065d6bce90b8cfccae1f240a", 
-        "Reporting": "0xda82da9a33e43924d014585a0f164f20f1996976", 
-        "ReportingThreshold": "0xa7e5a88df67ec952db698aeb816c1470ca0b47c2", 
-        "RoundTwo": "0x927cd1fb842ead4d5448cd115ff693be02ae269c", 
-        "RoundTwoPenalize": "0xaafeaf963551d06628c876362ca7a1759ae9aeeb", 
-        "SendReputation": "0xed93943989e407672d45639b095215c58a568285", 
-        "SlashRep": "0x7b06c42465116d161817995b24fc890e178a83d9", 
-        "Trade": "0xa3bd2bdfa15f9d6a7b186e3bb24a9a13622bc00d", 
-        "Trades": "0x9413c19670fb0d29da7fcd15dc6b2f7c5752fd16"
+        "Backstops": "0x391e1cabd13915f1ca8fae3876d59b7ba34d98a4", 
+        "Branches": "0x1177cf050142d208c4093d86f5f389b02386bdf5", 
+        "BuyAndSellShares": "0x48b4776386b350364fb7d0839cae640f4941864b", 
+        "Cash": "0x5117acc925e5830050bfbd2ada3916da5cfa42cd", 
+        "CloseMarket": "0x46156087579b43b22902094af9682d55c8b236f7", 
+        "CollectFees": "0x7a58ab1ce2e6dfc9f195362cd6101cd679231e62", 
+        "CompleteSets": "0x17f2759b8f7fddc484e845f68572ae5d1bfa903b", 
+        "CompositeGetters": "0x78475fc86f6748a3c370ccbec9ee73b1c0376e3c", 
+        "Consensus": "0x475c397b1ed36dfd0538a941c53e58f798222368", 
+        "ConsensusData": "0xb8505e94e6c2a31697bc4289b83418385f9b257e", 
+        "CreateBranch": "0xf4a2828902fd975ee33333f65f72c26bf9941252", 
+        "CreateMarket": "0x4a2bf600ee3179cd57f2c2cfca184dded7bb7781", 
+        "EventResolution": "0x659af37f6772558ba133f9db39cd42d6f27414cd", 
+        "Events": "0x18e9b30f466dca41678d151e1d01dfab9a37ec28", 
+        "ExpiringEvents": "0x699ce2c595e85c553e401c4cd28cb5203e69ceac", 
+        "Faucets": "0xe97a26b3dd7b1cbe3f280361a84496f0c8948e3d", 
+        "ForkPenalize": "0xf5df2c64269c3cfe7a80835fa10e672381d6301e", 
+        "Forking": "0xd38175718930badcab4dd62d026c4f3800aec21a", 
+        "FxpFunctions": "0xa9f8bd2b5ae7e5be6bb5b1862738402372d7d24e", 
+        "Info": "0x5b02a796bd434a8ed6161d519088c7c04fbb8525", 
+        "MakeReports": "0x5177cd3a766f0880144dd439edfe84ab0cf00e5d", 
+        "Markets": "0x508e61f51ba2cab8c4e30d5ed319d4e8e25600d2", 
+        "Payout": "0xf620788e79983d7b74abcfe0cbe874215bcb2c8b", 
+        "PenalizationCatchup": "0x63c8e1b382953e9e0eb093b473683dd5adc66223", 
+        "PenalizeNotEnoughReports": "0x61733f0d345fc0d55ea60baa1b15f1e1fc18fb49", 
+        "ProportionCorrect": "0x49ecd38f815bd3fe5d7b03d92b1e5d70429326af", 
+        "Register": "0xf88ed17582cd2e47b055097718021f014b15a4de", 
+        "Reporting": "0x00fbbde10760f2778349c7cf55adc1979c986012", 
+        "ReportingThreshold": "0xf1b2b5da2ac4e9d6331cd29c090c4820f8fa0617", 
+        "RoundTwo": "0x19345c00304deee89d65232d016749c13d663052", 
+        "RoundTwoPenalize": "0xd40a7306812f7688ce78fb162c588a961ae63e03", 
+        "SendReputation": "0xc81c84ef63b61e285d277a35ee6bcf18aeda13f2", 
+        "SlashRep": "0x417634939a285d16b70f31b9445804854475c656", 
+        "Trade": "0x94a30b1830d7542b451b9c4cdb172d25800aac1f", 
+        "Trades": "0xbde43fc85dd0c9a4dc31537bff3e7b9dc02b326b"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -41731,7 +41731,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.5.13";
+    this.version = "3.6.0";
 
     this.options = {
         debug: {
@@ -42519,10 +42519,11 @@ module.exports = {
     // load each batch of marketdata sequentially and recursively until complete
     loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
         var self = this;
+        var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
         this.getMarketsInfo({
             branch: branchID,
             offset: startIndex,
-            numMarketsToLoad: Math.min(chunkSize, numMarkets - startIndex),
+            numMarketsToLoad: numMarketsToLoad,
             volumeMin: volumeMin,
             volumeMax: volumeMax
         }, function (marketsData) {
