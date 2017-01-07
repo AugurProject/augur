@@ -98,7 +98,7 @@ export function constructRelayTransaction(tx, status) {
 				const { transactionHash, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
 				const order = selectOrder(p.buyer_trade_id);
 				dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
-				return dispatch(constructTradingTransaction('log_fill_tx', {
+				return dispatch(constructTradingTransaction('log_short_fill_tx', {
 					...p,
 					price: order.price,
 					outcome: parseInt(order.outcome, 10),

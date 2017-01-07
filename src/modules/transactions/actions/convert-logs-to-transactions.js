@@ -415,7 +415,6 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 		formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
 		formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
 	}
-	const rawPrice = bnPrice;
 	const action = trade.inProgress ? type : perfectType;
 	const transaction = {
 		[transactionID]: {
@@ -429,19 +428,55 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 				outcomeID,
 				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 			},
-			message: `${action} ${shares.full} for ${formatEther(trade.type === 1 ? totalCostPerShare : totalReturnPerShare).full} / share`,
-			rawNumShares: bnShares,
+			message: `${action} ${shares.full} for ${formatEther(trade.type === 'buy' ? totalCostPerShare : totalReturnPerShare).full} / share`,
 			numShares: shares,
-			rawPrice,
 			noFeePrice: price,
 			avgPrice: price,
 			timestamp: formatDate(new Date(trade.timestamp * 1000)),
-			rawTradingFees: tradingFees,
 			tradingFees: formatEther(tradingFees),
 			feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-			rawTotalCost: totalCost,
-			rawTotalReturn: totalReturn,
 			totalCost: formattedTotalCost,
+			totalReturn: formattedTotalReturn,
+			gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
+		}
+	};
+	return transaction;
+}
+
+export function constructLogShortFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+	const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+	const price = formatEther(trade.price);
+	const shares = formatShares(trade.amount);
+	const bnPrice = abi.bignum(trade.price);
+	const tradingFees = abi.bignum(trade.takerFee);
+	const bnShares = abi.bignum(trade.amount);
+	const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+	const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+	const totalCostPerShare = totalCost.dividedBy(bnShares);
+	// const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+	// const formattedTotalCost = formatEther(totalCost);
+	const formattedTotalReturn = formatEther(totalReturn);
+	const action = trade.inProgress ? 'short selling' : 'short sold';
+	const transaction = {
+		[transactionID]: {
+			type: 'short_sell',
+			hash: trade.transactionHash,
+			status,
+			description,
+			data: {
+				marketType,
+				outcomeName: outcomeName || outcomeID,
+				outcomeID,
+				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+			},
+			message: `${action} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+			numShares: shares,
+			noFeePrice: price,
+			avgPrice: price,
+			timestamp: formatDate(new Date(trade.timestamp * 1000)),
+			tradingFees: formatEther(tradingFees),
+			feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+			// totalCost: formattedTotalCost,
 			totalReturn: formattedTotalReturn,
 			gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
 		}
@@ -558,6 +593,9 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID, s
 			case 'log_fill_tx': {
 				return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
 			}
+			case 'log_short_fill_tx': {
+				return constructLogShortFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
+			}
 			case 'log_add_tx': {
 				return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch);
 			}
@@ -594,6 +632,7 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
 			if (marketsData[marketID]) {
 				dispatch(convertTradeLogToTransaction(label, data, marketID));
 			}
+			console.log('getting market info for', marketID);
 			augur.getMarketInfo(marketID, (marketInfo) => {
 				if (!marketInfo || marketInfo.error) {
 					if (marketInfo && marketInfo.error) console.error('augur.getMarketInfo:', marketInfo);
