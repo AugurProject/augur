@@ -50,8 +50,9 @@ export function constructRelayTransaction(tx, status) {
 					amount: abi.unfix(p.amount, 'string'),
 					gasFees
 				}, p.market, p.outcome, status));
-			case 'sell':
 			case 'shortAsk':
+				p.isShortAsk = true;
+			case 'sell':
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'sell',
 					...p,
@@ -91,7 +92,6 @@ export function constructRelayTransaction(tx, status) {
 						gasFees
 					}, order.market, order.outcome, 'committing'));
 				}
-				if (!p.inProgress) return null;
 				return transactions;
 			}
 			case 'short_sell': {
