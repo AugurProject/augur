@@ -51,7 +51,7 @@ export function constructRelayTransaction(tx, status) {
 					gasFees
 				}, p.market, p.outcome, status));
 			case 'shortAsk':
-				p.isShortAsk = true;
+				p.isShortAsk = true; // eslint-disable-line no-fallthrough
 			case 'sell':
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'sell',
