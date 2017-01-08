@@ -119,7 +119,7 @@ export function listenToUpdates() {
 
 					// if the user is either the maker or taker, add it to the transaction display
 					if (msg.sender === address || msg.owner === address) {
-						dispatch(convertTradeLogToTransaction('log_fill_tx', {
+						dispatch(convertTradeLogToTransaction('log_short_fill_tx', {
 							[msg.market]: { [msg.outcome]: [{
 								...msg,
 								maker: msg.owner === address
