@@ -16609,12 +16609,17 @@ module.exports={
         }, 
         {
           "indexed": false, 
+          "name": "isShortAsk", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
           "name": "timestamp", 
           "type": "int256"
         }
       ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c"
+      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xf6ebadeafdbe1f52fd45da6789b3f8fd7a39efd3b536a8c5ad1bfcf3914a1443"
     }, 
     "log_cancel": {
       "contract": "BuyAndSellShares", 
@@ -17942,7 +17947,8 @@ module.exports={
           "price", 
           "market", 
           "outcome", 
-          "minimumTradeSize"
+          "minimumTradeSize", 
+          "isShortAsk"
         ], 
         "label": "Ask", 
         "method": "sell", 
@@ -17950,6 +17956,7 @@ module.exports={
         "returns": "int256", 
         "send": true, 
         "signature": [
+          "int256", 
           "int256", 
           "int256", 
           "int256", 
@@ -41002,6 +41009,7 @@ module.exports = function () {
                 case "log_add_tx":
                     fmt = this.format_common_fields(msg);
                     fmt.outcome = parseInt(msg.outcome, 16);
+                    fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
                     return fmt;
                 case "log_cancel":
                     fmt = this.format_common_fields(msg);
@@ -41011,7 +41019,10 @@ module.exports = function () {
                 case "log_fill_tx":
                 case "log_short_fill_tx":
                     fmt = this.format_common_fields(msg);
-                    if (!fmt.type) fmt.type = "sell";
+                    if (!fmt.type) {
+                        fmt.type = "sell";
+                        fmt.isShortSell = true;
+                    }
                     fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
@@ -41731,7 +41742,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.0";
+    this.version = "3.6.1";
 
     this.options = {
         debug: {
@@ -42236,7 +42247,6 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.cancel);
         tx.params = trade_id;
-        tx.description = "Cancel order " + trade_id;
         if (this.options.debug.trading) {
             console.log("cancel tx:", JSON.stringify(tx, null, 2));
         }
@@ -42298,7 +42308,6 @@ module.exports = {
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
         ];
-        tx.description = "Bid " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
@@ -42331,9 +42340,9 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+            "0x0"
         ];
-        tx.description = "Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
@@ -42366,9 +42375,9 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+            "0x1"
         ];
-        tx.description = "Short Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
