@@ -53,6 +53,33 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 7, 2017</h3>
+			<ol>
+				<li>
+					Removed extraneous description fields from augur.js wrapper functions.  Descriptions are now handled by the relayer.
+				</li>
+				<li>
+					Added isShortAsk parameter to on-contract sell function and its associated log_add_tx event.  The log_add_tx and log_short_fill_tx filters in augur.js autoconvert isShortAsk to a boolean value.
+				</li>
+				<li>
+					Fixed final numMarketsToLoad value for descending loadMarkets.
+				</li>
+				<li>
+					Added always-in-progress flag to relayed commitTrade transactions.
+				</li>
+				<li>
+					Removed duplicate trading fees display in bid/ask/shortAsk transactions.
+				</li>
+				<li>
+					Added isShortAsk field to relayed shortAsk transactions.
+				</li>
+				<li>
+					Fixed short sell and short ask messaging.  Added log_short_fill_tx as a separate relayed transaction label.
+				</li>
+				<li>
+					Simplified trade simulation setup by inlining the trade and short sell &quot;transaction&quot; objects.  Removed unused add-short-sell-transaction and add-trade-transaction files.
+				</li>
+			</ol>
 			<h3>January 6, 2017</h3>
 			<ol>
 				<li>
