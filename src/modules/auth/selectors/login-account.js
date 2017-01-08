@@ -3,7 +3,7 @@ import memoizerific from 'memoizerific';
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
-import { addTransferFunds } from '../../transactions/actions/add-transfer-funds-transaction';
+import { transferFunds } from '../../auth/actions/transfer-funds';
 
 export default function () {
 	const { loginAccount } = store.getState();
@@ -11,10 +11,6 @@ export default function () {
 }
 
 export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
-	// temporary fix until we don't have accounts with secureLoginID
-	if (loginAccount.secureLoginID && !loginAccount.loginID) {
-		loginAccount.loginID = loginAccount.secureLoginID;
-	}
 	const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
 
 	const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
@@ -52,7 +48,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 		linkText,
 		downloadAccountFileName,
 		downloadAccountDataString,
-		transferFunds: (amount, currency, toAddress) => dispatch(addTransferFunds(amount, currency, toAddress)),
+		transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress)),
 		editName: name => dispatch(changeAccountName(name)),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
