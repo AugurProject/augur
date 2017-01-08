@@ -51,8 +51,8 @@ export function constructRelayTransaction(tx, status) {
 					gasFees
 				}, p.market, p.outcome, status));
 			case 'shortAsk':
-				p.isShortAsk = true; // eslint-disable-line no-fallthrough
 			case 'sell':
+				p.isShortAsk = p.isShortAsk ? !!parseInt(p.isShortAsk, 16) : true;
 				return dispatch(constructTradingTransaction('log_add_tx', {
 					type: 'sell',
 					...p,
@@ -80,6 +80,7 @@ export function constructRelayTransaction(tx, status) {
 						abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
 					transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
 						...p,
+						inProgress: true,
 						price: order.price,
 						outcome: parseInt(order.outcome, 10),
 						amount,
