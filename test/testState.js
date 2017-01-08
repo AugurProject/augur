@@ -20,6 +20,7 @@ const testState = {
 	},
 	blockchain: {
 		currentBlockMillisSinceEpoch: 1461774253983,
+		currentBlockTimestamp: 1461774253,
 		currentBlockNumber: 833339
 	},
 	branch: {
