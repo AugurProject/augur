@@ -51,7 +51,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -95,7 +94,6 @@ module.exports = {
             numOutcomes,
             resolution || ""
         ];
-        tx.description = description.split("~|>")[0];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -131,7 +129,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;

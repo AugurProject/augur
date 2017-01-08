@@ -29,8 +29,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
-        var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
-        tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.getVotePeriod(branch, function (period) {
             self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
                 if (self.options.debug.reporting) {

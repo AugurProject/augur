@@ -41742,7 +41742,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.2";
+    this.version = "3.6.3";
 
     this.options = {
         debug: {
@@ -42469,8 +42469,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
-        var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
-        tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.getVotePeriod(branch, function (period) {
             self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
                 if (self.options.debug.reporting) {
@@ -43209,7 +43207,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -43253,7 +43250,6 @@ module.exports = {
             numOutcomes,
             resolution || ""
         ];
-        tx.description = description.split("~|>")[0];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -43289,7 +43285,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -44143,11 +44138,10 @@ var constants = require("../constants");
 
 module.exports = {
 
-    closeMarket: function (branch, market, sender, description, onSent, onSuccess, onFailed) {
+    closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object) {
             market = branch.market;
             sender = branch.sender;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44155,7 +44149,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CloseMarket.closeMarket);
         tx.params = [branch, market, sender];
-        tx.description = description;
         this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -44184,7 +44177,6 @@ module.exports = {
                 self.claimProceeds({
                     branch: branch,
                     market: market.id,
-                    description: market.description,
                     onSent: function (res) {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds sent:", market.id, res);
@@ -44206,11 +44198,10 @@ module.exports = {
         });
     },
 
-    claimProceeds: function (branch, market, description, onSent, onSuccess, onFailed) {
+    claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
         var self = this;
         if (branch.constructor === Object) {
             market = branch.market;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44218,9 +44209,7 @@ module.exports = {
         }
         var tx = clone(self.tx.CloseMarket.claimProceeds);
         tx.params = [branch, market];
-        tx.description = description;
         if (self.options.debug.reporting) {
-            console.log("claimProceeds:", branch, market, description);
             console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
         }
         self.transact(tx, onSent, function (res) {
@@ -44978,10 +44967,9 @@ module.exports = {
         });
     },
 
-    penalizeWrong: function (branch, event, description, onSent, onSuccess, onFailed) {
+    penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object) {
             event = branch.event;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44989,7 +44977,6 @@ module.exports = {
         }
         var tx = clone(this.tx.Consensus.penalizeWrong);
         tx.params = [branch, event];
-        tx.description = description;
         this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -45143,7 +45130,6 @@ module.exports = {
                     self.penalizeWrong({
                         branch: branch,
                         event: 0,
-                        description: "Empty Reporting cycle",
                         onSent: utils.noop,
                         onSuccess: function (r) {
                             if (self.options.debug.reporting) {
@@ -45169,27 +45155,23 @@ module.exports = {
                             if (self.options.debug.reporting) {
                                 console.log("[penaltyCatchUp] penalizeWrong:", event);
                             }
-                            self.getDescription(event, function (description) {
-                                description = description.split("~|>")[0];
-                                self.penalizeWrong({
-                                    branch: branch,
-                                    event: event,
-                                    description: description,
-                                    onSent: utils.noop,
-                                    onSuccess: function (r) {
-                                        if (self.options.debug.reporting) {
-                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                        }
-                                        self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
-                                            if (err) return nextEvent(err);
-                                            nextEvent(null);
-                                        });
-                                    },
-                                    onFailed: function (e) {
-                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                        nextEvent(null);
+                            self.penalizeWrong({
+                                branch: branch,
+                                event: event,
+                                onSent: utils.noop,
+                                onSuccess: function (r) {
+                                    if (self.options.debug.reporting) {
+                                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                     }
-                                });
+                                    self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                                        if (err) return nextEvent(err);
+                                        nextEvent(null);
+                                    });
+                                },
+                                onFailed: function (e) {
+                                    console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                    nextEvent(null);
+                                }
                             });
                         });
                     }, callback);
@@ -45198,7 +45180,7 @@ module.exports = {
         });
     },
 
-    closeExtraMarkets: function (branch, event, description, sender, callback) {
+    closeExtraMarkets: function (branch, event, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
@@ -45217,7 +45199,6 @@ module.exports = {
                             branch: branch,
                             market: market,
                             sender: sender,
-                            description: description,
                             onSent: function (r) {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket sent:", market, r);
@@ -45488,15 +45469,6 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
-                        var hasValue = !abi.bignum(max_value).eq(constants.ZERO);
-                        tx.description = "";
-                        if (!abi.bignum(max_amount).eq(constants.ZERO)) {
-                            tx.description += max_amount.toString() + " Shares to sell";
-                            if (hasValue) tx.description += " and ";
-                        }
-                        if (hasValue) {
-                            tx.description += max_value.toString() + " ETH to spend";
-                        }
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -45614,7 +45586,6 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
-                        tx.description = max_amount.toString() + " Shares to short sell";
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }

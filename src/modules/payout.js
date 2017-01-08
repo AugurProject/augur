@@ -12,11 +12,10 @@ var constants = require("../constants");
 
 module.exports = {
 
-    closeMarket: function (branch, market, sender, description, onSent, onSuccess, onFailed) {
+    closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object) {
             market = branch.market;
             sender = branch.sender;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -24,7 +23,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CloseMarket.closeMarket);
         tx.params = [branch, market, sender];
-        tx.description = description;
         this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -53,7 +51,6 @@ module.exports = {
                 self.claimProceeds({
                     branch: branch,
                     market: market.id,
-                    description: market.description,
                     onSent: function (res) {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds sent:", market.id, res);
@@ -75,11 +72,10 @@ module.exports = {
         });
     },
 
-    claimProceeds: function (branch, market, description, onSent, onSuccess, onFailed) {
+    claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
         var self = this;
         if (branch.constructor === Object) {
             market = branch.market;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -87,9 +83,7 @@ module.exports = {
         }
         var tx = clone(self.tx.CloseMarket.claimProceeds);
         tx.params = [branch, market];
-        tx.description = description;
         if (self.options.debug.reporting) {
-            console.log("claimProceeds:", branch, market, description);
             console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
         }
         self.transact(tx, onSent, function (res) {
