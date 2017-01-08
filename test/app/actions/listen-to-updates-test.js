@@ -103,22 +103,43 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		}, {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
-			type: 'LOAD_BASIC_MARKET',
-			marketID: ['testMarketID']
+			type: 'UPDATE_MARKET_TRADES_DATA',
+			data: {
+				testMarketID: {
+					testOutcome: [
+						{
+							market: 'testMarketID',
+							outcome: 'testOutcome',
+							price: 123.44250502560001
+						}
+					]
+				}
+			}
+		}, {
+			type: 'UPDATE_MARKET_PRICE_HISTORY',
+			marketID: 'testMarketID',
+			priceHistory: {
+				testOutcome: [
+					{
+						market: 'testMarketID',
+						outcome: 'testOutcome',
+						price: 123.44250502560001
+					}
+				]
+			}
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: ['testID1']
+			marketID: [
+				'testID1'
+			]
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: ['testID1']
+			marketID: [
+				'testID1'
+			]
+		}, {
+			type: 'UPDATE_ASSETS'
 		}];
-
-		assert(mockAugurJS.augur.filters.listen.calledOnce, `Didn't call AugurJS.augur.filters.listen() exactly 1 time as expected`);
-		assert(mockUpdateBranch.syncBranch.calledOnce, `Didn't call syncBranch() once as expected`);
-		assert(mockUpdateBlockchain.syncBlockchain.calledOnce, `Didn't call syncBlockchain() once as expected`);
-		assert(mockUpdateAssets.updateAssets.calledOnce, `Didn't call updateAssets() once as expected`);
-		assert(mockOutcomePrice.updateOutcomePrice.calledOnce, `Didn't call updateOutcomePrice() once as expected`);
-		assert(mockLoadMarketsInfo.loadMarketsInfo.calledThrice, `Didn't call loadMarketsInfo() three times as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
 });

@@ -29,6 +29,10 @@ describe(`modules/app/actions/update-branch.js`, () => {
 	mockAugurJS.augur.getVotePeriod = sinon.stub().yields(19);
 	mockAugurJS.augur.getVotePeriod.onCall(1).yields(15);
 	mockAugurJS.augur.getVotePeriod.onCall(2).yields(18);
+	mockAugurJS.augur.getPenalizedUpTo = sinon.stub().yields('10');
+	mockAugurJS.augur.getFeesCollected = sinon.stub().yields('1');
+	mockAugurJS.augur.getPast24 = sinon.stub().yields('2');
+	mockAugurJS.augur.getNumberEvents = sinon.stub().yields('6');
 	mockClaimProceeds.claimProceeds = sinon.stub().returns({ type: 'CLAIM_PROCEEDS' });
 	sinon.stub(mockAugurJS.abi, 'bignum', (n) => {
 		if (n == null) return null;
@@ -93,19 +97,25 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			}
 		}, {
 			type: 'UPDATE_BRANCH',
-			branch: { reportPeriod: 19 }
-		}, {
-			type: 'CLAIM_PROCEEDS'
+			branch: {
+				reportPeriod: 19
+			}
 		}, {
 			type: 'UPDATE_BRANCH',
-			branch: { reportPeriod: 19 }
+			branch: {
+				numEventsCreatedInPast24Hours: 2
+			}
+		}, {
+			type: 'UPDATE_BRANCH',
+			branch: {
+				numEventsInReportPeriod: 6
+			}
+		}, {
+			type: 'CLAIM_PROCEEDS'
 		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));
-		assert(mockAugurJS.augur.getVotePeriod.calledOnce, `getVotePeriod wasn't called once as expected`);
-		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
-		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
 	it(`should collect fees and reveal reports if we're in the second half of the reporting period`, () => {
@@ -136,19 +146,25 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			}
 		}, {
 			type: 'UPDATE_BRANCH',
-			branch: { reportPeriod: 15 }
-		}, {
-			type: 'CLAIM_PROCEEDS'
+			branch: {
+				reportPeriod: 15
+			}
 		}, {
 			type: 'UPDATE_BRANCH',
-			branch: { reportPeriod: 19 }
+			branch: {
+				numEventsCreatedInPast24Hours: 2
+			}
+		}, {
+			type: 'UPDATE_BRANCH',
+			branch: {
+				numEventsInReportPeriod: 6
+			}
+		}, {
+			type: 'CLAIM_PROCEEDS'
 		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.syncBranch(mockCB));
-		assert(mockAugurJS.augur.getVotePeriod.calledTwice, `getVotePeriod wasn't called twice (no reset) as expected`);
-		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
-		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
 });
