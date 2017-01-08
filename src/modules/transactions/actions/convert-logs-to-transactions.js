@@ -622,8 +622,8 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 			const numTrades = data[marketID][outcomeID].length;
 			if (numTrades) {
 				for (let k = 0; k < numTrades; ++k) {
-					const txLabel = data[marketID][outcomeID][k].isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
-					const transaction = dispatch(constructTradingTransaction(txLabel, data[marketID][outcomeID][k], marketID, outcomeID, SUCCESS));
+					const trade = data[marketID][outcomeID][k];
+					const transaction = dispatch(constructTradingTransaction(trade.isShortSell ? 'log_short_fill_tx' : label, trade, marketID, outcomeID, SUCCESS));
 					if (transaction) dispatch(updateTransactionsData(transaction));
 				}
 			}
