@@ -196,10 +196,18 @@ export function constructRelayTransaction(tx, status) {
 						transaction = dispatch(constructTransaction('payout', { ...p, shares }));
 						break;
 					}
+					case 'sentCash':
+						transaction = dispatch(constructTransaction('sentCash', {
+							...p,
+							_from: abi.format_address(p.from),
+							_to: abi.format_address(p.recver),
+							_value: abi.unfix(p.value, 'string')
+						}));
+						break;
 					case 'transfer':
 						transaction = dispatch(constructTransaction('Transfer', {
 							...p,
-							_from: tx.data.from,
+							_from: abi.format_address(tx.data.from),
 							_to: abi.format_address(p.recver),
 							_value: abi.unfix(p.value, 'string')
 						}));
@@ -213,7 +221,7 @@ export function constructRelayTransaction(tx, status) {
 					case 'register':
 						transaction = dispatch(constructTransaction('registration', {
 							...p,
-							sender: tx.data.from
+							sender: abi.format_address(tx.data.from)
 						}));
 						break;
 					case 'createMarket':

@@ -126,6 +126,18 @@ export function constructPenalizationCaughtUpTransaction(log) {
 	return transaction;
 }
 
+export function constructSentCashTransaction(log) {
+	const transaction = { data: {} };
+	transaction.type = 'Transfer Ether';
+	transaction.description = `Transfer Ether from ${log._from} to ${log._to}`;
+	transaction.data.balances = [{
+		change: formatEther(log._value, { positiveSign: true })
+	}];
+	const action = log.inProgress ? 'transferring' : 'transferred';
+	transaction.message = `${action} ${formatEther(log._value).full}`;
+	return transaction;
+}
+
 export function constructTransferTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Transfer Reputation';
@@ -329,6 +341,8 @@ export function constructTransaction(label, log, isRetry, callback) {
 				return constructPenalizationCaughtUpTransaction(log);
 			case 'registration':
 				return constructRegistrationTransaction(log);
+			case 'sentCash':
+				return constructSentCashTransaction(log);
 			case 'Transfer':
 				return constructTransferTransaction(log);
 			case 'withdraw':

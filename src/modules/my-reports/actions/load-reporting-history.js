@@ -11,13 +11,11 @@ export function loadReportingHistory(cb) {
 			params.fromBlock = loginAccount.registerBlockNumber;
 		}
 		async.eachLimit([
-			'Approval',
 			'collectedFees',
 			'penalizationCaughtUp',
 			'penalize',
 			'submittedReport',
-			'submittedReportHash',
-			'Transfer',
+			'submittedReportHash'
 		], constants.PARALLEL_LIMIT, (label, nextLabel) => {
 			augur.getLogs(label, params, null, (err, logs) => {
 				if (err) return nextLabel(err);

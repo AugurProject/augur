@@ -2,9 +2,9 @@ import async from 'async';
 import { augur, constants } from '../../../services/augurjs';
 import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
 
-export function loadDepositWithdrawHistory(cb) {
+export function loadFundingHistory(cb) {
 	return (dispatch, getState) => {
-		const callback = cb || (e => console.log('loadDepositWithdrawHistory:', e));
+		const callback = cb || (e => console.log('loadFundingHistory:', e));
 		const { branch, loginAccount } = getState();
 		const params = { sender: loginAccount.address, branch: branch.id };
 		if (loginAccount.registerBlockNumber) {
@@ -14,7 +14,10 @@ export function loadDepositWithdrawHistory(cb) {
 			'fundedAccount',
 			'registration',
 			'deposit',
-			'withdraw'
+			'withdraw',
+			'Approval',
+			'Transfer',
+			'sentCash'
 		], constants.PARALLEL_LIMIT, (label, nextLabel) => {
 			const p = label === 'fundedAccount' ? { ...params, fromBlock: null } : params;
 			augur.getLogs(label, p, null, (err, logs) => {

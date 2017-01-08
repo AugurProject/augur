@@ -200,12 +200,25 @@ export function listenToUpdates() {
 				}
 			},
 
+			// Cash (ether) transfer
+			cashSent: (msg) => {
+				if (msg) {
+					console.debug('cashSent:', msg);
+					const { address } = getState().loginAcocunt;
+					if (msg._from === address || msg._to === address) {
+						dispatch(updateAssets());
+						dispatch(convertLogsToTransactions('Transfer', [msg]));
+					}
+				}
+			},
+
+
 			// Reputation transfer
 			Transfer: (msg) => {
 				if (msg) {
 					console.debug('Transfer:', msg);
 					const { address } = getState().loginAcocunt;
-					if (msg._owner === address || msg._spender === address) {
+					if (msg._from === address || msg._to === address) {
 						dispatch(updateAssets());
 						dispatch(convertLogsToTransactions('Transfer', [msg]));
 					}
@@ -216,7 +229,7 @@ export function listenToUpdates() {
 				if (msg) {
 					console.debug('Approval:', msg);
 					const { address } = getState().loginAcocunt;
-					if (msg.sender === address || msg.to === address) {
+					if (msg._owner === address || msg._spender === address) {
 						dispatch(updateAssets());
 						dispatch(convertLogsToTransactions('Approval', [msg]));
 					}
