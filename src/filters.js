@@ -125,6 +125,13 @@ module.exports = function () {
                     fmt.p = abi.unfix(msg.p, "string");
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
                     return fmt;
+                case "sentCash":
+                case "Transfer":
+                    fmt = clone(msg);
+                    fmt._from = abi.format_address(msg._from);
+                    fmt._to = abi.format_address(msg._to);
+                    fmt._value = abi.unfix(msg._value);
+                    return fmt;
                 case "submittedReport":
                 case "submittedReportHash":
                     fmt = this.format_common_fields(msg);
@@ -133,12 +140,6 @@ module.exports = function () {
                 case "tradingFeeUpdated":
                     fmt = this.format_common_fields(msg);
                     fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-                    return fmt;
-                case "Transfer":
-                    fmt = clone(msg);
-                    fmt._from = abi.format_address(msg._from);
-                    fmt._to = abi.format_address(msg._to);
-                    fmt._value = abi.unfix(msg._value);
                     return fmt;
                 case "withdraw":
                     fmt = this.format_common_fields(msg);
