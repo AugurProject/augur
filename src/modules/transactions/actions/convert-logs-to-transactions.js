@@ -390,6 +390,7 @@ export const convertLogsToTransactions = (label, logs, isRetry) => (
 );
 
 export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+	console.log('trade:', trade);
 	const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
 	const price = formatEther(trade.price);
 	const shares = formatShares(trade.amount);
@@ -415,7 +416,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 		formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
 		formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
 	}
-	const action = trade.inProgress ? type : perfectType;
+	const action = trade.inProgress && status !== 'committing' ? type : perfectType;
 	const transaction = {
 		[transactionID]: {
 			type,
@@ -440,6 +441,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 			gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
 		}
 	};
+	console.log('transaction:', transaction);
 	return transaction;
 }
 
@@ -451,12 +453,8 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
 	const tradingFees = abi.bignum(trade.takerFee);
 	const bnShares = abi.bignum(trade.amount);
 	const totalCost = bnPrice.times(bnShares).plus(tradingFees);
-	const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 	const totalCostPerShare = totalCost.dividedBy(bnShares);
-	// const totalReturnPerShare = totalReturn.dividedBy(bnShares);
-	// const formattedTotalCost = formatEther(totalCost);
-	const formattedTotalReturn = formatEther(totalReturn);
-	const action = trade.inProgress ? 'short selling' : 'short sold';
+	const action = trade.inProgress && status !== 'committing' ? 'short selling' : 'short sold';
 	const transaction = {
 		[transactionID]: {
 			type: 'short_sell',
@@ -472,12 +470,11 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
 			message: `${action} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
 			numShares: shares,
 			noFeePrice: price,
-			avgPrice: price,
+			avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
 			timestamp: formatDate(new Date(trade.timestamp * 1000)),
 			tradingFees: formatEther(tradingFees),
 			feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-			// totalCost: formattedTotalCost,
-			totalReturn: formattedTotalReturn,
+			totalCost: formatEther(totalCost),
 			gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
 		}
 	};
@@ -485,7 +482,18 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
 }
 
 export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch) {
-	const type = trade.type === 'buy' ? 'bid' : 'ask';
+	let type;
+	let action;
+	if (trade.type === 'buy') {
+		type = 'bid';
+		action = trade.inProgress ? 'bidding' : 'bid';
+	} else if (trade.isShortAsk) {
+		type = 'short_ask';
+		action = trade.inProgress ? 'short asking' : 'short ask';
+	} else {
+		type = 'ask';
+		action = trade.inProgress ? 'asking' : 'ask';
+	}
 	const price = formatEther(trade.price);
 	const shares = formatShares(trade.amount);
 	const makerFee = market.makerFee;
@@ -497,26 +505,23 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 	const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
 	const fxpShares = abi.fix(trade.amount);
 	const fxpPrice = abi.fix(trade.price);
-	const tradingFees = adjustedFees.maker.times(fxpShares)
-		.dividedBy(constants.ONE)
+	const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
 		.floor()
 		.times(fxpPrice)
 		.dividedBy(constants.ONE)
 		.floor();
-	const noFeeCost = fxpPrice.times(fxpShares)
-		.dividedBy(constants.ONE)
-		.floor();
+	let noFeeCost;
+	if (trade.isShortAsk) {
+		noFeeCost = fxpShares;
+	} else {
+		noFeeCost = fxpPrice.times(fxpShares).dividedBy(constants.ONE).floor();
+	}
 	const totalCost = noFeeCost.plus(tradingFees);
-	const totalCostPerShare = totalCost.dividedBy(fxpShares)
-		.times(constants.ONE)
-		.floor();
-	const totalReturn = fxpPrice.times(fxpShares)
-		.dividedBy(constants.ONE)
+	const totalCostPerShare = totalCost.dividedBy(fxpShares).times(constants.ONE).floor();
+	const totalReturn = fxpPrice.times(fxpShares).dividedBy(constants.ONE)
 		.floor()
 		.minus(tradingFees);
-	const totalReturnPerShare = totalReturn.dividedBy(fxpShares)
-		.times(constants.ONE)
-		.floor();
+	const totalReturnPerShare = totalReturn.dividedBy(fxpShares).times(constants.ONE).floor();
 	return {
 		[trade.transactionHash]: {
 			type,
@@ -528,12 +533,12 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 				outcomeID,
 				marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 			},
-			message: `${type} ${shares.full} for ${formatEther(abi.unfix(trade.type === 'buy' ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+			message: `${action} ${shares.full} for ${formatEther(abi.unfix(trade.type === 'buy' ? totalCostPerShare : totalReturnPerShare)).full} / share`,
 			numShares: shares,
 			noFeePrice: price,
 			freeze: {
 				verb: trade.inProgress ? 'freezing' : 'froze',
-				noFeeCost: trade.type === 'buy' ? formatEther(abi.unfix(noFeeCost)) : undefined,
+				noFeeCost: trade.type === 'ask' ? undefined : formatEther(abi.unfix(noFeeCost)),
 				tradingFees: formatEther(abi.unfix(tradingFees))
 			},
 			avgPrice: price,
@@ -541,8 +546,8 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 			hash: trade.transactionHash,
 			tradingFees: formatEther(abi.unfix(tradingFees)),
 			feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-			totalCost: trade.type === 'buy' ? formatEther(abi.unfix(totalCost)) : undefined,
-			totalReturn: trade.type === 'sell' ? formatEther(abi.unfix(totalReturn)) : undefined,
+			totalCost: type === 'bid' ? formatEther(abi.unfix(totalCost)) : undefined,
+			totalReturn: type === 'ask' ? formatEther(abi.unfix(totalReturn)) : undefined,
 			gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
 		}
 	};
@@ -617,7 +622,8 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 			const numTrades = data[marketID][outcomeID].length;
 			if (numTrades) {
 				for (let k = 0; k < numTrades; ++k) {
-					const transaction = dispatch(constructTradingTransaction(label, data[marketID][outcomeID][k], marketID, outcomeID, SUCCESS));
+					const txLabel = data[marketID][outcomeID][k].isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
+					const transaction = dispatch(constructTradingTransaction(txLabel, data[marketID][outcomeID][k], marketID, outcomeID, SUCCESS));
 					if (transaction) dispatch(updateTransactionsData(transaction));
 				}
 			}
