@@ -11,8 +11,8 @@ describe(`modules/auth/actions/login.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const fakeAugurJS = {
+		accounts: {},
 		augur: {
-			web: {},
 			getRegisterBlockNumber: () => {},
 			Register: {
 				register: () => {}
@@ -32,7 +32,7 @@ describe(`modules/auth/actions/login.js`, () => {
 	});
 	const store = mockStore(thisTestState);
 
-	fakeAugurJS.augur.web.login = sinon.stub().yields({
+	fakeAugurJS.accounts.login = sinon.stub().yields({
 		address: 'test',
 		handle: 'test',
 		ether: 0,
@@ -72,11 +72,6 @@ describe(`modules/auth/actions/login.js`, () => {
 	it(`should attempt to login an account given user/pass`, () => {
 		store.dispatch(action.login('test', 'test'));
 		const expectedOutput = [{ type: ldLoginAccLSTestString }, { type: updateTestString }, { type: ldLoginAccDepTestString }];
-		// assert(updtLoginAccStub.updateLoginAccount.calledOnce, `updateLoginAccount() wasn't called once as expected.`);
-		// assert(ldLoginAccStub.loadLoginAccountDependents.calledOnce, `loadLoginAccountDependents() wasn't called once as expected`);
-		// assert(ldLoginAccStub.loadLoginAccountLocalStorage.calledOnce, `loadLoginAccountLocalStorage() wasn't called once as expected`);
-		// assert(fakeSelectors.links.marketsLink.onClick.calledOnce, `marketsLink.onClick() wasn't called once as expected`);
-		// assert(fakeAugurJS.augur.web.login.calledOnce, `login() wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
 	});
 

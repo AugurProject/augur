@@ -13,7 +13,6 @@ describe(`modules/auth/actions/register.js`, () => {
 	const fakeAugurJS = { augur: { web: {} } };
 	const fakeAuthLink = {};
 	const fakeSelectors = {};
-	const fakeFund = {};
 	const updtLoginAccStub = {};
 	const ldLoginAccStub = {
 		loadLoginAccountDependents: () => {}
@@ -43,7 +42,6 @@ describe(`modules/auth/actions/register.js`, () => {
 		},
 	};
 	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
-	fakeFund.addFundNewAccount = sinon.stub().returns({ type: 'FUND_NEW_ACCOUNT' });
 	const updateTestString = 'updateLoginAccount(loginAccount) called.';
 	const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
 	const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
@@ -61,8 +59,7 @@ describe(`modules/auth/actions/register.js`, () => {
 		'../../../selectors': fakeSelectors,
 		'../../link/selectors/links': fakeAuthLink,
 		'../../auth/actions/update-login-account': updtLoginAccStub,
-		'../../auth/actions/load-login-account': ldLoginAccStub,
-		'../../transactions/actions/add-fund-new-account-transaction': fakeFund
+		'../../auth/actions/load-login-account': ldLoginAccStub
 	});
 
 	beforeEach(() => {
@@ -81,8 +78,6 @@ describe(`modules/auth/actions/register.js`, () => {
 		}, {
 			type: 'updateLoginAccount(loginAccount) called.'
 		}, {
-			type: 'FUND_NEW_ACCOUNT'
-		}, {
 			type: 'loadLoginAccountDependents() called.'
 		}];
 
@@ -91,11 +86,6 @@ describe(`modules/auth/actions/register.js`, () => {
 		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
 
 		assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
-		assert(fakeFund.addFundNewAccount.calledOnce, `addFundNewAccount wasn't called once as expected`);
-
-		assert(ldLoginAccStub.loadLoginAccountDependents.calledOnce, `loadLoginAccountDependents wasn't called once as expected.`);
-		assert(ldLoginAccStub.loadLoginAccountLocalStorage.calledOnce, `loadLoginAccountLocalStorage wasn't called once as expected`);
-		assert(updtLoginAccStub.updateLoginAccount.calledTwice, `updateLoginAccount wasn't called twice as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
 

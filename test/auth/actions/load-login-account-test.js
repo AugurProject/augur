@@ -30,13 +30,12 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeAugurJS.augur.getRegisterBlockNumber = (account, cb) => {
 		cb(null, 10000);
 	};
+	fakeAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(30);
 	fakeUpdateAssets.updateAssets = () => (dispatch, getState) => {
 		const ether = 500;
 		const rep = 25;
 		const realEther = 100;
-		dispatch(updateLoginAccount({ ether }));
-		dispatch(updateLoginAccount({ rep }));
-		dispatch(updateLoginAccount({ realEther }));
+		dispatch(updateLoginAccount({ rep, realEther, ether }));
 	};
 	fakeLoadMarketsInfo.loadMarketsInfo = () => (dispatch, getState) => {
 		dispatch({ type: 'UPDATE_MARKETS_INFO' });
@@ -69,30 +68,33 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 
 		const expectedOutput = [{
 			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { address: 123456789 }
+			data: {
+				address: 123456789
+			}
 		}, {
 			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { ether: 500 }
+			data: {
+				registerBlockNumber: 10000
+			}
 		}, {
 			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { rep: 25 }
-		}, {
-			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { realEther: 100 }
-		}, {
-			type: 'UPDATE_LOGIN_ACCOUNT',
-			data: { registerBlockNumber: 10000 }
+			data: {
+				ether: undefined,
+				realEther: undefined,
+				rep: undefined
+			}
 		}, {
 			type: 'CLEAR_REPORTS'
 		}, {
-			type: 'SYNC_BRANCH',
-			data: { reportPeriod: 19 }
-		}, {
-			type: 'CLEAR_ACCOUNT_TRADES'
-		}, {
-			type: 'LOAD_ACCOUNT_TRADES'
+			type: 'UPDATE_BRANCH',
+			branch: {
+				currentPeriod: 365443,
+				currentPeriodProgress: 56.325,
+				isReportRevealPhase: true,
+				phaseLabel: 'Reveal',
+				phaseTimeRemaining: 'in 29 minutes'
+			}
 		}];
-		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
 		const actual = store.getActions();
 		const numActions = actual.length;
 		for (let i = 0; i < numActions; ++i) {
