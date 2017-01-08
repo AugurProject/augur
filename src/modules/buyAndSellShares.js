@@ -156,8 +156,7 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            "0x1"
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
         ];
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
