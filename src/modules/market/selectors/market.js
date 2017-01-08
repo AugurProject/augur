@@ -20,7 +20,6 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
@@ -33,7 +32,7 @@ import { abi, constants } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
-import { addSellCompleteSetsTransaction } from '../../transactions/actions/add-sell-complete-sets-transaction';
+import { sellNumberCompleteSetsMarket } from '../../my-positions/actions/sell-complete-sets';
 import { commitReport } from '../../reports/actions/commit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
@@ -228,7 +227,7 @@ export function assembleMarket(
 
 			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
 			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
-			market.onSubmitClosePosition = () => dispatch(addSellCompleteSetsTransaction(marketID, market.smallestPosition.value));
+			market.onSubmitClosePosition = () => dispatch(sellNumberCompleteSetsMarket(marketID, market.smallestPosition.value));
 
 			market.report = {
 				...marketReport,
