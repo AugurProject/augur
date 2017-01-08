@@ -416,7 +416,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
 		formattedTotalCost = trade.type === 'buy' ? formatEther(totalCost) : undefined;
 		formattedTotalReturn = trade.type === 'sell' ? formatEther(totalReturn) : undefined;
 	}
-	const action = trade.inProgress && status !== 'committing' ? type : perfectType;
+	const action = trade.inProgress ? type : perfectType;
 	const transaction = {
 		[transactionID]: {
 			type,
@@ -454,7 +454,7 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
 	const bnShares = abi.bignum(trade.amount);
 	const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 	const totalCostPerShare = totalCost.dividedBy(bnShares);
-	const action = trade.inProgress && status !== 'committing' ? 'short selling' : 'short sold';
+	const action = trade.inProgress ? 'short selling' : 'short sold';
 	const transaction = {
 		[transactionID]: {
 			type: 'short_sell',
@@ -538,13 +538,12 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
 			noFeePrice: price,
 			freeze: {
 				verb: trade.inProgress ? 'freezing' : 'froze',
-				noFeeCost: trade.type === 'ask' ? undefined : formatEther(abi.unfix(noFeeCost)),
+				noFeeCost: type === 'ask' ? undefined : formatEther(abi.unfix(noFeeCost)),
 				tradingFees: formatEther(abi.unfix(tradingFees))
 			},
 			avgPrice: price,
 			timestamp: formatDate(new Date(trade.timestamp * 1000)),
 			hash: trade.transactionHash,
-			tradingFees: formatEther(abi.unfix(tradingFees)),
 			feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
 			totalCost: type === 'bid' ? formatEther(abi.unfix(totalCost)) : undefined,
 			totalReturn: type === 'ask' ? formatEther(abi.unfix(totalReturn)) : undefined,
