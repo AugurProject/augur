@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
 				<li>
 					In-progress transaction messaging for closing out complete sets, &quot;send&quot; funds transactions (ether, real ether, and reputation), and initial order book generation is now handled entirely by the transaction relayer.  (Note: initial order book generation is currently not exposed in the UI.)
 				</li>
+				<li>
+					Simplified the transactions module by removing two unnecessary methods (updateExistingTransaction and processTransactions).
+				</li>
 			</ol>
 			<h3>January 7, 2017</h3>
 			<ol>
