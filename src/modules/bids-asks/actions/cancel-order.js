@@ -1,7 +1,7 @@
 import { augur } from '../../../services/augurjs';
 import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import getOrder from '../../bids-asks/helpers/get-order';
-import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
+import { CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 
@@ -20,10 +20,7 @@ export function cancelOrder(orderID, marketID, type) {
 				augur.cancel({
 					trade_id: orderID,
 					onSent: res => console.log('cancel sent:', res),
-					onSuccess: (res) => {
-						console.log('cancel success:', res);
-						dispatch(updateOrderStatus(orderID, CANCELLED, marketID, type));
-					},
+					onSuccess: res => console.log('cancel success:', res),
 					onFailed: (err) => {
 						console.error('cancel failed:', err);
 						dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, marketID, type));
