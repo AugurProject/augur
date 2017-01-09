@@ -261,6 +261,10 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 					state.createMarketInProgress,
 					state.blockchain.currentBlockNumber,
 					state.blockchain.currentBlockMillisSinceEpoch,
+					state.branch.periodLength,
+					state.branch.baseReporters,
+					state.branch.numEventsCreatedInPast24Hours,
+					state.branch.numEventsInReportPeriod,
 					store.dispatch
 				)
 			};
