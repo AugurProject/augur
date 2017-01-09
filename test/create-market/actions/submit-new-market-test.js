@@ -27,12 +27,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const transID = 'testtransaction12345';
+	const endDate = { value: new Date() };
 	const failedMarketData = {
 		type: BINARY,
 		minValue: 1,
 		maxValue: 2,
 		numOutcomes: 2,
-		endDate: { value: new Date() },
+		endDate,
 		expirySource: true,
 		failTest: FAILED
 	};
@@ -89,34 +90,17 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	});
 
 	it(`should be able to submit a new market`, () => {
-		store.dispatch(action.submitNewMarket({
-			market: {
-				id: 'market'
-			}
-		}));
-
+		store.dispatch(action.submitNewMarket({ id: 'market', endDate }));
 		out = [{
-			type: 'UPDATE_TRANSACTIONS_DATA',
-			test123: {
-				type: 'create_market',
-				gas: 0,
-				ether: 0,
-				data: {
-					market: 'some marketdata'
-				},
-				action: 'do some action',
-				status: 'pending'
-			}
+			type: 'CLEAR_MAKE_IN_PROGRESS'
 		}];
-
 		assert(stubbedLink.selectTransactionsLink.calledOnce, 'selectTransactionsLink was not called once');
 		assert.deepEqual(store.getActions(), out, `Didn't correctly create a new market`);
-
 		global.window = {};
 		store.clearActions();
 	});
 
-	describe('createMarket states', () => {
+	describe('submitNewMarket states', () => {
 
 		const endDate = { value: new Date() };
 
@@ -138,26 +122,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		});
 
 		it('should fail correctly', () => {
-			console.log('failedMarketData:', failedMarketData);
-			store.dispatch(action.createMarket(transID, failedMarketData));
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: { status: 'failed', message: 'error!' }
-				}
-			];
-			assert.deepEqual(store.getActions(), out, `createMarket did not fail correctly`);
+			store.dispatch(action.submitNewMarket(failedMarketData));
+			out = [];
+			assert.deepEqual(store.getActions(), out, `submitNewMarket did not fail correctly`);
 		});
 
 		it('should be able to create a binary market WITH an order book', () => {
@@ -166,51 +133,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				type: BINARY,
 				isCreatingOrderBook: true
 			};
-
-			store.dispatch(action.createMarket(transID, marketData));
-
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				},
-				{
-					type: 'submitGenerateOrderBook'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}, {
+				type: 'submitGenerateOrderBook'
+			}];
 			expectedMarketData = {
 				endDate,
 				type: BINARY,
@@ -224,52 +153,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		});
 
 		it('should be able to create a binary market WITHOUT an order book', () => {
-			marketData = {
-				endDate,
-				type: BINARY
-			};
-
-			store.dispatch(action.createMarket(transID, marketData));
-
+			marketData = { endDate, type: BINARY };
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}];
 			expectedMarketData = {
 				endDate,
 				type: BINARY,
@@ -289,51 +178,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				scalarSmallNum: 10,
 				scalarBigNum: 100
 			};
-
-			store.dispatch(action.createMarket(transID, marketData));
-
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				},
-				{
-					type: 'submitGenerateOrderBook'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}, {
+				type: 'submitGenerateOrderBook'
+			}];
 			expectedMarketData = {
 				endDate,
 				type: SCALAR,
@@ -356,47 +207,11 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				scalarBigNum: 100
 			};
 
-			store.dispatch(action.createMarket(transID, marketData));
-
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}];
 			expectedMarketData = {
 				endDate,
 				type: SCALAR,
@@ -422,51 +237,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3' }
 				]
 			};
-
-			store.dispatch(action.createMarket(transID, marketData));
-
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				},
-				{
-					type: 'submitGenerateOrderBook'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}, {
+				type: 'submitGenerateOrderBook'
+			}];
 			expectedMarketData = {
 				endDate,
 				description: 'test',
@@ -497,48 +274,11 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3' }
 				]
 			};
-
-			store.dispatch(action.createMarket(transID, marketData));
-
+			store.dispatch(action.submitNewMarket(marketData));
 			clock.tick(10000);
-
-			out = [
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: 'sending...',
-						eventBond: undefined,
-						gasFees: undefined,
-						marketCreationFee: undefined
-					}
-				},
-				{
-					type: 'UPDATE_EXISTING_TRANSACTIONS',
-					transactionID: transID,
-					status: {
-						status: SUCCESS,
-						hash: undefined,
-						timestamp: undefined,
-						data: {
-							id: '0x123'
-						},
-						gasFees: {
-							denomination: ' real ETH',
-							formatted: '0',
-							formattedValue: 0,
-							full: '0 real ETH',
-							minimized: '0',
-							rounded: '0',
-							roundedValue: 0,
-							value: 0
-						}
-					}
-				},
-				{
-					type: 'CLEAR_MAKE_IN_PROGRESS'
-				}
-			];
+			out = [{
+				type: 'CLEAR_MAKE_IN_PROGRESS'
+			}];
 			expectedMarketData = {
 				endDate,
 				description: 'test',
