@@ -72,7 +72,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				}
@@ -113,7 +113,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				}
@@ -138,12 +138,12 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				}
@@ -184,17 +184,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				},
 				'0xa3': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				}
@@ -246,17 +246,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				},
 				'0xa3': {
-					'2': {
+					2: {
 						sharesPurchased: '1'
 					}
 				}
