@@ -25,7 +25,7 @@ export default class AccountPage extends Component {
 			showFullID: false,
 			msg: '',
 			sendAmount: '',
-			currency: 'eth',
+			currency: 'ETH',
 			recipientAddress: '',
 			settings: this.props.settings
 		};
@@ -45,7 +45,7 @@ export default class AccountPage extends Component {
 
 		this.setState({
 			sendAmount: '',
-			currency: 'eth',
+			currency: 'ETH',
 			recipientAddress: ''
 		});
 	};
