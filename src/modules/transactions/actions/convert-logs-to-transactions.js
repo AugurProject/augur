@@ -126,36 +126,71 @@ export function constructPenalizationCaughtUpTransaction(log) {
 	return transaction;
 }
 
-export function constructSentCashTransaction(log) {
-	const transaction = { data: {} };
-	transaction.type = 'Transfer Ether';
-	transaction.description = `Transfer Ether from ${log._from} to ${log._to}`;
-	transaction.data.balances = [{
-		change: formatEther(log._value, { positiveSign: true })
-	}];
-	const action = log.inProgress ? 'transferring' : 'transferred';
-	transaction.message = `${action} ${formatEther(log._value).full}`;
-	return transaction;
-}
-
-export function constructTransferTransaction(log) {
-	const transaction = { data: {} };
-	transaction.type = 'Transfer Reputation';
-	transaction.description = `Transfer Reputation from ${log._from} to ${log._to}`;
-	transaction.data.balances = [{
-		change: formatRep(log._value, { positiveSign: true })
-	}];
-	const action = log.inProgress ? 'transferring' : 'transferred';
-	transaction.message = `${action} ${formatRep(log._value).full}`;
-	return transaction;
-}
-
 export function constructWithdrawTransaction(log) {
 	const transaction = { data: {} };
 	transaction.type = 'Withdraw Ether';
 	transaction.description = 'Convert tradeable Ether token to Ether';
 	const action = log.inProgress ? 'withdrawing' : 'withdrew';
 	transaction.message = `${action} ${formatEther(log.value).full}`;
+	return transaction;
+}
+
+export function constructSentEtherTransaction(log, address) {
+	const transaction = { data: {} };
+	let action;
+	if (log._from === address) {
+		transaction.type = 'Send Real Ether';
+		transaction.description = `Send Real Ether to ${abi.strip_0x(log._to)}`;
+		transaction.data.balances = [{
+			change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+		}];
+		action = log.inProgress ? 'sending' : 'sent';
+	}
+	transaction.message = `${action} ETH`;
+	return transaction;
+}
+
+export function constructSentCashTransaction(log, address) {
+	const transaction = { data: {} };
+	let action;
+	if (log._from === address) {
+		transaction.type = 'Send Ether';
+		transaction.description = `Send Ether to ${abi.strip_0x(log._to)}`;
+		transaction.data.balances = [{
+			change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+		}];
+		action = log.inProgress ? 'sending' : 'sent';
+	} else if (log._to === address) {
+		transaction.type = 'Receive Ether';
+		transaction.description = `Receive Ether from ${abi.strip_0x(log._from)}`;
+		transaction.data.balances = [{
+			change: formatEther(log._value, { positiveSign: true })
+		}];
+		action = log.inProgress ? 'receiving' : 'received';
+	}
+	transaction.message = `${action} ETH`;
+	return transaction;
+}
+
+export function constructTransferTransaction(log, address) {
+	const transaction = { data: {} };
+	let action;
+	if (log._from === address) {
+		transaction.type = 'Send Reputation';
+		transaction.description = `Send Reputation to ${abi.strip_0x(log._to)}`;
+		transaction.data.balances = [{
+			change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+		}];
+		action = log.inProgress ? 'sending' : 'sent';
+	} else if (log._to === address) {
+		transaction.type = 'Receive Reputation';
+		transaction.description = `Receive Reputation from ${abi.strip_0x(log._from)}`;
+		transaction.data.balances = [{
+			change: formatRep(log._value, { positiveSign: true })
+		}];
+		action = log.inProgress ? 'receiving' : 'received';
+	}
+	transaction.message = `${action} REP`;
 	return transaction;
 }
 
@@ -341,12 +376,14 @@ export function constructTransaction(label, log, isRetry, callback) {
 				return constructPenalizationCaughtUpTransaction(log);
 			case 'registration':
 				return constructRegistrationTransaction(log);
-			case 'sentCash':
-				return constructSentCashTransaction(log);
-			case 'Transfer':
-				return constructTransferTransaction(log);
 			case 'withdraw':
 				return constructWithdrawTransaction(log);
+			case 'sentCash':
+				return constructSentCashTransaction(log, getState().loginAccount.address);
+			case 'sentEther':
+				return constructSentEtherTransaction(log, getState().loginAccount.address);
+			case 'Transfer':
+				return constructTransferTransaction(log, getState().loginAccount.address);
 			case 'marketCreated': {
 				if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
 				const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
