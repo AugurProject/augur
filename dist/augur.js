@@ -16336,10 +16336,15 @@ module.exports={
           "indexed": false, 
           "name": "value", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "Approval(int256,int256,int256)", 
-      "signature": "0xe64e66bf3e94c88742c041103133494023640d143db88ec4aec44744744d85f1"
+      "name": "Approval(int256,int256,int256,int256)", 
+      "signature": "0xb3a0644aa1a804a19f7ab4bf836f497fe9864488c91b39df7e6e6dd8f8f08b61"
     }, 
     "Transfer": {
       "contract": "SendReputation", 
@@ -16358,10 +16363,15 @@ module.exports={
           "indexed": false, 
           "name": "_value", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "Transfer(int256,int256,int256)", 
-      "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
+      "name": "Transfer(int256,int256,int256,int256)", 
+      "signature": "0xa5c50eea168b70b2f404cc28da30eade9ed5ab2beb48debd7856878bde2e6096"
     }, 
     "buyAndSellShares_logReturn": {
       "contract": "BuyAndSellShares", 
@@ -17041,10 +17051,15 @@ module.exports={
           "indexed": false, 
           "name": "_value", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "sentCash(int256,int256,int256)", 
-      "signature": "0xae8ab9b13c08da596a84ac5e018517fd37ef5ff3f3883d4ce517f8c4f558efde"
+      "name": "sentCash(int256,int256,int256,int256)", 
+      "signature": "0x27fc4539f0a547270e2eb3d44c9889a9dd0d9fe116324eb14204ad6d54d6e047"
     }, 
     "submittedReport": {
       "contract": "MakeReports", 
@@ -20491,8 +20506,9 @@ module.exports={
       }, 
       "fork": {
         "events": [
-          "penalizationCaughtUp", 
+          "Transfer", 
           "sentCash", 
+          "penalizationCaughtUp", 
           "collectedFees"
         ], 
         "inputs": [
@@ -21916,6 +21932,7 @@ module.exports={
       }, 
       "roundTwoPostBond": {
         "events": [
+          "Transfer", 
           "penalizationCaughtUp", 
           "collectedFees"
         ], 
@@ -22038,8 +22055,9 @@ module.exports={
       }, 
       "sendReputation": {
         "events": [
-          "penalizationCaughtUp", 
-          "collectedFees"
+          "Transfer", 
+          "collectedFees", 
+          "penalizationCaughtUp"
         ], 
         "inputs": [
           "branch", 
@@ -41787,7 +41805,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.4";
+    this.version = "3.6.5";
 
     this.options = {
         debug: {
