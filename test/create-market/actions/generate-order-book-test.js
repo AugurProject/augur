@@ -10,11 +10,11 @@ import testState from 'test/testState';
 import { GENERATE_ORDER_BOOK } from 'modules/transactions/constants/types';
 
 import {
-    SUCCESS,
-    FAILED,
-    COMPLETE_SET_BOUGHT,
-    ORDER_BOOK_ORDER_COMPLETE,
-    ORDER_BOOK_OUTCOME_COMPLETE
+	SUCCESS,
+	FAILED,
+	COMPLETE_SET_BOUGHT,
+	ORDER_BOOK_ORDER_COMPLETE,
+	ORDER_BOOK_OUTCOME_COMPLETE
 } from 'modules/transactions/constants/statuses';
 
 describe('modules/create-market/actions/generate-order-book.js', () => {
@@ -40,14 +40,14 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 	};
 
 	const stubbedAugurJS = {
-		generateOrderBook: () => {},
+		augur: { generateOrderBook: () => {} },
 		abi: { bignum: () => {} }
 	};
-	sinon.stub(stubbedAugurJS, 'generateOrderBook');
+	sinon.stub(stubbedAugurJS.augur, 'generateOrderBook');
 	sinon.stub(stubbedAugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 
 	const action = proxyquire(
-    '../../../src/modules/create-market/actions/generate-order-book',
+	'../../../src/modules/create-market/actions/generate-order-book',
 		{
 			'../../../services/augurjs': stubbedAugurJS
 		}
@@ -82,15 +82,15 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 	it('should be able to submit a request to generate an order book', () => {
 		store.dispatch(action.submitGenerateOrderBook(marketData));
 		const out = [{
-			type: GENERATE_ORDER_BOOK,
-			data: marketData,
-			action: 'create order book action'
+			type: 'UPDATE_SELL_COMPLETE_SETS_LOCK',
+			marketID: 'test-market-id',
+			isLocked: true
 		}];
 		assert.deepEqual(store.getActions(), out, `Didn't correctly submit an order book`);
 	});
 
 	it('should be able to generate an order book', () => {
-		store.dispatch(action.createOrderBook('trans123', marketData));
+		store.dispatch(action.submitGenerateOrderBook(marketData));
 		assert.deepEqual(store.getActions(), [{
 			type: 'UPDATE_SELL_COMPLETE_SETS_LOCK',
 			isLocked: true,
@@ -98,185 +98,4 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 		}], `Didn't correctly create order book`);
 	});
 
-	describe('generateOrderBook callbacks', () => {
-		beforeEach(() => {
-			store.clearActions();
-		});
-
-		it('should handle onFailed', () => {
-			store.dispatch(
-				action.handleGenerateOrderBookResponse(
-					{
-						message: 'failed'
-					},
-					null,
-					'trans123'
-				)
-			);
-
-			assert.deepEqual(store.getActions(), [{
-				type: 'UPDATE_EXISTING_TRANSACTIONS',
-				transactionID: 'trans123',
-				status: {
-					status: FAILED,
-					message: 'failed'
-				}
-			}], `Didn't correctly handle onFailed callback`);
-		});
-
-		it('should handle onSuccess', () => {
-			store.dispatch(
-				action.handleGenerateOrderBookResponse(
-					null,
-					{
-						status: SUCCESS
-					},
-					'trans123'
-				)
-			);
-
-			assert.deepEqual(store.getActions(), [{
-				type: 'UPDATE_EXISTING_TRANSACTIONS',
-				transactionID: 'trans123',
-				status: {
-					status: SUCCESS,
-					gasFees: {
-						denomination: ' real ETH',
-						formatted: '0',
-						formattedValue: 0,
-						full: '0 real ETH',
-						minimized: '0',
-						rounded: '0.0000',
-						roundedValue: 0,
-						value: 0
-					},
-					message: null
-				}
-			}], `Didn't correctly handle onSuccess callback`);
-		});
-
-		it('should handle onBuyCompleteSets', () => {
-			store.dispatch(
-				action.handleGenerateOrderBookResponse(
-					null,
-					{
-						status: COMPLETE_SET_BOUGHT,
-						payload: {
-							hash: '0xdeadbeef',
-							gasFees: 2,
-							timestamp: 1
-						}
-					},
-					'trans123'
-				)
-		);
-
-			assert.deepEqual(store.getActions(), [{
-				type: 'UPDATE_EXISTING_TRANSACTIONS',
-				transactionID: 'trans123',
-				status: {
-					status: COMPLETE_SET_BOUGHT,
-					message: null,
-					gasFees: {
-						denomination: ' real ETH',
-						formatted: '2.0000',
-						formattedValue: 2,
-						full: '2.0000 real ETH',
-						minimized: '2',
-						rounded: '2.0000',
-						roundedValue: 2,
-						value: 2
-					},
-					hash: '0xdeadbeef',
-					timestamp: 1
-				}
-			}], `Didn't correctly handle onCompleteSets callback`);
-		});
-
-		it('should handle onSetupOutcome', () => {
-			store.dispatch(
-				action.handleGenerateOrderBookResponse(
-					null,
-					{
-						status: ORDER_BOOK_OUTCOME_COMPLETE,
-						payload: {
-							outcome: 1
-						}
-					},
-					'trans123',
-					{
-						outcomes: [
-							{
-								name: 'outcome 1'
-							}
-						]
-					}
-				)
-			);
-
-			assert.deepEqual(store.getActions(), [{
-				type: 'UPDATE_EXISTING_TRANSACTIONS',
-				transactionID: 'trans123',
-				status: {
-					status: ORDER_BOOK_OUTCOME_COMPLETE,
-					gasFees: {
-						denomination: ' real ETH',
-						formatted: '2.0000',
-						formattedValue: 2,
-						full: '2.0000 real ETH',
-						minimized: '2',
-						rounded: '2.0000',
-						roundedValue: 2,
-						value: 2
-					},
-					message: `Order book creation for outcome 'outcome 1' completed.`
-				}
-			}], `Didn't correctly handle onSetupOutcome callback`);
-		});
-
-		it('should handle onSetupOrder', () => {
-			store.dispatch(
-				action.handleGenerateOrderBookResponse(
-					null,
-					{
-						status: ORDER_BOOK_ORDER_COMPLETE,
-						payload: {
-							buyPrice: 1,
-							amount: 1,
-							outcome: 1
-						}
-					},
-					'trans123',
-					{
-						outcomes: [
-							{
-								name: 'outcome 1'
-							}
-						]
-					}
-				)
-			);
-
-			assert.deepEqual(store.getActions(), [{
-				type: 'UPDATE_EXISTING_TRANSACTIONS',
-				transactionID: 'trans123',
-				status: {
-					status: ORDER_BOOK_ORDER_COMPLETE,
-					hash: undefined,
-					timestamp: undefined,
-					gasFees: {
-						denomination: ' real ETH',
-						formatted: '2.0000',
-						formattedValue: 2,
-						full: '2.0000 real ETH',
-						minimized: '2',
-						rounded: '2.0000',
-						roundedValue: 2,
-						value: 2
-					},
-					message: `Bid for 1 share of outcome 'outcome 1' at 1 ETH created.`
-				}
-			}], `Didn't correctly handle onSetupOutcome callback`);
-		});
-	});
 });
