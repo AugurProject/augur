@@ -1,16 +1,19 @@
 import React from 'react';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
+import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
+import { POSITION_CLOSING, POSITION_CLOSING_CONFIRMATION, POSTION_CLOSED, POSITION_CLOSING_FAILED } from 'modules/market/constants/position-status';
+import { POSITION } from 'modules/market/constants/trade-close-type';
 
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketPositionsRow = (p) => {
-
+	const marketID = getValue(p, 'outcome.marketID');
+	const outcomeID = getValue(p, 'outcome.id');
 	const quantityOfShares = setShareDenomination(getValue(p, 'outcome.position.qtyShares.formatted'), p.selectedShareDenomination);
-
 	const outcomeName = getValue(p, 'outcome.name');
 	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
 	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
@@ -18,6 +21,7 @@ const MarketPositionsRow = (p) => {
 	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
 	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
 	const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
+	const closePosition = getValue(p, 'positionStatus.closePosition');
 
 	return (
 		<article className="market-positions-row not-selectable" >
@@ -31,6 +35,13 @@ const MarketPositionsRow = (p) => {
 			<ValueDenomination formatted={realizedNet} />
 			<ValueDenomination formatted={unrealizedNet} />
 			<ValueDenomination formatted={totalNet} />
+			<MarketTradeCloseDialog
+				closeType={POSITION}
+				marketID={marketID}
+				outcomeID={outcomeID}
+				quantityOfShares={quantityOfShares}
+				closePosition={closePosition}
+			/>
 		</article>
 	);
 };

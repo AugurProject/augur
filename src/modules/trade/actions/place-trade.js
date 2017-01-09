@@ -13,6 +13,7 @@ import { addShortSellTransaction } from '../../transactions/actions/add-short-se
 import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
 
 export function placeTrade(marketID, outcomeID) {
+	console.log('PLACE TRADE');
 	return (dispatch, getState) => {
 		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];

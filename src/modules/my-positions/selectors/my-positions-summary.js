@@ -1,8 +1,11 @@
 import memoizerific from 'memoizerific';
-import { augur, abi } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { formatEther, formatShares, formatNumber } from '../../../utils/format-number';
-import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
+
+import selectMyPositions from 'modules/my-positions/selectors/my-positions';
+
+import { ZERO } from 'modules/trade/constants/numbers';
+
+import { augur, abi } from 'services/augurjs';
+import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
 	const myPositions = selectMyPositions();
