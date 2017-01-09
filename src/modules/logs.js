@@ -364,9 +364,9 @@ module.exports = {
             callback = options;
             options = null;
         }
-        this.getMakerShortSellLogs(account, options, function (err, makerLogs) {
+        this.getMakerShortSellLogs(account, clone(options), function (err, makerLogs) {
             if (err) return callback(err);
-            self.getTakerShortSellLogs(account, options, function (err, takerLogs) {
+            self.getTakerShortSellLogs(account, clone(options), function (err, takerLogs) {
                 if (err) return callback(err);
                 callback(null, makerLogs.concat(takerLogs));
             });
