@@ -16336,10 +16336,15 @@ module.exports={
           "indexed": false, 
           "name": "value", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "Approval(int256,int256,int256)", 
-      "signature": "0xe64e66bf3e94c88742c041103133494023640d143db88ec4aec44744744d85f1"
+      "name": "Approval(int256,int256,int256,int256)", 
+      "signature": "0xb3a0644aa1a804a19f7ab4bf836f497fe9864488c91b39df7e6e6dd8f8f08b61"
     }, 
     "Transfer": {
       "contract": "SendReputation", 
@@ -16358,10 +16363,15 @@ module.exports={
           "indexed": false, 
           "name": "_value", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "Transfer(int256,int256,int256)", 
-      "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
+      "name": "Transfer(int256,int256,int256,int256)", 
+      "signature": "0xa5c50eea168b70b2f404cc28da30eade9ed5ab2beb48debd7856878bde2e6096"
     }, 
     "buyAndSellShares_logReturn": {
       "contract": "BuyAndSellShares", 
@@ -16609,12 +16619,17 @@ module.exports={
         }, 
         {
           "indexed": false, 
+          "name": "isShortAsk", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
           "name": "timestamp", 
           "type": "int256"
         }
       ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c"
+      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xf6ebadeafdbe1f52fd45da6789b3f8fd7a39efd3b536a8c5ad1bfcf3914a1443"
     }, 
     "log_cancel": {
       "contract": "BuyAndSellShares", 
@@ -17018,6 +17033,33 @@ module.exports={
       ], 
       "name": "registration(int256,int256)", 
       "signature": "0x44b6aeb7b38bb1ad04b4d0daf588cff086ff8829f0a34c30ddbb4d38695428de"
+    }, 
+    "sentCash": {
+      "contract": "Cash", 
+      "inputs": [
+        {
+          "indexed": true, 
+          "name": "_from", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "_to", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "_value", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
+        }
+      ], 
+      "name": "sentCash(int256,int256,int256,int256)", 
+      "signature": "0x27fc4539f0a547270e2eb3d44c9889a9dd0d9fe116324eb14204ad6d54d6e047"
     }, 
     "submittedReport": {
       "contract": "MakeReports", 
@@ -17892,7 +17934,8 @@ module.exports={
     "BuyAndSellShares": {
       "buy": {
         "events": [
-          "log_add_tx"
+          "log_add_tx", 
+          "sentCash"
         ], 
         "gas": 725202, 
         "inputs": [
@@ -17934,7 +17977,8 @@ module.exports={
       }, 
       "sell": {
         "events": [
-          "log_add_tx"
+          "log_add_tx", 
+          "sentCash"
         ], 
         "gas": 696759, 
         "inputs": [
@@ -17942,7 +17986,8 @@ module.exports={
           "price", 
           "market", 
           "outcome", 
-          "minimumTradeSize"
+          "minimumTradeSize", 
+          "isShortAsk"
         ], 
         "label": "Ask", 
         "method": "sell", 
@@ -17954,12 +17999,14 @@ module.exports={
           "int256", 
           "int256", 
           "int256", 
+          "int256", 
           "int256"
         ]
       }, 
       "shortAsk": {
         "events": [
           "completeSets_logReturn", 
+          "sentCash", 
           "log_add_tx"
         ], 
         "gas": 1500000, 
@@ -18035,6 +18082,9 @@ module.exports={
         ]
       }, 
       "send": {
+        "events": [
+          "sentCash"
+        ], 
         "fixed": [
           1
         ], 
@@ -18052,6 +18102,9 @@ module.exports={
         ]
       }, 
       "sendFrom": {
+        "events": [
+          "sentCash"
+        ], 
         "fixed": [
           1
         ], 
@@ -18183,7 +18236,8 @@ module.exports={
     "CompleteSets": {
       "buyCompleteSets": {
         "events": [
-          "completeSets_logReturn"
+          "completeSets_logReturn", 
+          "sentCash"
         ], 
         "fixed": [
           1
@@ -18739,6 +18793,9 @@ module.exports={
     }, 
     "CreateBranch": {
       "createSubbranch": {
+        "events": [
+          "sentCash"
+        ], 
         "inputs": [
           "description", 
           "periodLength", 
@@ -18786,6 +18843,7 @@ module.exports={
       }, 
       "createMarket": {
         "events": [
+          "sentCash", 
           "marketCreated"
         ], 
         "inputs": [
@@ -18818,6 +18876,7 @@ module.exports={
       }, 
       "createSingleEventMarket": {
         "events": [
+          "sentCash", 
           "marketCreated"
         ], 
         "inputs": [
@@ -18857,6 +18916,9 @@ module.exports={
         ]
       }, 
       "pushMarketForward": {
+        "events": [
+          "sentCash"
+        ], 
         "inputs": [
           "branch", 
           "market"
@@ -18872,7 +18934,8 @@ module.exports={
       }, 
       "updateTradingFee": {
         "events": [
-          "tradingFeeUpdated"
+          "tradingFeeUpdated", 
+          "sentCash"
         ], 
         "inputs": [
           "branch", 
@@ -20375,6 +20438,7 @@ module.exports={
       }, 
       "fundNewAccount": {
         "events": [
+          "sentCash", 
           "fundedAccount"
         ], 
         "inputs": [
@@ -20442,6 +20506,8 @@ module.exports={
       }, 
       "fork": {
         "events": [
+          "Transfer", 
+          "sentCash", 
           "penalizationCaughtUp", 
           "collectedFees"
         ], 
@@ -21866,6 +21932,7 @@ module.exports={
       }, 
       "roundTwoPostBond": {
         "events": [
+          "Transfer", 
           "penalizationCaughtUp", 
           "collectedFees"
         ], 
@@ -21988,8 +22055,9 @@ module.exports={
       }, 
       "sendReputation": {
         "events": [
-          "penalizationCaughtUp", 
-          "collectedFees"
+          "Transfer", 
+          "collectedFees", 
+          "penalizationCaughtUp"
         ], 
         "inputs": [
           "branch", 
@@ -22072,7 +22140,8 @@ module.exports={
       "short_sell": {
         "events": [
           "log_short_fill_tx", 
-          "trade_logArrayReturn"
+          "trade_logArrayReturn", 
+          "sentCash"
         ], 
         "gas": 1059796, 
         "inputs": [
@@ -22407,41 +22476,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x391e1cabd13915f1ca8fae3876d59b7ba34d98a4", 
-        "Branches": "0x1177cf050142d208c4093d86f5f389b02386bdf5", 
-        "BuyAndSellShares": "0x48b4776386b350364fb7d0839cae640f4941864b", 
-        "Cash": "0x5117acc925e5830050bfbd2ada3916da5cfa42cd", 
-        "CloseMarket": "0x46156087579b43b22902094af9682d55c8b236f7", 
-        "CollectFees": "0x7a58ab1ce2e6dfc9f195362cd6101cd679231e62", 
-        "CompleteSets": "0x17f2759b8f7fddc484e845f68572ae5d1bfa903b", 
-        "CompositeGetters": "0x78475fc86f6748a3c370ccbec9ee73b1c0376e3c", 
-        "Consensus": "0x475c397b1ed36dfd0538a941c53e58f798222368", 
-        "ConsensusData": "0xb8505e94e6c2a31697bc4289b83418385f9b257e", 
-        "CreateBranch": "0xf4a2828902fd975ee33333f65f72c26bf9941252", 
-        "CreateMarket": "0x4a2bf600ee3179cd57f2c2cfca184dded7bb7781", 
-        "EventResolution": "0x659af37f6772558ba133f9db39cd42d6f27414cd", 
-        "Events": "0x18e9b30f466dca41678d151e1d01dfab9a37ec28", 
-        "ExpiringEvents": "0x699ce2c595e85c553e401c4cd28cb5203e69ceac", 
-        "Faucets": "0xe97a26b3dd7b1cbe3f280361a84496f0c8948e3d", 
-        "ForkPenalize": "0xf5df2c64269c3cfe7a80835fa10e672381d6301e", 
-        "Forking": "0xd38175718930badcab4dd62d026c4f3800aec21a", 
-        "FxpFunctions": "0xa9f8bd2b5ae7e5be6bb5b1862738402372d7d24e", 
-        "Info": "0x5b02a796bd434a8ed6161d519088c7c04fbb8525", 
-        "MakeReports": "0x5177cd3a766f0880144dd439edfe84ab0cf00e5d", 
-        "Markets": "0x508e61f51ba2cab8c4e30d5ed319d4e8e25600d2", 
-        "Payout": "0xf620788e79983d7b74abcfe0cbe874215bcb2c8b", 
-        "PenalizationCatchup": "0x63c8e1b382953e9e0eb093b473683dd5adc66223", 
-        "PenalizeNotEnoughReports": "0x61733f0d345fc0d55ea60baa1b15f1e1fc18fb49", 
-        "ProportionCorrect": "0x49ecd38f815bd3fe5d7b03d92b1e5d70429326af", 
-        "Register": "0xf88ed17582cd2e47b055097718021f014b15a4de", 
-        "Reporting": "0x00fbbde10760f2778349c7cf55adc1979c986012", 
-        "ReportingThreshold": "0xf1b2b5da2ac4e9d6331cd29c090c4820f8fa0617", 
-        "RoundTwo": "0x19345c00304deee89d65232d016749c13d663052", 
-        "RoundTwoPenalize": "0xd40a7306812f7688ce78fb162c588a961ae63e03", 
-        "SendReputation": "0xc81c84ef63b61e285d277a35ee6bcf18aeda13f2", 
-        "SlashRep": "0x417634939a285d16b70f31b9445804854475c656", 
-        "Trade": "0x94a30b1830d7542b451b9c4cdb172d25800aac1f", 
-        "Trades": "0xbde43fc85dd0c9a4dc31537bff3e7b9dc02b326b"
+        "Backstops": "0x2dbcdf3aca6e5202c2a9846be1b59d0d0ede79fd", 
+        "Branches": "0xf6487fbf48d674d558cffe83b48061c33c6fe77e", 
+        "BuyAndSellShares": "0x8d4a9fe15c5d44789a77173ceee3b73c2b8d2a2c", 
+        "Cash": "0xd7eb9a7f2da3a657ae97f2d7d46fd8245f978c78", 
+        "CloseMarket": "0x183cb59466de65fdcfd976cc9ae3bfa521d33423", 
+        "CollectFees": "0x7ded80f1e1251e986ccc440e6f0cb3ce8f2dd7c4", 
+        "CompleteSets": "0xb43851ddd2d3dd71ca22c3c7be3ae503221c9abc", 
+        "CompositeGetters": "0x4e5195d1645067817e4d3f0b229e3f1ae0511b44", 
+        "Consensus": "0x869f9424f9c4d671e65c2cd745d0a90ed6612992", 
+        "ConsensusData": "0xafa0c0e10884997c5c25bf4933e7a9853ebb793d", 
+        "CreateBranch": "0x437cc5f11bcb43ace404d0273556ad56205fde30", 
+        "CreateMarket": "0xe2614287c42cee581d0f06b593d991e89890b9ae", 
+        "EventResolution": "0xbbe6e01f6909f4a6e9fea0252cf7b89fd3fbea56", 
+        "Events": "0xbd299fc50ebd6b781745c54b366c3a493bc72fa7", 
+        "ExpiringEvents": "0xfaf92821845ce2cc7bcd904b1cec2f64c547e24b", 
+        "Faucets": "0x1437613c08441cedb50a9cea42268320243db9e9", 
+        "ForkPenalize": "0x0bbff6280ac8c6249dfe2d80a7214aa81cc06162", 
+        "Forking": "0x069a169b07f3df08edd6e6c1ea8c2832563fcca8", 
+        "FxpFunctions": "0xb57c55bf6ddf40bd1c9dfbcf06349c9828f350f3", 
+        "Info": "0x4f708e3e7f41f3c57d51897ff9891639e1fe8e0a", 
+        "MakeReports": "0x16f257510ebe7ba54055a23b096d26b16efb3a6d", 
+        "Markets": "0xee6963edd10360d88e7a3cdb17fd8118fed17a69", 
+        "Payout": "0xd0495bc83b430b65a53832fc4cbf438d30b8fc5b", 
+        "PenalizationCatchup": "0x9cbc76dbc86507717acd56152fa3496084440a8b", 
+        "PenalizeNotEnoughReports": "0x337816df33f260461c441cf179aa3edc1f0980f1", 
+        "ProportionCorrect": "0xee990f92dbae971d284ccbe60f4806f384a0c0ae", 
+        "Register": "0x0113b9dfa73024a87a92518a932463161849774a", 
+        "Reporting": "0x2fe7e8cbb7ba25c6111ea0dc6f754dab65e3fd77", 
+        "ReportingThreshold": "0xdf70624c45efc08c5ed5f32fee7854663f938bbc", 
+        "RoundTwo": "0xcbec96d16766796f99b893d911672c6057190bec", 
+        "RoundTwoPenalize": "0xc02dbc6d16801479cb821bf37ac849f7ef9428a4", 
+        "SendReputation": "0xb220dcc150d1af7a5726b184366d16d51fc18060", 
+        "SlashRep": "0xcb9393e359064728a92d58af4c275121b2974ec4", 
+        "Trade": "0x2ae5243105e59334bf7230397f7ba85d4645a2e2", 
+        "Trades": "0xa6f7dff8a045895a9081a3ddc9d283cd7dcc216c"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -41002,6 +41071,7 @@ module.exports = function () {
                 case "log_add_tx":
                     fmt = this.format_common_fields(msg);
                     fmt.outcome = parseInt(msg.outcome, 16);
+                    fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
                     return fmt;
                 case "log_cancel":
                     fmt = this.format_common_fields(msg);
@@ -41011,7 +41081,10 @@ module.exports = function () {
                 case "log_fill_tx":
                 case "log_short_fill_tx":
                     fmt = this.format_common_fields(msg);
-                    if (!fmt.type) fmt.type = "sell";
+                    if (!fmt.type) {
+                        fmt.type = "sell";
+                        fmt.isShortSell = true;
+                    }
                     fmt.owner = abi.format_address(msg.owner); // maker
                     fmt.takerFee = abi.unfix(msg.takerFee, "string");
                     fmt.makerFee = abi.unfix(msg.makerFee, "string");
@@ -41044,6 +41117,13 @@ module.exports = function () {
                     fmt.p = abi.unfix(msg.p, "string");
                     fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
                     return fmt;
+                case "sentCash":
+                case "Transfer":
+                    fmt = clone(msg);
+                    fmt._from = abi.format_address(msg._from);
+                    fmt._to = abi.format_address(msg._to);
+                    fmt._value = abi.unfix(msg._value);
+                    return fmt;
                 case "submittedReport":
                 case "submittedReportHash":
                     fmt = this.format_common_fields(msg);
@@ -41052,12 +41132,6 @@ module.exports = function () {
                 case "tradingFeeUpdated":
                     fmt = this.format_common_fields(msg);
                     fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-                    return fmt;
-                case "Transfer":
-                    fmt = clone(msg);
-                    fmt._from = abi.format_address(msg._from);
-                    fmt._to = abi.format_address(msg._to);
-                    fmt._value = abi.unfix(msg._value);
                     return fmt;
                 case "withdraw":
                     fmt = this.format_common_fields(msg);
@@ -41731,7 +41805,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.0";
+    this.version = "3.6.5";
 
     this.options = {
         debug: {
@@ -42236,7 +42310,6 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.cancel);
         tx.params = trade_id;
-        tx.description = "Cancel order " + trade_id;
         if (this.options.debug.trading) {
             console.log("cancel tx:", JSON.stringify(tx, null, 2));
         }
@@ -42298,7 +42371,6 @@ module.exports = {
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
         ];
-        tx.description = "Bid " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
         }
@@ -42331,9 +42403,9 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+            "0x0"
         ];
-        tx.description = "Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
         }
@@ -42368,7 +42440,6 @@ module.exports = {
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
         ];
-        tx.description = "Short Ask " + amount + " Shares @ " + price + " ETH";
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
         }
@@ -42395,9 +42466,9 @@ module.exports = {
         if (to && to.constructor === Object) {
             value = to.value;
             from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
+            onSent = to.onSent;
+            onSuccess = to.onSuccess;
+            onFailed = to.onFailed;
             to = to.to;
         }
         return this.transact({
@@ -42461,8 +42532,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
-        var lastPeriod = this.getCurrentPeriod(periodLength) - 1;
-        tx.description = "Collect Reporting fees up to cycle " + lastPeriod.toString();
         this.getVotePeriod(branch, function (period) {
             self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
                 if (self.options.debug.reporting) {
@@ -43201,7 +43270,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -43245,7 +43313,6 @@ module.exports = {
             numOutcomes,
             resolution || ""
         ];
-        tx.description = description.split("~|>")[0];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -43281,7 +43348,6 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        tx.description = description.split("~|>")[0];
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
@@ -44135,11 +44201,10 @@ var constants = require("../constants");
 
 module.exports = {
 
-    closeMarket: function (branch, market, sender, description, onSent, onSuccess, onFailed) {
+    closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object) {
             market = branch.market;
             sender = branch.sender;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44147,7 +44212,6 @@ module.exports = {
         }
         var tx = clone(this.tx.CloseMarket.closeMarket);
         tx.params = [branch, market, sender];
-        tx.description = description;
         this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -44176,7 +44240,6 @@ module.exports = {
                 self.claimProceeds({
                     branch: branch,
                     market: market.id,
-                    description: market.description,
                     onSent: function (res) {
                         if (self.options.debug.reporting) {
                             console.log("claim proceeds sent:", market.id, res);
@@ -44198,11 +44261,10 @@ module.exports = {
         });
     },
 
-    claimProceeds: function (branch, market, description, onSent, onSuccess, onFailed) {
+    claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
         var self = this;
         if (branch.constructor === Object) {
             market = branch.market;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44210,9 +44272,7 @@ module.exports = {
         }
         var tx = clone(self.tx.CloseMarket.claimProceeds);
         tx.params = [branch, market];
-        tx.description = description;
         if (self.options.debug.reporting) {
-            console.log("claimProceeds:", branch, market, description);
             console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
         }
         self.transact(tx, onSent, function (res) {
@@ -44970,10 +45030,9 @@ module.exports = {
         });
     },
 
-    penalizeWrong: function (branch, event, description, onSent, onSuccess, onFailed) {
+    penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
         if (branch.constructor === Object) {
             event = branch.event;
-            description = branch.description;
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
@@ -44981,7 +45040,6 @@ module.exports = {
         }
         var tx = clone(this.tx.Consensus.penalizeWrong);
         tx.params = [branch, event];
-        tx.description = description;
         this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -45135,7 +45193,6 @@ module.exports = {
                     self.penalizeWrong({
                         branch: branch,
                         event: 0,
-                        description: "Empty Reporting cycle",
                         onSent: utils.noop,
                         onSuccess: function (r) {
                             if (self.options.debug.reporting) {
@@ -45161,27 +45218,23 @@ module.exports = {
                             if (self.options.debug.reporting) {
                                 console.log("[penaltyCatchUp] penalizeWrong:", event);
                             }
-                            self.getDescription(event, function (description) {
-                                description = description.split("~|>")[0];
-                                self.penalizeWrong({
-                                    branch: branch,
-                                    event: event,
-                                    description: description,
-                                    onSent: utils.noop,
-                                    onSuccess: function (r) {
-                                        if (self.options.debug.reporting) {
-                                            console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                        }
-                                        self.closeExtraMarkets(branch, event, description, sender, function (err, markets) {
-                                            if (err) return nextEvent(err);
-                                            nextEvent(null);
-                                        });
-                                    },
-                                    onFailed: function (e) {
-                                        console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                        nextEvent(null);
+                            self.penalizeWrong({
+                                branch: branch,
+                                event: event,
+                                onSent: utils.noop,
+                                onSuccess: function (r) {
+                                    if (self.options.debug.reporting) {
+                                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                                     }
-                                });
+                                    self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                                        if (err) return nextEvent(err);
+                                        nextEvent(null);
+                                    });
+                                },
+                                onFailed: function (e) {
+                                    console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                                    nextEvent(null);
+                                }
                             });
                         });
                     }, callback);
@@ -45190,7 +45243,7 @@ module.exports = {
         });
     },
 
-    closeExtraMarkets: function (branch, event, description, sender, callback) {
+    closeExtraMarkets: function (branch, event, sender, callback) {
         var self = this;
         if (self.options.debug.reporting) {
             console.log("[closeExtraMarkets] Closing extra markets for event", event);
@@ -45209,7 +45262,6 @@ module.exports = {
                             branch: branch,
                             market: market,
                             sender: sender,
-                            description: description,
                             onSent: function (r) {
                                 if (self.options.debug.reporting) {
                                     console.log("[closeExtraMarkets] closeMarket sent:", market, r);
@@ -45480,15 +45532,6 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
-                        var hasValue = !abi.bignum(max_value).eq(constants.ZERO);
-                        tx.description = "";
-                        if (!abi.bignum(max_amount).eq(constants.ZERO)) {
-                            tx.description += max_amount.toString() + " Shares to sell";
-                            if (hasValue) tx.description += " and ";
-                        }
-                        if (hasValue) {
-                            tx.description += max_value.toString() + " ETH to spend";
-                        }
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -45606,7 +45649,6 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
-                        tx.description = max_amount.toString() + " Shares to short sell";
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }

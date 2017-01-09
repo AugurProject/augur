@@ -278,7 +278,6 @@ describe("feePenaltyCatchUp", function () {
         var getCurrentPeriod = augur.getCurrentPeriod;
         var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
         var closeExtraMarkets = augur.closeExtraMarkets;
-        var getDescription = augur.getDescription;
         after(function () {
             augur.collectFees = collectFees;
             augur.getEvents = getEvents;
@@ -295,7 +294,6 @@ describe("feePenaltyCatchUp", function () {
             augur.getCurrentPeriod = getCurrentPeriod;
             augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
             augur.closeExtraMarkets = closeExtraMarkets;
-            augur.getDescription = getDescription;
         });
         it(t.description, function (done) {
             var sequence = [];
@@ -399,15 +397,12 @@ describe("feePenaltyCatchUp", function () {
                 }
                 o.onSuccess({callReturn: "1"});
             };
-            augur.closeExtraMarkets = function (branch, event, description, sender, callback) {
+            augur.closeExtraMarkets = function (branch, event, sender, callback) {
                 sequence.push({
                     method: "closeExtraMarkets",
                     params: [branch, event, sender]
                 });
                 callback(null, state.markets[event]);
-            };
-            augur.getDescription = function (id, callback) {
-                callback('description');
             };
             augur.feePenaltyCatchUp(t.params.branchID, t.params.periodLength, t.params.periodToCheck, t.params.sender, function (err) {
                 assert.isNull(err);
