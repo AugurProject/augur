@@ -5,7 +5,6 @@ import { NO_RELAY } from '../../transactions/constants/no-relay';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
@@ -272,7 +271,9 @@ export function registerTransactionRelay() {
 							}
 						}
 					} else if (transactionsData[hash]) {
-						dispatch(updateExistingTransaction(hash, { gasFees }));
+						dispatch(updateTransactionsData({
+							[hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
+						}));
 					}
 				}
 			}
