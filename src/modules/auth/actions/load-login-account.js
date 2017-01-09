@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { loadBidsAsksHistory } from '../../../modules/bids-asks/actions/load-bids-asks-history';
 import { loadCreateMarketHistory } from '../../../modules/create-market/actions/load-create-market-history';
-import { loadFundingHistory } from '../../../modules/account/actions/load-funding-history';
+import { loadFundingHistory, loadTransferHistory } from '../../../modules/account/actions/load-funding-history';
 import { loadReportingHistory } from '../../../modules/my-reports/actions/load-reporting-history';
 import { syncBranch } from '../../../modules/app/actions/update-branch';
 import { loadEventsWithSubmittedReport } from '../../../modules/my-reports/actions/load-events-with-submitted-report';
@@ -27,6 +27,7 @@ export function loadLoginAccountDependents(cb) {
 			dispatch(loadAccountTrades());
 			dispatch(loadBidsAsksHistory());
 			dispatch(loadFundingHistory());
+			dispatch(loadTransferHistory());
 			dispatch(loadCreateMarketHistory());
 
 			// clear and load reports for any markets that have been loaded
