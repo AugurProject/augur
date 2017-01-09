@@ -6,7 +6,6 @@ import sinon from 'sinon';
 import mocks from 'test/mockStore';
 import { CANCEL_ORDER } from 'modules/transactions/constants/types';
 import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
-import { CANCELLING } from 'modules/bids-asks/constants/order-status';
 import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {

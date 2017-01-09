@@ -26,7 +26,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	let expectedMarketData = {};
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const transID = 'testtransaction12345';
 	const endDate = { value: new Date() };
 	const failedMarketData = {
 		type: BINARY,

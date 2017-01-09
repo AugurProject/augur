@@ -7,16 +7,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
-import { GENERATE_ORDER_BOOK } from 'modules/transactions/constants/types';
-
-import {
-	SUCCESS,
-	FAILED,
-	COMPLETE_SET_BOUGHT,
-	ORDER_BOOK_ORDER_COMPLETE,
-	ORDER_BOOK_OUTCOME_COMPLETE
-} from 'modules/transactions/constants/statuses';
-
 describe('modules/create-market/actions/generate-order-book.js', () => {
 
 	proxyquire.noPreserveCache().noCallThru();
