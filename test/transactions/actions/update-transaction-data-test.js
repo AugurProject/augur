@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
@@ -13,9 +12,7 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 	let out;
 	const state = Object.assign({}, testState);
 	const store = mockStore(state);
-	const mock = {};
 	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data');
-
 	it(`should fire update and process transaction actions`, () => {
 		out = [{
 			type: 'UPDATE_TRANSACTIONS_DATA',
@@ -28,5 +25,4 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 		}));
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
-
 });
