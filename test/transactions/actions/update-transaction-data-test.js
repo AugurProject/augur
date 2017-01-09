@@ -13,17 +13,8 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 	let out;
 	const state = Object.assign({}, testState);
 	const store = mockStore(state);
-	const fakeAction = {
-		type: 'PROCESS_TRANSACTIONS',
-		data: 'test'
-	};
 	const mock = {};
-
-	mock.processTransactions = sinon.stub().returns(fakeAction);
-
-	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data', {
-		'../../transactions/actions/process-transactions': mock
-	});
+	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data');
 
 	it(`should fire update and process transaction actions`, () => {
 		out = [{
@@ -31,16 +22,10 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 			transactionsData: {
 				test: 'testTransactionData'
 			}
-		}, {
-			type: 'PROCESS_TRANSACTIONS',
-			data: 'test'
 		}];
-
 		store.dispatch(action.updateTransactionsData({
 			test: 'testTransactionData'
 		}));
-
-		assert(mock.processTransactions.calledOnce, `processTransaction's wasn't called once.`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 	});
 
