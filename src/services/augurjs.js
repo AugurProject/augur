@@ -1,5 +1,4 @@
 import augur from 'augur.js';
-import { SUCCESS, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
 
 const ex = {};
 
@@ -74,24 +73,6 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		// otherwise, no account available
 		console.log('account is locked: ', augur.from);
 		return cb(null);
-	});
-};
-
-ex.generateOrderBook = function generateOrderBook(marketData, cb) {
-	augur.generateOrderBook({
-		market: marketData.id,
-		liquidity: marketData.initialLiquidity,
-		initialFairPrices: marketData.initialFairPrices.raw,
-		startingQuantity: marketData.startingQuantity,
-		bestStartingQuantity: marketData.bestStartingQuantity,
-		priceWidth: marketData.priceWidth,
-		isSimulation: marketData.isSimulation,
-		onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
-		onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
-		onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
-		onSetupOrder: r => cb(null, { status: ORDER_BOOK_ORDER_COMPLETE, payload: r }),
-		onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
-		onFailed: err => cb(err)
 	});
 };
 
@@ -179,7 +160,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
 	tools.DEBUG = true;
 	if (branchID) {
 		return augur.getPeriodLength(branchID, (branchPeriodLength) => {
-			console.debug('Using branch', branchID, 'for reporting tests, reporting length', branchPeriodLength);
+			console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
 			self.reportingMarketsSetup(branchPeriodLength, branchID, callback);
 		});
 	}
