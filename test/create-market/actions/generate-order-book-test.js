@@ -12,7 +12,6 @@ import { GENERATE_ORDER_BOOK } from 'modules/transactions/constants/types';
 import {
     SUCCESS,
     FAILED,
-    GENERATING_ORDER_BOOK,
     COMPLETE_SET_BOUGHT,
     ORDER_BOOK_ORDER_COMPLETE,
     ORDER_BOOK_OUTCOME_COMPLETE
@@ -40,27 +39,6 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 		isSimulation: false
 	};
 
-	const orderBookTransactions = {
-		addGenerateOrderBookTransaction: () => {}
-	};
-
-	const stubbedTransactions = sinon.stub(Object.assign({}, orderBookTransactions));
-	stubbedTransactions.addGenerateOrderBookTransaction.withArgs(marketData).returns({
-		type: GENERATE_ORDER_BOOK,
-		data: marketData,
-		action: 'create order book action'
-	});
-
-	const stubbedUpdateTransaction = {
-		updateExistingTransaction: () => {}
-	};
-
-	sinon.stub(stubbedUpdateTransaction, 'updateExistingTransaction', (transactionID, status) => ({
-		type: 'UPDATE_EXISTING_TRANSACTIONS',
-		transactionID,
-		status
-	}));
-
 	const stubbedAugurJS = {
 		generateOrderBook: () => {},
 		abi: { bignum: () => {} }
@@ -71,9 +49,7 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 	const action = proxyquire(
     '../../../src/modules/create-market/actions/generate-order-book',
 		{
-			'../../../services/augurjs': stubbedAugurJS,
-			'../../transactions/actions/add-generate-order-book-transaction': stubbedTransactions,
-			'../../transactions/actions/update-existing-transaction': stubbedUpdateTransaction
+			'../../../services/augurjs': stubbedAugurJS
 		}
 	);
 
@@ -105,29 +81,17 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
 
 	it('should be able to submit a request to generate an order book', () => {
 		store.dispatch(action.submitGenerateOrderBook(marketData));
-
 		const out = [{
 			type: GENERATE_ORDER_BOOK,
 			data: marketData,
 			action: 'create order book action'
 		}];
-
-		assert(stubbedTransactions.addGenerateOrderBookTransaction.calledOnce, `addGenerateOrderOrderBookTransaction wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't correctly submit an order book`);
 	});
 
 	it('should be able to generate an order book', () => {
 		store.dispatch(action.createOrderBook('trans123', marketData));
-
-		assert(stubbedAugurJS.generateOrderBook.calledOnce, `generateOrderBook wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), [{
-			type: 'UPDATE_EXISTING_TRANSACTIONS',
-			transactionID: 'trans123',
-			status: {
-				status: GENERATING_ORDER_BOOK
-			}
-		},
-		{
 			type: 'UPDATE_SELL_COMPLETE_SETS_LOCK',
 			isLocked: true,
 			marketID: marketData.id

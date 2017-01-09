@@ -2,6 +2,7 @@ import { abi, augur, rpc } from '../../../services/augurjs';
 import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
 import { ZERO } from '../../trade/constants/numbers';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
+import { formatRealEther } from '../../../utils/format-number';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
