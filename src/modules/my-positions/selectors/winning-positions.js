@@ -1,26 +1,26 @@
 import memoizerific from 'memoizerific';
-import store from '../../../store';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
-export default function () {
+export default function (outcomesData) {
 	const { portfolio } = require('../../../selectors');
-	return selectClosedMarketsWithWinningShares(portfolio.positions.markets);
+	return selectClosedMarketsWithWinningShares(portfolio.positions.markets, outcomesData);
 }
 
-export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) => {
+export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets, outcomesData) => {
 	const numPositions = markets.length;
 	const closedMarketsWithWinningShares = [];
 	for (let i = 0; i < numPositions; ++i) {
 		const market = markets[i];
 		if (!market.isOpen) {
+			const marketID = market.id;
 			const winningShares = market.type === SCALAR ?
-				selectTotalSharesInMarket(market) :
-				selectWinningSharesInMarket(market);
+				selectTotalSharesInMarket(market, outcomesData[marketID]) :
+				selectWinningSharesInMarket(market, outcomesData[marketID]);
 			if (winningShares && winningShares.gt(ZERO)) {
 				closedMarketsWithWinningShares.push({
-					id: market.id,
+					id: marketID,
 					description: market.description,
 					shares: winningShares.toFixed()
 				});
@@ -30,14 +30,12 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets) =>
 	return closedMarketsWithWinningShares;
 });
 
-export function selectTotalSharesInMarket(market) {
-	const { outcomesData } = store.getState();
-	const marketID = market.id;
-	const outcomeIDs = Object.keys(outcomesData[marketID]);
+export function selectTotalSharesInMarket(market, marketOutcomesData) {
+	const outcomeIDs = Object.keys(marketOutcomesData);
 	const numOutcomes = outcomeIDs.length;
 	let totalShares = ZERO;
 	for (let j = 0; j < numOutcomes; ++j) {
-		const bnSharesPurchased = abi.bignum(outcomesData[marketID][outcomeIDs[j]].sharesPurchased);
+		const bnSharesPurchased = abi.bignum(marketOutcomesData[outcomeIDs[j]].sharesPurchased);
 		if (bnSharesPurchased.gt(ZERO)) {
 			totalShares = totalShares.plus(bnSharesPurchased);
 		}
@@ -45,9 +43,8 @@ export function selectTotalSharesInMarket(market) {
 	return totalShares;
 }
 
-export function selectWinningSharesInMarket(market) {
-	const marketOutcomeData = store.getState().outcomesData[market.id];
-	const outcomeData = marketOutcomeData[market.reportedOutcome];
+export function selectWinningSharesInMarket(market, marketOutcomesData) {
+	const outcomeData = marketOutcomesData[market.reportedOutcome];
 	if (outcomeData && outcomeData.sharesPurchased) {
 		const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
 		return sharesPurchased.gt(ZERO) ? sharesPurchased : null;

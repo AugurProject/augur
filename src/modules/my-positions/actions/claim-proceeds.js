@@ -6,9 +6,9 @@ import selectWinningPositions from '../../my-positions/selectors/winning-positio
 
 export function claimProceeds() {
 	return (dispatch, getState) => {
-		const { branch, loginAccount } = getState();
+		const { branch, loginAccount, outcomesData } = getState();
 		if (loginAccount.address) {
-			const winningPositions = selectWinningPositions();
+			const winningPositions = selectWinningPositions(outcomesData);
 			console.debug('closed markets with winning shares:', winningPositions);
 			if (winningPositions.length) {
 				augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
