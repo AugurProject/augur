@@ -57,28 +57,6 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
 			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
 		});
-
-		it('should pass params to addCancelTransaction', () => {
-			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', BID));
-		});
-	});
-
-	describe('processCancelOrder', () => {
-		it(`shouldn't call anything for non-existing transaction`, () => {
-			store.dispatch(cancelOrderModule.processCancelOrder('non-existingID', 'orderID'));
-
-			assert.strictEqual(augur.cancel.callCount, 0);
-			assert.strictEqual(updateOrderStatus.callCount, 0);
-			assert.lengthOf(store.getActions(), 0);
-		});
-
-		it('should call actions and then augurJS', () => {
-			store.dispatch(cancelOrderModule.processCancelOrder('cancelTxn', '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3'));
-
-			assert.deepEqual(updateOrderStatus.args[0], ['0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CANCELLING, 'testMarketID', BID]);
-			assert.lengthOf(augur.cancel.args[0], 1);
-			assert.equal(augur.cancel.args[0][0].trade_id, '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3');
-		});
 	});
 
 	describe('abortCancelOrderConfirmation', () => {
