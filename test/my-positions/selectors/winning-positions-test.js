@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import thunk from 'redux-thunk';
 
 describe(`modules/my-positions/selectors/winning-positions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

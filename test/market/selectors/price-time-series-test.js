@@ -1,7 +1,6 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 
 describe(`modules/market/selectors/price-time-series.js`, () => {
