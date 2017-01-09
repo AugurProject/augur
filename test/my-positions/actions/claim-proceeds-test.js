@@ -10,57 +10,32 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-
 	const test = (t) => {
 		it(t.description, () => {
 			const store = mockStore(t.state);
 			const AugurJS = {
-				augur: {
-					claimMarketsProceeds: () => {}
-				},
-				abi: {
-					bignum: () => {}
-				}
+				augur: { claimMarketsProceeds: () => {} },
+				abi: { bignum: () => {} }
 			};
-			const LoadMarketsInfo = {
-				loadMarketsInfo: () => {}
-			};
-			const LoadBidsAsks = {
-				loadBidsAsks: () => {}
-			};
-			const LoadAccountTrades = {
-				loadAccountTrades: () => {}
-			};
-			const UpdateExistingTransaction = {};
-			const Selectors = t.selectors;
+			const LoadAccountTrades = { loadAccountTrades: () => {} };
 			const UpdateAssets = {};
+			const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
 			const action = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
 				'../../../services/augurjs': AugurJS,
-				'../../../selectors': Selectors,
-				'../../bids-asks/actions/load-bids-asks': LoadBidsAsks,
-				'../../markets/actions/load-markets-info': LoadMarketsInfo,
+				'../../my-positions/actions/load-account-trades': LoadAccountTrades,
 				'../../auth/actions/update-assets': UpdateAssets,
-				'../../transactions/actions/update-existing-transaction': UpdateExistingTransaction
+				'../../my-positions/selectors/winning-positions': WinningPositions
 			});
+			sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 			sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, markets, cb) => {
 				store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
 				cb(null, markets);
-			});
-			sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
-			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
-				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
-				cb(null);
 			});
 			sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => (dispatch, getState) => {
 				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
 				cb(null);
 			});
-			sinon.stub(LoadBidsAsks, 'loadBidsAsks', (marketID, cb) => (dispatch, getState) => {
-				dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
-				cb(null);
-			});
 			UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
-			UpdateExistingTransaction.updateExistingTransaction = sinon.stub().returns({ type: 'UPDATE_EXISTING_TRANSACTION' });
 			store.dispatch(action.claimProceeds());
 			t.assertions(store.getActions());
 			store.clearActions();
@@ -75,14 +50,11 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			loginAccount: {
 				address: '0xb0b'
-			}
+			},
+			outcomesData: {}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: []
-				}
-			}
+			winningPositions: []
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, []);
@@ -100,23 +72,18 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				}
 			}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: [{
-						id: '0xa1',
-						isOpen: false,
-						description: 'test market 1',
-						reportedOutcome: '2'
-					}]
-				}
-			}
+			winningPositions: [{
+				id: '0xa1',
+				description: 'test market 1',
+				shares: '1'
+			}]
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
@@ -124,10 +91,13 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				markets: [{
 					id: '0xa1',
 					description: 'test market 1',
-					shares: 1
+					shares: '1'
 				}]
 			}, {
 				type: 'UPDATE_ASSETS'
+			}, {
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: '0xa1',
 			}]);
 		}
 	});
@@ -140,17 +110,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			loginAccount: {
 				address: '0xb0b'
+			},
+			outcomesData: {
+				'0xa1': {
+					'2': {
+						sharesPurchased: '1'
+					}
+				}
 			}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: [{
-						id: '0xa1',
-						isOpen: true
-					}]
-				}
-			}
+			winningPositions: []
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, []);
@@ -168,31 +138,23 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				}
 			}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: [{
-						id: '0xa1',
-						isOpen: true
-					}, {
-						id: '0xa2',
-						isOpen: false,
-						description: 'test market 2',
-						reportedOutcome: '2'
-					}]
-				}
-			}
+			winningPositions: [{
+				id: '0xa2',
+				description: 'test market 2',
+				shares: '1'
+			}]
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
@@ -200,10 +162,13 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				markets: [{
 					id: '0xa2',
 					description: 'test market 2',
-					shares: 1
+					shares: '1'
 				}]
 			}, {
 				type: 'UPDATE_ASSETS'
+			}, {
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: '0xa2',
 			}]);
 		}
 	});
@@ -219,41 +184,32 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				},
 				'0xa3': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				}
 			}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: [{
-						id: '0xa1',
-						isOpen: true
-					}, {
-						id: '0xa2',
-						isOpen: false,
-						description: 'test market 2',
-						reportedOutcome: '2'
-					}, {
-						id: '0xa3',
-						isOpen: false,
-						description: 'test market 3',
-						reportedOutcome: '2'
-					}]
-				}
-			}
+			winningPositions: [{
+				id: '0xa2',
+				description: 'test market 2',
+				shares: '1'
+			}, {
+				id: '0xa3',
+				description: 'test market 3',
+				shares: '1'
+			}]
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
@@ -261,14 +217,20 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				markets: [{
 					id: '0xa2',
 					description: 'test market 2',
-					shares: 1
+					shares: '1'
 				}, {
 					id: '0xa3',
 					description: 'test market 3',
-					shares: 1
+					shares: '1'
 				}]
 			}, {
 				type: 'UPDATE_ASSETS'
+			}, {
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: '0xa2',
+			}, {
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: '0xa3',
 			}]);
 		}
 	});
@@ -284,39 +246,28 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 			},
 			outcomesData: {
 				'0xa1': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				},
 				'0xa2': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				},
 				'0xa3': {
-					2: {
-						sharesPurchased: 1
+					'2': {
+						sharesPurchased: '1'
 					}
 				}
 			}
 		},
 		selectors: {
-			portfolio: {
-				positions: {
-					markets: [{
-						id: '0xa1',
-						isOpen: true
-					}, {
-						id: '0xa2',
-						isOpen: true
-					}, {
-						id: '0xa3',
-						isOpen: false,
-						description: 'test market 3',
-						reportedOutcome: '2'
-					}]
-				}
-			}
+			winningPositions: [{
+				id: '0xa3',
+				description: 'test market 3',
+				shares: '1'
+			}]
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
@@ -324,10 +275,13 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
 				markets: [{
 					id: '0xa3',
 					description: 'test market 3',
-					shares: 1
+					shares: '1'
 				}]
 			}, {
 				type: 'UPDATE_ASSETS'
+			}, {
+				type: 'LOAD_ACCOUNT_TRADES',
+				marketID: '0xa3',
 			}]);
 		}
 	});

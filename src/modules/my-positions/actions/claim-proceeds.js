@@ -1,7 +1,7 @@
 import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
 export function claimProceeds() {
@@ -9,16 +9,12 @@ export function claimProceeds() {
 		const { branch, loginAccount, outcomesData } = getState();
 		if (loginAccount.address) {
 			const winningPositions = selectWinningPositions(outcomesData);
-			console.debug('closed markets with winning shares:', winningPositions);
+			console.log('closed markets with winning shares:', winningPositions);
 			if (winningPositions.length) {
 				augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
 					if (err) return console.error('claimMarketsProceeds failed:', err);
 					dispatch(updateAssets());
-					console.debug('claimed proceeds from markets:', claimedMarkets);
-					async.each(claimedMarkets, (marketID, nextMarket) => {
-						console.log('loadAccountTrades for', marketID);
-						dispatch(loadAccountTrades(marketID, () => nextMarket()));
-					});
+					async.each(claimedMarkets, (market, nextMarket) => dispatch(loadAccountTrades(market.id, () => nextMarket())));
 				});
 			}
 		}
