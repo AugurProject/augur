@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 39 tests total
+// 51 tests total
 
 describe("logs.parseShortSellLogs", function() {
 	// 3 tests total
@@ -908,13 +908,14 @@ describe("logs.insertIndexedLog", function() {
 
 	test({
 		description: 'Should insert an indexed log, passed as an array, into the processedLogs passed in',
-		processedLogs: {'0x00c1': '0x000def456'},
+		processedLogs: {'0x00c1': []},
 		parsed: {
-			'0x00c1': '0x000abc123',
+			market: '0x00c1',
+			value: '0x000abc123',
 		},
-		index: ['0x00c1'],
+		index: ['market'],
 		assertions: function(o) {
-			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ], '0x00c1': '0x000def456' });
+			assert.deepEqual(processedLogs, { '0x00c1': [ { market: '0x00c1', value: '0x000abc123' } ] });
 		}
 	});
 
@@ -922,11 +923,11 @@ describe("logs.insertIndexedLog", function() {
 		description: 'Should insert an indexed log, passed as an array, into the processedLogs passed in as an empty object',
 		processedLogs: {},
 		parsed: {
-			'0x00c1': '0x000abc123',
+			market: '0x000abc123',
 		},
-		index: ['0x00c1'],
+		index: ['market'],
 		assertions: function(o) {
-			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
+			assert.deepEqual(processedLogs, { '0x000abc123': [ { 'market': '0x000abc123' } ] });
 		}
 	});
 
@@ -934,11 +935,11 @@ describe("logs.insertIndexedLog", function() {
 		description: 'Should insert an indexed log, where indexed is a string, into the processedLogs passed in as an empty object',
 		processedLogs: {},
 		parsed: {
-			'0x00c1': '0x000abc123',
+			market: '0x000abc123',
 		},
-		index: '0x00c1',
+		index: 'market',
 		assertions: function(o) {
-			assert.deepEqual(processedLogs, { '0x000abc123': [ { '0x00c1': '0x000abc123' } ] });
+			assert.deepEqual(processedLogs, { '0x000abc123': [ { 'market': '0x000abc123' } ] });
 		}
 	});
 
@@ -964,29 +965,426 @@ describe("logs.insertIndexedLog", function() {
 
 	test({
 		description: 'Should insert an indexed log, where indexed is an array of length 2, into the processedLogs passed in',
-		processedLogs: {'0x00c1': '0x00123', '0x00a1': '0x00456'},
+		processedLogs: { '0x00c1': { '0x00a1': [] }},
 		parsed: {
-			'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002',
-			'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001'
+			market: '0x00c1',
+			value: '0x00a1'
 		},
-		index: ['0x00c1', '0x00a1'],
+		index: ['market', 'value'],
 		assertions: function(o) {
 			assert.deepEqual(processedLogs, {
-				'0x0000000000000000000000000000000000000000000000000000000000000002': {
-					'0x0000000000000000000000000000000000000000000000000000000000000001': [{
-						'0x00a1': '0x0000000000000000000000000000000000000000000000000000000000000001',
-						'0x00c1': '0x0000000000000000000000000000000000000000000000000000000000000002'
+				'0x00c1': {
+					'0x00a1': [{
+						value: '0x00a1',
+						market: '0x00c1'
 					}],
-				},
-				'0x00a1': '0x00456',
-				'0x00c1': '0x00123'
+				}
 			});
 		}
 	});
 });
 
-describe.skip("logs.processLogs", function() {});
-describe.skip("logs.getFilteredLogs", function() {});
+describe("logs.processLogs", function() {
+	// 6 total tests
+	var test = function(t) {
+		it(t.description, function() {
+			t.assertions(augur.processLogs(t.label, t.index, t.logs, t.extraField, t.processedLogs));
+		});
+	};
+
+	test({
+		description: 'should handle no index, processedLogs, or extraField passed in, with only 1 log to parse.',
+		label: 'log_add_tx',
+		index: undefined,
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		}],
+		extraField: undefined,
+		processedLogs: undefined,
+		assertions: function(o) {
+			assert.deepEqual(o, [{
+				market: '0x0b1',
+				sender: '0x00000000000000000000000000000000000000a1',
+				type: 'buy',
+				price: '100',
+				amount: '10',
+				outcome: 1,
+				tradeid: '0x0abc1',
+				isShortAsk: true,
+				timestamp: 5637144576,
+				blockNumber: 65793,
+				transactionHash: '0x0c1',
+				removed: false
+			}]);
+		}
+	});
+
+	test({
+		description: 'should handle no index or processedLogs passed in, with 2 logs to parse with an extraField to add',
+		label: 'log_add_tx',
+		index: undefined,
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		},
+		{
+			topics: [null, '0x0d1', '0x0a1'],
+			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		}],
+		extraField: { name: 'type', value: 'buy'},
+		processedLogs: undefined,
+		assertions: function(o) {
+			// we should have 2 processedLogs back, the 2nd should have it's type changed to buy because of the extraField modification despite it being passed as a sell.
+			assert.deepEqual(o, [{
+				market: '0x0b1',
+				sender: '0x00000000000000000000000000000000000000a1',
+				type: 'buy',
+				price: '100',
+				amount: '10',
+				outcome: 1,
+				tradeid: '0x0abc1',
+				isShortAsk: true,
+				timestamp: 5637144576,
+				blockNumber: 65793,
+				transactionHash: '0x0c1',
+				removed: false
+			},
+			{
+				market: '0x0d1',
+				sender: '0x00000000000000000000000000000000000000a1',
+				type: 'buy',
+				price: '125',
+				amount: '15',
+				outcome: 1,
+				tradeid: '0x0abc2',
+				isShortAsk: true,
+				timestamp: 5637144576,
+				blockNumber: 65793,
+				transactionHash: '0x0c1',
+				removed: false
+			}]);
+		}
+	});
+
+	test({
+		description: 'should handle an index String but no processedLogs passed in, with 2 logs to parse with an extraField to add and one of the logs is to be removed',
+		label: 'log_add_tx',
+		index: 'market',
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		},
+		{
+			topics: [null, '0x0d1', '0x0a1'],
+			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: true
+		}],
+		extraField: { name: 'type', value: 'buy'},
+		processedLogs: undefined,
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				'0x0b1': [{
+					market: '0x0b1',
+					sender: '0x00000000000000000000000000000000000000a1',
+					type: 'buy',
+					price: '100',
+					amount: '10',
+					outcome: 1,
+					tradeid: '0x0abc1',
+					isShortAsk: true,
+					timestamp: 5637144576,
+					blockNumber: 65793,
+					transactionHash: '0x0c1',
+					removed: false
+				}]
+			});
+		}
+	});
+
+	test({
+		description: 'should handle an index Array but no processedLogs passed in, with 1 log passed in, no extraField.',
+		label: 'log_add_tx',
+		index: ['market'],
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		}],
+		extraField: undefined,
+		processedLogs: undefined,
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				'0x0b1': [{
+					market: '0x0b1',
+					sender: '0x00000000000000000000000000000000000000a1',
+					type: 'sell',
+					price: '100',
+					amount: '10',
+					outcome: 1,
+					tradeid: '0x0abc1',
+					isShortAsk: true,
+					timestamp: 5637144576,
+					blockNumber: 65793,
+					transactionHash: '0x0c1',
+					removed: false
+				}]
+			});
+		}
+	});
+
+	test({
+		description: 'should handle an index Array and processedLogs passed in, with 1 log passed in, no extraField.',
+		label: 'log_add_tx',
+		index: ['market'],
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		}],
+		extraField: undefined,
+		processedLogs: {'0x0b1': [{ name: 'test', value: 'example'}]},
+		assertions: function(o) {
+			// in this case we simply add an example object in the processedLogs to prove that it adds to an existing array.
+			assert.deepEqual(o, {
+				'0x0b1': [{ name: 'test', value: 'example'}, {
+					market: '0x0b1',
+					sender: '0x00000000000000000000000000000000000000a1',
+					type: 'sell',
+					price: '100',
+					amount: '10',
+					outcome: 1,
+					tradeid: '0x0abc1',
+					isShortAsk: true,
+					timestamp: 5637144576,
+					blockNumber: 65793,
+					transactionHash: '0x0c1',
+					removed: false
+				}]
+			});
+		}
+	});
+
+	test({
+		description: 'should handle an index Array of length 2 and processedLogs passed in, with 2 log passed in, no extraField.',
+		label: 'log_add_tx',
+		index: ['type', 'market'],
+		logs: [{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c1',
+			removed: false
+		},
+		{
+			topics: [null, '0x0b1', '0x0a1'],
+			data: ['1', '10000000000000000000', '1000000000000000000', '1', '0x0abc1', false, 150000000],
+			blockNumber: '010101',
+			transactionHash: '0x0c2',
+			removed: false
+		}],
+		extraField: undefined,
+		processedLogs: {'sell': {'0x0b1': []}, 'buy': {'0x0b1': []},},
+		assertions: function(o) {
+			assert.deepEqual(o, {
+				'buy': {
+					'0x0b1': [{
+						market: '0x0b1',
+						sender: '0x00000000000000000000000000000000000000a1',
+						type: 'buy',
+						price: '10',
+						amount: '1',
+						outcome: 1,
+						tradeid: '0x0abc1',
+						isShortAsk: true,
+						timestamp: 5637144576,
+						blockNumber: 65793,
+						transactionHash: '0x0c2',
+						removed: false
+					}],
+				},
+				'sell': {
+					'0x0b1': [{
+						market: '0x0b1',
+						sender: '0x00000000000000000000000000000000000000a1',
+						type: 'sell',
+						price: '100',
+						amount: '10',
+						outcome: 1,
+						tradeid: '0x0abc1',
+						isShortAsk: true,
+						timestamp: 5637144576,
+						blockNumber: 65793,
+						transactionHash: '0x0c1',
+						removed: false
+					}],
+				}
+			});
+		}
+	});
+});
+
+describe("logs.getFilteredLogs", function() {
+	// 6 total tests
+	var test = function(t) {
+		it(t.description, function() {
+			var getLogs = augur.rpc.getLogs;
+			augur.rpc.getLogs = t.getLogs;
+
+			t.assertions(augur.getFilteredLogs(t.label, t.filterParams, t.callback));
+
+			augur.rpc.getLogs = getLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle undefined filterParams and cb',
+		label: 'log_add_tx',
+		filterParams: undefined,
+		callback: undefined,
+		getLogs: function(filters) {
+			// simply pass back filters to be tested by assertions
+			return filters;
+		},
+ 		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x1',
+				toBlock: 'latest',
+				address: augur.api.events['log_add_tx'].address,
+				topics: [augur.api.events['log_add_tx'].signature,
+					null,
+					null
+				],
+				timeout: 480000
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle passed filterParams and undefined cb',
+		label: 'log_add_tx',
+		filterParams: {
+			toBlock: '0x0b2',
+			fromBlock: '0x0b1'
+		},
+		callback: undefined,
+		getLogs: function(filters) {
+			// simply pass back filters to be tested by assertions
+			return filters;
+		},
+ 		assertions: function(o) {
+			assert.deepEqual(o, {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.api.events['log_add_tx'].address,
+				topics: [augur.api.events['log_add_tx'].signature,
+					null,
+					null
+				],
+				timeout: 480000
+			});
+		}
+	});
+
+	test({
+		description: 'Should handle passed filterParams and cb',
+		label: 'log_add_tx',
+		filterParams: {
+			toBlock: '0x0b2',
+			fromBlock: '0x0b1'
+		},
+		callback: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs[0], {
+				fromBlock: '0x0b1',
+				toBlock: '0x0b2',
+				address: augur.api.events['log_add_tx'].address,
+				topics: [augur.api.events['log_add_tx'].signature,
+					null,
+					null
+				],
+				timeout: 480000
+			});
+		},
+		getLogs: function(filters, cb) {
+			// simply pass back filters to be tested by cb assertions
+			cb([filters]);
+		},
+ 		assertions: function(o) {}
+	});
+
+	test({
+		description: 'Should handle passed filterParams and cb when getLogs returns an error object',
+		label: 'log_add_tx',
+		filterParams: {
+			toBlock: '0x0b2',
+			fromBlock: '0x0b1'
+		},
+		callback: function(err, logs) {
+			assert.isNull(logs);
+			assert.deepEqual(err, {
+				error: 'this is a problem!'
+			});
+		},
+		getLogs: function(filters, cb) {
+			// simply pass back filters to be tested by cb assertions
+			cb({ error: 'this is a problem!' });
+		},
+ 		assertions: function(o) {}
+	});
+
+	test({
+		description: 'Should handle passed filterParams and cb when getLogs returns an empty array',
+		label: 'log_add_tx',
+		filterParams: {
+			toBlock: '0x0b2',
+			fromBlock: '0x0b1'
+		},
+		callback: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs, []);
+		},
+		getLogs: function(filters, cb) {
+			// simply pass back an empty array to be tested by cb assertions
+			cb([]);
+		},
+ 		assertions: function(o) {}
+	});
+
+	test({
+		description: 'Should handle passed filterParams as a callback',
+		label: 'log_add_tx',
+		filterParams: function(err, logs) {
+			assert.isNull(err);
+			assert.deepEqual(logs, []);
+		},
+		callback: undefined,
+		getLogs: function(filters, cb) {
+			// simply pass back undefined to be tested by cb assertions
+			cb(undefined);
+		},
+ 		assertions: function(o) {}
+	});
+});
+
 describe.skip("logs.getLogs", function() {});
 describe.skip("logs.sortTradesByBlockNumber", function() {});
 describe.skip("logs.getMakerShortSellLogs", function() {});
