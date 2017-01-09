@@ -30,7 +30,10 @@ const testState = {
 		currentPeriod: 20,
 		isReportRevealPhase: true,
 		reportPeriod: 19,
-		currentPeriodProgress: 52
+		currentPeriodProgress: 52,
+		baseReporters: 6,
+		numEventsCreatedInPast24Hours: 4,
+		numEventsInReportPeriod: 3
 	},
 	connection: {
 		isConnected: true
