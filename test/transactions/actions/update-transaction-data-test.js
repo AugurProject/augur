@@ -12,7 +12,7 @@ describe(`modules/transactions/actions/update-transactions-data.js`, () => {
 	let out;
 	const state = Object.assign({}, testState);
 	const store = mockStore(state);
-	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data');
+	const action = proxyquire('../../../src/modules/transactions/actions/update-transactions-data', {});
 	it(`should fire update and process transaction actions`, () => {
 		out = [{
 			type: 'UPDATE_TRANSACTIONS_DATA',
