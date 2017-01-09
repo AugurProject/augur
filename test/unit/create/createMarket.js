@@ -54,7 +54,6 @@ describe("createMarket.createSingleEventMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createSingleEventMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, `createSingleEventMarket`);
-			assert.deepEqual(out.description, 'Some question for an Event and Market');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 			 '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -94,7 +93,6 @@ describe("createMarket.createSingleEventMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createSingleEventMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, `createSingleEventMarket`);
-			assert.deepEqual(out.description, 'Some padded question for an Event and Market');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 			 '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -131,7 +129,6 @@ describe("createMarket.createSingleEventMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createSingleEventMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, `createSingleEventMarket`);
-			assert.deepEqual(out.description, 'Some padded question for an Event and Market');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 			 '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -200,7 +197,6 @@ describe("createMarket.createEvent", function() {
 			assert.deepEqual(out.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', 'https://iknoweverything.com']);
 			assert.deepEqual(out.label, 'Create Event');
 			assert.deepEqual(out.method, 'createEvent');
-			assert.deepEqual(out.description, 'This is a test event description');
 		}
 	});
 	test({
@@ -220,7 +216,6 @@ describe("createMarket.createEvent", function() {
 			assert.deepEqual(out.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', 'https://iknoweverything.com']);
 			assert.deepEqual(out.label, 'Create Event');
 			assert.deepEqual(out.method, 'createEvent');
-			assert.deepEqual(out.description, 'This is a test event description');
 		}
 	});
 	test({
@@ -242,7 +237,6 @@ describe("createMarket.createEvent", function() {
 			assert.deepEqual(out.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x4563918244f40000', '5', 'https://iknowmostthings.com']);
 			assert.deepEqual(out.label, 'Create Event');
 			assert.deepEqual(out.method, 'createEvent');
-			assert.deepEqual(out.description, 'This is a test event description');
 		}
 	});
 });
@@ -274,7 +268,6 @@ describe("createMarket.createMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, 'createMarket');
-			assert.deepEqual(out.description, 'this is a description');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 				'0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -302,7 +295,6 @@ describe("createMarket.createMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, 'createMarket');
-			assert.deepEqual(out.description, 'This is a super cool market!');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 				'0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -333,7 +325,6 @@ describe("createMarket.createMarket", function() {
 			assert.deepEqual(out.to, augur.tx.CreateMarket.createMarket.to);
 			assert.deepEqual(out.label, 'Create Market');
 			assert.deepEqual(out.method, 'createMarket');
-			assert.deepEqual(out.description, 'This is a super cool market with a padded description!');
 			assert.deepEqual(out.value, '0x1036640');
 			assert.deepEqual(out.params, [
 				'0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',

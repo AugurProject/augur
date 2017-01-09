@@ -13,7 +13,7 @@ var transact,
 // 7 tests total
 
 describe("collectFees", function() {
-// 7 tests total
+	// 7 tests total
 	var getFeesCollectedCC = 1;
 	var test = function(t) {
 		it(t.description, function() {
@@ -138,7 +138,6 @@ describe("collectFees", function() {
 			assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
 			assert.deepEqual(tx.gasPrice, '14327');
 			assert.deepEqual(tx.value, '0x9a174ebe0');
-			assert.deepEqual(tx.description, 'Collect Reporting fees up to cycle 99');
 			onSuccess({ callReturn: "1" });
 		},
 		branch: '0xb1',
@@ -187,7 +186,6 @@ describe("collectFees", function() {
 			assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
 			assert.deepEqual(tx.gasPrice, '14327');
 			assert.deepEqual(tx.value, '0x9a174ebe0');
-			assert.deepEqual(tx.description, 'Collect Reporting fees up to cycle 99');
 			onSuccess({ callReturn: "2" });
 		},
 		branch: '0xb1',
@@ -240,7 +238,6 @@ describe("collectFees", function() {
 			assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
 			assert.deepEqual(tx.gasPrice, '14327');
 			assert.deepEqual(tx.value, '0x9a174ebe0');
-			assert.deepEqual(tx.description, 'Collect Reporting fees up to cycle 99');
 			onSuccess({ callReturn: "-1" });
 		},
 		getAfterRep: function(branch, period, sender, cb) {
@@ -296,7 +293,6 @@ describe("collectFees", function() {
 			assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
 			assert.deepEqual(tx.gasPrice, '14327');
 			assert.deepEqual(tx.value, '0x9a174ebe0');
-			assert.deepEqual(tx.description, 'Collect Reporting fees up to cycle 99');
 			onSuccess({ callReturn: "-1" });
 		},
 		getAfterRep: function(branch, period, sender, cb) {
@@ -352,7 +348,6 @@ describe("collectFees", function() {
 			assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
 			assert.deepEqual(tx.gasPrice, '14327');
 			assert.deepEqual(tx.value, '0x9a174ebe0');
-			assert.deepEqual(tx.description, 'Collect Reporting fees up to cycle 99');
 			onSuccess({ callReturn: "-1" });
 		},
 		getAfterRep: function(branch, period, sender, cb) {
