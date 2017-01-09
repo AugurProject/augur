@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 8, 2017</h3>
+			<ol>
+				<li>
+					The cash contract now fires a sentCash event when the send or sendFrom functions complete successfully.  Supporting code has been added to the front-end listeners, the filters event formatter, and the transaction relay to listen for, parse, and automatically show on the transactions page.
+				</li>
+				<li>
+					In-progress transaction messaging for closing out complete sets, &quot;send&quot; funds transactions (ether, real ether, and reputation), and initial order book generation is now handled entirely by the transaction relayer.  (Note: initial order book generation is currently not exposed in the UI.)
+				</li>
+			</ol>
 			<h3>January 7, 2017</h3>
 			<ol>
 				<li>
