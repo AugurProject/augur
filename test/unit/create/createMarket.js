@@ -5,11 +5,11 @@ var utils = require('../../../src/utilities.js');
 var abi = require("augur-abi");
 var augur = require('../../../src/');
 var transact;
-var rpc;
+var getGasPrice;
 var currentAssertions;
 // 12 tests total
 
-var sharedMockTransact = function(tx, onSent, onSuccess, onFailed) {
+var mockTransact = function(tx, onSent, onSuccess, onFailed) {
 	// if onSent is defined then callbacks where passed, check that they are functions.
 	if (onSent) {
 		assert.isFunction(onSent);
@@ -19,12 +19,10 @@ var sharedMockTransact = function(tx, onSent, onSuccess, onFailed) {
 	// pass transaction object to assertions
 	currentAssertions(tx);
 };
-var sharedMockRpc = {
-	getGasPrice: function(cb) {
-		// for simplicity's sake, just return 10.
-		if (cb) return cb('10');
-		return '10';
-	}
+var mockGetGasPrice = function(cb) {
+	// for simplicity's sake, just return 10.
+	if (cb) return cb('10');
+	return '10';
 };
 
 describe("createMarket.createSingleEventMarket", function() {
@@ -38,14 +36,14 @@ describe("createMarket.createSingleEventMarket", function() {
 
 	before(function() {
 		transact = augur.transact;
-		rpc = augur.rpc;
-		augur.transact = sharedMockTransact;
-		augur.rpc = sharedMockRpc;
+		getGasPrice = augur.rpc.getGasPrice;
+		augur.transact = mockTransact;
+		augur.rpc.getGasPrice = mockGetGasPrice;
 	});
 
 	after(function() {
 		augur.transact = transact;
-		augur.rpc = rpc;
+		augur.rpc.getGasPrice = getGasPrice;
 	});
 
 	test({
@@ -173,7 +171,7 @@ describe("createMarket.createEvent", function() {
 
 	before(function() {
 		transact = augur.transact;
-		augur.transact = sharedMockTransact;
+		augur.transact = mockTransact;
 	});
 
 	after(function() {
@@ -252,14 +250,14 @@ describe("createMarket.createMarket", function() {
 
 	before(function() {
 		transact = augur.transact;
-		rpc = augur.rpc;
-		augur.transact = sharedMockTransact;
-		augur.rpc = sharedMockRpc;
+		getGasPrice = augur.rpc.getGasPrice;
+		augur.transact = mockTransact;
+		augur.rpc.getGasPrice = mockGetGasPrice;
 	});
 
 	after(function() {
 		augur.transact = transact;
-		augur.rpc = rpc;
+		augur.rpc.getGasPrice = getGasPrice;
 	});
 
 	test({
@@ -364,7 +362,7 @@ describe("createMarket.updateTradingFee", function() {
 
 	before(function() {
 		transact = augur.transact;
-		augur.transact = sharedMockTransact;
+		augur.transact = mockTransact;
 	});
 
 	after(function() {
