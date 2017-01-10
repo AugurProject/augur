@@ -25,8 +25,8 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
 
 	return {
 		...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
-		isPositionClosable: position && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-		isPositionFullyClosable: position && relevantOrders.length ? isPositionFullyClosable(position, relevantOrders) : false // Based on available orders, can this position be fully closed
+		isClosable: position && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
+		isFullyClosable: position && relevantOrders.length ? isPositionFullyClosable(position, relevantOrders) : false // Based on available orders, can this position be fully closed
 	};
 });
 
