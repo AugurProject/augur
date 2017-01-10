@@ -138,6 +138,28 @@ describe("Account trade list", function () {
 });
 
 describe("listen/ignore", function () {
+    it("listen ignores invalid label", function (done) {
+        this.timeout(tools.TIMEOUT);
+        augur.filters.listen({
+            invalidFilterLabel: function (msg) {}
+        }, function (filters) {
+            done();
+        });
+    });
+    it("listen doesn't hang on same label", function (done) {
+        this.timeout(tools.TIMEOUT);
+        augur.filters.listen({
+            marketCreated: {}
+        }, function (filters) {
+            var id = filters.marketCreated.id;
+            augur.filters.listen({
+                marketCreated: {}
+            }, function (filters) {
+                assert.notStrictEqual(id, filters.marketCreated.id);
+                done();
+            });
+        });
+    });
     it("block filter", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require(augurpath), process.argv.slice(2));

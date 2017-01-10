@@ -627,28 +627,3 @@ describe("parse_event_message", function () {
         }]
     });
 });
-
-describe("listen", function () {
-    it("ignores invalid label", function (done) {
-        this.timeout(tools.TIMEOUT);
-        augur.filters.listen({
-            invalidFilterLabel: function (msg) {}
-        }, function (filters) {
-            done();
-        });
-    });
-    it("doesn't hang on same label", function (done) {
-        this.timeout(tools.TIMEOUT);
-        augur.filters.listen({
-            marketCreated: {}
-        }, function (filters) {
-            var id = filters.marketCreated.id;
-            augur.filters.listen({
-                marketCreated: {}
-            }, function (filters) {
-                assert.notStrictEqual(id, filters.marketCreated.id);
-                done();
-            });
-        });
-    });
-});
