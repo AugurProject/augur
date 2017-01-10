@@ -168,8 +168,7 @@ module.exports = function () {
                         version: 3,
                         id: uuid.v4()
                     };
-                    var unencryptedLoginID = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unencryptedLoginID);
+                    var loginID = augur.base58Encode({ keystore: keystore });
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -197,8 +196,7 @@ module.exports = function () {
             keys.recover(password, keystore, function (privateKey) {
                 var keystoreCrypto = keystore.crypto || keystore.Crypto;
                 keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-                    var unencryptedLoginID = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unencryptedLoginID);
+                    var loginID = augur.base58Encode({ keystore: keystore });
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -242,13 +240,13 @@ module.exports = function () {
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginID;
+            var decodedLoginID;
             try {
-                unencryptedLoginID = augur.base58Decrypt(loginID);
+                decodedLoginID = augur.base58Decode(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
-            var keystore = unencryptedLoginID.keystore;
+            var keystore = decodedLoginID.keystore;
             var keystoreCrypto = keystore.crypto || keystore.Crypto;
             var options = {
                 kdf: keystoreCrypto.kdf,
@@ -336,13 +334,12 @@ module.exports = function () {
                     version: 3,
                     id: uuid.v4()
                 };
-                var unsecureLoginIDObject = {name: name, keystore: keystore};
-                var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                var loginID = augur.base58Encode({name: name, keystore: keystore});
 
                 // while logged in, web.account object is set
                 self.account = {
                     name: name,
-                    secureLoginID: secureLoginID,
+                    loginID: loginID,
                     privateKey: new Buffer(privateKey, "hex"),
                     address: address,
                     keystore: keystore,
