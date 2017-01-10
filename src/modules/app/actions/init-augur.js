@@ -18,8 +18,7 @@ require('core-js/es6/reflect');
 
 export function initAugur() {
 	return (dispatch, getState) => {
-		console.info(`Running Augur.js Version: ${AugurJS.augur.version}`);
-
+		console.info(`Running augur.js Version: ${augur.version}`);
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = () => {
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
