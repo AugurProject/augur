@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 77 tests total
+// 89 tests total
 
 /***********
  * Parsers *
@@ -1540,7 +1540,186 @@ describe("logs.getLogs", function() {
 		}
 	});
 });
-describe.skip("logs.getAccountTrades", function() {});
+describe("logs.getAccountTrades", function() {
+	// 4 (so far - not talled at top) tests total
+	var getLogsCC = 0;
+	var test = function(t) {
+		it(t.description, function() {
+			var getLogs = augur.getLogs;
+			augur.getLogs = t.getLogs;
+			getLogsCC = 0;
+
+			augur.getAccountTrades(t.account, t.filterParams, t.callback);
+
+			augur.getLogs = getLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no filter params passed as well as an error from getLogs on the first call.',
+		account: '0x0',
+		filterParams: undefined,
+		getLogs: function(label, filterParams, aux, callback) {
+			// just confirming we get the expected Aux object:
+			assert.deepEqual(aux, {
+					index: ["market", "outcome"],
+					mergedLogs: {},
+					extraField: {name: "maker", value: false}
+			});
+			assert.deepEqual(filterParams, { sender: '0x0' });
+			callback({ error: 'Uh-Oh!' });
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isUndefined(trades);
+			assert.deepEqual(err, { error: 'Uh-Oh!' });
+		}
+	});
+
+	test({
+		description: 'Should handle no filter params passed as well as an error from getLogs on the second call.',
+		account: '0x0',
+		filterParams: undefined,
+		getLogs: function(label, filterParams, aux, callback) {
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: true}
+				});
+				callback({ error: 'Uh-Oh!' });
+				break;
+			default:
+				getLogsCC++;
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isUndefined(trades);
+			assert.deepEqual(err, { error: 'Uh-Oh!' });
+		}
+	});
+
+	test({
+		description: 'Should handle no filter params passed as well as an error from getLogs on the third call.',
+		account: '0x0',
+		filterParams: undefined,
+		getLogs: function(label, filterParams, aux, callback) {
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false }
+				});
+				callback({ error: 'Uh-Oh!' });
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: true}
+				});
+				callback(null, []);
+				break;
+			default:
+				getLogsCC++;
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isUndefined(trades);
+			assert.deepEqual(err, { error: 'Uh-Oh!' });
+		}
+	});
+
+	test({
+		description: 'Should handle no filter params passed as well as an error from getLogs on the fourth call.',
+		account: '0x0',
+		filterParams: undefined,
+		getLogs: function(label, filterParams, aux, callback) {
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 3:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: true }
+				});
+				callback({ error: 'Uh-Oh!' });
+				break;
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false }
+				});
+				callback(null, []);
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: true}
+				});
+				callback(null, []);
+				break;
+			default:
+				getLogsCC++;
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isUndefined(trades);
+			assert.deepEqual(err, { error: 'Uh-Oh!' });
+		}
+	});
+});
 describe("logs.sortTradesByBlockNumber", function() {
 	// 2 total tests
 	var test = function(t) {
@@ -1817,11 +1996,10 @@ describe("logs.getMakerTakerShortSellLogs", function() {
 });
 describe("logs.getParsedShortSellLogs", function() {
 	// 4 tests total
-	var getShortSellLogs, parseShortSellLogs;
 	var test = function(t) {
 		it(t.description, function() {
-			getShortSellLogs = augur.getShortSellLogs;
-			parseShortSellLogs = augur.parseShortSellLogs;
+			var getShortSellLogs = augur.getShortSellLogs;
+			var parseShortSellLogs = augur.parseShortSellLogs;
 			augur.getShortSellLogs = t.getShortSellLogs;
 			augur.parseShortSellLogs = t.parseShortSellLogs;
 
@@ -1988,11 +2166,10 @@ describe("logs.getParsedShortSellLogs", function() {
 });
 describe("logs.getParsedCompleteSetsLogs", function() {
 	// 4 tests total
-	var getCompleteSetsLogs, parseCompleteSetsLogs;
 	var test = function(t) {
 		it(t.description, function() {
-			getCompleteSetsLogs = augur.getCompleteSetsLogs;
- 			parseCompleteSetsLogs = augur.parseCompleteSetsLogs;
+			var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+ 			var parseCompleteSetsLogs = augur.parseCompleteSetsLogs;
 			augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
 			augur.parseCompleteSetsLogs = t.parseCompleteSetsLogs;
 
@@ -2115,8 +2292,219 @@ describe("logs.getParsedCompleteSetsLogs", function() {
 		}
 	});
 });
-describe.skip("logs.getShortAskBuyCompleteSetsLogs", function() {});
-describe.skip("logs.getRegularCompleteSetsLogs", function() {});
-describe.skip("logs.getBuyCompleteSetsLogs", function() {});
-describe.skip("logs.getSellCompleteSetsLogs", function() {});
-describe.skip("logs.getAccountMeanTradePrices", function() {});
+describe("logs.getShortAskBuyCompleteSetsLogs", function() {
+	// 3 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+			augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+
+			t.assertions(augur.getShortAskBuyCompleteSetsLogs(t.account, t.options, t.callback));
+
+			augur.getCompleteSetsLogs = getCompleteSetsLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no options passed',
+		account: '0x0',
+		options: undefined,
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: true, type: 'buy' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed',
+		account: '0x0',
+		options: { market: '0x0c1' },
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: true, type: 'buy' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed as the callback with no callback passed.',
+		account: '0x0',
+		options: utils.noop,
+		callback: undefined,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: true, type: 'buy' }, callback: utils.noop });
+		}
+	});
+});
+describe("logs.getRegularCompleteSetsLogs", function() {
+	// 3 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+			augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+
+			t.assertions(augur.getRegularCompleteSetsLogs(t.account, t.options, t.callback));
+
+			augur.getCompleteSetsLogs = getCompleteSetsLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no options passed',
+		account: '0x0',
+		options: undefined,
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: null }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed',
+		account: '0x0',
+		options: { market: '0x0c1' },
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: false, type: null }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed as the callback with no callback passed.',
+		account: '0x0',
+		options: utils.noop,
+		callback: undefined,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: null }, callback: utils.noop });
+		}
+	});
+});
+describe("logs.getBuyCompleteSetsLogs", function() {
+	// 3 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+			augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+
+			t.assertions(augur.getBuyCompleteSetsLogs(t.account, t.options, t.callback));
+
+			augur.getCompleteSetsLogs = getCompleteSetsLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no options passed',
+		account: '0x0',
+		options: undefined,
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed',
+		account: '0x0',
+		options: { market: '0x0c1' },
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: false, type: 'buy' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed as the callback with no callback passed.',
+		account: '0x0',
+		options: utils.noop,
+		callback: undefined,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
+		}
+	});
+});
+describe("logs.getSellCompleteSetsLogs", function() {
+	// 3 tests total
+	var test = function(t) {
+		it(t.description, function() {
+			var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+			augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+
+			t.assertions(augur.getSellCompleteSetsLogs(t.account, t.options, t.callback));
+
+			augur.getCompleteSetsLogs = getCompleteSetsLogs;
+		});
+	};
+
+	test({
+		description: 'Should handle no options passed',
+		account: '0x0',
+		options: undefined,
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'sell' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed',
+		account: '0x0',
+		options: { market: '0x0c1' },
+		callback: utils.noop,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: false, type: 'sell' }, callback: utils.noop });
+		}
+	});
+
+	test({
+		description: 'Should handle options passed as the callback with no callback passed.',
+		account: '0x0',
+		options: utils.noop,
+		callback: undefined,
+		getCompleteSetsLogs: function(account, options, callback) {
+			return { account: account, options: options, callback: callback };
+		},
+		assertions: function(o) {
+			assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'sell' }, callback: utils.noop });
+		}
+	});
+});
+describe.skip("logs.getAccountMeanTradePrices", function() {
+	// ? tests total
+	var test = function(t) {
+		it(t.description, function() {
+
+		});
+	};
+});
