@@ -642,13 +642,13 @@ describe("utilities.sha256", function () {
         hashable: [
             0,
             "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            "0x3078313230303030303030303030303030303030", // initial liquidity
-            "0xf69b5", // branch
+            "0x3078313230303030303030303030303030303030",
+            "0xf69b5",
             "-0x5b9fcc7b08c38be45843adb61ef9ff62aa9ac003440d83112173367f88fcbe2e",
-            1, // numEvents
-            120, // cumulative scale
-            "0x3078323035626330316133366532656232", // alpha
-            2, // numOutcomes
+            1,
+            120,
+            "0x3078323035626330316133366532656232",
+            2,
             1054
         ],
         digest: "0x1b2c7fceac62ef762590b8b058ee2143c78889a74f7856dd54ea91e4cc1c8f75"
@@ -657,14 +657,14 @@ describe("utilities.sha256", function () {
         hashable: [
             0,
             "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            "0x3078313230303030303030303030303030303030", // initial liquidity
-            "0xf69b5", // branch
+            "0x3078313230303030303030303030303030303030",
+            "0xf69b5",
             "-0x5b9fcc7b08c38be45843adb61ef9ff62aa9ac003440d83112173367f88fcbe2e",
-            1, // numEvents
-            120, // cumulative scale
-            "0x3078323035626330316133366532656232", // alpha
-            2, // numOutcomes
-            1054, // tradingPeriod
+            1,
+            120,
+            "0x3078323035626330316133366532656232",
+            2,
+            1054,
             "0x3078353165623835316562383531656238"
         ],
         digest: "0x5b1a0ae47238a4e1e264bfb27329f40f36df030c1022add9aa638b18821e6db8"
@@ -673,15 +673,15 @@ describe("utilities.sha256", function () {
         hashable: [
             0,
             "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            "0x3078313230303030303030303030303030303030", // initial liquidity
-            "0xf69b5", // branch
+            "0x3078313230303030303030303030303030303030",
+            "0xf69b5",
             "-0x5b9fcc7b08c38be45843adb61ef9ff62aa9ac003440d83112173367f88fcbe2e",
-            1, // numEvents
-            120, // cumulative scale
-            "0x3078323035626330316133366532656232", // alpha
-            2, // numOutcomes
-            1054, // tradingPeriod
-            "0x3078353165623835316562383531656238", // tradingFee
+            1,
+            120,
+            "0x3078323035626330316133366532656232",
+            2,
+            1054,
+            "0x3078353165623835316562383531656238",
             "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
         ],
         digest: "0x49419e3f50f7af3ef5300ee8cc2556903585f538550a7805b5a1fadb86851792"
