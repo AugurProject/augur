@@ -407,11 +407,11 @@ module.exports = {
         }
     },
 
-    base58Decrypt: function (secureLoginID) {
-        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+    base58Decode: function (encoded) {
+        return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
     },
 
-    base58Encrypt: function (keystore) {
-        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+    base58Encode: function (o) {
+        return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
     }
 };

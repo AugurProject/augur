@@ -22476,41 +22476,41 @@ module.exports={
         "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
     }, 
     "3": {
-        "Backstops": "0x2dbcdf3aca6e5202c2a9846be1b59d0d0ede79fd", 
-        "Branches": "0xf6487fbf48d674d558cffe83b48061c33c6fe77e", 
-        "BuyAndSellShares": "0x8d4a9fe15c5d44789a77173ceee3b73c2b8d2a2c", 
-        "Cash": "0xd7eb9a7f2da3a657ae97f2d7d46fd8245f978c78", 
-        "CloseMarket": "0x183cb59466de65fdcfd976cc9ae3bfa521d33423", 
-        "CollectFees": "0x7ded80f1e1251e986ccc440e6f0cb3ce8f2dd7c4", 
-        "CompleteSets": "0xb43851ddd2d3dd71ca22c3c7be3ae503221c9abc", 
-        "CompositeGetters": "0x4e5195d1645067817e4d3f0b229e3f1ae0511b44", 
-        "Consensus": "0x869f9424f9c4d671e65c2cd745d0a90ed6612992", 
-        "ConsensusData": "0xafa0c0e10884997c5c25bf4933e7a9853ebb793d", 
-        "CreateBranch": "0x437cc5f11bcb43ace404d0273556ad56205fde30", 
-        "CreateMarket": "0xe2614287c42cee581d0f06b593d991e89890b9ae", 
-        "EventResolution": "0xbbe6e01f6909f4a6e9fea0252cf7b89fd3fbea56", 
-        "Events": "0xbd299fc50ebd6b781745c54b366c3a493bc72fa7", 
-        "ExpiringEvents": "0xfaf92821845ce2cc7bcd904b1cec2f64c547e24b", 
-        "Faucets": "0x1437613c08441cedb50a9cea42268320243db9e9", 
-        "ForkPenalize": "0x0bbff6280ac8c6249dfe2d80a7214aa81cc06162", 
-        "Forking": "0x069a169b07f3df08edd6e6c1ea8c2832563fcca8", 
-        "FxpFunctions": "0xb57c55bf6ddf40bd1c9dfbcf06349c9828f350f3", 
-        "Info": "0x4f708e3e7f41f3c57d51897ff9891639e1fe8e0a", 
-        "MakeReports": "0x16f257510ebe7ba54055a23b096d26b16efb3a6d", 
-        "Markets": "0xee6963edd10360d88e7a3cdb17fd8118fed17a69", 
-        "Payout": "0xd0495bc83b430b65a53832fc4cbf438d30b8fc5b", 
-        "PenalizationCatchup": "0x9cbc76dbc86507717acd56152fa3496084440a8b", 
-        "PenalizeNotEnoughReports": "0x337816df33f260461c441cf179aa3edc1f0980f1", 
-        "ProportionCorrect": "0xee990f92dbae971d284ccbe60f4806f384a0c0ae", 
-        "Register": "0x0113b9dfa73024a87a92518a932463161849774a", 
-        "Reporting": "0x2fe7e8cbb7ba25c6111ea0dc6f754dab65e3fd77", 
-        "ReportingThreshold": "0xdf70624c45efc08c5ed5f32fee7854663f938bbc", 
-        "RoundTwo": "0xcbec96d16766796f99b893d911672c6057190bec", 
-        "RoundTwoPenalize": "0xc02dbc6d16801479cb821bf37ac849f7ef9428a4", 
-        "SendReputation": "0xb220dcc150d1af7a5726b184366d16d51fc18060", 
-        "SlashRep": "0xcb9393e359064728a92d58af4c275121b2974ec4", 
-        "Trade": "0x2ae5243105e59334bf7230397f7ba85d4645a2e2", 
-        "Trades": "0xa6f7dff8a045895a9081a3ddc9d283cd7dcc216c"
+        "Backstops": "0xdf5d66ab2fd56f21791e03d2decf6347529c2d67", 
+        "Branches": "0x1d9376ac4951996e83607a5d2ffec5b541357d78", 
+        "BuyAndSellShares": "0x4e6b14e2ef317e6fe838132c4dd4c7a4aeaae7a5", 
+        "Cash": "0xf3715ccaeb3228dc842529e40009783c7a51815f", 
+        "CloseMarket": "0x28e4758872db8364b38f4e1cda7bc674ee8f71ec", 
+        "CollectFees": "0x2bcabae0156d65f899d57d442f00ec20c91a8539", 
+        "CompleteSets": "0xf26cb4dea18db474fef503cbb215d252ff87c2e1", 
+        "CompositeGetters": "0x769a69a670f8f5ab8cdb45cd657ce5442f6b5ecf", 
+        "Consensus": "0xac4e3da587131168d0ca8402555d65a1bd75f101", 
+        "ConsensusData": "0xc951492619c83fc174b3fd2bbeab0b728ed7c054", 
+        "CreateBranch": "0x1fe0735aba28037d37e5089e11264d013c3381d3", 
+        "CreateMarket": "0x6dc2afd13fe3eee98c439bd6a8d325ebf865f133", 
+        "EventResolution": "0x3fa9301973b11abf473a3d97bfb0d49ea82798f6", 
+        "Events": "0xbc1dcd99f819b569959389e6cdad80fe23e94a4e", 
+        "ExpiringEvents": "0xd119530c2b01658f11ca729d5b77adafa1e9a431", 
+        "Faucets": "0x7a2d5ce3f791396c313101636aa75899e4656919", 
+        "ForkPenalize": "0xe8e23fd2cc1c74a57e905c24e06ff90460881c53", 
+        "Forking": "0x9a2f8f15e1386290d74840360adfe1d5d4a561fc", 
+        "FxpFunctions": "0x74cb03dffadc529f41820d6a7ac64ca951fb204e", 
+        "Info": "0xe3e46a75d55806cbf691bc5f406f5fbb6727e140", 
+        "MakeReports": "0x8246a081e0992217281d0e87b93a6c0646e21625", 
+        "Markets": "0x56fcf34683bcf5b3b9af1c33f82ccbc69e6b557b", 
+        "Payout": "0x13ce7875e41c386cd3929e68d54cce970cc3cc1a", 
+        "PenalizationCatchup": "0xf340b960fc3277b8fccf013b86e07de35d6490aa", 
+        "PenalizeNotEnoughReports": "0xb8ae6759b9a6a8011996d3d395a7513b07c59200", 
+        "ProportionCorrect": "0x3dd62bb97328965e6cecdbebf2de40cc3515268e", 
+        "Register": "0xe3a6cb84e0d9f87eb0f385ef979115f96f54ce28", 
+        "Reporting": "0x661107481f544110ee34b105d953294e1261e8bb", 
+        "ReportingThreshold": "0x5e086aab184f41c99526977941f076834c1e4e51", 
+        "RoundTwo": "0x28504c4427a47e6fa0ffbf38cb0d547cf03f7817", 
+        "RoundTwoPenalize": "0x802c61d84889bad2680a9fea84633ca987ac4f73", 
+        "SendReputation": "0xcbd16c8221f026a840d6df388ba771faed52b68e", 
+        "SlashRep": "0xd6a1a5343c7f5bb502774a2f78f2c1f4b71d7ca2", 
+        "Trade": "0x556a74ef16e17d6953d74f8f2c1c2c985d4b1a04", 
+        "Trades": "0x8c48efd6a21df0130dc94dbb89f31cd88c08fddb"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -40347,8 +40347,7 @@ module.exports = function () {
                         version: 3,
                         id: uuid.v4()
                     };
-                    var unencryptedLoginID = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unencryptedLoginID);
+                    var loginID = augur.base58Encode({ keystore: keystore });
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -40376,8 +40375,7 @@ module.exports = function () {
             keys.recover(password, keystore, function (privateKey) {
                 var keystoreCrypto = keystore.crypto || keystore.Crypto;
                 keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-                    var unencryptedLoginID = { keystore: keystore };
-                    var loginID = augur.base58Encrypt(unencryptedLoginID);
+                    var loginID = augur.base58Encode({ keystore: keystore });
 
                     // while logged in, web.account object is set
                     self.account = {
@@ -40421,13 +40419,13 @@ module.exports = function () {
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginID;
+            var decodedLoginID;
             try {
-                unencryptedLoginID = augur.base58Decrypt(loginID);
+                decodedLoginID = augur.base58Decode(loginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }
-            var keystore = unencryptedLoginID.keystore;
+            var keystore = decodedLoginID.keystore;
             var keystoreCrypto = keystore.crypto || keystore.Crypto;
             var options = {
                 kdf: keystoreCrypto.kdf,
@@ -40515,13 +40513,12 @@ module.exports = function () {
                     version: 3,
                     id: uuid.v4()
                 };
-                var unsecureLoginIDObject = {name: name, keystore: keystore};
-                var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+                var loginID = augur.base58Encode({name: name, keystore: keystore});
 
                 // while logged in, web.account object is set
                 self.account = {
                     name: name,
-                    secureLoginID: secureLoginID,
+                    loginID: loginID,
                     privateKey: new Buffer(privateKey, "hex"),
                     address: address,
                     keystore: keystore,
@@ -41805,7 +41802,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.5";
+    this.version = "3.6.6";
 
     this.options = {
         debug: {
@@ -42269,12 +42266,12 @@ module.exports = {
         }
     },
 
-    base58Decrypt: function (secureLoginID) {
-        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+    base58Decode: function (encoded) {
+        return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
     },
 
-    base58Encrypt: function (keystore) {
-        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+    base58Encode: function (o) {
+        return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
     }
 };
 
