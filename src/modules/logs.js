@@ -392,6 +392,7 @@ module.exports = {
             callback = options;
             options = null;
         }
+				options = options || {};
         this.getCompleteSetsLogs(account, options, function (err, logs) {
             if (err) return callback(err);
             callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
