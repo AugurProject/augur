@@ -14,6 +14,7 @@ module.exports = {
     },
 
     parseMarkets: function (markets) {
+				if (!markets) return markets;
         var numMarkets = markets.length;
         var parsedMarkets = new Array(numMarkets);
         for (var i = 0; i < numMarkets; ++i) {
@@ -24,7 +25,7 @@ module.exports = {
 
     parseEventInfo: function (info) {
         // 0: self.Events[event].branch
-        // 1: self.Events[event].expirationDate 
+        // 1: self.Events[event].expirationDate
         // 2: self.Events[event].outcome
         // 3: self.Events[event].minValue
         // 4: self.Events[event].maxValue

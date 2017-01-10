@@ -58,9 +58,8 @@ function checkAccount(augur, account, noWebAccountCheck) {
     assert.strictEqual(account.address.length, 42);
 }
 
-afterEach(function () { augur.web.logout(); });
-
 describe("Register", function () {
+	afterEach(function () { augur.web.logout(); });
     it("register account 1: " + name + " / " + password, function (done) {
         this.timeout(tools.TIMEOUT);
         augur.web.register(name, password, function (result) {
@@ -114,6 +113,7 @@ describe("Register", function () {
 });
 
 describe("Import Account", function () {
+	afterEach(function () { augur.web.logout(); });
     it("Import Account should login the account given name, password, and keystore", function (done) {
         this.timeout(tools.TIMEOUT);
         augur.web.importAccount(name, password, generatedKeystore, function (user) {
@@ -134,6 +134,7 @@ describe("Import Account", function () {
 });
 
 describe("Login", function () {
+	afterEach(function () { augur.web.logout(); });
     it("login and decrypt the stored private key", function (done) {
         this.timeout(tools.TIMEOUT);
         augur.web.login(loginID, password, function (user) {
@@ -233,6 +234,7 @@ describe("Login", function () {
 });
 
 describe("Logout", function () {
+	afterEach(function () { augur.web.logout(); });
     it("logout and unset the account object", function (done) {
         this.timeout(tools.TIMEOUT);
         augur.web.login(loginID, password, function (user) {
@@ -250,6 +252,7 @@ describe("Logout", function () {
 });
 
 describe("Change Account Name", function () {
+	afterEach(function () { augur.web.logout(); });
     it("Should be able to update the account object", function (done) {
         this.timeout(tools.TIMEOUT);
         augur.web.login(loginID, password, function (user) {
@@ -266,7 +269,7 @@ describe("Change Account Name", function () {
 });
 
 describe("Transaction signing", function () {
-
+	afterEach(function () { augur.web.logout(); });
     // sign tx with private key
     it("sign raw transaction using private key", function () {
         var tx = new EthTx({

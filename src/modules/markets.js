@@ -21,7 +21,8 @@ module.exports = {
             if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
                 return winningOutcomes;
             }
-            return winningOutcomes.slice(0, this.getMarketNumOutcomes(market));
+						var numOutcomes = this.getMarketNumOutcomes(market);
+            return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
         }
         this.fire(tx, function (winningOutcomes) {
             if (!winningOutcomes) return callback(null);

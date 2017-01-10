@@ -47,7 +47,8 @@ function Augur() {
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false,     // trading-related debug logging
-            reporting: false    // reporting-related debug logging
+            reporting: false,    // reporting-related debug logging
+						filters: false			// filters-related debug logging
         },
         loadZeroVolumeMarkets: true
     };

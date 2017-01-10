@@ -4,7 +4,7 @@
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --core --create --trading --reporting",
+    "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
     "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
     "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
