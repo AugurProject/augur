@@ -81,7 +81,7 @@ module.exports = {
         if (x !== null && x !== undefined) {
 
             // if x is an array, serialize and concatenate its individual elements
-            if (x && x.constructor === Array) {
+            if (x.constructor === Array || Buffer.isBuffer(x)) {
                 serialized = "";
                 for (var i = 0, n = x.length; i < n; ++i) {
                     serialized += this.serialize(x[i]);
