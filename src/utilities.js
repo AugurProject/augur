@@ -76,96 +76,53 @@ module.exports = {
         return self.indexOf(value) === index;
     },
 
-    sha256: function (hashable) {
-        var x = clone(hashable);
-        if (x && x.constructor === Array) {
-            var digest, cat = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                if (x[i] !== null && x[i] !== undefined) {
-
-                    // array element is a javascript number
-                    // (base-10 numbers)
-                    if (x[i].constructor === Number) {
-                        x[i] = abi.bignum(x[i]);
-                        if (x[i].lt(constants.ZERO)) {
-                            x[i] = x[i].add(abi.constants.MOD);
-                        }
-                        cat += abi.encode_int(x[i]);
-
-                    // array element is a string: text or hex
-                    } else if (x[i].constructor === String) {
-
-                        // negative hex
-                        if (x[i].slice(0,1) === '-') {
-                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
-                            cat += abi.encode_int(x[i]);
-
-                        // positive hex
-                        } else if (x[i].slice(0,2) === "0x") {
-                            cat += abi.pad_left(x[i].slice(2));
-
-                        // text string
-                        } else {
-                            cat += new Buffer(x[i], "utf8").toString("hex");
-                        }
-                    }
-                }
-            }
-            digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
-            if (digest.gt(new BigNumber(2).toPower(255))) {
-                return abi.hex(digest.sub(abi.constants.MOD));
-            }
-            return abi.hex(digest);
-        }
-        return crypto.createHash("sha256").update(x).digest("hex");
-    },
-
     serialize: function (x) {
-        var serialized;
+        var serialized, bn;
         if (x !== null && x !== undefined) {
 
-            // array element is a javascript number
-            // (base-10 numbers)
-            if (x.constructor === Number) {
-                x = abi.bignum(x);
-                if (x.lt(constants.ZERO)) {
-                    x = x.add(abi.constants.MOD);
+            // if x is an array, serialize and concatenate its individual elements
+            if (x.constructor === Array || Buffer.isBuffer(x)) {
+                serialized = "";
+                for (var i = 0, n = x.length; i < n; ++i) {
+                    serialized += this.serialize(x[i]);
                 }
-                serialized = abi.encode_int(x);
+            } else {
 
-            // array element is a string: text or hex
-            } else if (x.constructor === String) {
+                // input is a base-10 javascript number
+                if (x.constructor === Number) {
+                    bn = abi.bignum(x);
+                    if (bn.lt(constants.ZERO)) {
+                        bn = bn.add(abi.constants.MOD);
+                    }
+                    serialized = abi.encode_int(bn);
 
-                // negative hex
-                if (x.slice(0,1) === '-') {
-                    x = abi.bignum(x).add(abi.constants.MOD).toFixed();
-                    serialized = abi.encode_int(x);
+                // input is a utf8 or hex string
+                } else if (x.constructor === String) {
 
-                // positive hex
-                } else if (x.slice(0,2) === "0x") {
-                    serialized = abi.pad_left(x.slice(2));
+                    // negative hex
+                    if (x.slice(0,1) === '-') {
+                        serialized = abi.encode_int(abi.bignum(x).add(abi.constants.MOD).toFixed());
 
-                // text string
-                } else {
-                    serialized = new Buffer(x, "utf8").toString("hex");
+                    // positive hex
+                    } else if (x.slice(0,2) === "0x") {
+                        serialized = abi.pad_left(x.slice(2));
+
+                    // text string
+                    } else {
+                        serialized = new Buffer(x, "utf8").toString("hex");
+                    }
                 }
             }
         }
         return serialized;
     },
 
+    sha256: function (hashable) {
+        return abi.hex(abi.prefix_hex(crypto.createHash("sha256").update(this.serialize(hashable)).digest("hex")), true);
+    },
+
     sha3: function (hashable) {
-        var x = clone(hashable);
-        var serialized;
-        if (x && x.constructor === Array) {
-            serialized = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                serialized += this.serialize(x[i]);
-            }
-        } else {
-            serialized = this.serialize(x);
-        }
-        return abi.prefix_hex(abi.sha3(serialized));
+        return abi.prefix_hex(abi.sha3(this.serialize(hashable)));
     }
 
 };

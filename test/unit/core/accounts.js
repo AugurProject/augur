@@ -124,8 +124,8 @@ describe("Import Account", function () {
                 assert.isString(user.name);
                 assert.isObject(user.keystore);
                 assert.strictEqual(
-                        augur.web.account.privateKey.toString("hex").length,
-                        constants.KEYSIZE*2
+                    augur.web.account.privateKey.toString("hex").length,
+                    constants.KEYSIZE*2
                 );
                 assert.strictEqual(user.address.length, 42);
                 done();
@@ -166,6 +166,22 @@ describe("Login", function () {
                 assert.strictEqual(user.address, same_user.address);
                 done();
             });
+        });
+    });
+    it("login with a private key", function (done) {
+        this.timeout(tools.TIMEOUT);
+        augur.web.loginWithMasterKey('jo mama', new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"), function (user) {
+            assert.notProperty(user, "error");
+            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+            assert.isString(user.address);
+            assert.isObject(user.keystore);
+            assert.strictEqual(
+                augur.web.account.privateKey.toString("hex").length,
+                constants.KEYSIZE*2
+            );
+            assert.strictEqual(augur.web.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
+            assert.strictEqual(user.address.length, 42);
+            done();
         });
     });
     it("fail with error 403 when given an incorrect loginID", function (done) {

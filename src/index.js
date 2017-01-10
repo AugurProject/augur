@@ -38,7 +38,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.6";
+    this.version = "3.6.7";
 
     this.options = {
         debug: {
@@ -76,7 +76,8 @@ function Augur() {
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
     this.createBatch = require("./batch").bind(this);
-    this.web = this.Accounts();
+    this.accounts = this.Accounts();
+    this.web = this.accounts; // deprecated
     this.filters = this.Filters();
     this.chat = this.Chat();
     this.augurNode = this.AugurNode();
