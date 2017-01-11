@@ -15,13 +15,6 @@ var transact,
 
 describe("payout.closeMarket", function() {
 	// 2 tests total
-	var test = function(t) {
-		it(t.testDescription, function() {
-			currentAssertions = t.assertions;
-			augur.closeMarket(t.branch, t.market, t.sender, t.onSent, t.onSuccess, t.onFailed);
-		});
-	};
-
 	before(function() {
 		transact = augur.transact;
 		augur.transact = function(tx, onSent, onSuccess, onFailed) {
@@ -39,6 +32,14 @@ describe("payout.closeMarket", function() {
 	after(function() {
 		augur.transact = transact;
 	});
+
+	var test = function(t) {
+		it(t.testDescription, function() {
+			currentAssertions = t.assertions;
+			augur.closeMarket(t.branch, t.market, t.sender, t.onSent, t.onSuccess, t.onFailed);
+		});
+	};
+
 
 	test({
 		testDescription: "Should handle sending a transaction to close a market",
@@ -80,15 +81,6 @@ describe("payout.closeMarket", function() {
 
 describe("payout.claimProceeds", function() {
 	// 7 tests total
-	var test = function(t) {
-		it(t.testDescription, function() {
-			callReturn = t.callReturn || "1";
-			Cash = t.receiptCash || [];
-			Shares = t.receiptShares || [];
-			augur.claimProceeds(t.branch, t.market, t.description, t.onSent, t.onSuccess, t.onFailed);
-		});
-	};
-
 	before(function() {
 		transact = augur.transact;
 		receipt = augur.rpc.receipt;
@@ -115,11 +107,18 @@ describe("payout.claimProceeds", function() {
 			cb({ logs: logs });
 		};
 	});
-
 	after(function() {
 		augur.transact = transact;
 		augur.rpc.receipt = receipt;
 	});
+	var test = function(t) {
+		it(t.testDescription, function() {
+			callReturn = t.callReturn || "1";
+			Cash = t.receiptCash || [];
+			Shares = t.receiptShares || [];
+			augur.claimProceeds(t.branch, t.market, t.description, t.onSent, t.onSuccess, t.onFailed);
+		});
+	};
 
 	test({
 		testDescription: 'should claim Proceeds for a given market if user has shares on the winning outcome',
@@ -238,16 +237,6 @@ describe("payout.claimProceeds", function() {
 
 describe.skip("payout.claimMarketsProceeds", function() {
 	// 2 tests total
-	var test = function(t) {
-		it(t.testDescription, function(done) {
-			callReturn = t.callReturn || "1";
-			Cash = t.receiptCash || [];
-			Shares = t.receiptShares || [];
-			Complete = done;
-			augur.claimMarketsProceeds(t.branch, t.markets, t.callback, t.onSent, t.onSuccess, t.onFailed);
-		});
-	};
-
 	before(function() {
 		var getWinningOutcomesCC = 0;
 		transact = augur.transact;
@@ -284,6 +273,15 @@ describe.skip("payout.claimMarketsProceeds", function() {
 		augur.rpc.receipt = receipt;
 		augur.getWinningOutcomes = winningOutcomes;
 	});
+	var test = function(t) {
+		it(t.testDescription, function(done) {
+			callReturn = t.callReturn || "1";
+			Cash = t.receiptCash || [];
+			Shares = t.receiptShares || [];
+			Complete = done;
+			augur.claimMarketsProceeds(t.branch, t.markets, t.callback, t.onSent, t.onSuccess, t.onFailed);
+		});
+	};
 
 	test({
 		testDescription: 'should claim Proceeds for given markets if user has shares on the winning outcome',

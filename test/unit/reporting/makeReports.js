@@ -11,14 +11,13 @@ var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
 
-before(function () {
-    makeReports.options = {debug: {reporting: false}};
-});
-after(function () {
-    delete makeReports.options;
-});
-
 describe("fixReport / unfixReport", function () {
+		before(function () {
+				makeReports.options = {debug: {reporting: false}};
+		});
+		after(function () {
+				delete makeReports.options;
+		});
     var test = function (t) {
         it(JSON.stringify(t), function () {
             var fixedReport = makeReports.fixReport(
@@ -207,6 +206,12 @@ describe("fixReport / unfixReport", function () {
 });
 
 describe("Report encryption/decryption", function () {
+		before(function () {
+				makeReports.options = {debug: {reporting: false}};
+		});
+		after(function () {
+				delete makeReports.options;
+		});
     var test = function (t) {
         it("encryptReport(" + t.report + "," + t.key + "," + t.salt + ") -> " + t.encryptedReport, function () {
             var encryptedReport = makeReports.encryptReport(t.report, t.key, t.salt);
@@ -422,6 +427,12 @@ describe("Report encryption/decryption", function () {
 });
 
 describe("makeHash", function () {
+		before(function () {
+				makeReports.options = {debug: {reporting: false}};
+		});
+		after(function () {
+				delete makeReports.options;
+		});
     var test = function (t) {
         it(JSON.stringify(t), function () {
             var localHash = makeReports.makeHash(t.salt, t.report, t.event, t.from, t.isScalar, t.isIndeterminate);
