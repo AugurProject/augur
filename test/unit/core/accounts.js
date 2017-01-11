@@ -41,28 +41,28 @@ function checkAccount(augur, account, noWebAccountCheck) {
     assert.isObject(account.keystore);
     assert.strictEqual(account.address.length, 42);
         if (!noWebAccountCheck) {
-            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
-            assert.isString(augur.web.account.address);
-            assert.isObject(augur.web.account.keystore);
+            assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
+            assert.isString(augur.accounts.account.address);
+            assert.isObject(augur.accounts.account.keystore);
             assert.strictEqual(
-                augur.web.account.privateKey.toString("hex").length,
+                augur.accounts.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
-            assert.strictEqual(augur.web.account.address.length, 42);
-            assert.strictEqual(account.address, augur.web.account.address);
+            assert.strictEqual(augur.accounts.account.address.length, 42);
+            assert.strictEqual(account.address, augur.accounts.account.address);
             assert.strictEqual(
                 JSON.stringify(account.keystore),
-                JSON.stringify(augur.web.account.keystore)
+                JSON.stringify(augur.accounts.account.keystore)
             );
         }
     assert.strictEqual(account.address.length, 42);
 }
 
 describe("Register", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     it("register account 1: " + name + " / " + password, function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.register(name, password, function (result) {
+        augur.accounts.register(name, password, function (result) {
             checkAccount(augur, result, true);
             loginID = result.loginID;
             var rec = result.keystore;
@@ -88,7 +88,7 @@ describe("Register", function () {
     });
     it("register account 2: " + name2 + " / " + password2, function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.register(name2, password2, function (result) {
+        augur.accounts.register(name2, password2, function (result) {
             checkAccount(augur, result, true);
             loginID2 = result.loginID;
             var rec = result.keystore;
@@ -113,18 +113,18 @@ describe("Register", function () {
 });
 
 describe("Import Account", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     it("Import Account should login the account given name, password, and keystore", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.importAccount(name, password, generatedKeystore, function (user) {
+        augur.accounts.importAccount(name, password, generatedKeystore, function (user) {
                 assert.notProperty(user, "error");
-                assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+                assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
                 assert.isString(user.address);
                 assert.isString(user.loginID);
                 assert.isString(user.name);
                 assert.isObject(user.keystore);
                 assert.strictEqual(
-                    augur.web.account.privateKey.toString("hex").length,
+                    augur.accounts.account.privateKey.toString("hex").length,
                     constants.KEYSIZE*2
                 );
                 assert.strictEqual(user.address.length, 42);
@@ -134,16 +134,16 @@ describe("Import Account", function () {
 });
 
 describe("Login", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     it("login and decrypt the stored private key", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+            assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
             assert.isString(user.address);
             assert.isObject(user.keystore);
             assert.strictEqual(
-                augur.web.account.privateKey.toString("hex").length,
+                augur.accounts.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
@@ -152,17 +152,17 @@ describe("Login", function () {
     });
     it("login twice as the same user", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+            assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
             assert.isString(user.address);
             assert.isObject(user.keystore);
             assert.strictEqual(
-                augur.web.account.privateKey.toString("hex").length,
+                augur.accounts.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
-            augur.web.login(loginID, password, function (same_user) {
+            augur.accounts.login(loginID, password, function (same_user) {
                 assert(!same_user.error);
                 assert.strictEqual(user.address, same_user.address);
                 done();
@@ -171,16 +171,16 @@ describe("Login", function () {
     });
     it("login with a private key", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.loginWithMasterKey('jo mama', new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"), function (user) {
+        augur.accounts.loginWithMasterKey('jo mama', new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"), function (user) {
             assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+            assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
             assert.isString(user.address);
             assert.isObject(user.keystore);
             assert.strictEqual(
-                augur.web.account.privateKey.toString("hex").length,
+                augur.accounts.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
-            assert.strictEqual(augur.web.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
+            assert.strictEqual(augur.accounts.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
             assert.strictEqual(user.address.length, 42);
             done();
         });
@@ -188,28 +188,28 @@ describe("Login", function () {
     it("fail with error 403 when given an incorrect loginID", function (done) {
         this.timeout(tools.TIMEOUT);
         var badLoginID = utils.sha256(new Date().toString());
-        augur.web.login(badLoginID, password, function (user) {
+        augur.accounts.login(badLoginID, password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
     it("fail with error 403 when given a blank loginID", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login("", password, function (user) {
+        augur.accounts.login("", password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
     it("fail with error 403 when given a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login(loginID, "", function (user) {
+        augur.accounts.login(loginID, "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
     });
     it("fail with error 403 when given a blank loginID and a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login("", "", function (user) {
+        augur.accounts.login("", "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
@@ -217,7 +217,7 @@ describe("Login", function () {
     it("fail with error 403 when given an incorrect password", function (done) {
         this.timeout(tools.TIMEOUT);
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-        augur.web.login(loginID, bad_password, function (user) {
+        augur.accounts.login(loginID, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
@@ -226,7 +226,7 @@ describe("Login", function () {
         this.timeout(tools.TIMEOUT);
         var bad_loginID = utils.sha256(new Date().toString());
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-        augur.web.login(bad_loginID, bad_password, function (user) {
+        augur.accounts.login(bad_loginID, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
         });
@@ -234,17 +234,17 @@ describe("Login", function () {
 });
 
 describe("Logout", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     it("logout and unset the account object", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
             assert.strictEqual(user.loginID, loginID);
             for (var i = 0; i < 2; ++i) {
-                augur.web.logout();
-                assert.notProperty(augur.web.account, "loginID");
-                assert.notProperty(augur.web.account, "address");
-                assert.notProperty(augur.web.account, "privateKey");
+                augur.accounts.logout();
+                assert.notProperty(augur.accounts.account, "loginID");
+                assert.notProperty(augur.accounts.account, "address");
+                assert.notProperty(augur.accounts.account, "privateKey");
             }
             done();
         });
@@ -252,16 +252,16 @@ describe("Logout", function () {
 });
 
 describe("Change Account Name", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     it("Should be able to update the account object", function (done) {
         this.timeout(tools.TIMEOUT);
-        augur.web.login(loginID, password, function (user) {
-            var privateKey = augur.web.account.privateKey;
-            augur.web.changeAccountName("testingName", function (updatedUser) {
+        augur.accounts.login(loginID, password, function (user) {
+            var privateKey = augur.accounts.account.privateKey;
+            augur.accounts.changeAccountName("testingName", function (updatedUser) {
                 assert.deepEqual(user.keystore, updatedUser.keystore);
                 assert.strictEqual(updatedUser.name, "testingName");
                 assert.strictEqual(user.address, updatedUser.address);
-                assert.strictEqual(privateKey.toString("hex"), augur.web.account.privateKey.toString("hex"));
+                assert.strictEqual(privateKey.toString("hex"), augur.accounts.account.privateKey.toString("hex"));
                 done();
             });
         });
@@ -269,7 +269,7 @@ describe("Change Account Name", function () {
 });
 
 describe("Transaction signing", function () {
-	afterEach(function () { augur.web.logout(); });
+	afterEach(function () { augur.accounts.logout(); });
     // sign tx with private key
     it("sign raw transaction using private key", function () {
         var tx = new EthTx({

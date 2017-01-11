@@ -43,18 +43,18 @@ function checkAccount(augur, account, noWebAccountCheck) {
     assert.isObject(account.keystore);
     assert.strictEqual(account.address.length, 42);
         if (!noWebAccountCheck) {
-            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
-            assert.isString(augur.web.account.address);
-            assert.isObject(augur.web.account.keystore);
+            assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
+            assert.isString(augur.accounts.account.address);
+            assert.isObject(augur.accounts.account.keystore);
             assert.strictEqual(
-                augur.web.account.privateKey.toString("hex").length,
+                augur.accounts.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
-            assert.strictEqual(augur.web.account.address.length, 42);
-            assert.strictEqual(account.address, augur.web.account.address);
+            assert.strictEqual(augur.accounts.account.address.length, 42);
+            assert.strictEqual(account.address, augur.accounts.account.address);
             assert.strictEqual(
                 JSON.stringify(account.keystore),
-                JSON.stringify(augur.web.account.keystore)
+                JSON.stringify(augur.accounts.account.keystore)
             );
         }
     assert.strictEqual(account.address.length, 42);
@@ -62,28 +62,28 @@ function checkAccount(augur, account, noWebAccountCheck) {
 
 before(function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.web.register(name, password, function (result) {
+    augur.accounts.register(name, password, function (result) {
         loginID = result.loginID;
-        augur.web.register(name2, password2, function (result) {
+        augur.accounts.register(name2, password2, function (result) {
             loginID2 = result.loginID;
             done();
         });
     });
 })
 
-afterEach(function () { augur.web.logout(); });
+afterEach(function () { augur.accounts.logout(); });
 
 describe("eth_call", function () {
     it("call getBranches using web.invoke", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.strictEqual(user.address, augur.web.account.address);
+            assert.strictEqual(user.address, augur.accounts.account.address);
 
             // sync
             var tx = clone(augur.tx.Branches.getBranches);
-            var branches = augur.web.invoke(tx);
+            var branches = augur.accounts.invoke(tx);
             assert.notProperty(branches, "error");
             assert.isAbove(branches.length, 0);
             assert.isArray(branches);
@@ -93,7 +93,7 @@ describe("eth_call", function () {
             );
 
             // async
-            augur.web.invoke(tx, function (branches) {
+            augur.accounts.invoke(tx, function (branches) {
                 assert.notProperty(branches, "error");
                 assert.isAbove(branches.length, 0);
                 assert.isArray(branches);
@@ -112,13 +112,13 @@ describe("Fund new account", function () {
         this.timeout(tools.TIMEOUT*2);
         var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
         var sender = augur.from;
-        augur.web.login(loginID, password, function (account) {
+        augur.accounts.login(loginID, password, function (account) {
             // console.log("login:", account);
             checkAccount(augur, account);
             var recipient = account.address;
             var initial_balance = abi.fix(augur.rpc.balance(recipient));
             // console.log("initial balance:", initial_balance.toFixed());
-            augur.web.fundNewAccountFromAddress(sender, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
+            augur.accounts.fundNewAccountFromAddress(sender, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
                 function (res) {
                     assert.notProperty(res, "error");
                 },
@@ -150,13 +150,13 @@ describe("Fund new account", function () {
         // faucet only exists on network 2!
         if (augur.network_id !== "2") return done();
 
-        augur.web.login(loginID2, password2, function (account) {
+        augur.accounts.login(loginID2, password2, function (account) {
             // console.log("login:", account);
             checkAccount(augur, account);
             var recipient = account.address;
             var initial_balance = abi.unfix(augur.rpc.balance(recipient));
             // console.log("initial balance:", initial_balance.toFixed());
-            augur.web.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
+            augur.accounts.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
                 function (res) {
                     assert.notProperty(res, "error");
                 },
@@ -187,9 +187,9 @@ describe("Send transaction", function () {
     it("detect logged in user and default to web.invoke", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.strictEqual(user.address, augur.web.account.address);
+            assert.strictEqual(user.address, augur.accounts.account.address);
             augur.reputationFaucet({
                 branch: augur.constants.DEFAULT_BRANCH_ID + "01",
                 onSent: function (r) {
@@ -220,11 +220,11 @@ describe("Send transaction", function () {
     it("sign and send transaction using account 1", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-        augur.web.login(loginID, password, function (user) {
+        augur.accounts.login(loginID, password, function (user) {
             assert.notProperty(user, "error");
             var tx = clone(augur.tx.Faucets.reputationFaucet);
             tx.params = augur.constants.DEFAULT_BRANCH_ID;
-            augur.web.invoke(tx, function (txhash) {
+            augur.accounts.invoke(tx, function (txhash) {
                 assert.notProperty(txhash, "error");
                 assert(txhash);
                 assert.isObject(augur.rpc.rawTxs[txhash].tx);
@@ -256,11 +256,11 @@ describe("Concurrent transactions", function () {
         augur.connect(connectParams, function (connection) {
             assert.deepEqual(connection, connectParams);
             var sender = augur.from;
-            augur.web.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+            augur.accounts.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
                 console.log("registered:", user);
                 assert.notProperty(user, "error");
-                assert.strictEqual(user.address, augur.web.account.address);
-                augur.web.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+                assert.strictEqual(user.address, augur.accounts.account.address);
+                augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
                     function (r) {
                         // console.log("fundNewAccountFromAddress sent:", r);
                     },
@@ -330,11 +330,11 @@ describe("Concurrent transactions", function () {
         augur.connect(connectParams, function (connection) {
             assert.deepEqual(connection, connectParams);
             var sender = augur.from;
-            augur.web.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+            augur.accounts.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
                 console.log("registered:", user);
                 assert.notProperty(user, "error");
-                assert.strictEqual(user.address, augur.web.account.address);
-                augur.web.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+                assert.strictEqual(user.address, augur.accounts.account.address);
+                augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
                     function (r) {
                         // console.log("fundNewAccountFromAddress sent:", r);
                     },
@@ -400,11 +400,11 @@ describe("Concurrent transactions", function () {
         augur.connect(connectParams, function (connection) {
             assert.deepEqual(connection, connectParams);
             var sender = augur.from;
-            augur.web.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+            augur.accounts.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
                 console.log("registered:", user);
                 assert.notProperty(user, "error");
-                assert.strictEqual(user.address, augur.web.account.address);
-                augur.web.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+                assert.strictEqual(user.address, augur.accounts.account.address);
+                augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
                     function (r) {
                         // console.log("fundNewAccountFromAddress sent:", r);
                     },
@@ -470,11 +470,11 @@ describe("Concurrent transactions", function () {
         augur.connect(connectParams, function (connection) {
             assert.deepEqual(connection, connectParams);
             var sender = augur.from;
-            augur.web.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+            augur.accounts.register("", utils.sha256(Math.random().toString(36).substring(4)), function (user) {
                 console.log("registered:", user);
                 assert.notProperty(user, "error");
-                assert.strictEqual(user.address, augur.web.account.address);
-                augur.web.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+                assert.strictEqual(user.address, augur.accounts.account.address);
+                augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
                     function (r) {
                         // console.log("fundNewAccountFromAddress sent:", r);
                     },

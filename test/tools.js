@@ -50,7 +50,7 @@ module.exports = {
     },
 
     print_reporting_status: function (augur, eventID, label) {
-        var sender = augur.web.account.address || augur.from;
+        var sender = augur.accounts.account.address || augur.from;
         var branch = augur.Events.getBranch(eventID);
         var periodLength = parseInt(augur.Branches.getPeriodLength(branch));
         var redistributed = augur.ConsensusData.getRepRedistributionDone(branch, sender);
@@ -73,8 +73,8 @@ module.exports = {
         branch = branch || constants.DEFAULT_BRANCH_ID;
         var clientSideAccount;
         var accounts = clone(accountList);
-        if (augur.web.account.address) {
-            accounts = [augur.web.account.address].concat(accounts);
+        if (augur.accounts.account.address) {
+            accounts = [augur.accounts.account.address].concat(accounts);
         }
         async.eachSeries(accounts, function (account, nextAccount) {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
@@ -89,19 +89,19 @@ module.exports = {
                         address: account,
                         callback: function (repBalance) {
                             function next() {
-                                if (augur.web.account.address) {
-                                    clientSideAccount = clone(augur.web.account);
-                                    augur.web.account = {};
+                                if (augur.accounts.account.address) {
+                                    clientSideAccount = clone(augur.accounts.account);
+                                    augur.accounts.account = {};
                                 }
                                 nextAccount();
                             }
-                            if (!augur.web.account.address) {
+                            if (!augur.accounts.account.address) {
                                 augur.useAccount(account);
                             }
                             if (parseFloat(cashBalance) >= 10000000000 && parseFloat(repBalance) >= 47) {
-                                if (augur.web.account.address) {
-                                    clientSideAccount = clone(augur.web.account);
-                                    augur.web.account = {};
+                                if (augur.accounts.account.address) {
+                                    clientSideAccount = clone(augur.accounts.account);
+                                    augur.accounts.account = {};
                                 } else {
                                     unlocked.push(account);
                                 }
@@ -117,7 +117,7 @@ module.exports = {
                                         balance: "10000000000",
                                         onSent: utils.noop,
                                         onSuccess: function (r) {
-                                            if (r.callReturn === "1" && !augur.web.account.address) { 
+                                            if (r.callReturn === "1" && !augur.accounts.account.address) { 
                                                 unlocked.push(account);
                                             }
                                             next();
@@ -133,7 +133,7 @@ module.exports = {
             });
         }, function (err) {
             if (clientSideAccount) {
-                augur.web.account = clientSideAccount;
+                augur.accounts.account = clientSideAccount;
             }
             augur.useAccount(active);
             if (err) return callback(err);
@@ -155,7 +155,7 @@ module.exports = {
         var clientSideAccount;
         var parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
         console.log("from:", sender);
-        console.log("web.account.address:", augur.web.account.address);
+        console.log("web.account.address:", augur.accounts.account.address);
         console.log("parent branch ID:", parentBranchID);
         console.log("parent branch rep balance:", parentBranchRepBalance);
         augur.createBranch({
@@ -174,19 +174,19 @@ module.exports = {
                 var block = augur.rpc.getBlock(res.blockNumber);
 
                 // get reputation on the new branch
-                if (augur.web.account.address) {
-                    accounts = [augur.web.account.address].concat(accounts);
+                if (augur.accounts.account.address) {
+                    accounts = [augur.accounts.account.address].concat(accounts);
                 }
                 async.each(accounts, function (account, nextAccount) {
                     if (self.DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(account));
                     function next() {
-                        if (augur.web.account.address) {
-                            clientSideAccount = clone(augur.web.account);
-                            augur.web.account = {};
+                        if (augur.accounts.account.address) {
+                            clientSideAccount = clone(augur.accounts.account);
+                            augur.accounts.account = {};
                         }
                         nextAccount();
                     }
-                    if (account !== augur.web.account.address) {
+                    if (account !== augur.accounts.account.address) {
                         augur.useAccount(account);
                     }
                     augur.fundNewAccount({
@@ -199,7 +199,7 @@ module.exports = {
                     });
                 }, function (err) {
                     if (clientSideAccount) {
-                        augur.web.account = clientSideAccount;
+                        augur.accounts.account = clientSideAccount;
                     }
                     augur.useAccount(sender);
                     if (err) return callback(err);
@@ -208,7 +208,7 @@ module.exports = {
             },
             onFailed: function (err) {
                 if (clientSideAccount) {
-                    augur.web.account = clientSideAccount;
+                    augur.accounts.account = clientSideAccount;
                 }
                 augur.useAccount(sender);
                 callback(err);
@@ -249,9 +249,9 @@ module.exports = {
         console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
         var active = augur.from;
         var clientSideAccount;
-        if (augur.web.account.address) {
-            clientSideAccount = clone(augur.web.account);
-            augur.web.account = {};
+        if (augur.accounts.account.address) {
+            clientSideAccount = clone(augur.accounts.account);
+            augur.accounts.account = {};
         }
         augur.createSingleEventMarket({
             branchId: branchID,
@@ -301,7 +301,7 @@ module.exports = {
                                 markets.scalar = res.callReturn;
                                 if (self.is_created(markets)) {
                                     if (clientSideAccount) {
-                                        augur.web.account = clientSideAccount;
+                                        augur.accounts.account = clientSideAccount;
                                     }
                                     augur.useAccount(active);
                                     callback(null, markets);
@@ -318,7 +318,7 @@ module.exports = {
                         markets.categorical = res.callReturn;
                         if (self.is_created(markets)) {
                             if (clientSideAccount) {
-                                augur.web.account = clientSideAccount;
+                                augur.accounts.account = clientSideAccount;
                             }
                             augur.useAccount(active);
                             callback(null, markets);
@@ -335,7 +335,7 @@ module.exports = {
                 markets.binary = res.callReturn;
                 if (self.is_created(markets)) {
                     if (clientSideAccount) {
-                        augur.web.account = clientSideAccount;
+                        augur.accounts.account = clientSideAccount;
                     }
                     augur.useAccount(active);
                     callback(null, markets);
@@ -354,9 +354,9 @@ module.exports = {
         var periodLength = augur.getPeriodLength(branch);
         var active = augur.from;
         var clientSideAccount;
-        if (augur.web.account.address) {
-            clientSideAccount = clone(augur.web.account);
-            augur.web.account = {};
+        if (augur.accounts.account.address) {
+            clientSideAccount = clone(augur.accounts.account);
+            augur.accounts.account = {};
         }
         if (this.DEBUG) {
             console.log(chalk.blue.bold("\nTrading in each market..."));
@@ -431,7 +431,7 @@ module.exports = {
                             },
                             onCommitFailed: function (e) {
                                 if (clientSideAccount) {
-                                    augur.web.account = clientSideAccount;
+                                    augur.accounts.account = clientSideAccount;
                                 }
                                 augur.useAccount(active);
                                 nextMarket(e);
@@ -445,14 +445,14 @@ module.exports = {
                                     self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
                                 }
                                 if (clientSideAccount) {
-                                    augur.web.account = clientSideAccount;
+                                    augur.accounts.account = clientSideAccount;
                                 }
                                 augur.useAccount(active);
                                 nextMarket(null);
                             },
                             onTradeFailed: function (e) {
                                 if (clientSideAccount) {
-                                    augur.web.account = clientSideAccount;
+                                    augur.accounts.account = clientSideAccount;
                                 }
                                 augur.useAccount(active);
                                 nextMarket(e);
@@ -470,9 +470,9 @@ module.exports = {
         var periodLength = augur.getPeriodLength(branch);
         var active = augur.from;
         var clientSideAccount;
-        if (augur.web.account.address) {
-            clientSideAccount = clone(augur.web.account);
-            augur.web.account = {};
+        if (augur.accounts.account.address) {
+            clientSideAccount = clone(augur.accounts.account);
+            augur.accounts.account = {};
         }
         if (this.DEBUG) {
             console.log(chalk.blue.bold("\nTrading in each market..."));
@@ -508,7 +508,7 @@ module.exports = {
             });
         }, function (err) {
             if (clientSideAccount) {
-                augur.web.account = clientSideAccount;
+                augur.accounts.account = clientSideAccount;
             }
             augur.useAccount(active);
             callback(err);

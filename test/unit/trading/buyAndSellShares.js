@@ -47,7 +47,12 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				//assertions aren't provied since we are testing in transact since there is no output of the cancel function.
 				currentMethod = 'cancel';
-				augur.cancel(t.trade_id, t.onSent, t.onSuccess, t.onFailed);
+				augur.cancel({
+					trade_id: t.trade_id,
+					onSent: t.onSent,
+					onSuccess: t.onSuccess,
+					onFailed: t.onFailed
+				});
 			});
 		};
 
@@ -127,7 +132,17 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'buy';
 				expectedParams = t.expectedParams;
-				augur.buy(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+				augur.buy({
+					amount: t.amount,
+					price: t.price,
+					market: t.market,
+					outcome: t.outcome,
+					tradeGroupID: t.tradeGroupID,
+					scalarMinMax: t.scalarMinMax,
+					onSent: t.onSent,
+					onSuccess: t.onSuccess,
+					onFailed: t.onFailed
+				});
 			});
 		};
 
@@ -319,7 +334,16 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'sell';
 				expectedParams = t.expectedParams;
-				augur.sell(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+				augur.sell({
+					amount: t.amount,
+					price: t.price,
+					market: t.market,
+					outcome: t.outcome,
+					scalarMinMax: t.scalarMinMax,
+					onSent: t.onSent,
+					onSuccess: t.onSuccess,
+					onFailed: t.onFailed
+				});
 			});
 		};
 
@@ -511,7 +535,17 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'shortAsk';
 				expectedParams = t.expectedParams;
-				augur.shortAsk(t.amount, t.price, t.market, t.outcome, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
+				augur.shortAsk({
+					amount: t.amount,
+					price: t.price,
+					market: t.market,
+					outcome: t.outcome,
+					tradeGroupID: t.tradeGroupID,
+					scalarMinMax: t.scalarMinMax,
+					onSent: t.onSent,
+					onSuccess: t.onSuccess,
+					onFailed: t.onFailed
+				});
 			});
 		};
 
