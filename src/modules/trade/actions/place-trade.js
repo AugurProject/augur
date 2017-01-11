@@ -11,10 +11,12 @@ import { placeBuy, placeSell, placeShortSell } from '../../trade/actions/take-or
 
 export function placeTrade(marketID, outcomeID) {
 	return (dispatch, getState) => {
+		if (!marketID) return null;
 		const { loginAccount, marketsData, orderBooks, tradesInProgress } = getState();
 		const market = marketsData[marketID];
-		if (!tradesInProgress[marketID] || !market) {
-			return console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
+		if (!tradesInProgress[marketID] || !market || outcomeID == null) {
+			console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
+			return dispatch(clearTradeInProgress(marketID));
 		}
 		async.eachSeries(tradesInProgress[marketID], (tradeInProgress, nextTradeInProgress) => {
 			if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {
