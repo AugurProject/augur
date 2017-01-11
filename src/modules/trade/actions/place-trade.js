@@ -1,5 +1,7 @@
 import async from 'async';
 import BigNumber from 'bignumber.js';
+import uuid from 'uuid';
+import uuidParse from 'uuid-parse';
 import { BUY, SELL } from '../../trade/constants/types';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
@@ -23,6 +25,7 @@ export function placeTrade(marketID, outcomeID) {
 			const limitPrice = tradeInProgress.limitPrice;
 			const numShares = tradeInProgress.numShares;
 			const tradingFees = tradeInProgress.tradingFeesEth;
+			const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString("hex"));
 			if (tradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
 				if (tradeIDs && tradeIDs.length) {
@@ -36,7 +39,6 @@ export function placeTrade(marketID, outcomeID) {
 				// check if user has position
 				//  - if so, sell/ask
 				//  - if not, short sell/short ask
-
 				augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
 					if (!sharesPurchased || sharesPurchased.error) {
 						return nextTradeInProgress('getParticipantSharesPurchased:', sharesPurchased);
