@@ -23,7 +23,7 @@ export default class MarketTradeCloseDialog extends Component {
 		const s = this.state;
 
 		// Position -- No Available Actions
-		if (p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) {
+		if ((p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) || !p.isClosable) {
 			return <EmDash />;
 		}
 
@@ -53,7 +53,7 @@ export default class MarketTradeCloseDialog extends Component {
 						Yes
 					</button>
 				</span>
-			)
+			);
 		}
 
 		switch (status) {
@@ -65,9 +65,13 @@ export default class MarketTradeCloseDialog extends Component {
 							this.setState({ isConfirming: true });
 						}}
 					>
-						<i></i> { p.closeType === POSITION ? 'close' : 'cancel' }
+						<i></i> {
+							p.closeType === POSITION ?
+								<span>{p.isFullyClosable ? 'close' : 'minimize'}</span>
+								: 'cancel'
+							}
 					</button>
-				)
+				);
 		}
 	}
 }

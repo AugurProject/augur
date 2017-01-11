@@ -1,15 +1,16 @@
 import memoizerific from 'memoizerific';
 
-import { abi } from '../../../services/augurjs';
+import store from 'src/store';
 
-import { formatShares, formatEther } from '../../../utils/format-number';
+import { abi } from 'services/augurjs';
 
-import { CANCELLED } from '../../bids-asks/constants/order-status';
-import { ZERO } from '../../trade/constants/numbers';
+import { CANCELLED } from 'modules/bids-asks/constants/order-status';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
-import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 
-import store from '../../../store';
+import { formatShares, formatEther } from 'utils/format-number';
 
 /**
  * @param {String} outcomeID
@@ -18,8 +19,8 @@ import store from '../../../store';
 export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrderBook, orderCancellation) => {
 	if (marketOrderBook == null) {
 		return {
-			bids: [],
-			asks: []
+			[BIDS]: [],
+			[ASKS]: []
 		};
 	}
 

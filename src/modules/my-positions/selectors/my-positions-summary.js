@@ -80,7 +80,7 @@ const isPositionFullyClosable = memoizerific(20)((position, orders) => {
 	return !!orders.find((order) => {
 		sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
 
-		if (sharesFilled > position) {
+		if (sharesFilled >= position) {
 			return true;
 		}
 

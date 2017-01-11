@@ -21,6 +21,8 @@ const MarketPositionsRow = (p) => {
 	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
 	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
 	const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
+	const isClosable = getValue(p, 'outcome.position.isClosable');
+	const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
 	const closePosition = getValue(p, 'positionStatus.closePosition');
 
 	return (
@@ -41,6 +43,8 @@ const MarketPositionsRow = (p) => {
 				outcomeID={outcomeID}
 				quantityOfShares={quantityOfShares}
 				closePosition={closePosition}
+				isClosable={isClosable}
+				isFullyClosable={isFullyClosable}
 			/>
 		</article>
 	);
