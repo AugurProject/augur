@@ -100,12 +100,25 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 
 	it('should reveal reports', () => {
 		const out = [{
+			type: 'UPDATE_ASSETS'
+		}, {
 			type: 'UPDATE_REPORTS',
 			reports: {
-				[testState.branch.id]: {
+				'0xf69b5': {
 					test1: {
-						...reports[testState.branch.id].test1,
-						isRevealed: true
+						eventID: 'test1',
+						marketID: 'market1',
+						reportHash: '0xtesthash123456789testhash1',
+						salt: 'salt1',
+						period: 19,
+						isRevealed: true,
+						reportedOutcomeID: 'testOutcomeID1',
+						minValue: '1',
+						maxValue: '2',
+						isUnethical: false,
+						isIndeterminate: true,
+						isCategorical: false,
+						isScalar: false
 					}
 				}
 			}
