@@ -15,7 +15,7 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAcc
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const masterPrivateKey = ethereumWallet.keys.ethereumKey;
-		augur.web.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
+		augur.accounts.loginWithMasterKey(airbitzAccount.username, masterPrivateKey, (account) => {
 			console.log('loginWithMasterKey:', account);
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to login' }));

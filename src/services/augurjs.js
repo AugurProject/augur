@@ -37,17 +37,17 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 	// if available, use the client-side account
-	if (augur.web.account.address && augur.web.account.privateKey) {
-		console.log('using client-side account:', augur.web.account.address);
-		return cb(null, { ...augur.web.account });
+	if (augur.accounts.account.address && augur.accounts.account.privateKey) {
+		console.log('using client-side account:', augur.accounts.account.address);
+		return cb(null, { ...augur.accounts.account });
 	}
 	// if the user has a persistent login, use it
 	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
 		const account = JSON.parse(localStorageRef.getItem('account'));
 		if (account && account.privateKey) {
-			// local storage account exists, load it spawn the callback using augur.web.account
-			augur.web.loadLocalLoginAccount(account, loginAccount =>
-				cb(null, { ...augur.web.account })
+			// local storage account exists, load it spawn the callback using augur.accounts.account
+			augur.accounts.loadLocalLoginAccount(account, loginAccount =>
+				cb(null, { ...augur.accounts.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
 			return;
@@ -65,7 +65,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 
 		// use augur.from address if unlocked
 		if (unlocked && !unlocked.error) {
-			augur.web.logout();
+			augur.accounts.logout();
 			console.log('using unlocked account:', augur.from);
 			return cb(null, { address: augur.from });
 		}
@@ -80,7 +80,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 	const tools = augur.tools;
 	tools.DEBUG = true;
 	const accounts = augur.rpc.accounts();
-	const sender = augur.web.account.address || augur.from;
+	const sender = augur.accounts.account.address || augur.from;
 	const callback = cb || function callback(e, r) {
 		if (e) console.error(e);
 		if (r) console.log(r);
@@ -151,7 +151,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
 	if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
 	const tools = augur.tools;
 	const constants = augur.constants;
-	const sender = augur.web.account.address || augur.from;
+	const sender = augur.accounts.account.address || augur.from;
 	const periodLength = periodLen || 1200;
 	const callback = cb || function callback(e, r) {
 		if (e) console.error(e);
@@ -174,7 +174,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
 ex.augur = augur;
 ex.rpc = augur.rpc;
 ex.abi = augur.abi;
-ex.accounts = augur.web;
+ex.accounts = augur.accounts;
 ex.constants = augur.constants;
 ex.utils = augur.utils;
 

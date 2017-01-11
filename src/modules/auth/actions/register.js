@@ -52,7 +52,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 			return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
 		}
 
-		augur.web.register(name, password, (account) => {
+		augur.accounts.register(name, password, (account) => {
 			if (!account) {
 				return dispatch(authError({ code: 0, message: 'failed to register' }));
 			} else if (account.error) {

@@ -10,7 +10,7 @@ describe(`modules/auth/actions/register.js`, () => {
 	proxyquire.noPreserveCache();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = { augur: { web: {} } };
+	const fakeAugurJS = { augur: { accounts: {} } };
 	const fakeAuthLink = {};
 	const fakeSelectors = {};
 	const updtLoginAccStub = {};
@@ -23,7 +23,7 @@ describe(`modules/auth/actions/register.js`, () => {
 	});
 	const store = mockStore(thisTestState);
 	const fakeCallback = sinon.stub();
-	fakeAugurJS.augur.web.register = (name, psswrd, cb) => {
+	fakeAugurJS.augur.accounts.register = (name, psswrd, cb) => {
 		cb({
 			address: 'test',
 			secureLoginID: 'testid',
