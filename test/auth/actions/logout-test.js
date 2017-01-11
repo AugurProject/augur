@@ -13,10 +13,6 @@ describe(`modules/auth/actions/logout.js`, () => {
 	const fakeAugurJS = { augur: { accounts: {} } };
 	const store = mockStore(testState);
 	fakeAugurJS.augur.accounts.logout = () => {};
-	sinon.stub(fakeAugurJS.augur.Sessions, 'logout', (o) => {
-		o.onSent({ callReturn: 1 });
-		o.onSuccess({ callReturn: 1 });
-	});
 	const action = proxyquire('../../../src/modules/auth/actions/logout', {
 		'../../../services/augurjs': fakeAugurJS
 	});
