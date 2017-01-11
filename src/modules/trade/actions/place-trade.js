@@ -11,7 +11,7 @@ import { placeBuy, placeSell, placeShortSell } from '../../trade/actions/take-or
 
 export function placeTrade(marketID, outcomeID) {
 	return (dispatch, getState) => {
-		const { loginAccount, marketsData, orderBooks, outcomesData, tradesInProgress } = getState();
+		const { loginAccount, marketsData, orderBooks, tradesInProgress } = getState();
 		const market = marketsData[marketID];
 		if (!tradesInProgress[marketID] || !market) {
 			return console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
@@ -25,7 +25,7 @@ export function placeTrade(marketID, outcomeID) {
 			const limitPrice = tradeInProgress.limitPrice;
 			const numShares = tradeInProgress.numShares;
 			const tradingFees = tradeInProgress.tradingFeesEth;
-			const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString("hex"));
+			const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString('hex'));
 			if (tradeInProgress.side === BUY) {
 				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
 				if (tradeIDs && tradeIDs.length) {
