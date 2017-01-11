@@ -7,7 +7,7 @@ import { updateTradeCommitment } from '../../../trade/actions/update-trade-commi
 import selectOrder from '../../../bids-asks/selectors/select-order';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
-export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export const trade = (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, takerAddress, getTradeIDs, cb) => (dispatch) => {
 	// undefined/null arguments get zero'ed out to gracefully fail
 	const bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
 	const bnNumShares = abi.bignum(numShares) || ZERO;
@@ -24,12 +24,11 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
 	let bnCashBalance = bnTotalEth;
 	async.until(() => {
 		matchingTradeIDs = getTradeIDs();
-		// console.log('matchingTradeIDs:', matchingTradeIDs);
 		console.log('remainingEth:', res.remainingEth.toFixed());
 		console.log('remainingShares:', res.remainingShares.toFixed());
 		console.log('sharesPurchased:', bnSharesPurchased.toFixed());
 		console.log('balance:', bnCashBalance.toFixed());
-		return !matchingTradeIDs.length ||
+		return !matchingTradeIDs || !matchingTradeIDs.length ||
 			(res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
 			(bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
 			(bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
@@ -73,10 +72,7 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
 						res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 						dispatch(updateTradeCommitment({ gasFees: res.gasFees.toFixed() }));
 					},
-					onCommitFailed: (err) => {
-						console.log('commit failed:', err);
-						nextTrade(err);
-					},
+					onCommitFailed: err => nextTrade(err),
 					onNextBlock: data => console.log('trade-onNextBlock', data),
 					onTradeSent: data => console.log('trade sent:', data),
 					onTradeSuccess: (data) => {
@@ -109,16 +105,13 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
 							});
 						}));
 					},
-					onTradeFailed: (err) => {
-						console.log('trade failed:', err);
-						nextTrade(err);
-					}
+					onTradeFailed: err => nextTrade(err)
 				});
 			});
 		});
 	}, (err) => {
 		if (err) return cb(err);
-		console.log('full trade success:', JSON.stringify(res, null, 2));
+		console.log('trade complete:', JSON.stringify(res, null, 2));
 		cb(null, res);
 	});
-}
+};

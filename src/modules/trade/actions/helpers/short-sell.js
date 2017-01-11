@@ -4,7 +4,7 @@ import { ZERO } from '../../../trade/constants/numbers';
 import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
 import selectOrder from '../../../bids-asks/selectors/select-order';
 
-export function shortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export const shortSell = (marketID, outcomeID, numShares, tradingFees, tradeGroupID, takerAddress, getTradeIDs, cb) => (dispatch) => {
 	const res = {
 		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
@@ -14,7 +14,7 @@ export function shortSell(marketID, outcomeID, numShares, tradingFees, tradeGrou
 	};
 	const matchingIDs = getTradeIDs();
 	console.log('matching trade IDs:', matchingIDs);
-	if (!matchingIDs.length || res.remainingShares.lte(ZERO)) return cb(null, res);
+	if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(ZERO)) return cb(null, res);
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
 		const maxAmount = res.remainingShares.toFixed();
 		augur.short_sell({
@@ -34,7 +34,7 @@ export function shortSell(marketID, outcomeID, numShares, tradingFees, tradeGrou
 				tradingFees: res.tradingFees.gt(ZERO) ? res.tradingFees.toFixed() : tradingFees,
 				gasFees: res.gasFees.toFixed()
 			})),
-			onCommitSent: data => cbStatus({ status: 'committing' }),
+			onCommitSent: data => console.log({ status: 'committing' }),
 			onCommitSuccess: (data) => {
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				dispatch(updateTradeCommitment({ gasFees: res.gasFees.toFixed() }));
@@ -79,4 +79,4 @@ export function shortSell(marketID, outcomeID, numShares, tradingFees, tradeGrou
 		console.log('short_sell success:', JSON.stringify(res, null, 2));
 		cb(null, res);
 	});
-}
+};

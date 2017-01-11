@@ -13,7 +13,7 @@ export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tr
 		dispatch(updateTradeCommitLock(true));
 		const marketID = market.id;
 		const getTradeIDs = () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		trade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		dispatch(trade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
 			const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
@@ -21,7 +21,7 @@ export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tr
 				console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
 				placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
 			}
-		});
+		}));
 	};
 }
 
@@ -31,7 +31,7 @@ export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, t
 		dispatch(updateTradeCommitLock(true));
 		const marketID = market.id;
 		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		trade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		dispatch(trade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('trade failed:', err);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
@@ -65,7 +65,7 @@ export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, t
 					}
 				});
 			}
-		});
+		}));
 	};
 }
 
@@ -75,12 +75,12 @@ export function placeShortSell(market, outcomeID, numShares, limitPrice, totalCo
 		dispatch(updateTradeCommitLock(true));
 		const marketID = market.id;
 		const getTradeIDs = () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
-		shortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, dispatch, r => console.debug('cbStatus:', r), (err, res) => {
+		dispatch(shortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, (err, res) => {
 			dispatch(updateTradeCommitLock(false));
 			if (err) return console.error('shortSell failed:', err);
 			if (res.remainingShares.gt(constants.PRECISION.zero)) {
 				placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
 			}
-		});
+		}));
 	};
 }
