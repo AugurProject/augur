@@ -7,7 +7,7 @@ import { updateTradeCommitment } from '../../../trade/actions/update-trade-commi
 import selectOrder from '../../../bids-asks/selectors/select-order';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
-export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
 	// undefined/null arguments get zero'ed out to gracefully fail
 	const bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
 	const bnNumShares = abi.bignum(numShares) || ZERO;
@@ -54,6 +54,7 @@ export function trade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
 					max_value: maxValue.toFixed(),
 					max_amount: maxAmount.toFixed(),
 					trade_ids: tradeIDs,
+					tradeGroupID,
 					sender: takerAddress,
 					onTradeHash: tradeHash => dispatch(updateTradeCommitment({
 						tradeHash: abi.format_int256(tradeHash),

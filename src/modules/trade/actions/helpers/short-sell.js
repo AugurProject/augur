@@ -4,7 +4,7 @@ import { ZERO } from '../../../trade/constants/numbers';
 import { updateTradeCommitment } from '../../../trade/actions/update-trade-commitment';
 import selectOrder from '../../../bids-asks/selectors/select-order';
 
-export function shortSell(marketID, outcomeID, numShares, tradingFees, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
+export function shortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, takerAddress, getTradeIDs, dispatch, cbStatus, cb) {
 	const res = {
 		remainingShares: abi.bignum(numShares) || ZERO,
 		filledShares: ZERO,
@@ -21,6 +21,7 @@ export function shortSell(marketID, outcomeID, numShares, tradingFees, takerAddr
 			max_amount: maxAmount,
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
+			tradeGroupID,
 			onTradeHash: tradeHash => dispatch(updateTradeCommitment({
 				tradeHash: abi.format_int256(tradeHash),
 				orders: [selectOrder(matchingID)],
