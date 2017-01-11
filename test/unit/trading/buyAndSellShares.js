@@ -47,12 +47,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				//assertions aren't provied since we are testing in transact since there is no output of the cancel function.
 				currentMethod = 'cancel';
-				augur.cancel({
-					trade_id: t.trade_id,
-					onSent: t.onSent,
-					onSuccess: t.onSuccess,
-					onFailed: t.onFailed
-				});
+				augur.cancel(t.trade_id, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
 
@@ -132,17 +127,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'buy';
 				expectedParams = t.expectedParams;
-				augur.buy({
-					amount: t.amount,
-					price: t.price,
-					market: t.market,
-					outcome: t.outcome,
-					tradeGroupID: t.tradeGroupID,
-					scalarMinMax: t.scalarMinMax,
-					onSent: t.onSent,
-					onSuccess: t.onSuccess,
-					onFailed: t.onFailed
-				});
+				augur.buy(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
 
@@ -165,7 +150,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -177,7 +162,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -187,7 +172,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			amount: abi.bignum(10),
 			price: abi.bignum(0.5),
 			market: "testBinaryMarketID",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			outcome: "1",
 			scalarMinMax: null,
 			onSent: noop,
@@ -201,16 +186,16 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"]
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]
 		});
 		test({
 			description: "Should handle a binary market buy using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a binary market buy using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
@@ -222,7 +207,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testScalarMarketID",
 			outcome: "1",
 			scalarMinMax: { minValue: -10, maxValue: 140 },
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -234,7 +219,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testScalarMarketID",
 			outcome: "1",
 			scalarMinMax: { minValue: '-10', maxValue: '140' },
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -246,7 +231,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testScalarMarketID",
 			outcome: "1",
 			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -258,16 +243,16 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testScalarMarketID",
 			outcome: "1",
 			scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"]
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]
 		});
 		test({
 			description: "Should handle a scalar market buy using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a scalar market buy using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
@@ -278,7 +263,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testCategoricalMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -290,7 +275,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testCategoricalMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -302,7 +287,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testCategoricalMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -314,16 +299,16 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testCategoricalMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"]
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]
 		});
 		test({
 			description: "Should handle a categorical market buy using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a categorical market buy using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});
@@ -334,16 +319,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'sell';
 				expectedParams = t.expectedParams;
-				augur.sell({
-					amount: t.amount,
-					price: t.price,
-					market: t.market,
-					outcome: t.outcome,
-					scalarMinMax: t.scalarMinMax,
-					onSent: t.onSent,
-					onSuccess: t.onSuccess,
-					onFailed: t.onFailed
-				});
+				augur.sell(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
 
@@ -366,7 +342,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -378,7 +354,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -390,7 +366,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			onSent: noop,
 			onSuccess: noop,
 			onFailed: noop
@@ -402,23 +378,23 @@ describe("buyAndSellShares Unit Tests", function() {
 			market: "testBinaryMarketID",
 			outcome: "1",
 			scalarMinMax: null,
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"]
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]
 		});
 		test({
 			description: "Should handle a binary market sell using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a binary market sell using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
 
 		test({
 			description: "Should handle a scalar market sell using JS Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: 10,
 			price: 55,
 			market: "testScalarMarketID",
@@ -430,7 +406,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market sell using String inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: "10",
 			price: "55",
 			market: "testScalarMarketID",
@@ -442,7 +418,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market sell using Big Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: abi.bignum(10),
 			price: abi.bignum(55),
 			market: "testScalarMarketID",
@@ -454,7 +430,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market sell using String inputs but missing function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: "10",
 			price: "55",
 			market: "testScalarMarketID",
@@ -463,18 +439,18 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market sell using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a scalar market sell using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
 		test({
 			description: "Should handle a categorical market sell using JS Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: 10,
 			price: 0.5,
 			market: "testCategoricalMarketID",
@@ -486,7 +462,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market sell using String inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testCategoricalMarketID",
@@ -498,7 +474,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market sell using Big Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: abi.bignum(10),
 			price: abi.bignum(0.5),
 			market: "testCategoricalMarketID",
@@ -510,7 +486,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market sell using String inputs but missing function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testCategoricalMarketID",
@@ -519,12 +495,12 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market sell using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a categorical market sell using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});
@@ -535,17 +511,7 @@ describe("buyAndSellShares Unit Tests", function() {
 			it(t.description, function() {
 				currentMethod = 'shortAsk';
 				expectedParams = t.expectedParams;
-				augur.shortAsk({
-					amount: t.amount,
-					price: t.price,
-					market: t.market,
-					outcome: t.outcome,
-					tradeGroupID: t.tradeGroupID,
-					scalarMinMax: t.scalarMinMax,
-					onSent: t.onSent,
-					onSuccess: t.onSuccess,
-					onFailed: t.onFailed
-				});
+				augur.shortAsk(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
 			});
 		};
 
@@ -563,7 +529,7 @@ describe("buyAndSellShares Unit Tests", function() {
 
 		test({
 			description: "Should handle a binary market shortAsk using JS Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: 10,
 			price: 0.5,
 			market: "testBinaryMarketID",
@@ -575,7 +541,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a binary market shortAsk using String inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testBinaryMarketID",
@@ -587,7 +553,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a binary market shortAsk using Big Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: abi.bignum(10),
 			price: abi.bignum(0.5),
 			market: "testBinaryMarketID",
@@ -599,7 +565,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a binary market shortAsk using String inputs but missing function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testBinaryMarketID",
@@ -608,19 +574,18 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a binary market shortAsk using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a binary market shortAsk using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
 		});
 
-
 		test({
 			description: "Should handle a scalar market shortAsk using JS Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: 10,
 			price: 55,
 			market: "testScalarMarketID",
@@ -632,7 +597,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market shortAsk using String inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "55",
 			market: "testScalarMarketID",
@@ -644,7 +609,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market shortAsk using Big Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: abi.bignum(10),
 			price: abi.bignum(55),
 			market: "testScalarMarketID",
@@ -656,7 +621,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market shortAsk using String inputs but missing function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "55",
 			market: "testScalarMarketID",
@@ -665,18 +630,18 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a scalar market shortAsk using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a scalar market shortAsk using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
 		});
 
 		test({
 			description: "Should handle a categorical market shortAsk using JS Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: 10,
 			price: 0.5,
 			market: "testCategoricalMarketID",
@@ -688,7 +653,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market shortAsk using String inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testCategoricalMarketID",
@@ -700,7 +665,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market shortAsk using Big Number inputs",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: abi.bignum(10),
 			price: abi.bignum(0.5),
 			market: "testCategoricalMarketID",
@@ -712,7 +677,7 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market shortAsk using String inputs but missing function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: "10",
 			price: "0.5",
 			market: "testCategoricalMarketID",
@@ -721,12 +686,12 @@ describe("buyAndSellShares Unit Tests", function() {
 		});
 		test({
 			description: "Should handle a categorical market shortAsk using String inputs in a single object argument",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
 		});
 		test({
 			description: "Should handle a categorical market shortAsk using String inputs in a single object argument missing the function hooks",
-			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000"],
+			expectedParams: ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0],
 			amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
 		});
 	});

@@ -996,7 +996,7 @@ describe("logs.processLogs", function() {
 		index: undefined,
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
@@ -1012,6 +1012,7 @@ describe("logs.processLogs", function() {
 				amount: '10',
 				outcome: 1,
 				tradeid: '0x0abc1',
+				tradeGroupID: 0,
 				isShortAsk: true,
 				timestamp: 5637144576,
 				blockNumber: 65793,
@@ -1027,14 +1028,14 @@ describe("logs.processLogs", function() {
 		index: undefined,
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
 		},
 		{
 			topics: [null, '0x0d1', '0x0a1'],
-			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000],
+			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
@@ -1051,6 +1052,7 @@ describe("logs.processLogs", function() {
 				amount: '10',
 				outcome: 1,
 				tradeid: '0x0abc1',
+				tradeGroupID: 0,
 				isShortAsk: true,
 				timestamp: 5637144576,
 				blockNumber: 65793,
@@ -1065,6 +1067,7 @@ describe("logs.processLogs", function() {
 				amount: '15',
 				outcome: 1,
 				tradeid: '0x0abc2',
+				tradeGroupID: 0,
 				isShortAsk: true,
 				timestamp: 5637144576,
 				blockNumber: 65793,
@@ -1080,14 +1083,14 @@ describe("logs.processLogs", function() {
 		index: 'market',
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['1', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
 		},
 		{
 			topics: [null, '0x0d1', '0x0a1'],
-			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000],
+			data: ['2', '125000000000000000000', '15000000000000000000', '1', '0x0abc2', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: true
@@ -1104,6 +1107,7 @@ describe("logs.processLogs", function() {
 					amount: '10',
 					outcome: 1,
 					tradeid: '0x0abc1',
+					tradeGroupID: 0,
 					isShortAsk: true,
 					timestamp: 5637144576,
 					blockNumber: 65793,
@@ -1120,7 +1124,7 @@ describe("logs.processLogs", function() {
 		index: ['market'],
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
@@ -1137,6 +1141,7 @@ describe("logs.processLogs", function() {
 					amount: '10',
 					outcome: 1,
 					tradeid: '0x0abc1',
+					tradeGroupID: 0,
 					isShortAsk: true,
 					timestamp: 5637144576,
 					blockNumber: 65793,
@@ -1153,7 +1158,7 @@ describe("logs.processLogs", function() {
 		index: ['market'],
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
@@ -1171,6 +1176,7 @@ describe("logs.processLogs", function() {
 					amount: '10',
 					outcome: 1,
 					tradeid: '0x0abc1',
+					tradeGroupID: 0,
 					isShortAsk: true,
 					timestamp: 5637144576,
 					blockNumber: 65793,
@@ -1187,14 +1193,14 @@ describe("logs.processLogs", function() {
 		index: ['type', 'market'],
 		logs: [{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['2', '100000000000000000000', '10000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c1',
 			removed: false
 		},
 		{
 			topics: [null, '0x0b1', '0x0a1'],
-			data: ['1', '10000000000000000000', '1000000000000000000', '1', '0x0abc1', false, 150000000],
+			data: ['1', '10000000000000000000', '1000000000000000000', '1', '0x0abc1', false, 150000000, 0],
 			blockNumber: '010101',
 			transactionHash: '0x0c2',
 			removed: false
@@ -1212,6 +1218,7 @@ describe("logs.processLogs", function() {
 						amount: '1',
 						outcome: 1,
 						tradeid: '0x0abc1',
+						tradeGroupID: 0,
 						isShortAsk: true,
 						timestamp: 5637144576,
 						blockNumber: 65793,
@@ -1228,6 +1235,7 @@ describe("logs.processLogs", function() {
 						amount: '10',
 						outcome: 1,
 						tradeid: '0x0abc1',
+						tradeGroupID: 0,
 						isShortAsk: true,
 						timestamp: 5637144576,
 						blockNumber: 65793,
