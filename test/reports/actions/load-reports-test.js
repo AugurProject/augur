@@ -16,7 +16,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 			const AugurJS = {
 				augur: {
 					getEventsToReportOn: () => {},
-					getMarket: () => {}
+					getMarkets: () => {}
 				}
 			};
 			const LoadMarketsInfo = {
@@ -37,8 +37,8 @@ describe('modules/reports/actions/load-reports.js', () => {
 			sinon.stub(AugurJS.augur, 'getEventsToReportOn', (branchID, period, account, index, cb) => {
 				cb(t.blockchain.eventsToReportOn[branchID]);
 			});
-			sinon.stub(AugurJS.augur, 'getMarket', (eventID, index, cb) => {
-				cb(t.blockchain.eventToMarket[eventID]);
+			sinon.stub(AugurJS.augur, 'getMarkets', (eventID, cb) => {
+				cb(t.blockchain.eventToMarkets[eventID]);
 			});
 			sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
 				dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
@@ -54,6 +54,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 			});
 			store.dispatch(action.loadReports((e) => {
 				assert.isNull(e);
+				console.log(JSON.stringify(store.getActions(), null, 4));
 				t.assertions(store.getActions());
 				store.clearActions();
 				done();
@@ -63,7 +64,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 	test({
 		description: 'no events to report on',
 		blockchain: {
-			eventToMarket: {},
+			eventToMarkets: {},
 			eventsToReportOn: {
 				'0xb1': []
 			}
@@ -89,14 +90,16 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions) => {
 			assert.isArray(actions);
-			assert.lengthOf(actions, 0);
+			assert.deepEqual(actions, [{
+				type: 'LOAD_REPORT_DESCRIPTORS'
+			}]);
 		}
 	});
 	test({
 		description: 'one event to report on',
 		blockchain: {
-			eventToMarket: {
-				'0xe1': '0xf1'
+			eventToMarkets: {
+				'0xe1': ['0xf1']
 			},
 			eventsToReportOn: {
 				'0xb1': [
@@ -125,6 +128,10 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe1',
+				marketIDs: ['0xf1']
+			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
 			}, {
@@ -137,9 +144,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 	test({
 		description: 'two events to report on',
 		blockchain: {
-			eventToMarket: {
-				'0xe1': '0xf1',
-				'0xe2': '0xf2'
+			eventToMarkets: {
+				'0xe1': ['0xf1'],
+				'0xe2': ['0xf2']
 			},
 			eventsToReportOn: {
 				'0xb1': [
@@ -169,10 +176,18 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe1',
+				marketIDs: ['0xf1']
+			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
 			}, {
 				type: 'LOAD_REPORT'
+			}, {
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe2',
+				marketIDs: ['0xf2']
 			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf2']
@@ -186,9 +201,9 @@ describe('modules/reports/actions/load-reports.js', () => {
 	test({
 		description: 'two events to report on, one already revealed',
 		blockchain: {
-			eventToMarket: {
-				'0xe1': '0xf1',
-				'0xe2': '0xf2'
+			eventToMarkets: {
+				'0xe1': ['0xf1'],
+				'0xe2': ['0xf2']
 			},
 			eventsToReportOn: {
 				'0xb1': [
@@ -224,10 +239,18 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe1',
+				marketIDs: ['0xf1']
+			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
 			}, {
 				type: 'LOAD_REPORT'
+			}, {
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe2',
+				marketIDs: ['0xf2']
 			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf2']
@@ -241,10 +264,10 @@ describe('modules/reports/actions/load-reports.js', () => {
 	test({
 		description: 'two events to report on current branch, one event elsewhere',
 		blockchain: {
-			eventToMarket: {
-				'0xe1': '0xf1',
-				'0xe2': '0xf2',
-				'0xe3': '0xf3'
+			eventToMarkets: {
+				'0xe1': ['0xf1'],
+				'0xe2': ['0xf2'],
+				'0xe3': ['0xf3']
 			},
 			eventsToReportOn: {
 				'0xb1': [
@@ -277,10 +300,18 @@ describe('modules/reports/actions/load-reports.js', () => {
 		},
 		assertions: (actions) => {
 			assert.deepEqual(actions, [{
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe1',
+				marketIDs: ['0xf1']
+			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf1']
 			}, {
 				type: 'LOAD_REPORT'
+			}, {
+				type: 'UPDATE_EVENT_MARKETS_MAP',
+				eventID: '0xe2',
+				marketIDs: ['0xf2']
 			}, {
 				type: 'LOAD_MARKETS_INFO',
 				marketIDs: ['0xf2']

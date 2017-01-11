@@ -17,7 +17,6 @@ export function loadReports(cb) {
 		const account = loginAccount.address;
 		const branchID = branch.id;
 		const branchReports = reports[branchID];
-		console.log('branchReports:', branchReports);
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
 			console.log('eventsToReportOn:', eventsToReportOn);
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
