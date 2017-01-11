@@ -16626,10 +16626,15 @@ module.exports={
           "indexed": false, 
           "name": "timestamp", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "tradeGroupID", 
+          "type": "int256"
         }
       ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xf6ebadeafdbe1f52fd45da6789b3f8fd7a39efd3b536a8c5ad1bfcf3914a1443"
+      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x3922406b6c1bc74fdedc2f7b5f84f64655e6a78d29229166b493c9b738a5e40e"
     }, 
     "log_cancel": {
       "contract": "BuyAndSellShares", 
@@ -16750,10 +16755,15 @@ module.exports={
           "indexed": false, 
           "name": "tradeHash", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "tradeGroupID", 
+          "type": "int256"
         }
       ], 
-      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x458df6858b43ba351946c2ebb255e91a6ae5d642f0869c39d9ea146c551db43f"
+      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xe054ca76966cd4f17c6c6a8e55f1c6352cb2b58b760f658e013353f1613d32c7"
     }, 
     "log_short_fill_tx": {
       "contract": "Trade", 
@@ -16822,10 +16832,15 @@ module.exports={
           "indexed": false, 
           "name": "tradeHash", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "tradeGroupID", 
+          "type": "int256"
         }
       ], 
-      "name": "log_short_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x6ddcee277b0bc8892c2a869d356c2ebb1f91c3400a95aa1a049d7f0f003249ad"
+      "name": "log_short_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x3572c2b345009b4c449540a9d7fe10a7464ae662d6bb1bae9fea96ce21a8ebb1"
     }, 
     "makeReports_logReturn": {
       "contract": "MakeReports", 
@@ -17943,7 +17958,8 @@ module.exports={
           "price", 
           "market", 
           "outcome", 
-          "minimumTradeSize"
+          "minimumTradeSize", 
+          "tradeGroupID"
         ], 
         "label": "Bid", 
         "method": "buy", 
@@ -17951,6 +17967,7 @@ module.exports={
         "returns": "int256", 
         "send": true, 
         "signature": [
+          "int256", 
           "int256", 
           "int256", 
           "int256", 
@@ -17987,7 +18004,8 @@ module.exports={
           "market", 
           "outcome", 
           "minimumTradeSize", 
-          "isShortAsk"
+          "isShortAsk", 
+          "tradeGroupID"
         ], 
         "label": "Ask", 
         "method": "sell", 
@@ -17995,6 +18013,7 @@ module.exports={
         "returns": "int256", 
         "send": true, 
         "signature": [
+          "int256", 
           "int256", 
           "int256", 
           "int256", 
@@ -18015,13 +18034,15 @@ module.exports={
           "price", 
           "market", 
           "outcome", 
-          "minimumTradeSize"
+          "minimumTradeSize", 
+          "tradeGroupID"
         ], 
         "label": "Short Ask", 
         "method": "shortAsk", 
         "mutable": true, 
         "returns": "int256", 
         "signature": [
+          "int256", 
           "int256", 
           "int256", 
           "int256", 
@@ -22146,7 +22167,8 @@ module.exports={
         "gas": 1059796, 
         "inputs": [
           "buyer_trade_id", 
-          "max_amount"
+          "max_amount", 
+          "tradeGroupID"
         ], 
         "label": "Short sell", 
         "method": "short_sell", 
@@ -22154,6 +22176,7 @@ module.exports={
         "returns": "hash[]", 
         "send": true, 
         "signature": [
+          "int256", 
           "int256", 
           "int256"
         ]
@@ -22167,7 +22190,8 @@ module.exports={
         "inputs": [
           "max_value", 
           "max_amount", 
-          "trade_ids"
+          "trade_ids", 
+          "tradeGroupID"
         ], 
         "label": "Trade", 
         "method": "trade", 
@@ -22177,7 +22201,8 @@ module.exports={
         "signature": [
           "int256", 
           "int256", 
-          "int256[]"
+          "int256[]", 
+          "int256"
         ]
       }
     }, 
@@ -40698,7 +40723,7 @@ module.exports  = function () {
         bootstrap: function (cache_nodes, cb) {
             var self = this;
             cb = cb || noop;
-            if (cache_nodes.constructor === Array) {
+            if (cache_nodes && cache_nodes.constructor === Array) {
                 self.nodes = cache_nodes;
             }
             return cb();
@@ -40787,7 +40812,7 @@ var Batch = function (tx, rpc) {
 };
 
 Batch.prototype.add = function (contract, method, params, callback) {
-    if (method) {
+    if (method && contract) {
         var tx = clone(this.tx[contract][method]);
         tx.params = params;
         if (callback) tx.callback = callback;
@@ -41141,6 +41166,10 @@ module.exports = function () {
         },
         parse_event_message: function (label, msg, onMessage) {
             var i;
+						if (augur.options.debug.filters) {
+	            console.log("parse_event_message label:", label);
+	            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
+						}
             if (msg) {
                 switch (msg.constructor) {
                     case Array:
@@ -41802,7 +41831,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.7";
+    this.version = "3.6.8";
 
     this.options = {
         debug: {
@@ -41811,7 +41840,8 @@ function Augur() {
             broadcast: false,   // broadcast debug logging in ethrpc
             connect: false,     // connection debug logging in ethereumjs-connect
             trading: false,     // trading-related debug logging
-            reporting: false    // reporting-related debug logging
+            reporting: false,    // reporting-related debug logging
+						filters: false			// filters-related debug logging
         },
         loadZeroVolumeMarkets: true
     };
@@ -42335,10 +42365,7 @@ module.exports = {
                 cb(result);
             });
         };
-        this.transact(tx,
-            onSent,
-            utils.compose(prepare, onSuccess),
-            onFailed);
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
     },
 
     buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
@@ -42375,7 +42402,7 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("sell:", JSON.stringify(amount, null, 2));
         }
@@ -42383,6 +42410,7 @@ module.exports = {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            tradeGroupID = amount.tradeGroupID;
             scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
@@ -42402,7 +42430,8 @@ module.exports = {
             market,
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            "0x0"
+            "0x0",
+            tradeGroupID
         ];
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
@@ -42410,7 +42439,7 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    shortAsk: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    shortAsk: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("shortAsk:", JSON.stringify(amount, null, 2));
         }
@@ -42418,6 +42447,7 @@ module.exports = {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            tradeGroupID = amount.tradeGroupID;
             scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
@@ -42436,7 +42466,8 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+            tradeGroupID
         ];
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
@@ -43405,6 +43436,7 @@ module.exports = {
     },
 
     parseMarkets: function (markets) {
+				if (!markets) return markets;
         var numMarkets = markets.length;
         var parsedMarkets = new Array(numMarkets);
         for (var i = 0; i < numMarkets; ++i) {
@@ -43415,7 +43447,7 @@ module.exports = {
 
     parseEventInfo: function (info) {
         // 0: self.Events[event].branch
-        // 1: self.Events[event].expirationDate 
+        // 1: self.Events[event].expirationDate
         // 2: self.Events[event].outcome
         // 3: self.Events[event].minValue
         // 4: self.Events[event].maxValue
@@ -43552,8 +43584,8 @@ module.exports = {
             };
             if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
             this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
                 if (logs && logs.error) return callback(logs, null);
+								if (!logs || !logs.length) return callback(null, []);
                 callback(null, logs);
             });
         }
@@ -43582,8 +43614,8 @@ module.exports = {
             };
             if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
             this.rpc.getLogs(filter, function (logs) {
+								if (logs && logs.error) return callback(logs, null);
                 if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
                 callback(null, logs);
             });
         }
@@ -43669,8 +43701,8 @@ module.exports = {
         var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
         if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
         this.rpc.getLogs(filter, function (logs) {
+						if (logs && logs.error) return callback(logs, null);
             if (!logs || !logs.length) return callback(null, []);
-            if (logs && logs.error) return callback(logs, null);
             callback(null, logs);
         });
     },
@@ -43801,9 +43833,9 @@ module.exports = {
             callback = options;
             options = null;
         }
-        this.getMakerShortSellLogs(account, options, function (err, makerLogs) {
+        this.getMakerShortSellLogs(account, clone(options), function (err, makerLogs) {
             if (err) return callback(err);
-            self.getTakerShortSellLogs(account, options, function (err, takerLogs) {
+            self.getTakerShortSellLogs(account, clone(options), function (err, takerLogs) {
                 if (err) return callback(err);
                 callback(null, makerLogs.concat(takerLogs));
             });
@@ -43829,11 +43861,12 @@ module.exports = {
             callback = options;
             options = null;
         }
+				options = options || {};
         this.getCompleteSetsLogs(account, options, function (err, logs) {
             if (err) return callback(err);
             callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
         });
-    },    
+    },
 
     getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
         if (!callback && utils.is_function(options)) {
@@ -44167,7 +44200,8 @@ module.exports = {
             if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
                 return winningOutcomes;
             }
-            return winningOutcomes.slice(0, this.getMarketNumOutcomes(market));
+						var numOutcomes = this.getMarketNumOutcomes(market);
+            return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
         }
         this.fire(tx, function (winningOutcomes) {
             if (!winningOutcomes) return callback(null);
@@ -45482,7 +45516,7 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("trade:", JSON.stringify(max_value, null, 2));
@@ -45490,6 +45524,7 @@ module.exports = {
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
+            tradeGroupID = max_value.tradeGroupID;
             sender = max_value.sender;
             onTradeHash = max_value.onTradeHash;
             onCommitSent = max_value.onCommitSent;
@@ -45529,7 +45564,7 @@ module.exports = {
                         if (self.options.debug.trading) console.log('fastforward:', blockNumber);
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
-                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -45608,13 +45643,14 @@ module.exports = {
         });
     },
 
-    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    short_sell: function (buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
         }
-        if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
+        if (buyer_trade_id.constructor === Object) {
             max_amount = buyer_trade_id.max_amount;
+            tradeGroupID = buyer_trade_id.tradeGroupID;
             sender = buyer_trade_id.sender;
             onTradeHash = buyer_trade_id.onTradeHash;
             onCommitSent = buyer_trade_id.onCommitSent;
@@ -45646,7 +45682,7 @@ module.exports = {
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
-                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }

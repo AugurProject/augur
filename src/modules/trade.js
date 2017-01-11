@@ -76,7 +76,7 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("trade:", JSON.stringify(max_value, null, 2));
@@ -84,6 +84,7 @@ module.exports = {
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
+            tradeGroupID = max_value.tradeGroupID;
             sender = max_value.sender;
             onTradeHash = max_value.onTradeHash;
             onCommitSent = max_value.onCommitSent;
@@ -123,7 +124,7 @@ module.exports = {
                         if (self.options.debug.trading) console.log('fastforward:', blockNumber);
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
-                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
                         if (self.options.debug.trading) {
                             console.log("trade tx:", JSON.stringify(tx, null, 2));
                         }
@@ -202,13 +203,14 @@ module.exports = {
         });
     },
 
-    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    short_sell: function (buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
         var self = this;
         if (this.options.debug.trading) {
             console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
         }
-        if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
+        if (buyer_trade_id.constructor === Object) {
             max_amount = buyer_trade_id.max_amount;
+            tradeGroupID = buyer_trade_id.tradeGroupID;
             sender = buyer_trade_id.sender;
             onTradeHash = buyer_trade_id.onTradeHash;
             onCommitSent = buyer_trade_id.onCommitSent;
@@ -240,7 +242,7 @@ module.exports = {
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
-                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
                         if (self.options.debug.trading) {
                             console.log("short_sell tx:", JSON.stringify(tx, null, 2));
                         }
