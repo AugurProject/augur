@@ -53,6 +53,45 @@ const LoginMessagePage = p => (
 				</li>
 			</ol>
 			<h2>Technical updates:</h2>
+			<h3>January 10, 2017</h3>
+			<ol>
+				<li>
+					Added an optional &quot;trade-group ID&quot; parameter to all on-contract trading functions: buy, sell, short_sell, shortAsk, and trade, as well as the log_add_tx, log_fill_tx, and log_short_fill_tx events.  Also added support for trade group ID in augur.js and the front-end.  Trade group ID is a UUID assigned to each trade by the front-end, and is used to track (after-the-fact) which trades were placed as part of the same trade group or &quot;meta-trade&quot; in the UI.
+				</li>
+				<li>
+					Updated reveal-reports, load-reports, commit-report, logout, place-trade, short-sell, and trade tests.  All previously existing tests have now been updated for the transaction changes!
+				</li>
+				<li>
+					Refactored place-trade: the &quot;taker actions&quot; (placeBuy, placeSell, and placeShortSell) are now in a separate file, take-order.
+				</li>
+				<li>
+					Added Buffer support to the serialize utility in augur.js.
+				</li>
+				<li>
+					The unit test suite for augur.js has been significantly expanded.
+				</li>
+				<li>
+					Added loginWithMasterKey to augur.js accounts unit tests.
+				</li>
+				<li>
+					Renamed the &quot;web&quot; submodule of augur.js to &quot;accounts&quot;.  The old reference will continue to work for the time being.
+				</li>
+			</ol>
+			<h3>January 9, 2017</h3>
+			<ol>
+				<li>
+					Added unit tests for the new winning-positions selector.
+				</li>
+				<li>
+					Updated price-time-series and claim-proceeds unit tests.
+				</li>
+				<li>
+					Changed scrollbars to auto-display when needed.
+				</li>
+				<li>
+					Adjusted tooltip padding.
+				</li>
+			</ol>
 			<h3>January 8, 2017</h3>
 			<ol>
 				<li>
