@@ -10,14 +10,9 @@ describe(`modules/auth/actions/logout.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = {
-		augur: {
-			web: {},
-			Sessions: { logout: () => {} }
-		}
-	};
+	const fakeAugurJS = { augur: { accounts: {} } };
 	const store = mockStore(testState);
-	fakeAugurJS.augur.web.logout = () => {};
+	fakeAugurJS.augur.accounts.logout = () => {};
 	sinon.stub(fakeAugurJS.augur.Sessions, 'logout', (o) => {
 		o.onSent({ callReturn: 1 });
 		o.onSuccess({ callReturn: 1 });
@@ -30,7 +25,6 @@ describe(`modules/auth/actions/logout.js`, () => {
 		const expectedOutput = [{
 			type: 'CLEAR_LOGIN_ACCOUNT'
 		}];
-
 		store.dispatch(action.logout());
 		assert.deepEqual(store.getActions(), expectedOutput, `It didn't logout as expected`);
 	});
