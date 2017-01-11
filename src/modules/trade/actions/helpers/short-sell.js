@@ -34,17 +34,14 @@ export const shortSell = (marketID, outcomeID, numShares, tradingFees, tradeGrou
 				tradingFees: res.tradingFees.gt(ZERO) ? res.tradingFees.toFixed() : tradingFees,
 				gasFees: res.gasFees.toFixed()
 			})),
-			onCommitSent: data => console.log({ status: 'committing' }),
+			onCommitSent: data => console.log('short sell commit sent:', data),
 			onCommitSuccess: (data) => {
 				res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
 				dispatch(updateTradeCommitment({ gasFees: res.gasFees.toFixed() }));
 			},
-			onCommitFailed: (err) => {
-				console.log('commit failed:', err);
-				nextMatchingID(err);
-			},
-			onNextBlock: data => console.log('short_sell-onNextBlock', data),
-			onTradeSent: data => console.debug('trade sent', data),
+			onCommitFailed: err => nextMatchingID(err),
+			onNextBlock: data => console.log('short_sell onNextBlock', data),
+			onTradeSent: data => console.debug('short sell sent', data),
 			onTradeSuccess: (data) => {
 				if (data.unmatchedShares) {
 					res.remainingShares = abi.bignum(data.unmatchedShares);
@@ -69,10 +66,7 @@ export const shortSell = (marketID, outcomeID, numShares, tradingFees, tradeGrou
 				if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
 				nextMatchingID({ isComplete: true });
 			},
-			onTradeFailed: (err) => {
-				console.log('trade failed:', err);
-				nextMatchingID(err);
-			}
+			onTradeFailed: err => nextMatchingID(err)
 		});
 	}, (err) => {
 		if (err && !err.isComplete) return cb(err);

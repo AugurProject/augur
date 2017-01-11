@@ -150,7 +150,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 	sinon.stub(mockAugur.abi, 'bignum', n => augur.abi.bignum(n));
 	sinon.stub(mockAugur.abi, 'format_int256', n => augur.abi.format_int256(n));
 	sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
-		console.log('callcount:', mockAugur.augur.getParticipantSharesPurchased.callCount);
 		switch (mockAugur.augur.getParticipantSharesPurchased.callCount) {
 			case 2:
 				cb('5');
