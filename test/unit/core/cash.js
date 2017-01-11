@@ -7,30 +7,18 @@ var utils = require("../../../src/utilities");
 
 describe("cash", function() {
 	// 9 total tests
-	function noop() {};
-	var transact = augur.transact;
-
 	describe("sendEther", function() {
 		// 6 total tests
 		var test = function(t) {
 			it(t.description, function() {
+				var transact = augur.transact;
+				augur.transact = t.transact;
+
 				t.assertions(augur.sendEther(t.to, t.value, t.from, t.onSent, t.onSuccess, t.onFailed));
+
+				augur.transact = transact;
 			});
 		};
-
-		before(function() {
-			augur.transact = function (tx, onSent, onSuccess, onFailed, onConfirmed) {
-				assert.deepEqual(onSent, utils.noop);
-				assert.deepEqual(onSuccess, utils.noop);
-				assert.deepEqual(onFailed, utils.noop)
-				// currently never gets passed onConfirmed...
-				return tx;
-			};
-		});
-
-		after(function() {
-			augur.transact = transact;
-		});
 
 		test({
 			to: 'toAddress',
@@ -40,6 +28,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "handles a string input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -56,6 +48,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "handles a JS Number input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -72,6 +68,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "handles a Big Number input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -90,6 +90,10 @@ describe("cash", function() {
 				onFailed: utils.noop,
 			},
 			description: "handles a string input for value, args passed as single arg object",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -108,6 +112,10 @@ describe("cash", function() {
 				onFailed: utils.noop,
 			},
 			description: "handles a JS Number input for value, args passed as single arg object",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -126,6 +134,10 @@ describe("cash", function() {
 				onFailed: utils.noop,
 			},
 			description: "handles a Big Number input for value, args passed as single arg object",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.from, 'fromAddress');
 				assert.deepEqual(out.to, 'toAddress');
@@ -140,23 +152,14 @@ describe("cash", function() {
 		// 3 total tests
 		var test = function(t) {
 			it(t.description, function() {
+				var transact = augur.transact;
+				augur.transact = t.transact;
+
 				t.assertions(augur.depositEther(t.to, t.value, t.from, t.onSent, t.onSuccess, t.onFailed));
+
+				augur.transact = transact;
 			});
 		};
-
-		before(function() {
-			augur.transact = function (tx, onSent, onSuccess, onFailed, onConfirmed) {
-				assert.deepEqual(onSent, utils.noop);
-				assert.deepEqual(onSuccess, utils.noop);
-				assert.deepEqual(onFailed, utils.noop)
-				// currently never gets passed onConfirmed...
-				return tx;
-			};
-		});
-
-		after(function() {
-			augur.transact = transact;
-		});
 
 		test({
 			value: 100.19530,
@@ -164,6 +167,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "depositeEther with a JS Number input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');
@@ -178,6 +185,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "depositeEther with a String input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');
@@ -192,6 +203,10 @@ describe("cash", function() {
 			onSuccess: utils.noop,
 			onFailed: utils.noop,
 			description: "depositeEther with a Big Number input for value",
+			transact: function(tx, onSent, onSuccess, onFailed) {
+				// just return the tx to be passed to assertions.
+				return tx;
+			},
 			assertions: function(out) {
 				assert.deepEqual(out.method, 'depositEther');
 				assert.deepEqual(out.returns, 'number');

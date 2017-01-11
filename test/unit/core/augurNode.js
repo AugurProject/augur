@@ -1,21 +1,19 @@
 var assert = require("chai").assert;
 var augurNode = require('../../../src/augurNode.js')();
+var utils = require("../../../src/utilities");
+
 // 12 tests total
 describe("augurNode", function() {
 	var test = function(t) {
 		it(t.description, function() {
+			var fetchHelper = augurNode.fetchHelper;
+			augurNode.fetchHelper = t.fetchHelper;
 			// clear the cache_nodes or set them to t.startState
 			augurNode.nodes = t.startState || [];
 			t.assertions(augurNode[t.method](t.arg1, t.arg2, t.arg3));
+			augurNode.fetchHelper = fetchHelper;
 		});
 	};
-
-	before(function() {
-		augurNode.fetchHelper = function(url, cb) {
-			// this is a dummy function that just calls the callback with the provided URL, this is done to avoid the regular fetchHelper which passes back an error or the body of the request, we are simplifing this because we only care about the augurNode.js file and that it works as expected.
-			return cb(url);
-		}
-	});
 
 	test({
 		description: "bootsrap sets the nodes array correctly",
@@ -68,6 +66,10 @@ describe("augurNode", function() {
 		},
 		method: 'buildRequest',
 		startState: ['https://OnlyOne.node'],
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			cb(url);
+		},
 		arg1: 'getSomeData',
 		arg2: { marketID: 'myMarketID1'}
 	});
@@ -82,6 +84,10 @@ describe("augurNode", function() {
 		},
 		method: 'buildRequest',
 		startState: ['hello', 'world'],
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			cb(url);
+		},
 		arg1: 'getSomeData',
 		arg2: { test: [0, 1, 2, 3], augur: 'numberOne', branch: '010101'}
 	});
@@ -92,6 +98,10 @@ describe("augurNode", function() {
 			assert.deepEqual(out, null);
 		},
 		method: 'buildRequest',
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			cb(url);
+		},
 		arg1: 'getSomeData',
 		arg2: { test: [0, 1, 2, 3], augur: 'numberOne'}
 	});
@@ -104,11 +114,12 @@ describe("augurNode", function() {
 		},
 		method: 'getMarketInfo',
 		startState: ['hello', 'world'],
-		arg1: 'myMarketID123',
-		arg2: function(url) {
-			// cb: it's going to get called with URL because that's how my dummy function works, simply pass url to get tested in assertions.
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
 			return url;
-		}
+		},
+		arg1: 'myMarketID123',
+		arg2: utils.noop
 	});
 
 	test({
@@ -119,11 +130,12 @@ describe("augurNode", function() {
 		},
 		method: 'getMarketsInfo',
 		startState: ['hello', 'world'],
-		arg1: '010101',
-		arg2: function(url) {
-			// cb: it's going to get called with URL because that's how my dummy function works, simply pass url to get tested in assertions.
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
 			return url;
-		}
+		},
+		arg1: '010101',
+		arg2: utils.noop
 	});
 
 	test({
@@ -133,12 +145,13 @@ describe("augurNode", function() {
 			assert.include(out, '/batchGetMarketInfo?ids=myMarketID1,myMarketID2,myMarketID3');
 		},
 		method: 'batchGetMarketInfo',
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			return url;
+		},
 		startState: ['hello', 'world'],
 		arg1: ['myMarketID1', 'myMarketID2', 'myMarketID3'],
-		arg2: function(url) {
-			// cb: it's going to get called with URL because that's how my dummy function works, simply pass url to get tested in assertions.
-			return url;
-		}
+		arg2: utils.noop
 	});
 
 	test({
@@ -148,12 +161,13 @@ describe("augurNode", function() {
 			assert.include(out, '/getMarketPriceHistory?someOption=test&branch=010101&id=someMarketID');
 		},
 		method: 'getMarketPriceHistory',
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			return url;
+		},
 		startState: ['hello', 'world'],
 		arg1: { someOption: 'test', branch: '010101', id: 'someMarketID' },
-		arg2: function(url) {
-			// cb: it's going to get called with URL because that's how my dummy function works, simply pass url to get tested in assertions.
-			return url;
-		}
+		arg2: utils.noop
 	});
 
 	test({
@@ -163,11 +177,12 @@ describe("augurNode", function() {
 			assert.include(out, '/getAccountTrades?anotherOption=test&branch=010101&id=someMarketID1');
 		},
 		method: 'getAccountTrades',
+		fetchHelper: function(url, cb) {
+			// just return the URL for assertions
+			return url;
+		},
 		startState: ['hello', 'world'],
 		arg1: { anotherOption: 'test', branch: '010101', id: 'someMarketID1' },
-		arg2: function(url) {
-			// cb: it's going to get called with URL because that's how my dummy function works, simply pass url to get tested in assertions.
-			return url;
-		}
+		arg2: utils.noop
 	});
 });
