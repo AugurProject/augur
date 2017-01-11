@@ -42368,7 +42368,7 @@ module.exports = {
         this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
     },
 
-    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
         if (this.options.debug.trading) {
             console.log("buy:", JSON.stringify(amount, null, 2));
         }
@@ -42376,6 +42376,7 @@ module.exports = {
             price = amount.price;
             market = amount.market;
             outcome = amount.outcome;
+            tradeGroupID = amount.tradeGroupID;
             scalarMinMax = amount.scalarMinMax;
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
@@ -42394,7 +42395,8 @@ module.exports = {
             abi.fix(price, "hex"),
             market,
             outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex")
+            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+            tradeGroupID || 0
         ];
         if (this.options.debug.trading) {
             console.log("buy tx:", JSON.stringify(tx, null, 2));
@@ -42431,7 +42433,7 @@ module.exports = {
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
             "0x0",
-            tradeGroupID
+            tradeGroupID || 0
         ];
         if (this.options.debug.trading) {
             console.log("sell tx:", JSON.stringify(tx, null, 2));
@@ -42467,7 +42469,7 @@ module.exports = {
             market,
             outcome,
             abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            tradeGroupID
+            tradeGroupID || 0
         ];
         if (this.options.debug.trading) {
             console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
