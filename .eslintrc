@@ -36,8 +36,8 @@
 		"no-unused-expressions": [2, { "allowShortCircuit": true }],
 		"no-unused-vars": [2, { "vars": "all", "args": "none" }],
 		"no-param-reassign": [2, { "props": false }],
-		"react/jsx-indent": [2, "tab"],
-		"react/jsx-indent-props": [2, "tab"],
+		"react/jsx-indent": [2, 2],
+		"react/jsx-indent-props": [2, 2],
 		"no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
 		"quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true}],
 		# NOTE -- Temporarily disabled -- utilization of string refs should be refactored to utilize state
