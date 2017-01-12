@@ -4,25 +4,25 @@ import * as mockStore from 'test/mockStore';
 import linksAssertions from 'assertions/links';
 
 describe(`modules/link/selectors/links.js`, () => {
-	proxyquire.noPreserveCache().noCallThru();
-	const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru();
+  const { store } = mockStore.default;
 
-	const selector = proxyquire('../../../src/modules/link/selectors/links', {
-		'../../../store': store
-	});
+  const selector = proxyquire('../../../src/modules/link/selectors/links', {
+    '../../../store': store
+  });
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
+  afterEach(() => {
 		// global.window = {};
-		store.clearActions();
-	});
+    store.clearActions();
+  });
 
-	it(`should have the expected shape`, () => {
-		const actual = selector.default();
+  it(`should have the expected shape`, () => {
+    const actual = selector.default();
 		// console.log(actual);
-		linksAssertions(actual);
-	});
+    linksAssertions(actual);
+  });
 });
