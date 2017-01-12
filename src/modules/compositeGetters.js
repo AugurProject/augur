@@ -251,7 +251,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, reportedOutcome;
+        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
         }
@@ -263,17 +263,24 @@ module.exports = {
             shift = totalLen + 1;
             marketID = abi.format_int256(marketsArray[shift]);
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
-            minValue = abi.unfix(abi.hex(marketsArray[shift + 11], true), "string");
-            maxValue = abi.unfix(abi.hex(marketsArray[shift + 12], true), "string");
+            minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
+            maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
             numOutcomes = parseInt(marketsArray[shift + 13], 16);
-            reportedOutcome = abi.unfix(abi.hex(marketsArray[shift + 14], true), "string");
-            if (!parseInt(reportedOutcome, 10)) reportedOutcome = undefined;
             if (numOutcomes > 2) {
                 type = "categorical";
             } else if (minValue === "1" && maxValue === "2") {
                 type = "binary";
             } else {
                 type = "scalar";
+            }
+            reportedOutcome = abi.hex(marketsArray[shift + 14], true);
+            if (!abi.unfix(reportedOutcome, "number")) {
+                reportedOutcome = undefined;
+                isIndeterminate = undefined;
+            } else {
+                unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+                reportedOutcome = unfixed.report;
+                isIndeterminate = unfixed.isIndeterminate;
             }
             marketsInfo[marketID] = {
                 sortOrder: i,
@@ -297,6 +304,7 @@ module.exports = {
                 numOutcomes: numOutcomes,
                 type: type,
                 reportedOutcome: reportedOutcome,
+                isIndeterminate: isIndeterminate,
                 description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
             };
             totalLen += len;

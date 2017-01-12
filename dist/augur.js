@@ -19277,7 +19277,7 @@ module.exports={
         ], 
         "label": "Get Outcome", 
         "method": "getOutcome", 
-        "returns": "unfix", 
+        "returns": "number", 
         "signature": [
           "int256"
         ]
@@ -19354,7 +19354,7 @@ module.exports={
         ], 
         "label": "Get Uncaught Outcome", 
         "method": "getUncaughtOutcome", 
-        "returns": "unfix", 
+        "returns": "number", 
         "signature": [
           "int256"
         ]
@@ -22433,7 +22433,7 @@ module.exports={
         "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
         "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "CompositeGetters": "0x4803e0b158ab66eae81a48bba2799f905c379eb2", 
         "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
         "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
         "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
@@ -41831,7 +41831,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "3.6.9";
+    this.version = "3.7.0";
 
     this.options = {
         debug: {
@@ -41902,6 +41902,7 @@ var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
+var makeReports = require("./makeReports");
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
@@ -42119,24 +42120,14 @@ module.exports = {
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var outcome, proportionCorrect;
-            if (parseInt(rawInfo[index + 2], 16) !== 0) {
-                outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
-            }
-            if (parseInt(rawInfo[index + 8], 16) !== 0) {
-                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-            }
             var event = {
                 id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
-                minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
-                maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
+                minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
+                maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
-                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string")
+                bond: abi.unfix_signed(rawInfo[index + 6], "string")
             };
-            if (outcome) event.isEthical = !!abi.unfix(abi.hex(rawInfo[index + 7], true), "number");
-            info.reportedOutcome = outcome;
-            info.proportionCorrect = proportionCorrect;
 
             // event type: binary, categorical, or scalar
             if (event.numOutcomes > 2) {
@@ -42150,6 +42141,18 @@ module.exports = {
             info.endDate = event.endDate;
             info.minValue = event.minValue;
             info.maxValue = event.maxValue;
+            var outcome, proportionCorrect;
+            if (parseInt(rawInfo[index + 2], 16) !== 0) {
+                var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+                outcome = unfixed.report;
+                info.isIndeterminate = unfixed.isIndeterminate;
+            }
+            if (parseInt(rawInfo[index + 8], 16) !== 0) {
+                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+            }
+            if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
+            info.reportedOutcome = outcome;
+            info.proportionCorrect = proportionCorrect;
             info.events = [event];
             index += EVENTS_FIELDS;
 
@@ -42158,7 +42161,7 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(abi.hex(rawInfo[i*OUTCOMES_FIELDS + index + 1], true), "string"),
+                    price: abi.unfix_signed(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
                     sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
@@ -42307,7 +42310,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":266,"async":80,"augur-abi":1,"bignumber.js":83,"bs58":116,"buffer":118,"clone":121}],247:[function(require,module,exports){
+},{"../constants":242,"../utilities":266,"./makeReports":256,"async":80,"augur-abi":1,"bignumber.js":83,"bs58":116,"buffer":118,"clone":121}],247:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42854,7 +42857,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, reportedOutcome;
+        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return null;
         }
@@ -42866,17 +42869,24 @@ module.exports = {
             shift = totalLen + 1;
             marketID = abi.format_int256(marketsArray[shift]);
             fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
-            minValue = abi.unfix(abi.hex(marketsArray[shift + 11], true), "string");
-            maxValue = abi.unfix(abi.hex(marketsArray[shift + 12], true), "string");
+            minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
+            maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
             numOutcomes = parseInt(marketsArray[shift + 13], 16);
-            reportedOutcome = abi.unfix(abi.hex(marketsArray[shift + 14], true), "string");
-            if (!parseInt(reportedOutcome, 10)) reportedOutcome = undefined;
             if (numOutcomes > 2) {
                 type = "categorical";
             } else if (minValue === "1" && maxValue === "2") {
                 type = "binary";
             } else {
                 type = "scalar";
+            }
+            reportedOutcome = abi.hex(marketsArray[shift + 14], true);
+            if (!abi.unfix(reportedOutcome, "number")) {
+                reportedOutcome = undefined;
+                isIndeterminate = undefined;
+            } else {
+                unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+                reportedOutcome = unfixed.report;
+                isIndeterminate = unfixed.isIndeterminate;
             }
             marketsInfo[marketID] = {
                 sortOrder: i,
@@ -42900,6 +42910,7 @@ module.exports = {
                 numOutcomes: numOutcomes,
                 type: type,
                 reportedOutcome: reportedOutcome,
+                isIndeterminate: isIndeterminate,
                 description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
             };
             totalLen += len;

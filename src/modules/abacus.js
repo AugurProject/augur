@@ -12,6 +12,7 @@ var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
+var makeReports = require("./makeReports");
 
 BigNumber.config({
     MODULO_MODE: BigNumber.EUCLID,
@@ -229,24 +230,14 @@ module.exports = {
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var outcome, proportionCorrect;
-            if (parseInt(rawInfo[index + 2], 16) !== 0) {
-                outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
-            }
-            if (parseInt(rawInfo[index + 8], 16) !== 0) {
-                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-            }
             var event = {
                 id: abi.format_int256(rawInfo[index]),
                 endDate: parseInt(rawInfo[index + 1], 16),
-                minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
-                maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
+                minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
+                maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16),
-                bond: abi.unfix(abi.hex(rawInfo[index + 6], true), "string")
+                bond: abi.unfix_signed(rawInfo[index + 6], "string")
             };
-            if (outcome) event.isEthical = !!abi.unfix(abi.hex(rawInfo[index + 7], true), "number");
-            info.reportedOutcome = outcome;
-            info.proportionCorrect = proportionCorrect;
 
             // event type: binary, categorical, or scalar
             if (event.numOutcomes > 2) {
@@ -260,6 +251,18 @@ module.exports = {
             info.endDate = event.endDate;
             info.minValue = event.minValue;
             info.maxValue = event.maxValue;
+            var outcome, proportionCorrect;
+            if (parseInt(rawInfo[index + 2], 16) !== 0) {
+                var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+                outcome = unfixed.report;
+                info.isIndeterminate = unfixed.isIndeterminate;
+            }
+            if (parseInt(rawInfo[index + 8], 16) !== 0) {
+                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+            }
+            if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
+            info.reportedOutcome = outcome;
+            info.proportionCorrect = proportionCorrect;
             info.events = [event];
             index += EVENTS_FIELDS;
 
@@ -268,7 +271,7 @@ module.exports = {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(abi.hex(rawInfo[i*OUTCOMES_FIELDS + index + 1], true), "string"),
+                    price: abi.unfix_signed(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
                     sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
                 };
             }
