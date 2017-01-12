@@ -81,6 +81,25 @@ export function loadAdditionalEventData(events) {
 					if (!branchReports || !branchReports[eventID] || !branchReports[eventID].reportedOutcomeID) {
 						const marketData = getState().marketsData[marketID];
 						if (marketData && marketData.minValue && marketData.maxValue && marketData.type) {
+							if (marketData.type === 'binary') {
+								augur.getOutcome(eventID, (marketOutcome) => {
+									if (marketOutcome) {
+										updateEvent(eventID, {
+											marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+										});
+										augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
+									}
+								});
+							} else {
+								augur.getUncaughtOutcome(eventID, (marketOutcome) => {
+									if (marketOutcome) {
+										updateEvent(eventID, {
+											marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+										});
+										augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
+									}
+								});
+							}
 							augur.getReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, marketData.minValue, marketData.maxValue, marketData.type, (report) => {
 								if (report) {
 									const accountReport = report.report;
@@ -92,7 +111,7 @@ export function loadAdditionalEventData(events) {
 											isCommitted: true
 										});
 										augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
-											if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
+											if (ethicReport && !ethicReport.error) {
 												updateEvent(eventID, { isUnethical: ethicReport === '0' });
 											}
 										});
@@ -102,6 +121,25 @@ export function loadAdditionalEventData(events) {
 						} else {
 							dispatch(loadMarketsInfo([marketID], () => {
 								const marketData = getState().marketsData[marketID];
+								if (marketData.type === 'binary') {
+									augur.getOutcome(eventID, (marketOutcome) => {
+										if (marketOutcome) {
+											updateEvent(eventID, {
+												marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+											});
+											augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
+										}
+									});
+								} else {
+									augur.getUncaughtOutcome(eventID, (marketOutcome) => {
+										if (marketOutcome) {
+											updateEvent(eventID, {
+												marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+											});
+											augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
+										}
+									});
+								}
 								augur.getReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, marketData.minValue, marketData.maxValue, marketData.type, (report) => {
 									if (report) {
 										const accountReport = report.report;
@@ -113,7 +151,7 @@ export function loadAdditionalEventData(events) {
 												isCommitted: true
 											});
 											augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
-												if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
+												if (ethicReport && !ethicReport.error) {
 													updateEvent(eventID, { isUnethical: ethicReport === '0' });
 												}
 											});
@@ -148,12 +186,6 @@ export function loadAdditionalEventData(events) {
 				}
 			});
 			// augur.getFinal(eventID, isFinal => !!isFinal && updateEvent(eventID, { isFinal: isFinal === '1' }));
-			augur.getOutcome(eventID, (marketOutcome) => {
-				if (marketOutcome) {
-					updateEvent(eventID, { marketOutcome });
-					augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
-				}
-			});
 			// augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
 			if (loginAccount.rep !== '0') {
 				updateEvent(eventID, { repBalance: loginAccount.rep });
