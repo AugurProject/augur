@@ -5,8 +5,8 @@ export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS';
  * @return {{type: string, isConnected: *}} returns action
  */
 export function updateConnectionStatus(isConnected) {
-	return {
-		type: UPDATE_CONNECTION_STATUS,
-		isConnected
-	};
+  return {
+    type: UPDATE_CONNECTION_STATUS,
+    isConnected
+  };
 }

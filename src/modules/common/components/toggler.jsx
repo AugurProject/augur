@@ -2,24 +2,24 @@ import React from 'react';
 import classnames from 'classnames';
 
 const Toggler = p => (
-	<button
-		className={classnames('clickable', 'toggler', p.className)}
-		onClick={(e) => {
-			e.persist();
-			p.onClick(findNextOption(p.selected, p.options), e);
-		}}
-	>
-		{p.selected.label}
-	</button>
+  <button
+    className={classnames('clickable', 'toggler', p.className)}
+    onClick={(e) => {
+      e.persist();
+      p.onClick(findNextOption(p.selected, p.options), e);
+    }}
+  >
+    {p.selected.label}
+  </button>
 );
 
 const findNextOption = (selected, options) => {
-	const currentSelectedIndex = options.indexOf(selected);
-	let nextSelectedInex = currentSelectedIndex + 1;
-	if (nextSelectedInex >= options.length) {
-		nextSelectedInex = 0;
-	}
-	return options[nextSelectedInex];
+  const currentSelectedIndex = options.indexOf(selected);
+  let nextSelectedInex = currentSelectedIndex + 1;
+  if (nextSelectedInex >= options.length) {
+    nextSelectedInex = 0;
+  }
+  return options[nextSelectedInex];
 };
 
 // TODO -- Prop Validations

@@ -9,122 +9,122 @@ import { loadAccountTrades } from '../../my-positions/actions/load-account-trade
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 
 export function refreshMarket(marketID) {
-	return (dispatch, getState) => {
-		if (getState().marketsData[marketID]) {
-			dispatch(loadMarketsInfo([marketID], () => {
-				dispatch(loadBidsAsks(marketID));
-				if (getState().loginAccount.address) {
-					dispatch(loadAccountTrades(marketID));
-				}
-			}));
-		}
-	};
+  return (dispatch, getState) => {
+    if (getState().marketsData[marketID]) {
+      dispatch(loadMarketsInfo([marketID], () => {
+        dispatch(loadBidsAsks(marketID));
+        if (getState().loginAccount.address) {
+          dispatch(loadAccountTrades(marketID));
+        }
+      }));
+    }
+  };
 }
 
 export function listenToUpdates() {
-	return (dispatch, getState) => {
-		augur.filters.listen({
+  return (dispatch, getState) => {
+    augur.filters.listen({
 
 			// block arrivals
-			block: (blockHash) => {
-				dispatch(updateAssets());
-				dispatch(syncBlockchain());
-				dispatch(syncBranch());
-			},
+      block: (blockHash) => {
+        dispatch(updateAssets());
+        dispatch(syncBlockchain());
+        dispatch(syncBranch());
+      },
 
 			// trade filled: { market, outcome (id), price }
-			log_fill_tx: (msg) => {
-				console.debug('log_fill_tx:', msg);
-				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshMarket(msg.market));
-				}
-			},
+      log_fill_tx: (msg) => {
+        console.debug('log_fill_tx:', msg);
+        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+          dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
+          dispatch(refreshMarket(msg.market));
+        }
+      },
 
 			// short sell filled
-			log_short_fill_tx: (msg) => {
-				console.debug('log_short_fill_tx:', msg);
-				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(refreshMarket(msg.market));
-				}
-			},
+      log_short_fill_tx: (msg) => {
+        console.debug('log_short_fill_tx:', msg);
+        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+          dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
+          dispatch(refreshMarket(msg.market));
+        }
+      },
 
 			// order added to orderbook
-			log_add_tx: (msg) => {
-				console.debug('log_add_tx:', msg);
-				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadBidsAsks(msg.market));
-				}
-			},
+      log_add_tx: (msg) => {
+        console.debug('log_add_tx:', msg);
+        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+          dispatch(loadBidsAsks(msg.market));
+        }
+      },
 
 			// order removed from orderbook
-			log_cancel: (msg) => {
-				console.debug('log_cancel:', msg);
-				if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-					dispatch(loadBidsAsks(msg.market));
-				}
-			},
+      log_cancel: (msg) => {
+        console.debug('log_cancel:', msg);
+        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+          dispatch(loadBidsAsks(msg.market));
+        }
+      },
 
 			// new market: msg = { marketID }
-			marketCreated: (msg) => {
-				if (msg && msg.marketID) {
-					console.debug('marketCreated:', msg);
-					dispatch(loadMarketsInfo([msg.marketID]));
-				}
-			},
+      marketCreated: (msg) => {
+        if (msg && msg.marketID) {
+          console.debug('marketCreated:', msg);
+          dispatch(loadMarketsInfo([msg.marketID]));
+        }
+      },
 
 			// market trading fee updated (decrease only)
-			tradingFeeUpdated: (msg) => {
-				console.debug('tradingFeeUpdated:', msg);
-				if (msg && msg.marketID) {
-					dispatch(loadMarketsInfo([msg.marketID]));
-				}
-			},
+      tradingFeeUpdated: (msg) => {
+        console.debug('tradingFeeUpdated:', msg);
+        if (msg && msg.marketID) {
+          dispatch(loadMarketsInfo([msg.marketID]));
+        }
+      },
 
-			deposit: (msg) => {
-				if (msg) {
-					console.debug('deposit:', msg);
-					dispatch(updateAssets());
-				}
-			},
+      deposit: (msg) => {
+        if (msg) {
+          console.debug('deposit:', msg);
+          dispatch(updateAssets());
+        }
+      },
 
-			withdraw: (msg) => {
-				if (msg) {
-					console.debug('withdraw:', msg);
-					dispatch(updateAssets());
-				}
-			},
+      withdraw: (msg) => {
+        if (msg) {
+          console.debug('withdraw:', msg);
+          dispatch(updateAssets());
+        }
+      },
 
 			// Reporter penalization (debugging-only)
-			penalize: (msg) => {
-				if (msg) {
-					console.debug('penalize:', msg);
-					dispatch(updateAssets());
-				}
-			},
+      penalize: (msg) => {
+        if (msg) {
+          console.debug('penalize:', msg);
+          dispatch(updateAssets());
+        }
+      },
 
 			// Reputation transfer
-			Transfer: (msg) => {
-				if (msg) {
-					console.debug('Transfer:', msg);
-					dispatch(updateAssets());
-				}
-			},
+      Transfer: (msg) => {
+        if (msg) {
+          console.debug('Transfer:', msg);
+          dispatch(updateAssets());
+        }
+      },
 
-			Approval: (msg) => {
-				if (msg) {
-					console.debug('Approval:', msg);
-					dispatch(updateAssets());
-				}
-			},
+      Approval: (msg) => {
+        if (msg) {
+          console.debug('Approval:', msg);
+          dispatch(updateAssets());
+        }
+      },
 
-			closeMarket_logReturn: (msg) => {
-				if (msg && msg.returnValue && parseInt(msg.returnValue, 16) === 1) {
-					console.debug('closeMarket_logReturn:', msg);
-					dispatch(claimProceeds());
-				}
-			}
-		}, filters => console.log('### Listening to filters:', filters));
-	};
+      closeMarket_logReturn: (msg) => {
+        if (msg && msg.returnValue && parseInt(msg.returnValue, 16) === 1) {
+          console.debug('closeMarket_logReturn:', msg);
+          dispatch(claimProceeds());
+        }
+      }
+    }, filters => console.log('### Listening to filters:', filters));
+  };
 }

@@ -4,30 +4,30 @@ import { updateScalarMarketShareDenomination } from '../../market/actions/update
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from '../../market/constants/share-denominations';
 
 export default function () {
-	const { scalarMarketsShareDenomination } = store.getState();
+  const { scalarMarketsShareDenomination } = store.getState();
 
-	return {
-		denominations,
-		markets: scalarMarketsShareDenomination,
-		updateSelectedShareDenomination: selectShareDenomination
-	};
+  return {
+    denominations,
+    markets: scalarMarketsShareDenomination,
+    updateSelectedShareDenomination: selectShareDenomination
+  };
 }
 
 const denominations = [
-	{
-		label: 'Shares',
-		value: SHARE
-	},
-	{
-		label: 'mShares',
-		value: MILLI_SHARE
-	},
-	{
-		label: 'μShares',
-		value: MICRO_SHARE
-	}
+  {
+    label: 'Shares',
+    value: SHARE
+  },
+  {
+    label: 'mShares',
+    value: MILLI_SHARE
+  },
+  {
+    label: 'μShares',
+    value: MICRO_SHARE
+  }
 ];
 
 function selectShareDenomination(marketID, denomination) {
-	store.dispatch(updateScalarMarketShareDenomination(marketID, denomination));
+  store.dispatch(updateScalarMarketShareDenomination(marketID, denomination));
 }

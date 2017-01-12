@@ -3,43 +3,43 @@ import validateExpirySource from '../../../create-market/validators/validate-exp
 import validateExpirySourceUrl from '../../../create-market/validators/validate-expiry-source-url';
 
 export const select = (formState) => {
-	const obj = {
-		tagsMaxNum: TAGS_MAX_NUM,
-		tagMaxLength: TAGS_MAX_LENGTH,
-		resourcesMaxNum: RESOURCES_MAX_NUM,
-		resourceMaxLength: RESOURCES_MAX_LENGTH,
-		expirySourceTypes: {
-			generic: EXPIRY_SOURCE_GENERIC,
-			specific: EXPIRY_SOURCE_SPECIFIC
-		}
-	};
-	return obj;
+  const obj = {
+    tagsMaxNum: TAGS_MAX_NUM,
+    tagMaxLength: TAGS_MAX_LENGTH,
+    resourcesMaxNum: RESOURCES_MAX_NUM,
+    resourceMaxLength: RESOURCES_MAX_LENGTH,
+    expirySourceTypes: {
+      generic: EXPIRY_SOURCE_GENERIC,
+      specific: EXPIRY_SOURCE_SPECIFIC
+    }
+  };
+  return obj;
 };
 
 export const isValid = (formState) => {
-	if (validateExpirySource(formState.expirySource)) {
-		return false;
-	}
+  if (validateExpirySource(formState.expirySource)) {
+    return false;
+  }
 
-	if (validateExpirySourceUrl(formState.expirySourceUrl, formState.expirySource)) {
-		return false;
-	}
+  if (validateExpirySourceUrl(formState.expirySourceUrl, formState.expirySource)) {
+    return false;
+  }
 
-	return true;
+  return true;
 };
 
 export const errors = (formState) => {
-	const errs = {};
+  const errs = {};
 
-	if (formState.expirySource !== undefined) {
-		errs.expirySource = validateExpirySource(formState.expirySource);
-	}
+  if (formState.expirySource !== undefined) {
+    errs.expirySource = validateExpirySource(formState.expirySource);
+  }
 
-	if (formState.endDate !== undefined) {
-		errs.expirySourceUrl = validateExpirySourceUrl(
+  if (formState.endDate !== undefined) {
+    errs.expirySourceUrl = validateExpirySourceUrl(
 			formState.expirySourceUrl,
 			formState.expirySource);
-	}
+  }
 
-	return errs;
+  return errs;
 };

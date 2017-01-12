@@ -16,72 +16,72 @@ export const SHOW_CANCEL_ORDER_CONFIRMATION = 'SHOW_CANCEL_ORDER_CONFIRMATION';
 export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION';
 
 export function cancelOrder(orderID, marketID, type) {
-	return (dispatch, getState) => {
-		const { orderBooks, outcomesData, marketsData } = getState();
-		const order = getOrder(orderID, marketID, type, orderBooks);
-		const market = marketsData[marketID];
+  return (dispatch, getState) => {
+    const { orderBooks, outcomesData, marketsData } = getState();
+    const order = getOrder(orderID, marketID, type, orderBooks);
+    const market = marketsData[marketID];
 
-		if (order == null || market == null || outcomesData[marketID] == null) {
-			return;
-		}
+    if (order == null || market == null || outcomesData[marketID] == null) {
+      return;
+    }
 
-		const outcome = outcomesData[marketID][order.outcome];
-		if (outcome == null) {
-			return;
-		}
+    const outcome = outcomesData[marketID][order.outcome];
+    if (outcome == null) {
+      return;
+    }
 
-		dispatch(addCancelTransaction(order, { ...market, id: marketID }, outcome));
-	};
+    dispatch(addCancelTransaction(order, { ...market, id: marketID }, outcome));
+  };
 }
 
 export function processCancelOrder(transactionID, orderID) {
-	return (dispatch, getState) => {
+  return (dispatch, getState) => {
 
-		const { transactionsData, orderBooks } = getState();
-		const transaction = transactionsData[transactionID];
-		if (transaction == null) {
-			return;
-		}
+    const { transactionsData, orderBooks } = getState();
+    const transaction = transactionsData[transactionID];
+    if (transaction == null) {
+      return;
+    }
 
-		const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, orderBooks);
-		if (order == null || !order.amount || !order.price) {
-			return;
-		}
+    const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, orderBooks);
+    if (order == null || !order.amount || !order.price) {
+      return;
+    }
 
-		dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.market.id, transaction.data.order.type));
-		dispatch(updateExistingTransaction(transactionID, {
-			status: CANCELLING_ORDER,
-			message: `canceling order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
-			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.BuyAndSellShares.cancel }, augur.rpc.gasPrice))
-		}));
+    dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.market.id, transaction.data.order.type));
+    dispatch(updateExistingTransaction(transactionID, {
+      status: CANCELLING_ORDER,
+      message: `canceling order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+      gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.BuyAndSellShares.cancel }, augur.rpc.gasPrice))
+    }));
 
-		augur.cancel({
-			trade_id: orderID,
-			onSent: res => console.log('augur.cancel sent: %o', res),
-			onSuccess: (res) => {
-				console.log('augur.cancel success: %o', res);
-				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, {
-					status: SUCCESS,
-					message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
-					hash: res.hash,
-					timestamp: res.timestamp,
-					totalReturn: formatEther(res.cashRefund),
-					gasFees: formatRealEther(res.gasFees)
-				}));
-				dispatch(loadBidsAsks(transaction.data.market.id, () => {
-					dispatch(updateAssets());
-					dispatch(loadAccountTrades(transaction.data.market.id));
-				}));
-			},
-			onFailed: (res) => {
-				console.log('augur.cancel failed: %o', res);
-				dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.market.id, transaction.data.order.type));
-				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
-				setTimeout(() => dispatch(updateOrderStatus(orderID, null, transaction.data.market.id, transaction.data.order.type)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
-			}
-		});
-	};
+    augur.cancel({
+      trade_id: orderID,
+      onSent: res => console.log('augur.cancel sent: %o', res),
+      onSuccess: (res) => {
+        console.log('augur.cancel success: %o', res);
+        dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
+        dispatch(updateExistingTransaction(transactionID, {
+          status: SUCCESS,
+          message: `canceled order to ${order.type} ${formatShares(order.amount).full} for ${formatEther(order.price).full} each`,
+          hash: res.hash,
+          timestamp: res.timestamp,
+          totalReturn: formatEther(res.cashRefund),
+          gasFees: formatRealEther(res.gasFees)
+        }));
+        dispatch(loadBidsAsks(transaction.data.market.id, () => {
+          dispatch(updateAssets());
+          dispatch(loadAccountTrades(transaction.data.market.id));
+        }));
+      },
+      onFailed: (res) => {
+        console.log('augur.cancel failed: %o', res);
+        dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.market.id, transaction.data.order.type));
+        dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
+        setTimeout(() => dispatch(updateOrderStatus(orderID, null, transaction.data.market.id, transaction.data.order.type)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
+      }
+    });
+  };
 }
 
 /**
@@ -90,10 +90,10 @@ export function processCancelOrder(transactionID, orderID) {
  * @return {{type: string, orderID: *}}
  */
 export function showCancelOrderConfirmation(orderID) {
-	return {
-		type: SHOW_CANCEL_ORDER_CONFIRMATION,
-		orderID
-	};
+  return {
+    type: SHOW_CANCEL_ORDER_CONFIRMATION,
+    orderID
+  };
 }
 
 /**
@@ -102,8 +102,8 @@ export function showCancelOrderConfirmation(orderID) {
  * @return {{type: string, orderID: *}}
  */
 export function abortCancelOrderConfirmation(orderID) {
-	return {
-		type: ABORT_CANCEL_ORDER_CONFIRMATION,
-		orderID
-	};
+  return {
+    type: ABORT_CANCEL_ORDER_CONFIRMATION,
+    orderID
+  };
 }
