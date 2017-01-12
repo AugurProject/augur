@@ -327,7 +327,7 @@ export function assembleMarket(
 			// This houses the reported outcome + the proportion correct of that outcome
 			if (market.reportedOutcome) {
 				market.result = { outcomeID: market.reportedOutcome };
-				if (market.type !== 'scalar' && market.reportableOutcomes.length) {
+				if (market.type !== SCALAR && market.reportableOutcomes.length) {
 					const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.reportedOutcome);
 					if (marketOutcome) market.result.outcomeName = marketOutcome.name;
 				}
