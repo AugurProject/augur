@@ -10,7 +10,7 @@ const testState = {
 	accountTrades: {
 		testMarketID: {
 			testoutcomeID: [
-				{ type: 1, price: '0.5', shares: '50' }
+				{ type: 1, price: '0.5', amount: '50' }
 			]
 		}
 	},
@@ -186,22 +186,22 @@ const testState = {
 		testMarketID: {},
 		'0xMARKET1': {
 			0: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
 			],
 			1: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
 			]
 		},
 		'0xMARKET2': {
 			0: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
 			],
 			1: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
 			]
 		},
 	},
