@@ -569,10 +569,13 @@ export function constructTransaction(label, log, isRetry, callback) {
 			case 'withdraw':
 				return constructWithdrawTransaction(log);
 			case 'sentCash':
+				if (getState().transactionsData[log.transactionHash]) return null;
 				return constructSentCashTransaction(log, getState().loginAccount.address);
 			case 'sentEther':
+				if (getState().transactionsData[log.transactionHash]) return null;
 				return constructSentEtherTransaction(log, getState().loginAccount.address);
 			case 'Transfer':
+				if (getState().transactionsData[log.transactionHash]) return null;
 				return constructTransferTransaction(log, getState().loginAccount.address);
 			case 'marketCreated': {
 				if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
