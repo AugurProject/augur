@@ -16,7 +16,7 @@ global.constants = require("./src/constants");
 global.utils = require("./src/utilities");
 global.tools = require("./test/tools");
 global.augur = (global.reload = function () {
-    return tools.setup(tools.reset("./src/index"), process.argv.slice(2));
+  return tools.setup(tools.reset("./src/index"), process.argv.slice(2));
 })();
 global.comments = augur.comments;
 global.b = augur.constants.DEFAULT_BRANCH_ID
@@ -24,26 +24,26 @@ global.log = console.log;
 global.logger = function (r) { console.log(JSON.stringify(r, null, 2)); };
 global.rpc = augur.rpc;
 try {
-    global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
-    global.accounts = rpc.personal("listAccounts");
+  global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
+  global.accounts = rpc.personal("listAccounts");
 } catch (exc) {
-    console.log(exc);
+  console.log(exc);
 }
 
 global.balances = (global.balance = function (account, branch) {
-    account = account || augur.from;
-    var balances = {
-        cash: augur.getCashBalance(account),
-        reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
-        ether: abi.unfix(augur.rpc.balance(account), "string")
-    };
-    console.log(balances);
-    return balances;
+  account = account || augur.from;
+  var balances = {
+    cash: augur.getCashBalance(account),
+    reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
+    ether: abi.unfix(augur.rpc.balance(account), "string")
+  };
+  console.log(balances);
+  return balances;
 })();
 var numMarkets = parseInt(augur.getNumMarketsBranch(augur.constants.DEFAULT_BRANCH_ID), 10);
 global.markets = augur.getSomeMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID, 0, Math.min(numMarkets, 2000));
 if (markets && markets.constructor === Array && markets.length) {
-    global.market = markets[markets.length - 1];
+  global.market = markets[markets.length - 1];
 }
 
 console.log(chalk.cyan("Network"), chalk.green(augur.network_id));
@@ -54,13 +54,13 @@ console.log("Reputation: " + chalk.green(balances.reputation));
 console.log("Ether:      " + chalk.green(balances.ether));
 
 var reportingInfo = (global.reporting = function (branch) {
-    var info = {
-        vote_period: augur.getVotePeriod(b),
-        current_period: augur.getCurrentPeriod(b),
-        num_reports: augur.getNumberReporters(b)
-    };
-    info.num_events = augur.getNumberEvents(b, info.vote_period);
-    return info;
+  var info = {
+    vote_period: augur.getVotePeriod(b),
+    current_period: augur.getCurrentPeriod(b),
+    num_reports: augur.getNumberReporters(b)
+  };
+  info.num_events = augur.getNumberEvents(b, info.vote_period);
+  return info;
 })(b);
 
 console.log(chalk.cyan("Reporting period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
