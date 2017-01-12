@@ -12,146 +12,146 @@ import { formatNumber, formatEther, formatRep } from 'utils/format-number';
 import * as selector from 'modules/portfolio/selectors/portfolio-nav-items';
 
 describe('modules/portfolio/selectors/nav-items', () => {
-	proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru();
 
-	let actual;
+  let actual;
 
-	const stubbedSelectors = {
-		links: {
-			myPositionsLink: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			},
-			myMarketsLink: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			},
-			myReportsLink: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			}
-		}
-	};
+  const stubbedSelectors = {
+    links: {
+      myPositionsLink: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      },
+      myMarketsLink: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      },
+      myReportsLink: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      }
+    }
+  };
 
-	const selectors = {
-		selectMyPositionsSummary: () => {},
-		selectMyMarketsSummary: () => {},
-		selectMyReportsSummary: () => {}
-	};
+  const selectors = {
+    selectMyPositionsSummary: () => {},
+    selectMyMarketsSummary: () => {},
+    selectMyReportsSummary: () => {}
+  };
 
-	const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
-		{
-			numPositions: formatNumber(10, { denomination: 'positions' }),
-			totalNet: formatEther(2)
-		}
+  const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
+    {
+      numPositions: formatNumber(10, { denomination: 'positions' }),
+      totalNet: formatEther(2)
+    }
 	));
-	const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
-		{
-			numMarkets: 30,
-			totalValue: 10
-		}
-	));
-
-	const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
-		{
-			numReports: 10,
-			netRep: 5
-		}
+  const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
+    {
+      numMarkets: 30,
+      totalValue: 10
+    }
 	));
 
-	const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
-		'../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
-		'../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
-		'../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
-		'../../../selectors': stubbedSelectors
-	});
+  const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
+    {
+      numReports: 10,
+      netRep: 5
+    }
+	));
 
-	const expected = [
-		{
-			label: 'Positions',
-			link: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			},
-			page: MY_POSITIONS,
-			leadingTitle: 'Total Number of Positions',
-			leadingValue: formatNumber(10, { denomination: 'positions' }),
-			trailingTitle: 'Total Profit/Loss',
-			trailingValue: formatEther(2)
-		},
-		{
-			label: 'Markets',
-			link: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			},
-			page: MY_MARKETS,
-			leadingTitle: 'Total Markets',
-			leadingValue: formatNumber(30, { denomination: 'markets' }),
-			trailingTitle: 'Total Gain/Loss',
-			trailingValue: formatEther(10, { denomination: 'eth' })
-		},
-		{
-			label: 'Reports',
-			link: {
-				label: 'test',
-				link: {
-					href: 'test',
-					onClick: 'fake function'
-				},
-				page: 'test'
-			},
-			page: MY_REPORTS,
-			leadingTitle: 'Total Reports',
-			leadingValue: formatNumber(10, { denomination: 'reports' }),
-			trailingTitle: 'Total Gain/Loss',
-			trailingValue: formatRep(5, { denomination: 'rep' })
-		}
-	];
+  const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
+    '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
+    '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
+    '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
+    '../../../selectors': stubbedSelectors
+  });
 
-	before(() => {
-		actual = proxiedSelector.default();
-	});
+  const expected = [
+    {
+      label: 'Positions',
+      link: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      },
+      page: MY_POSITIONS,
+      leadingTitle: 'Total Number of Positions',
+      leadingValue: formatNumber(10, { denomination: 'positions' }),
+      trailingTitle: 'Total Profit/Loss',
+      trailingValue: formatEther(2)
+    },
+    {
+      label: 'Markets',
+      link: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      },
+      page: MY_MARKETS,
+      leadingTitle: 'Total Markets',
+      leadingValue: formatNumber(30, { denomination: 'markets' }),
+      trailingTitle: 'Total Gain/Loss',
+      trailingValue: formatEther(10, { denomination: 'eth' })
+    },
+    {
+      label: 'Reports',
+      link: {
+        label: 'test',
+        link: {
+          href: 'test',
+          onClick: 'fake function'
+        },
+        page: 'test'
+      },
+      page: MY_REPORTS,
+      leadingTitle: 'Total Reports',
+      leadingValue: formatNumber(10, { denomination: 'reports' }),
+      trailingTitle: 'Total Gain/Loss',
+      trailingValue: formatRep(5, { denomination: 'rep' })
+    }
+  ];
 
-	it(`should call 'selectMyPositionsSummary' once`, () => {
-		assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`);
-	});
+  before(() => {
+    actual = proxiedSelector.default();
+  });
 
-	it(`should call 'selectMyMarketsSummary' once`, () => {
-		assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`);
-	});
+  it(`should call 'selectMyPositionsSummary' once`, () => {
+    assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`);
+  });
 
-	it(`should call 'selectMyReportsSummary' once`, () => {
-		assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`);
-	});
+  it(`should call 'selectMyMarketsSummary' once`, () => {
+    assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`);
+  });
 
-	it('should return the expected array', () => {
-		assert.deepEqual(expected, actual, `Didn't return the expected array`);
-	});
+  it(`should call 'selectMyReportsSummary' once`, () => {
+    assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`);
+  });
 
-	it('should deliver the expected shape to augur-ui-react-components', () => {
-		actual = selector.default();
+  it('should return the expected array', () => {
+    assert.deepEqual(expected, actual, `Didn't return the expected array`);
+  });
 
-		portfolioNavItemsAssertions(actual);
-	});
+  it('should deliver the expected shape to augur-ui-react-components', () => {
+    actual = selector.default();
+
+    portfolioNavItemsAssertions(actual);
+  });
 });

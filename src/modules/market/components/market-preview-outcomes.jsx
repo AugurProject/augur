@@ -2,24 +2,24 @@ import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketOutcomes = p => (
-	<div className="market-preview-outcomes">
-		{p.outcomes.map((outcome, i) => (
-			<div
-				key={outcome.id}
-				className="outcome"
-			>
-				{!!outcome.lastPricePercent &&
-					<ValueDenomination
-						className="outcome-price"
-						{...outcome.lastPricePercent}
-						formatted={outcome.lastPricePercent.rounded}
-						formattedValue={outcome.lastPricePercent.roundedValue}
-					/>
+  <div className="market-preview-outcomes">
+    {p.outcomes.map((outcome, i) => (
+      <div
+        key={outcome.id}
+        className="outcome"
+      >
+        {!!outcome.lastPricePercent &&
+        <ValueDenomination
+          className="outcome-price"
+          {...outcome.lastPricePercent}
+          formatted={outcome.lastPricePercent.rounded}
+          formattedValue={outcome.lastPricePercent.roundedValue}
+        />
 				}
-				<span className="outcome-name">{outcome.name}</span>
-			</div>
+        <span className="outcome-name">{outcome.name}</span>
+      </div>
 		))}
-	</div>
+  </div>
 );
 
 // TODO -- Prop Validations

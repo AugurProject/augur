@@ -5,10 +5,10 @@ export const IMPORT = 'import';
 export const FUND_ACCOUNT = 'fund_account';
 
 export const AUTH_TYPES = {
-	[REGISTER]: REGISTER,
-	[LOGIN]: LOGIN,
-	[IMPORT]: IMPORT,
-	[LOGOUT]: LOGOUT
+  [REGISTER]: REGISTER,
+  [LOGIN]: LOGIN,
+  [IMPORT]: IMPORT,
+  [LOGOUT]: LOGOUT
 };
 
 export const DEFAULT_AUTH_TYPE = REGISTER;

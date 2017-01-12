@@ -17,34 +17,34 @@ import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
 require('core-js/es6/reflect');
 
 export function initAugur() {
-	return (dispatch, getState) => {
-		console.info(`Running Augur.js Version: ${AugurJS.augur.version}`);
+  return (dispatch, getState) => {
+    console.info(`Running Augur.js Version: ${AugurJS.augur.version}`);
 
-		const xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = () => {
-			if (xhttp.readyState === 4 && xhttp.status === 200) {
-				const env = JSON.parse(xhttp.responseText);
-				dispatch(updateEnv(env));
-				AugurJS.connect(env, (err, connected) => {
-					if (err) return console.error('connect failure:', err);
-					dispatch(updateConnectionStatus(connected));
-					dispatch(registerTransactionRelay());
-					dispatch(loadChatMessages('augur'));
-					dispatch(loadLoginAccount());
-					if (env.reportingTest) {
-						dispatch(reportingTestSetup(env.branchID));
-					} else {
-						dispatch(loadBranch(env.branchID || BRANCH_ID));
-						const { loginAccount, loginMessage } = getState();
-						if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
-							const { links } = require('../../../selectors');
-							links.loginMessageLink.onClick();
-						}
-					}
-				});
-			}
-		};
-		xhttp.open('GET', '/config/env.json', true);
-		xhttp.send();
-	};
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4 && xhttp.status === 200) {
+        const env = JSON.parse(xhttp.responseText);
+        dispatch(updateEnv(env));
+        AugurJS.connect(env, (err, connected) => {
+          if (err) return console.error('connect failure:', err);
+          dispatch(updateConnectionStatus(connected));
+          dispatch(registerTransactionRelay());
+          dispatch(loadChatMessages('augur'));
+          dispatch(loadLoginAccount());
+          if (env.reportingTest) {
+            dispatch(reportingTestSetup(env.branchID));
+          } else {
+            dispatch(loadBranch(env.branchID || BRANCH_ID));
+            const { loginAccount, loginMessage } = getState();
+            if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
+              const { links } = require('../../../selectors');
+              links.loginMessageLink.onClick();
+            }
+          }
+        });
+      }
+    };
+    xhttp.open('GET', '/config/env.json', true);
+    xhttp.send();
+  };
 }

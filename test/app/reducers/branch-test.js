@@ -7,18 +7,18 @@ import {
 import reducer from 'modules/app/reducers/branch';
 
 describe(`modules/app/reducers/branch.js`, () => {
-	const thisTestState = Object.assign({}, testState);
+  const thisTestState = Object.assign({}, testState);
 
-	it(`should update the branch object in state`, () => {
-		const action = {
-			type: UPDATE_BRANCH,
-			branch: {
-				description: 'testing!',
-				periodLength: '12345'
-			}
-		};
-		const expectedOutput = Object.assign({}, thisTestState.branch, action.branch);
-		assert.deepEqual(reducer(thisTestState.branch, action), expectedOutput, `Didn't update the branch object correctly`);
-	});
+  it(`should update the branch object in state`, () => {
+    const action = {
+      type: UPDATE_BRANCH,
+      branch: {
+        description: 'testing!',
+        periodLength: '12345'
+      }
+    };
+    const expectedOutput = Object.assign({}, thisTestState.branch, action.branch);
+    assert.deepEqual(reducer(thisTestState.branch, action), expectedOutput, `Didn't update the branch object correctly`);
+  });
 
 });

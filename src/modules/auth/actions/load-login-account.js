@@ -17,104 +17,104 @@ import { updateAccountSettings } from '../../auth/actions/update-account-setting
 import { updateScalarMarketShareDenomination } from '../../market/actions/update-scalar-market-share-denomination';
 
 export function loadLoginAccountDependents(cb) {
-	return (dispatch, getState) => {
-		const { loginAccount } = getState();
-		dispatch(updateAssets(cb));
-		AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
-			if (!err && blockNumber) {
-				loginAccount.registerBlockNumber = blockNumber;
-				dispatch(updateLoginAccount(loginAccount));
-			}
-			dispatch(clearAccountTrades());
-			dispatch(loadAccountTrades());
+  return (dispatch, getState) => {
+    const { loginAccount } = getState();
+    dispatch(updateAssets(cb));
+    AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
+      if (!err && blockNumber) {
+        loginAccount.registerBlockNumber = blockNumber;
+        dispatch(updateLoginAccount(loginAccount));
+      }
+      dispatch(clearAccountTrades());
+      dispatch(loadAccountTrades());
 
 			// clear and load reports for any markets that have been loaded
 			// (partly to handle signing out of one account and into another)
-			dispatch(clearReports());
-			dispatch(syncBranch((err) => {
-				if (err) console.error('syncBranch:', err);
-				dispatch(loadEventsWithSubmittedReport());
-			}));
-		});
-	};
+      dispatch(clearReports());
+      dispatch(syncBranch((err) => {
+        if (err) console.error('syncBranch:', err);
+        dispatch(loadEventsWithSubmittedReport());
+      }));
+    });
+  };
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch) => {
-		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+  return (dispatch) => {
+    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
-			return;
-		}
+    if (!localStorageRef || !localStorageRef.getItem || !accountID) {
+      return;
+    }
 
-		const localState = JSON.parse(localStorageRef.getItem(accountID));
+    const localState = JSON.parse(localStorageRef.getItem(accountID));
 
-		if (!localState) {
-			return;
-		}
+    if (!localState) {
+      return;
+    }
 
-		if (localState.favorites) {
-			dispatch(updateFavorites(localState.favorites));
-		}
-		if (localState.scalarMarketsShareDenomination) {
-			Object.keys(localState.scalarMarketsShareDenomination).forEach((marketID) => {
-				dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
-			});
-		}
-		if (localState.accountTrades) {
-			dispatch(clearAccountTrades());
-			dispatch(updateAccountTradesData(localState.accountTrades));
-		}
-		if (localState.reports && Object.keys(localState.reports).length) {
-			dispatch(updateReports(localState.reports));
-		}
-		if (localState.transactionsData) {
-			Object.keys(localState.transactionsData).forEach((key) => {
-				if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
-					localState.transactionsData[key].status = INTERRUPTED;
-					localState.transactionsData[key].message = 'unknown if completed';
-				}
-			});
-			dispatch(updateTransactionsData(localState.transactionsData));
-		}
-		if (localState.settings) {
-			dispatch(updateAccountSettings(localState.settings));
-		}
+    if (localState.favorites) {
+      dispatch(updateFavorites(localState.favorites));
+    }
+    if (localState.scalarMarketsShareDenomination) {
+      Object.keys(localState.scalarMarketsShareDenomination).forEach((marketID) => {
+        dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
+      });
+    }
+    if (localState.accountTrades) {
+      dispatch(clearAccountTrades());
+      dispatch(updateAccountTradesData(localState.accountTrades));
+    }
+    if (localState.reports && Object.keys(localState.reports).length) {
+      dispatch(updateReports(localState.reports));
+    }
+    if (localState.transactionsData) {
+      Object.keys(localState.transactionsData).forEach((key) => {
+        if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
+          localState.transactionsData[key].status = INTERRUPTED;
+          localState.transactionsData[key].message = 'unknown if completed';
+        }
+      });
+      dispatch(updateTransactionsData(localState.transactionsData));
+    }
+    if (localState.settings) {
+      dispatch(updateAccountSettings(localState.settings));
+    }
 
-		if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
-			dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
-		}
-	};
+    if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
+      dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
+    }
+  };
 }
 
 export function loadLoginAccount() {
-	return (dispatch, getState) => {
-		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-		const { env } = getState();
+  return (dispatch, getState) => {
+    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+    const { env } = getState();
 
-		AugurJS.loadLoginAccount(env, (err, loginAccount) => {
-			let localLoginAccount = loginAccount;
+    AugurJS.loadLoginAccount(env, (err, loginAccount) => {
+      let localLoginAccount = loginAccount;
 
-			if (err) {
-				return console.error('ERR loadLoginAccount():', err);
-			}
+      if (err) {
+        return console.error('ERR loadLoginAccount():', err);
+      }
 
-			if (!localLoginAccount && localStorageRef && localStorageRef.getItem) {
-				const account = localStorageRef.getItem('account');
-				if (account !== null) {
-					localLoginAccount = JSON.parse(account);
-				}
-			}
+      if (!localLoginAccount && localStorageRef && localStorageRef.getItem) {
+        const account = localStorageRef.getItem('account');
+        if (account !== null) {
+          localLoginAccount = JSON.parse(account);
+        }
+      }
 
-			if (!localLoginAccount || !localLoginAccount.address) {
-				return;
-			}
-			localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
+      if (!localLoginAccount || !localLoginAccount.address) {
+        return;
+      }
+      localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
-			dispatch(updateLoginAccount(localLoginAccount));
-			dispatch(loadLoginAccountDependents());
+      dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
+      dispatch(updateLoginAccount(localLoginAccount));
+      dispatch(loadLoginAccountDependents());
 
-		});
-	};
+    });
+  };
 }

@@ -20,24 +20,24 @@ ${colors.notice('NOTE')}	${colors.dim(`| The initial build takes a while.
 );
 
 const devServer = new Promise((resolve, reject) => {
-	shell.exec(`node ${SERVER}`, (code) => {
-		if (code !== 0) {
-			reject(new Error());
-			shell.exit(code);
-		}
+  shell.exec(`node ${SERVER}`, (code) => {
+    if (code !== 0) {
+      reject(new Error());
+      shell.exit(code);
+    }
 
-		resolve();
-	});
+    resolve();
+  });
 });
 
 const tasks = new Listr([
-	{
-		title: 'Development Server',
-		task: () => devServer
-	}
+  {
+    title: 'Development Server',
+    task: () => devServer
+  }
 ],
-{
-	renderer: 'verbose'
-});
+  {
+    renderer: 'verbose'
+  });
 
 tasks.run().catch((err) => {});

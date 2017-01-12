@@ -9,10 +9,10 @@ export const addFundNewAccount = address => (
 );
 
 export const makeAddFundTransaction = (address, dispatch) => {
-	const addFundingObject = {
-		type: FUND_ACCOUNT,
-		address,
-		action: transactionID => dispatch(processFundNewAccount(transactionID, address))
-	};
-	return addFundingObject;
+  const addFundingObject = {
+    type: FUND_ACCOUNT,
+    address,
+    action: transactionID => dispatch(processFundNewAccount(transactionID, address))
+  };
+  return addFundingObject;
 };

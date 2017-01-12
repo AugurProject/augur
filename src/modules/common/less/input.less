@@ -1,63 +1,63 @@
 .input {
-	.border(true);
+  .border(true);
 
-	input {
-		.border(false);
-	}
+  input {
+    .border(false);
+  }
 
-	&.clearable {
-		.box {
-			padding-right: 2em;
-		}
-	}
+  &.clearable {
+    .box {
+      padding-right: 2em;
+    }
+  }
 
-	&.input-error {
-		border-color: @color-red-light;
-	}
+  &.input-error {
+    border-color: @color-red-light;
+  }
 
-	&.is-incrementable {
-		display: flex;
+  &.is-incrementable {
+    display: flex;
 
-		.box {
-			width: 80%;
-		}
+    .box {
+      width: 80%;
+    }
 
-		input[type='number'] {
-			appearance: textfield;
-		}
+    input[type='number'] {
+      appearance: textfield;
+    }
 
-		input[type=number]::-webkit-outer-spin-button,
-		input[type=number]::-webkit-inner-spin-button {
-			appearance: none;
-			margin: 0;
-		}
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
 
-		input {
-			flex: 1 1 auto;
-		}
+    input {
+      flex: 1 1 auto;
+    }
 
-		.value-incrementers {
+    .value-incrementers {
 
-			.border(true, @border-left);
+      .border(true, @border-left);
 
-			display: flex;
-			flex-direction: column;
+      display: flex;
+      flex-direction: column;
 
-			button {
-				cursor: default;
-				flex: 1;
-				padding: 0 0.2em;
+      button {
+        cursor: default;
+        flex: 1;
+        padding: 0 0.2em;
 
-				&:active {
-					background-color: @color-gray;
-				}
-			}
-		}
-	}
+        &:active {
+          background-color: @color-gray;
+        }
+      }
+    }
+  }
 
-	.box {
-		font-size: inherit;
-		padding: 0.5em;
-		width: 100%;
-	}
+  .box {
+    font-size: inherit;
+    padding: 0.5em;
+    width: 100%;
+  }
 }

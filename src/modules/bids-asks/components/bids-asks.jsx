@@ -2,20 +2,20 @@ import React from 'react';
 import OrderBook from 'modules/bids-asks/components/order-book';
 
 const BidsAsks = p => (
-	<div className="bids-asks">
-		{
+  <div className="bids-asks">
+    {
 			p.market.outcomes.map(outcome =>
 				(
-					<OrderBook
-						key={`order-book-${outcome.id}`}
-						outcome={outcome}
-						bids={outcome.orderBook.bids}
-						asks={outcome.orderBook.asks}
-					/>
+  <OrderBook
+    key={`order-book-${outcome.id}`}
+    outcome={outcome}
+    bids={outcome.orderBook.bids}
+    asks={outcome.orderBook.asks}
+  />
 				)
 			)
 		}
-	</div>
+  </div>
 );
 
 // TODO -- Prop Validations

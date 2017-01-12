@@ -8,47 +8,47 @@ import Reports from 'modules/portfolio/components/reports';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 const PortfolioView = (p) => {
-	let node;
+  let node;
 
-	switch (p.activeView) {
-		default:
-		case MY_POSITIONS:
-			node = <Positions {...p.positions} settings={p.settings} />;
-			break;
-		case MY_MARKETS:
-			node = <Markets {...p.markets} />;
-			break;
-		case MY_REPORTS:
-			node = <Reports {...p.reports} branch={p.branch} />;
-			break;
-	}
-	return (
-		<section id="portfolio_view" >
-			<header className="page-header portfolio-header">
-				{!!p.navItems && !!p.navItems.length &&
-					<TabNavigation
-						activeView={p.activeView}
-						navItems={p.navItems}
-					/>
+  switch (p.activeView) {
+    default:
+    case MY_POSITIONS:
+      node = <Positions {...p.positions} settings={p.settings} />;
+      break;
+    case MY_MARKETS:
+      node = <Markets {...p.markets} />;
+      break;
+    case MY_REPORTS:
+      node = <Reports {...p.reports} branch={p.branch} />;
+      break;
+  }
+  return (
+    <section id="portfolio_view" >
+      <header className="page-header portfolio-header">
+        {!!p.navItems && !!p.navItems.length &&
+        <TabNavigation
+          activeView={p.activeView}
+          navItems={p.navItems}
+        />
 				}
-			</header>
+      </header>
 
-			<div className="page-content">
-				<section className="portfolio-content">
-					{node}
-				</section>
-			</div>
-		</section>
-	);
+      <div className="page-content">
+        <section className="portfolio-content">
+          {node}
+        </section>
+      </div>
+    </section>
+  );
 };
 
 PortfolioView.propTypes = {
-	navItems: PropTypes.array.isRequired,
-	totals: PropTypes.object.isRequired,
-	positions: PropTypes.object.isRequired,
-	markets: PropTypes.object.isRequired,
-	reports: PropTypes.object.isRequired,
-	settings: PropTypes.object.isRequired
+  navItems: PropTypes.array.isRequired,
+  totals: PropTypes.object.isRequired,
+  positions: PropTypes.object.isRequired,
+  markets: PropTypes.object.isRequired,
+  reports: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired
 };
 
 export default PortfolioView;

@@ -8,37 +8,37 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 import getValue from 'utils/get-value';
 
 const MarketPositions = (p) => {
-	const outcomePositions = getValue(p, 'market.myPositionOutcomes');
-	const nullMessage = 'No Current Positions';
+  const outcomePositions = getValue(p, 'market.myPositionOutcomes');
+  const nullMessage = 'No Current Positions';
 
-	return (
-		<article className="market-positions">
-			{!outcomePositions ?
-				<NullStateMessage message={nullMessage} /> :
-				<div>
-					<div className="market-positions-header">
-						<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
-						<span>Shares</span>
-						<span>Avg Price</span>
-						<span>Last Price</span>
-						<span>Realized P/L</span>
-						<span>Unrealized P/L</span>
-						<span>Total P/L</span>
-					</div>
-					<div className="market-content-scrollable" >
-						{(outcomePositions || []).map(outcome =>
-							<MarketPositionsRow
-								key={outcome.id}
-								marketType={p.marketType}
-								outcome={outcome}
-								selectedShareDenomination={p.selectedShareDenomination}
-							/>
+  return (
+    <article className="market-positions">
+      {!outcomePositions ?
+        <NullStateMessage message={nullMessage} /> :
+        <div>
+          <div className="market-positions-header">
+            <span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
+            <span>Shares</span>
+            <span>Avg Price</span>
+            <span>Last Price</span>
+            <span>Realized P/L</span>
+            <span>Unrealized P/L</span>
+            <span>Total P/L</span>
+          </div>
+          <div className="market-content-scrollable" >
+            {(outcomePositions || []).map(outcome =>
+              <MarketPositionsRow
+                key={outcome.id}
+                marketType={p.marketType}
+                outcome={outcome}
+                selectedShareDenomination={p.selectedShareDenomination}
+              />
 						)}
-					</div>
-				</div>
+          </div>
+        </div>
 			}
-		</article>
-	);
+    </article>
+  );
 };
 
 export default MarketPositions;

@@ -9,17 +9,17 @@ Object.keys(rawSelectors).forEach(selectorKey =>
 ));
 
 if (module.hot) {
-	module.hot.accept();
+  module.hot.accept();
 
-	module.hot.accept('./selectors-raw', () => {
-		const hotSelectors = require('src/selectors-raw').default;
+  module.hot.accept('./selectors-raw', () => {
+    const hotSelectors = require('src/selectors-raw').default;
 
-		module.exports = {};
+    module.exports = {};
 
-		Object.keys(hotSelectors).forEach(selectorKey =>
+    Object.keys(hotSelectors).forEach(selectorKey =>
 			Object.defineProperty(module.exports,
 				selectorKey,
 				{ get: hotSelectors[selectorKey], enumerable: true }
 		));
-	});
+  });
 }

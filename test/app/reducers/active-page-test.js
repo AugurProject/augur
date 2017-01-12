@@ -5,16 +5,16 @@ import reducer from 'modules/app/reducers/active-view';
 import testState from 'test/testState';
 
 describe(`modules/app/reducers/active-page.js`, () => {
-	const thisTestState = Object.assign({}, testState);
+  const thisTestState = Object.assign({}, testState);
 
-	it(`should update activepage`, () => {
-		const action = {
-			type: UPDATE_URL,
-			parsedURL: {
-				searchParams: { page: 'login' }
-			}
-		};
-		const expectedOutput = 'login';
-		assert.equal(reducer(thisTestState.activePage, action), expectedOutput, `didn't switch to login from default page of 'markets'`);
-	});
+  it(`should update activepage`, () => {
+    const action = {
+      type: UPDATE_URL,
+      parsedURL: {
+        searchParams: { page: 'login' }
+      }
+    };
+    const expectedOutput = 'login';
+    assert.equal(reducer(thisTestState.activePage, action), expectedOutput, `didn't switch to login from default page of 'markets'`);
+  });
 });

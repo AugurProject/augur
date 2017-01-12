@@ -4,9 +4,9 @@ import updateSelectedOutcome from '../../outcomes/actions/update-selected-outcom
 
 export default () =>
 	({
-		selectedOutcomeID: store.getState().selectedOutcomeID,
-		updateSelectedOutcome: selectUpdateSelectedOutcome(store.dispatch)
-	});
+  selectedOutcomeID: store.getState().selectedOutcomeID,
+  updateSelectedOutcome: selectUpdateSelectedOutcome(store.dispatch)
+});
 
 const selectUpdateSelectedOutcome = memoizerific(1)(dispatch =>
 	selectedOutcomeID => dispatch(updateSelectedOutcome(selectedOutcomeID))

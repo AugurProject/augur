@@ -8,55 +8,55 @@ import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-
 import { submitNewMarket } from '../../../create-market/actions/submit-new-market';
 
 export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) => {
-	const o = { ...formState };
+  const o = { ...formState };
 
-	o.type = formState.type;
-	o.endDate = formatDate(formState.endDate);
-	o.endBlock = selectEndBlockFromEndDate(
+  o.type = formState.type;
+  o.endDate = formatDate(formState.endDate);
+  o.endBlock = selectEndBlockFromEndDate(
 								formState.endDate.getTime(),
 								currentBlockNumber,
 								currentBlockMillisSinceEpoch);
 
 	// o.tradingFee = formState.tradingFeePercent / 100;
-	o.takerFeePercent = formatPercent(formState.takerFee);
-	o.makerFeePercent = formatPercent(formState.makerFee);
-	o.volume = formatNumber(0);
-	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
+  o.takerFeePercent = formatPercent(formState.takerFee);
+  o.makerFeePercent = formatPercent(formState.makerFee);
+  o.volume = formatNumber(0);
+  o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
-	o.formattedDescription = o.description;
+  o.formattedDescription = o.description;
 
-	o.outcomes = selectOutcomesFromForm(
+  o.outcomes = selectOutcomesFromForm(
 		formState.type,
 		formState.categoricalOutcomes,
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
-	o.isFavorite = false;
-	o.eventBond = formatEther(0); // 0 for testing
-	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
-	o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
+  o.isFavorite = false;
+  o.eventBond = formatEther(0); // 0 for testing
+  o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CreateMarket.createMarket }, augur.rpc.gasPrice));
+  o.marketCreationFee = formatRealEther(abi.bignum(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)).dividedBy(constants.ETHER));
 
-	if (o.isCreatingOrderBook) {
-		const formattedFairPrices = [];
+  if (o.isCreatingOrderBook) {
+    const formattedFairPrices = [];
 
-		o.initialFairPrices.values.map((cV, i) => {
-			formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
-			return formattedFairPrices;
-		});
+    o.initialFairPrices.values.map((cV, i) => {
+      formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
+      return formattedFairPrices;
+    });
 
-		o.initialFairPrices = {
-			...o.initialFairPrices,
-			formatted: formattedFairPrices
-		};
+    o.initialFairPrices = {
+      ...o.initialFairPrices,
+      formatted: formattedFairPrices
+    };
 
-		o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
-		o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
-		o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
-		o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
-	}
+    o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
+    o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
+    o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
+    o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
+  }
 
-	o.onSubmit = () => { dispatch(submitNewMarket(o)); };
+  o.onSubmit = () => { dispatch(submitNewMarket(o)); };
 
-	return o;
+  return o;
 };
 
 export const selectEndBlockFromEndDate = (
@@ -72,17 +72,17 @@ export const selectOutcomesFromForm = (
 	categoricalOutcomes,
 	scalarSmallNum,
 	scalarBigNum) => {
-	switch (type) {
-		case BINARY:
-			return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
-		case CATEGORICAL:
-			return categoricalOutcomes.map((outcome, i) => {
-				const obj = { id: i, name: outcome };
-				return obj;
-			});
-		case SCALAR:
-			return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
-		default:
-			break;
-	}
+  switch (type) {
+    case BINARY:
+      return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+    case CATEGORICAL:
+      return categoricalOutcomes.map((outcome, i) => {
+        const obj = { id: i, name: outcome };
+        return obj;
+      });
+    case SCALAR:
+      return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+    default:
+      break;
+  }
 };

@@ -1,35 +1,35 @@
 .component-nav {
 
-	.border(true, @border-bottom, @border-muted);
+  .border(true, @border-bottom, @border-muted);
 
-	display: flex;
+  display: flex;
 
-	.link {
-		cursor: default;
+  .link {
+    cursor: default;
 
-		&.mobile-only {
-			display: none;
+    &.mobile-only {
+      display: none;
 
-			@media @breakpoint-mobile {
-				display: block;
-			}
-		}
-	}
+      @media @breakpoint-mobile {
+        display: block;
+      }
+    }
+  }
 
-	li {
-		margin: 0 1em -1px; // -1px pulls bottom `up` one pixel to stylistically overlap w/ component-nav bottom border
-		padding: 1em 0 0.5em;
+  li {
+    margin: 0 1em -1px; // -1px pulls bottom `up` one pixel to stylistically overlap w/ component-nav bottom border
+    padding: 1em 0 0.5em;
 
-		// .transition(border-bottom @animation-speed-very-fast); // Not a great transition in testing...leaving for now
+    // .transition(border-bottom @animation-speed-very-fast); // Not a great transition in testing...leaving for now
 
-		&.selected {
+    &.selected {
 
-			.border(true, @border-bottom, @color-purple, @border-width-3);
-		}
+      .border(true, @border-bottom, @color-purple, @border-width-3);
+    }
 
-		&:hover:not(.selected) {
+    &:hover:not(.selected) {
 
-			.border(true, @border-bottom, @color-purple, @border-width-2);
-		}
-	}
+      .border(true, @border-bottom, @color-purple, @border-width-2);
+    }
+  }
 }

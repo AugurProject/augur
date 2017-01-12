@@ -1,6 +1,6 @@
 export default function (endDate) {
-	if (!endDate) {
-		return 'Please choose an end date';
-	}
-	return null;
+  if (!endDate) {
+    return 'Please choose an end date';
+  }
+  return null;
 }

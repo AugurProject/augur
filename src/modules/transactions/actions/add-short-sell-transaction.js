@@ -6,34 +6,34 @@ import { processShortSell } from '../../trade/actions/process-short-sell';
 
 export const addShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
-	}
+  dispatch(addTransaction(makeShortSellTransaction(marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch)));
+}
 );
 
 export const makeShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth, dispatch) => {
-	console.log('short sell transaction:', marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
-	const bnNumShares = abi.bignum(numShares);
-	const transaction = {
-		type: SHORT_SELL,
-		data: {
-			marketID,
-			outcomeID,
-			marketType,
-			marketDescription,
-			outcomeName
-		},
-		numShares: formatShares(numShares),
-		noFeePrice: formatEther(limitPrice),
-		avgPrice: formatEther(abi.bignum(totalCost)
+  console.log('short sell transaction:', marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth);
+  const bnNumShares = abi.bignum(numShares);
+  const transaction = {
+    type: SHORT_SELL,
+    data: {
+      marketID,
+      outcomeID,
+      marketType,
+      marketDescription,
+      outcomeName
+    },
+    numShares: formatShares(numShares),
+    noFeePrice: formatEther(limitPrice),
+    avgPrice: formatEther(abi.bignum(totalCost)
 			.minus(bnNumShares)
 			.dividedBy(bnNumShares)
 			.abs()),
-		tradingFees: formatEther(tradingFeesEth),
-		feePercent: formatPercent(feePercent),
-		gasFees: formatRealEther(gasFeesRealEth)
-	};
+    tradingFees: formatEther(tradingFeesEth),
+    feePercent: formatPercent(feePercent),
+    gasFees: formatRealEther(gasFeesRealEth)
+  };
 
-	transaction.action = transactionID => dispatch(processShortSell(
+  transaction.action = transactionID => dispatch(processShortSell(
 		transactionID,
 		marketID,
 		outcomeID,
@@ -43,5 +43,5 @@ export const makeShortSellTransaction = (marketID, outcomeID, marketType, market
 		tradingFeesEth,
 		gasFeesRealEth));
 
-	return transaction;
+  return transaction;
 };

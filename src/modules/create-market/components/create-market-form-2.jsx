@@ -7,56 +7,56 @@ import Input from 'modules/common/components/input';
 import DatePicker from 'modules/common/components/datepicker';
 
 const CreateMarketForm2 = (p) => {
-	let	typeSpecific;
+  let	typeSpecific;
 	// const tomorrow = new Date();
 	// tomorrow.setDate(tomorrow.getDate() + 1);
-	switch (p.type) {
-		case CATEGORICAL:
-			typeSpecific = <Form2Categorical {...p} />;
-			break;
-		case SCALAR:
-			typeSpecific = <Form2Scalar {...p} />;
-			break;
-		default:
-			break;
-	}
+  switch (p.type) {
+    case CATEGORICAL:
+      typeSpecific = <Form2Categorical {...p} />;
+      break;
+    case SCALAR:
+      typeSpecific = <Form2Scalar {...p} />;
+      break;
+    default:
+      break;
+  }
 
-	return (
-		<div className="step-2">
-			<div className="description">
-				<h1>
+  return (
+    <div className="step-2">
+      <div className="description">
+        <h1>
 					What do you want to ask?
 				</h1>
-				<Input
-					type="text"
-					value={p.description}
-					placeholder={p.descriptionPlaceholder}
-					maxLength={p.descriptionMaxLength}
-					onChange={value => p.onValuesUpdated({ description: value })}
-				/>
-				{p.errors.description &&
-					<span className="error-message">{p.errors.description}</span>
+        <Input
+          type="text"
+          value={p.description}
+          placeholder={p.descriptionPlaceholder}
+          maxLength={p.descriptionMaxLength}
+          onChange={value => p.onValuesUpdated({ description: value })}
+        />
+        {p.errors.description &&
+        <span className="error-message">{p.errors.description}</span>
 				}
-			</div>
+      </div>
 
-			{typeSpecific}
+      {typeSpecific}
 
-			<div className="end-date">
-				<h4>What&apos;s the end date for your question?</h4>
+      <div className="end-date">
+        <h4>What&apos;s the end date for your question?</h4>
 
-				<DatePicker endDate={p.endDate} onValuesUpdated={p.onValuesUpdated} />
+        <DatePicker endDate={p.endDate} onValuesUpdated={p.onValuesUpdated} />
 
-				{p.errors.endDate &&
-					<span className="error-message">{p.errors.endDate}</span>
+        {p.errors.endDate &&
+        <span className="error-message">{p.errors.endDate}</span>
 				}
-			</div>
-			<FormButtons
-				disabled={!p.isValid}
-				onNext={() => p.onValuesUpdated({ step: p.step + 1 })}
-				onPrev={() => p.onValuesUpdated({ step: p.step - 1 })}
-			/>
-		</div>
-	);
+      </div>
+      <FormButtons
+        disabled={!p.isValid}
+        onNext={() => p.onValuesUpdated({ step: p.step + 1 })}
+        onPrev={() => p.onValuesUpdated({ step: p.step - 1 })}
+      />
+    </div>
+  );
 };
 
 // TODO -- Prop Validations

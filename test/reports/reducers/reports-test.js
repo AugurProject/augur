@@ -8,99 +8,99 @@ import testState from 'test/testState';
 import reducer from 'modules/reports/reducers/reports';
 
 describe(`modules/reports/reducers/reports.js`, () => {
-	let action;
-	let test;
-	const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
-	const state = Object.assign({}, testState);
+  let action;
+  let test;
+  const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
+  const state = Object.assign({}, testState);
 
-	afterEach(() => {
-		testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
-	});
+  afterEach(() => {
+    testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
+  });
 
-	it(`should update reports`, () => {
-		action = {
-			type: UPDATE_REPORTS,
-			reports: {
-				[testState.branch.id]: {
-					test: {
-						eventID: 'test',
-						example: 'example',
-						isScalar: false,
-						isIndeterminate: false,
-						isUnethical: false,
-						isRevealed: false
-					},
-					example: {
-						eventID: 'example',
-						test: 'test',
-						isScalar: false,
-						isIndeterminate: false,
-						isUnethical: false,
-						isRevealed: false
-					}
-				}
-			}
-		};
-		const out = {
-			[testState.branch.id]: {
-				test: {
-					eventID: 'test',
-					example: 'example',
-					isScalar: false,
-					isIndeterminate: false,
-					isUnethical: false,
-					isRevealed: false
-				},
-				example: {
-					eventID: 'example',
-					test: 'test',
-					isScalar: false,
-					isIndeterminate: false,
-					isUnethical: false,
-					isRevealed: false
-				},
-				testEventID: {
-					eventID: 'testEventID',
-					isScalar: false,
-					isIndeterminate: false,
-					isUnethical: false,
-					isRevealed: false
-				}
-			}
-		};
+  it(`should update reports`, () => {
+    action = {
+      type: UPDATE_REPORTS,
+      reports: {
+        [testState.branch.id]: {
+          test: {
+            eventID: 'test',
+            example: 'example',
+            isScalar: false,
+            isIndeterminate: false,
+            isUnethical: false,
+            isRevealed: false
+          },
+          example: {
+            eventID: 'example',
+            test: 'test',
+            isScalar: false,
+            isIndeterminate: false,
+            isUnethical: false,
+            isRevealed: false
+          }
+        }
+      }
+    };
+    const out = {
+      [testState.branch.id]: {
+        test: {
+          eventID: 'test',
+          example: 'example',
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          isRevealed: false
+        },
+        example: {
+          eventID: 'example',
+          test: 'test',
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          isRevealed: false
+        },
+        testEventID: {
+          eventID: 'testEventID',
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          isRevealed: false
+        }
+      }
+    };
 
-		test = reducer(state.reports, action);
+    test = reducer(state.reports, action);
 
-		assert.deepEqual(test, out, `Didn't update report information`);
-	});
+    assert.deepEqual(test, out, `Didn't update report information`);
+  });
 
-	it(`should clear reports`, () => {
-		action = {
-			type: CLEAR_REPORTS
-		};
-		const fakeState = {
-			[testState.branch.id]: {
-				test: {
-					eventID: 'test',
-					example: 'example',
-					isScalar: false,
-					isIndeterminate: false,
-					isUnethical: false,
-					isRevealed: false
-				},
-				example: {
-					eventID: 'example',
-					test: 'test',
-					isScalar: false,
-					isIndeterminate: false,
-					isUnethical: false,
-					isRevealed: false
-				}
-			}
-		};
+  it(`should clear reports`, () => {
+    action = {
+      type: CLEAR_REPORTS
+    };
+    const fakeState = {
+      [testState.branch.id]: {
+        test: {
+          eventID: 'test',
+          example: 'example',
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          isRevealed: false
+        },
+        example: {
+          eventID: 'example',
+          test: 'test',
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          isRevealed: false
+        }
+      }
+    };
 
-		test = reducer(fakeState, action);
+    test = reducer(fakeState, action);
 
-		assert.deepEqual(test, {}, `Didn't clear reports correctly`);
-	});
+    assert.deepEqual(test, {}, `Didn't clear reports correctly`);
+  });
 });

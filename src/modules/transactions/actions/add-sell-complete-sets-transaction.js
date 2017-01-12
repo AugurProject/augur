@@ -9,57 +9,57 @@ import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-ac
 import { augur, abi } from '../../../services/augurjs';
 
 export function addSellCompleteSetsTransaction(marketID, numShares, callback) {
-	return (dispatch, getState) => {
-		const marketData = getState().marketsData[marketID];
-		const fmtNumShares = formatShares(numShares);
-		const fmtValue = formatEther(abi.bignum(numShares).times(abi.bignum(marketData.cumulativeScale)));
-		const transaction = {
-			type: SELL_COMPLETE_SETS,
-			data: {
-				marketID,
-				marketDescription: marketData.description
-			},
-			numShares: fmtNumShares,
-			value: fmtValue,
-			gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
-		};
-		console.info(SELL_COMPLETE_SETS, transaction.data);
-		transaction.action = (transactionID) => {
-			augur.sellCompleteSets({
-				market: marketID,
-				amount: numShares,
-				onSent: (r) => {
-					console.debug('sellCompleteSets sent:', r);
-					dispatch(updateExistingTransaction(transactionID, {
-						status: SUBMITTED,
-						message: `redeeming ${fmtNumShares.formatted} complete sets`
-					}));
-				},
-				onSuccess: (r) => {
-					console.debug('sellCompleteSets success:', r);
-					dispatch(updateExistingTransaction(transactionID, {
-						status: SUCCESS,
-						hash: r.hash,
-						timestamp: r.timestamp,
-						message: `redeemed ${fmtNumShares.formatted} complete sets`,
-						gasFees: formatRealEther(r.gasFees)
-					}));
-					dispatch(updateAssets());
-					dispatch(loadAccountTrades(marketID));
-					dispatch(updateSellCompleteSetsLock(marketID, false));
-					if (callback) callback(null);
-				},
-				onFailed: (e) => {
-					console.error('sellCompleteSets failed:', e);
-					dispatch(updateExistingTransaction(transactionID, {
-						status: FAILED,
-						message: `transaction failed: ${e.message}`
-					}));
-					dispatch(updateSellCompleteSetsLock(marketID, false));
-					if (callback) callback(e);
-				}
-			});
-		};
-		dispatch(addTransaction(transaction));
-	};
+  return (dispatch, getState) => {
+    const marketData = getState().marketsData[marketID];
+    const fmtNumShares = formatShares(numShares);
+    const fmtValue = formatEther(abi.bignum(numShares).times(abi.bignum(marketData.cumulativeScale)));
+    const transaction = {
+      type: SELL_COMPLETE_SETS,
+      data: {
+        marketID,
+        marketDescription: marketData.description
+      },
+      numShares: fmtNumShares,
+      value: fmtValue,
+      gasFees: formatRealEtherEstimate(augur.getTxGasEth({ ...augur.tx.CompleteSets.sellCompleteSets }, augur.rpc.gasPrice))
+    };
+    console.info(SELL_COMPLETE_SETS, transaction.data);
+    transaction.action = (transactionID) => {
+      augur.sellCompleteSets({
+        market: marketID,
+        amount: numShares,
+        onSent: (r) => {
+          console.debug('sellCompleteSets sent:', r);
+          dispatch(updateExistingTransaction(transactionID, {
+            status: SUBMITTED,
+            message: `redeeming ${fmtNumShares.formatted} complete sets`
+          }));
+        },
+        onSuccess: (r) => {
+          console.debug('sellCompleteSets success:', r);
+          dispatch(updateExistingTransaction(transactionID, {
+            status: SUCCESS,
+            hash: r.hash,
+            timestamp: r.timestamp,
+            message: `redeemed ${fmtNumShares.formatted} complete sets`,
+            gasFees: formatRealEther(r.gasFees)
+          }));
+          dispatch(updateAssets());
+          dispatch(loadAccountTrades(marketID));
+          dispatch(updateSellCompleteSetsLock(marketID, false));
+          if (callback) callback(null);
+        },
+        onFailed: (e) => {
+          console.error('sellCompleteSets failed:', e);
+          dispatch(updateExistingTransaction(transactionID, {
+            status: FAILED,
+            message: `transaction failed: ${e.message}`
+          }));
+          dispatch(updateSellCompleteSetsLock(marketID, false));
+          if (callback) callback(e);
+        }
+      });
+    };
+    dispatch(addTransaction(transaction));
+  };
 }
