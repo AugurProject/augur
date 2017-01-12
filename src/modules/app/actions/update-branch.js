@@ -3,6 +3,7 @@ import { ONE } from '../../trade/constants/numbers';
 import { isZero } from '../../../utils/math';
 import { augur, abi } from '../../../services/augurjs';
 import { checkPeriod } from '../../reports/actions/check-period';
+import { updateAssets } from '../../auth/actions/update-assets';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 
 export const UPDATE_BRANCH = 'UPDATE_BRANCH';
@@ -49,7 +50,6 @@ export function syncBranchReporter(cb) {
 					return callback(feesCollected || 'could not look up fees collected');
 				}
 				dispatch(updateBranch({ feesCollected: feesCollected === '1' }));
-				dispatch(claimProceeds());
 
 				// check if period needs to be incremented / penalizeWrong
 				// needs to be called
@@ -88,9 +88,11 @@ export function syncBranch(cb) {
 					}
 					dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
 					if (!loginAccount.address) return callback(null);
-					dispatch(claimProceeds());
-					if (!loginAccount.rep || isZero(loginAccount.rep)) return callback(null);
-					dispatch(syncBranchReporter(callback));
+					dispatch(updateAssets((err, balances) => {
+						dispatch(claimProceeds());
+						if (!balances.rep || isZero(balances.rep)) return callback(null);
+						dispatch(syncBranchReporter(callback));
+					}));
 				});
 			});
 		});
