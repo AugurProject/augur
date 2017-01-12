@@ -2,7 +2,7 @@ import { abi, augur, rpc } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { constructTradingTransaction, constructTransaction, constructBasicTransaction } from '../../transactions/actions/construct-transaction';
+import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from '../../transactions/actions/construct-transaction';
 import unpackTransactionParameters from '../../transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
