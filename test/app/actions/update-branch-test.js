@@ -23,6 +23,7 @@ describe(`modules/app/actions/update-branch.js`, () => {
 	const store = mockStore(state);
 	const mockAugurJS = { augur: {}, abi: { bignum: () => {} } };
 	const mockCheckPeriod = { checkPeriod: () => {} };
+	const mockUpdateAssets = { updateAssets: () => {} };
 	const mockClaimProceeds = {};
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
 	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
@@ -43,10 +44,15 @@ describe(`modules/app/actions/update-branch.js`, () => {
 		dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });
 		cb(null, reportPeriod);
 	});
+	sinon.stub(mockUpdateAssets, 'updateAssets', cb => (dispatch) => {
+		dispatch({ type: 'UPDATE_ASSETS' });
+		cb(null, { rep: null });
+	});
 	const action = proxyquire('../../../src/modules/app/actions/update-branch.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../reports/actions/check-period': mockCheckPeriod,
-		'../../my-positions/actions/claim-proceeds': mockClaimProceeds
+		'../../my-positions/actions/claim-proceeds': mockClaimProceeds,
+		'../../auth/actions/update-assets': mockUpdateAssets
 	});
 	beforeEach(() => {
 		store.clearActions();
@@ -111,6 +117,8 @@ describe(`modules/app/actions/update-branch.js`, () => {
 				numEventsInReportPeriod: 6
 			}
 		}, {
+			type: 'UPDATE_ASSETS'
+		}, {
 			type: 'CLAIM_PROCEEDS'
 		}, {
 			type: 'MOCK_CB_CALLED'
@@ -159,6 +167,8 @@ describe(`modules/app/actions/update-branch.js`, () => {
 			branch: {
 				numEventsInReportPeriod: 6
 			}
+		}, {
+			type: 'UPDATE_ASSETS'
 		}, {
 			type: 'CLAIM_PROCEEDS'
 		}, {
