@@ -90,7 +90,7 @@ export const selectAverageTradeSize = memoizerific(1)((marketPriceHistory) => {
 
 	const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
 		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-			shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.shares)),
+			shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.amount)),
 			trades: outcomeTotals.trades + 1
 		}), initialState);
 
