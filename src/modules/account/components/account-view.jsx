@@ -77,43 +77,43 @@ export default class AccountPage extends Component {
                   <th className="title">Account Name:</th>
                   <td className="item">
                     {s.editName &&
-                  <Input
-                  type="text"
-                  value={p.account.name}
-                  onChange={name => this.setState({ name })}
-                />
+                      <Input
+                        type="text"
+                        value={p.account.name}
+                        onChange={name => this.setState({ name })}
+                      />
 										}
                     {!s.editName &&
-                  <span data-tip data-for="edit-name-tooltip">
-                  {p.account.name || 'Click here to add a name.'}
-                </span>
+                      <span data-tip data-for="edit-name-tooltip">
+                        {p.account.name || 'Click here to add a name.'}
+                      </span>
 										}
                     {!s.editName &&
-                  <button
-                  data-tip data-for="change-name-tooltip"
-                  className="link" onClick={() => this.setState({ editName: true })}
-                >
+                      <button
+                        data-tip data-for="change-name-tooltip"
+                        className="link" onClick={() => this.setState({ editName: true })}
+                      >
 												(change name)
 											</button>
 										}
                     {s.editName &&
-                  <button
-                  className="button"
-                  data-tip data-for="cancel-edit-name-tooltip"
-                  onClick={() => this.setState({ name: '', editName: false })}
-                >
+                      <button
+                        className="button"
+                        data-tip data-for="cancel-edit-name-tooltip"
+                        onClick={() => this.setState({ name: '', editName: false })}
+                      >
 												cancel
 											</button>
 										}
                     {s.editName &&
-                  <button
-                  className="button make"
-                  data-tip data-for="save-name-tooltip"
-                  onClick={() => {
-                  p.account.editName(s.name);
-                  this.setState({ name: '', editName: false });
-                }}
-                >
+                      <button
+                        className="button make"
+                        data-tip data-for="save-name-tooltip"
+                        onClick={() => {
+                          p.account.editName(s.name);
+                          this.setState({ name: '', editName: false });
+                        }}
+                      >
 												save change
 											</button>
 										}
@@ -124,8 +124,8 @@ export default class AccountPage extends Component {
                   <th className="title">Account Address:</th>
                   <td className="item">
                     <span>
-                    {p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
-                  </span>
+                      {p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
+                    </span>
                   </td>
                 </tr>
 
@@ -133,32 +133,32 @@ export default class AccountPage extends Component {
                   <th className="title">Login ID:</th>
                   <td className="item">
                     {!s.showFullID &&
-                  <span>
-                  {p.account.prettyLoginID}
-                </span>
+                      <span>
+                        {p.account.prettyLoginID}
+                      </span>
 										}
                     {s.showFullID &&
-                  <textarea
-                  ref="fullLoginID"
-                  className="display-full-login-id"
-                  value={p.account.loginID}
-                  readOnly
-                  onClick={this.loginIDCopy}
-                />
+                      <textarea
+                        ref="fullLoginID"
+                        className="display-full-login-id"
+                        value={p.account.loginID}
+                        readOnly
+                        onClick={this.loginIDCopy}
+                      />
 										}
                     <button
-                    className="link"
-                    onClick={() => {
-                    this.setState({ showFullID: !s.showFullID });
-                  }}
-                  >
-                    {s.showFullID ? '(hide id)' : '(show full id)'}
-                  </button>
+                      className="link"
+                      onClick={() => {
+                        this.setState({ showFullID: !s.showFullID });
+                      }}
+                    >
+                      {s.showFullID ? '(hide id)' : '(show full id)'}
+                    </button>
                     {s.showFullID &&
-                  <button
-                  className="button"
-                  onClick={this.loginIDCopy}
-                >
+                      <button
+                        className="button"
+                        onClick={this.loginIDCopy}
+                      >
 												Copy Login ID
 											</button>
 										}
@@ -170,8 +170,8 @@ export default class AccountPage extends Component {
   <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
     <td colSpan="2">
       <button className="button" onClick={p.onAirbitzManageAccount}>
-													Manage Airbitz Account
-												</button>
+                          Manage Airbitz Account
+                        </button>
     </td>
   </tr>
 									) : null

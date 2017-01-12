@@ -58,15 +58,15 @@ export default class MarketOpenOrders extends Component {
 
                 return (
                   <MarketOpenOrdersGroup
-                  key={outcome.name}
-                  id={outcome.id}
-                  name={outcome.name}
-                  marketType={p.marketType}
-                  lastPricePercent={lastPricePercent}
-                  userOpenOrders={outcome.userOpenOrders}
-                  orderCancellation={p.orderCancellation}
-                  selectedShareDenomination={p.selectedShareDenomination}
-                />
+                    key={outcome.name}
+                    id={outcome.id}
+                    name={outcome.name}
+                    marketType={p.marketType}
+                    lastPricePercent={lastPricePercent}
+                    userOpenOrders={outcome.userOpenOrders}
+                    orderCancellation={p.orderCancellation}
+                    selectedShareDenomination={p.selectedShareDenomination}
+                  />
                 );
               })}
             </div>

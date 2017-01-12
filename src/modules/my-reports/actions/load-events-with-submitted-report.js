@@ -85,18 +85,18 @@ export function loadAdditionalEventData(events) {
                 if (report) {
                   const accountReport = report.report;
                   if (accountReport && accountReport !== '0' && !accountReport.error) {
-                  updateEvent(eventID, {
-                    accountReport,
-                    isIndeterminate: report.isIndeterminate,
-                    isRevealed: true,
-                    isCommitted: true
-                  });
-                  augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
-                    if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
-                    updateEvent(eventID, { isUnethical: ethicReport === '0' });
+                    updateEvent(eventID, {
+                      accountReport,
+                      isIndeterminate: report.isIndeterminate,
+                      isRevealed: true,
+                      isCommitted: true
+                    });
+                    augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
+                      if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
+                        updateEvent(eventID, { isUnethical: ethicReport === '0' });
+                      }
+                    });
                   }
-                  });
-                }
                 }
               });
             } else {
@@ -104,21 +104,21 @@ export function loadAdditionalEventData(events) {
                 const marketData = getState().marketsData[marketID];
                 augur.getReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, marketData.minValue, marketData.maxValue, marketData.type, (report) => {
                   if (report) {
-                  const accountReport = report.report;
-                  if (accountReport && accountReport !== '0' && !accountReport.error) {
-                    updateEvent(eventID, {
-                    accountReport,
-                    isIndeterminate: report.isIndeterminate,
-                    isRevealed: true,
-                    isCommitted: true
-                  });
-                    augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
-                    if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
-                    updateEvent(eventID, { isUnethical: ethicReport === '0' });
+                    const accountReport = report.report;
+                    if (accountReport && accountReport !== '0' && !accountReport.error) {
+                      updateEvent(eventID, {
+                        accountReport,
+                        isIndeterminate: report.isIndeterminate,
+                        isRevealed: true,
+                        isCommitted: true
+                      });
+                      augur.getEthicReport(events[eventID].branch, events[eventID].period, eventID, loginAccount.address, (ethicReport) => {
+                        if (ethicReport && ethicReport !== '0' && !ethicReport.error) {
+                          updateEvent(eventID, { isUnethical: ethicReport === '0' });
+                        }
+                      });
+                    }
                   }
-                  });
-                  }
-                }
                 });
               }));
             }
@@ -147,19 +147,19 @@ export function loadAdditionalEventData(events) {
           }
         }
       });
-			// augur.getFinal(eventID, isFinal => !!isFinal && updateEvent(eventID, { isFinal: isFinal === '1' }));
+      // augur.getFinal(eventID, isFinal => !!isFinal && updateEvent(eventID, { isFinal: isFinal === '1' }));
       augur.getOutcome(eventID, (marketOutcome) => {
         if (marketOutcome) {
           updateEvent(eventID, { marketOutcome });
           augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
         }
       });
-			// augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
+      // augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
       if (loginAccount.rep !== '0') {
         updateEvent(eventID, { repBalance: loginAccount.rep });
       }
-			// augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
-			// augur.getRoundTwo(eventID, isChallenged => !!isChallenged && updateEvent(eventID, { isChallenged: isChallenged === '1' }));
+      // augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
+      // augur.getRoundTwo(eventID, isChallenged => !!isChallenged && updateEvent(eventID, { isChallenged: isChallenged === '1' }));
     });
   };
 }

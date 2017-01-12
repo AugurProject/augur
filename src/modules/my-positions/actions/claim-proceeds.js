@@ -64,8 +64,8 @@ export function claimProceeds() {
             dispatch(loadAccountTrades(marketID, () => {
               dispatch(loadBidsAsks(marketID, () => {
                 dispatch(updateExistingTransaction(transactionID, {
-                status: SUCCESS
-              }));
+                  status: SUCCESS
+                }));
               }));
             }));
           }));

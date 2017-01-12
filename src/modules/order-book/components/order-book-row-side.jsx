@@ -40,30 +40,30 @@ const OrderBookRowSide = (p) => {
                 <button
                   className="unstyled"
                   onClick={() => {
-                  p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
-                }}
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? SHARE : PRICE);
+                  }}
                 >
                   <ValueDenomination formatted={side === BID ? shares : price} />
                 </button>
                 <button
                   className="unstyled"
                   onClick={() => {
-                  p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
-                }}
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BID ? PRICE : SHARE);
+                  }}
                 >
                   <ValueDenomination formatted={side === BID ? price : shares} />
                 </button>
                 {order.isOfCurrentUser &&
                 <ReactTooltip
-                id={`${type}-${i}-orders`}
-                type="info"
-                effect="solid"
-                place="top"
-              >
-                <span className="tooltip-text">
+                  id={`${type}-${i}-orders`}
+                  type="info"
+                  effect="solid"
+                  place="top"
+                >
+                  <span className="tooltip-text">
 											Your Order
 										</span>
-              </ReactTooltip>
+                </ReactTooltip>
 								}
               </div>
             );

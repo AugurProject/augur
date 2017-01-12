@@ -108,13 +108,13 @@ export default class Input extends Component {
                 if (newValue > p.max) {
                   newValue = new BigNumber(p.max);
                 } else if (newValue < p.min) {
-                newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
-              } else {
-                newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
-                if (newValue > p.max) {
-                newValue = new BigNumber(p.max);
-              }
-              }
+                  newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+                } else {
+                  newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+                  if (newValue > p.max) {
+                    newValue = new BigNumber(p.max);
+                  }
+                }
 
                 updateValue(newValue);
               }
@@ -131,13 +131,13 @@ export default class Input extends Component {
                 if (newValue > p.max) {
                   newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
                 } else if (newValue < p.min) {
-                newValue = new BigNumber(p.min);
-              } else {
-                newValue = newValue.minus(new BigNumber(incrementAmount));
-                if (newValue < p.min) {
-                newValue = new BigNumber(p.min);
-              }
-              }
+                  newValue = new BigNumber(p.min);
+                } else {
+                  newValue = newValue.minus(new BigNumber(incrementAmount));
+                  if (newValue < p.min) {
+                    newValue = new BigNumber(p.min);
+                  }
+                }
 
                 updateValue(newValue);
               }
