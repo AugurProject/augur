@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import store from '../../../store';
+import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
@@ -23,12 +23,12 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
   return 0;
 })
 		.map((id) => {
-  let marketLink = null;
-  if (transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].data.marketDescription)) {
+  let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
+  if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
     marketLink = selectMarketLink(
       {
         id: transactionsData[id].data.id || transactionsData[id].data.marketID,
-        description: transactionsData[id].data.description || transactionsData[id].data.marketDescription
+        description: transactionsData[id].description
       },
 					store.dispatch
 				);
@@ -40,10 +40,8 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
       marketLink
     },
     gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
-    ether: transactionsData[id].etherWithoutGas &&
-				formatEther(transactionsData[id].etherWithoutGas),
-    shares: transactionsData[id].sharesChange &&
-				formatShares(transactionsData[id].sharesChange),
+    ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
+    shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
     rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
   };
 })

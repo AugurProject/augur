@@ -1,5 +1,4 @@
 import augur from 'augur.js';
-import { SUCCESS, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
 
 const ex = {};
 
@@ -19,7 +18,7 @@ ex.connect = function connect(env, cb) {
   }
   if (options.http) augur.rpc.nodes.hosted = [options.http];
   augur.options.debug.trading = false;
-  augur.options.debug.reporting = true;
+  augur.options.debug.reporting = false;
   augur.options.debug.nonce = false;
   augur.rpc.debug.broadcast = false;
   augur.rpc.debug.tx = false;
@@ -38,17 +37,17 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 	// if available, use the client-side account
-  if (augur.web.account.address && augur.web.account.privateKey) {
-    console.log('using client-side account:', augur.web.account.address);
-    return cb(null, { ...augur.web.account });
+  if (augur.accounts.account.address && augur.accounts.account.privateKey) {
+    console.log('using client-side account:', augur.accounts.account.address);
+    return cb(null, { ...augur.accounts.account });
   }
 	// if the user has a persistent login, use it
   if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
     const account = JSON.parse(localStorageRef.getItem('account'));
     if (account && account.privateKey) {
-			// local storage account exists, load it spawn the callback using augur.web.account
-      augur.web.loadLocalLoginAccount(account, loginAccount =>
-				cb(null, { ...augur.web.account })
+			// local storage account exists, load it spawn the callback using augur.accounts.account
+      augur.accounts.loadLocalLoginAccount(account, loginAccount =>
+				cb(null, { ...augur.accounts.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
       return;
@@ -66,7 +65,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 
 		// use augur.from address if unlocked
     if (unlocked && !unlocked.error) {
-      augur.web.logout();
+      augur.accounts.logout();
       console.log('using unlocked account:', augur.from);
       return cb(null, { address: augur.from });
     }
@@ -77,29 +76,11 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
   });
 };
 
-ex.generateOrderBook = function generateOrderBook(marketData, cb) {
-  augur.generateOrderBook({
-    market: marketData.id,
-    liquidity: marketData.initialLiquidity,
-    initialFairPrices: marketData.initialFairPrices.raw,
-    startingQuantity: marketData.startingQuantity,
-    bestStartingQuantity: marketData.bestStartingQuantity,
-    priceWidth: marketData.priceWidth,
-    isSimulation: marketData.isSimulation,
-    onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
-    onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
-    onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
-    onSetupOrder: r => cb(null, { status: ORDER_BOOK_ORDER_COMPLETE, payload: r }),
-    onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
-    onFailed: err => cb(err)
-  });
-};
-
 ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
   const tools = augur.tools;
   tools.DEBUG = true;
   const accounts = augur.rpc.accounts();
-  const sender = augur.web.account.address || augur.from;
+  const sender = augur.accounts.account.address || augur.from;
   const callback = cb || function callback(e, r) {
     if (e) console.error(e);
     if (r) console.log(r);
@@ -170,7 +151,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
   if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
   const tools = augur.tools;
   const constants = augur.constants;
-  const sender = augur.web.account.address || augur.from;
+  const sender = augur.accounts.account.address || augur.from;
   const periodLength = periodLen || 1200;
   const callback = cb || function callback(e, r) {
     if (e) console.error(e);
@@ -179,7 +160,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
   tools.DEBUG = true;
   if (branchID) {
     return augur.getPeriodLength(branchID, (branchPeriodLength) => {
-      console.debug('Using branch', branchID, 'for reporting tests, reporting length', branchPeriodLength);
+      console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
       self.reportingMarketsSetup(branchPeriodLength, branchID, callback);
     });
   }
@@ -190,17 +171,11 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
   });
 };
 
-ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
-  if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
-    augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address || augur.from, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
-  } else {
-    augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
-  }
-};
-
 ex.augur = augur;
 ex.rpc = augur.rpc;
 ex.abi = augur.abi;
+ex.accounts = augur.accounts;
 ex.constants = augur.constants;
+ex.utils = augur.utils;
 
 module.exports = ex;

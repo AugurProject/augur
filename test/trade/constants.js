@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import { formatPercent, formatShares, formatEther, formatRealEther } from 'utils/format-number';
 import { abi } from 'services/augurjs';
 
 export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
@@ -513,112 +512,6 @@ export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, order
   const orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
   return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
 };
-
-export const stubAddBidTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-  const transaction = {
-    type: 'bid',
-    data: {
-      marketID,
-      outcomeID,
-      marketType,
-      marketDescription,
-      outcomeName
-    },
-    numShares: formatShares(numShares),
-    noFeePrice: formatEther(limitPrice),
-    avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-    tradingFees: formatEther(tradingFeesEth),
-    feePercent: formatPercent(feePercent),
-    gasFees: formatRealEther(gasFeesRealEth)
-  };
-  return transaction;
-};
-
-export const stubAddTradeTransaction = (tradeType, marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-  const transaction = {
-    type: tradeType,
-    data: {
-      marketID,
-      outcomeID,
-      marketType,
-      marketDescription,
-      outcomeName
-    },
-    numShares: formatShares(numShares),
-    noFeePrice: formatEther(limitPrice),
-    avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-    tradingFees: formatEther(tradingFeesEth),
-    feePercent: formatPercent(feePercent),
-    gasFees: formatRealEther(gasFeesRealEth)
-  };
-  return transaction;
-};
-
-export const stubAddAskTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-  const transaction = {
-    type: 'ask',
-    data: {
-      marketID,
-      outcomeID,
-      marketType,
-      marketDescription,
-      outcomeName
-    },
-    numShares: formatShares(numShares),
-    noFeePrice: formatEther(limitPrice),
-    avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-    tradingFees: formatEther(tradingFeesEth),
-    feePercent: formatPercent(feePercent),
-    gasFees: formatRealEther(gasFeesRealEth)
-  };
-  return transaction;
-};
-
-export const stubAddShortAskTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-  const transaction = {
-    type: 'short_ask',
-    data: {
-      marketID,
-      outcomeID,
-      marketType,
-      marketDescription,
-      outcomeName
-    },
-    numShares: formatShares(numShares),
-    noFeePrice: formatEther(limitPrice),
-    avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-    tradingFees: formatEther(tradingFeesEth),
-    feePercent: formatPercent(feePercent),
-    gasFees: formatRealEther(gasFeesRealEth)
-  };
-  return transaction;
-};
-
-export const stubAddShortSellTransaction = (marketID, outcomeID, marketType, marketDescription, outcomeName, numShares, limitPrice, totalCost, tradingFeesEth, feePercent, gasFeesRealEth) => {
-  const transaction = {
-    type: 'short_sell',
-    data: {
-      marketID,
-      outcomeID,
-      marketType,
-      marketDescription,
-      outcomeName
-    },
-    numShares: formatShares(numShares),
-    noFeePrice: formatEther(limitPrice),
-    avgPrice: formatEther(abi.bignum(totalCost).dividedBy(abi.bignum(numShares))),
-    tradingFees: formatEther(tradingFeesEth),
-    feePercent: formatPercent(feePercent),
-    gasFees: formatRealEther(gasFeesRealEth)
-  };
-  return transaction;
-};
-
-export const stubUpdateExistingTransaction = (transactionID, data) => ({
-  type: 'UPDATE_EXISTING_TRANSACTION',
-  transactionID,
-  data
-});
 
 export const stubLoadAccountTrades = (marketID, cb) => {
   assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);

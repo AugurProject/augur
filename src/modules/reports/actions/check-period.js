@@ -1,16 +1,12 @@
 import { augur } from '../../../services/augurjs';
 import { updateBranch } from '../../app/actions/update-branch';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
-import { collectFees } from '../../reports/actions/collect-fees';
 import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
-import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
 const tracker = {
   checkPeriodLock: false,
-  feesCollected: false,
   reportsRevealed: false,
   notSoCurrentPeriod: 0
 };
@@ -25,7 +21,6 @@ export function checkPeriod(unlock, cb) {
     }
     const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
     if (unlock || currentPeriod > tracker.notSoCurrentPeriod) {
-      tracker.feesCollected = false;
       tracker.reportsRevealed = false;
       tracker.notSoCurrentPeriod = currentPeriod;
       tracker.checkPeriodLock = false;
@@ -33,16 +28,13 @@ export function checkPeriod(unlock, cb) {
     }
     if (tracker.checkPeriodLock) return callback(null);
     tracker.checkPeriodLock = true;
-    augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod, marketsClosed) => {
-      console.log('checkPeriod complete:', err, reportPeriod, marketsClosed);
+    augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
+      console.log('checkPeriod complete:', err, reportPeriod);
       if (err) {
         tracker.checkPeriodLock = false;
         return callback(err);
       }
       dispatch(updateBranch({ reportPeriod }));
-      if (marketsClosed && marketsClosed.length) {
-        dispatch(loadMarketsInfo(marketsClosed));
-      }
       dispatch(loadEventsWithSubmittedReport());
       dispatch(clearOldReports());
       dispatch(loadReports((err) => {
@@ -51,34 +43,13 @@ export function checkPeriod(unlock, cb) {
           return callback(err);
         }
         if (branch.isReportRevealPhase) {
-          if (!tracker.feesCollected) {
-            tracker.feesCollected = true;
-            console.debug('collecting fees...');
-            dispatch(collectFees((err) => {
-              console.log('collectFees complete:', err);
-              tracker.checkPeriodLock = false;
-              if (err) {
-                tracker.feesCollected = false;
-                console.error('feesCollected:', err);
-              }
-              tracker.reportsRevealed = true;
-              dispatch(revealReports((err) => {
-                console.log('revealReports complete:', err);
-                if (err) {
-                  tracker.reportsRevealed = false;
-                  tracker.checkPeriodLock = false;
-                  console.error('revealReports:', err);
-                }
-              }));
-            }));
-          } else if (!tracker.reportsRevealed) {
+          if (!tracker.reportsRevealed) {
             tracker.reportsRevealed = true;
             dispatch(revealReports((err) => {
               console.log('revealReports complete:', err);
               if (err) {
                 tracker.reportsRevealed = false;
                 tracker.checkPeriodLock = false;
-                console.error('revealReports:', err);
               }
             }));
           }
@@ -87,60 +58,6 @@ export function checkPeriod(unlock, cb) {
         }
         callback(null);
       }));
-    }, (transactionID, eventOrMarketID, method) => {
-      let message;
-      switch (method) {
-        case 'penalizeWrong': {
-          if (eventOrMarketID) {
-            const { branch, marketsData, reports } = getState();
-            const myReport = reports[branch.id][eventOrMarketID];
-            message = `comparing ${myReport.reportedOutcomeID} to ${marketsData[myReport.marketID].reportedOutcomeID}`;
-          } else {
-            message = '';
-          }
-          break;
-        }
-        case 'penalizationCatchup':
-          message = 'catching up';
-          break;
-        case 'closeMarket':
-          message = 'closing market';
-          break;
-        default:
-          break;
-      }
-      console.log('updating transaction:', transactionID, message);
-      dispatch(updateExistingTransaction(transactionID, { message }));
-    }, (transactionID, eventOrMarketID, method) => {
-      let message;
-      switch (method) {
-        case 'penalizeWrong': {
-          if (eventOrMarketID) {
-            const { branch, marketsData, reports } = getState();
-            const myReport = reports[branch.id][eventOrMarketID];
-            const myReportedOutcome = myReport.reportedOutcomeID;
-            const consensusOutcome = marketsData[myReport.marketID].reportedOutcomeID;
-            if (myReportedOutcome === consensusOutcome) {
-              message = `reported outcome ${myReportedOutcome} matches the consensus`;
-            } else {
-              message = `reported outcome ${myReportedOutcome} does not match the consensus outcome ${consensusOutcome}`;
-            }
-          } else {
-            message = '';
-          }
-          break;
-        }
-        case 'penalizationCatchup':
-          message = 'caught up';
-          break;
-        case 'closeMarket':
-          message = 'closed market';
-          break;
-        default:
-          break;
-      }
-      console.log('updating transaction:', transactionID, message);
-      dispatch(updateExistingTransaction(transactionID, { message }));
     });
   };
 }

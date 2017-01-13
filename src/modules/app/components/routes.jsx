@@ -66,8 +66,9 @@ export default class Routes extends Component {
         break;
       case TRANSACTIONS:
         viewProps = {
-          transactions: p.transactions,
-          transactionsTotals: p.transactionsTotals
+          branch: p.branch,
+          loginAccount: p.loginAccount,
+          transactions: p.transactions
         };
         System.import('modules/transactions/components/transactions-view').then((module) => {
           const TransactionsView = module.default;

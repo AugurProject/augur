@@ -50,6 +50,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -90,6 +94,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -172,7 +180,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -229,14 +236,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 500
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -249,10 +256,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,
@@ -275,6 +282,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -320,7 +331,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -333,14 +343,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           full: '-'
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -353,10 +363,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,
@@ -412,6 +422,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -517,7 +531,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -574,14 +587,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 500
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -594,10 +607,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,
@@ -630,6 +643,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -684,7 +701,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -697,14 +713,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           full: '-'
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -717,10 +733,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,
@@ -768,6 +784,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -850,7 +870,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -909,14 +928,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 500
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -929,10 +948,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,
@@ -958,6 +977,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
+				state.branch.periodLength,
+				state.branch.baseReporters,
+				state.branch.numEventsCreatedInPast24Hours,
+				state.branch.numEventsInReportPeriod,
 				store.dispatch
 			);
 
@@ -1003,7 +1026,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           denomination: '%',
           full: '1.0%'
         },
-        endBlock: select.endBlock,
         takerFee: TAKER_FEE_DEFAULT,
         volume: {
           value: 0,
@@ -1016,14 +1038,14 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           full: '-'
         },
         eventBond: {
-          denomination: ' ETH',
-          formatted: '0',
-          formattedValue: 0,
-          full: '0 ETH',
-          minimized: '0',
-          rounded: '0.0000',
-          roundedValue: 0,
-          value: 0
+          denomination: ' ETH (estimated)',
+          formatted: '0.1776',
+          formattedValue: 0.1776,
+          full: '0.1776 ETH (estimated)',
+          minimized: '0.1776',
+          rounded: '0.1776',
+          roundedValue: 0.1776,
+          value: 0.177625
         },
         gasFees: {
           denomination: ' real ETH (estimated)',
@@ -1036,10 +1058,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           value: 0.0627
         },
         marketCreationFee: {
-          denomination: ' real ETH',
+          denomination: ' real ETH (estimated)',
           formatted: '0.0340',
           formattedValue: 0.034,
-          full: '0.0340 real ETH',
+          full: '0.0340 real ETH (estimated)',
           minimized: '0.034',
           rounded: '0.0340',
           roundedValue: 0.034,

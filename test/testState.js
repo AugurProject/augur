@@ -10,7 +10,7 @@ const testState = {
   accountTrades: {
     testMarketID: {
       testoutcomeID: [
-				{ type: 1, price: '0.5', shares: '50' }
+				{ type: 1, price: '0.5', amount: '50' }
       ]
     }
   },
@@ -20,6 +20,7 @@ const testState = {
   },
   blockchain: {
     currentBlockMillisSinceEpoch: 1461774253983,
+    currentBlockTimestamp: 1461774253,
     currentBlockNumber: 833339
   },
   branch: {
@@ -29,7 +30,10 @@ const testState = {
     currentPeriod: 20,
     isReportRevealPhase: true,
     reportPeriod: 19,
-    currentPeriodProgress: 52
+    currentPeriodProgress: 52,
+    baseReporters: 6,
+    numEventsCreatedInPast24Hours: 4,
+    numEventsInReportPeriod: 3
   },
   connection: {
     isConnected: true
@@ -182,22 +186,22 @@ const testState = {
     testMarketID: {},
     '0xMARKET1': {
       0: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
       ],
       1: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
       ]
     },
     '0xMARKET2': {
       0: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
       ],
       1: [
-				{ shares: 10 },
-				{ shares: 20 }
+				{ amount: 10 },
+				{ amount: 20 }
       ]
     },
   },

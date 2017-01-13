@@ -4,7 +4,7 @@ import { authError } from '../../auth/actions/auth-error';
 
 export function changeAccountName(name) {
   return (dispatch, getState) => {
-    augur.web.changeAccountName(name, (account) => {
+    augur.accounts.changeAccountName(name, (account) => {
       if (!account || account.error) {
         return dispatch(authError({
           code: 0,

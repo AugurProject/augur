@@ -1,50 +1,17 @@
 import React from 'react';
 import classnames from 'classnames';
 import Link from 'modules/link/components/link';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
-
-function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
+import TransactionMessage from 'modules/transactions/components/transaction-message';
+import TransactionDescription from 'modules/transactions/components/transaction-description';
+import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Transaction = (p) => {
   const nodes = {};
-
-  const buildDescription = (fullDescription) => {
-    if (!fullDescription) return <span />;
-    let shortDescription;
-    if (fullDescription.indexOf('\n') > -1) {
-      shortDescription = fullDescription.split('\n').map(text => <li key={text}>{text}</li>);
-      shortDescription = <ul>{shortDescription}</ul>;
-    } else {
-      shortDescription = fullDescription.substring(0, 100) + ((fullDescription.length > 100 && '...') || '');
-    }
-    const description = (isShortened) => {
-      if (isShortened) {
-        return (
-          <span className="market-description" data-tip={fullDescription}>
-            {shortDescription}
-          </span>
-        );
-      }
-      return (
-        <span className="market-description">
-          {shortDescription}
-        </span>
-      );
-    };
-    const isShortened = shortDescription !== fullDescription;
-    if (shortDescription && p.data.marketLink) {
-      return (
-        <Link href={p.data.marketLink.href} onClick={p.data.marketLink.onClick}>
-          {description(isShortened)}
-        </Link>
-      );
-    }
-    return <span>{description(isShortened)}</span>;
-  };
 
   switch (p.type) {
     case BUY:
@@ -53,24 +20,32 @@ const Transaction = (p) => {
     case ASK:
     case SHORT_SELL:
     case SHORT_ASK:
+    case MATCH_BID:
+    case MATCH_ASK:
       switch (p.type) {
         case BUY:
-          nodes.action = 'BUY';
+          nodes.action = 'Buy';
           break;
         case BID:
-          nodes.action = 'BID';
+          nodes.action = 'Bid';
           break;
         case SELL:
-          nodes.action = 'SELL';
+          nodes.action = 'Sell';
           break;
         case ASK:
-          nodes.action = 'ASK';
+          nodes.action = 'Ask';
           break;
         case SHORT_SELL:
-          nodes.action = 'SHORT SELL';
+          nodes.action = 'Short Sell';
           break;
         case SHORT_ASK:
-          nodes.action = 'SHORT ASK';
+          nodes.action = 'Short Ask';
+          break;
+        case MATCH_BID:
+          nodes.action = 'Bid Filled';
+          break;
+        case MATCH_ASK:
+          nodes.action = 'Ask Filled';
           break;
         default:
           break;
@@ -90,7 +65,7 @@ const Transaction = (p) => {
           <br className="hide-in-tx-display" />
           <ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
           <br />
-          {buildDescription(p.data.marketDescription)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br className="hide-in-trade-summary-display" />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -101,12 +76,12 @@ const Transaction = (p) => {
       break;
 
     case SELL_COMPLETE_SETS:
-      nodes.action = `REDEEM ${p.numShares.formatted} COMPLETE SETS`;
+      nodes.action = `Redeem ${p.numShares.formatted} Complete Sets`;
       nodes.description = (
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          {buildDescription(p.data.marketDescription)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -116,7 +91,7 @@ const Transaction = (p) => {
       break;
 
     case FUND_ACCOUNT:
-      nodes.action = 'REGISTER NEW ACCOUNT';
+      nodes.action = 'Fund Account';
       nodes.description = (
         <span className="description">
           <span className="action">{nodes.action}</span>
@@ -131,12 +106,12 @@ const Transaction = (p) => {
       break;
 
     case CREATE_MARKET:
-      nodes.action = 'Create market';
+      nodes.action = 'Create Market';
       nodes.description = (
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          {buildDescription(p.data.description)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -147,31 +122,17 @@ const Transaction = (p) => {
 
     case COMMIT_REPORT:
     case REVEAL_REPORT: {
-      let isScalar;
-      switch (p.type) {
-        case COMMIT_REPORT:
-          nodes.action = 'Commit report';
-          isScalar = p.data.market.type === SCALAR;
-          break;
-        case REVEAL_REPORT:
-          nodes.action = 'Reveal report';
-          isScalar = p.data.isScalar;
-          break;
-        default:
-          break;
-      }
-      const reportedOutcome = isScalar ?
+      nodes.action = p.type === COMMIT_REPORT ? 'Commit Report' : 'Reveal Report';
+      const reportedOutcome = (p.data.isScalar || (p.data.market && p.data.market.type === SCALAR)) ?
 				p.data.reportedOutcomeID :
 				p.data.outcome && p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
       nodes.description = (
         <span className="description">
           <span className="action">{nodes.action}</span>
           <strong>{reportedOutcome}</strong>
-          {!!p.data.isUnethical &&
-          <strong className="unethical"> and Unethical</strong>
-					}
+          <ReportEthics isUnethical={p.data.isUnethical} />
           <br />
-          {buildDescription(p.data.description || p.data.marketDescription)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -186,7 +147,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          {buildDescription(p.data.description)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -204,7 +165,7 @@ const Transaction = (p) => {
           <span className="of">of</span>
           <span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
           <br />
-          {buildDescription(p.data.description)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -219,7 +180,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{p.type}</span>
           <br />
-          {buildDescription(p.data.description)}
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -253,155 +214,9 @@ const Transaction = (p) => {
 
       {p.status && p.hash ?
         <Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
-          <div className="status-and-message">
-            <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
-            <br />
-            {!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
-            <span>
-              <ValueDenomination
-                className="tradingFees-message"
-                {...p.tradingFees}
-                prefix="trading fees:"
-              />
-              <br />
-            </span>
-						}
-            {!!p.freeze &&
-            <span className="freeze-message">
-              {p.freeze.noFeeCost &&
-              <ValueDenomination
-                className="freeze-noFeeCost-message"
-                {...p.freeze.noFeeCost}
-                prefix={p.freeze.verb}
-                postfix="+ "
-              />
-								}
-              <ValueDenomination
-                className="freeze-tradingFees-message"
-                {...p.freeze.tradingFees}
-                prefix={!p.freeze.noFeeCost && p.freeze.verb}
-                postfix="in potential trading fees"
-              />
-              <br />
-            </span>
-						}
-            {!!p.totalCost && p.totalCost.value !== null && p.totalCost.value !== undefined &&
-            <span>
-              <ValueDenomination
-                className="totalCost-message"
-                {...p.totalCost}
-                prefix="total cost:"
-              />
-              <br />
-            </span>
-						}
-            {!!p.totalReturn && p.totalReturn.value !== null && p.totalReturn.value !== undefined &&
-            <span>
-              <ValueDenomination
-                className="totalReturn-message"
-                {...p.totalReturn}
-                prefix="total return:"
-              />
-              <br />
-            </span>
-						}
-            {!!p.marketCreationFee && p.marketCreationFee.value !== null && p.marketCreationFee !== undefined &&
-            <span>
-              <ValueDenomination
-                className="marketCreationFee-message"
-                {...p.marketCreationFee}
-                prefix="market creation fee:"
-              />
-              <br />
-            </span>
-						}
-            {!!p.eventBond && p.eventBond.value !== null && p.eventBond !== undefined &&
-            <span>
-              <ValueDenomination
-                className="eventBond-message"
-                {...p.eventBond}
-                prefix="event creation bond:"
-              />
-              <br />
-            </span>
-						}
-            {!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
-            <span>
-              <ValueDenomination
-                className="gasFees-message"
-                {...p.gasFees}
-                prefix="gas cost:"
-              />
-              <br />
-            </span>
-						}
-            <span className="status">{p.status}</span>
-          </div>
+          <TransactionMessage {...p} />
         </Link> :
-        <div className="status-and-message">
-          <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
-          <br />
-          {!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
-          <span>
-            <ValueDenomination
-              className="tradingFees-message"
-              {...p.tradingFees}
-              prefix="trading fees:"
-            />
-            <br />
-          </span>
-					}
-          {!!p.freeze &&
-          <span className="freeze-message">
-            {p.freeze.noFeeCost &&
-            <ValueDenomination
-              className="freeze-noFeeCost-message"
-              {...p.freeze.noFeeCost}
-              prefix={p.freeze.verb}
-              postfix="+ "
-            />
-							}
-            <ValueDenomination
-              className="freeze-tradingFees-message"
-              {...p.freeze.tradingFees}
-              prefix={!p.freeze.noFeeCost && p.freeze.verb}
-              postfix="in potential trading fees"
-            />
-            <br />
-          </span>
-					}
-          {!!p.totalCost && p.totalCost.value !== null && p.totalCost.value !== undefined &&
-          <span>
-            <ValueDenomination
-              className="totalCost-message"
-              {...p.totalCost}
-              prefix="total cost:"
-            />
-            <br />
-          </span>
-					}
-          {!!p.totalReturn && p.totalReturn.value !== null && p.totalReturn.value !== undefined &&
-          <span>
-            <ValueDenomination
-              className="totalReturn-message"
-              {...p.totalReturn}
-              prefix="total return:"
-            />
-            <br />
-          </span>
-					}
-          {!!p.gasFees && p.gasFees.value !== null && p.gasFees.value !== undefined &&
-          <span>
-            <ValueDenomination
-              className="gasFees-message"
-              {...p.gasFees}
-              prefix="gas cost:"
-            />
-            <br />
-          </span>
-					}
-          <span className="status">{p.status}</span>
-        </div>
+        <TransactionMessage {...p} />
 			}
     </article>
   );
@@ -413,6 +228,7 @@ Transaction.propTypes = {
   type: React.PropTypes.string,
   status: React.PropTypes.string,
   data: React.PropTypes.object,
+  description: React.PropTypes.string,
   shares: React.PropTypes.object,
   gas: React.PropTypes.object,
   hash: React.PropTypes.string,
@@ -420,7 +236,7 @@ Transaction.propTypes = {
   gasFees: React.PropTypes.object,
   tradingFees: React.PropTypes.object,
   marketCreationFee: React.PropTypes.object,
-  eventBond: React.PropTypes.object,
+  bond: React.PropTypes.object,
   totalCost: React.PropTypes.object,
   totalReturn: React.PropTypes.object,
   timestamp: React.PropTypes.object

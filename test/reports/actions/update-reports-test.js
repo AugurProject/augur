@@ -1,7 +1,5 @@
 import { describe, it, beforeEach, afterEach } from 'mocha';
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';

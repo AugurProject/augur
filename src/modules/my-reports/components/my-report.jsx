@@ -3,6 +3,8 @@ import ReactTooltip from 'react-tooltip';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
+import EmDash from 'modules/common/components/em-dash';
+import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Report = p => (
   <div className="portfolio-row">
@@ -17,7 +19,7 @@ const Report = p => (
           <span>{p.outcome}</span>
 					}
           {!p.outcome &&
-						'-'
+          <EmDash />
 					}
         </span>
       </div>
@@ -29,16 +31,16 @@ const Report = p => (
             className="report-committed"
             data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
           >
-            {p.reported || '-'}
+            {p.reported || <EmDash />}
           </span>
 					}
           {!!p.isRevealed &&
           <span className="report-revealed">
-            {p.reported || '-'}
+            {p.reported || <EmDash />}
           </span>
 					}
           {!p.isRevealed && !p.isCommitted &&
-          <span>{p.reported || '-'}</span>
+          <span>{p.reported || <EmDash />}</span>
 					}
           {!!p.outcome && p.isReportEqual &&
           <span
@@ -56,14 +58,7 @@ const Report = p => (
 							&#xf057;
 						</span>
 					}
-          {!!p.isUnethical &&
-          <span
-            className="fa report-unethical"
-            data-tip="You reported that this market is unethical"
-          >
-							&#xf165;
-						</span>
-					}
+          <ReportEthics isUnethical={p.isUnethical} />
         </span>
       </div>
       <div className="portfolio-pair">
@@ -75,7 +70,7 @@ const Report = p => (
             >
               {p.period}
             </span> :
-						'-'
+            <EmDash />
 					}
         </span>
       </div>
@@ -99,7 +94,10 @@ const Report = p => (
       </div>
       <div className="portfolio-pair">
         <span className="title">ended</span>
-        <ValueDate {...p.endDate} />
+        {p.endDate ?
+          <ValueDate {...p.endDate} /> :
+          <EmDash />
+				}
       </div>
     </div>
     <ReactTooltip type="light" effect="solid" place="top" />

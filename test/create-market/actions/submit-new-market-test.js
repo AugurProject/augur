@@ -1,7 +1,5 @@
 import { describe, it, before, beforeEach, afterEach } from 'mocha';
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -20,56 +18,24 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'm
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
-
   let out;
   let clock;
   let marketData = {};
   let expectedMarketData = {};
-
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-
-  const testData = {
-    type: 'UPDATE_TRANSACTIONS_DATA',
-    test123: {
-      type: 'create_market',
-      gas: 0,
-      ether: 0,
-      data: {
-        market: 'some marketdata'
-      },
-      action: 'do some action',
-      status: 'pending'
-    }
-  };
-  const transID = 'testtransaction12345';
+  const endDate = { value: new Date() };
   const failedMarketData = {
     type: BINARY,
     minValue: 1,
     maxValue: 2,
     numOutcomes: 2,
-    endDate: { value: new Date() },
+    endDate,
     expirySource: true,
     failTest: FAILED
   };
   const state = Object.assign({}, testState);
-
   const store = mockStore(state);
-
-  const stubbedNewMarketTransactions = {
-    addCreateMarketTransaction: () => {}
-  };
-  sinon.stub(stubbedNewMarketTransactions, 'addCreateMarketTransaction', newMarket => testData);
-
-  const stubbedUpdateExistingTransaction = {
-    updateExistingTransaction: () => {}
-  };
-  sinon.stub(stubbedUpdateExistingTransaction, 'updateExistingTransaction', (transactionID, status) => ({
-    type: 'UPDATE_EXISTING_TRANSACTIONS',
-    transactionID,
-    status
-  }));
-
   const stubbedAugurJS = {
     augur: { createSingleEventMarket: () => {} }
   };
@@ -80,14 +46,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
       o.onSuccess({ status: SUCCESS, marketID: 'test123', callReturn: '0x123' });
     }
   });
-
   const stubbedGenerateOrderBook = {
     submitGenerateOrderBook: () => {}
   };
   sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', data => ({
     type: 'submitGenerateOrderBook'
   }));
-
   const stubbedLink = {
     selectTransactionsLink: () => {}
   };
@@ -100,8 +64,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
   const action = proxyquire(
 		'../../../src/modules/create-market/actions/submit-new-market',
     {
-      '../../transactions/actions/add-create-market-transaction': stubbedNewMarketTransactions,
-      '../../transactions/actions/update-existing-transaction': stubbedUpdateExistingTransaction,
       '../../../services/augurjs': stubbedAugurJS,
       '../../create-market/actions/generate-order-book': stubbedGenerateOrderBook,
       '../../link/selectors/links': stubbedLink
@@ -125,41 +87,22 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
   });
 
   it(`should be able to submit a new market`, () => {
-    store.dispatch(action.submitNewMarket({
-      market: {
-        id: 'market'
-      }
-    }));
-
+    store.dispatch(action.submitNewMarket({ id: 'market', endDate }));
     out = [{
-      type: 'UPDATE_TRANSACTIONS_DATA',
-      test123: {
-        type: 'create_market',
-        gas: 0,
-        ether: 0,
-        data: {
-          market: 'some marketdata'
-        },
-        action: 'do some action',
-        status: 'pending'
-      }
+      type: 'CLEAR_MAKE_IN_PROGRESS'
     }];
-
     assert(stubbedLink.selectTransactionsLink.calledOnce, 'selectTransactionsLink was not called once');
-    assert(stubbedNewMarketTransactions.addCreateMarketTransaction.calledOnce, `addCreateMarketTransaction wasn't called once as expected`);
     assert.deepEqual(store.getActions(), out, `Didn't correctly create a new market`);
-
     global.window = {};
     store.clearActions();
   });
 
-  describe('createMarket states', () => {
+  describe('submitNewMarket states', () => {
 
     const endDate = { value: new Date() };
 
     beforeEach(() => {
       store.clearActions();
-      stubbedUpdateExistingTransaction.updateExistingTransaction.reset();
       marketData = {};
       out = [];
       expectedMarketData = {};
@@ -176,29 +119,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
     });
 
     it('should fail correctly', () => {
-      console.log('failedMarketData:', failedMarketData);
-      store.dispatch(action.createMarket(transID, failedMarketData));
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: { status: 'failed', message: 'error!' }
-        }
-      ];
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
-      assert.deepEqual(store.getActions(), out, `createMarket did not fail correctly`);
+      store.dispatch(action.submitNewMarket(failedMarketData));
+      out = [];
+      assert.deepEqual(store.getActions(), out, `submitNewMarket did not fail correctly`);
     });
 
     it('should be able to create a binary market WITH an order book', () => {
@@ -207,52 +130,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         type: BINARY,
         isCreatingOrderBook: true
       };
-
-      store.dispatch(action.createMarket(transID, marketData));
-
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        },
-        {
-          type: 'submitGenerateOrderBook'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }, {
+        type: 'submitGenerateOrderBook'
+      }];
       expectedMarketData = {
         endDate,
         type: BINARY,
@@ -261,60 +145,17 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 2,
         numOutcomes: 2
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
 
     it('should be able to create a binary market WITHOUT an order book', () => {
-      marketData = {
-        endDate,
-        type: BINARY
-      };
-
-      store.dispatch(action.createMarket(transID, marketData));
-
+      marketData = { endDate, type: BINARY };
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }];
       expectedMarketData = {
         endDate,
         type: BINARY,
@@ -322,8 +163,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 2,
         numOutcomes: 2
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
@@ -336,52 +175,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         scalarSmallNum: 10,
         scalarBigNum: 100
       };
-
-      store.dispatch(action.createMarket(transID, marketData));
-
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        },
-        {
-          type: 'submitGenerateOrderBook'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }, {
+        type: 'submitGenerateOrderBook'
+      }];
       expectedMarketData = {
         endDate,
         type: SCALAR,
@@ -392,8 +192,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 100,
         numOutcomes: 2
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a scalar market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
@@ -406,48 +204,11 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         scalarBigNum: 100
       };
 
-      store.dispatch(action.createMarket(transID, marketData));
-
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }];
       expectedMarketData = {
         endDate,
         type: SCALAR,
@@ -457,8 +218,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 100,
         numOutcomes: 2
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a scalar market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
@@ -475,52 +234,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3' }
         ]
       };
-
-      store.dispatch(action.createMarket(transID, marketData));
-
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        },
-        {
-          type: 'submitGenerateOrderBook'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }, {
+        type: 'submitGenerateOrderBook'
+      }];
       expectedMarketData = {
         endDate,
         description: 'test',
@@ -536,8 +256,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 3,
         numOutcomes: 3
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a categorical market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
@@ -553,49 +271,11 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					{ id: 2, name: 'outcome3' }
         ]
       };
-
-      store.dispatch(action.createMarket(transID, marketData));
-
+      store.dispatch(action.submitNewMarket(marketData));
       clock.tick(10000);
-
-      out = [
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: 'sending...',
-            eventBond: undefined,
-            gasFees: undefined,
-            marketCreationFee: undefined
-          }
-        },
-        {
-          type: 'UPDATE_EXISTING_TRANSACTIONS',
-          transactionID: transID,
-          status: {
-            status: SUCCESS,
-            hash: undefined,
-            timestamp: undefined,
-            data: {
-              id: '0x123'
-            },
-            gasFees: {
-              denomination: ' real ETH',
-              formatted: '0',
-              formattedValue: 0,
-              full: '0 real ETH',
-              minimized: '0',
-              rounded: '0',
-              roundedValue: 0,
-              value: 0
-            }
-          }
-        },
-        {
-          type: 'CLEAR_MAKE_IN_PROGRESS'
-        }
-      ];
-
+      out = [{
+        type: 'CLEAR_MAKE_IN_PROGRESS'
+      }];
       expectedMarketData = {
         endDate,
         description: 'test',
@@ -610,8 +290,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         maxValue: 3,
         numOutcomes: 3
       };
-
-      assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
       assert.deepEqual(store.getActions(), out, `a categorical market was not correctly created`);
       assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
     });
