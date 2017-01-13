@@ -41796,7 +41796,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.2";
+  this.version = "3.7.3";
 
   this.options = {
     debug: {
@@ -42725,7 +42725,7 @@ module.exports = {
 
   adjustScalarOrder: function (order, minValue) {
     order.price = this.expandScalarPrice(minValue, order.price);
-    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
+    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
     return order;
   },
 
