@@ -79,9 +79,9 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 			return transactions;
 		}
 		case 'short_sell': {
-			const { transactionHash, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
-			const order = selectOrder(p.buyer_trade_id);
-			dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
+			const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
+			const order = orders[0];
+			dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
 			return dispatch(constructTradingTransaction('log_short_fill_tx', {
 				...p,
 				price: order.price,
@@ -89,8 +89,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 				amount: maxAmount,
 				sender: tx.data.from,
 				owner: order.owner,
-				type: order.type === 'buy' ? 'sell' : 'buy',
-				tradeid: order.id,
+				tradeid: p.buyer_trade_id,
 				tradeHash,
 				takerFee: tradingFees,
 				gasFees
@@ -174,14 +173,19 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 					break;
 				}
 				case 'claimProceeds': {
-					const winningPositions = selectWinningPositions();
-					const shares = (winningPositions.find(position => position.id === p.market) || {}).shares;
+					const { outcomesData, transactionsData } = getState();
+					let shares;
+					if (transactionsData[hash] && transactionsData[hash].data.shares) {
+						shares = transactionsData[hash].data.shares;
+					} else {
+						const winningPositions = selectWinningPositions(outcomesData);
+						shares = (winningPositions.find(position => position.id === p.market) || {}).shares;
+					}
 					transaction = dispatch(constructTransaction('payout', { ...p, shares }));
 					break;
 				}
 				case 'send':
 				case 'sendFrom':
-					if (getState().transactionsData[hash]) return null;
 					transaction = dispatch(constructTransaction('sentCash', {
 						...p,
 						_from: abi.format_address(p.from),
@@ -190,7 +194,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 					}));
 					break;
 				case 'sendEther':
-					if (getState().transactionsData[hash]) return null;
 					transaction = dispatch(constructTransaction('sentEther', {
 						...p,
 						_from: abi.format_address(p.from),
@@ -200,7 +203,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 					break;
 				case 'transfer':
 				case 'sendReputation':
-					if (getState().transactionsData[hash]) return null;
 					transaction = dispatch(constructTransaction('Transfer', {
 						...p,
 						_from: abi.format_address(tx.data.from),
