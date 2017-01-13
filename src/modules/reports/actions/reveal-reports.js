@@ -21,49 +21,49 @@ export function revealReports(cb) {
 				.filter(eventID => branchReports[eventID].reportHash &&
 				branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
 				.map((eventID) => {
-					const obj = { ...branchReports[eventID], eventID };
-					return obj;
-				});
-			console.log('revealableReports:', revealableReports);
-			if (revealableReports && revealableReports.length && loginAccount.address) {
-				async.eachSeries(revealableReports, (report, nextReport) => {
-					const eventID = report.eventID;
-					console.log('revealReportLock:', eventID, revealReportLock[eventID]);
-					if (revealReportLock[eventID]) return nextReport();
-					revealReportLock[eventID] = true;
-					let type;
-					if (report.isScalar) {
-						type = SCALAR;
-					} else if (report.isCategorical) {
-						type = CATEGORICAL;
-					} else {
-						type = BINARY;
-					}
-					augur.submitReport({
-						event: eventID,
-						report: report.reportedOutcomeID,
-						salt: report.salt,
-						ethics: Number(!report.isUnethical),
-						minValue: report.minValue,
-						maxValue: report.maxValue,
-						type,
-						isIndeterminate: report.isIndeterminate,
-						onSent: r => console.log('submitReport sent:', r),
-						onSuccess: (r) => {
-							console.log('submitReport success:', r);
-							dispatch(updateAssets());
-							revealReportLock[eventID] = false;
-							dispatch(updateReports({
-								[branch.id]: {
-									[eventID]: { ...report, isRevealed: true }
-								}
-							}));
-							nextReport();
-						},
-						onFailed: e => nextReport(e)
-					});
-				}, e => callback(e));
-			}
-		}
-	};
+  const obj = { ...branchReports[eventID], eventID };
+  return obj;
+});
+      console.log('revealableReports:', revealableReports);
+      if (revealableReports && revealableReports.length && loginAccount.address) {
+        async.eachSeries(revealableReports, (report, nextReport) => {
+          const eventID = report.eventID;
+          console.log('revealReportLock:', eventID, revealReportLock[eventID]);
+          if (revealReportLock[eventID]) return nextReport();
+          revealReportLock[eventID] = true;
+          let type;
+          if (report.isScalar) {
+            type = SCALAR;
+          } else if (report.isCategorical) {
+            type = CATEGORICAL;
+          } else {
+            type = BINARY;
+          }
+          augur.submitReport({
+            event: eventID,
+            report: report.reportedOutcomeID,
+            salt: report.salt,
+            ethics: Number(!report.isUnethical),
+            minValue: report.minValue,
+            maxValue: report.maxValue,
+            type,
+            isIndeterminate: report.isIndeterminate,
+            onSent: r => console.log('submitReport sent:', r),
+            onSuccess: (r) => {
+              console.log('submitReport success:', r);
+              dispatch(updateAssets());
+              revealReportLock[eventID] = false;
+              dispatch(updateReports({
+                [branch.id]: {
+                  [eventID]: { ...report, isRevealed: true }
+                }
+              }));
+              nextReport();
+            },
+            onFailed: e => nextReport(e)
+          });
+        }, e => callback(e));
+      }
+    }
+  };
 }

@@ -100,32 +100,32 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
 });
 
 export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
-	const tradeActions = outcomeTradeInProgress && outcomeTradeInProgress.tradeActions;
-	if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
-		return [];
-	}
-	const marketID = market.id;
-	const outcomeID = outcome.id;
-	const marketType = market.type;
-	const outcomeName = outcome.name;
-	const description = market.description;
-	return tradeActions.map((tradeAction) => {
-		const numShares = abi.bignum(tradeAction.shares);
-		const costEth = abi.bignum(tradeAction.costEth).abs();
-		const avgPrice = tradeAction.action === 'SHORT_SELL' ?
+  const tradeActions = outcomeTradeInProgress && outcomeTradeInProgress.tradeActions;
+  if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
+    return [];
+  }
+  const marketID = market.id;
+  const outcomeID = outcome.id;
+  const marketType = market.type;
+  const outcomeName = outcome.name;
+  const description = market.description;
+  return tradeActions.map((tradeAction) => {
+    const numShares = abi.bignum(tradeAction.shares);
+    const costEth = abi.bignum(tradeAction.costEth).abs();
+    const avgPrice = tradeAction.action === 'SHORT_SELL' ?
 			costEth.minus(numShares).dividedBy(numShares) :
 			abi.bignum(costEth).dividedBy(abi.bignum(numShares));
-		const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
-		return {
-			type: TRANSACTIONS_TYPES[tradeAction.action],
-			data: { marketID, outcomeID, marketType, outcomeName },
-			description,
-			numShares: formatShares(tradeAction.shares),
-			avgPrice: formatEther(avgPrice),
-			noFeePrice: formatEther(noFeePrice),
-			tradingFees: formatEther(tradeAction.feeEth),
-			feePercent: formatPercent(tradeAction.feePercent),
-			gasFees: formatRealEther(tradeAction.gasEth)
-		};
-	});
+    const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
+    return {
+      type: TRANSACTIONS_TYPES[tradeAction.action],
+      data: { marketID, outcomeID, marketType, outcomeName },
+      description,
+      numShares: formatShares(tradeAction.shares),
+      avgPrice: formatEther(avgPrice),
+      noFeePrice: formatEther(noFeePrice),
+      tradingFees: formatEther(tradeAction.feeEth),
+      feePercent: formatPercent(tradeAction.feePercent),
+      gasFees: formatRealEther(tradeAction.gasEth)
+    };
+  });
 });

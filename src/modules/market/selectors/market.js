@@ -112,15 +112,15 @@ export const selectMarket = (marketID) => {
 };
 
 export const selectScalarMinimum = (market) => {
-	const scalarMinimum = {};
-	if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
-	return scalarMinimum;
+  const scalarMinimum = {};
+  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
+  return scalarMinimum;
 };
 
 export const selectMarketIDFromEventID = (eventID) => {
-	const marketIDs = store.getState().eventMarketsMap[eventID];
-	if (marketIDs && marketIDs.length) return marketIDs[0];
-	return null;
+  const marketIDs = store.getState().eventMarketsMap[eventID];
+  if (marketIDs && marketIDs.length) return marketIDs[0];
+  return null;
 };
 
 export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));
@@ -174,82 +174,82 @@ export function assembleMarket(
 			loginAccount,
 			dispatch) => { // console.log('>>assembleMarket<<');
 
-			const market = {
-				...marketData,
-				description: marketData.description || '',
-				id: marketID
-			};
+      const market = {
+        ...marketData,
+        description: marketData.description || '',
+        id: marketID
+      };
 
-			const now = new Date();
+      const now = new Date();
 
-			switch (market.type) {
-				case BINARY:
-					market.isBinary = true;
-					market.isCategorical = false;
-					market.isScalar = false;
-					break;
-				case CATEGORICAL:
-					market.isBinary = false;
-					market.isCategorical = true;
-					market.isScalar = false;
-					break;
-				case SCALAR:
-					market.isBinary = false;
-					market.isCategorical = false;
-					market.isScalar = true;
-					break;
-				default:
-					break;
-			}
+      switch (market.type) {
+        case BINARY:
+          market.isBinary = true;
+          market.isCategorical = false;
+          market.isScalar = false;
+          break;
+        case CATEGORICAL:
+          market.isBinary = false;
+          market.isCategorical = true;
+          market.isScalar = false;
+          break;
+        case SCALAR:
+          market.isBinary = false;
+          market.isCategorical = false;
+          market.isScalar = true;
+          break;
+        default:
+          break;
+      }
 
-			market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null;
-			market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';
-			market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
+      market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null;
+      market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';
+      market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
-			market.isOpen = isOpen;
-			market.isExpired = isExpired;
-			market.isFavorite = isFavorite;
+      market.isOpen = isOpen;
+      market.isExpired = isExpired;
+      market.isFavorite = isFavorite;
 
-			market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
-			market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
-			market.volume = formatShares(marketData.volume, { positiveSign: false });
+      market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
+      market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
+      market.volume = formatShares(marketData.volume, { positiveSign: false });
 
-			market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-			market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase; // account is required to report on this unreported market during reporting phase
-			market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
-			market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
-			market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
-			market.isMissedOrReported = market.isMissedReport || market.isReported;
+      market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase; // account is required to report on this unreported market during reporting phase
+      market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
+      market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+      market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
+      market.isMissedOrReported = market.isMissedReport || market.isReported;
 
-			market.marketLink = selectMarketLink(market, dispatch);
-			market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-			market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
+      market.marketLink = selectMarketLink(market, dispatch);
+      market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
+      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
 
-			market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
-			market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
-			market.onSubmitClosePosition = () => dispatch(sellNumberCompleteSetsMarket(marketID, market.smallestPosition.value));
+      market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
+      market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
+      market.onSubmitClosePosition = () => dispatch(sellNumberCompleteSetsMarket(marketID, market.smallestPosition.value));
 
-			market.report = {
-				...marketReport,
-				onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
-			};
+      market.report = {
+        ...marketReport,
+        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
+      };
 
-			market.outcomes = [];
+      market.outcomes = [];
 
-			let marketTradeOrders = [];
+      let marketTradeOrders = [];
 
-			market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeID) => {
-				const outcomeData = marketOutcomesData[outcomeID];
-				const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
+      market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeID) => {
+        const outcomeData = marketOutcomesData[outcomeID];
+        const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
-				const outcome = {
-					...outcomeData,
-					id: outcomeID,
-					marketID,
-					lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
-				};
+        const outcome = {
+          ...outcomeData,
+          id: outcomeID,
+          marketID,
+          lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
+        };
 
-				if (market.isScalar) {
+        if (market.isScalar) {
 					// note: not actually a percent
           if (outcome.lastPrice.value) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
@@ -325,20 +325,20 @@ export function assembleMarket(
 
 			// Update the `result` object
 			// This houses the reported outcome + the proportion correct of that outcome
-			if (market.reportedOutcome) {
-				market.result = { outcomeID: market.reportedOutcome };
-				if (market.type !== SCALAR && market.reportableOutcomes.length) {
-					const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.reportedOutcome);
-					if (marketOutcome) market.result.outcomeName = marketOutcome.name;
-				}
-				if (market.proportionCorrect) {
-					market.result.proportionCorrect = formatPercent(abi.bignum(market.proportionCorrect).times(100));
-				}
-			}
+      if (market.reportedOutcome) {
+        market.result = { outcomeID: market.reportedOutcome };
+        if (market.type !== SCALAR && market.reportableOutcomes.length) {
+          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.reportedOutcome);
+          if (marketOutcome) market.result.outcomeName = marketOutcome.name;
+        }
+        if (market.proportionCorrect) {
+          market.result.proportionCorrect = formatPercent(abi.bignum(market.proportionCorrect).times(100));
+        }
+      }
 
-			return market;
-		});
-	}
+      return market;
+    });
+  }
 
-	return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
+  return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
 }

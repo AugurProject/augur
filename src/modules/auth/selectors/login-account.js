@@ -11,7 +11,7 @@ export default function () {
 }
 
 export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
-	const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
+  const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
 
   const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
 
@@ -36,22 +36,22 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
     loginAccount.onAirbitzManageAccount = () => {
       require('../../../selectors').abc.openManageWindow(loginAccount.airbitzAccount, (result, account) => {
 				// Possibly update the loginAccount
-			});
-		};
-	}
+      });
+    };
+  }
 
-	return {
-		...loginAccount,
-		prettyLoginID,
-		prettyAddress,
-		localNode,
-		linkText,
-		downloadAccountFileName,
-		downloadAccountDataString,
-		transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress)),
-		editName: name => dispatch(changeAccountName(name)),
-		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
-		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
-		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
-	};
+  return {
+    ...loginAccount,
+    prettyLoginID,
+    prettyAddress,
+    localNode,
+    linkText,
+    downloadAccountFileName,
+    downloadAccountDataString,
+    transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress)),
+    editName: name => dispatch(changeAccountName(name)),
+    rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
+    ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
+    realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
+  };
 });

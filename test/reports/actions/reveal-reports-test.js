@@ -70,60 +70,60 @@ describe('modules/reports/actions/reveal-reports.js', () => {
   });
   const store = mockStore(state);
 
-	const mockUpdateAssets = { updateAssets: () => {} };
-	const mockAugurJS = {
-		augur: {
-			submitReport: () => {},
-			getTxGasEth: () => {},
-			rpc: { gasPrice: 10 },
-			tx: { MakeReports: { submitReport: {} } }
-		}
-	};
+  const mockUpdateAssets = { updateAssets: () => {} };
+  const mockAugurJS = {
+    augur: {
+      submitReport: () => {},
+      getTxGasEth: () => {},
+      rpc: { gasPrice: 10 },
+      tx: { MakeReports: { submitReport: {} } }
+    }
+  };
 
-	sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
-	sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
-	sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
-		const message = 'revealed report: testOutcome 2';
-		const hash = '0xdeadbeef';
-		o.onSent({ status: 'submitted', hash, message });
-		o.onSuccess({ status: 'success', hash, message, gasFees: 1, timestamp: 100 });
-	});
+  sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
+  sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
+  sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
+    const message = 'revealed report: testOutcome 2';
+    const hash = '0xdeadbeef';
+    o.onSent({ status: 'submitted', hash, message });
+    o.onSuccess({ status: 'success', hash, message, gasFees: 1, timestamp: 100 });
+  });
 
-	const action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
-		'../../auth/actions/update-assets': mockUpdateAssets,
-		'../../../services/augurjs': mockAugurJS
-	});
+  const action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
+    '../../auth/actions/update-assets': mockUpdateAssets,
+    '../../../services/augurjs': mockAugurJS
+  });
 
   beforeEach(() => {
     store.clearActions();
   });
 
-	it('should reveal reports', () => {
-		const out = [{
-			type: 'UPDATE_ASSETS'
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: {
-				'0xf69b5': {
-					test1: {
-						eventID: 'test1',
-						marketID: 'market1',
-						reportHash: '0xtesthash123456789testhash1',
-						salt: 'salt1',
-						period: 19,
-						isRevealed: true,
-						reportedOutcomeID: 'testOutcomeID1',
-						minValue: '1',
-						maxValue: '2',
-						isUnethical: false,
-						isIndeterminate: true,
-						isCategorical: false,
-						isScalar: false
-					}
-				}
-			}
-		}];
-		store.dispatch(action.revealReports());
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-	});
+  it('should reveal reports', () => {
+    const out = [{
+      type: 'UPDATE_ASSETS'
+    }, {
+      type: 'UPDATE_REPORTS',
+      reports: {
+        '0xf69b5': {
+          test1: {
+            eventID: 'test1',
+            marketID: 'market1',
+            reportHash: '0xtesthash123456789testhash1',
+            salt: 'salt1',
+            period: 19,
+            isRevealed: true,
+            reportedOutcomeID: 'testOutcomeID1',
+            minValue: '1',
+            maxValue: '2',
+            isUnethical: false,
+            isIndeterminate: true,
+            isCategorical: false,
+            isScalar: false
+          }
+        }
+      }
+    }];
+    store.dispatch(action.revealReports());
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
+  });
 });

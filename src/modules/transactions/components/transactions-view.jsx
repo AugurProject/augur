@@ -3,14 +3,14 @@ import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 
 const TransactionsPage = p => (
-	<section id="transactions_view">
-		{!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
-			<Branch {...p.branch} />
+  <section id="transactions_view">
+    {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
+    <Branch {...p.branch} />
 		}
 
-		<div className="view-header">
-			<h2>Transactions</h2>
-		</div>
+    <div className="view-header">
+      <h2>Transactions</h2>
+    </div>
 
     <div className="page-content">
       <Transactions
@@ -22,10 +22,10 @@ const TransactionsPage = p => (
 );
 
 TransactionsPage.propTypes = {
-	branch: React.PropTypes.object,
-	className: React.PropTypes.string,
-	loginAccount: React.PropTypes.object,
-	transactions: React.PropTypes.array
+  branch: React.PropTypes.object,
+  className: React.PropTypes.string,
+  loginAccount: React.PropTypes.object,
+  transactions: React.PropTypes.array
 };
 
 export default TransactionsPage;

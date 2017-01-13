@@ -92,54 +92,54 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     store.clearActions();
   });
 
-	it(`should listen for new updates`, () => {
-		store.dispatch(action.listenToUpdates());
-		const out = [{
-			type: 'UPDATE_ASSETS'
-		}, {
-			type: 'SYNC_BLOCKCHAIN'
-		}, {
-			type: 'SYNC_BRANCH'
-		}, {
-			type: 'UPDATE_OUTCOME_PRICE'
-		}, {
-			type: 'UPDATE_MARKET_TRADES_DATA',
-			data: {
-				testMarketID: {
-					testOutcome: [
-						{
-							market: 'testMarketID',
-							outcome: 'testOutcome',
-							price: 123.44250502560001
-						}
-					]
-				}
-			}
-		}, {
-			type: 'UPDATE_MARKET_PRICE_HISTORY',
-			marketID: 'testMarketID',
-			priceHistory: {
-				testOutcome: [
-					{
-						market: 'testMarketID',
-						outcome: 'testOutcome',
-						price: 123.44250502560001
-					}
-				]
-			}
-		}, {
-			type: 'LOAD_BASIC_MARKET',
-			marketID: [
-				'testID1'
-			]
-		}, {
-			type: 'LOAD_BASIC_MARKET',
-			marketID: [
-				'testID1'
-			]
-		}, {
-			type: 'UPDATE_ASSETS'
-		}];
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-	});
+  it(`should listen for new updates`, () => {
+    store.dispatch(action.listenToUpdates());
+    const out = [{
+      type: 'UPDATE_ASSETS'
+    }, {
+      type: 'SYNC_BLOCKCHAIN'
+    }, {
+      type: 'SYNC_BRANCH'
+    }, {
+      type: 'UPDATE_OUTCOME_PRICE'
+    }, {
+      type: 'UPDATE_MARKET_TRADES_DATA',
+      data: {
+        testMarketID: {
+          testOutcome: [
+            {
+              market: 'testMarketID',
+              outcome: 'testOutcome',
+              price: 123.44250502560001
+            }
+          ]
+        }
+      }
+    }, {
+      type: 'UPDATE_MARKET_PRICE_HISTORY',
+      marketID: 'testMarketID',
+      priceHistory: {
+        testOutcome: [
+          {
+            market: 'testMarketID',
+            outcome: 'testOutcome',
+            price: 123.44250502560001
+          }
+        ]
+      }
+    }, {
+      type: 'LOAD_BASIC_MARKET',
+      marketID: [
+        'testID1'
+      ]
+    }, {
+      type: 'LOAD_BASIC_MARKET',
+      marketID: [
+        'testID1'
+      ]
+    }, {
+      type: 'UPDATE_ASSETS'
+    }];
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
+  });
 });

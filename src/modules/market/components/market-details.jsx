@@ -21,17 +21,17 @@ const MarketDetails = (p) => {
           <span className="property-value">{outcomeName} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
         </li>
 				}
-				{p.type === 'categorical' && outcomeName &&
-					<li className="property outcome">
-						<span className="property-label">result</span>
-						<span className="property-value">{outcomeName}</span>
-					</li>
+        {p.type === 'categorical' && outcomeName &&
+        <li className="property outcome">
+          <span className="property-label">result</span>
+          <span className="property-value">{outcomeName}</span>
+        </li>
 				}
-				{p.type === 'scalar' && p.reportedOutcome &&
-					<li className="property outcome">
-						<span className="property-label">result</span>
-						<span className="property-value">{p.reportedOutcome}</span>
-					</li>
+        {p.type === 'scalar' && p.reportedOutcome &&
+        <li className="property outcome">
+          <span className="property-label">result</span>
+          <span className="property-value">{p.reportedOutcome}</span>
+        </li>
 				}
         {p.author != null &&
         <li className="property author">

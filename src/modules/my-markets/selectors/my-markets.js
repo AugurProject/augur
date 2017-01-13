@@ -79,26 +79,26 @@ export const selectOpenVolume = (market) => {
 };
 
 export const selectAverageTradeSize = memoizerific(1)((marketPriceHistory) => {
-	if (!marketPriceHistory) {
-		return 0;
-	}
+  if (!marketPriceHistory) {
+    return 0;
+  }
 
-	const initialState = {
-		shares: ZERO,
-		trades: 0
-	};
+  const initialState = {
+    shares: ZERO,
+    trades: 0
+  };
 
-	const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
-		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-			shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.amount)),
-			trades: outcomeTotals.trades + 1
-		}), initialState);
+  const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
+    const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
+      shares: abi.bignum(outcomeTotals.shares).plus(abi.bignum(trade.amount)),
+      trades: outcomeTotals.trades + 1
+    }), initialState);
 
-		return {
-			shares: historyTotals.shares.plus(outcomeTotals.shares),
-			trades: historyTotals.trades + outcomeTotals.trades
-		};
-	}, initialState);
+    return {
+      shares: historyTotals.shares.plus(outcomeTotals.shares),
+      trades: historyTotals.trades + outcomeTotals.trades
+    };
+  }, initialState);
 
-	return priceHistoryTotals.shares.dividedBy(abi.bignum(priceHistoryTotals.trades));
+  return priceHistoryTotals.shares.dividedBy(abi.bignum(priceHistoryTotals.trades));
 });

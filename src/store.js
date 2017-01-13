@@ -25,15 +25,15 @@ const localStorageMiddleware = store => next => (action) => {
     return;
   }
 
-	if (windowRef.localStorage && windowRef.localStorage.setItem) {
-		windowRef.localStorage.setItem(state.loginAccount.address, JSON.stringify({
-			scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
-			favorites: state.favorites,
-			settings: state.settings,
-			reports: state.reports,
-			loginMessageVersionRead: state.loginMessage.userVersionRead
-		}));
-	}
+  if (windowRef.localStorage && windowRef.localStorage.setItem) {
+    windowRef.localStorage.setItem(state.loginAccount.address, JSON.stringify({
+      scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
+      favorites: state.favorites,
+      settings: state.settings,
+      reports: state.reports,
+      loginMessageVersionRead: state.loginMessage.userVersionRead
+    }));
+  }
 };
 let middleWare;
 if (process.env.NODE_ENV !== 'production') {

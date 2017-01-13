@@ -7,45 +7,45 @@ import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
 describe(`modules/auth/actions/login.js`, () => {
-	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = {
-		accounts: {},
-		augur: {
-			getRegisterBlockNumber: () => {},
-			Register: {
-				register: () => {}
-			}
-		}
-	};
-	const fakeSelectors = {
-		links: {
-			marketsLink: {},
-			loginMessageLink: {}
-		}
-	};
-	const updtLoginAccStub = {};
-	const ldLoginAccStub = {};
-	const thisTestState = Object.assign({}, testState, {
-		loginAccount: {}
-	});
-	const store = mockStore(thisTestState);
+  proxyquire.noPreserveCache().noCallThru();
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const fakeAugurJS = {
+    accounts: {},
+    augur: {
+      getRegisterBlockNumber: () => {},
+      Register: {
+        register: () => {}
+      }
+    }
+  };
+  const fakeSelectors = {
+    links: {
+      marketsLink: {},
+      loginMessageLink: {}
+    }
+  };
+  const updtLoginAccStub = {};
+  const ldLoginAccStub = {};
+  const thisTestState = Object.assign({}, testState, {
+    loginAccount: {}
+  });
+  const store = mockStore(thisTestState);
 
-	fakeAugurJS.accounts.login = sinon.stub().yields({
-		address: 'test',
-		handle: 'test',
-		ether: 0,
-		realEther: 0,
-		rep: 0
-	});
-	sinon.stub(fakeAugurJS.augur.Register, 'register', (o) => {
-		o.onSent({ callReturn: 1 });
-		o.onSuccess({ callReturn: 1 });
-	});
-	sinon.stub(fakeAugurJS.augur, 'getRegisterBlockNumber', (account, cb) => {
-		cb(null, 123456789);
-	});
+  fakeAugurJS.accounts.login = sinon.stub().yields({
+    address: 'test',
+    handle: 'test',
+    ether: 0,
+    realEther: 0,
+    rep: 0
+  });
+  sinon.stub(fakeAugurJS.augur.Register, 'register', (o) => {
+    o.onSent({ callReturn: 1 });
+    o.onSuccess({ callReturn: 1 });
+  });
+  sinon.stub(fakeAugurJS.augur, 'getRegisterBlockNumber', (account, cb) => {
+    cb(null, 123456789);
+  });
 
   fakeSelectors.links.marketsLink.onClick = sinon.stub();
   fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
@@ -69,10 +69,10 @@ describe(`modules/auth/actions/login.js`, () => {
     store.clearActions();
   });
 
-	it(`should attempt to login an account given user/pass`, () => {
-		store.dispatch(action.login('test', 'test'));
-		const expectedOutput = [{ type: ldLoginAccLSTestString }, { type: updateTestString }, { type: ldLoginAccDepTestString }];
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
-	});
+  it(`should attempt to login an account given user/pass`, () => {
+    store.dispatch(action.login('test', 'test'));
+    const expectedOutput = [{ type: ldLoginAccLSTestString }, { type: updateTestString }, { type: ldLoginAccDepTestString }];
+    assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
+  });
 
 });

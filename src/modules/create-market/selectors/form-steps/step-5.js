@@ -7,25 +7,25 @@ import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-
 import { submitNewMarket } from '../../../create-market/actions/submit-new-market';
 
 export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, dispatch) => {
-	const tradingFee = augur.calculateTradingFees(formState.makerFee, formState.takerFee).tradingFee;
-	const validityBond = augur.calculateValidityBond(tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod);
-	const o = { ...formState };
-	o.type = formState.type;
-	o.endDate = formatDate(formState.endDate);
-	o.takerFeePercent = formatPercent(formState.takerFee);
-	o.makerFeePercent = formatPercent(formState.makerFee);
-	o.volume = formatNumber(0);
-	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
-	o.formattedDescription = o.description;
-	o.outcomes = selectOutcomesFromForm(
+  const tradingFee = augur.calculateTradingFees(formState.makerFee, formState.takerFee).tradingFee;
+  const validityBond = augur.calculateValidityBond(tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod);
+  const o = { ...formState };
+  o.type = formState.type;
+  o.endDate = formatDate(formState.endDate);
+  o.takerFeePercent = formatPercent(formState.takerFee);
+  o.makerFeePercent = formatPercent(formState.makerFee);
+  o.volume = formatNumber(0);
+  o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
+  o.formattedDescription = o.description;
+  o.outcomes = selectOutcomesFromForm(
 		formState.type,
 		formState.categoricalOutcomes,
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
-	o.isFavorite = false;
-	o.eventBond = formatEtherEstimate(validityBond);
-	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
-	o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
+  o.isFavorite = false;
+  o.eventBond = formatEtherEstimate(validityBond);
+  o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
+  o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
 
   if (o.isCreatingOrderBook) {
     const formattedFairPrices = [];

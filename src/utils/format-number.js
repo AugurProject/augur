@@ -261,29 +261,29 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
     o.rounded = (bigUnitPostfix)
 			? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
 			: addCommas(o.roundedValue.toFixed(decimalsRounded));
-		o.minimized = addCommas(abi.string(o.formattedValue));
-		o.formattedValue = abi.number(o.formattedValue);
-		o.roundedValue = o.roundedValue.toNumber();
-	}
+    o.minimized = addCommas(abi.string(o.formattedValue));
+    o.formattedValue = abi.number(o.formattedValue);
+    o.roundedValue = o.roundedValue.toNumber();
+  }
 
-	if (positiveSign && !bigUnitPostfix) {
-		if (o.formattedValue >= 0) {
-			o.formatted = `+${o.formatted}`;
-			o.minimized = `+${o.minimized}`;
-		}
-		if (o.roundedValue >= 0) {
-			o.rounded = `+${o.rounded}`;
-		}
-	}
+  if (positiveSign && !bigUnitPostfix) {
+    if (o.formattedValue >= 0) {
+      o.formatted = `+${o.formatted}`;
+      o.minimized = `+${o.minimized}`;
+    }
+    if (o.roundedValue >= 0) {
+      o.rounded = `+${o.rounded}`;
+    }
+  }
 
-	if (minimized) {
-		o.formatted = o.minimized;
-	}
+  if (minimized) {
+    o.formatted = o.minimized;
+  }
 
-	o.denomination = denomination;
-	o.full = makeFull(o.formatted, o.denomination);
+  o.denomination = denomination;
+  o.full = makeFull(o.formatted, o.denomination);
 
-	return o;
+  return o;
 }
 
 function addBigUnitPostfix(value, formattedValue) {

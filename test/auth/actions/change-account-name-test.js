@@ -7,18 +7,18 @@ import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
 describe(`modules/auth/actions/change-account-name.js`, () => {
-	proxyquire.noPreserveCache();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	const store = mockStore(testState);
-	const fakeAugurJS = {
-		augur: { accounts: { changeAccountName: () => {} } }
-	};
+  proxyquire.noPreserveCache();
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const store = mockStore(testState);
+  const fakeAugurJS = {
+    augur: { accounts: { changeAccountName: () => {} } }
+  };
 
-	sinon.stub(fakeAugurJS.augur.accounts, 'changeAccountName', name => ({
-		type: 'FAKE TYPE NAME CHANGE',
-		name
-	}));
+  sinon.stub(fakeAugurJS.augur.accounts, 'changeAccountName', name => ({
+    type: 'FAKE TYPE NAME CHANGE',
+    name
+  }));
 
   beforeEach(() => {
     store.clearActions();
@@ -35,6 +35,6 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
   it('should change an account name', () => {
     store.dispatch(action.changeAccountName('myNameChange'));
 
-		assert(fakeAugurJS.augur.accounts.changeAccountName.calledOnce, `augurJS.changeAccountName wasn't called once as expected.`);
-	});
+    assert(fakeAugurJS.augur.accounts.changeAccountName.calledOnce, `augurJS.changeAccountName wasn't called once as expected.`);
+  });
 });

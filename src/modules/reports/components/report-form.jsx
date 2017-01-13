@@ -41,10 +41,10 @@ export default class ReportForm extends Component {
 
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
-	handleSubmit() {
-		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
-		this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false });
-	}
+  handleSubmit() {
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
+    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false });
+  }
 
   render() {
     const p = this.props;
@@ -112,16 +112,16 @@ export default class ReportForm extends Component {
 						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
 					</span>
 
-					<Checkbox
-						className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
-						text="Yes, this question is indeterminate"
-						isChecked={!!s.isIndeterminate}
-						onClick={(!s.isReported && (() => this.setState({
-							isIndeterminate: !s.isIndeterminate,
-							reportedOutcomeID: indeterminateValue
-						}))) || undefined}
-					/>
-				</div>
+          <Checkbox
+            className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
+            text="Yes, this question is indeterminate"
+            isChecked={!!s.isIndeterminate}
+            onClick={(!s.isReported && (() => this.setState({
+              isIndeterminate: !s.isIndeterminate,
+              reportedOutcomeID: indeterminateValue
+            }))) || undefined}
+          />
+        </div>
 
         <div className="unethical">
           <h4>Is this question unethical?</h4>
@@ -129,21 +129,21 @@ export default class ReportForm extends Component {
 						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
 					</span>
 
-					<Checkbox
-						className={classnames('unethical-checkbox', { disabled: s.isReported })}
-						text="Yes, this question is unethical"
-						isChecked={!!s.isUnethical}
-						onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}
-					/>
-				</div>
+          <Checkbox
+            className={classnames('unethical-checkbox', { disabled: s.isReported })}
+            text="Yes, this question is unethical"
+            isChecked={!!s.isUnethical}
+            onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}
+          />
+        </div>
 
-				<div className="report-actions">
-					{!s.isReported &&
-						<button
-							className="button report"
-							disabled={!s.reportedOutcomeID}
-							onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || undefined}
-						>
+        <div className="report-actions">
+          {!s.isReported &&
+          <button
+            className="button report"
+            disabled={!s.reportedOutcomeID}
+            onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || undefined}
+          >
 							Submit Report
 						</button>
 					}

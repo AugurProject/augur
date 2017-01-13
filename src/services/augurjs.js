@@ -3,50 +3,50 @@ import augur from 'augur.js';
 const ex = {};
 
 ex.connect = function connect(env, cb) {
-	const options = {
-		http: env.gethHttpURL,
-		ws: env.gethWebsocketsURL,
-		contracts: env.contracts,
-		augurNodes: env.augurNodes
-	};
-	const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-	if (isHttps) {
-		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
-		const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
-		if (!isEnvHttps) options.http = null;
-		if (!isEnvWss) options.ws = null;
-	}
-	if (options.http) augur.rpc.nodes.hosted = [options.http];
-	augur.options.debug.trading = false;
-	augur.options.debug.reporting = false;
-	augur.options.debug.nonce = false;
-	augur.rpc.debug.broadcast = false;
-	augur.rpc.debug.tx = false;
-	augur.connect(options, (connection) => {
-		if (!connection) return cb('could not connect to ethereum');
-		console.log('connected:', connection);
-		if (env.augurNodeURL && !isHttps) {
-			console.debug('fetching cached data from', env.augurNodeURL);
-			augur.augurNode.bootstrap([env.augurNodeURL]);
-		}
-		cb(null, connection);
-	});
+  const options = {
+    http: env.gethHttpURL,
+    ws: env.gethWebsocketsURL,
+    contracts: env.contracts,
+    augurNodes: env.augurNodes
+  };
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  if (isHttps) {
+    const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
+    const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
+    if (!isEnvHttps) options.http = null;
+    if (!isEnvWss) options.ws = null;
+  }
+  if (options.http) augur.rpc.nodes.hosted = [options.http];
+  augur.options.debug.trading = false;
+  augur.options.debug.reporting = false;
+  augur.options.debug.nonce = false;
+  augur.rpc.debug.broadcast = false;
+  augur.rpc.debug.tx = false;
+  augur.connect(options, (connection) => {
+    if (!connection) return cb('could not connect to ethereum');
+    console.log('connected:', connection);
+    if (env.augurNodeURL && !isHttps) {
+      console.debug('fetching cached data from', env.augurNodeURL);
+      augur.augurNode.bootstrap([env.augurNodeURL]);
+    }
+    cb(null, connection);
+  });
 };
 
 ex.loadLoginAccount = function loadLoginAccount(env, cb) {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 	// if available, use the client-side account
-	if (augur.accounts.account.address && augur.accounts.account.privateKey) {
-		console.log('using client-side account:', augur.accounts.account.address);
-		return cb(null, { ...augur.accounts.account });
-	}
+  if (augur.accounts.account.address && augur.accounts.account.privateKey) {
+    console.log('using client-side account:', augur.accounts.account.address);
+    return cb(null, { ...augur.accounts.account });
+  }
 	// if the user has a persistent login, use it
-	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
-		const account = JSON.parse(localStorageRef.getItem('account'));
-		if (account && account.privateKey) {
+  if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
+    const account = JSON.parse(localStorageRef.getItem('account'));
+    if (account && account.privateKey) {
 			// local storage account exists, load it spawn the callback using augur.accounts.account
-			augur.accounts.loadLocalLoginAccount(account, loginAccount =>
+      augur.accounts.loadLocalLoginAccount(account, loginAccount =>
 				cb(null, { ...augur.accounts.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
@@ -64,11 +64,11 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
   augur.rpc.unlocked(augur.from, (unlocked) => {
 
 		// use augur.from address if unlocked
-		if (unlocked && !unlocked.error) {
-			augur.accounts.logout();
-			console.log('using unlocked account:', augur.from);
-			return cb(null, { address: augur.from });
-		}
+    if (unlocked && !unlocked.error) {
+      augur.accounts.logout();
+      console.log('using unlocked account:', augur.from);
+      return cb(null, { address: augur.from });
+    }
 
 		// otherwise, no account available
     console.log('account is locked: ', augur.from);
@@ -77,14 +77,14 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 };
 
 ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
-	const tools = augur.tools;
-	tools.DEBUG = true;
-	const accounts = augur.rpc.accounts();
-	const sender = augur.accounts.account.address || augur.from;
-	const callback = cb || function callback(e, r) {
-		if (e) console.error(e);
-		if (r) console.log(r);
-	};
+  const tools = augur.tools;
+  tools.DEBUG = true;
+  const accounts = augur.rpc.accounts();
+  const sender = augur.accounts.account.address || augur.from;
+  const callback = cb || function callback(e, r) {
+    if (e) console.error(e);
+    if (r) console.log(r);
+  };
 
 	// create an event (and market) of each type on the new branch
   const t = new Date().getTime() / 1000;
@@ -147,28 +147,28 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
 ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
-	const self = this;
-	if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
-	const tools = augur.tools;
-	const constants = augur.constants;
-	const sender = augur.accounts.account.address || augur.from;
-	const periodLength = periodLen || 1200;
-	const callback = cb || function callback(e, r) {
-		if (e) console.error(e);
-		if (r) console.log(r);
-	};
-	tools.DEBUG = true;
-	if (branchID) {
-		return augur.getPeriodLength(branchID, (branchPeriodLength) => {
-			console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
-			self.reportingMarketsSetup(branchPeriodLength, branchID, callback);
-		});
-	}
-	console.debug('Setting up new branch for reporting tests...');
-	tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], (err, newBranchID) => {
-		if (err) return callback(err);
-		self.reportingMarketsSetup(periodLength, newBranchID, callback);
-	});
+  const self = this;
+  if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
+  const tools = augur.tools;
+  const constants = augur.constants;
+  const sender = augur.accounts.account.address || augur.from;
+  const periodLength = periodLen || 1200;
+  const callback = cb || function callback(e, r) {
+    if (e) console.error(e);
+    if (r) console.log(r);
+  };
+  tools.DEBUG = true;
+  if (branchID) {
+    return augur.getPeriodLength(branchID, (branchPeriodLength) => {
+      console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
+      self.reportingMarketsSetup(branchPeriodLength, branchID, callback);
+    });
+  }
+  console.debug('Setting up new branch for reporting tests...');
+  tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], (err, newBranchID) => {
+    if (err) return callback(err);
+    self.reportingMarketsSetup(periodLength, newBranchID, callback);
+  });
 };
 
 ex.augur = augur;

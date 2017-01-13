@@ -5,14 +5,14 @@ import classnames from 'classnames';
 import EmDash from 'modules/common/components/em-dash';
 
 const ValueDenomination = p => (
-	<span
-		className={classnames('value-denomination', p.className, {
-			positive: p.formattedValue > 0,
-			negative: p.formattedValue < 0
-		})}
-	>
-		{p.prefix && !p.hidePrefix &&
-			<span className="prefix">{p.prefix}</span>
+  <span
+    className={classnames('value-denomination', p.className, {
+      positive: p.formattedValue > 0,
+      negative: p.formattedValue < 0
+    })}
+  >
+    {p.prefix && !p.hidePrefix &&
+    <span className="prefix">{p.prefix}</span>
 		}
     {p.formatted && p.fullPrecision &&
     <span
@@ -29,8 +29,8 @@ const ValueDenomination = p => (
     {p.denomination &&
     <span className="denomination">{p.denomination}</span>
 		}
-		{p.postfix && !p.hidePostfix &&
-			<span className="postfix">{p.postfix}</span>
+    {p.postfix && !p.hidePostfix &&
+    <span className="postfix">{p.postfix}</span>
 		}
     {!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
     <span className="value" ><EmDash /></span>
@@ -40,16 +40,16 @@ const ValueDenomination = p => (
 );
 
 ValueDenomination.propTypes = {
-	className: PropTypes.string,
-	value: PropTypes.number,
-	formattedValue: PropTypes.number,
-	formatted: PropTypes.string,
-	fullPrecision: PropTypes.string,
-	denomination: PropTypes.string,
-	hidePrefix: PropTypes.bool,
-	hidePostfix: PropTypes.bool,
-	prefix: PropTypes.string,
-	postfix: PropTypes.string
+  className: PropTypes.string,
+  value: PropTypes.number,
+  formattedValue: PropTypes.number,
+  formatted: PropTypes.string,
+  fullPrecision: PropTypes.string,
+  denomination: PropTypes.string,
+  hidePrefix: PropTypes.bool,
+  hidePostfix: PropTypes.bool,
+  prefix: PropTypes.string,
+  postfix: PropTypes.string
 };
 
 export default ValueDenomination;

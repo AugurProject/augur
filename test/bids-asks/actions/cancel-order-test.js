@@ -11,21 +11,21 @@ import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
   proxyquire.noPreserveCache().noCallThru();
 
-	const { mockStore, actionCreator, state } = mocks;
-	const augur = {
-		cancel: sinon.stub(),
-		rpc: { gasPrice: 1 },
-		tx: { BuyAndSellShares: { cancel: {} } },
-		getTxGasEth: sinon.stub()
-	};
-	const updateOrderStatus = actionCreator();
-	const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
-		'../../../services/augurjs': {
-			augur,
-			abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
-		},
-		'../../bids-asks/actions/update-order-status': { updateOrderStatus }
-	});
+  const { mockStore, actionCreator, state } = mocks;
+  const augur = {
+    cancel: sinon.stub(),
+    rpc: { gasPrice: 1 },
+    tx: { BuyAndSellShares: { cancel: {} } },
+    getTxGasEth: sinon.stub()
+  };
+  const updateOrderStatus = actionCreator();
+  const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
+    '../../../services/augurjs': {
+      augur,
+      abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
+    },
+    '../../bids-asks/actions/update-order-status': { updateOrderStatus }
+  });
 
   const store = mockStore({
     ...state,
@@ -44,19 +44,19 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
     }
   });
 
-	afterEach(() => {
-		augur.cancel.reset();
-		updateOrderStatus.reset();
-		store.clearActions();
-	});
+  afterEach(() => {
+    augur.cancel.reset();
+    updateOrderStatus.reset();
+    store.clearActions();
+  });
 
-	describe('cancelOrder', () => {
-		it(`shouldn't dispatch it order doesn't exist`, () => {
-			store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID));
-			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
-			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
-		});
-	});
+  describe('cancelOrder', () => {
+    it(`shouldn't dispatch it order doesn't exist`, () => {
+      store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID));
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
+    });
+  });
 
   describe('abortCancelOrderConfirmation', () => {
     it('should produce action', () => {

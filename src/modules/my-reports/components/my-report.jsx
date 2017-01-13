@@ -18,29 +18,29 @@ const Report = p => (
           {p.outcome && !p.outcomePercentage &&
           <span>{p.outcome}</span>
 					}
-					{!p.outcome &&
-						<EmDash />
+          {!p.outcome &&
+          <EmDash />
 					}
-				</span>
-			</div>
-			<div className="portfolio-pair">
-				<span className="report-main-group-title">reported: </span>
-				<span className="report-main-group-title-outcome">
-					{!!p.isCommitted && !p.isRevealed &&
-						<span
-							className="report-committed"
-							data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
-						>
-							{p.reported || <EmDash />}
-						</span>
+        </span>
+      </div>
+      <div className="portfolio-pair">
+        <span className="report-main-group-title">reported: </span>
+        <span className="report-main-group-title-outcome">
+          {!!p.isCommitted && !p.isRevealed &&
+          <span
+            className="report-committed"
+            data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
+          >
+            {p.reported || <EmDash />}
+          </span>
 					}
-					{!!p.isRevealed &&
-						<span className="report-revealed">
-							{p.reported || <EmDash />}
-						</span>
+          {!!p.isRevealed &&
+          <span className="report-revealed">
+            {p.reported || <EmDash />}
+          </span>
 					}
-					{!p.isRevealed && !p.isCommitted &&
-						<span>{p.reported || <EmDash />}</span>
+          {!p.isRevealed && !p.isCommitted &&
+          <span>{p.reported || <EmDash />}</span>
 					}
           {!!p.outcome && p.isReportEqual &&
           <span
@@ -58,19 +58,19 @@ const Report = p => (
 							&#xf057;
 						</span>
 					}
-					<ReportEthics isUnethical={p.isUnethical} />
-				</span>
-			</div>
-			<div className="portfolio-pair">
-				<span className="report-main-group-title">cycle: </span>
-				<span className="report-main-group-title-outcome">
-					{p.period ?
-						<span
-							data-tip={`${p.branch.currentPeriod - p.period} reporting cycles ago`}
-						>
-							{p.period}
-						</span> :
-						<EmDash />
+          <ReportEthics isUnethical={p.isUnethical} />
+        </span>
+      </div>
+      <div className="portfolio-pair">
+        <span className="report-main-group-title">cycle: </span>
+        <span className="report-main-group-title-outcome">
+          {p.period ?
+            <span
+              data-tip={`${p.branch.currentPeriod - p.period} reporting cycles ago`}
+            >
+              {p.period}
+            </span> :
+            <EmDash />
 					}
         </span>
       </div>
@@ -85,23 +85,23 @@ const Report = p => (
 				/>
 			</div>
 			*/}
-			<div className="portfolio-pair">
-				<span className="title">rep gain/loss</span>
-				<ValueDenomination
-					className="colorize"
-					{...p.repEarned}
-				/>
-			</div>
-			<div className="portfolio-pair">
-				<span className="title">ended</span>
-				{p.endDate ?
-					<ValueDate {...p.endDate} /> :
-					<EmDash />
+      <div className="portfolio-pair">
+        <span className="title">rep gain/loss</span>
+        <ValueDenomination
+          className="colorize"
+          {...p.repEarned}
+        />
+      </div>
+      <div className="portfolio-pair">
+        <span className="title">ended</span>
+        {p.endDate ?
+          <ValueDate {...p.endDate} /> :
+          <EmDash />
 				}
-			</div>
-		</div>
-		<ReactTooltip type="light" effect="solid" place="top" />
-	</div>
+      </div>
+    </div>
+    <ReactTooltip type="light" effect="solid" place="top" />
+  </div>
 );
 
 // TODO -- Prop Validations

@@ -14,14 +14,14 @@ export default function (transactionsData = {}, action) {
         return p;
       }, { ...transactionsData });
 
-		case DELETE_TRANSACTION: {
-			const updatedTransactionsData = Object.assign({}, transactionsData);
-			delete updatedTransactionsData[action.transactionID];
-			return updatedTransactionsData;
-		}
+    case DELETE_TRANSACTION: {
+      const updatedTransactionsData = Object.assign({}, transactionsData);
+      delete updatedTransactionsData[action.transactionID];
+      return updatedTransactionsData;
+    }
 
-		case CLEAR_LOGIN_ACCOUNT:
-			return {};
+    case CLEAR_LOGIN_ACCOUNT:
+      return {};
 
     default:
       return transactionsData;

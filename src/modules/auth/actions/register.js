@@ -17,28 +17,28 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
     const { links } = require('../../../selectors');
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-		if (loginID && links && links.marketsLink && !cb && loginAccount.keystore)	{
-			if (rememberMe && localStorageRef && localStorageRef.setItem) {
-				const persistentAccount = Object.assign({}, loginAccount);
-				if (Buffer.isBuffer(persistentAccount.privateKey)) {
-					persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-				}
-				if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-					persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-				}
-				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-			}
-			loginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
-			loginAccount.settings = loginAccount.settings || {};
-			dispatch(loadLoginAccountLocalStorage(loginAccount.address));
-			dispatch(updateLoginAccount(loginAccount));
-			dispatch(loadLoginAccountDependents((err) => {
-				if (err) return console.error(err);
-				dispatch(fundNewAccount((err) => {
-					if (err) return console.error(err);
-					dispatch(registerTimestamp());
-				}));
-			}));
+    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore)	{
+      if (rememberMe && localStorageRef && localStorageRef.setItem) {
+        const persistentAccount = Object.assign({}, loginAccount);
+        if (Buffer.isBuffer(persistentAccount.privateKey)) {
+          persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+        }
+        if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+          persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+        }
+        localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+      }
+      loginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
+      loginAccount.settings = loginAccount.settings || {};
+      dispatch(loadLoginAccountLocalStorage(loginAccount.address));
+      dispatch(updateLoginAccount(loginAccount));
+      dispatch(loadLoginAccountDependents((err) => {
+        if (err) return console.error(err);
+        dispatch(fundNewAccount((err) => {
+          if (err) return console.error(err);
+          dispatch(registerTimestamp());
+        }));
+      }));
 
 			// decide if we need to display the loginMessage
       const { loginMessage } = getState();
@@ -52,20 +52,20 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
     }
 
-		augur.accounts.register(name, password, (account) => {
-			if (!account) {
-				return dispatch(authError({ code: 0, message: 'failed to register' }));
-			} else if (account.error) {
-				return dispatch(authError({ code: account.error, message: account.message }));
-			}
-			const localLoginAccount = {
-				...account,
-				loginID: account.loginID || account.secureLoginID
-			};
-			if (!localLoginAccount || !localLoginAccount.address) {
-				return;
-			}
-			dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
+    augur.accounts.register(name, password, (account) => {
+      if (!account) {
+        return dispatch(authError({ code: 0, message: 'failed to register' }));
+      } else if (account.error) {
+        return dispatch(authError({ code: account.error, message: account.message }));
+      }
+      const localLoginAccount = {
+        ...account,
+        loginID: account.loginID || account.secureLoginID
+      };
+      if (!localLoginAccount || !localLoginAccount.address) {
+        return;
+      }
+      dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
 			// dispatch(addFundNewAccount(localLoginAccount.address));
       if (typeof cb === 'function') {
         cb(localLoginAccount);

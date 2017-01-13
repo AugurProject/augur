@@ -15,66 +15,66 @@ import { updateAccountSettings } from '../../../modules/auth/actions/update-acco
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
 
 export function loadLoginAccountDependents(cb) {
-	return (dispatch, getState) => {
-		const { loginAccount } = getState();
-		AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
-			if (!err && blockNumber) {
-				loginAccount.registerBlockNumber = blockNumber;
-				dispatch(updateLoginAccount(loginAccount));
-			}
-			dispatch(updateAssets(cb));
+  return (dispatch, getState) => {
+    const { loginAccount } = getState();
+    AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
+      if (!err && blockNumber) {
+        loginAccount.registerBlockNumber = blockNumber;
+        dispatch(updateLoginAccount(loginAccount));
+      }
+      dispatch(updateAssets(cb));
 
-			dispatch(loadAccountTrades());
-			dispatch(loadBidsAsksHistory());
-			dispatch(loadFundingHistory());
-			dispatch(loadTransferHistory());
-			dispatch(loadCreateMarketHistory());
+      dispatch(loadAccountTrades());
+      dispatch(loadBidsAsksHistory());
+      dispatch(loadFundingHistory());
+      dispatch(loadTransferHistory());
+      dispatch(loadCreateMarketHistory());
 
 			// clear and load reports for any markets that have been loaded
 			// (partly to handle signing out of one account and into another)
-			dispatch(clearReports());
-			dispatch(loadReportingHistory());
-			dispatch(loadEventsWithSubmittedReport());
-			dispatch(syncBranch((err) => {
-				if (err) console.error('syncBranch:', err);
-			}));
-		});
-	};
+      dispatch(clearReports());
+      dispatch(loadReportingHistory());
+      dispatch(loadEventsWithSubmittedReport());
+      dispatch(syncBranch((err) => {
+        if (err) console.error('syncBranch:', err);
+      }));
+    });
+  };
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch) => {
-		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+  return (dispatch) => {
+    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
-			return;
-		}
+    if (!localStorageRef || !localStorageRef.getItem || !accountID) {
+      return;
+    }
 
-		const localState = JSON.parse(localStorageRef.getItem(accountID));
+    const localState = JSON.parse(localStorageRef.getItem(accountID));
 
-		if (!localState) {
-			return;
-		}
+    if (!localState) {
+      return;
+    }
 
-		if (localState.favorites) {
-			dispatch(updateFavorites(localState.favorites));
-		}
-		if (localState.scalarMarketsShareDenomination) {
-			Object.keys(localState.scalarMarketsShareDenomination).forEach((marketID) => {
-				dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
-			});
-		}
-		if (localState.reports && Object.keys(localState.reports).length) {
-			dispatch(updateReports(localState.reports));
-		}
-		if (localState.settings) {
-			dispatch(updateAccountSettings(localState.settings));
-		}
+    if (localState.favorites) {
+      dispatch(updateFavorites(localState.favorites));
+    }
+    if (localState.scalarMarketsShareDenomination) {
+      Object.keys(localState.scalarMarketsShareDenomination).forEach((marketID) => {
+        dispatch(updateScalarMarketShareDenomination(marketID, localState.scalarMarketsShareDenomination[marketID]));
+      });
+    }
+    if (localState.reports && Object.keys(localState.reports).length) {
+      dispatch(updateReports(localState.reports));
+    }
+    if (localState.settings) {
+      dispatch(updateAccountSettings(localState.settings));
+    }
 
-		if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
-			dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
-		}
-	};
+    if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
+      dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
+    }
+  };
 }
 
 export function loadLoginAccount() {

@@ -23,26 +23,26 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
   return 0;
 })
 		.map((id) => {
-			let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
-			if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
-				marketLink = selectMarketLink(
-					{
-						id: transactionsData[id].data.id || transactionsData[id].data.marketID,
-						description: transactionsData[id].description
-					},
+  let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
+  if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
+    marketLink = selectMarketLink(
+      {
+        id: transactionsData[id].data.id || transactionsData[id].data.marketID,
+        description: transactionsData[id].description
+      },
 					store.dispatch
 				);
-			}
-			return {
-				...transactionsData[id],
-				data: {
-					...transactionsData[id].data,
-					marketLink
-				},
-				gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
-				ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
-				shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
-				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
-			};
-		})
+  }
+  return {
+    ...transactionsData[id],
+    data: {
+      ...transactionsData[id].data,
+      marketLink
+    },
+    gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
+    ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
+    shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
+    rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
+  };
+})
 ));

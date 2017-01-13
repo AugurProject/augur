@@ -19,16 +19,16 @@ export default class AccountPage extends Component {
   constructor(props) {
     super(props);
 
-		this.state = {
-			name: this.props.account.name,
-			editName: false,
-			showFullID: false,
-			msg: '',
-			sendAmount: '',
-			currency: 'ETH',
-			recipientAddress: '',
-			settings: this.props.settings
-		};
+    this.state = {
+      name: this.props.account.name,
+      editName: false,
+      showFullID: false,
+      msg: '',
+      sendAmount: '',
+      currency: 'ETH',
+      recipientAddress: '',
+      settings: this.props.settings
+    };
 
     this.handleTransfer = this.handleTransfer.bind(this);
     this.loginIDCopy = this.loginIDCopy.bind(this);
@@ -43,12 +43,12 @@ export default class AccountPage extends Component {
 
     this.props.account.transferFunds(amount, currency, recipient);
 
-		this.setState({
-			sendAmount: '',
-			currency: 'ETH',
-			recipientAddress: ''
-		});
-	};
+    this.setState({
+      sendAmount: '',
+      currency: 'ETH',
+      recipientAddress: ''
+    });
+  };
 
   loginIDCopy = (e) => {
     try {
