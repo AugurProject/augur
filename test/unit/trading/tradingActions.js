@@ -53,7 +53,7 @@ describe("getTradingActions", function () {
   var txOriginal;
   before("getTradingActions", function () {
     txOriginal = augur.tx;
-    augur.tx = new require("augur-contracts").Tx("2").functions;
+    augur.tx = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
   });
 
   after("getTradingActions", function () {

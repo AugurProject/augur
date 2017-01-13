@@ -8,6 +8,7 @@
 var assert = require("chai").assert;
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
+var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
 require("it-each")({testPerIteration: true});
@@ -21,8 +22,8 @@ describe("Read contracts", function () {
   };
 
   var contract_list = [];
-  for (var c in contracts["2"]) {
-    if (!contracts["2"].hasOwnProperty(c)) continue;
+  for (var c in contracts[constants.DEFAULT_NETWORK_ID]) {
+    if (!contracts[constants.DEFAULT_NETWORK_ID].hasOwnProperty(c)) continue;
     contract_list.push(c);
   }
 

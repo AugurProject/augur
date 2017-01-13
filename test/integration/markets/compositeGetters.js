@@ -11,6 +11,7 @@ var abi = require("augur-abi");
 var clone = require("clone");
 var utils = require("../../../src/utilities");
 var augurpath = "../../../src/index";
+var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
 var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
@@ -91,7 +92,7 @@ var testMarketInfo = function (market, info) {
   }
   assert.isObject(r);
   assert.property(r, "network");
-  assert(r.network === "7" || r.network === "10101" || r.network === "2");
+  assert(r.network === "7" || r.network === "10101" || r.network === constants.DEFAULT_NETWORK_ID);
   assert.property(r, "makerFee");
   assert.isNotNull(r.makerFee);
   assert.property(r, "takerFee");

@@ -22,7 +22,7 @@ describe("positions", function () {
 
   before(function () {
     txOriginal = augur.tx;
-    augur.tx = new require("augur-contracts").Tx("2").functions;
+    augur.tx = new require("augur-contracts").Tx("3").functions;
   });
 
   after(function () {

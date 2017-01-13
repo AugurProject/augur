@@ -137,11 +137,10 @@ module.exports = {
     self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
       lastPeriodPenalized = parseInt(lastPeriodPenalized);
       if (self.options.debug.reporting) {
-        console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
-        console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+        console.log("[feePenaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[feePenaltyCatchUp] Checking period:      ", periodToCheck);
       }
       self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
-        console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
         if (!feesCollected || feesCollected.error) {
           return callback(feesCollected || "couldn't get fees collected");
         }

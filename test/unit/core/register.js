@@ -20,7 +20,7 @@ describe("register", function () {
     api = augur.api;
     tx = augur.tx;
     getLogs = augur.rpc.getLogs;
-    augur.api = new require("augur-contracts").Tx("2");
+    augur.api = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID);
     augur.tx = augur.api.functions;
   });
 

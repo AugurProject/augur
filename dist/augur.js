@@ -40913,6 +40913,8 @@ module.exports = {
   // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
+  DEFAULT_NETWORK_ID: "3",
+
   // default branch info: "root branch", 1010101
   DEFAULT_BRANCH_ID: "0xf69b5",
   DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
@@ -41794,7 +41796,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.1";
+  this.version = "3.7.2";
 
   this.options = {
     debug: {
@@ -45119,11 +45121,10 @@ module.exports = {
     self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
       lastPeriodPenalized = parseInt(lastPeriodPenalized);
       if (self.options.debug.reporting) {
-        console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
-        console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+        console.log("[feePenaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[feePenaltyCatchUp] Checking period:      ", periodToCheck);
       }
       self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
-        console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
         if (!feesCollected || feesCollected.error) {
           return callback(feesCollected || "couldn't get fees collected");
         }
@@ -47133,7 +47134,7 @@ module.exports = {
             } else {
                 var key, method;
                 this.rpc.blockNumber(noop);
-                this.network_id = this.rpc.version() || "2";
+                this.network_id = this.rpc.version() || "3";
                 this.api = new contracts.Tx(this.network_id, this.custom_contracts);
                 this.contracts = clone(this.custom_contracts || contracts[this.network_id]);
                 for (method in this.api.functions) {

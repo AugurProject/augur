@@ -8,8 +8,9 @@ var contracts = require("augur-contracts");
 var random = require("./random");
 var tools = require("./tools");
 var utils = require("../src/utilities");
+var constants = require("../src/constants");
 var augur = require("../src");
-augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
+augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || constants.DEFAULT_NETWORK_ID);
 augur.tx = augur.api.functions;
 augur.bindContractAPI();
 

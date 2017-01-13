@@ -147,8 +147,8 @@ describe("Fund new account", function () {
     this.timeout(tools.TIMEOUT*2);
     var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
 
-    // faucet only exists on network 2!
-    if (augur.network_id !== "2") return done();
+    // faucet only exists on network 3
+    if (augur.network_id !== constants.DEFAULT_NETWORK_ID) return done();
 
     augur.accounts.login(loginID2, password2, function (account) {
       // console.log("login:", account);
