@@ -13,7 +13,7 @@ const MarketPositions = (p) => {
 
   return (
     <article className="market-positions">
-      {!outcomePositions ?
+      {!outcomePositions || !outcomePositions.length ?
         <NullStateMessage message={nullMessage} /> :
         <div>
           <div className="market-positions-header">
