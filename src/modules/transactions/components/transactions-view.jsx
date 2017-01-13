@@ -12,13 +12,13 @@ const TransactionsPage = p => (
 			<h2>Transactions</h2>
 		</div>
 
-		<div className="page-content">
-			<Transactions
-				className="transactions-content"
-				transactions={p.transactions}
-			/>
-		</div>
-	</section>
+    <div className="page-content">
+      <Transactions
+        className="transactions-content"
+        transactions={p.transactions}
+      />
+    </div>
+  </section>
 );
 
 TransactionsPage.propTypes = {

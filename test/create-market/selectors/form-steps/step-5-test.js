@@ -15,38 +15,38 @@ import * as selector from 'modules/create-market/selectors/form-steps/step-5';
 import * as submitNewMarket from 'modules/create-market/actions/submit-new-market';
 
 describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
-	proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru();
 
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
 
-	let formState;
-	let out;
-	let outAction;
-	const state = Object.assign({}, testState);
-	const store = mockStore(state);
+  let formState;
+  let out;
+  let outAction;
+  const state = Object.assign({}, testState);
+  const store = mockStore(state);
 
-	const stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
+  const stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
 
-	describe('select', () => {
-		before(() => {
-			outAction = [store.dispatch(stubbedSubmitNewMarket())];
-			store.clearActions();
-		});
+  describe('select', () => {
+    before(() => {
+      outAction = [store.dispatch(stubbedSubmitNewMarket())];
+      store.clearActions();
+    });
 
-		beforeEach(() => {
-			formState = {
-				description: 'test',
-				endDate: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
-				takerFee: TAKER_FEE_DEFAULT,
-				makerFee: MAKER_FEE_DEFAULT,
-				expirySource: 'testing',
-				type: BINARY
-			};
-		});
+    beforeEach(() => {
+      formState = {
+        description: 'test',
+        endDate: new Date(Date.UTC(3000, 0, 1, 0, 0, 0, 0)),
+        takerFee: TAKER_FEE_DEFAULT,
+        makerFee: MAKER_FEE_DEFAULT,
+        expirySource: 'testing',
+        type: BINARY
+      };
+    });
 
-		it('should call the correct action onSubmit', () => {
-			const select = selector.select(
+    it('should call the correct action onSubmit', () => {
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -57,40 +57,40 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				store.dispatch
 			);
 
-			select.onSubmit();
+      select.onSubmit();
 
-			assert.deepEqual(store.getActions(), outAction, `Didn't dispatch the expected action object when onSubmit was called`);
-		});
+      assert.deepEqual(store.getActions(), outAction, `Didn't dispatch the expected action object when onSubmit was called`);
+    });
 
-		it('should return the correct object for a binary market WITH an order book', () => {
-			formState = {
-				...formState,
-				type: BINARY,
-				isCreatingOrderBook: true,
-				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-				startingQuantity: STARTING_QUANTITY_DEFAULT,
-				priceWidth: PRICE_WIDTH_DEFAULT,
-				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-				initialFairPrices: {
-					type: BINARY,
-					values: [
-						{
-							label: 'Yes',
-							value: 0.5
-						},
-						{
-							label: 'No',
-							value: 0.5
-						}
-					],
-					raw: [
-						0.5,
-						0.5
-					]
-				}
-			};
+    it('should return the correct object for a binary market WITH an order book', () => {
+      formState = {
+        ...formState,
+        type: BINARY,
+        isCreatingOrderBook: true,
+        bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+        startingQuantity: STARTING_QUANTITY_DEFAULT,
+        priceWidth: PRICE_WIDTH_DEFAULT,
+        initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+        initialFairPrices: {
+          type: BINARY,
+          values: [
+            {
+              label: 'Yes',
+              value: 0.5
+            },
+            {
+              label: 'No',
+              value: 0.5
+            }
+          ],
+          raw: [
+            0.5,
+            0.5
+          ]
+        }
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -268,17 +268,17 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(select, out, `correct object was not returned`);
-		});
+      assert.deepEqual(select, out, `correct object was not returned`);
+    });
 
-		it('should return the correct object for a binary market WITHOUT an order book', () => {
-			formState = {
-				...formState
-			};
+    it('should return the correct object for a binary market WITHOUT an order book', () => {
+      formState = {
+        ...formState
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -375,50 +375,50 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isFavorite: false
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(select, out, `correct object was not returned`);
-		});
+      assert.deepEqual(select, out, `correct object was not returned`);
+    });
 
-		it('should return the correct object for a categorical market WITH an order book', () => {
-			formState = {
-				...formState,
-				type: CATEGORICAL,
-				isCreatingOrderBook: true,
-				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-				startingQuantity: STARTING_QUANTITY_DEFAULT,
-				priceWidth: PRICE_WIDTH_DEFAULT,
-				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-				initialFairPrices: {
-					type: CATEGORICAL,
-					values: [
-						{
-							label: 'test1',
-							value: 0.5
-						},
-						{
-							label: 'test2',
-							value: 0.5
-						},
-						{
-							label: 'test3',
-							value: 0.5
-						}
-					],
-					raw: [
-						0.5,
-						0.5,
-						0.5
-					]
-				},
-				categoricalOutcomes: [
-					'test1',
-					'test2',
-					'test3'
-				]
-			};
+    it('should return the correct object for a categorical market WITH an order book', () => {
+      formState = {
+        ...formState,
+        type: CATEGORICAL,
+        isCreatingOrderBook: true,
+        bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+        startingQuantity: STARTING_QUANTITY_DEFAULT,
+        priceWidth: PRICE_WIDTH_DEFAULT,
+        initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+        initialFairPrices: {
+          type: CATEGORICAL,
+          values: [
+            {
+              label: 'test1',
+              value: 0.5
+            },
+            {
+              label: 'test2',
+              value: 0.5
+            },
+            {
+              label: 'test3',
+              value: 0.5
+            }
+          ],
+          raw: [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        categoricalOutcomes: [
+          'test1',
+          'test2',
+          'test3'
+        ]
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -619,27 +619,27 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(
+      assert.deepEqual(
 				select,
 				out,
 				`correct object was not returned`
 			);
-		});
+    });
 
-		it('should return the correct object for a categorical market WITHOUT an order book', () => {
-			formState = {
-				...formState,
-				type: CATEGORICAL,
-				categoricalOutcomes: [
-					'test1',
-					'test2',
-					'test3'
-				]
-			};
+    it('should return the correct object for a categorical market WITHOUT an order book', () => {
+      formState = {
+        ...formState,
+        type: CATEGORICAL,
+        categoricalOutcomes: [
+          'test1',
+          'test2',
+          'test3'
+        ]
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -745,42 +745,42 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isFavorite: false
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(select, out, `correct object was not returned`);
-		});
+      assert.deepEqual(select, out, `correct object was not returned`);
+    });
 
-		it('should return the correct object for a scalar market WITH an order book', () => {
-			formState = {
-				...formState,
-				type: SCALAR,
-				isCreatingOrderBook: true,
-				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-				startingQuantity: STARTING_QUANTITY_DEFAULT,
-				priceWidth: PRICE_WIDTH_DEFAULT,
-				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-				initialFairPrices: {
-					type: SCALAR,
-					values: [
-						{
-							label: '⇧',
-							value: 55
-						},
-						{
-							label: '⇩',
-							value: 55
-						}
-					],
-					raw: [
-						55,
-						55
-					]
-				},
-				scalarSmallNum: 10,
-				scalarBigNum: 100
-			};
+    it('should return the correct object for a scalar market WITH an order book', () => {
+      formState = {
+        ...formState,
+        type: SCALAR,
+        isCreatingOrderBook: true,
+        bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+        startingQuantity: STARTING_QUANTITY_DEFAULT,
+        priceWidth: PRICE_WIDTH_DEFAULT,
+        initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+        initialFairPrices: {
+          type: SCALAR,
+          values: [
+            {
+              label: '⇧',
+              value: 55
+            },
+            {
+              label: '⇩',
+              value: 55
+            }
+          ],
+          raw: [
+            55,
+            55
+          ]
+        },
+        scalarSmallNum: 10,
+        scalarBigNum: 100
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -960,20 +960,20 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				isCreatingOrderBook: true
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(select, out, 'correct object was not returned');
-		});
+      assert.deepEqual(select, out, 'correct object was not returned');
+    });
 
-		it('should return the correct object for a scalar market WITHOUT an order book', () => {
-			formState = {
-				...formState,
-				type: SCALAR,
-				scalarSmallNum: 10,
-				scalarBigNum: 100
-			};
+    it('should return the correct object for a scalar market WITHOUT an order book', () => {
+      formState = {
+        ...formState,
+        type: SCALAR,
+        scalarSmallNum: 10,
+        scalarBigNum: 100
+      };
 
-			const select = selector.select(
+      const select = selector.select(
 				formState,
 				state.blockchain.currentBlockNumber,
 				state.blockchain.currentBlockMillisSinceEpoch,
@@ -1072,9 +1072,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				scalarBigNum: 100
 			};
 
-			delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
+      delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(select, out, 'correct object was not returned');
-		});
-	});
+      assert.deepEqual(select, out, 'correct object was not returned');
+    });
+  });
 });

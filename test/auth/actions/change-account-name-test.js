@@ -20,20 +20,20 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
 		name
 	}));
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-	});
+  afterEach(() => {
+    store.clearActions();
+  });
 
-	const action = proxyquire('../../../src/modules/auth/actions/change-account-name', {
-		'../../../services/augurjs': fakeAugurJS
-	});
+  const action = proxyquire('../../../src/modules/auth/actions/change-account-name', {
+    '../../../services/augurjs': fakeAugurJS
+  });
 
-	it('should change an account name', () => {
-		store.dispatch(action.changeAccountName('myNameChange'));
+  it('should change an account name', () => {
+    store.dispatch(action.changeAccountName('myNameChange'));
 
 		assert(fakeAugurJS.augur.accounts.changeAccountName.calledOnce, `augurJS.changeAccountName wasn't called once as expected.`);
 	});

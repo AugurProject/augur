@@ -11,28 +11,28 @@ import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 
 export function refreshMarket(marketID) {
-	return (dispatch, getState) => {
-		if (getState().marketsData[marketID]) {
-			dispatch(loadMarketsInfo([marketID], () => {
-				dispatch(loadBidsAsks(marketID));
-				if (getState().loginAccount.address) {
-					dispatch(loadAccountTrades(marketID));
-				}
-			}));
-		}
-	};
+  return (dispatch, getState) => {
+    if (getState().marketsData[marketID]) {
+      dispatch(loadMarketsInfo([marketID], () => {
+        dispatch(loadBidsAsks(marketID));
+        if (getState().loginAccount.address) {
+          dispatch(loadAccountTrades(marketID));
+        }
+      }));
+    }
+  };
 }
 
 export function listenToUpdates() {
-	return (dispatch, getState) => {
-		augur.filters.listen({
+  return (dispatch, getState) => {
+    augur.filters.listen({
 
 			// block arrivals
-			block: (blockHash) => {
-				dispatch(updateAssets());
-				dispatch(syncBlockchain());
-				dispatch(syncBranch());
-			},
+      block: (blockHash) => {
+        dispatch(updateAssets());
+        dispatch(syncBlockchain());
+        dispatch(syncBranch());
+      },
 
 			collectedFees: (msg) => {
 				if (msg && msg.sender === getState().loginAccount.address) {

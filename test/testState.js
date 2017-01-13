@@ -254,140 +254,140 @@ const testState = {
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' }
-			],
-			1: [
+      ],
+      1: [
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' }
-			]
-		},
-		'0xMARKET2': {
-			0: [
+      ]
+    },
+    '0xMARKET2': {
+      0: [
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' }
-			],
-			1: [
+      ],
+      1: [
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' },
 				{ test: 'test' }
-			]
-		},
-	},
-	allMarkets: [
-		{
-			id: '0xMARKET1',
-			author: '0x0000000000000000000000000000000000000001',
-			description: 'test-market-1',
-			endDate: formatDate(new Date('2017/12/12')),
-			volume: formatNumber(100),
-			outcomes: [
-				{
-					orderBook: {
-						bid: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						],
-						ask: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						]
-					}
-				},
-				{
-					orderBook: {
-						bid: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						],
-						ask: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						]
-					}
-				}
-			]
-		},
-		{
-			id: '0xMARKET2',
-			author: '0x0000000000000000000000000000000000000001',
-			description: 'test-market-2',
-			endDate: formatDate(new Date('2017/12/12')),
-			volume: formatNumber(100),
-			outcomes: [
-				{
-					orderBook: {
-						bid: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						],
-						ask: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						]
-					}
-				},
-				{
-					orderBook: {
-						bid: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						],
-						ask: [
-							{
-								shares: formatShares(10)
-							},
-							{
-								shares: formatShares(10)
-							},
-						]
-					}
-				}
-			]
-		},
-		{
-			id: '0xMARKET3',
-			author: '0xtest456'
-		},
-		{
-			id: '0xMARKET4',
-			author: '0xtest456'
-		}
-	],
-	loginMessage: {
-		version: 1
-	}
+      ]
+    },
+  },
+  allMarkets: [
+    {
+      id: '0xMARKET1',
+      author: '0x0000000000000000000000000000000000000001',
+      description: 'test-market-1',
+      endDate: formatDate(new Date('2017/12/12')),
+      volume: formatNumber(100),
+      outcomes: [
+        {
+          orderBook: {
+            bid: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ],
+            ask: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ]
+          }
+        },
+        {
+          orderBook: {
+            bid: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ],
+            ask: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ]
+          }
+        }
+      ]
+    },
+    {
+      id: '0xMARKET2',
+      author: '0x0000000000000000000000000000000000000001',
+      description: 'test-market-2',
+      endDate: formatDate(new Date('2017/12/12')),
+      volume: formatNumber(100),
+      outcomes: [
+        {
+          orderBook: {
+            bid: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ],
+            ask: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ]
+          }
+        },
+        {
+          orderBook: {
+            bid: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ],
+            ask: [
+              {
+                shares: formatShares(10)
+              },
+              {
+                shares: formatShares(10)
+              },
+            ]
+          }
+        }
+      ]
+    },
+    {
+      id: '0xMARKET3',
+      author: '0xtest456'
+    },
+    {
+      id: '0xMARKET4',
+      author: '0xtest456'
+    }
+  ],
+  loginMessage: {
+    version: 1
+  }
 };
 
 export default testState;

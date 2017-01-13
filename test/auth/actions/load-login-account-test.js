@@ -46,9 +46,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		if (cb) cb(null);
 	});
 
-	fakeLoadAcctTrades.loadAccountTrades = sinon.stub().returns({
-		type: 'LOAD_ACCOUNT_TRADES'
-	});
+  fakeLoadAcctTrades.loadAccountTrades = sinon.stub().returns({
+    type: 'LOAD_ACCOUNT_TRADES'
+  });
 
 	const action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
@@ -59,12 +59,12 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		'../../app/actions/update-branch': fakeUpdateBranch
 	});
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	it(`should update the login account`, () => {
-		store.dispatch(action.loadLoginAccount());
+  it(`should update the login account`, () => {
+    store.dispatch(action.loadLoginAccount());
 
 		const expectedOutput = [{
 			type: 'UPDATE_LOGIN_ACCOUNT',

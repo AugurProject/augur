@@ -4,28 +4,28 @@ import requestsReducer from 'modules/app/reducers/requests';
 import { MARKET_DATA_LOADING } from 'modules/market/actions/load-full-market';
 
 describe('modules/app/reducers/requests.js', () => {
-	it('should react to default action', () => {
-		const newState = requestsReducer(undefined, {
-			type: '@@INIT'
-		});
+  it('should react to default action', () => {
+    const newState = requestsReducer(undefined, {
+      type: '@@INIT'
+    });
 
-		assert.deepEqual(newState, {});
-	});
+    assert.deepEqual(newState, {});
+  });
 
-	it('should react to MARKET_DATA_LOADING action', () => {
-		const currentState = {};
+  it('should react to MARKET_DATA_LOADING action', () => {
+    const currentState = {};
 
-		const newState = requestsReducer(currentState, {
-			type: MARKET_DATA_LOADING,
-			marketID: 'marketID'
-		});
+    const newState = requestsReducer(currentState, {
+      type: MARKET_DATA_LOADING,
+      marketID: 'marketID'
+    });
 
-		assert.deepEqual(newState, {
-			MARKET_DATA_LOADING: {
-				marketID: true
-			}
-		});
-		assert.notStrictEqual(currentState, newState);
-	});
+    assert.deepEqual(newState, {
+      MARKET_DATA_LOADING: {
+        marketID: true
+      }
+    });
+    assert.notStrictEqual(currentState, newState);
+  });
 
 });

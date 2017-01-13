@@ -78,33 +78,33 @@ export function loadLoginAccountLocalStorage(accountID) {
 }
 
 export function loadLoginAccount() {
-	return (dispatch, getState) => {
-		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-		const { env } = getState();
+  return (dispatch, getState) => {
+    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+    const { env } = getState();
 
-		AugurJS.loadLoginAccount(env, (err, loginAccount) => {
-			let localLoginAccount = loginAccount;
+    AugurJS.loadLoginAccount(env, (err, loginAccount) => {
+      let localLoginAccount = loginAccount;
 
-			if (err) {
-				return console.error('ERR loadLoginAccount():', err);
-			}
+      if (err) {
+        return console.error('ERR loadLoginAccount():', err);
+      }
 
-			if (!localLoginAccount && localStorageRef && localStorageRef.getItem) {
-				const account = localStorageRef.getItem('account');
-				if (account !== null) {
-					localLoginAccount = JSON.parse(account);
-				}
-			}
+      if (!localLoginAccount && localStorageRef && localStorageRef.getItem) {
+        const account = localStorageRef.getItem('account');
+        if (account !== null) {
+          localLoginAccount = JSON.parse(account);
+        }
+      }
 
-			if (!localLoginAccount || !localLoginAccount.address) {
-				return;
-			}
-			localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
+      if (!localLoginAccount || !localLoginAccount.address) {
+        return;
+      }
+      localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
-			dispatch(updateLoginAccount(localLoginAccount));
-			dispatch(loadLoginAccountDependents());
+      dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
+      dispatch(updateLoginAccount(localLoginAccount));
+      dispatch(loadLoginAccountDependents());
 
-		});
-	};
+    });
+  };
 }

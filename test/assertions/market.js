@@ -8,209 +8,209 @@ import assertReportableOutcomes from 'assertions/reportable-outcomes';
 export default function (market) {
 
 	// market can be undefined
-	if (!market.id) {
-		return;
-	}
+  if (!market.id) {
+    return;
+  }
 
-	describe('augur-ui-react-components market state', () => {
-		it('market', () => {
-			assert.isDefined(market);
-			assert.isObject(market);
-		});
+  describe('augur-ui-react-components market state', () => {
+    it('market', () => {
+      assert.isDefined(market);
+      assert.isObject(market);
+    });
 
-		it('market.id', () => {
-			assert.isDefined(market.id);
-			assert.isString(market.id);
-		});
+    it('market.id', () => {
+      assert.isDefined(market.id);
+      assert.isString(market.id);
+    });
 
-		it('market.author', () => {
-			assert.isDefined(market.author);
-			assert.isString(market.author);
-		});
+    it('market.author', () => {
+      assert.isDefined(market.author);
+      assert.isString(market.author);
+    });
 
-		it('market.type', () => {
-			assert.isDefined(market.type);
-			assert.isString(market.type);
-		});
+    it('market.type', () => {
+      assert.isDefined(market.type);
+      assert.isString(market.type);
+    });
 
-		it('market.description', () => {
-			assert.isDefined(market.description);
-			assert.isString(market.description);
-		});
+    it('market.description', () => {
+      assert.isDefined(market.description);
+      assert.isString(market.description);
+    });
 
-		it('market.resolution', () => {
-			assert.isDefined(market.resolution);
-			assert.isString(market.resolution);
-		});
+    it('market.resolution', () => {
+      assert.isDefined(market.resolution);
+      assert.isString(market.resolution);
+    });
 
-		it('market.extraInfo', () => {
-			assert.isDefined(market.extraInfo);
-			assert.isString(market.extraInfo);
-		});
+    it('market.extraInfo', () => {
+      assert.isDefined(market.extraInfo);
+      assert.isString(market.extraInfo);
+    });
 
-		it('market.endDate', () => {
-			assert.isDefined(market.endDate);
-			assertFormattedDate(market.endDate, 'market.endDate');
-		});
+    it('market.endDate', () => {
+      assert.isDefined(market.endDate);
+      assertFormattedDate(market.endDate, 'market.endDate');
+    });
 
-		it('market.creationTime', () => {
-			assert.isDefined(market.creationTime);
-			assertFormattedDate(market.creationTime, 'market.creationTime');
-		});
+    it('market.creationTime', () => {
+      assert.isDefined(market.creationTime);
+      assertFormattedDate(market.creationTime, 'market.creationTime');
+    });
 
-		it('market.endDateLabel', () => {
-			assert.isDefined(market.endDateLabel);
-			assert.isString(market.endDateLabel);
-		});
+    it('market.endDateLabel', () => {
+      assert.isDefined(market.endDateLabel);
+      assert.isString(market.endDateLabel);
+    });
 
-		it('market.outstandingShares', () => {
-			assert.isDefined(market.outstandingShares);
-			assertFormattedNumber(market.outstandingShares, 'market.outstandingShares');
-		});
+    it('market.outstandingShares', () => {
+      assert.isDefined(market.outstandingShares);
+      assertFormattedNumber(market.outstandingShares, 'market.outstandingShares');
+    });
 
-		it('market.takerFeePercent', () => {
-			assert.isDefined(market.takerFeePercent);
-			assertFormattedNumber(market.takerFeePercent, 'market.takerFeePercent');
-		});
+    it('market.takerFeePercent', () => {
+      assert.isDefined(market.takerFeePercent);
+      assertFormattedNumber(market.takerFeePercent, 'market.takerFeePercent');
+    });
 
-		it('market.makerFeePercent', () => {
-			assert.isDefined(market.makerFeePercent);
-			assertFormattedNumber(market.makerFeePercent, 'market.makerFeePercent');
-		});
+    it('market.makerFeePercent', () => {
+      assert.isDefined(market.makerFeePercent);
+      assertFormattedNumber(market.makerFeePercent, 'market.makerFeePercent');
+    });
 
-		it('market.volume', () => {
-			assert.isDefined(market.volume);
-			assertFormattedNumber(market.volume, 'market.volume');
-		});
+    it('market.volume', () => {
+      assert.isDefined(market.volume);
+      assertFormattedNumber(market.volume, 'market.volume');
+    });
 
-		it('market.isOpen', () => {
-			assert.isDefined(market.isOpen);
-			assert.isBoolean(market.isOpen);
-		});
+    it('market.isOpen', () => {
+      assert.isDefined(market.isOpen);
+      assert.isBoolean(market.isOpen);
+    });
 
-		it('market.isPendingReport', () => {
-			assert.isDefined(market.isPendingReport);
-			assert.isBoolean(market.isPendingReport);
-		});
+    it('market.isPendingReport', () => {
+      assert.isDefined(market.isPendingReport);
+      assert.isBoolean(market.isPendingReport);
+    });
 
-		it('market.marketLink', () => {
-			assert.isDefined(market.marketLink);
-			assertMarketLink(market.marketLink, 'market.marketLink');
-		});
+    it('market.marketLink', () => {
+      assert.isDefined(market.marketLink);
+      assertMarketLink(market.marketLink, 'market.marketLink');
+    });
 
-		const tags = market.tags;
-		it('market.tags', () => {
-			assert.isDefined(tags);
-			assert.isArray(tags);
+    const tags = market.tags;
+    it('market.tags', () => {
+      assert.isDefined(tags);
+      assert.isArray(tags);
 
-			tags.forEach((tag, i) => {
-				it(`market.tags[${i}].name`, () => {
-					assert.isDefined(tag.name);
-					assert.isString(tag.name);
-				});
+      tags.forEach((tag, i) => {
+        it(`market.tags[${i}].name`, () => {
+          assert.isDefined(tag.name);
+          assert.isString(tag.name);
+        });
 
-				it(`market.tags[${i}].onCLick`, () => {
-					assert.isDefined(tag.onClick);
-					assert.isFunction(tag.onClick);
-				});
-			});
-		});
+        it(`market.tags[${i}].onCLick`, () => {
+          assert.isDefined(tag.onClick);
+          assert.isFunction(tag.onClick);
+        });
+      });
+    });
 
-		it('market.outcomes', () => {
-			assert.isDefined(market.outcomes);
-			assert.isArray(market.outcomes);
+    it('market.outcomes', () => {
+      assert.isDefined(market.outcomes);
+      assert.isArray(market.outcomes);
 
-			market.outcomes.forEach((outcome, i) => {
-				it(`market.outcomes[${i}]`, () => {
-					assert.isDefined(outcome);
-					assert.isObject(outcome);
-				});
+      market.outcomes.forEach((outcome, i) => {
+        it(`market.outcomes[${i}]`, () => {
+          assert.isDefined(outcome);
+          assert.isObject(outcome);
+        });
 
-				it(`market.outcomes[${i}].id`, () => {
-					assert.isDefined(outcome.id);
-					assert.isString(outcome.id);
-				});
+        it(`market.outcomes[${i}].id`, () => {
+          assert.isDefined(outcome.id);
+          assert.isString(outcome.id);
+        });
 
-				it(`market.outcomes[${i}].name`, () => {
-					assert.isDefined(outcome.name);
-					assert.isString(outcome.name);
-				});
+        it(`market.outcomes[${i}].name`, () => {
+          assert.isDefined(outcome.name);
+          assert.isString(outcome.name);
+        });
 
-				it(`market.outcomes[${i}].marketID`, () => {
-					assert.isDefined(outcome.marketID);
-					assert.isString(outcome.marketID);
-				});
+        it(`market.outcomes[${i}].marketID`, () => {
+          assert.isDefined(outcome.marketID);
+          assert.isString(outcome.marketID);
+        });
 
-				it(`market.outcomes[${i}].lastPrice`, () => {
-					assert.isDefined(outcome.lastPrice);
-					assertFormattedNumber(outcome.lastPrice, 'outcome.lastPrice');
-				});
+        it(`market.outcomes[${i}].lastPrice`, () => {
+          assert.isDefined(outcome.lastPrice);
+          assertFormattedNumber(outcome.lastPrice, 'outcome.lastPrice');
+        });
 
-				it(`market.outcomes[${i}].lastPricePercent`, () => {
-					assert.isDefined(outcome.lastPricePercent);
-					assertFormattedNumber(outcome.lastPricePercent, 'outcome.lastPricePercent');
-				});
+        it(`market.outcomes[${i}].lastPricePercent`, () => {
+          assert.isDefined(outcome.lastPricePercent);
+          assertFormattedNumber(outcome.lastPricePercent, 'outcome.lastPricePercent');
+        });
 
-				const trade = outcome.trade;
-				it(`market.outcomes[${i}].trade`, () => {
-					assert.isDefined(trade);
-					assert.isObject(trade);
-				});
+        const trade = outcome.trade;
+        it(`market.outcomes[${i}].trade`, () => {
+          assert.isDefined(trade);
+          assert.isObject(trade);
+        });
 
-				it(`market.outcomes[${i}].trade.side`, () => {
-					assert.isDefined(trade.side);
-					assert.isString(trade.side);
-				});
+        it(`market.outcomes[${i}].trade.side`, () => {
+          assert.isDefined(trade.side);
+          assert.isString(trade.side);
+        });
 
-				it(`market.outcomes[${i}].trade.numShares`, () => {
-					assert.isDefined(trade.numShares);
-					assert.isNumber(trade.numShares);
-				});
+        it(`market.outcomes[${i}].trade.numShares`, () => {
+          assert.isDefined(trade.numShares);
+          assert.isNumber(trade.numShares);
+        });
 
-				it(`market.outcomes[${i}].trade.maxNumShares`, () => {
-					assert.isDefined(trade.maxNumShares);
-					assert.isNumber(trade.maxNumShares);
-				});
+        it(`market.outcomes[${i}].trade.maxNumShares`, () => {
+          assert.isDefined(trade.maxNumShares);
+          assert.isNumber(trade.maxNumShares);
+        });
 
-				it(`market.outcomes[${i}].trade.limitPrice`, () => {
-					assert.isDefined(trade.limitPrice);
-					assert.isNumber(trade.limitPrice);
-				});
+        it(`market.outcomes[${i}].trade.limitPrice`, () => {
+          assert.isDefined(trade.limitPrice);
+          assert.isNumber(trade.limitPrice);
+        });
 
-				it(`market.outcomes[${i}].trade.tradeSummary`, () => {
+        it(`market.outcomes[${i}].trade.tradeSummary`, () => {
 					// NOTE -- shallow check here due to deep check further down of the same selector method
-					assert.isDefined(trade.tradeSummary);
-					assert.isObject(trade.tradeSummary);
-				});
+          assert.isDefined(trade.tradeSummary);
+          assert.isObject(trade.tradeSummary);
+        });
 
-				it(`market.outcomes[${i}].trade.updateTradeOrder`, () => {
-					assert.isDefined(trade.updateTradeOrder);
-					assert.isFunction(trade.updateTradeOrder);
-				});
+        it(`market.outcomes[${i}].trade.updateTradeOrder`, () => {
+          assert.isDefined(trade.updateTradeOrder);
+          assert.isFunction(trade.updateTradeOrder);
+        });
 
-				const orderBook = outcome.orderBook;
-				it(`market.outcomes[${i}].orderBook`, () => {
+        const orderBook = outcome.orderBook;
+        it(`market.outcomes[${i}].orderBook`, () => {
 					// NOTE -- shallow check here due to deep check further down of the same selector method
-					assert.isDefined(orderBook);
-					assert.isObject(orderBook);
-				});
+          assert.isDefined(orderBook);
+          assert.isObject(orderBook);
+        });
 
-				it(`market.outcomes[${i}].orderBook.bids`, () => {
-					assert.isDefined(orderBook.bids);
-					assert.isArray(orderBook.bids);
-				});
+        it(`market.outcomes[${i}].orderBook.bids`, () => {
+          assert.isDefined(orderBook.bids);
+          assert.isArray(orderBook.bids);
+        });
 
-				it(`market.outcomes[${i}].orderBook.asks`, () => {
-					assert.isDefined(orderBook.asks);
-					assert.isArray(orderBook.asks);
-				});
+        it(`market.outcomes[${i}].orderBook.asks`, () => {
+          assert.isDefined(orderBook.asks);
+          assert.isArray(orderBook.asks);
+        });
 
-				it(`market.outcomes[${i}].orderBook.topBid`, () => {
+        it(`market.outcomes[${i}].orderBook.topBid`, () => {
 					// NOTE -- shallow check here due to deep check further down of the same selector method
-					assert.isDefined(outcome.topBid);
-				});
+          assert.isDefined(outcome.topBid);
+        });
 
-				it(`market.outcomes[${i}].orderBook.topAsk`, () => {
+        it(`market.outcomes[${i}].orderBook.topAsk`, () => {
 					// NOTE -- shallow check here due to deep check further down of the same selector method
 					assert.isDefined(outcome.topAsk);
 				});

@@ -15,11 +15,11 @@ require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
 if (process.env.NODE_ENV === 'development') {
-	Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
-	window.selectors = selectors;
-	window.App = App;
-	window.augurjs = AugurJS;
-	console.log(`
+  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
+  window.selectors = selectors;
+  window.App = App;
+  window.augurjs = AugurJS;
+  console.log(`
 *********************************************
 			DEVELOPMENT MODE
 	window.state		-- all state data
@@ -35,10 +35,10 @@ store.dispatch(initAugur());
 const appElement = document.getElementById('app');
 
 function render(appElement, selectors) {
-	ReactDOM.render(
-		<AppContainer>
-			<App {...selectors} />
-		</AppContainer>,
+  ReactDOM.render(
+    <AppContainer>
+      <App {...selectors} />
+    </AppContainer>,
 		appElement
 	);
 }
@@ -47,27 +47,27 @@ function render(appElement, selectors) {
 store.subscribe(handleRender);
 
 window.onpopstate = (e) => {
-	store.dispatch(updateURL(window.location.pathname + window.location.search));
+  store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
 if (module.hot) {
-	module.hot.accept();
+  module.hot.accept();
 
-	module.hot.accept('./modules/app/components/app', () => {
-		handleRender();
-	});
+  module.hot.accept('./modules/app/components/app', () => {
+    handleRender();
+  });
 
-	module.hot.accept('./modules/app/actions/init-augur');
-	module.hot.accept('./modules/link/actions/update-url');
-	module.hot.accept('./services/augurjs');
+  module.hot.accept('./modules/app/actions/init-augur');
+  module.hot.accept('./modules/link/actions/update-url');
+  module.hot.accept('./services/augurjs');
 }
 
 function handleRender() {
-	let currentSelectors;
-	if (process.env.NODE_ENV === 'development') {
-		currentSelectors = require('./selectors');
-	} else {
-		currentSelectors = selectors;
-	}
-	render(appElement, currentSelectors);
+  let currentSelectors;
+  if (process.env.NODE_ENV === 'development') {
+    currentSelectors = require('./selectors');
+  } else {
+    currentSelectors = selectors;
+  }
+  render(appElement, currentSelectors);
 }

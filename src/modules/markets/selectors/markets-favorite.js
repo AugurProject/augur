@@ -1,8 +1,8 @@
 import memoizerific from 'memoizerific';
 
 export default function () {
-	const { filteredMarkets } = require('../../../selectors');
-	return selectFavoriteMarkets(filteredMarkets);
+  const { filteredMarkets } = require('../../../selectors');
+  return selectFavoriteMarkets(filteredMarkets);
 }
 
 export const selectFavoriteMarkets = memoizerific(1)(markets =>

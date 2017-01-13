@@ -19,26 +19,26 @@
 
 // 	Notifications
 .animation-flash-slow(@color) {
-	.animation(flash-slow @animation-speed-slow @animation-default-type infinite alternate);
+  .animation(flash-slow @animation-speed-slow @animation-default-type infinite alternate);
 
-	.keyframes(flash-slow, {
-	0% { background: fade(@color, @amount-subtle) }
-	100% { background: fade(@color, @amount-light) }
-	});
+  .keyframes(flash-slow, {
+  0% { background: fade(@color, @amount-subtle) }
+  100% { background: fade(@color, @amount-light) }
+  });
 }
 
 // Transitions
 // Don't pass `all`.  Can potentially cause performance issues.
 // Instead, pass a comma separated list of property/timing/easing to watch for changes with a `;` at the end
 .transition(...) {
-	transition: @arguments;
+  transition: @arguments;
 }
 
 //	Helpers
 .animation(@args) {
-	animation: @args;
+  animation: @args;
 }
 
 .keyframes(@name; @args) {
-	@keyframes @name { @args(); }
+  @keyframes @name { @args(); }
 }

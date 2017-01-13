@@ -1,167 +1,167 @@
 .app-nav {
-	display: flex;
-	flex: 1;
-	justify-content: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
 
-	.app-nav-link:not(button) {
+  .app-nav-link:not(button) {
 
-		.transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
+    .transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
 
-		&:hover,
-		&:active {
-			&:not(.augur-brand):not(button) {
-				background-color: @color-nav-background-active;
-				color: @color-text-light;
-				cursor: pointer;
-			}
-		}
+    &:hover,
+    &:active {
+      &:not(.augur-brand):not(button) {
+        background-color: @color-nav-background-active;
+        color: @color-text-light;
+        cursor: pointer;
+      }
+    }
 
-		&.active {
-			background-color: @color-nav-background-active;
-			color: @color-text-light;
-		}
+    &.active {
+      background-color: @color-nav-background-active;
+      color: @color-text-light;
+    }
 
-		&.transactions {
-			&.working {
-				&:not(.active) {
+    &.transactions {
+      &.working {
+        &:not(.active) {
 
-					.animation-flash-slow(@color-orange);
+          .animation-flash-slow(@color-orange);
 
-					color: @color-text-light;
-				}
-			}
+          color: @color-text-light;
+        }
+      }
 
-			.link-text {
-				white-space: nowrap;
-			}
-		}
-	}
+      .link-text {
+        white-space: nowrap;
+      }
+    }
+  }
 
-	button.app-nav-link {
-		padding: 0 2em;
-	}
+  button.app-nav-link {
+    padding: 0 2em;
+  }
 
-	// Navs displayed in header
-	&.nav-header {
-		.nav-icon {
-			display: none;
-		}
+  // Navs displayed in header
+  &.nav-header {
+    .nav-icon {
+      display: none;
+    }
 
-		button.app-nav-link {
-			i {
+    button.app-nav-link {
+      i {
 
-				.font-size-medium();
+        .font-size-medium();
 
-				padding-right: 0.4em;
-			}
+        padding-right: 0.4em;
+      }
 
-			@media @breakpoint-mobile {
-				padding: 1.1em;
-			}
-		}
+      @media @breakpoint-mobile {
+        padding: 1.1em;
+      }
+    }
 
-		.augur-brand {
-			display: flex;
-			flex: 1;
-			padding: 0;
+    .augur-brand {
+      display: flex;
+      flex: 1;
+      padding: 0;
 
-			.augur-logo-full {
-				height: 2.5em;
-				left: 0;
-				padding: 1em 0;
-				pointer-events: none;
-				position: absolute;
-				width: 100vw;
+      .augur-logo-full {
+        height: 2.5em;
+        left: 0;
+        padding: 1em 0;
+        pointer-events: none;
+        position: absolute;
+        width: 100vw;
 
-				@media @breakpoint-mobile {
-					height: 1.5em;
-					padding: 0.8em 0;
-				}
-			}
-		}
+        @media @breakpoint-mobile {
+          height: 1.5em;
+          padding: 0.8em 0;
+        }
+      }
+    }
 
-		.side-bar-filter-icon {
-			height: 1.3em;
-			padding: 0;
+    .side-bar-filter-icon {
+      height: 1.3em;
+      padding: 0;
 
-			@media @breakpoint-mobile {
-				height: 1em;
-			}
-		}
+      @media @breakpoint-mobile {
+        height: 1em;
+      }
+    }
 
-		.app-nav-link.link {
-			align-items: center;
-			display: flex;
-			justify-content: center;
-			padding: 1.6em 1.8em;
-			white-space: nowrap;
+    .app-nav-link.link {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      padding: 1.6em 1.8em;
+      white-space: nowrap;
 
-			@media @breakpoint-2 {
-				padding: 1.6em 1.8em;
-			}
+      @media @breakpoint-2 {
+        padding: 1.6em 1.8em;
+      }
 
-			@media @breakpoint-mobile {
-				display: none;
-			}
+      @media @breakpoint-mobile {
+        display: none;
+      }
 
-			.nav-count {
-				margin-right: 0.2em;
-			}
-		}
-	}
+      .nav-count {
+        margin-right: 0.2em;
+      }
+    }
+  }
 
-	// Navs displayed in footer
-	&.nav-footer {
-		display: none;
-		position: relative;
+  // Navs displayed in footer
+  &.nav-footer {
+    display: none;
+    position: relative;
 
-		.augur-brand {
-			display: none;
-		}
+    .augur-brand {
+      display: none;
+    }
 
-		@media @breakpoint-mobile {
+    @media @breakpoint-mobile {
 
-			.font-color-light();
+      .font-color-light();
 
-			background-color: @color-nav-background;
-			display: flex;
-			flex: 1;
-			flex-wrap: wrap;
-			justify-content: flex-start;
-		}
+      background-color: @color-nav-background;
+      display: flex;
+      flex: 1;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
 
-		.app-nav-link {
-			align-content: center;
-			align-items: center;
-			display: flex;
-			flex: 1;
-			flex-direction: column;
-			justify-content: center;
-			min-width: 4em;
-			padding: 1em;
-			position: relative;
-			text-align: center; // accounts for wrapped text
-		}
+    .app-nav-link {
+      align-content: center;
+      align-items: center;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 4em;
+      padding: 1em;
+      position: relative;
+      text-align: center; // accounts for wrapped text
+    }
 
-		button.app-nav-link {
-			display: none;
-		}
+    button.app-nav-link {
+      display: none;
+    }
 
-		.nav-icon {
-			margin-bottom: 0.2em;
-			width: 2em;
-		}
+    .nav-icon {
+      margin-bottom: 0.2em;
+      width: 2em;
+    }
 
-		.nav-count {
+    .nav-count {
 
-			.font-color-dark();
+      .font-color-dark();
 
-			background-color: @color-white-muted;
-			border-radius: 50%;
-			padding: 0.25em 0.5em;
-			position: absolute;
-			right: 10%;
-			top: 10%;
-		}
-	}
+      background-color: @color-white-muted;
+      border-radius: 50%;
+      padding: 0.25em 0.5em;
+      position: absolute;
+      right: 10%;
+      top: 10%;
+    }
+  }
 }

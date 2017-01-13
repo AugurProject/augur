@@ -10,43 +10,43 @@ import { SHARE } from 'modules/market/constants/share-denominations';
 import getValue from 'utils/get-value';
 
 const CreateMarketForm = (p) => {
-	let form;
+  let form;
 
-	const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
+  const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
-	switch (p.step) {
-		case 1:
-		default:
-			form = <Form1 {...p} />;
-			break;
-		case 2:
-			form = <Form2 {...p} />;
-			break;
-		case 3:
-			form = <Form3 {...p} />;
-			break;
-		case 4:
-			form = <Form4 {...p} />;
-			break;
-		case 5:
-			form = (<Form5
-				{...p}
-				selectedShareDenomination={SHARE}
-				shareDenominations={shareDenominations}
-			/>);
-			break;
-	}
+  switch (p.step) {
+    case 1:
+    default:
+      form = <Form1 {...p} />;
+      break;
+    case 2:
+      form = <Form2 {...p} />;
+      break;
+    case 3:
+      form = <Form3 {...p} />;
+      break;
+    case 4:
+      form = <Form4 {...p} />;
+      break;
+    case 5:
+      form = (<Form5
+        {...p}
+        selectedShareDenomination={SHARE}
+        shareDenominations={shareDenominations}
+      />);
+      break;
+  }
 
-	return (
-		<article className={p.className}>
-			{form}
-		</article>
-	);
+  return (
+    <article className={p.className}>
+      {form}
+    </article>
+  );
 };
 
 CreateMarketForm.propTypes = {
-	className: PropTypes.string,
-	step: PropTypes.number
+  className: PropTypes.string,
+  step: PropTypes.number
 };
 
 export default CreateMarketForm;

@@ -70,8 +70,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		}
 	);
 
-	before(() => {
-		store.clearActions();
+  before(() => {
+    store.clearActions();
 
 		// Mock the window object
 		global.window = {};

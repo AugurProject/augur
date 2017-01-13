@@ -5,19 +5,19 @@ import selectLoginAccountMarkets from '../../../modules/my-markets/selectors/log
 import selectLoginAccountReports from '../../../modules/my-reports/selectors/login-account-reports';
 
 export default function () {
-	const positions = selectLoginAccountPositions();
-	const markets = selectLoginAccountMarkets();
-	const reports = selectLoginAccountReports();
-	const navItems = portfolioNavItems();
-	const totals = selectPortfolioTotals();
+  const positions = selectLoginAccountPositions();
+  const markets = selectLoginAccountMarkets();
+  const reports = selectLoginAccountReports();
+  const navItems = portfolioNavItems();
+  const totals = selectPortfolioTotals();
 
 	// console.log('loginAccountReports -- ', reports);
 
-	return {
-		navItems,
-		positions,
-		markets,
-		reports,
-		totals
-	};
+  return {
+    navItems,
+    positions,
+    markets,
+    reports,
+    totals
+  };
 }

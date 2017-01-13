@@ -27,28 +27,28 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 	o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
 	o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
 
-	if (o.isCreatingOrderBook) {
-		const formattedFairPrices = [];
+  if (o.isCreatingOrderBook) {
+    const formattedFairPrices = [];
 
-		o.initialFairPrices.values.map((cV, i) => {
-			formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
-			return formattedFairPrices;
-		});
+    o.initialFairPrices.values.map((cV, i) => {
+      formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
+      return formattedFairPrices;
+    });
 
-		o.initialFairPrices = {
-			...o.initialFairPrices,
-			formatted: formattedFairPrices
-		};
+    o.initialFairPrices = {
+      ...o.initialFairPrices,
+      formatted: formattedFairPrices
+    };
 
-		o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
-		o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
-		o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
-		o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
-	}
+    o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
+    o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
+    o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
+    o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
+  }
 
-	o.onSubmit = () => { dispatch(submitNewMarket(o)); };
+  o.onSubmit = () => { dispatch(submitNewMarket(o)); };
 
-	return o;
+  return o;
 };
 
 export const selectOutcomesFromForm = (
@@ -56,17 +56,17 @@ export const selectOutcomesFromForm = (
 	categoricalOutcomes,
 	scalarSmallNum,
 	scalarBigNum) => {
-	switch (type) {
-		case BINARY:
-			return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
-		case CATEGORICAL:
-			return categoricalOutcomes.map((outcome, i) => {
-				const obj = { id: i, name: outcome };
-				return obj;
-			});
-		case SCALAR:
-			return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
-		default:
-			break;
-	}
+  switch (type) {
+    case BINARY:
+      return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+    case CATEGORICAL:
+      return categoricalOutcomes.map((outcome, i) => {
+        const obj = { id: i, name: outcome };
+        return obj;
+      });
+    case SCALAR:
+      return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+    default:
+      break;
+  }
 };

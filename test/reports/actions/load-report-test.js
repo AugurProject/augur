@@ -6,9 +6,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 describe('modules/reports/actions/load-report.js', () => {
-	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru();
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
 
 	const test = (t) => {
 		it(t.description, (done) => {

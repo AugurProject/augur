@@ -7,71 +7,71 @@ export default function () {
 	// 	filtering: `markets/selectores/markets-filtered.js`
 	//	sorting: `markets/selectors/markets-all.js`
 
-	const { selectedFilterSort } = store.getState();
+  const { selectedFilterSort } = store.getState();
 
-	return {
-		types: selectTypeOptions,
-		sorts: selectSortOptions,
-		order: selectOrderOptions,
-		onChange: selectOnChange,
-		selectedFilterSort
-	};
+  return {
+    types: selectTypeOptions,
+    sorts: selectSortOptions,
+    order: selectOrderOptions,
+    onChange: selectOnChange,
+    selectedFilterSort
+  };
 }
 
 const selectTypeOptions = [
-	{
-		label: 'Open',
-		value: FILTER_TYPE_OPEN
-	},
-	{
-		label: 'Reporting',
-		value: FILTER_TYPE_REPORTING
-	},
-	{
-		label: 'Closed',
-		value: FILTER_TYPE_CLOSED
-	}
+  {
+    label: 'Open',
+    value: FILTER_TYPE_OPEN
+  },
+  {
+    label: 'Reporting',
+    value: FILTER_TYPE_REPORTING
+  },
+  {
+    label: 'Closed',
+    value: FILTER_TYPE_CLOSED
+  }
 ];
 
 const selectSortOptions = [
-	{
-		label: 'Volume',
-		value: 'volume'
-	},
-	{
-		label: 'Newest',
-		value: 'creationTime'
-	},
-	{
-		label: 'Expiration',
-		value: 'endDate'
-	},
-	{
-		label: 'Taker Fee',
-		value: 'takerFeePercent'
-	},
-	{
-		label: 'Maker Fee',
-		value: 'makerFeePercent'
-	}
+  {
+    label: 'Volume',
+    value: 'volume'
+  },
+  {
+    label: 'Newest',
+    value: 'creationTime'
+  },
+  {
+    label: 'Expiration',
+    value: 'endDate'
+  },
+  {
+    label: 'Taker Fee',
+    value: 'takerFeePercent'
+  },
+  {
+    label: 'Maker Fee',
+    value: 'makerFeePercent'
+  }
 ];
 
 const selectOrderOptions = {
-	isDesc: true
+  isDesc: true
 };
 
 const selectOnChange = (type, sort, order) => {
-	const { selectedFilterSort } = store.getState();
+  const { selectedFilterSort } = store.getState();
 
-	const isDesc = order !== null && order !== selectedFilterSort.isDesc ? order : null;
+  const isDesc = order !== null && order !== selectedFilterSort.isDesc ? order : null;
 
-	const selections = { type, sort, isDesc };
-	const changes = Object.keys(selections).reduce((prev, item) => {
-		if (selections[item] !== null) {
-			return { ...prev, [item]: selections[item] };
-		}
-		return { ...prev };
-	}, {});
+  const selections = { type, sort, isDesc };
+  const changes = Object.keys(selections).reduce((prev, item) => {
+    if (selections[item] !== null) {
+      return { ...prev, [item]: selections[item] };
+    }
+    return { ...prev };
+  }, {});
 
-	store.dispatch(updateSelectedFilterSort(changes));
+  store.dispatch(updateSelectedFilterSort(changes));
 };

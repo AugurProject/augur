@@ -12,8 +12,8 @@ export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHisto
 		return [];
 	}
 
-	return outcomes.map((outcome) => {
-		const outcomePriceHistory = marketPriceHistory[outcome.id] || [];
+  return outcomes.map((outcome) => {
+    const outcomePriceHistory = marketPriceHistory[outcome.id] || [];
 
 		return {
 			name: outcome.name,

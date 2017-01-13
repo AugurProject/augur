@@ -10,18 +10,18 @@ import selectLoginAccountPositions from '../../../modules/my-positions/selectors
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
 
 export function sellCompleteSets(marketID, cb) {
-	return (dispatch, getState) => {
-		if (getState().loginAccount.address) {
-			if (marketID) return dispatch(sellCompleteSetsMarket(marketID, cb));
-			async.eachSeries(selectLoginAccountPositions().markets, (market, nextMarket) => {
-				if (market.outcomes.length !== market.numOutcomes) return nextMarket();
-				dispatch(sellCompleteSetsMarket(market.id, nextMarket));
-			}, (err) => {
-				if (err) console.error('sellCompleteSets error:', err);
-				if (cb) cb();
-			});
-		}
-	};
+  return (dispatch, getState) => {
+    if (getState().loginAccount.address) {
+      if (marketID) return dispatch(sellCompleteSetsMarket(marketID, cb));
+      async.eachSeries(selectLoginAccountPositions().markets, (market, nextMarket) => {
+        if (market.outcomes.length !== market.numOutcomes) return nextMarket();
+        dispatch(sellCompleteSetsMarket(market.id, nextMarket));
+      }, (err) => {
+        if (err) console.error('sellCompleteSets error:', err);
+        if (cb) cb();
+      });
+    }
+  };
 }
 
 export function sellCompleteSetsMarket(marketID, callback) {
@@ -65,12 +65,12 @@ export function completeSetsCheck(marketID, callback) {
 						position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
 							.minus(totalCompleteSetsBought)
 							.toFixed(), ZERO);
-					}
-				}
-			}
-			callback(null, getSmallestPositionInMarket(position));
-		});
-	};
+          }
+        }
+      }
+      callback(null, getSmallestPositionInMarket(position));
+    });
+  };
 }
 
 export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (

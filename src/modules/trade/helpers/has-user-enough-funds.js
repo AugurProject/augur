@@ -10,14 +10,14 @@ import { ZERO } from '../constants/numbers';
  * @return {boolean}
  */
 export default memoizerific(10)((trades, loginAccount) => {
-	if (!loginAccount || loginAccount.address == null || loginAccount.ether == null) {
-		return false;
-	}
+  if (!loginAccount || loginAccount.address == null || loginAccount.ether == null) {
+    return false;
+  }
 
-	const totalCost = trades.reduce((totalCost, trade) => (
+  const totalCost = trades.reduce((totalCost, trade) => (
         trade.side === 'buy' ?
             totalCost.plus(new BigNumber(trade.totalCost.value, 10)) :
             totalCost.plus(new BigNumber(trade.totalFee.value, 10))
     ), ZERO);
-	return totalCost.lte(new BigNumber(loginAccount.ether, 10));
+  return totalCost.lte(new BigNumber(loginAccount.ether, 10));
 });

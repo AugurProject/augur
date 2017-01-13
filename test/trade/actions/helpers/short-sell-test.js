@@ -76,9 +76,9 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 
 	const mockCB = sinon.stub();
 
-	const helper = proxyquire('../../../../src/modules/trade/actions/helpers/short-sell.js', {
-		'../../../../services/augurjs': mockAugur,
-	});
+  const helper = proxyquire('../../../../src/modules/trade/actions/helpers/short-sell.js', {
+    '../../../../services/augurjs': mockAugur,
+  });
 
 	beforeEach(() => {
 		mockCB.reset();
@@ -167,7 +167,7 @@ describe('modules/trade/actions/helpers/short-sell.js', () => {
 		// marketID, outcomeID, numShares, tradingFees, tradeGroupID, takerAddress, getTradeIDs, cb
 		store.dispatch(helper.shortSell('testBinaryMarketID', '2', '50', '0.02', 0, 'taker1', () => ['orderID1', 'orderID2', 'orderID3'], (...args) => {
 			// assert no error
-			assert(args[0] === null, `the error object sent to cb is not null as expected`);
+      assert(args[0] === null, `the error object sent to cb is not null as expected`);
 			// assert that the "res" object we get back has the expected calcs
 			assert(args[1].remainingShares.eq(ZERO), `remainingShares value is incorrect`);
 			assert(args[1].filledShares.eq(abi.bignum('50')), `filledShares value is incorrect`);

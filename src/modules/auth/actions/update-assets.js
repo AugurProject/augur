@@ -35,5 +35,5 @@ export function updateAssets(cb) {
 				if (allAssetsLoaded(balances)) callback(null, balances);
 			}
 		);
-	};
+  };
 }

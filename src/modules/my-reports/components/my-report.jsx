@@ -7,16 +7,16 @@ import EmDash from 'modules/common/components/em-dash';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Report = p => (
-	<div className="portfolio-row">
-		<div className="portfolio-group portfolio-main-group">
-			<div className="portfolio-pair">
-				<span className="report-main-group-title">outcome: </span>
-				<span className="report-main-group-title-outcome">
-					{p.outcome && p.outcomePercentage && p.outcomePercentage.value &&
-						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span>
+  <div className="portfolio-row">
+    <div className="portfolio-group portfolio-main-group">
+      <div className="portfolio-pair">
+        <span className="report-main-group-title">outcome: </span>
+        <span className="report-main-group-title-outcome">
+          {p.outcome && p.outcomePercentage && p.outcomePercentage.value &&
+          <span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span>
 					}
-					{p.outcome && !p.outcomePercentage &&
-						<span>{p.outcome}</span>
+          {p.outcome && !p.outcomePercentage &&
+          <span>{p.outcome}</span>
 					}
 					{!p.outcome &&
 						<EmDash />
@@ -42,19 +42,19 @@ const Report = p => (
 					{!p.isRevealed && !p.isCommitted &&
 						<span>{p.reported || <EmDash />}</span>
 					}
-					{!!p.outcome && p.isReportEqual &&
-						<span
-							className="fa report-equal"
-							data-tip="Your report matches the consensus outcome"
-						>
+          {!!p.outcome && p.isReportEqual &&
+          <span
+            className="fa report-equal"
+            data-tip="Your report matches the consensus outcome"
+          >
 							&#xf058;
 						</span>
 					}
-					{!!p.outcome && !p.isReportEqual &&
-						<span
-							className="fa report-unequal"
-							data-tip="Your report does not match the consensus outcome"
-						>
+          {!!p.outcome && !p.isReportEqual &&
+          <span
+            className="fa report-unequal"
+            data-tip="Your report does not match the consensus outcome"
+          >
 							&#xf057;
 						</span>
 					}
@@ -72,11 +72,11 @@ const Report = p => (
 						</span> :
 						<EmDash />
 					}
-				</span>
-			</div>
-		</div>
-		<div className="portfolio-group">
-			{/*
+        </span>
+      </div>
+    </div>
+    <div className="portfolio-group">
+      {/*
 			<div className="portfolio-pair">
 				<span className="title">fees gain/loss</span>
 				<ValueDenomination

@@ -4,26 +4,26 @@ import PositionsMarketOverview from 'modules/my-positions/components/my-position
 import Link from 'modules/link/components/link';
 
 const PortfolioPositions = p => (
-	<div className="positions-content" >
-		{!!p.markets && !!p.markets.length && p.markets.map(market => (
-			<div key={market.id} className="positions-container" >
-				<Link href={market.marketLink.href} onClick={market.marketLink.onClick} >
-					<PositionsMarketOverview
-						description={market.description}
-						{...market.myPositionsSummary}
-					/>
-				</Link>
-				{!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
-					<Positions
-						className="page-content positions-content"
-						market={market}
-						marketLink={market.marketLink}
-						settings={p.settings}
-					/>
+  <div className="positions-content" >
+    {!!p.markets && !!p.markets.length && p.markets.map(market => (
+      <div key={market.id} className="positions-container" >
+        <Link href={market.marketLink.href} onClick={market.marketLink.onClick} >
+          <PositionsMarketOverview
+            description={market.description}
+            {...market.myPositionsSummary}
+          />
+        </Link>
+        {!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
+        <Positions
+          className="page-content positions-content"
+          market={market}
+          marketLink={market.marketLink}
+          settings={p.settings}
+        />
 				}
-			</div>
+      </div>
 		))}
-	</div>
+  </div>
 );
 
 // TODO -- Prop Validations

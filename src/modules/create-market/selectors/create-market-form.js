@@ -34,72 +34,72 @@ export const selectCreateMarketForm =
 	numEventsCreatedInPast24Hours,
 	numEventsInReportPeriod,
 	dispatch) => {
-		let formState = {
-			...createMarketInProgress,
-			creatingMarket: true,
-			errors: {}
-		};
+  let formState = {
+    ...createMarketInProgress,
+    creatingMarket: true,
+    errors: {}
+  };
 
 		// next step handler
-		formState.onValuesUpdated = newValues => dispatch(updateMakeInProgress(newValues));
+  formState.onValuesUpdated = newValues => dispatch(updateMakeInProgress(newValues));
 
 		// init
-		if (!formState.step || !(formState.step >= 1)) {
-			formState.step = 1;
-			return formState;
-		}
+  if (!formState.step || !(formState.step >= 1)) {
+    formState.step = 1;
+    return formState;
+  }
 
 		// step 1
-		if (!(formState.step > 1) || !MARKET_TYPES[formState.type]) {
-			formState.step = 1;
-			return formState;
-		}
+  if (!(formState.step > 1) || !MARKET_TYPES[formState.type]) {
+    formState.step = 1;
+    return formState;
+  }
 
 		// step 2
-		formState = {
-			...formState,
-			...Step2.initialFairPrices(formState),
-			...Step2.select(formState)
-		};
-		formState.isValid = Step2.isValid(formState);
-		if (!(formState.step > 2) || !formState.isValid) {
-			formState.step = 2;
-			formState.errors = {
-				...formState.errors,
-				...Step2.errors(formState)
-			};
-			return formState;
-		}
+  formState = {
+    ...formState,
+    ...Step2.initialFairPrices(formState),
+    ...Step2.select(formState)
+  };
+  formState.isValid = Step2.isValid(formState);
+  if (!(formState.step > 2) || !formState.isValid) {
+    formState.step = 2;
+    formState.errors = {
+      ...formState.errors,
+      ...Step2.errors(formState)
+    };
+    return formState;
+  }
 
 		// step 3
-		formState = {
-			...formState,
-			...Step3.select(formState)
-		};
-		formState.isValid = Step3.isValid(formState);
-		if (!(formState.step > 3) || !formState.isValid) {
-			formState.step = 3;
-			formState.errors = {
-				...formState.errors,
-				...Step3.errors(formState)
-			};
-			return formState;
-		}
+  formState = {
+    ...formState,
+    ...Step3.select(formState)
+  };
+  formState.isValid = Step3.isValid(formState);
+  if (!(formState.step > 3) || !formState.isValid) {
+    formState.step = 3;
+    formState.errors = {
+      ...formState.errors,
+      ...Step3.errors(formState)
+    };
+    return formState;
+  }
 
 		// step 4
-		formState = {
-			...formState,
-			...Step4.select(formState)
-		};
-		formState.isValid = Step4.isValid(formState);
-		if (!(formState.step > 4) || !formState.isValid) {
-			formState.step = 4;
-			formState.errors = {
-				...formState.errors,
-				...Step4.errors(formState)
-			};
-			return formState;
-		}
+  formState = {
+    ...formState,
+    ...Step4.select(formState)
+  };
+  formState.isValid = Step4.isValid(formState);
+  if (!(formState.step > 4) || !formState.isValid) {
+    formState.step = 4;
+    formState.errors = {
+      ...formState.errors,
+      ...Step4.errors(formState)
+    };
+    return formState;
+  }
 
 		// step 5
 		return {

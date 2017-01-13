@@ -9,7 +9,7 @@ import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
-	proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru();
 
 	const { mockStore, actionCreator, state } = mocks;
 	const augur = {
@@ -27,22 +27,22 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		'../../bids-asks/actions/update-order-status': { updateOrderStatus }
 	});
 
-	const store = mockStore({
-		...state,
-		transactionsData: {
-			cancelTxn: {
-				type: CANCEL_ORDER,
-				data: {
-					order: {
-						id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-						type: BID
-					},
-					market: { id: 'testMarketID' },
-					outcome: {}
-				}
-			}
-		}
-	});
+  const store = mockStore({
+    ...state,
+    transactionsData: {
+      cancelTxn: {
+        type: CANCEL_ORDER,
+        data: {
+          order: {
+            id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+            type: BID
+          },
+          market: { id: 'testMarketID' },
+          outcome: {}
+        }
+      }
+    }
+  });
 
 	afterEach(() => {
 		augur.cancel.reset();
@@ -58,19 +58,19 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		});
 	});
 
-	describe('abortCancelOrderConfirmation', () => {
-		it('should produce action', () => {
-			store.dispatch(cancelOrderModule.abortCancelOrderConfirmation('orderID'));
-			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
-		});
-	});
+  describe('abortCancelOrderConfirmation', () => {
+    it('should produce action', () => {
+      store.dispatch(cancelOrderModule.abortCancelOrderConfirmation('orderID'));
+      assert.lengthOf(store.getActions(), 1);
+      assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
+    });
+  });
 
-	describe('showCancelOrderConfirmation', () => {
-		it('should produce action', () => {
-			store.dispatch(cancelOrderModule.showCancelOrderConfirmation('orderID'));
-			assert.lengthOf(store.getActions(), 1);
-			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
-		});
-	});
+  describe('showCancelOrderConfirmation', () => {
+    it('should produce action', () => {
+      store.dispatch(cancelOrderModule.showCancelOrderConfirmation('orderID'));
+      assert.lengthOf(store.getActions(), 1);
+      assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
+    });
+  });
 });

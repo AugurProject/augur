@@ -4,24 +4,24 @@ import { formatShares, formatEther, formatRep } from '../../../utils/format-numb
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
-	const { transactionsData } = store.getState();
-	return selectTransactions(transactionsData);
+  const { transactionsData } = store.getState();
+  return selectTransactions(transactionsData);
 }
 
 export const selectTransactions = memoizerific(1)(transactionsData => (
 	Object.keys(transactionsData || {})
 		.sort((a, b) => {
-			const timestampA = transactionsData[a].timestamp;
-			const timestampB = transactionsData[b].timestamp;
-			if (timestampA && timestampA.timestamp && timestampB && timestampB.timestamp) {
-				return timestampB.timestamp - timestampA.timestamp;
-			} else if (timestampA && timestampA.timestamp) {
-				return 1;
-			} else if (timestampB && timestampB.timestamp) {
-				return -1;
-			}
-			return 0;
-		})
+  const timestampA = transactionsData[a].timestamp;
+  const timestampB = transactionsData[b].timestamp;
+  if (timestampA && timestampA.timestamp && timestampB && timestampB.timestamp) {
+    return timestampB.timestamp - timestampA.timestamp;
+  } else if (timestampA && timestampA.timestamp) {
+    return 1;
+  } else if (timestampB && timestampB.timestamp) {
+    return -1;
+  }
+  return 0;
+})
 		.map((id) => {
 			let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
 			if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {

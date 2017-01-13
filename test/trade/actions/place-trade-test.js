@@ -172,14 +172,14 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		'../../trade/actions/take-order': mockTakeOrder
 	});
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-		if (mockAugur.augur.getParticipantSharesPurchased.callCount === 5) mockAugur.augur.getParticipantSharesPurchased.reset();
-	});
+  afterEach(() => {
+    store.clearActions();
+    if (mockAugur.augur.getParticipantSharesPurchased.callCount === 5) mockAugur.augur.getParticipantSharesPurchased.reset();
+  });
 
 	describe('Binary Market Place Trade Tests', () => {
 		it('should place a BUY trade for a binary market', () => {

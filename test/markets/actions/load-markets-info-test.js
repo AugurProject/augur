@@ -22,36 +22,36 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	mockLoadMarketCreatorFees.loadMarketCreatorFees = sinon.stub().returns({ type: 'MOCK_LOAD_MARKET_CREATOR_FEES' });
 	mockLoadCreatedMarketInfo.loadCreatedMarketInfo = sinon.stub().returns({ type: 'MOCK_LOAD_CREATED_MARKET_INFO' });
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-	});
+  afterEach(() => {
+    store.clearActions();
+  });
 
-	sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, account, cb) => {
-		cb({
-			test123: {
-				author: '0x0000000000000000000000000000000000000001',
-				branchId: testState.branch.id,
-				events: [{
-					id: 'event1',
-					minValue: 1,
-					maxValue: 3,
-					numOutcomes: 3,
-					outcome: 2
-				}],
-				tags: ['test', 'testtag'],
-				outcomes: [{
-					id: 1
-				}, {
-					id: 2
-				}],
-				type: 'binary'
-			}
-		});
-	});
+  sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, account, cb) => {
+    cb({
+      test123: {
+        author: '0x0000000000000000000000000000000000000001',
+        branchId: testState.branch.id,
+        events: [{
+          id: 'event1',
+          minValue: 1,
+          maxValue: 3,
+          numOutcomes: 3,
+          outcome: 2
+        }],
+        tags: ['test', 'testtag'],
+        outcomes: [{
+          id: 1
+        }, {
+          id: 2
+        }],
+        type: 'binary'
+      }
+    });
+  });
 
 	const action = proxyquire('../../../src/modules/markets/actions/load-markets-info', {
 		'../../market/actions/load-full-market': mockLoadFullMarket,

@@ -11,7 +11,7 @@ import TransactionDescription from 'modules/transactions/components/transaction-
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const Transaction = (p) => {
-	const nodes = {};
+  const nodes = {};
 
 	switch (p.type) {
 		case BUY:
@@ -51,14 +51,14 @@ const Transaction = (p) => {
 					break;
 			}
 
-			nodes.description = (
-				<span className="description">
-					<span className="action">{nodes.action}</span>
-					<ValueDenomination className="shares" {...p.numShares} />
-					{p.data.marketType === CATEGORICAL &&
-						<span>
-							<span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
-						</span>
+      nodes.description = (
+        <span className="description">
+          <span className="action">{nodes.action}</span>
+          <ValueDenomination className="shares" {...p.numShares} />
+          {p.data.marketType === CATEGORICAL &&
+          <span>
+            <span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
+          </span>
 					}
 					<span className="at">@</span>
 					<ValueDenomination className="noFeePrice" {...p.noFeePrice} />
@@ -70,10 +70,10 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
 
-			break;
+      break;
 
 		case SELL_COMPLETE_SETS:
 			nodes.action = `Redeem ${p.numShares.formatted} Complete Sets`;
@@ -86,9 +86,9 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
-			break;
+      break;
 
 		case FUND_ACCOUNT:
 			nodes.action = 'Fund Account';
@@ -101,9 +101,9 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
-			break;
+      break;
 
 		case CREATE_MARKET:
 			nodes.action = 'Create Market';
@@ -116,9 +116,9 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
-			break;
+      break;
 
 		case COMMIT_REPORT:
 		case REVEAL_REPORT: {
@@ -137,7 +137,7 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
 			break;
 		}
@@ -152,9 +152,9 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
-			break;
+      break;
 
 		case CANCEL_ORDER: {
 			nodes.description = (
@@ -170,7 +170,7 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 
 			);
 			break;
@@ -185,32 +185,32 @@ const Transaction = (p) => {
 					{p.timestamp &&
 						<ValueTimestamp className="property-value" {...p.timestamp} />
 					}
-				</span>
+        </span>
 			);
-			break;
-	}
+      break;
+  }
 
-	return (
-		<article className={classnames('transaction-item', p.className, p.status)}>
-			{p.index &&
-				<span className="index">{`${p.index}.`}</span>
+  return (
+    <article className={classnames('transaction-item', p.className, p.status)}>
+      {p.index &&
+      <span className="index">{`${p.index}.`}</span>
 			}
 
-			{nodes.description}
+      {nodes.description}
 
-			<span className="value-changes">
-				{!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
-					<ValueDenomination className="value-change tradingFees" {...p.tradingFees} prefix="trading fees:" />
+      <span className="value-changes">
+        {!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
+        <ValueDenomination className="value-change tradingFees" {...p.tradingFees} prefix="trading fees:" />
 				}
-				<span className="spacer">&nbsp;</span>
-				{!!p.feePercent && p.feePercent.value !== null && p.feePercent !== undefined &&
-					<ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
+        <span className="spacer">&nbsp;</span>
+        {!!p.feePercent && p.feePercent.value !== null && p.feePercent !== undefined &&
+        <ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
 				}
-				<br />
-				{!!p.gasFees && !!p.gasFees.value &&
-					<ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
+        <br />
+        {!!p.gasFees && !!p.gasFees.value &&
+        <ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
 				}
-			</span>
+      </span>
 
 			{p.status && p.hash ?
 				<Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
@@ -218,8 +218,8 @@ const Transaction = (p) => {
 				</Link> :
 				<TransactionMessage {...p} />
 			}
-		</article>
-	);
+    </article>
+  );
 };
 
 Transaction.propTypes = {

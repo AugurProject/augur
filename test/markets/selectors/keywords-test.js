@@ -6,34 +6,34 @@ import * as mockStore from 'test/mockStore';
 import keywordsAssertions from 'assertions/keywords';
 
 describe('modules/markets/selectors/keywords.js', () => {
-	proxyquire.noPreserveCache().noCallThru();
-	const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru();
+  const { store } = mockStore.default;
 
-	const mockUpdate = {
-		updateKeywords: () => {}
-	};
-	sinon.stub(mockUpdate, 'updateKeywords', keywords => ({
-		type: 'UPDATE_KEYWORDS',
-		keywords
-	}));
+  const mockUpdate = {
+    updateKeywords: () => {}
+  };
+  sinon.stub(mockUpdate, 'updateKeywords', keywords => ({
+    type: 'UPDATE_KEYWORDS',
+    keywords
+  }));
 
-	const selector = proxyquire('../../../src/modules/markets/selectors/keywords.js', {
-		'../../../store': store,
-		'../../markets/actions/update-keywords': mockUpdate
-	});
+  const selector = proxyquire('../../../src/modules/markets/selectors/keywords.js', {
+    '../../../store': store,
+    '../../markets/actions/update-keywords': mockUpdate
+  });
 
-	it(`should return the active keywords`, () => {
-		const keywords = store.getState().keywords;
-		const actual = selector.default();
-		const expected = [{
-			type: 'UPDATE_KEYWORDS',
-			keywords
-		}];
+  it(`should return the active keywords`, () => {
+    const keywords = store.getState().keywords;
+    const actual = selector.default();
+    const expected = [{
+      type: 'UPDATE_KEYWORDS',
+      keywords
+    }];
 
-		actual.onChangeKeywords(keywords);
-		keywordsAssertions(actual);
+    actual.onChangeKeywords(keywords);
+    keywordsAssertions(actual);
 
-		assert(mockUpdate.updateKeywords.calledOnce, `updateKeywords wasn't called once as expected`);
-		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the correct action when onChangeKeywords was called.`);
-	});
+    assert(mockUpdate.updateKeywords.calledOnce, `updateKeywords wasn't called once as expected`);
+    assert.deepEqual(store.getActions(), expected, `Didn't dispatch the correct action when onChangeKeywords was called.`);
+  });
 });

@@ -52,17 +52,17 @@ describe('modules/reports/actions/check-period.js', () => {
 		'../../my-reports/actions/load-events-with-submitted-report': mockLoadEventsWithSubmittedReport
 	});
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-	});
+  afterEach(() => {
+    store.clearActions();
+  });
 
-	it('should check for increment period / penalize wrong', () => {
-		store.dispatch(action.checkPeriod());
-		assert(mockAugurJS.augur.checkPeriod.calledOnce);
-	});
+  it('should check for increment period / penalize wrong', () => {
+    store.dispatch(action.checkPeriod());
+    assert(mockAugurJS.augur.checkPeriod.calledOnce);
+  });
 
 });

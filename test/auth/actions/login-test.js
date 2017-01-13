@@ -47,27 +47,27 @@ describe(`modules/auth/actions/login.js`, () => {
 		cb(null, 123456789);
 	});
 
-	fakeSelectors.links.marketsLink.onClick = sinon.stub();
-	fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
+  fakeSelectors.links.marketsLink.onClick = sinon.stub();
+  fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
 
-	const updateTestString = 'updateLoginAccount(loginAccount) called.';
-	const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-	const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+  const updateTestString = 'updateLoginAccount(loginAccount) called.';
+  const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
+  const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({ type: ldLoginAccDepTestString });
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
+  ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({ type: ldLoginAccDepTestString });
+  ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
-	const action = proxyquire('../../../src/modules/auth/actions/login', {
-		'../../../services/augurjs': fakeAugurJS,
-		'../../../selectors': fakeSelectors,
-		'../../auth/actions/update-login-account': updtLoginAccStub,
-		'../../auth/actions/load-login-account': ldLoginAccStub
-	});
+  const action = proxyquire('../../../src/modules/auth/actions/login', {
+    '../../../services/augurjs': fakeAugurJS,
+    '../../../selectors': fakeSelectors,
+    '../../auth/actions/update-login-account': updtLoginAccStub,
+    '../../auth/actions/load-login-account': ldLoginAccStub
+  });
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
 	it(`should attempt to login an account given user/pass`, () => {
 		store.dispatch(action.login('test', 'test'));

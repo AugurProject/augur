@@ -14,29 +14,29 @@ const ValueDenomination = p => (
 		{p.prefix && !p.hidePrefix &&
 			<span className="prefix">{p.prefix}</span>
 		}
-		{p.formatted && p.fullPrecision &&
-			<span
-				className="value pointer"
-				data-tip={p.fullPrecision}
-				data-event="click focus"
-			>
-				{p.formatted}
-			</span>
+    {p.formatted && p.fullPrecision &&
+    <span
+      className="value pointer"
+      data-tip={p.fullPrecision}
+      data-event="click focus"
+    >
+      {p.formatted}
+    </span>
 		}
-		{p.formatted && !p.fullPrecision &&
-			<span className="value">{p.formatted}</span>
+    {p.formatted && !p.fullPrecision &&
+    <span className="value">{p.formatted}</span>
 		}
-		{p.denomination &&
-			<span className="denomination">{p.denomination}</span>
+    {p.denomination &&
+    <span className="denomination">{p.denomination}</span>
 		}
 		{p.postfix && !p.hidePostfix &&
 			<span className="postfix">{p.postfix}</span>
 		}
-		{!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
-			<span className="value" ><EmDash /></span>
+    {!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
+    <span className="value" ><EmDash /></span>
 		}
-		<ReactTooltip type="light" effect="solid" place="top" />
-	</span>
+    <ReactTooltip type="light" effect="solid" place="top" />
+  </span>
 );
 
 ValueDenomination.propTypes = {

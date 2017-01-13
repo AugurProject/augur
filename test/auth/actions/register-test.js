@@ -46,13 +46,13 @@ describe(`modules/auth/actions/register.js`, () => {
 	const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
 	const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
+  updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
 	// ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
-	sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
-		if (cb) cb(null, 2.5);
-		return { type: ldLoginAccDepTestString };
-	});
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
+    if (cb) cb(null, 2.5);
+    return { type: ldLoginAccDepTestString };
+  });
+  ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
 	const action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,
@@ -62,13 +62,13 @@ describe(`modules/auth/actions/register.js`, () => {
 		'../../auth/actions/load-login-account': ldLoginAccStub
 	});
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-	});
+  afterEach(() => {
+    store.clearActions();
+  });
 
 	it(`should register a new account`, () => {
 		const expectedOutput = [{
@@ -81,42 +81,42 @@ describe(`modules/auth/actions/register.js`, () => {
 			type: 'loadLoginAccountDependents() called.'
 		}];
 
-		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
+    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
 		// Call again to simulate someone pasting loginID and then hitting signUp
-		store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
+    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
 
 		assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
 
-	it(`should fail with mismatched passwords`, () => {
-		const expectedOutput = [{
-			type: 'AUTH_ERROR',
-			err: {
-				code: 'PASSWORDS_DO_NOT_MATCH'
-			}
-		}, {
-			type: 'AUTH_ERROR',
-			err: {
-				code: 'PASSWORDS_DO_NOT_MATCH'
-			}
-		}, {
-			type: 'AUTH_ERROR',
-			err: {
-				code: 'PASSWORDS_DO_NOT_MATCH'
-			}
-		}, {
-			type: 'AUTH_ERROR',
-			err: {
-				code: 'PASSWORDS_DO_NOT_MATCH'
-			}
-		}];
+  it(`should fail with mismatched passwords`, () => {
+    const expectedOutput = [{
+      type: 'AUTH_ERROR',
+      err: {
+        code: 'PASSWORDS_DO_NOT_MATCH'
+      }
+    }, {
+      type: 'AUTH_ERROR',
+      err: {
+        code: 'PASSWORDS_DO_NOT_MATCH'
+      }
+    }, {
+      type: 'AUTH_ERROR',
+      err: {
+        code: 'PASSWORDS_DO_NOT_MATCH'
+      }
+    }, {
+      type: 'AUTH_ERROR',
+      err: {
+        code: 'PASSWORDS_DO_NOT_MATCH'
+      }
+    }];
 
-		store.dispatch(action.register('test', 'test', 'test1'));
-		store.dispatch(action.register('test', '', 'test'));
-		store.dispatch(action.register('test', 'test2', 'test'));
-		store.dispatch(action.register('test', 'test1', 'test2'));
+    store.dispatch(action.register('test', 'test', 'test1'));
+    store.dispatch(action.register('test', '', 'test'));
+    store.dispatch(action.register('test', 'test2', 'test'));
+    store.dispatch(action.register('test', 'test1', 'test2'));
 
-		assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when user doesn't pass a username`);
-	});
+    assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when user doesn't pass a username`);
+  });
 });

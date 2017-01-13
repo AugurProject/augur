@@ -7,17 +7,17 @@ import { updateReports } from '../../reports/actions/update-reports';
 const revealReportLock = {};
 
 export function revealReports(cb) {
-	return (dispatch, getState) => {
-		const callback = cb || (e => console.log('revealReports:', e));
-		const { branch, loginAccount, reports } = getState();
+  return (dispatch, getState) => {
+    const callback = cb || (e => console.log('revealReports:', e));
+    const { branch, loginAccount, reports } = getState();
 		// Make sure that:
 		//  - branch is in the second half of its reporting period
 		//  - user is logged in and has Rep
 		//  - that this user has committed reports to reveal
-		if (branch.isReportRevealPhase && loginAccount.rep && reports) {
-			const branchReports = reports[branch.id];
-			if (!branchReports) return callback(null);
-			const revealableReports = Object.keys(branchReports)
+    if (branch.isReportRevealPhase && loginAccount.rep && reports) {
+      const branchReports = reports[branch.id];
+      if (!branchReports) return callback(null);
+      const revealableReports = Object.keys(branchReports)
 				.filter(eventID => branchReports[eventID].reportHash &&
 				branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
 				.map((eventID) => {

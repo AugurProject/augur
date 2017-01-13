@@ -21,15 +21,15 @@
 @border-width-3: 3px;
 
 .border(@side: false; @property: @border-all; @chroma: @border-default-chroma; @width: @border-default-width) {
-	& when (@side) {
-		& when (@property = @border-all) {
-			border: @width solid @chroma;
-		}
+  & when (@side) {
+    & when (@property = @border-all) {
+      border: @width solid @chroma;
+    }
 
-		@{property}: @width solid @chroma;
-	}
+    @{property}: @width solid @chroma;
+  }
 
-	& when not (@side) {
-		border: none;
-	}
+  & when not (@side) {
+    border: none;
+  }
 }

@@ -56,32 +56,32 @@ import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets
 import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
 
 export default function () {
-	const { selectedMarketID } = store.getState();
-	return selectMarket(selectedMarketID);
+  const { selectedMarketID } = store.getState();
+  return selectMarket(selectedMarketID);
 }
 
 export const selectMarketReport = (marketID, branchReports) => {
-	if (marketID && branchReports) {
-		const branchReportsEventIDs = Object.keys(branchReports);
-		const numBranchReports = branchReportsEventIDs.length;
-		for (let i = 0; i < numBranchReports; ++i) {
-			if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-				return branchReports[branchReportsEventIDs[i]];
-			}
-		}
-	}
+  if (marketID && branchReports) {
+    const branchReportsEventIDs = Object.keys(branchReports);
+    const numBranchReports = branchReportsEventIDs.length;
+    for (let i = 0; i < numBranchReports; ++i) {
+      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+        return branchReports[branchReportsEventIDs[i]];
+      }
+    }
+  }
 };
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
-	if (!marketID || !marketsData || !marketsData[marketID]) {
-		return {};
-	}
+  if (!marketID || !marketsData || !marketsData[marketID]) {
+    return {};
+  }
 
-	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
+  const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
 
-	return assembleMarket(
+  return assembleMarket(
 		marketID,
 		marketsData[marketID],
 		priceHistory[marketID],
@@ -150,8 +150,8 @@ export function assembleMarket(
 		loginAccount,
 		dispatch) {
 
-	if (!assembledMarketsCache[marketID]) {
-		assembledMarketsCache[marketID] = memoizerific(1)((
+  if (!assembledMarketsCache[marketID]) {
+    assembledMarketsCache[marketID] = memoizerific(1)((
 			marketID,
 			marketData,
 			marketPriceHistory,
@@ -251,77 +251,77 @@ export function assembleMarket(
 
 				if (market.isScalar) {
 					// note: not actually a percent
-					if (outcome.lastPrice.value) {
-						outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
-							decimals: 2,
-							decimalsRounded: 1,
-							denomination: '',
-							positiveSign: false,
-							zeroStyled: true
-						});
-					} else {
-						const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2);
-						outcome.lastPricePercent = formatNumber(midPoint, {
-							decimals: 2,
-							decimalsRounded: 1,
-							denomination: '',
-							positiveSign: false,
-							zeroStyled: true
-						});
-					}
-				} else if (outcome.lastPrice.value) {
-					outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
-				} else {
-					outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
-				}
+          if (outcome.lastPrice.value) {
+            outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
+              decimals: 2,
+              decimalsRounded: 1,
+              denomination: '',
+              positiveSign: false,
+              zeroStyled: true
+            });
+          } else {
+            const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2);
+            outcome.lastPricePercent = formatNumber(midPoint, {
+              decimals: 2,
+              decimalsRounded: 1,
+              denomination: '',
+              positiveSign: false,
+              zeroStyled: true
+            });
+          }
+        } else if (outcome.lastPrice.value) {
+          outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
+        } else {
+          outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
+        }
 
-				outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
+        outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
 
-				outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
-				const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
-				outcome.orderBook = orderBook;
-				outcome.topBid = selectTopBid(orderBook, false);
-				outcome.topAsk = selectTopAsk(orderBook, false);
+        outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
+        const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
+        outcome.orderBook = orderBook;
+        outcome.topBid = selectTopBid(orderBook, false);
+        outcome.topAsk = selectTopAsk(orderBook, false);
 
-				marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
+        marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 
-				outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks);
+        outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBooks);
 
-				return outcome;
-			}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
+        return outcome;
+      }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-			market.tags = (market.tags || []).map((tag) => {
-				const obj = {
-					name: tag && tag.toString().toLowerCase().trim(),
-					onClick: () => dispatch(toggleTag(tag))
-				};
-				return obj;
-			}).filter(tag => !!tag.name);
+      market.tags = (market.tags || []).map((tag) => {
+        const obj = {
+          name: tag && tag.toString().toLowerCase().trim(),
+          onClick: () => dispatch(toggleTag(tag))
+        };
+        return obj;
+      }).filter(tag => !!tag.name);
 
-			market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
+      market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
 
-			market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
+      market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
-			market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
-			const indeterminateOutcomeID = market.type === BINARY ?
+      market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
+      const indeterminateOutcomeID = market.type === BINARY ?
 				BINARY_INDETERMINATE_OUTCOME_ID :
 				CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
-			market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
+      market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
 
-			market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
+      market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
-			market.tradeSummary = generateTradeSummary(marketTradeOrders);
-			market.tradeSummary.hasUserEnoughFunds = hasUserEnoughFunds(market.outcomes.map(outcome => outcome.trade), loginAccount);
+      market.tradeSummary = generateTradeSummary(marketTradeOrders);
+      market.tradeSummary.hasUserEnoughFunds = hasUserEnoughFunds(market.outcomes.map(outcome => outcome.trade), loginAccount);
 
-			if (marketAccountTrades) {
-				market.myPositionsSummary = generateMarketsPositionsSummary([market]);
-				if (market.myPositionsSummary) {
-					market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
-					delete market.myPositionsSummary.positionOutcomes;
-				}
-			}
+      if (marketAccountTrades) {
+        market.myPositionsSummary = generateMarketsPositionsSummary([market]);
+        if (market.myPositionsSummary) {
+          market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
+          delete market.myPositionsSummary.positionOutcomes;
+        }
+      }
 
-			market.myMarketSummary = selectMyMarket(market)[0];
+      market.myMarketSummary = selectMyMarket(market)[0];
 
 			// Update the `result` object
 			// This houses the reported outcome + the proportion correct of that outcome

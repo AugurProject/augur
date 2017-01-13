@@ -203,10 +203,10 @@ describe('modules/trade/actions/helpers/trade.js', () => {
 			onTradeSuccess({ sharesBought: '10', cashFromTrade: '0', unmatchedShares: '0', unmatchedCash: '0', tradingFees: '0.01', gasFees: '0.01450404', hash: 'testhash', timestamp: 1500000000 });
 		});
 
-		const helper = proxyquire('../../../../src/modules/trade/actions/helpers/trade.js', {
-			'../../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
-			'../../../../services/augurjs': mockAugurSell
-		});
+    const helper = proxyquire('../../../../src/modules/trade/actions/helpers/trade.js', {
+      '../../../bids-asks/actions/load-bids-asks': mockLoadBidAsks,
+      '../../../../services/augurjs': mockAugurSell
+    });
 
 		beforeEach(() => {
 			store.clearActions();

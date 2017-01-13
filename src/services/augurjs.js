@@ -34,7 +34,7 @@ ex.connect = function connect(env, cb) {
 };
 
 ex.loadLoginAccount = function loadLoginAccount(env, cb) {
-	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 	// if available, use the client-side account
 	if (augur.accounts.account.address && augur.accounts.account.privateKey) {
@@ -50,18 +50,18 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 				cb(null, { ...augur.accounts.account })
 			);
 			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
-			return;
-		}
-	}
+      return;
+    }
+  }
 
 	// Short circuit if autologin disabled in env.json
-	if (!env.autoLogin) {
-		return cb(null);
-	}
+  if (!env.autoLogin) {
+    return cb(null);
+  }
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
-	augur.rpc.unlocked(augur.from, (unlocked) => {
+  augur.rpc.unlocked(augur.from, (unlocked) => {
 
 		// use augur.from address if unlocked
 		if (unlocked && !unlocked.error) {
@@ -71,9 +71,9 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		}
 
 		// otherwise, no account available
-		console.log('account is locked: ', augur.from);
-		return cb(null);
-	});
+    console.log('account is locked: ', augur.from);
+    return cb(null);
+  });
 };
 
 ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
@@ -87,60 +87,60 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 	};
 
 	// create an event (and market) of each type on the new branch
-	const t = new Date().getTime() / 1000;
-	const untilNextPeriod = periodLength - (parseInt(t, 10) % periodLength);
-	const expDate = parseInt(t + untilNextPeriod + 1, 10);
-	const expirationPeriod = Math.floor(expDate / periodLength);
-	console.debug('\nCreating events/markets...');
-	console.log('Next period starts at time', parseInt(t, 10) + untilNextPeriod + ' (' + untilNextPeriod + ' seconds to go)');
-	console.log('Current timestamp:', parseInt(t, 10));
-	console.log('Expiration time:  ', expDate);
-	console.log('Expiration period:', expirationPeriod);
-	callback(null, 1, branchID);
-	tools.create_each_market_type(augur, branchID, expDate, (err, markets) => {
-		if (err) return callback(err);
-		callback(null, 2);
-		const events = {};
-		const types = Object.keys(markets);
-		const numTypes = types.length;
-		for (let i = 0; i < numTypes; ++i) {
-			events[types[i]] = augur.getMarketEvent(markets[types[i]], 0);
-		}
-		const eventID = events.binary;
-		console.debug('Binary event:', events.binary);
-		console.debug('Categorical event:', events.categorical);
-		console.debug('Scalar event:', events.scalar);
+  const t = new Date().getTime() / 1000;
+  const untilNextPeriod = periodLength - (parseInt(t, 10) % periodLength);
+  const expDate = parseInt(t + untilNextPeriod + 1, 10);
+  const expirationPeriod = Math.floor(expDate / periodLength);
+  console.debug('\nCreating events/markets...');
+  console.log('Next period starts at time', parseInt(t, 10) + untilNextPeriod + ' (' + untilNextPeriod + ' seconds to go)');
+  console.log('Current timestamp:', parseInt(t, 10));
+  console.log('Expiration time:  ', expDate);
+  console.log('Expiration period:', expirationPeriod);
+  callback(null, 1, branchID);
+  tools.create_each_market_type(augur, branchID, expDate, (err, markets) => {
+    if (err) return callback(err);
+    callback(null, 2);
+    const events = {};
+    const types = Object.keys(markets);
+    const numTypes = types.length;
+    for (let i = 0; i < numTypes; ++i) {
+      events[types[i]] = augur.getMarketEvent(markets[types[i]], 0);
+    }
+    const eventID = events.binary;
+    console.debug('Binary event:', events.binary);
+    console.debug('Categorical event:', events.categorical);
+    console.debug('Scalar event:', events.scalar);
 
 		// make a single trade in each new market
-		const password = process.env.GETH_PASSWORD;
-		tools.make_order_in_each_market(augur, 1, markets, accounts[1], accounts[2], password, (err) => {
-			if (err) return callback(err);
-			callback(null, 3);
+    const password = process.env.GETH_PASSWORD;
+    tools.make_order_in_each_market(augur, 1, markets, accounts[1], accounts[2], password, (err) => {
+      if (err) return callback(err);
+      callback(null, 3);
 
 			// wait until the period after the new events expire
-			tools.wait_until_expiration(augur, events.binary, (err) => {
-				if (err) return callback(err);
-				callback(null, 4);
-				const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-				const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
-				tools.print_reporting_status(augur, eventID, 'Wait complete');
-				console.log('Current period:', augur.getCurrentPeriod(periodLength));
-				console.log('Expiration period + 1:', expirationPeriod + 1);
-				callback(null, 5);
+      tools.wait_until_expiration(augur, events.binary, (err) => {
+        if (err) return callback(err);
+        callback(null, 4);
+        const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
+        const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+        tools.print_reporting_status(augur, eventID, 'Wait complete');
+        console.log('Current period:', augur.getCurrentPeriod(periodLength));
+        console.log('Expiration period + 1:', expirationPeriod + 1);
+        callback(null, 5);
 
 				// wait for second period to start
-				augur.checkPeriod(branchID, periodLength, sender, (err, votePeriod) => {
-					if (err) console.error('checkVotePeriod failed:', err);
-					callback(null, 6);
-					tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
-					augur.checkTime(branchID, eventID, periodLength, (err) => {
-						if (err) console.error('checkTime failed:', err);
-						callback(null, 7);
-					});
-				});
-			});
-		});
-	});
+        augur.checkPeriod(branchID, periodLength, sender, (err, votePeriod) => {
+          if (err) console.error('checkVotePeriod failed:', err);
+          callback(null, 6);
+          tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
+          augur.checkTime(branchID, eventID, periodLength, (err) => {
+            if (err) console.error('checkTime failed:', err);
+            callback(null, 7);
+          });
+        });
+      });
+    });
+  });
 };
 
 // Setup a new branch and prep it for reporting tests:

@@ -4,67 +4,67 @@ import { updateEventsWithAccountReportData } from '../../my-reports/actions/upda
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 export function loadEventsWithSubmittedReport(loadMore) {
-	return (dispatch, getState) => {
-		const { branch, loginAccount, oldestLoadedEventPeriod } = getState();
+  return (dispatch, getState) => {
+    const { branch, loginAccount, oldestLoadedEventPeriod } = getState();
 
-		if (branch.id && branch.currentPeriod && loginAccount.address) {
-			const oldestLoadedPeriod = oldestLoadedEventPeriod || branch.currentPeriod - 5;
+    if (branch.id && branch.currentPeriod && loginAccount.address) {
+      const oldestLoadedPeriod = oldestLoadedEventPeriod || branch.currentPeriod - 5;
 
-			let startPeriod = loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
+      let startPeriod = loadMore ? oldestLoadedPeriod - 5 : oldestLoadedPeriod;
 
-			dispatch(updateOldestLoadedEventPeriod(startPeriod));
+      dispatch(updateOldestLoadedEventPeriod(startPeriod));
 
-			while (startPeriod <= branch.currentPeriod) {
-				dispatch(getEventsWithReports(branch.id, startPeriod, loginAccount.address));
-				startPeriod += 1;
-			}
-		}
-	};
+      while (startPeriod <= branch.currentPeriod) {
+        dispatch(getEventsWithReports(branch.id, startPeriod, loginAccount.address));
+        startPeriod += 1;
+      }
+    }
+  };
 }
 
 export function getEventsWithReports(branch, period, accountID) {
-	return (dispatch, getState) => {
-		augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
-			const events = {};
-			(eventIDs || []).forEach((eventID) => {
-				if (parseInt(eventID, 16)) events[eventID] = { branch, period };
-			});
-			dispatch(updateEventsWithAccountReportData(events));
-			dispatch(loadAdditionalEventData(events));
-		});
-	};
+  return (dispatch, getState) => {
+    augur.getEventsWithSubmittedReport(branch, period, accountID, (eventIDs) => {
+      const events = {};
+      (eventIDs || []).forEach((eventID) => {
+        if (parseInt(eventID, 16)) events[eventID] = { branch, period };
+      });
+      dispatch(updateEventsWithAccountReportData(events));
+      dispatch(loadAdditionalEventData(events));
+    });
+  };
 }
 
 // TODO optimize RPC requests, this is slooooowwwwww
 export function loadAdditionalEventData(events) {
-	return (dispatch, getState) => {
-		const { branch, loginAccount, reports } = getState();
+  return (dispatch, getState) => {
+    const { branch, loginAccount, reports } = getState();
 
-		const updateEvent = (eventID, data) => {
-			const event = {};
-			event[eventID] = { ...data };
-			dispatch(updateEventsWithAccountReportData(event));
-		};
+    const updateEvent = (eventID, data) => {
+      const event = {};
+      event[eventID] = { ...data };
+      dispatch(updateEventsWithAccountReportData(event));
+    };
 
-		const branchReports = reports[branch.id];
-		if (branchReports) {
-			const eventIDs = Object.keys(branchReports);
-			const numEventIDs = eventIDs.length;
-			let report;
-			let eventID;
-			for (let i = 0; i < numEventIDs; ++i) {
-				eventID = eventIDs[i];
-				report = branchReports[eventID];
-				updateEvent(eventID, {
-					marketID: report.marketID,
-					reportHash: report.reportHash,
-					accountReport: report.reportedOutcomeID,
-					isUnethical: report.isUnethical,
-					isRevealed: report.isRevealed,
-					isCommitted: report.isCommitted
-				});
-			}
-		}
+    const branchReports = reports[branch.id];
+    if (branchReports) {
+      const eventIDs = Object.keys(branchReports);
+      const numEventIDs = eventIDs.length;
+      let report;
+      let eventID;
+      for (let i = 0; i < numEventIDs; ++i) {
+        eventID = eventIDs[i];
+        report = branchReports[eventID];
+        updateEvent(eventID, {
+          marketID: report.marketID,
+          reportHash: report.reportHash,
+          accountReport: report.reportedOutcomeID,
+          isUnethical: report.isUnethical,
+          isRevealed: report.isRevealed,
+          isCommitted: report.isCommitted
+        });
+      }
+    }
 
 		Object.keys(events).forEach((eventID) => {
 			augur.getExpiration(eventID, (expirationDate) => {

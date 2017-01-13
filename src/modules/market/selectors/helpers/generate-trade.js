@@ -19,22 +19,22 @@ import store from 'src/store';
  * @param {Object} orderBooks Orders for market
  */
 export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress, loginAccount, orderBooks) => {
-	const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || BUY;
-	const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null;
-	const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null;
-	const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0;
-	const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
-	const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
+  const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || BUY;
+  const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null;
+  const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null;
+  const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0;
+  const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
+  const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
 
-	let maxNumShares;
-	if (limitPrice != null) {
-		const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(
+  let maxNumShares;
+  if (limitPrice != null) {
+    const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(
 			orderBooks[side === BUY ? ASK : BID],
 			side,
 			limitPrice,
 			outcome.id,
 			loginAccount.address);
-		maxNumShares = formatShares(calculateMaxPossibleShares(
+    maxNumShares = formatShares(calculateMaxPossibleShares(
 			loginAccount,
 			orders,
 			market.makerFee,
@@ -42,61 +42,61 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 			market.cumulativeScale,
 			outcomeTradeInProgress,
 			market.type === 'scalar' ? market.minValue : null));
-	} else {
-		maxNumShares = formatShares(0);
-	}
+  } else {
+    maxNumShares = formatShares(0);
+  }
 
-	return {
-		side,
-		numShares,
-		limitPrice,
-		maxNumShares,
+  return {
+    side,
+    numShares,
+    limitPrice,
+    maxNumShares,
 
-		totalFee: formatEther(totalFee, { blankZero: true }),
-		gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
-		totalCost: formatEther(totalCost, { blankZero: true }),
+    totalFee: formatEther(totalFee, { blankZero: true }),
+    gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
+    totalCost: formatEther(totalCost, { blankZero: true }),
 
-		tradeTypeOptions: [
+    tradeTypeOptions: [
 			{ label: BUY, value: BUY },
 			{ label: SELL, value: SELL }
-		],
+    ],
 
-		tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
-		updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
-		totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
-	};
+    tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
+    updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
+    totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
+  };
 });
 
 const totalSharesUpToOrder = memoizerific(5)((marketID, outcomeID, side, orderIndex, orderBooks) => {
-	const { orderCancellation } = store.getState();
+  const { orderCancellation } = store.getState();
 
-	const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? BIDS : ASKS];
+  const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? BIDS : ASKS];
 
-	return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0);
+  return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0);
 });
 
 export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
-	let tradeSummary = { totalGas: ZERO, tradeOrders: [] };
+  let tradeSummary = { totalGas: ZERO, tradeOrders: [] };
 
-	if (tradeOrders && tradeOrders.length) {
-		tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
+  if (tradeOrders && tradeOrders.length) {
+    tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
 
 			// total gas
-			if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
-				p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
-			}
+      if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
+        p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
+      }
 
 			// trade order
-			p.tradeOrders.push(tradeOrder);
+      p.tradeOrders.push(tradeOrder);
 
-			return p;
+      return p;
 
-		}, tradeSummary);
-	}
+    }, tradeSummary);
+  }
 
-	tradeSummary.totalGas = formatRealEther(tradeSummary.totalGas);
+  tradeSummary.totalGas = formatRealEther(tradeSummary.totalGas);
 
-	return tradeSummary;
+  return tradeSummary;
 });
 
 export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
