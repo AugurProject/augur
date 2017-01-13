@@ -22425,119 +22425,118 @@ module.exports={
 }
 },{}],57:[function(require,module,exports){
 module.exports={
-  "10101": {
-    "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-    "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-    "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
-    "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-    "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-    "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-    "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-    "CompositeGetters": "0x4803e0b158ab66eae81a48bba2799f905c379eb2",
-    "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-    "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-    "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-    "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
-    "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d",
-    "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
-    "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-    "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-    "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-    "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-    "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-    "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-    "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-    "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-    "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-    "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-    "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-    "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-    "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-    "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-    "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-    "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-    "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
-    "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-    "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-    "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
-    "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
-  },
-  "3": {
-    "Backstops": "0x99739f6bfcd74b9c3f6718e6eff388a444219369", 
-    "Branches": "0xfbd3970615adf968293c23a9999e1efdbe369306", 
-    "BuyAndSellShares": "0x39ced95894e47bb9d2f6b1b8526f43d69987ac3e", 
-    "Cash": "0xb13db9a01f589a5384213d168860d29453f4db19", 
-    "CloseMarket": "0xb4c1865c7370ee181b4e5eee41c839dac06c4196", 
-    "CollectFees": "0x96916008eebbbcaf9a3425cde3cce6d4fe995f0a", 
-    "CompleteSets": "0x5561d257442a5c5d907ebe1f1d4f1e127b33f311", 
-    "CompositeGetters": "0x104943c46d858881695ee7a852d1cbe246c3c0f1", 
-    "Consensus": "0xf6b21754b16a84631eae27c6e93890ea62e63919", 
-    "ConsensusData": "0x0e32fb15e163402785476ddcc7496736afcef6ce", 
-    "CreateBranch": "0x170274de054120ffe47ccb13a1c269ae7bc1895a", 
-    "CreateMarket": "0x33d76d2434d5033297302ee0b27b72393b9a806c", 
-    "EventResolution": "0x9c9ff61d7931c5695b7433717fc5893516921519", 
-    "Events": "0x160f2dcef1bbeb993822a664f7f99501b4b79635", 
-    "ExpiringEvents": "0x46c2a2a1e20a529f22fc5189feb97bea86d1b9e9", 
-    "Faucets": "0x418cdf90976d007966488b4fa47a669b387e7e2b", 
-    "ForkPenalize": "0x177c8208b200e04c123f142d7d6c4e4887e7422c", 
-    "Forking": "0x9621bbea0e0170c31d44f4a98ef8dff7490dd51d", 
-    "FxpFunctions": "0x0db6461948e14b8e8f21abb10a7e0c69d82117a6", 
-    "Info": "0xa4d15709a2f8d88d1acb22fafa8424570222fd1c", 
-    "MakeReports": "0x43f642016d08c09b8addbfcdd794d6b986884a71", 
-    "Markets": "0x6c20a929731e787eb573c88fef254a9409f08fe2", 
-    "Payout": "0x7054ee417059e4f038c968c5084f5fb1b099d7c6", 
-    "PenalizationCatchup": "0x06cd646d6d675266b1aa986230f886bac2006cbb", 
-    "PenalizeNotEnoughReports": "0xc6b6f03104b2db5a9d3381915e284b57f225ad66", 
-    "ProportionCorrect": "0x3a48674cffdec5943ca3022f0e7c5e271ccb951e", 
-    "Register": "0x0fb8908ee430b8ea89c48464a1225675af5cfbae", 
-    "Reporting": "0x1c29f6340627dc14d267f7f579e67b282667456d", 
-    "ReportingThreshold": "0xd3a1881d01c808d1c6947307ad32afdfce0cca98", 
-    "RoundTwo": "0xa66e1aaede72fb23f98d0e4c1a178d88fe359860", 
-    "RoundTwoPenalize": "0xef1e195662133016b379f0d2b74f7d6d85b1a071", 
-    "SendReputation": "0xc6bb29557a9d9925cb4715fa1dd33078488e1dc1", 
-    "SlashRep": "0xb9e3ed9f364058c0f3401c7aef761515a1decf7a", 
-    "Trade": "0x98f77e5269a52719a9aa1653b27192490506af4b", 
-    "Trades": "0x3708ad269ec95d5348cd7af2b7a1c9dde04ea138"
-  },
-  "9000": {
-    "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-    "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-    "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
-    "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-    "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-    "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-    "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-    "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-    "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-    "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-    "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
-    "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
-    "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d",
-    "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
-    "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-    "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-    "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-    "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-    "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-    "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-    "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-    "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-    "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-    "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-    "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-    "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-    "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-    "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-    "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-    "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-    "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
-    "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-    "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-    "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
-    "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
-  }
+    "10101": {
+        "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
+        "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
+        "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
+    }, 
+    "3": {
+        "Backstops": "0x99739f6bfcd74b9c3f6718e6eff388a444219369", 
+        "Branches": "0xfbd3970615adf968293c23a9999e1efdbe369306", 
+        "BuyAndSellShares": "0x39ced95894e47bb9d2f6b1b8526f43d69987ac3e", 
+        "Cash": "0xb13db9a01f589a5384213d168860d29453f4db19", 
+        "CloseMarket": "0xb4c1865c7370ee181b4e5eee41c839dac06c4196", 
+        "CollectFees": "0x96916008eebbbcaf9a3425cde3cce6d4fe995f0a", 
+        "CompleteSets": "0x5561d257442a5c5d907ebe1f1d4f1e127b33f311", 
+        "CompositeGetters": "0x104943c46d858881695ee7a852d1cbe246c3c0f1", 
+        "Consensus": "0xf6b21754b16a84631eae27c6e93890ea62e63919", 
+        "ConsensusData": "0x0e32fb15e163402785476ddcc7496736afcef6ce", 
+        "CreateBranch": "0x170274de054120ffe47ccb13a1c269ae7bc1895a", 
+        "CreateMarket": "0x33d76d2434d5033297302ee0b27b72393b9a806c", 
+        "EventResolution": "0x9c9ff61d7931c5695b7433717fc5893516921519", 
+        "Events": "0x160f2dcef1bbeb993822a664f7f99501b4b79635", 
+        "ExpiringEvents": "0x46c2a2a1e20a529f22fc5189feb97bea86d1b9e9", 
+        "Faucets": "0x418cdf90976d007966488b4fa47a669b387e7e2b", 
+        "ForkPenalize": "0x177c8208b200e04c123f142d7d6c4e4887e7422c", 
+        "Forking": "0x9621bbea0e0170c31d44f4a98ef8dff7490dd51d", 
+        "FxpFunctions": "0x0db6461948e14b8e8f21abb10a7e0c69d82117a6", 
+        "Info": "0xa4d15709a2f8d88d1acb22fafa8424570222fd1c", 
+        "MakeReports": "0x43f642016d08c09b8addbfcdd794d6b986884a71", 
+        "Markets": "0x6c20a929731e787eb573c88fef254a9409f08fe2", 
+        "Payout": "0x7054ee417059e4f038c968c5084f5fb1b099d7c6", 
+        "PenalizationCatchup": "0x06cd646d6d675266b1aa986230f886bac2006cbb", 
+        "PenalizeNotEnoughReports": "0xc6b6f03104b2db5a9d3381915e284b57f225ad66", 
+        "ProportionCorrect": "0x3a48674cffdec5943ca3022f0e7c5e271ccb951e", 
+        "Register": "0x0fb8908ee430b8ea89c48464a1225675af5cfbae", 
+        "Reporting": "0x1c29f6340627dc14d267f7f579e67b282667456d", 
+        "ReportingThreshold": "0xd3a1881d01c808d1c6947307ad32afdfce0cca98", 
+        "RoundTwo": "0xa66e1aaede72fb23f98d0e4c1a178d88fe359860", 
+        "RoundTwoPenalize": "0xef1e195662133016b379f0d2b74f7d6d85b1a071", 
+        "SendReputation": "0xc6bb29557a9d9925cb4715fa1dd33078488e1dc1", 
+        "SlashRep": "0xb9e3ed9f364058c0f3401c7aef761515a1decf7a", 
+        "Trade": "0x98f77e5269a52719a9aa1653b27192490506af4b", 
+        "Trades": "0x3708ad269ec95d5348cd7af2b7a1c9dde04ea138"
+    }, 
+    "9000": {
+        "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
+        "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
+        "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
+    }
 }
-
 },{}],58:[function(require,module,exports){
 module.exports={
   "0x": "no response or bad input",
@@ -40463,57 +40462,17 @@ module.exports = function () {
       }); // deriveKey
     },
 
-
+    // user-supplied plaintext private key
     loginWithMasterKey: function (name, privateKey, cb) {
-      var self = this;
-      // derive secret key from password
-      var salt = new Buffer("6169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex");
-      var iv = new Buffer("ef40723ec10d95c4356c8d157ce4308e", "hex");
-      keys.deriveKey("password", salt, null, function (derivedKey) {
-        if (derivedKey.error) return cb(derivedKey);
-        if (!Buffer.isBuffer(derivedKey)) {
-          derivedKey = new Buffer(derivedKey, "hex");
-        }
-        var encryptedPrivateKey = new Buffer(keys.encrypt(
-          privateKey,
-          derivedKey.slice(0, 16),
-          iv
-        ), "base64").toString("hex");
-
-        // encrypt private key using derived key and IV, then
-        // store encrypted key & IV, indexed by handle
-        var address = abi.format_address(keys.privateKeyToAddress(privateKey));
-        var keystore = {
-          address: address,
-          crypto: {
-            cipher: keys.constants.cipher,
-            ciphertext: encryptedPrivateKey,
-            cipherparams: {iv: iv.toString("hex")},
-            kdf: constants.KDF,
-            kdfparams: {
-              c: keys.constants[constants.KDF].c,
-              dklen: keys.constants[constants.KDF].dklen,
-              prf: keys.constants[constants.KDF].prf,
-              salt: salt.toString("hex")
-            },
-            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-          },
-          version: 3,
-          id: uuid.v4()
-        };
-        var loginID = augur.base58Encode({name: name, keystore: keystore});
-
-        // while logged in, web.account object is set
-        self.account = {
-          name: name,
-          loginID: loginID,
-          privateKey: new Buffer(privateKey, "hex"),
-          address: address,
-          keystore: keystore,
-          derivedKey: derivedKey
-        };
-        return cb(clone(self.account));
-      }); // deriveKey
+      if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
+      this.account = {
+        name: name,
+        loginID: augur.base58Encode({name: name}),
+        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
+        privateKey: privateKey,
+        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")
+      };
+      return cb(clone(this.account));
     },
 
     logout: function () {
@@ -41796,7 +41755,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.3";
+  this.version = "3.7.4";
 
   this.options = {
     debug: {

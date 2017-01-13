@@ -123,10 +123,7 @@ describe("Import Account", function () {
       assert.isString(user.loginID);
       assert.isString(user.name);
       assert.isObject(user.keystore);
-      assert.strictEqual(
-        augur.accounts.account.privateKey.toString("hex").length,
-        constants.KEYSIZE*2
-      );
+      assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(user.address.length, 42);
       done();
     });
@@ -142,10 +139,7 @@ describe("Login", function () {
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
       assert.isObject(user.keystore);
-      assert.strictEqual(
-        augur.accounts.account.privateKey.toString("hex").length,
-        constants.KEYSIZE*2
-      );
+      assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(user.address.length, 42);
       done();
     });
@@ -157,10 +151,7 @@ describe("Login", function () {
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
       assert.isObject(user.keystore);
-      assert.strictEqual(
-        augur.accounts.account.privateKey.toString("hex").length,
-        constants.KEYSIZE*2
-      );
+      assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(user.address.length, 42);
       augur.accounts.login(loginID, password, function (same_user) {
         assert(!same_user.error);
@@ -171,17 +162,19 @@ describe("Login", function () {
   });
   it("login with a private key", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.loginWithMasterKey('jo mama', new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"), function (user) {
+    augur.accounts.loginWithMasterKey('jack', "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", function (user) {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
+      assert.isTrue(Buffer.isBuffer(augur.accounts.account.derivedKey));
       assert.isString(user.address);
-      assert.isObject(user.keystore);
-      assert.strictEqual(
-        augur.accounts.account.privateKey.toString("hex").length,
-        constants.KEYSIZE*2
-      );
+      assert.isUndefined(user.keystore);
+      assert.strictEqual(user.name, 'jack');
+      assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
+      assert.strictEqual(augur.accounts.account.derivedKey.toString("hex"), abi.unfork(utils.sha256(new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"))));
       assert.strictEqual(user.address.length, 42);
+      assert.strictEqual(user.address, abi.format_address(user.address));
+      assert.strictEqual(user.address, abi.format_address(keys.privateKeyToAddress("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex")));
       done();
     });
   });
