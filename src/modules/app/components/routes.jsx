@@ -129,7 +129,8 @@ export default class Routes extends Component {
           isTradeCommitLocked: p.tradeCommitLock.isLocked,
           scalarShareDenomination: p.scalarShareDenomination,
           marketReportingNavItems: p.marketReportingNavItems,
-          outcomeTradeNavItems: p.outcomeTradeNavItems
+          outcomeTradeNavItems: p.outcomeTradeNavItems,
+          positionStatus: p.positionStatus
         };
         System.import('modules/market/components/market-view').then((module) => {
           const MarketView = module.default;
