@@ -9,13 +9,15 @@ export function convertTradeLogToTransaction(label, data, marketID) {
 	return (dispatch, getState) => {
 		const outcomeIDs = Object.keys(data[marketID]);
 		const numOutcomes = outcomeIDs.length;
+		const { address } = getState().loginAccount;
 		for (let j = 0; j < numOutcomes; ++j) {
 			const outcomeID = outcomeIDs[j];
 			const numTrades = data[marketID][outcomeID].length;
 			if (numTrades) {
 				for (let k = 0; k < numTrades; ++k) {
 					const trade = data[marketID][outcomeID][k];
-					const transaction = dispatch(constructTradingTransaction(trade.isShortSell ? 'log_short_fill_tx' : label, trade, marketID, outcomeID, SUCCESS));
+					const tradeLabel = trade.isShortSell && trade.sender === address ? 'log_short_fill_tx' : label;
+					const transaction = dispatch(constructTradingTransaction(tradeLabel, trade, marketID, outcomeID, SUCCESS));
 					if (transaction) dispatch(updateTransactionsData(transaction));
 				}
 			}
