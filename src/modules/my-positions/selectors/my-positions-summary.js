@@ -22,11 +22,12 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
   const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
   const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
+  const positionShares = new BigNumber(position);
 
   return {
     ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
-    isClosable: position && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-    isFullyClosable: position && relevantOrders.length ? isPositionFullyClosable(position, relevantOrders) : false // Based on available orders, can this position be fully closed
+    isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
+    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false // Based on available orders, can this position be fully closed
   };
 });
 
@@ -80,7 +81,7 @@ const isPositionFullyClosable = memoizerific(20)((position, orders) => {
   return !!orders.find((order) => {
     sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
 
-    if (sharesFilled >= position) {
+    if (sharesFilled.toNumber() >= position) {
       return true;
     }
 
