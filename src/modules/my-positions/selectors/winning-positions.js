@@ -1,4 +1,3 @@
-import memoizerific from 'memoizerific';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
@@ -8,7 +7,7 @@ export default function (outcomesData) {
 	return selectClosedMarketsWithWinningShares(portfolio.positions.markets, outcomesData);
 }
 
-export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets, outcomesData) => {
+export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {
 	const numPositions = markets.length;
 	const closedMarketsWithWinningShares = [];
 	for (let i = 0; i < numPositions; ++i) {
@@ -28,7 +27,7 @@ export const selectClosedMarketsWithWinningShares = memoizerific(1)((markets, ou
 		}
 	}
 	return closedMarketsWithWinningShares;
-});
+};
 
 export function selectTotalSharesInMarket(market, marketOutcomesData) {
 	const outcomeIDs = Object.keys(marketOutcomesData);
