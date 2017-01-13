@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
-import { placeTrade } from 'modules/trade/actions/place-trade';
+// import { placeTrade } from 'modules/trade/actions/place-trade';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
 
@@ -22,9 +22,11 @@ export function closePosition(marketID, outcomeID) {
     dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, (err) => {
       if (err) {
 				// TODO -- update status
+        console.log('err!');
       } else {
 				// TODO -- update status, req. transID
-        dispatch(placeTrade(marketID, outcomeID));
+        console.log('submit trade');
+        // dispatch(placeTrade(marketID, outcomeID));
       }
     }));
   };
