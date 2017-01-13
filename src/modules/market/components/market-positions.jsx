@@ -11,30 +11,30 @@ const MarketPositions = (p) => {
   const outcomePositions = getValue(p, 'market.myPositionOutcomes');
   const nullMessage = 'No Current Positions';
 
-	return (
-		<article className="market-positions">
-			{!outcomePositions ?
-				<NullStateMessage message={nullMessage} /> :
-				<div>
-					<div className="market-positions-header">
-						<span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
-						<span>Shares</span>
-						<span>Avg Price</span>
-						<span>Last Price</span>
-						<span>Realized P/L</span>
-						<span>Unrealized P/L</span>
-						<span>Total P/L</span>
-						<span>Action</span>
-					</div>
-					<div className="market-content-scrollable" >
-						{(outcomePositions || []).map(outcome =>
-							<MarketPositionsRow
-								key={outcome.id}
-								marketType={p.marketType}
-								outcome={outcome}
-								selectedShareDenomination={p.selectedShareDenomination}
-								positionStatus={p.positionStatus}
-							/>
+  return (
+    <article className="market-positions">
+      {!outcomePositions ?
+        <NullStateMessage message={nullMessage} /> :
+        <div>
+          <div className="market-positions-header">
+            <span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
+            <span>Shares</span>
+            <span>Avg Price</span>
+            <span>Last Price</span>
+            <span>Realized P/L</span>
+            <span>Unrealized P/L</span>
+            <span>Total P/L</span>
+            <span>Action</span>
+          </div>
+          <div className="market-content-scrollable" >
+            {(outcomePositions || []).map(outcome =>
+              <MarketPositionsRow
+                key={outcome.id}
+                marketType={p.marketType}
+                outcome={outcome}
+                selectedShareDenomination={p.selectedShareDenomination}
+                positionStatus={p.positionStatus}
+              />
 						)}
           </div>
         </div>

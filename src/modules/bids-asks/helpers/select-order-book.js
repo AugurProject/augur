@@ -17,17 +17,17 @@ import { formatShares, formatEther } from 'utils/format-number';
  * @param {Object} marketOrderBook
  */
 export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrderBook, orderCancellation) => {
-	if (marketOrderBook == null) {
-		return {
-			[BIDS]: [],
-			[ASKS]: []
-		};
-	}
+  if (marketOrderBook == null) {
+    return {
+      [BIDS]: [],
+      [ASKS]: []
+    };
+  }
 
-	return {
-		bids: selectAggregatePricePoints(outcomeID, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
-		asks: selectAggregatePricePoints(outcomeID, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
-	};
+  return {
+    bids: selectAggregatePricePoints(outcomeID, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
+    asks: selectAggregatePricePoints(outcomeID, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
+  };
 });
 
 export const selectTopBid = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {

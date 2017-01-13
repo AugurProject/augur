@@ -4,50 +4,50 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
-import { POSITION_CLOSING, POSITION_CLOSING_CONFIRMATION, POSTION_CLOSED, POSITION_CLOSING_FAILED } from 'modules/market/constants/position-status';
+// import { POSITION_CLOSING, POSITION_CLOSING_CONFIRMATION, POSTION_CLOSED, POSITION_CLOSING_FAILED } from 'modules/market/constants/position-status';
 import { POSITION } from 'modules/market/constants/trade-close-type';
 
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
 const MarketPositionsRow = (p) => {
-	const marketID = getValue(p, 'outcome.marketID');
-	const outcomeID = getValue(p, 'outcome.id');
-	const quantityOfShares = setShareDenomination(getValue(p, 'outcome.position.qtyShares.formatted'), p.selectedShareDenomination);
-	const outcomeName = getValue(p, 'outcome.name');
-	const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
-	const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
-	const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
-	const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
-	const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
-	const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
-	const isClosable = getValue(p, 'outcome.position.isClosable');
-	const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
-	const closePosition = getValue(p, 'positionStatus.closePosition');
+  const marketID = getValue(p, 'outcome.marketID');
+  const outcomeID = getValue(p, 'outcome.id');
+  const quantityOfShares = setShareDenomination(getValue(p, 'outcome.position.qtyShares.formatted'), p.selectedShareDenomination);
+  const outcomeName = getValue(p, 'outcome.name');
+  const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
+  const purchasePrice = getValue(p, 'outcome.position.purchasePrice.formatted');
+  const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
+  const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
+  const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
+  const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
+  const isClosable = getValue(p, 'outcome.position.isClosable');
+  const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
+  const closePosition = getValue(p, 'positionStatus.closePosition');
 
-	return (
-		<article className="market-positions-row not-selectable" >
-			{p.marketType === SCALAR ?
-				<ValueDenomination formatted={lastPricePercent} /> :
-				<span>{outcomeName}</span>
+  return (
+    <article className="market-positions-row not-selectable" >
+      {p.marketType === SCALAR ?
+        <ValueDenomination formatted={lastPricePercent} /> :
+        <span>{outcomeName}</span>
 			}
-			<ValueDenomination formatted={quantityOfShares} />
-			<ValueDenomination formatted={purchasePrice} />
-			<ValueDenomination formatted={lastPrice} />
-			<ValueDenomination formatted={realizedNet} />
-			<ValueDenomination formatted={unrealizedNet} />
-			<ValueDenomination formatted={totalNet} />
-			<MarketTradeCloseDialog
-				closeType={POSITION}
-				marketID={marketID}
-				outcomeID={outcomeID}
-				quantityOfShares={quantityOfShares}
-				closePosition={closePosition}
-				isClosable={isClosable}
-				isFullyClosable={isFullyClosable}
-			/>
-		</article>
-	);
+      <ValueDenomination formatted={quantityOfShares} />
+      <ValueDenomination formatted={purchasePrice} />
+      <ValueDenomination formatted={lastPrice} />
+      <ValueDenomination formatted={realizedNet} />
+      <ValueDenomination formatted={unrealizedNet} />
+      <ValueDenomination formatted={totalNet} />
+      <MarketTradeCloseDialog
+        closeType={POSITION}
+        marketID={marketID}
+        outcomeID={outcomeID}
+        quantityOfShares={quantityOfShares}
+        closePosition={closePosition}
+        isClosable={isClosable}
+        isFullyClosable={isFullyClosable}
+      />
+    </article>
+  );
 };
 
 export default MarketPositionsRow;

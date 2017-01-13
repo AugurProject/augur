@@ -5,75 +5,75 @@ import EmDash from 'modules/common/components/em-dash';
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type';
 
 export default class MarketTradeCloseDialog extends Component {
-	static propTypes = {
-		status: PropTypes.string
-	};
+  static propTypes = {
+    status: PropTypes.string
+  };
 
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.state = {
-			isConfirming: false,
-			status: props.status
-		};
-	}
+    this.state = {
+      isConfirming: false,
+      status: props.status
+    };
+  }
 
-	render() {
-		const p = this.props;
-		const s = this.state;
+  render() {
+    const p = this.props;
+    const s = this.state;
 
 		// Position -- No Available Actions
-		if ((p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) || !p.isClosable) {
-			return <EmDash />;
-		}
+    if ((p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) || !p.isClosable) {
+      return <EmDash />;
+    }
 
-		if (s.isConfirming) {
-			return (
-				<span>
-					<button
-						className="unstyled no confirm"
-						onClick={() => {
-							this.setState({ isConfirming: false });
-						}}
-					>
+    if (s.isConfirming) {
+      return (
+        <span>
+          <button
+            className="unstyled no confirm"
+            onClick={() => {
+              this.setState({ isConfirming: false });
+            }}
+          >
 						No
 					</button>
-					<button
-						className="unstyled yes confirm"
-						onClick={(event) => {
-							if (p.closeType === POSITION) {
-								p.closePosition(p.marketID, p.outcomeID);
-							} else if (p.closeType === ORDER) {
-								console.log('TODO, cancel order');
+          <button
+            className="unstyled yes confirm"
+            onClick={(event) => {
+              if (p.closeType === POSITION) {
+                p.closePosition(p.marketID, p.outcomeID);
+              } else if (p.closeType === ORDER) {
+                console.log('TODO, cancel order');
 								// cancelOrder(orderID, marketID, type);
-							}
-							this.setState({ isConfirming: false });
-						}}
-					>
+              }
+              this.setState({ isConfirming: false });
+            }}
+          >
 						Yes
 					</button>
-				</span>
-			);
-		}
+        </span>
+      );
+    }
 
-		switch (status) {
-			default:
-				return (
-					<button
-						className="unstyled cancel"
-						onClick={() => {
-							this.setState({ isConfirming: true });
-						}}
-					>
-						<i></i> {
+    switch (status) {
+      default:
+        return (
+          <button
+            className="unstyled cancel"
+            onClick={() => {
+              this.setState({ isConfirming: true });
+            }}
+          >
+            <i></i> {
 							p.closeType === POSITION ?
-								<span>{p.isFullyClosable ? 'close' : 'minimize'}</span>
+  <span>{p.isFullyClosable ? 'close' : 'minimize'}</span>
 								: 'cancel'
 							}
-					</button>
-				);
-		}
-	}
+          </button>
+        );
+    }
+  }
 }
 
 // function renderCloseDialog(marketID, outcomeID, quantityOfShares, status, closePosition) {

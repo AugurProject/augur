@@ -15,19 +15,19 @@ export default function () {
 }
 
 export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
-	if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
-		return null;
-	}
+  if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
+    return null;
+  }
 
-	const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
-	const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
-	const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
+  const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
+  const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
+  const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
 
-	return {
-		...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
-		isClosable: position && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-		isFullyClosable: position && relevantOrders.length ? isPositionFullyClosable(position, relevantOrders) : false // Based on available orders, can this position be fully closed
-	};
+  return {
+    ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
+    isClosable: position && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
+    isFullyClosable: position && relevantOrders.length ? isPositionFullyClosable(position, relevantOrders) : false // Based on available orders, can this position be fully closed
+  };
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
@@ -75,15 +75,15 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 });
 
 const isPositionFullyClosable = memoizerific(20)((position, orders) => {
-	let sharesFilled = new BigNumber(0);
+  let sharesFilled = new BigNumber(0);
 
-	return !!orders.find((order) => {
-		sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
+  return !!orders.find((order) => {
+    sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
 
-		if (sharesFilled >= position) {
-			return true;
-		}
+    if (sharesFilled >= position) {
+      return true;
+    }
 
-		return false;
-	});
+    return false;
+  });
 });
