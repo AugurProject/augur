@@ -11,7 +11,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const test = (t) => {
-    it(t.description, (done) => {
+    it(t.description, () => {
+      this.timeout(15000);
       const store = mockStore(t.state);
       const AugurJS = {
         abi: {
@@ -109,7 +110,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
       t.assertions(store.getActions(), relayTransaction);
       store.clearActions();
-      done();
     });
   };
   test({
