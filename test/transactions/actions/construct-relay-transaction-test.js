@@ -6,13 +6,12 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`modules/transactions/actions/construct-relay-transaction.js`, function () {
+describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const test = (t) => {
-    it(t.description, (done) => {
-      this.timeout(0);
+    it(t.description, () => {
       const store = mockStore(t.state);
       const AugurJS = {
         abi: {
@@ -110,7 +109,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
       t.assertions(store.getActions(), relayTransaction);
       store.clearActions();
-      done();
     });
   };
   test({
