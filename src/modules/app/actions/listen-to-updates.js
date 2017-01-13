@@ -105,6 +105,7 @@ export function listenToUpdates() {
 							}] }
 						}, msg.market));
 						dispatch(updateAssets());
+						dispatch(loadMarketsInfo([msg.market]));
 					}
 				}
 			},
@@ -114,18 +115,20 @@ export function listenToUpdates() {
 				console.debug('log_short_fill_tx:', msg);
 				if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-					dispatch(fillOrder(msg));
+					dispatch(fillOrder({ ...msg, type: 'sell' }));
 					const { address } = getState().loginAccount;
 
 					// if the user is either the maker or taker, add it to the transaction display
 					if (msg.sender === address || msg.owner === address) {
-						dispatch(convertTradeLogToTransaction('log_short_fill_tx', {
+						dispatch(convertTradeLogToTransaction('log_fill_tx', {
 							[msg.market]: { [msg.outcome]: [{
 								...msg,
+								isShortSell: true,
 								maker: msg.owner === address
 							}] }
 						}, msg.market));
 						dispatch(updateAssets());
+						dispatch(loadMarketsInfo([msg.market]));
 					}
 				}
 			},
