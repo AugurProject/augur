@@ -1,55 +1,40 @@
-import { abi, augur, rpc } from '../../../services/augurjs';
+import { augur, rpc } from '../../../services/augurjs';
+import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
-import { formatDate } from '../../../utils/format-date';
-import { formatRealEther, formatRealEtherEstimate } from '../../../utils/format-number';
+import { formatRealEther } from '../../../utils/format-number';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { constructRelayTransaction } from '../../transactions/actions/construct-relay-transaction';
 
-export function registerTransactionRelay() {
-	return (dispatch, getState) => {
-		rpc.excludeFromTxRelay(NO_RELAY);
-		rpc.registerTxRelay((tx) => {
-			// console.debug('rpc.txRelay:', tx);
-			if (tx && tx.response && tx.data) {
-				const hash = tx.response.hash;
-				if (hash) {
-					if (!tx.data.description && tx.data.inputs) {
-						const params = tx.data.params.slice();
-						if (tx.data.fixed) {
-							const numFixed = tx.data.fixed.length;
-							for (let i = 0; i < numFixed; ++i) {
-								params[tx.data.fixed[i]] = abi.unfix(params[tx.data.fixed[i]], 'string');
-							}
-						}
-						tx.data.description = tx.data.inputs.map((input, i) => `${input}: ${params[i]}`).join('\n');
-					}
-					const timestamp = tx.response.timestamp ?
-						formatDate(new Date(tx.response.timestamp * 1000)) :
-						formatDate(new Date());
-					const gasFees = tx.response.gasFees ?
-						formatRealEther(tx.response.gasFees) :
-						formatRealEtherEstimate(augur.getTxGasEth({
-							...tx.data
-						}, rpc.gasPrice));
-					const { transactionsData } = getState();
-					if (transactionsData[hash] && transactionsData[hash].disableAutoMessage) {
-						return dispatch(updateTransactionsData({
-							[hash]: { ...tx, timestamp, gasFees, hash }
-						}));
-					}
-					let message;
-					if (tx.response.callReturn && (
-						tx.response.callReturn.constructor === Array ||
-						tx.response.callReturn.constructor === Object)
-					) {
-						message = JSON.stringify(tx.response.callReturn);
-					} else {
-						message = tx.response.callReturn;
-					}
-					dispatch(updateTransactionsData({
-						[hash]: { ...tx, message, timestamp, gasFees, hash }
-					}));
-				}
-			}
-		});
-	};
-}
+export const handleRelayTransaction = tx => (dispatch, getState) => {
+  if (tx && tx.response && tx.data) {
+		// console.log('txRelay:', JSON.stringify(tx, null, 4));
+    const hash = tx.response.hash;
+    const { loginAccount, transactionsData } = getState();
+    if (hash && tx.data.from === loginAccount.address) {
+      if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
+        const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
+        const relayTransaction = dispatch(constructRelayTransaction(tx, status));
+        if (relayTransaction) {
+          if (relayTransaction.constructor === Object) {
+            return dispatch(updateTransactionsData(relayTransaction));
+          } else if (relayTransaction.constructor === Array) {
+            const numTransactions = relayTransaction.length;
+            for (let i = 0; i < numTransactions; ++i) {
+              dispatch(updateTransactionsData(relayTransaction[i]));
+            }
+          }
+        }
+      } else if (transactionsData[hash]) {
+        const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
+        dispatch(updateTransactionsData({
+          [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
+        }));
+      }
+    }
+  }
+};
+
+export const registerTransactionRelay = () => (dispatch) => {
+  rpc.excludeFromTxRelay(NO_RELAY);
+  rpc.registerTxRelay(tx => dispatch(handleRelayTransaction(tx)));
+};

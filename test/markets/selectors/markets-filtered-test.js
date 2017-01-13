@@ -7,87 +7,87 @@ import * as mockStore from 'test/mockStore';
 let filteredMarkets;  // eslint-disable-line import/no-mutable-exports
 
 describe(`modules/markets/selectors/markets-filtered.js`, () => {
-	proxyquire.noPreserveCache().noCallThru();
-	const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru();
+  const { store } = mockStore.default;
 
-	const mockSelectors = {
-		allMarkets: [{
-			isOpen: true,
-			description: 'test 1',
-			outcomes: [{
-				name: 'outcome1'
-			}, {
-				name: 'outcome2'
-			}],
-			tags: [{
-				name: 'testtag'
-			}, {
-				name: 'tag'
-			}]
-		}, {
-			isOpen: true,
-			description: 'test 2',
-			outcomes: [{
-				name: 'outcome3'
-			}, {
-				name: 'outcome4'
-			}],
-			tags: [{
-				name: 'testtag'
-			}, {
-				name: 'tag'
-			}]
-		}]
-	};
+  const mockSelectors = {
+    allMarkets: [{
+      isOpen: true,
+      description: 'test 1',
+      outcomes: [{
+        name: 'outcome1'
+      }, {
+        name: 'outcome2'
+      }],
+      tags: [{
+        name: 'testtag'
+      }, {
+        name: 'tag'
+      }]
+    }, {
+      isOpen: true,
+      description: 'test 2',
+      outcomes: [{
+        name: 'outcome3'
+      }, {
+        name: 'outcome4'
+      }],
+      tags: [{
+        name: 'testtag'
+      }, {
+        name: 'tag'
+      }]
+    }]
+  };
 
-	const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {
-		'../../../store': store,
-		'../../../selectors': mockSelectors
-	});
+  const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {
+    '../../../store': store,
+    '../../../selectors': mockSelectors
+  });
 
-	filteredMarkets = selector.default;
+  filteredMarkets = selector.default;
 
-	beforeEach(() => {
-		store.clearActions();
-	});
+  beforeEach(() => {
+    store.clearActions();
+  });
 
-	afterEach(() => {
-		store.clearActions();
-	});
+  afterEach(() => {
+    store.clearActions();
+  });
 
-	it(`should be able to select the correct filtered markets`, () => {
-		const test = selector.default();
+  it(`should be able to select the correct filtered markets`, () => {
+    const test = selector.default();
 
-		const out = [{
-			isOpen: true,
-			description: 'test 1',
-			outcomes: [{
-				name: 'outcome1'
-			}, {
-				name: 'outcome2'
-			}],
-			tags: [{
-				name: 'testtag'
-			}, {
-				name: 'tag'
-			}]
-		}, {
-			isOpen: true,
-			description: 'test 2',
-			outcomes: [{
-				name: 'outcome3'
-			}, {
-				name: 'outcome4'
-			}],
-			tags: [{
-				name: 'testtag'
-			}, {
-				name: 'tag'
-			}]
-		}];
+    const out = [{
+      isOpen: true,
+      description: 'test 1',
+      outcomes: [{
+        name: 'outcome1'
+      }, {
+        name: 'outcome2'
+      }],
+      tags: [{
+        name: 'testtag'
+      }, {
+        name: 'tag'
+      }]
+    }, {
+      isOpen: true,
+      description: 'test 2',
+      outcomes: [{
+        name: 'outcome3'
+      }, {
+        name: 'outcome4'
+      }],
+      tags: [{
+        name: 'testtag'
+      }, {
+        name: 'tag'
+      }]
+    }];
 
-		assert.deepEqual(test, out, `Didn't produce the expected output object`);
-	});
+    assert.deepEqual(test, out, `Didn't produce the expected output object`);
+  });
 
 });
 

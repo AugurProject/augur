@@ -14,9 +14,9 @@ import { formatNone, formatEther, formatShares } from '../../../utils/format-num
  * @return {Array}
  */
 export default function (outcomeId, marketOrderBook) {
-	const { loginAccount, orderCancellation } = store.getState();
+  const { loginAccount, orderCancellation } = store.getState();
 
-	return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation);
+  return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation);
 }
 
 /**
@@ -29,17 +29,17 @@ export default function (outcomeId, marketOrderBook) {
  * @return {Array}
  */
 const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
-	const isUserLoggedIn = loginAccount.address != null;
+  const isUserLoggedIn = loginAccount.address != null;
 
-	if (!isUserLoggedIn || marketOrderBook == null) {
-		return [];
-	}
+  if (!isUserLoggedIn || marketOrderBook == null) {
+    return [];
+  }
 
-	const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.address, orderCancellation);
+  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.address, orderCancellation);
 
-	const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.address, orderCancellation);
+  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.address, orderCancellation);
 
-	return userAsks.concat(userBids);
+  return userAsks.concat(userBids);
 });
 
 /**
@@ -54,19 +54,19 @@ const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOr
  * @return {Array}
  */
 function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation) {
-	return Object.keys(orders)
+  return Object.keys(orders)
 		.map(orderId => orders[orderId])
 		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && orderCancellation[order.id] !== CANCELLED)
 		.sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
 		.map(order => (
-			{
-				id: order.id,
-				marketID: order.market,
-				type: orderType,
-				originalShares: formatNone(),
-				avgPrice: formatEther(order.price),
-				matchedShares: formatNone(),
-				unmatchedShares: formatShares(order.amount)
-			}
+  {
+    id: order.id,
+    marketID: order.market,
+    type: orderType,
+    originalShares: formatNone(),
+    avgPrice: formatEther(order.price),
+    matchedShares: formatNone(),
+    unmatchedShares: formatShares(order.amount)
+  }
 		));
 }

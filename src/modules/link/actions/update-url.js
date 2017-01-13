@@ -9,21 +9,21 @@ export const UPDATE_URL = 'UPDATE_URL';
 // Pass in `false`: skips setting title
 // null/undefined: sets respective default title
 export function updateURL(url, title) {
-	return (dispatch, getState) => {
-		const parsedURL = parseURL(url);
+  return (dispatch, getState) => {
+    const parsedURL = parseURL(url);
 
-		if (title) {
-			setTitle(title);
-		} else if (title !== false) {
-			setTitle(null, (parsedURL.searchParams|| null));
-		}
+    if (title) {
+      setTitle(title);
+    } else if (title !== false) {
+      setTitle(null, (parsedURL.searchParams|| null));
+    }
 
-		dispatch({ type: UPDATE_URL, parsedURL });
+    dispatch({ type: UPDATE_URL, parsedURL });
 
-		const { selectedMarketID, connection } = getState();
+    const { selectedMarketID, connection } = getState();
 
-		if (selectedMarketID && connection.isConnected) {
-			dispatch(loadFullMarket(selectedMarketID));
-		}
-	};
+    if (selectedMarketID && connection.isConnected) {
+      dispatch(loadFullMarket(selectedMarketID));
+    }
+  };
 }

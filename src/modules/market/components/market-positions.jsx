@@ -8,8 +8,8 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 import getValue from 'utils/get-value';
 
 const MarketPositions = (p) => {
-	const outcomePositions = getValue(p, 'market.myPositionOutcomes');
-	const nullMessage = 'No Current Positions';
+  const outcomePositions = getValue(p, 'market.myPositionOutcomes');
+  const nullMessage = 'No Current Positions';
 
 	return (
 		<article className="market-positions">
@@ -36,11 +36,11 @@ const MarketPositions = (p) => {
 								positionStatus={p.positionStatus}
 							/>
 						)}
-					</div>
-				</div>
+          </div>
+        </div>
 			}
-		</article>
-	);
+    </article>
+  );
 };
 
 export default MarketPositions;

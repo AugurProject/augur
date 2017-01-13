@@ -1,26 +1,31 @@
 import React from 'react';
-
 import Transactions from 'modules/transactions/components/transactions';
+import Branch from 'modules/branch/components/branch';
 
 const TransactionsPage = p => (
-	<section id="transactions_view">
-		<header className="page-header">
-			<span className="big-line">{p.transactionsTotals.title}</span>
-		</header>
+  <section id="transactions_view">
+    {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
+    <Branch {...p.branch} />
+		}
 
-		<div className="page-content">
-			<Transactions
-				className="transactions-content"
-				transactions={p.transactions}
-			/>
-		</div>
-	</section>
+    <div className="view-header">
+      <h2>Transactions</h2>
+    </div>
+
+    <div className="page-content">
+      <Transactions
+        className="transactions-content"
+        transactions={p.transactions}
+      />
+    </div>
+  </section>
 );
 
 TransactionsPage.propTypes = {
-	className: React.PropTypes.string,
-	transactions: React.PropTypes.array,
-	transactionsTotals: React.PropTypes.object
+  branch: React.PropTypes.object,
+  className: React.PropTypes.string,
+  loginAccount: React.PropTypes.object,
+  transactions: React.PropTypes.array
 };
 
 export default TransactionsPage;

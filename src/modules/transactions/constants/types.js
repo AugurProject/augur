@@ -7,6 +7,9 @@ export const ASK = 'ask';
 export const SHORT_SELL = 'short_sell';
 export const SHORT_ASK = 'short_ask';
 
+export const MATCH_BID = 'match_bid';
+export const MATCH_ASK = 'match_ask';
+
 export const SELL_COMPLETE_SETS = 'sell_complete_sets';
 
 export const CREATE_MARKET = 'create_market';

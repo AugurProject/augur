@@ -31,39 +31,39 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrde
 });
 
 export const selectTopBid = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
-	let topBid;
-	if (excludeCurrentUser) {
-		const numBids = marketOrderBook.bids.length;
-		if (numBids) {
-			for (let i = 0; i < numBids; ++i) {
-				if (!marketOrderBook.bids[i].isOfCurrentUser) {
-					topBid = marketOrderBook.bids[i];
-					break;
-				}
-			}
-		}
-	} else {
-		topBid = marketOrderBook.bids[0];
-	}
-	return topBid != null ? topBid : null;
+  let topBid;
+  if (excludeCurrentUser) {
+    const numBids = marketOrderBook.bids.length;
+    if (numBids) {
+      for (let i = 0; i < numBids; ++i) {
+        if (!marketOrderBook.bids[i].isOfCurrentUser) {
+          topBid = marketOrderBook.bids[i];
+          break;
+        }
+      }
+    }
+  } else {
+    topBid = marketOrderBook.bids[0];
+  }
+  return topBid != null ? topBid : null;
 });
 
 export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
-	let topAsk;
-	if (excludeCurrentUser) {
-		const numAsks = marketOrderBook.asks.length;
-		if (numAsks) {
-			for (let i = 0; i < numAsks; ++i) {
-				if (!marketOrderBook.asks[i].isOfCurrentUser) {
-					topAsk = marketOrderBook.asks[i];
-					break;
-				}
-			}
-		}
-	} else {
-		topAsk = marketOrderBook.asks[0];
-	}
-	return topAsk != null ? topAsk : null;
+  let topAsk;
+  if (excludeCurrentUser) {
+    const numAsks = marketOrderBook.asks.length;
+    if (numAsks) {
+      for (let i = 0; i < numAsks; ++i) {
+        if (!marketOrderBook.asks[i].isOfCurrentUser) {
+          topAsk = marketOrderBook.asks[i];
+          break;
+        }
+      }
+    }
+  } else {
+    topAsk = marketOrderBook.asks[0];
+  }
+  return topAsk != null ? topAsk : null;
 });
 
 /**
@@ -73,29 +73,29 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUse
  * @param {{String, Object}} orders Key is order ID, value is order
  */
 const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCancellation) => {
-	if (orders == null) {
-		return [];
-	}
-	const currentUserAddress = store.getState().loginAccount.address;
+  if (orders == null) {
+    return [];
+  }
+  const currentUserAddress = store.getState().loginAccount.address;
 
-	const shareCountPerPrice = Object.keys(orders)
+  const shareCountPerPrice = Object.keys(orders)
 		.map(orderId => orders[orderId])
 		.filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CANCELLED)
 		.map(order => ({
-			...order,
-			isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
-		}))
+  ...order,
+  isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
+}))
 		.reduce(reduceSharesCountByPrice, {});
 
-	return Object.keys(shareCountPerPrice)
+  return Object.keys(shareCountPerPrice)
 		.map((price) => {
-			const obj = {
-				isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
-				shares: formatShares(shareCountPerPrice[price].shares),
-				price: formatEther(parseFloat(price))
-			};
-			return obj;
-		});
+  const obj = {
+    isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
+    shares: formatShares(shareCountPerPrice[price].shares),
+    price: formatEther(parseFloat(price))
+  };
+  return obj;
+});
 });
 
 /**
@@ -106,24 +106,24 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
  * @return {Object} aggregateOrdersPerPrice
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
-	const key = abi.bignum(order.price).toFixed();
-	if (aggregateOrdersPerPrice[key] == null) {
-		aggregateOrdersPerPrice[key] = {
-			shares: ZERO,
-			isOfCurrentUser: false
-		};
-	}
+  const key = abi.bignum(order.price).toFixed();
+  if (aggregateOrdersPerPrice[key] == null) {
+    aggregateOrdersPerPrice[key] = {
+      shares: ZERO,
+      isOfCurrentUser: false
+    };
+  }
 
-	aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
-	aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
+  aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
+  aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
 
-	return aggregateOrdersPerPrice;
+  return aggregateOrdersPerPrice;
 }
 
 function sortPricePointsByPriceAsc(pricePoint1, pricePoint2) {
-	return pricePoint1.price.value - pricePoint2.price.value;
+  return pricePoint1.price.value - pricePoint2.price.value;
 }
 
 function sortPricePointsByPriceDesc(pricePoint1, pricePoint2) {
-	return pricePoint2.price.value - pricePoint1.price.value;
+  return pricePoint2.price.value - pricePoint1.price.value;
 }

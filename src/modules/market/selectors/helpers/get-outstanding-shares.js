@@ -7,7 +7,7 @@ import { ZERO } from '../../../trade/constants/numbers';
  * @return {Number}
  */
 export default function (marketOutcomesData) {
-	return Object.keys(marketOutcomesData)
+  return Object.keys(marketOutcomesData)
 		.map(outcomeId => marketOutcomesData[outcomeId])
 		.reduce((outstandingShares, outcome) => outstandingShares.plus(abi.bignum(outcome.outstandingShares)), ZERO)
         .toNumber();

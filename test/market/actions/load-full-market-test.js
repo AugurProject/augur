@@ -28,7 +28,7 @@ describe(`modules/market/actions/load-full-market.js`, () => {
 	//   '../../markets/actions/update-markets-data': mockMarketsData
 	// });
 
-	it(`TODO - should load full the full market`);
+  it(`TODO - should load full the full market`);
 	// it(`should be able to load a market given an marketID`, () => {
 	//   out = [{
 	//     type: 'UPDATE_MARKETS_DATA',

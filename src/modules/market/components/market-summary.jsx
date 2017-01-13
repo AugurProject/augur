@@ -9,21 +9,21 @@ export default class MarketSummary extends Component {
 	// 	marketSummary: PropTypes.object.isRequired
 	// };
 
-	constructor(props) {
-		super(props);
-		this.shouldComponentUpdate = shouldComponentUpdatePure;
-	}
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = shouldComponentUpdatePure;
+  }
 
-	render() {
-		const p = this.props;
+  render() {
+    const p = this.props;
 
-		return (
-			<section className="market-summary">
-				<MarketSummaryHeader {...p.marketSummary} className="market-section-header" />
-				<section className="portfolio-list">
-					<Market {...p.marketSummary} />
-				</section>
-			</section>
-		);
-	}
+    return (
+      <section className="market-summary">
+        <MarketSummaryHeader {...p.marketSummary} className="market-section-header" />
+        <section className="portfolio-list">
+          <Market {...p.marketSummary} />
+        </section>
+      </section>
+    );
+  }
 }

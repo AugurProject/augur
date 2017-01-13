@@ -2,6 +2,6 @@
 import store from '../../../store';
 
 export default function () {
-	const { selectedMarketID, tradesInProgress } = store.getState();
-	return tradesInProgress[selectedMarketID];
+  const { selectedMarketID, tradesInProgress } = store.getState();
+  return tradesInProgress[selectedMarketID];
 }

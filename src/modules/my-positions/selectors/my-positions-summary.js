@@ -10,8 +10,8 @@ import { augur, abi } from 'services/augurjs';
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
-	const myPositions = selectMyPositions();
-	return generateMarketsPositionsSummary(myPositions);
+  const myPositions = selectMyPositions();
+  return generateMarketsPositionsSummary(myPositions);
 }
 
 export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
@@ -31,47 +31,47 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
-	if (!markets || !markets.length) {
-		return null;
-	}
-	let qtyShares = ZERO;
-	let totalRealizedNet = ZERO;
-	let totalUnrealizedNet = ZERO;
-	const positionOutcomes = [];
-	markets.forEach((market) => {
-		market.outcomes.forEach((outcome) => {
-			if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
-				return;
-			}
-			qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
-			totalRealizedNet = totalRealizedNet.plus(abi.bignum(outcome.position.realizedNet.value));
-			totalUnrealizedNet = totalUnrealizedNet.plus(abi.bignum(outcome.position.unrealizedNet.value));
-			positionOutcomes.push(outcome);
-		});
-	});
-	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, 0, totalRealizedNet, totalUnrealizedNet);
-	return {
-		...positionsSummary,
-		positionOutcomes
-	};
+  if (!markets || !markets.length) {
+    return null;
+  }
+  let qtyShares = ZERO;
+  let totalRealizedNet = ZERO;
+  let totalUnrealizedNet = ZERO;
+  const positionOutcomes = [];
+  markets.forEach((market) => {
+    market.outcomes.forEach((outcome) => {
+      if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
+        return;
+      }
+      qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
+      totalRealizedNet = totalRealizedNet.plus(abi.bignum(outcome.position.realizedNet.value));
+      totalUnrealizedNet = totalUnrealizedNet.plus(abi.bignum(outcome.position.unrealizedNet.value));
+      positionOutcomes.push(outcome);
+    });
+  });
+  const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, 0, totalRealizedNet, totalUnrealizedNet);
+  return {
+    ...positionsSummary,
+    positionOutcomes
+  };
 });
 
 export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
-	const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
-	return {
-		numPositions: formatNumber(numPositions, {
-			decimals: 0,
-			decimalsRounded: 0,
-			denomination: 'positions',
-			positiveSign: false,
-			zeroStyled: false
-		}),
-		qtyShares: formatShares(qtyShares),
-		purchasePrice: formatEther(meanTradePrice),
-		realizedNet: formatEther(realizedNet),
-		unrealizedNet: formatEther(unrealizedNet),
-		totalNet: formatEther(totalNet)
-	};
+  const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
+  return {
+    numPositions: formatNumber(numPositions, {
+      decimals: 0,
+      decimalsRounded: 0,
+      denomination: 'positions',
+      positiveSign: false,
+      zeroStyled: false
+    }),
+    qtyShares: formatShares(qtyShares),
+    purchasePrice: formatEther(meanTradePrice),
+    realizedNet: formatEther(realizedNet),
+    unrealizedNet: formatEther(unrealizedNet),
+    totalNet: formatEther(totalNet)
+  };
 });
 
 const isPositionFullyClosable = memoizerific(20)((position, orders) => {

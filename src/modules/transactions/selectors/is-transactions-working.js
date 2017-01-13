@@ -3,8 +3,8 @@ import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/consta
 import store from '../../../store';
 
 export default function () {
-	const { transactionsData } = store.getState();
-	return selectIsWorking(transactionsData);
+  const { transactionsData } = store.getState();
+  return selectIsWorking(transactionsData);
 }
 
 export const selectIsWorking = memoizerific(1)(transactionsData =>

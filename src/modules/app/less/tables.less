@@ -2,78 +2,78 @@
 // 	Styles + mixins for the display of tables
 
 .table-cell-spacing {
-	padding: 0.8em 0;
+  padding: 0.8em 0;
 
-	@media @breakpoint-mobile {
-		padding: 1.5em 0;
-	}
+  @media @breakpoint-mobile {
+    padding: 1.5em 0;
+  }
 }
 
 .table {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-	.value-denomination,
-	.value-date {
-		&,
-		* {
+  .value-denomination,
+  .value-date {
+    &,
+    * {
 
-			.font-weight-extra-light();
-		}
+      .font-weight-extra-light();
+    }
 
-		&.emphasized {
-			* {
+    &.emphasized {
+      * {
 
-				.font-weight-normal();
-			}
-		}
-	}
+        .font-weight-normal();
+      }
+    }
+  }
 }
 
 .table-header {
-	display: flex;
-	flex: 1;
+  display: flex;
+  flex: 1;
 
-	.font-weight-normal();
+  .font-weight-normal();
 
-	& > * {
+  & > * {
 
-		.table-cell-spacing();
-	}
+    .table-cell-spacing();
+  }
 }
 
 .table-row {
 
-	.border(true, @border-top, @border-light);
+  .border(true, @border-top, @border-light);
 
-	display: flex;
-	flex: 1;
+  display: flex;
+  flex: 1;
 
-	& > * {
+  & > * {
 
-		.table-cell-spacing();
+    .table-cell-spacing();
 
-		&:not(:first-child) {
-			.border(true, @border-left, @border-light);
-		}
-	}
+    &:not(:first-child) {
+      .border(true, @border-left, @border-light);
+    }
+  }
 
-	&.selected {
+  &.selected {
 
-		.border(true, @border-top, @color-blue-light);
-		.border(true, @border-right, @color-blue-light);
-		.border(true, @border-bottom, @color-blue-light);
-		.border(true, @border-left, @color-blue, @border-width-3);
+    .border(true, @border-top, @color-blue-light);
+    .border(true, @border-right, @color-blue-light);
+    .border(true, @border-bottom, @color-blue-light);
+    .border(true, @border-left, @color-blue, @border-width-3);
 
-		background-color: @color-blue-extra-light;
-	}
+    background-color: @color-blue-extra-light;
+  }
 
-	&:hover,
-	&:active {
-		background-color: @color-blue-extra-light;
-	}
+  &:hover,
+  &:active {
+    background-color: @color-blue-extra-light;
+  }
 
-	&.not-selectable:hover {
-		background-color: @color-gray-light;
-	}
+  &.not-selectable:hover {
+    background-color: @color-gray-light;
+  }
 }

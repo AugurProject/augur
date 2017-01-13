@@ -2,11 +2,11 @@ import selectMyPositions from '../../../modules/my-positions/selectors/my-positi
 import selectMyPositionsSummary from '../../../modules/my-positions/selectors/my-positions-summary';
 
 export default function () {
-	const markets = selectMyPositions();
-	const summary = selectMyPositionsSummary();
+  const markets = selectMyPositions();
+  const summary = selectMyPositionsSummary();
 
-	return {
-		markets,
-		summary
-	};
+  return {
+    markets,
+    summary
+  };
 }
