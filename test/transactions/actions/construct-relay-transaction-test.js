@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
+describe(`modules/transactions/actions/construct-relay-transaction.js`, function() {
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
