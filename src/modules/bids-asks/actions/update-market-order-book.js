@@ -22,6 +22,12 @@ export function addOrder(log) {
 			if (orderBookSide) {
 				orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, getState().marketsData[log.market]);
 				dispatch(updateMarketOrderBook(log.market, orderBook));
+			} else {
+				const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+				dispatch(updateMarketOrderBook(log.market, {
+					[log.type]: convertAddTxLogToOrder(log, getState().marketsData[log.market]),
+					[matchedType]: {}
+				}));
 			}
 		}
 	};
