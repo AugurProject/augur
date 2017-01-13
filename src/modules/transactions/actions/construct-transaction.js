@@ -230,6 +230,7 @@ export function constructPayoutTransaction(log, market, dispatch) {
 			balance: formatEther(log.cashBalance)
 		}];
 	}
+	transaction.data.shares = log.shares;
 	transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
 	const action = log.inProgress ? 'closing out' : 'closed out';
 	transaction.message = `${action} ${formatShares(log.shares).full}`;
