@@ -12,610 +12,610 @@ var keccak_256 = require("js-sha3").keccak_256;
 var ethabi = require("ethereumjs-abi");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 module.exports = {
 
-    debug: false,
+  debug: false,
 
-    version: "1.0.0",
+  version: "1.0.0",
 
-    constants: {
-        ONE: new BigNumber(10).toPower(new BigNumber(18)),
-        BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
-        // Serpent integers are bounded by [-2^255, 2^255-1]
-        SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
-        SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
-        MOD: new BigNumber(2).toPower(new BigNumber(256))
-    },
+  constants: {
+    ONE: new BigNumber(10).toPower(new BigNumber(18)),
+    BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+    // Serpent integers are bounded by [-2^255, 2^255-1]
+    SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+    SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
+    MOD: new BigNumber(2).toPower(new BigNumber(256))
+  },
 
-    abi: ethabi,
+  abi: ethabi,
 
-    keccak_256: keccak_256,
+  keccak_256: keccak_256,
 
-    // Convert hex to byte array for sha3
-    // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
-    hex_to_bytes: function (s) {
-        var o = [];
-        var alpha = "0123456789abcdef";
-        for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
-            var index1 = alpha.indexOf(s[i]);
-            var index2 = alpha.indexOf(s[i + 1]);
-            if (index1 < 0 || index2 < 0) {
-                throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
-            }
-            o.push(16*index1 + index2);
+  // Convert hex to byte array for sha3
+  // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
+  hex_to_bytes: function (s) {
+    var o = [];
+    var alpha = "0123456789abcdef";
+    for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
+      var index1 = alpha.indexOf(s[i]);
+      var index2 = alpha.indexOf(s[i + 1]);
+      if (index1 < 0 || index2 < 0) {
+        throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
+      }
+      o.push(16*index1 + index2);
+    }
+    return o;
+  },
+
+  bytes_to_hex: function (b) {
+    var hexbyte, h = "";
+    for (var i = 0, n = b.length; i < n; ++i) {
+      hexbyte = this.strip_0x(b[i].toString(16));
+      if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+      h += hexbyte;
+    }
+    return h;
+  },
+
+  sha3: function (hexstr) {
+    return keccak_256(this.hex_to_bytes(hexstr));
+  },
+
+  copy: function (obj) {
+    if (null === obj || "object" !== typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+  },
+
+  is_numeric: function (n) {
+    return Number(parseFloat(n)) == n;
+  },
+
+  remove_leading_zeros: function (h) {
+    var hex = h.toString();
+    if (hex.slice(0, 2) === "0x") {
+      hex = hex.slice(2);
+    }
+    if (!/^0+$/.test(hex)) {
+      while (hex.slice(0, 2) === "00") {
+        hex = hex.slice(2);
+      }
+    }
+    return hex;
+  },
+
+  remove_trailing_zeros: function (h, utf8) {
+    var hex = h.toString();
+    if (utf8) {
+      while (hex.slice(-1) === "\u0000") {
+        hex = hex.slice(0, -1);
+      }
+    } else {
+      while (hex.slice(-2) === "00") {
+        hex = hex.slice(0, -2);
+      }
+    }
+    return hex;
+  },
+
+  bytes_to_utf16: function (bytearray) {
+    if (bytearray.constructor === Array) {
+      var tmp = '';
+      for (var i = 0; i < bytearray.length; ++i) {
+        if (bytearray[i] !== undefined && bytearray[i] !== null) {
+          if (bytearray[i].constructor === String) {
+            tmp += this.strip_0x(bytearray[i]);
+          } else if (bytearray[i].constructor === Number) {
+            tmp += bytearray[i].toString(16);
+          } else if (Buffer.isBuffer(bytearray[i])) {
+            tmp += bytearray[i].toString("hex");
+          }
         }
-        return o;
-    },
+      }
+      bytearray = tmp;
+    }
+    if (bytearray.constructor === String) {
+      bytearray = this.strip_0x(bytearray);
+    }
+    if (!Buffer.isBuffer(bytearray)) {
+      try {
+        bytearray = new Buffer(bytearray, "hex");
+      } catch (ex) {
+        console.log("[augur-abi] bytes_to_utf16:", JSON.stringify(bytearray, null, 2));
+        throw ex;
+      }
+    }
+    return bytearray.toString("utf8");
+  },
 
-    bytes_to_hex: function (b) {
-        var hexbyte, h = "";
-        for (var i = 0, n = b.length; i < n; ++i) {
-            hexbyte = this.strip_0x(b[i].toString(16));
-            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
-            h += hexbyte;
+  short_string_to_int256: function (shortstring) {
+    var int256 = shortstring;
+    if (int256.length > 32) int256 = int256.slice(0, 32);
+    return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
+  },
+
+  int256_to_short_string: function (int256) {
+    return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
+  },
+
+  decode_hex: function (h, strip) {
+    var hex = h.toString();
+    var str = '';
+    if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+    // first 32 bytes = offset
+    // second 32 bytes = string length
+    if (strip) {
+      hex = hex.slice(128);
+      hex = this.remove_trailing_zeros(hex);
+    }
+    for (var i = 0, l = hex.length; i < l; i += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return str;
+  },
+
+  // convert bytes to hex
+  encode_hex: function (str, toArray) {
+    var hexbyte, hex, i, len;
+    if (str && str.constructor === Object || str.constructor === Array) {
+      str = JSON.stringify(str);
+    }
+    len = str.length;
+    if (toArray) {
+      hex = [];
+      for (i = 0; i < len; ++i) {
+        hexbyte = str.charCodeAt(i).toString(16);
+        if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+        hex.push(this.prefix_hex(hexbyte));
+      }
+    } else {
+      hex = '';
+      for (i = 0; i < len; ++i) {
+        hexbyte = str.charCodeAt(i).toString(16);
+        if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+        hex += hexbyte;
+      }
+    }
+    return hex;
+  },
+
+  raw_encode_hex: function (str) {
+    return ethabi.rawEncode(["string"], [str]).toString("hex");
+  },
+
+  raw_decode_hex: function (hex) {
+    if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
+    return ethabi.rawDecode(["string"], hex)[0];
+  },
+
+  unfork: function (forked, prefix) {
+    if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+      var unforked = this.bignum(forked);
+      if (unforked.constructor === BigNumber) {
+        var superforked = unforked.plus(this.constants.MOD);
+        if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+          unforked = superforked;
         }
-        return h;
-    },
+        if (forked.constructor === BigNumber) return unforked;
+        unforked = this.pad_left(unforked.toString(16));
+        if (prefix) unforked = this.prefix_hex(unforked);
+        return unforked;
+      } else {
+        throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+      }
+    } else {
+      throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+    }
+  },
 
-    sha3: function (hexstr) {
-        return keccak_256(this.hex_to_bytes(hexstr));
-    },
-
-    copy: function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    },
-
-    is_numeric: function (n) {
-        return Number(parseFloat(n)) == n;
-    },
-
-    remove_leading_zeros: function (h) {
-        var hex = h.toString();
-        if (hex.slice(0, 2) === "0x") {
-            hex = hex.slice(2);
-        }
-        if (!/^0+$/.test(hex)) {
-            while (hex.slice(0, 2) === "00") {
-                hex = hex.slice(2);
-            }
-        }
-        return hex;
-    },
-
-    remove_trailing_zeros: function (h, utf8) {
-        var hex = h.toString();
-        if (utf8) {
-            while (hex.slice(-1) === "\u0000") {
-                hex = hex.slice(0, -1);
-            }
-        } else {
-            while (hex.slice(-2) === "00") {
-                hex = hex.slice(0, -2);
-            }
-        }
-        return hex;
-    },
-
-    bytes_to_utf16: function (bytearray) {
-        if (bytearray.constructor === Array) {
-            var tmp = '';
-            for (var i = 0; i < bytearray.length; ++i) {
-                if (bytearray[i] !== undefined && bytearray[i] !== null) {
-                    if (bytearray[i].constructor === String) {
-                        tmp += this.strip_0x(bytearray[i]);
-                    } else if (bytearray[i].constructor === Number) {
-                        tmp += bytearray[i].toString(16);
-                    } else if (Buffer.isBuffer(bytearray[i])) {
-                        tmp += bytearray[i].toString("hex");
-                    }
-                }
-            }
-            bytearray = tmp;
-        }
-        if (bytearray.constructor === String) {
-            bytearray = this.strip_0x(bytearray);
-        }
-        if (!Buffer.isBuffer(bytearray)) {
-            try {
-                bytearray = new Buffer(bytearray, "hex");
-            } catch (ex) {
-                console.log("[augur-abi] bytes_to_utf16:", JSON.stringify(bytearray, null, 2));
-                throw ex;
-            }
-        }
-        return bytearray.toString("utf8");
-    },
-
-    short_string_to_int256: function (shortstring) {
-        var int256 = shortstring;
-        if (int256.length > 32) int256 = int256.slice(0, 32);
-        return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
-    },
-
-    int256_to_short_string: function (int256) {
-        return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
-    },
-
-    decode_hex: function (h, strip) {
-        var hex = h.toString();
-        var str = '';
-        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
-        // first 32 bytes = offset
-        // second 32 bytes = string length
-        if (strip) {
-            hex = hex.slice(128);
-            hex = this.remove_trailing_zeros(hex);
-        }
-        for (var i = 0, l = hex.length; i < l; i += 2) {
-            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-        }
-        return str;
-    },
-
-    // convert bytes to hex
-    encode_hex: function (str, toArray) {
-        var hexbyte, hex, i, len;
-        if (str && str.constructor === Object || str.constructor === Array) {
-            str = JSON.stringify(str);
-        }
-        len = str.length;
-        if (toArray) {
-            hex = [];
-            for (i = 0; i < len; ++i) {
-                hexbyte = str.charCodeAt(i).toString(16);
-                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
-                hex.push(this.prefix_hex(hexbyte));
-            }
-        } else {
-            hex = '';
-            for (i = 0; i < len; ++i) {
-                hexbyte = str.charCodeAt(i).toString(16);
-                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
-                hex += hexbyte;
-            }
-        }
-        return hex;
-    },
-
-    raw_encode_hex: function (str) {
-        return ethabi.rawEncode(["string"], [str]).toString("hex");
-    },
-
-    raw_decode_hex: function (hex) {
-        if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
-        return ethabi.rawDecode(["string"], hex)[0];
-    },
-
-    unfork: function (forked, prefix) {
-        if (forked !== null && forked !== undefined && forked.constructor !== Object) {
-            var unforked = this.bignum(forked);
-            if (unforked.constructor === BigNumber) {
-                var superforked = unforked.plus(this.constants.MOD);
-                if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
-                    unforked = superforked;
-                }
-                if (forked.constructor === BigNumber) return unforked;
-                unforked = this.pad_left(unforked.toString(16));
-                if (prefix) unforked = this.prefix_hex(unforked);
-                return unforked;
+  hex: function (n, wrap) {
+    var h;
+    if (n !== undefined && n !== null && n.constructor) {
+      switch (n.constructor) {
+        case Buffer:
+          h = n.toString("hex");
+          break;
+        case Object:
+          h = this.encode_hex(JSON.stringify(n));
+          break;
+        case Array:
+          h = this.bignum(n, "hex", wrap);
+          break;
+        case BigNumber:
+          if (wrap) {
+            h = this.wrap(n.floor()).toString(16);
+          } else {
+            h = n.floor().toString(16);
+          }
+          break;
+        case String:
+          if (n === "-0x0") {
+            h = "0x0";
+          } else if (n === "-0") {
+            h = "0";
+          } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+            h = this.bignum(n, "hex", wrap);
+          } else {
+            if (isFinite(n)) {
+              h = this.bignum(n, "hex", wrap);
             } else {
-                throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+              h = this.encode_hex(n);
             }
+          }
+          break;
+        case Boolean:
+          h = (n) ? "0x1" : "0x0";
+          break;
+        default:
+          h = this.bignum(n, "hex", wrap);
+      }
+    }
+    return this.prefix_hex(h);
+  },
+
+  is_hex: function (str) {
+    if (str && str.constructor === String) {
+      if (str.slice(0, 1) === '-' && str.length > 1) {
+        return /^[0-9A-F]+$/i.test(str.slice(1));
+      }
+      return /^[0-9A-F]+$/i.test(str);
+    }
+    return false;
+  },
+
+  format_int256: function (s) {
+    if (s === undefined || s === null || s === "0x") return s;
+    if (Buffer.isBuffer(s)) s = s.toString("hex");
+    if (s.constructor !== String) s = s.toString(16);
+    if (s.slice(0, 1) === "-") s = this.unfork(s);
+    s = this.strip_0x(s);
+    if (s.length > 64) {
+      if (this.debug) {
+        var overflow = (s.length / 2) - 32;
+        console.warn("input " + overflow + " bytes too large for int256, truncating");
+      }
+      s = s.slice(0, 64);
+    }
+    return this.prefix_hex(this.pad_left(s));
+  },
+
+  format_address: function (addr) {
+    if (addr && addr.constructor === String) {
+      addr = this.strip_0x(addr);
+      while (addr.length > 40 && addr.slice(0, 1) === "0") {
+        addr = addr.slice(1);
+      }
+      while (addr.length < 40) {
+        addr = "0" + addr;
+      }
+      return this.prefix_hex(addr);
+    }
+  },
+
+  strip_0x: function (str) {
+    if (str && str.constructor === String && str.length >= 2) {
+      var h = str;
+      if (h === "-0x0" || h === "0x0") {
+        return "0";
+      }
+      if (h.slice(0, 2) === "0x" && h.length > 2) {
+        h = h.slice(2);
+      } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+        h = '-' + h.slice(3);
+      }
+      if (this.is_hex(h)) return h;
+    }
+    return str;
+  },
+
+  zero_prefix: function (h) {
+    if (h !== undefined && h !== null && h.constructor === String) {
+      h = this.strip_0x(h);
+      if (h.length % 2) h = "0" + h;
+      if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+        if (h.slice(0,1) === '-') {
+          h = "-0x" + h.slice(1);
         } else {
-            throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+          h = "0x" + h;
         }
-    },
+      }
+    }
+    return h;
+  },
 
-    hex: function (n, wrap) {
-        var h;
-        if (n !== undefined && n !== null && n.constructor) {
-            switch (n.constructor) {
-                case Buffer:
-                    h = n.toString("hex");
-                    break;
-                case Object:
-                    h = this.encode_hex(JSON.stringify(n));
-                    break;
-                case Array:
-                    h = this.bignum(n, "hex", wrap);
-                    break;
-                case BigNumber:
-                    if (wrap) {
-                        h = this.wrap(n.floor()).toString(16);
-                    } else {
-                        h = n.floor().toString(16);
-                    }
-                    break;
-                case String:
-                    if (n === "-0x0") {
-                        h = "0x0";
-                    } else if (n === "-0") {
-                        h = "0";
-                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
-                        h = this.bignum(n, "hex", wrap);
-                    } else {
-                        if (isFinite(n)) {
-                            h = this.bignum(n, "hex", wrap);
-                        } else {
-                            h = this.encode_hex(n);
-                        }
-                    }
-                    break;
-                case Boolean:
-                    h = (n) ? "0x1" : "0x0";
-                    break;
-                default:
-                    h = this.bignum(n, "hex", wrap);
-            }
-        }
-        return this.prefix_hex(h);
-    },
+  prefix_hex: function (n) {
+    if (n === undefined || n === null || n === "") return n;
+    if (n.constructor === Number || n.constructor === BigNumber) {
+      n = n.toString(16);
+    }
+    if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+      if (n.slice(0,1) === '-') {
+        n = "-0x" + n.slice(1);
+      } else {
+        n = "0x" + n;
+      }
+    }
+    return n;
+  },
 
-    is_hex: function (str) {
-        if (str && str.constructor === String) {
-            if (str.slice(0, 1) === '-' && str.length > 1) {
-                return /^[0-9A-F]+$/i.test(str.slice(1));
-            }
-            return /^[0-9A-F]+$/i.test(str);
-        }
-        return false;
-    },
-
-    format_int256: function (s) {
-        if (s === undefined || s === null || s === "0x") return s;
-        if (Buffer.isBuffer(s)) s = s.toString("hex");
-        if (s.constructor !== String) s = s.toString(16);
-        if (s.slice(0, 1) === "-") s = this.unfork(s);
-        s = this.strip_0x(s);
-        if (s.length > 64) {
-            if (this.debug) {
-                var overflow = (s.length / 2) - 32;
-                console.warn("input " + overflow + " bytes too large for int256, truncating");
-            }
-            s = s.slice(0, 64);
-        }
-        return this.prefix_hex(this.pad_left(s));
-    },
-
-    format_address: function (addr) {
-        if (addr && addr.constructor === String) {
-            addr = this.strip_0x(addr);
-            while (addr.length > 40 && addr.slice(0, 1) === "0") {
-                addr = addr.slice(1);
-            }
-            while (addr.length < 40) {
-                addr = "0" + addr;
-            }
-            return this.prefix_hex(addr);
-        }
-    },
-
-    strip_0x: function (str) {
-        if (str && str.constructor === String && str.length >= 2) {
-            var h = str;
-            if (h === "-0x0" || h === "0x0") {
-                return "0";
-            }
-            if (h.slice(0, 2) === "0x" && h.length > 2) {
-                h = h.slice(2);
-            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
-                h = '-' + h.slice(3);
-            }
-            if (this.is_hex(h)) return h;
-        }
-        return str;
-    },
-
-    zero_prefix: function (h) {
-        if (h !== undefined && h !== null && h.constructor === String) {
-            h = this.strip_0x(h);
-            if (h.length % 2) h = "0" + h;
-            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
-                if (h.slice(0,1) === '-') {
-                    h = "-0x" + h.slice(1);
-                } else {
-                    h = "0x" + h;
-                }
-            }
-        }
-        return h;
-    },
-
-    prefix_hex: function (n) {
-        if (n === undefined || n === null || n === "") return n;
-        if (n.constructor === Number || n.constructor === BigNumber) {
-            n = n.toString(16);
-        }
-        if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
-            if (n.slice(0,1) === '-') {
-                n = "-0x" + n.slice(1);
+  bignum: function (n, encoding, wrap) {
+    var bn, len;
+    if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+      switch (n.constructor) {
+        case BigNumber:
+          bn = n;
+          break;
+        case Number:
+          bn = new BigNumber(n, 10);
+          break;
+        case String:
+          try {
+            bn = new BigNumber(n, 10);
+          } catch (exc) {
+            if (this.is_hex(n)) {
+              bn = new BigNumber(n, 16);
             } else {
-                n = "0x" + n;
+              return n;
             }
+          }
+          break;
+        case Array:
+          len = n.length;
+          bn = new Array(len);
+          for (var i = 0; i < len; ++i) {
+            bn[i] = this.bignum(n[i], encoding, wrap);
+          }
+          break;
+        default:
+          if (this.is_hex(n)) {
+            bn = new BigNumber(n, 16);
+          } else {
+            bn = new BigNumber(n, 10);
+          }
+      }
+      if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+        if (wrap) bn = this.wrap(bn);
+        if (encoding) {
+          if (encoding === "number") {
+            bn = bn.toNumber();
+          } else if (encoding === "string") {
+            bn = bn.toFixed();
+          } else if (encoding === "hex") {
+            bn = this.prefix_hex(bn.floor().toString(16));
+          }
         }
-        return n;
-    },
+      }
+      return bn;
+    } else {
+      return n;
+    }
+  },
 
-    bignum: function (n, encoding, wrap) {
-        var bn, len;
-        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
-            switch (n.constructor) {
-                case BigNumber:
-                    bn = n;
-                    break;
-                case Number:
-                    bn = new BigNumber(n, 10);
-                    break;
-                case String:
-                    try {
-                        bn = new BigNumber(n, 10);
-                    } catch (exc) {
-                        if (this.is_hex(n)) {
-                            bn = new BigNumber(n, 16);
-                        } else {
-                            return n;
-                        }
-                    }
-                    break;
-                case Array:
-                    len = n.length;
-                    bn = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        bn[i] = this.bignum(n[i], encoding, wrap);
-                    }
-                    break;
-                default:
-                    if (this.is_hex(n)) {
-                        bn = new BigNumber(n, 16);
-                    } else {
-                        bn = new BigNumber(n, 10);
-                    }
-            }
-            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (wrap) bn = this.wrap(bn);
-                if (encoding) {
-                    if (encoding === "number") {
-                        bn = bn.toNumber();
-                    } else if (encoding === "string") {
-                        bn = bn.toFixed();
-                    } else if (encoding === "hex") {
-                        bn = this.prefix_hex(bn.floor().toString(16));
-                    }
-                }
-            }
-            return bn;
+  wrap: function (bn) {
+    if (bn === undefined || bn === null) return bn;
+    if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+    if (bn.gt(this.constants.SERPINT_MAX)) {
+      return bn.sub(this.constants.MOD);
+    } else if (bn.lt(this.constants.SERPINT_MIN)) {
+      return bn.plus(this.constants.MOD);
+    }
+    return bn;
+  },
+
+  fix: function (n, encode, wrap) {
+    var fixed;
+    if (n && n !== "0x" && !n.error && !n.message) {
+      if (encode && n.constructor === String) {
+        encode = encode.toLowerCase();
+      }
+      if (n.constructor === Array) {
+        var len = n.length;
+        fixed = new Array(len);
+        for (var i = 0; i < len; ++i) {
+          fixed[i] = this.fix(n[i], encode);
+        }
+      } else {
+        if (n.constructor === BigNumber) {
+          fixed = n.mul(this.constants.ONE).round();
         } else {
-            return n;
+          fixed = this.bignum(n).mul(this.constants.ONE).round();
         }
-    },
-
-    wrap: function (bn) {
-        if (bn === undefined || bn === null) return bn;
-        if (bn.constructor !== BigNumber) bn = this.bignum(bn);
-        if (bn.gt(this.constants.SERPINT_MAX)) {
-            return bn.sub(this.constants.MOD);
-        } else if (bn.lt(this.constants.SERPINT_MIN)) {
-            return bn.plus(this.constants.MOD);
+        if (wrap) fixed = this.wrap(fixed);
+        if (encode) {
+          if (encode === "string") {
+            fixed = fixed.toFixed();
+          } else if (encode === "hex") {
+            if (fixed.constructor === BigNumber) {
+              fixed = fixed.toString(16);
+            }
+            fixed = this.prefix_hex(fixed);
+          }
         }
-        return bn;
-    },
+      }
+      return fixed;
+    } else {
+      return n;
+    }
+  },
 
-    fix: function (n, encode, wrap) {
-        var fixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode && n.constructor === String) {
-                encode = encode.toLowerCase();
-            }
-            if (n.constructor === Array) {
-                var len = n.length;
-                fixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    fixed[i] = this.fix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    fixed = n.mul(this.constants.ONE).round();
-                } else {
-                    fixed = this.bignum(n).mul(this.constants.ONE).round();
-                }
-                if (wrap) fixed = this.wrap(fixed);
-                if (encode) {
-                    if (encode === "string") {
-                        fixed = fixed.toFixed();
-                    } else if (encode === "hex") {
-                        if (fixed.constructor === BigNumber) {
-                            fixed = fixed.toString(16);
-                        }
-                        fixed = this.prefix_hex(fixed);
-                    }
-                }
-            }
-            return fixed;
+  unfix: function (n, encode) {
+    var unfixed;
+    if (n && n !== "0x" && !n.error && !n.message) {
+      if (encode) encode = encode.toLowerCase();
+      if (n.constructor === Array) {
+        var len = n.length;
+        unfixed = new Array(len);
+        for (var i = 0; i < len; ++i) {
+          unfixed[i] = this.unfix(n[i], encode);
+        }
+      } else {
+        if (n.constructor === BigNumber) {
+          unfixed = n.dividedBy(this.constants.ONE);
         } else {
-            return n;
+          unfixed = this.bignum(n).dividedBy(this.constants.ONE);
         }
-    },
+        if (unfixed && encode) {
+          if (encode === "hex") {
+            unfixed = this.prefix_hex(unfixed.round());
+          } else if (encode === "string") {
+            unfixed = unfixed.toFixed();
+          } else if (encode === "number") {
+            unfixed = unfixed.toNumber();
+          }
+        }
+      }
+      return unfixed;
+    } else {
+      return n;
+    }
+  },
 
-    unfix: function (n, encode) {
-        var unfixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode) encode = encode.toLowerCase();
-            if (n.constructor === Array) {
-                var len = n.length;
-                unfixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    unfixed[i] = this.unfix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    unfixed = n.dividedBy(this.constants.ONE);
-                } else {
-                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
-                }
-                if (unfixed && encode) {
-                    if (encode === "hex") {
-                        unfixed = this.prefix_hex(unfixed.round());
-                    } else if (encode === "string") {
-                        unfixed = unfixed.toFixed();
-                    } else if (encode === "number") {
-                        unfixed = unfixed.toNumber();
-                    }
-                }
-            }
-            return unfixed;
+  unfix_signed: function (n, encode) {
+    return this.unfix(this.hex(n, true), encode);
+  },
+
+  string: function (n, wrap) {
+    return this.bignum(n, "string", wrap);
+  },
+
+  number: function (s, wrap) {
+    return this.bignum(s, "number", wrap);
+  },
+
+  chunk: function (total_len, chunk_len) {
+    chunk_len = chunk_len || 64;
+    return Math.ceil(total_len / chunk_len);
+  },
+
+  pad_right: function (s, chunk_len, prefix) {
+    chunk_len = chunk_len || 64;
+    s = this.strip_0x(s);
+    var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+    while (s.length < multiple) {
+      s += '0';
+    }
+    if (prefix) s = this.prefix_hex(s);
+    return s;
+  },
+
+  pad_left: function (s, chunk_len, prefix) {
+    chunk_len = chunk_len || 64;
+    s = this.strip_0x(s);
+    var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+    while (s.length < multiple) {
+      s = '0' + s;
+    }
+    if (prefix) s = this.prefix_hex(s);
+    return s;
+  },
+
+  encode_prefix: function (funcname, signature) {
+    signature = signature || "";
+    var summary = funcname + "(";
+    for (var i = 0, len = signature.length; i < len; ++i) {
+      switch (signature[i]) {
+        case 's':
+          summary += "bytes";
+          break;
+        case 'b':
+          summary += "bytes";
+          var j = 1;
+          while (this.is_numeric(signature[i+j])) {
+            summary += signature[i+j].toString();
+            j++;
+          }
+          i += j;
+          break;
+        case 'i':
+          summary += "int256";
+          break;
+        case 'a':
+          summary += "int256[]";
+          break;
+        default:
+          summary += "weird";
+      }
+      if (i !== len - 1) summary += ",";
+    }
+    var prefix = keccak_256(summary + ")").slice(0, 8);
+    while (prefix.slice(0, 1) === '0') {
+      prefix = prefix.slice(1);
+    }
+    return this.pad_left(prefix, 8, true);
+  },
+
+  parse_signature: function (signature) {
+    var types = [];
+    for (var i = 0, len = signature.length; i < len; ++i) {
+      if (this.is_numeric(signature[i])) {
+        types[types.length - 1] += signature[i].toString();
+      } else {
+        if (signature[i] === 's') {
+          types.push("bytes");
+        } else if (signature[i] === 'b') {
+          types.push("bytes");
+        } else if (signature[i] === 'a') {
+          types.push("int256[]");
         } else {
-            return n;
+          types.push("int256");
         }
-    },
+      }
+    }
+    return types;
+  },
 
-    unfix_signed: function (n, encode) {
-        return this.unfix(this.hex(n, true), encode);
-    },
-
-    string: function (n, wrap) {
-        return this.bignum(n, "string", wrap);
-    },
-
-    number: function (s, wrap) {
-        return this.bignum(s, "number", wrap);
-    },
-
-    chunk: function (total_len, chunk_len) {
-        chunk_len = chunk_len || 64;
-        return Math.ceil(total_len / chunk_len);
-    },
-
-    pad_right: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
-        while (s.length < multiple) {
-            s += '0';
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    pad_left: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
-        while (s.length < multiple) {
-            s = '0' + s;
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    encode_prefix: function (funcname, signature) {
-        signature = signature || "";
-        var summary = funcname + "(";
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            switch (signature[i]) {
-                case 's':
-                    summary += "bytes";
-                    break;
-                case 'b':
-                    summary += "bytes";
-                    var j = 1;
-                    while (this.is_numeric(signature[i+j])) {
-                        summary += signature[i+j].toString();
-                        j++;
-                    }
-                    i += j;
-                    break;
-                case 'i':
-                    summary += "int256";
-                    break;
-                case 'a':
-                    summary += "int256[]";
-                    break;
-                default:
-                    summary += "weird";
-            }
-            if (i !== len - 1) summary += ",";
-        }
-        var prefix = keccak_256(summary + ")").slice(0, 8);
-        while (prefix.slice(0, 1) === '0') {
-            prefix = prefix.slice(1);
-        }
-        return this.pad_left(prefix, 8, true);
-    },
-
-    parse_signature: function (signature) {
-        var types = [];
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            if (this.is_numeric(signature[i])) {
-                types[types.length - 1] += signature[i].toString();
-            } else {
-                if (signature[i] === 's') {
-                    types.push("bytes");
-                } else if (signature[i] === 'b') {
-                    types.push("bytes");
-                } else if (signature[i] === 'a') {
-                    types.push("int256[]");
-                } else {
-                    types.push("int256");
-                }
-            }
-        }
-        return types;
-    },
-
-    parse_params: function (params) {
-        if (params !== undefined && params !== null &&
+  parse_params: function (params) {
+    if (params !== undefined && params !== null &&
             params !== [] && params !== "")
         {
-            if (params.constructor === String) {
-                if (params.slice(0,1) === "[" &&
+      if (params.constructor === String) {
+        if (params.slice(0,1) === "[" &&
                     params.slice(-1) === "]")
                 {
-                    params = JSON.parse(params);
-                }
-                if (params.constructor === String) {
-                    params = [params];
-                }
-            } else if (params.constructor === Number) {
-                params = [params];
-            }
-        } else {
-            params = [];
+          params = JSON.parse(params);
         }
-        return params;
-    },
-
-    encode_int: function (value) {
-        var cs, x, output;
-        cs = [];
-        x = new BigNumber(value);
-        while (x.gt(new BigNumber(0))) {
-            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
-            x = x.dividedBy(new BigNumber(256)).floor();
+        if (params.constructor === String) {
+          params = [params];
         }
-        output = this.encode_hex((cs.reverse()).join(''));
-        while (output.length < 64) {
-            output = '0' + output;
-        }
-        return output;
-    },
-
-    // hex-encode a function's ABI data and return it
-    encode: function (tx) {
-        tx.signature = tx.signature || [];
-        return this.prefix_hex(Buffer.concat([
-            ethabi.methodID(tx.method, tx.signature),
-            ethabi.rawEncode(tx.signature, tx.params)
-        ]).toString("hex"));
+      } else if (params.constructor === Number) {
+        params = [params];
+      }
+    } else {
+      params = [];
     }
+    return params;
+  },
+
+  encode_int: function (value) {
+    var cs, x, output;
+    cs = [];
+    x = new BigNumber(value);
+    while (x.gt(new BigNumber(0))) {
+      cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+      x = x.dividedBy(new BigNumber(256)).floor();
+    }
+    output = this.encode_hex((cs.reverse()).join(''));
+    while (output.length < 64) {
+      output = '0' + output;
+    }
+    return output;
+  },
+
+  // hex-encode a function's ABI data and return it
+  encode: function (tx) {
+    tx.signature = tx.signature || [];
+    return this.prefix_hex(Buffer.concat([
+      ethabi.methodID(tx.method, tx.signature),
+      ethabi.rawEncode(tx.signature, tx.params)
+    ]).toString("hex"));
+  }
 };
 
 }).call(this,require("buffer").Buffer)
@@ -22425,483 +22425,446 @@ module.exports={
 }
 },{}],57:[function(require,module,exports){
 module.exports={
-    "10101": {
-        "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
-        "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "CompositeGetters": "0x4803e0b158ab66eae81a48bba2799f905c379eb2", 
-        "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
-        "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
-        "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
-    }, 
-    "2": {
-        "Backstops": "0xe7b15def7af9b21efaf23107aa674068a887f91b", 
-        "Branches": "0x6364bfeee536565269b17f4ba760c039c5c28ed8", 
-        "BuyAndSellShares": "0xd996967fd46e7cae18e3ae8ffc4b4f000f11f454", 
-        "Cash": "0xa470f24e2f44b1373a201b8b876361352a5044ca", 
-        "CloseMarket": "0x80f0e40ef1623ebd2d0a64e52f9637d01120e775", 
-        "CloseMarketOne": "0xedfab60ec675321f23560bb14b2b0ee093c9820e", 
-        "CloseMarketTwo": "0xbec7e28f2002a6ddf13bea948daac81024757265", 
-        "CollectFees": "0x8bcf8f4eb99193d66c864fe01e879936b26ab3f1", 
-        "CompleteSets": "0xfbb64e5b58205a66f5072e054a8ef3a63283c563", 
-        "CompositeGetters": "0xc57896bc165fa62045dd302734b542ff8bc8722f", 
-        "Consensus": "0x809b336f070a5f0b054a7b09cf032be6d2718237", 
-        "ConsensusData": "0x4c14bbcee01169cc943168bf8e7c9514cb1d9724", 
-        "CreateBranch": "0xbe301475b9616c528d1f59cc4b3e1ed1a3a011fd", 
-        "CreateMarket": "0xfbff48fd7633182e9185e0bfb33574b3550f878e", 
-        "EventResolution": "0x1f6b2d8eedd938caccb0806ff3e0a0c25061dba6", 
-        "Events": "0xd63945d6a1a8970e4314f4d5ad91f31b3546e02d", 
-        "ExpiringEvents": "0xfc4570a6427ca4324dd363dcf1ad3f6a06ede423", 
-        "Faucets": "0xd2594eca97608c71fad50c49ff01ea580f2e0182", 
-        "ForkPenalize": "0x5d348800bd486b841b0588a9b58ee48a2f95ff53", 
-        "Forking": "0x997534dee63572f7c0ef22a02ae36e7490920a14", 
-        "FxpFunctions": "0xf58e7a722acb67e0c2051ca2e1e589ce994cf005", 
-        "Info": "0x7df74be4d0987e0c54bbf8464880886ef72c6454", 
-        "MakeReports": "0x9abab8c867e3550a7516f0ac58139c0c35439271", 
-        "Markets": "0x523b175058c2d95addc60b3ae2b1eabb4e66d9b3", 
-        "PenalizationCatchup": "0x0a34aed359d6a1d87bfa3dd6de5506886b324246", 
-        "PenalizeNotEnoughReports": "0xc8c562b70bc3cf800ada4cb911573a3861e33179", 
-        "ProportionCorrect": "0x45773b4de356cdf5544f8016d7c0c3bd8f2b5b6f", 
-        "Register": "0x07b3b68db6cecc3f21dbf8619048c1b1fdda858b", 
-        "Reporting": "0x5903ca079125de5a16d67c6e1511e8124f5a121d", 
-        "ReportingThreshold": "0xda8defe3149549b30965c2c2dcb972206f01eca4", 
-        "RoundTwo": "0xea88e08fbfe6efcd63192ea98b500e135f1457a2", 
-        "RoundTwoPenalize": "0xabcf47a605cbaba390025fcc86c02d9cc38aaf6f", 
-        "SendReputation": "0xd580b44476b80ed2ec59363a9a3df196538deef9", 
-        "SlashRep": "0x033309178ab10e4869cb3a9ef97bfa4684844132", 
-        "Trade": "0xf22f08f6a893725c0161fb30667b902781aa9dc8", 
-        "Trades": "0xa546d6e0913b4e47962fd0efcf0cbe3112aee11b"
-    }, 
-    "3": {
-        "Backstops": "0x39233db6a46688838c0e6f3f666a6e2c54691ba8", 
-        "Branches": "0x3dd807ac7da5b24f5c00f841a74bdf1e5974be6f", 
-        "BuyAndSellShares": "0x110ed15b8ebd5bd19dd8d8fbf0e5f3fe6d5a5100", 
-        "Cash": "0xf3f2504a84a7c994528b17771e84d2c742e0fd00", 
-        "CloseMarket": "0x2cf1709843785a51d36b9844abed063041a5ad3d", 
-        "CollectFees": "0x40313fad2710dad2061ee906848be0dba3ae06fa", 
-        "CompleteSets": "0x03db7bf1febd987d99f639798c339a213423c24d", 
-        "CompositeGetters": "0x3821cdacda6dfb08a8ffc5373a223697f49c69c9", 
-        "Consensus": "0xbdb5a0e136918196f5c07d5d330794344344c6fe", 
-        "ConsensusData": "0x627c2cc8fc12fbeb0b77184b921c0df68d873897", 
-        "CreateBranch": "0x28870f9ba569198953d55bfd06d6faf28c03512b", 
-        "CreateMarket": "0x281899d86f2209bd33ad9e47f696e7059dceb42f", 
-        "EventResolution": "0x320b8e9db5f61902d30017206225faca63ce99d9", 
-        "Events": "0x4f06980ea73befdf02e71e648338b771fc94d05d", 
-        "ExpiringEvents": "0xec2afe624a2c093cdebc9f9ac0ab3392958cd5d3", 
-        "Faucets": "0x3eab9164d7164e228ac537ba734b61765c96b8db", 
-        "ForkPenalize": "0xb73bac0b4bcae01506c29331ca718041f27e4a76", 
-        "Forking": "0xe5cd2da1c476d18054ceef3adee348b66ad67434", 
-        "FxpFunctions": "0x6327a4a763653e4c90e22ded4f7b6b50926af689", 
-        "Info": "0xfb241a2ed08c6be004abca9a4ef1a97f3f11a400", 
-        "MakeReports": "0xc3e5c24ab41281dbd2c79ededbc1f212a7223ca1", 
-        "Markets": "0x1253aa148cddc4479ae1c7814866f029da1bb6d5", 
-        "Payout": "0x28334992a8ed76ab390f7c795d8bdb51b9cfe3cd", 
-        "PenalizationCatchup": "0xc823018ea0398b203179a793f9943c4e1a425b57", 
-        "PenalizeNotEnoughReports": "0x5c412cdc23835d84f63940fb55073e2e37203d47", 
-        "ProportionCorrect": "0x21bba22c6ce9cf511c12e6848625f50a3856769a", 
-        "Register": "0xc0b6a445951d432b182b494f71dccb681f4b3d06", 
-        "Reporting": "0xce8d6a17ae5f2aade25323d73a26a49034ea26b6", 
-        "ReportingThreshold": "0x2dcbb0c8d9ec956fe1ddd3abfde1b0c404855fa9", 
-        "RoundTwo": "0x20f90841a002cf7db14aea8b8c31cdc08a49d49a", 
-        "RoundTwoPenalize": "0x7a2e426268029ca8a94936d6710fa905f152acd3", 
-        "SendReputation": "0x01b6900f6b28cfda2d6b4917aed15362c9216be1", 
-        "SlashRep": "0x1c33d47ad5ebcead9309d8e8d0ede6ea9cc3f834", 
-        "Trade": "0x3e83bae48eda16ed7e0f93876308340a86318151", 
-        "Trades": "0xb2628263ce4ef07d094860a1997ab733635482d8"
-    }, 
-    "9000": {
-        "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
-        "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
-        "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
-        "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
-        "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
-    }
+  "10101": {
+    "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
+    "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+    "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+    "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+    "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+    "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+    "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+    "CompositeGetters": "0x4803e0b158ab66eae81a48bba2799f905c379eb2",
+    "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+    "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+    "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+    "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+    "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d",
+    "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
+    "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+    "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+    "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+    "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200",
+    "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+    "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+    "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+    "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+    "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+    "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+    "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+    "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+    "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
+    "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+    "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+    "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+    "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+    "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+    "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2",
+    "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+    "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
+  },
+  "3": {
+    "Backstops": "0x99739f6bfcd74b9c3f6718e6eff388a444219369", 
+    "Branches": "0xfbd3970615adf968293c23a9999e1efdbe369306", 
+    "BuyAndSellShares": "0x39ced95894e47bb9d2f6b1b8526f43d69987ac3e", 
+    "Cash": "0xb13db9a01f589a5384213d168860d29453f4db19", 
+    "CloseMarket": "0xb4c1865c7370ee181b4e5eee41c839dac06c4196", 
+    "CollectFees": "0x96916008eebbbcaf9a3425cde3cce6d4fe995f0a", 
+    "CompleteSets": "0x5561d257442a5c5d907ebe1f1d4f1e127b33f311", 
+    "CompositeGetters": "0x104943c46d858881695ee7a852d1cbe246c3c0f1", 
+    "Consensus": "0xf6b21754b16a84631eae27c6e93890ea62e63919", 
+    "ConsensusData": "0x0e32fb15e163402785476ddcc7496736afcef6ce", 
+    "CreateBranch": "0x170274de054120ffe47ccb13a1c269ae7bc1895a", 
+    "CreateMarket": "0x33d76d2434d5033297302ee0b27b72393b9a806c", 
+    "EventResolution": "0x9c9ff61d7931c5695b7433717fc5893516921519", 
+    "Events": "0x160f2dcef1bbeb993822a664f7f99501b4b79635", 
+    "ExpiringEvents": "0x46c2a2a1e20a529f22fc5189feb97bea86d1b9e9", 
+    "Faucets": "0x418cdf90976d007966488b4fa47a669b387e7e2b", 
+    "ForkPenalize": "0x177c8208b200e04c123f142d7d6c4e4887e7422c", 
+    "Forking": "0x9621bbea0e0170c31d44f4a98ef8dff7490dd51d", 
+    "FxpFunctions": "0x0db6461948e14b8e8f21abb10a7e0c69d82117a6", 
+    "Info": "0xa4d15709a2f8d88d1acb22fafa8424570222fd1c", 
+    "MakeReports": "0x43f642016d08c09b8addbfcdd794d6b986884a71", 
+    "Markets": "0x6c20a929731e787eb573c88fef254a9409f08fe2", 
+    "Payout": "0x7054ee417059e4f038c968c5084f5fb1b099d7c6", 
+    "PenalizationCatchup": "0x06cd646d6d675266b1aa986230f886bac2006cbb", 
+    "PenalizeNotEnoughReports": "0xc6b6f03104b2db5a9d3381915e284b57f225ad66", 
+    "ProportionCorrect": "0x3a48674cffdec5943ca3022f0e7c5e271ccb951e", 
+    "Register": "0x0fb8908ee430b8ea89c48464a1225675af5cfbae", 
+    "Reporting": "0x1c29f6340627dc14d267f7f579e67b282667456d", 
+    "ReportingThreshold": "0xd3a1881d01c808d1c6947307ad32afdfce0cca98", 
+    "RoundTwo": "0xa66e1aaede72fb23f98d0e4c1a178d88fe359860", 
+    "RoundTwoPenalize": "0xef1e195662133016b379f0d2b74f7d6d85b1a071", 
+    "SendReputation": "0xc6bb29557a9d9925cb4715fa1dd33078488e1dc1", 
+    "SlashRep": "0xb9e3ed9f364058c0f3401c7aef761515a1decf7a", 
+    "Trade": "0x98f77e5269a52719a9aa1653b27192490506af4b", 
+    "Trades": "0x3708ad269ec95d5348cd7af2b7a1c9dde04ea138"
+  },
+  "9000": {
+    "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
+    "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
+    "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+    "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
+    "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
+    "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
+    "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
+    "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
+    "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
+    "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
+    "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645",
+    "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
+    "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d",
+    "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
+    "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
+    "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
+    "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
+    "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200",
+    "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
+    "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
+    "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
+    "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+    "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
+    "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
+    "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
+    "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
+    "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
+    "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
+    "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
+    "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
+    "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
+    "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
+    "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2",
+    "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51",
+    "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
+  }
 }
+
 },{}],58:[function(require,module,exports){
 module.exports={
-    "0x": "no response or bad input",
-    "buy": {
-        "0": "market doesn't exist",
-        "-1": "amount/price bad",
-        "-2": "oracle-only branch",
-        "-4": "not enough money",
-        "-5": "bid price exceeds best ask",
-        "21": "trade already exists"
-    },
-    "buyCompleteSets": {
-        "0": "market not found",
-        "-1": "oracle-only branch",
-        "-3": "not enough cash"
-    },
-    "cashFaucet": {
-        "-1": "Hey, you're not broke!"
-    },
-    "claimProceeds": {
-        "0": "reporting not done",
-        "-1": "trader doesn't exist",
-        "-8": "invalid branch"
-    },
-    "closeMarket": {
-        "0": "fail/trading not over yet/event not expired or closed already",
-        "-1": "Market has no cash anyway / already closed",
-        "-2": "0 outcome / not reported on yet",
-        "-3": "not final round 2 event",
-        "-5": "Event forked and not final yet",
-        "-6": "bonded pushed forward market not ready to be resolved",
-        "-7": "event not reportable >.99",
-        "-8": "market isn't in branch"
-    },
-    "collectFees": {
-        "-1": "rep redistribution/rewards/penalizations in consensus not done yet"
-    },
-    "createEvent": {
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad",
-        "0": "not enough money to pay fees or event already exists",
-        "-2": "max value < min value",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createSingleEventMarket": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
-        "-2": "max value < min value",
-        "-3": "too many outcomes",
-        "-4": "not enough money",
-        "-5": "fee too low",
-        "-6": "duplicate events",
-        "-7": "event already expired",
-        "-8": "market already exists",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money",
-        "-5": "fee too low",
-        "-6": "duplicate events",
-        "-7": "event already expired",
-        "-8": "market already exists",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createSubbranch": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "no money for creation fee or branch already exists"
-    },
-    "penalizationCatchup": {
-        "-1": "not in first half of reporting period",
-        "-2": "doesn't need to be penalized/caught up",
-        "-3": "user isn't behind or reported in the last period (and should thus use the penalization functions in consensus.se)"
-    },
-    "penalizeOnForkedEvent": {
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "fork event isn't resolved yet",
-        "-5": "already done for all events in this period"
-    },
-    "penalizeRoundTwoWrong": {
-        "0": "event is a fork event",
-        "-1": "need to penalize in round 2 penalize function",
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
-        "-5": "already done for all events in this period",
-        "-6": "forked events should be penalized using the fork penalization function"
-    },
-    "penalizeWrong": {
-        "0": "event is a fork event",
-        "-1": "need to penalize in round 2 penalize function",
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
-        "-6": "forked events should be penalized using the fork penalization function",
-        "-7": "no outcome"
-    },
-    "proveReporterDidntReportEnough": {
-        "-1": "already done",
-        "-2": "not in right part of period"
-    },
-    "pushMarketForward": {
-        "-1": "fork period cannot be the current or previous period",
-        "-2": "market is already closed or pushed forward",
-        "-3": "not enough cash to post early resolution bond",
-        "-4": "early resolution already attempted or outcome already exists"
-    },
-    "sell": {
-        "0": "market doesn't exist",
-        "-1": "amount/price bad",
-        "-2": "oracle only branch",
-        "-3": "bad outcome to trade",
-        "-4": "not enough shares",
-        "-5": "best bid exceeds ask price",
-        "10": "insufficient balance",
-        "21": "trade already exists"
-    },
-    "sellCompleteSets": {
-        "-1": "oracle-only branch",
-        "-2": "not a participant in this market",
-        "-3": "not enough shares"
-    },
-    "sendReputation": {
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
-    },
-    "shortAsk": {
-        "0": "market doesn't exist",
-        "-1": "amount/price bad",
-        "-2": "oracle only branch",
-        "-3": "bad outcome to trade",
-        "-4": "not enough shares",
-        "-5": "best bid exceeds ask price",
-        "10": "insufficient balance",
-        "21": "trade already exists"
-    },
-    "short_sell": {
-        "-1": "trade doesn't exist",
-        "-2": "invalid trade hash/commitment",
-        "-3": "must be a bid, not an ask",
-        "-4": "market is already resolved",
-        "-5": "can't pickup your own trade",
-        "-6": "can't trade on oracle only branch",
-        "-7": "not a large enough trade",
-        "10": "insufficient balance",
-        "22": "trade in same block prohibited"
-    },
-    "slashRep": {
-        "0": "not a valid claim",
-        "-2": "reporter doesn't exist"
-    },
-    "submitReportHash": {
-        "-1": "invalid event",
-        "-3": "not eligible to report on this event"
-    },
-    "submitReport": {
-        "0": "reporter doesn't exist or has <1 rep",
-        "-1": "has already reported",
-        "-2": "not in second half of period [reveal part]",
-        "-3": "hash doesn't match",
-        "-4": "bad report",
-        "-5": "invalid event",
-        "-6": "already resolved",
-        "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
-        "-8": "fees couldn't be collected",
-        "-9": "need to pay not reporting bond"
-    },
-    "trade": {
-        "-1": "oracle only branch",
-        "-2": "bad trade hash",
-        "-3": "trader doesn't exist / own shares in this market",
-        "-4": "must trade at least 0.00000001 in value",
-        "-5": "can't pick up your own trade",
-        "10": "insufficient balance",
-        "22": "trade in same block prohibited"
-    },
-    "updateTradingFee": {
-        "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
-        "-4": "sender's address does not match the market creator's address"
-    },
-    "GAS_LIMIT_EXCEEDED": {
-        "error": 40,
-        "message": "trade exceeds the current block gas limit"
-    },
-    "WRONG_NUMBER_OF_OUTCOMES": {
-        "error": 41,
-        "message": "the number of initial fair prices does not match this market's number of outcomes"
-    },
-    "INSUFFICIENT_LIQUIDITY": {
-        "error": 42,
-        "message": "insufficient liquidity to generate order book"
-    },
-    "INITIAL_PRICE_OUT_OF_BOUNDS": {
-        "error": 43,
-        "message": "one or more initial fair prices are out-of-bounds"
-    },
-    "PRICE_WIDTH_OUT_OF_BOUNDS": {
-        "error": 44,
-        "message": "price width is too large for one or more initial fair prices"
-    },
-    "DB_DELETE_FAILED": {
-        "error": 97,
-        "message": "database delete failed"
-    },
-    "DB_WRITE_FAILED": {
-        "error": 98,
-        "message": "database write failed"
-    },
-    "DB_READ_FAILED": {
-        "error": 99,
-        "message": "database read failed"
-    },
-    "INVALID_CONTRACT_PARAMETER": {
-        "error": 400,
-        "message": "cannot send object parameter to contract"
-    },
-    "NOT_LOGGED_IN": {
-        "error": 401,
-        "message": "not logged in"
-    },
-    "PARAMETER_NUMBER_ERROR": {
-        "error": 402,
-        "message": "wrong number of parameters"
-    },
-    "BAD_CREDENTIALS": {
-        "error": 403,
-        "message": "incorrect handle or password"
-    },
-    "TRANSACTION_NOT_FOUND": {
-        "error": 404,
-        "message": "transaction not found"
-    },
-    "PASSWORD_TOO_SHORT": {
-        "error": 405,
-        "message": "password must be at least 6 characters long"
-    },
-    "NULL_CALL_RETURN": {
-        "error": 406,
-        "message": "expected contract call to return value, received null"
-    },
-    "NULL_RESPONSE": {
-        "error": 407,
-        "message": "expected transaction hash from Ethereum node, received null"
-    },
-    "NO_RESPONSE": {
-        "error": 408,
-        "message": "no response"
-    },
-    "INVALID_RESPONSE": {
-        "error": 409,
-        "message": "could not parse response from Ethereum node"
-    },
-    "LOCAL_NODE_FAILURE": {
-        "error": 410,
-        "message": "RPC request to local Ethereum node failed"
-    },
-    "HOSTED_NODE_FAILURE": {
-        "error": 411,
-        "message": "RPC request to hosted nodes failed"
-    },
-    "TRANSACTION_INVALID": {
-        "error": 412,
-        "message": "transaction validation failed"
-    },
-    "TRANSACTION_RETRY_MAX_EXCEEDED": {
-        "error": 413,
-        "message": "maximum number of transaction retry attempts exceeded"
-    },
-    "HANDLE_TAKEN": {
-        "error": 422,
-        "message": "handle already taken"
-    },
-    "FILTER_NOT_CREATED": {
-        "error": 450,
-        "message": "filter could not be created"
-    },
-    "TRANSACTION_FAILED": {
-        "error": 500,
-        "message": "transaction failed"
-    },
-    "TRANSACTION_NOT_CONFIRMED": {
-        "error": 501,
-        "message": "polled network but could not confirm transaction"
-    },
-    "DUPLICATE_TRANSACTION": {
-        "error": 502,
-        "message": "duplicate transaction"
-    },
-    "RAW_TRANSACTION_ERROR": {
-        "error": 503,
-        "message": "error sending client-side transaction"
-    },
-    "RLP_ENCODING_ERROR": {
-        "error": 504,
-        "message": "RLP encoding error"
-    },
-    "TRANSACTION_RECEIPT_NOT_FOUND": {
-        "error": 505,
-        "message": "transaction receipt not found"
-    },
-    "RPC_TIMEOUT": {
-        "error": 599,
-        "message": "timed out while waiting for Ethereum network response"
-    },
-    "LOOPBACK_NOT_FOUND": {
-        "error": 650,
-        "message": "loopback interface required for synchronous local commands"
-    },
-    "ETHEREUM_NOT_FOUND": {
-        "error": 651,
-        "message": "no active ethereum node(s) found"
-    },
-    "CHECK_ORDER_BOOK_FAILED": {
-        "error": 710,
-        "message": "could not check order book using current prices"
-    },
-    "TRADE_FAILED": {
-        "error": 711,
-        "message": "trade failed, instead of success value (1), received "
-    },
-    "TRADE_NOT_FOUND": {
-        "error": 712,
-        "message": "trade not found"
-    },
-    "REPORT_NOT_FOUND": {
-        "error": 812,
-        "message": "report not found"
-    }
+  "0x": "no response or bad input",
+  "buy": {
+    "0": "market doesn't exist",
+    "-1": "amount/price bad",
+    "-2": "oracle-only branch",
+    "-4": "not enough money",
+    "-5": "bid price exceeds best ask",
+    "21": "trade already exists"
+  },
+  "buyCompleteSets": {
+    "0": "market not found",
+    "-1": "oracle-only branch",
+    "-3": "not enough cash"
+  },
+  "cashFaucet": {
+    "-1": "Hey, you're not broke!"
+  },
+  "claimProceeds": {
+    "0": "reporting not done",
+    "-1": "trader doesn't exist",
+    "-8": "invalid branch"
+  },
+  "closeMarket": {
+    "0": "fail/trading not over yet/event not expired or closed already",
+    "-1": "Market has no cash anyway / already closed",
+    "-2": "0 outcome / not reported on yet",
+    "-3": "not final round 2 event",
+    "-5": "Event forked and not final yet",
+    "-6": "bonded pushed forward market not ready to be resolved",
+    "-7": "event not reportable >.99",
+    "-8": "market isn't in branch"
+  },
+  "collectFees": {
+    "-1": "rep redistribution/rewards/penalizations in consensus not done yet"
+  },
+  "createEvent": {
+    "-1": "we're either already past that date, branch doesn't exist, or description is bad",
+    "0": "not enough money to pay fees or event already exists",
+    "-2": "max value < min value",
+    "-9": "would expire during non-reporting fork period"
+  },
+  "createSingleEventMarket": {
+    "0": "not enough money to pay fees or event already exists",
+    "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
+    "-2": "max value < min value",
+    "-3": "too many outcomes",
+    "-4": "not enough money",
+    "-5": "fee too low",
+    "-6": "duplicate events",
+    "-7": "event already expired",
+    "-8": "market already exists",
+    "-9": "would expire during non-reporting fork period"
+  },
+  "createMarket": {
+    "-1": "bad input or parent doesn't exist",
+    "-2": "too many events",
+    "-3": "too many outcomes",
+    "-4": "not enough money",
+    "-5": "fee too low",
+    "-6": "duplicate events",
+    "-7": "event already expired",
+    "-8": "market already exists",
+    "-9": "would expire during non-reporting fork period"
+  },
+  "createSubbranch": {
+    "-1": "bad input or parent doesn't exist",
+    "-2": "no money for creation fee or branch already exists"
+  },
+  "penalizationCatchup": {
+    "-1": "not in first half of reporting period",
+    "-2": "doesn't need to be penalized/caught up",
+    "-3": "user isn't behind or reported in the last period (and should thus use the penalization functions in consensus.se)"
+  },
+  "penalizeOnForkedEvent": {
+    "-2": "already past first half of new period and needed to penalize before then",
+    "-4": "fork event isn't resolved yet",
+    "-5": "already done for all events in this period"
+  },
+  "penalizeRoundTwoWrong": {
+    "0": "event is a fork event",
+    "-1": "need to penalize in round 2 penalize function",
+    "-2": "already past first half of new period and needed to penalize before then",
+    "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+    "-5": "already done for all events in this period",
+    "-6": "forked events should be penalized using the fork penalization function"
+  },
+  "penalizeWrong": {
+    "0": "event is a fork event",
+    "-1": "need to penalize in round 2 penalize function",
+    "-2": "already past first half of new period and needed to penalize before then",
+    "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+    "-6": "forked events should be penalized using the fork penalization function",
+    "-7": "no outcome"
+  },
+  "proveReporterDidntReportEnough": {
+    "-1": "already done",
+    "-2": "not in right part of period"
+  },
+  "pushMarketForward": {
+    "-1": "fork period cannot be the current or previous period",
+    "-2": "market is already closed or pushed forward",
+    "-3": "not enough cash to post early resolution bond",
+    "-4": "early resolution already attempted or outcome already exists"
+  },
+  "sell": {
+    "0": "market doesn't exist",
+    "-1": "amount/price bad",
+    "-2": "oracle only branch",
+    "-3": "bad outcome to trade",
+    "-4": "not enough shares",
+    "-5": "best bid exceeds ask price",
+    "10": "insufficient balance",
+    "21": "trade already exists"
+  },
+  "sellCompleteSets": {
+    "-1": "oracle-only branch",
+    "-2": "not a participant in this market",
+    "-3": "not enough shares"
+  },
+  "sendReputation": {
+    "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+    "-2": "Receiving address doesn't exist"
+  },
+  "shortAsk": {
+    "0": "market doesn't exist",
+    "-1": "amount/price bad",
+    "-2": "oracle only branch",
+    "-3": "bad outcome to trade",
+    "-4": "not enough shares",
+    "-5": "best bid exceeds ask price",
+    "10": "insufficient balance",
+    "21": "trade already exists"
+  },
+  "short_sell": {
+    "-1": "trade doesn't exist",
+    "-2": "invalid trade hash/commitment",
+    "-3": "must be a bid, not an ask",
+    "-4": "market is already resolved",
+    "-5": "can't pickup your own trade",
+    "-6": "can't trade on oracle only branch",
+    "-7": "not a large enough trade",
+    "10": "insufficient balance",
+    "22": "trade in same block prohibited"
+  },
+  "slashRep": {
+    "0": "not a valid claim",
+    "-2": "reporter doesn't exist"
+  },
+  "submitReportHash": {
+    "-1": "invalid event",
+    "-3": "not eligible to report on this event"
+  },
+  "submitReport": {
+    "0": "reporter doesn't exist or has <1 rep",
+    "-1": "has already reported",
+    "-2": "not in second half of period [reveal part]",
+    "-3": "hash doesn't match",
+    "-4": "bad report",
+    "-5": "invalid event",
+    "-6": "already resolved",
+    "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
+    "-8": "fees couldn't be collected",
+    "-9": "need to pay not reporting bond"
+  },
+  "trade": {
+    "-1": "oracle only branch",
+    "-2": "bad trade hash",
+    "-3": "trader doesn't exist / own shares in this market",
+    "-4": "must trade at least 0.00000001 in value",
+    "-5": "can't pick up your own trade",
+    "10": "insufficient balance",
+    "22": "trade in same block prohibited"
+  },
+  "updateTradingFee": {
+    "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
+    "-4": "sender's address does not match the market creator's address"
+  },
+  "GAS_LIMIT_EXCEEDED": {
+    "error": 40,
+    "message": "trade exceeds the current block gas limit"
+  },
+  "WRONG_NUMBER_OF_OUTCOMES": {
+    "error": 41,
+    "message": "the number of initial fair prices does not match this market's number of outcomes"
+  },
+  "INSUFFICIENT_LIQUIDITY": {
+    "error": 42,
+    "message": "insufficient liquidity to generate order book"
+  },
+  "INITIAL_PRICE_OUT_OF_BOUNDS": {
+    "error": 43,
+    "message": "one or more initial fair prices are out-of-bounds"
+  },
+  "PRICE_WIDTH_OUT_OF_BOUNDS": {
+    "error": 44,
+    "message": "price width is too large for one or more initial fair prices"
+  },
+  "DB_DELETE_FAILED": {
+    "error": 97,
+    "message": "database delete failed"
+  },
+  "DB_WRITE_FAILED": {
+    "error": 98,
+    "message": "database write failed"
+  },
+  "DB_READ_FAILED": {
+    "error": 99,
+    "message": "database read failed"
+  },
+  "INVALID_CONTRACT_PARAMETER": {
+    "error": 400,
+    "message": "cannot send object parameter to contract"
+  },
+  "NOT_LOGGED_IN": {
+    "error": 401,
+    "message": "not logged in"
+  },
+  "PARAMETER_NUMBER_ERROR": {
+    "error": 402,
+    "message": "wrong number of parameters"
+  },
+  "BAD_CREDENTIALS": {
+    "error": 403,
+    "message": "incorrect handle or password"
+  },
+  "TRANSACTION_NOT_FOUND": {
+    "error": 404,
+    "message": "transaction not found"
+  },
+  "PASSWORD_TOO_SHORT": {
+    "error": 405,
+    "message": "password must be at least 6 characters long"
+  },
+  "NULL_CALL_RETURN": {
+    "error": 406,
+    "message": "expected contract call to return value, received null"
+  },
+  "NULL_RESPONSE": {
+    "error": 407,
+    "message": "expected transaction hash from Ethereum node, received null"
+  },
+  "NO_RESPONSE": {
+    "error": 408,
+    "message": "no response"
+  },
+  "INVALID_RESPONSE": {
+    "error": 409,
+    "message": "could not parse response from Ethereum node"
+  },
+  "LOCAL_NODE_FAILURE": {
+    "error": 410,
+    "message": "RPC request to local Ethereum node failed"
+  },
+  "HOSTED_NODE_FAILURE": {
+    "error": 411,
+    "message": "RPC request to hosted nodes failed"
+  },
+  "TRANSACTION_INVALID": {
+    "error": 412,
+    "message": "transaction validation failed"
+  },
+  "TRANSACTION_RETRY_MAX_EXCEEDED": {
+    "error": 413,
+    "message": "maximum number of transaction retry attempts exceeded"
+  },
+  "HANDLE_TAKEN": {
+    "error": 422,
+    "message": "handle already taken"
+  },
+  "FILTER_NOT_CREATED": {
+    "error": 450,
+    "message": "filter could not be created"
+  },
+  "TRANSACTION_FAILED": {
+    "error": 500,
+    "message": "transaction failed"
+  },
+  "TRANSACTION_NOT_CONFIRMED": {
+    "error": 501,
+    "message": "polled network but could not confirm transaction"
+  },
+  "DUPLICATE_TRANSACTION": {
+    "error": 502,
+    "message": "duplicate transaction"
+  },
+  "RAW_TRANSACTION_ERROR": {
+    "error": 503,
+    "message": "error sending client-side transaction"
+  },
+  "RLP_ENCODING_ERROR": {
+    "error": 504,
+    "message": "RLP encoding error"
+  },
+  "TRANSACTION_RECEIPT_NOT_FOUND": {
+    "error": 505,
+    "message": "transaction receipt not found"
+  },
+  "RPC_TIMEOUT": {
+    "error": 599,
+    "message": "timed out while waiting for Ethereum network response"
+  },
+  "LOOPBACK_NOT_FOUND": {
+    "error": 650,
+    "message": "loopback interface required for synchronous local commands"
+  },
+  "ETHEREUM_NOT_FOUND": {
+    "error": 651,
+    "message": "no active ethereum node(s) found"
+  },
+  "CHECK_ORDER_BOOK_FAILED": {
+    "error": 710,
+    "message": "could not check order book using current prices"
+  },
+  "TRADE_FAILED": {
+    "error": 711,
+    "message": "trade failed, instead of success value (1), received "
+  },
+  "TRADE_NOT_FOUND": {
+    "error": 712,
+    "message": "trade not found"
+  },
+  "REPORT_NOT_FOUND": {
+    "error": 812,
+    "message": "report not found"
+  }
 }
 
 },{}],59:[function(require,module,exports){
@@ -23086,22 +23049,22 @@ var clone = require("clone");
 
 module.exports = function (network, contracts) {
 
-    contracts = contracts || require("./contracts")[network || "2"];
-    var api = clone(require("./api"));
+  contracts = contracts || require("./contracts")[network || "3"];
+  var api = clone(require("./api"));
 
-    for (var contract in api.functions) {
-        if (!api.functions.hasOwnProperty(contract)) continue;
-        for (var method in api.functions[contract]) {
-            if (!api.functions[contract].hasOwnProperty(method)) continue;
-            api.functions[contract][method].to = contracts[contract];
-        }
+  for (var contract in api.functions) {
+    if (!api.functions.hasOwnProperty(contract)) continue;
+    for (var method in api.functions[contract]) {
+      if (!api.functions[contract].hasOwnProperty(method)) continue;
+      api.functions[contract][method].to = contracts[contract];
     }
-    for (var event in api.events) {
-        if (!api.events.hasOwnProperty(event)) continue;
-        api.events[event].address = contracts[api.events[event].contract];
-    }
+  }
+  for (var event in api.events) {
+    if (!api.events.hasOwnProperty(event)) continue;
+    api.events[event].address = contracts[api.events[event].contract];
+  }
 
-    return api;
+  return api;
 };
 
 },{"./api":56,"./contracts":57,"clone":60}],62:[function(require,module,exports){
@@ -40230,468 +40193,468 @@ keys.constants.scrypt.n = constants.ROUNDS;
 
 module.exports = function () {
 
-    var augur = this;
-    return {
+  var augur = this;
+  return {
 
-        // The account object is set when logged in
-        account: {},
+    // The account object is set when logged in
+    account: {},
 
-        // free (testnet) ether for new accounts on registration
-        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            if (registeredAddress === undefined || registeredAddress === null ||
+    // free (testnet) ether for new accounts on registration
+    fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
+      onSent = onSent || utils.noop;
+      onSuccess = onSuccess || utils.noop;
+      onFailed = onFailed || utils.noop;
+      if (registeredAddress === undefined || registeredAddress === null ||
                 registeredAddress.constructor !== String) {
-                return onFailed(registeredAddress);
-            }
-            var url = constants.FAUCET + abi.format_address(registeredAddress);
-            console.debug("fundNewAccountFromFaucet:", url);
-            request(url, function (err, response, body) {
-                console.log('faucet err:', err);
-                console.log('faucet response:', response);
-                console.log('faucet body:', body);
-                if (err) return onFailed(err);
-                if (response.statusCode !== 200) {
-                    return onFailed(response.statusCode);
-                }
-                console.debug("Sent ether to:", registeredAddress);
+        return onFailed(registeredAddress);
+      }
+      var url = constants.FAUCET + abi.format_address(registeredAddress);
+      console.debug("fundNewAccountFromFaucet:", url);
+      request(url, function (err, response, body) {
+        console.log('faucet err:', err);
+        console.log('faucet response:', response);
+        console.log('faucet body:', body);
+        if (err) return onFailed(err);
+        if (response.statusCode !== 200) {
+          return onFailed(response.statusCode);
+        }
+        console.debug("Sent ether to:", registeredAddress);
+        augur.rpc.balance(registeredAddress, function (ethBalance) {
+          console.debug("Balance:", ethBalance);
+          var balance = parseInt(ethBalance, 16);
+          if (balance > 0) {
+            augur.fundNewAccount({
+              branch: branch || constants.DEFAULT_BRANCH_ID,
+              onSent: onSent,
+              onSuccess: onSuccess,
+              onFailed: onFailed
+            });
+          } else {
+            async.until(function () {
+              return balance > 0;
+            }, function (callback) {
+              augur.rpc.fastforward(1, function (nextBlock) {
+                console.log("Block:", nextBlock);
                 augur.rpc.balance(registeredAddress, function (ethBalance) {
-                    console.debug("Balance:", ethBalance);
-                    var balance = parseInt(ethBalance, 16);
-                    if (balance > 0) {
-                        augur.fundNewAccount({
-                            branch: branch || constants.DEFAULT_BRANCH_ID,
-                            onSent: onSent,
-                            onSuccess: onSuccess,
-                            onFailed: onFailed
-                        });
-                    } else {
-                        async.until(function () {
-                            return balance > 0;
-                        }, function (callback) {
-                            augur.rpc.fastforward(1, function (nextBlock) {
-                                console.log("Block:", nextBlock);
-                                augur.rpc.balance(registeredAddress, function (ethBalance) {
-                                    console.debug("Balance:", ethBalance);
-                                    balance = parseInt(ethBalance, 16);
-                                    callback(null, balance);
-                                });
-                            });
-                        }, function (e, balance) {
-                            if (e) console.error(e);
-                            augur.fundNewAccount({
-                                branch: branch || constants.DEFAULT_BRANCH_ID,
-                                onSent: onSent,
-                                onSuccess: onSuccess,
-                                onFailed: onFailed
-                            });
-                        });
-                    }
+                  console.debug("Balance:", ethBalance);
+                  balance = parseInt(ethBalance, 16);
+                  callback(null, balance);
                 });
-            });
-        },
-
-        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            augur.rpc.sendEther({
-                to: registeredAddress,
-                value: amount,
-                from: fromAddress,
-                onSent: utils.noop,
-                onSuccess: function (res) {
-                    augur.fundNewAccount({
-                        branch: branch || constants.DEFAULT_BRANCH_ID,
-                        onSent: onSent,
-                        onSuccess: onSuccess,
-                        onFailed: onFailed
-                    });
-                },
+              });
+            }, function (e, balance) {
+              if (e) console.error(e);
+              augur.fundNewAccount({
+                branch: branch || constants.DEFAULT_BRANCH_ID,
+                onSent: onSent,
+                onSuccess: onSuccess,
                 onFailed: onFailed
+              });
             });
+          }
+        });
+      });
+    },
+
+    fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+      onSent = onSent || utils.noop;
+      onSuccess = onSuccess || utils.noop;
+      onFailed = onFailed || utils.noop;
+      augur.rpc.sendEther({
+        to: registeredAddress,
+        value: amount,
+        from: fromAddress,
+        onSent: utils.noop,
+        onSuccess: function (res) {
+          augur.fundNewAccount({
+            branch: branch || constants.DEFAULT_BRANCH_ID,
+            onSent: onSent,
+            onSuccess: onSuccess,
+            onFailed: onFailed
+          });
         },
+        onFailed: onFailed
+      });
+    },
 
-        changeAccountName: function (newName, cb) {
-            cb = cb || utils.pass;
+    changeAccountName: function (newName, cb) {
+      cb = cb || utils.pass;
 
-            // web.account object is set to use new name
-            this.account.name = newName;
+      // web.account object is set to use new name
+      this.account.name = newName;
 
-            // send back the new updated loginAccount object.
-            return cb(clone(this.account));
-        },
+      // send back the new updated loginAccount object.
+      return cb(clone(this.account));
+    },
 
-        register: function (name, password, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
-            if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
+    register: function (name, password, cb) {
+      var self = this;
+      cb = (utils.is_function(cb)) ? cb : utils.pass;
+      if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
 
-            // generate ECDSA private key and initialization vector
-            keys.create(null, function (plain) {
-                if (plain.error) return cb(plain);
+      // generate ECDSA private key and initialization vector
+      keys.create(null, function (plain) {
+        if (plain.error) return cb(plain);
 
-                // derive secret key from password
-                keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
-                    if (derivedKey.error) return cb(derivedKey);
-                    if (!Buffer.isBuffer(derivedKey)) {
-                        derivedKey = new Buffer(derivedKey, "hex");
-                    }
-                    var encryptedPrivateKey = new Buffer(keys.encrypt(
+        // derive secret key from password
+        keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
+          if (derivedKey.error) return cb(derivedKey);
+          if (!Buffer.isBuffer(derivedKey)) {
+            derivedKey = new Buffer(derivedKey, "hex");
+          }
+          var encryptedPrivateKey = new Buffer(keys.encrypt(
                         plain.privateKey,
                         derivedKey.slice(0, 16),
                         plain.iv
                     ), "base64").toString("hex");
 
-                    // encrypt private key using derived key and IV, then
-                    // store encrypted key & IV, indexed by handle
-                    var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
-                    var kdfparams = {
-                        dklen: keys.constants[constants.KDF].dklen,
-                        salt: plain.salt.toString("hex")
-                    };
-                    if (constants.KDF === "scrypt") {
-                        kdfparams.n = keys.constants.scrypt.n;
-                        kdfparams.r = keys.constants.scrypt.r;
-                        kdfparams.p = keys.constants.scrypt.p;
-                    } else {
-                        kdfparams.c = keys.constants.pbkdf2.c;
-                        kdfparams.prf = keys.constants.pbkdf2.prf;
-                    }
-                    var keystore = {
-                        address: address,
-                        crypto: {
-                            cipher: keys.constants.cipher,
-                            ciphertext: encryptedPrivateKey,
-                            cipherparams: {iv: plain.iv.toString("hex")},
-                            kdf: constants.KDF,
-                            kdfparams: kdfparams,
-                            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-                        },
-                        version: 3,
-                        id: uuid.v4()
-                    };
-                    var loginID = augur.base58Encode({ keystore: keystore });
+          // encrypt private key using derived key and IV, then
+          // store encrypted key & IV, indexed by handle
+          var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+          var kdfparams = {
+            dklen: keys.constants[constants.KDF].dklen,
+            salt: plain.salt.toString("hex")
+          };
+          if (constants.KDF === "scrypt") {
+            kdfparams.n = keys.constants.scrypt.n;
+            kdfparams.r = keys.constants.scrypt.r;
+            kdfparams.p = keys.constants.scrypt.p;
+          } else {
+            kdfparams.c = keys.constants.pbkdf2.c;
+            kdfparams.prf = keys.constants.pbkdf2.prf;
+          }
+          var keystore = {
+            address: address,
+            crypto: {
+              cipher: keys.constants.cipher,
+              ciphertext: encryptedPrivateKey,
+              cipherparams: {iv: plain.iv.toString("hex")},
+              kdf: constants.KDF,
+              kdfparams: kdfparams,
+              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+            },
+            version: 3,
+            id: uuid.v4()
+          };
+          var loginID = augur.base58Encode({ keystore: keystore });
 
-                    // while logged in, web.account object is set
-                    self.account = {
-                        name: name,
-                        loginID: loginID,
-                        privateKey: plain.privateKey,
-                        address: address,
-                        keystore: keystore,
-                        derivedKey: derivedKey
-                    };
+          // while logged in, web.account object is set
+          self.account = {
+            name: name,
+            loginID: loginID,
+            privateKey: plain.privateKey,
+            address: address,
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
 
-                    return cb(clone(self.account));
-                }); // deriveKey
-            }); // create
-        },
+          return cb(clone(self.account));
+        }); // deriveKey
+      }); // create
+    },
 
-        importAccount: function (name, password, keystore, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
+    importAccount: function (name, password, keystore, cb) {
+      var self = this;
+      cb = (utils.is_function(cb)) ? cb : utils.pass;
 
-            // blank password
-            if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+      // blank password
+      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
 
-            // preparing to redo the secureLoginID to use the new name
-            keys.recover(password, keystore, function (privateKey) {
-                var keystoreCrypto = keystore.crypto || keystore.Crypto;
-                keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-                    var loginID = augur.base58Encode({ keystore: keystore });
+      // preparing to redo the secureLoginID to use the new name
+      keys.recover(password, keystore, function (privateKey) {
+        var keystoreCrypto = keystore.crypto || keystore.Crypto;
+        keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
+          var loginID = augur.base58Encode({ keystore: keystore });
 
-                    // while logged in, web.account object is set
-                    self.account = {
-                        name: name,
-                        loginID: loginID,
-                        privateKey: privateKey,
-                        address: abi.format_address(keystore.address),
-                        keystore: keystore,
-                        derivedKey: derivedKey
-                    };
-                    return cb(clone(self.account));
-                });
-            });
-        },
+          // while logged in, web.account object is set
+          self.account = {
+            name: name,
+            loginID: loginID,
+            privateKey: privateKey,
+            address: abi.format_address(keystore.address),
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
+          return cb(clone(self.account));
+        });
+      });
+    },
 
-        loadLocalLoginAccount: function (localAccount, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
-            var privateKey = localAccount.privateKey;
-            var derivedKey = localAccount.derivedKey;
-            if (privateKey && !Buffer.isBuffer(privateKey)) {
-                privateKey = new Buffer(privateKey, "hex");
-            }
-            if (derivedKey && !Buffer.isBuffer(derivedKey)) {
-                derivedKey = new Buffer(derivedKey, "hex");
-            }
-            self.account = {
-                name: localAccount.name,
-                loginID: localAccount.loginID,
-                privateKey: privateKey,
-                address: abi.format_address(localAccount.keystore.address),
-                keystore: localAccount.keystore,
-                derivedKey: derivedKey
-            };
-            return cb(clone(this.account));
-        },
+    loadLocalLoginAccount: function (localAccount, cb) {
+      var self = this;
+      cb = (utils.is_function(cb)) ? cb : utils.pass;
+      var privateKey = localAccount.privateKey;
+      var derivedKey = localAccount.derivedKey;
+      if (privateKey && !Buffer.isBuffer(privateKey)) {
+        privateKey = new Buffer(privateKey, "hex");
+      }
+      if (derivedKey && !Buffer.isBuffer(derivedKey)) {
+        derivedKey = new Buffer(derivedKey, "hex");
+      }
+      self.account = {
+        name: localAccount.name,
+        loginID: localAccount.loginID,
+        privateKey: privateKey,
+        address: abi.format_address(localAccount.keystore.address),
+        keystore: localAccount.keystore,
+        derivedKey: derivedKey
+      };
+      return cb(clone(this.account));
+    },
 
-        login: function (loginID, password, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
+    login: function (loginID, password, cb) {
+      var self = this;
+      cb = (utils.is_function(cb)) ? cb : utils.pass;
 
-            // blank password
-            if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var decodedLoginID;
-            try {
-                decodedLoginID = augur.base58Decode(loginID);
-            } catch (err) {
-                return cb(errors.BAD_CREDENTIALS);
-            }
-            var keystore = decodedLoginID.keystore;
-            var keystoreCrypto = keystore.crypto || keystore.Crypto;
-            var options = {
-                kdf: keystoreCrypto.kdf,
-                kdfparams: keystoreCrypto.kdfparams,
-                cipher: keystoreCrypto.kdf
-            };
+      // blank password
+      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+      var decodedLoginID;
+      try {
+        decodedLoginID = augur.base58Decode(loginID);
+      } catch (err) {
+        return cb(errors.BAD_CREDENTIALS);
+      }
+      var keystore = decodedLoginID.keystore;
+      var keystoreCrypto = keystore.crypto || keystore.Crypto;
+      var options = {
+        kdf: keystoreCrypto.kdf,
+        kdfparams: keystoreCrypto.kdfparams,
+        cipher: keystoreCrypto.kdf
+      };
 
-            // derive secret key from password
-            keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
-                if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+      // derive secret key from password
+      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
+        if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
-                // verify that message authentication codes match
-                var storedKey = keystoreCrypto.ciphertext;
-                if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
-                    return cb(errors.BAD_CREDENTIALS);
-                }
-
-                if (!Buffer.isBuffer(derivedKey)) {
-                    derivedKey = new Buffer(derivedKey, "hex");
-                }
-
-                // decrypt stored private key using secret key
-                try {
-                    var privateKey = new Buffer(keys.decrypt(
-                        storedKey,
-                        derivedKey.slice(0, 16),
-                        keystoreCrypto.cipherparams.iv
-                    ), "hex");
-
-                    // while logged in, web.account object is set
-                    self.account = {
-                        name: "",
-                        loginID: loginID,
-                        privateKey: privateKey,
-                        address: abi.format_address(keystore.address),
-                        keystore: keystore,
-                        derivedKey: derivedKey
-                    };
-                    return cb(clone(self.account));
-
-                // decryption failure: bad password
-                } catch (exc) {
-                    var e = clone(errors.BAD_CREDENTIALS);
-                    e.bubble = exc;
-                    return cb(e);
-                }
-            }); // deriveKey
-        },
-
-
-        loginWithMasterKey: function (name, privateKey, cb) {
-            var self = this;
-            // derive secret key from password
-            var salt = new Buffer("6169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex");
-            var iv = new Buffer("ef40723ec10d95c4356c8d157ce4308e", "hex");
-            keys.deriveKey("password", salt, null, function (derivedKey) {
-                if (derivedKey.error) return cb(derivedKey);
-                if (!Buffer.isBuffer(derivedKey)) {
-                    derivedKey = new Buffer(derivedKey, "hex");
-                }
-                var encryptedPrivateKey = new Buffer(keys.encrypt(
-                    privateKey,
-                    derivedKey.slice(0, 16),
-                    iv
-                ), "base64").toString("hex");
-
-                // encrypt private key using derived key and IV, then
-                // store encrypted key & IV, indexed by handle
-                var address = abi.format_address(keys.privateKeyToAddress(privateKey));
-                var keystore = {
-                    address: address,
-                    crypto: {
-                        cipher: keys.constants.cipher,
-                        ciphertext: encryptedPrivateKey,
-                        cipherparams: {iv: iv.toString("hex")},
-                        kdf: constants.KDF,
-                        kdfparams: {
-                            c: keys.constants[constants.KDF].c,
-                            dklen: keys.constants[constants.KDF].dklen,
-                            prf: keys.constants[constants.KDF].prf,
-                            salt: salt.toString("hex")
-                        },
-                        mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-                    },
-                    version: 3,
-                    id: uuid.v4()
-                };
-                var loginID = augur.base58Encode({name: name, keystore: keystore});
-
-                // while logged in, web.account object is set
-                self.account = {
-                    name: name,
-                    loginID: loginID,
-                    privateKey: new Buffer(privateKey, "hex"),
-                    address: address,
-                    keystore: keystore,
-                    derivedKey: derivedKey
-                };
-                return cb(clone(self.account));
-            }); // deriveKey
-        },
-
-        logout: function () {
-            this.account = {};
-            augur.rpc.clear();
-        },
-
-        submitTx: function (packaged, cb) {
-            var self = this;
-            var mutex = locks.createMutex();
-            mutex.lock(function () {
-                for (var rawTxHash in augur.rpc.rawTxs) {
-                    if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-                    if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
-                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
-                        packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
-                        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                            console.debug("[augur.js] duplicate nonce, incremented:",
-                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-                        }
-                        break;
-                    }
-                }
-                if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
-                    packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
-                } else {
-                    augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
-                }
-                if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                    console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-                }
-                mutex.unlock();
-                if (augur.rpc.debug.broadcast) {
-                    console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
-                }
-                var etx = new EthTx(packaged);
-
-                // sign, validate, and send the transaction
-                etx.sign(self.account.privateKey);
-
-                // calculate the cost (in ether) of this transaction
-                // (note: this is just an upper bound on the cost, set by the gasLimit!)
-                var cost = etx.getUpfrontCost().toString();
-
-                // transaction validation
-                if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-                // send the raw signed transaction to geth
-                augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                    if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
-                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
-                    if (res.error) {
-                        if (res.message.indexOf("rlp") > -1) {
-                            var err = clone(errors.RLP_ENCODING_ERROR);
-                            err.bubble = res;
-                            err.packaged = packaged;
-                            return cb(err);
-                        } else if (res.message.indexOf("Nonce too low") > -1) {
-                            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
-                            }
-                            ++augur.rpc.rawTxMaxNonce;
-                            delete packaged.nonce;
-                            return self.getTxNonce(packaged, cb);
-                        }
-                        return cb(res);
-                    }
-
-                    // res is the txhash if nothing failed immediately
-                    // (even if the tx is nulled, still index the hash)
-                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-                    // nonce ok, execute callback
-                    return cb(res);
-                });
-            });
-        },
-
-        // get nonce: number of transactions
-        getTxNonce: function (packaged, cb) {
-            var self = this;
-            if (packaged.nonce) return this.submitTx(packaged, cb);
-            augur.rpc.pendingTxCount(self.account.address, function (txCount) {
-                if (augur.rpc.debug.nonce) {
-                    console.debug('[augur.js] txCount:', parseInt(txCount, 16));
-                }
-                if (txCount && !txCount.error && !(txCount instanceof Error)) {
-                    packaged.nonce = abi.hex(txCount);
-                }
-                self.submitTx(packaged, cb);
-            });
-        },
-
-        invoke: function (payload, cb) {
-            var self = this;
-
-            // if this is just a call, use ethrpc's regular invoke method
-            if (!payload.send) {
-                if (augur.rpc.debug.broadcast) {
-                    console.log("[augur.js] eth_call payload:", payload);
-                }
-                return augur.rpc.fire(payload, cb);
-            }
-
-            cb = cb || utils.pass;
-            if (!this.account.address || !this.account.privateKey) {
-                return cb(errors.NOT_LOGGED_IN);
-            }
-            if (!payload || payload.constructor !== Object) {
-                return cb(errors.TRANSACTION_FAILED);
-            }
-
-            // parse and serialize transaction parameters
-            var packaged = augur.rpc.packageRequest(payload);
-            packaged.from = this.account.address;
-            packaged.nonce = payload.nonce || "0x0";
-            packaged.value = payload.value || "0x0";
-            if (payload.gasLimit) {
-                packaged.gasLimit = abi.hex(payload.gasLimit);
-            } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
-                packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
-            } else {
-                packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
-            }
-            if (augur.rpc.debug.broadcast) {
-                console.log("[augur.js] payload:", payload);
-            }
-            if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
-                packaged.gasPrice = payload.gasPrice;
-                return this.getTxNonce(packaged, cb);
-            }
-            augur.rpc.getGasPrice(function (gasPrice) {
-                if (!gasPrice || gasPrice.error) {
-                    return cb(errors.TRANSACTION_FAILED);
-                }
-                packaged.gasPrice = gasPrice;
-                self.getTxNonce(packaged, cb);
-            });
+        // verify that message authentication codes match
+        var storedKey = keystoreCrypto.ciphertext;
+        if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
+          return cb(errors.BAD_CREDENTIALS);
         }
 
-    };
+        if (!Buffer.isBuffer(derivedKey)) {
+          derivedKey = new Buffer(derivedKey, "hex");
+        }
+
+        // decrypt stored private key using secret key
+        try {
+          var privateKey = new Buffer(keys.decrypt(
+            storedKey,
+            derivedKey.slice(0, 16),
+            keystoreCrypto.cipherparams.iv
+          ), "hex");
+
+          // while logged in, web.account object is set
+          self.account = {
+            name: "",
+            loginID: loginID,
+            privateKey: privateKey,
+            address: abi.format_address(keystore.address),
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
+          return cb(clone(self.account));
+
+          // decryption failure: bad password
+        } catch (exc) {
+          var e = clone(errors.BAD_CREDENTIALS);
+          e.bubble = exc;
+          return cb(e);
+        }
+      }); // deriveKey
+    },
+
+
+    loginWithMasterKey: function (name, privateKey, cb) {
+      var self = this;
+      // derive secret key from password
+      var salt = new Buffer("6169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex");
+      var iv = new Buffer("ef40723ec10d95c4356c8d157ce4308e", "hex");
+      keys.deriveKey("password", salt, null, function (derivedKey) {
+        if (derivedKey.error) return cb(derivedKey);
+        if (!Buffer.isBuffer(derivedKey)) {
+          derivedKey = new Buffer(derivedKey, "hex");
+        }
+        var encryptedPrivateKey = new Buffer(keys.encrypt(
+          privateKey,
+          derivedKey.slice(0, 16),
+          iv
+        ), "base64").toString("hex");
+
+        // encrypt private key using derived key and IV, then
+        // store encrypted key & IV, indexed by handle
+        var address = abi.format_address(keys.privateKeyToAddress(privateKey));
+        var keystore = {
+          address: address,
+          crypto: {
+            cipher: keys.constants.cipher,
+            ciphertext: encryptedPrivateKey,
+            cipherparams: {iv: iv.toString("hex")},
+            kdf: constants.KDF,
+            kdfparams: {
+              c: keys.constants[constants.KDF].c,
+              dklen: keys.constants[constants.KDF].dklen,
+              prf: keys.constants[constants.KDF].prf,
+              salt: salt.toString("hex")
+            },
+            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+          },
+          version: 3,
+          id: uuid.v4()
+        };
+        var loginID = augur.base58Encode({name: name, keystore: keystore});
+
+        // while logged in, web.account object is set
+        self.account = {
+          name: name,
+          loginID: loginID,
+          privateKey: new Buffer(privateKey, "hex"),
+          address: address,
+          keystore: keystore,
+          derivedKey: derivedKey
+        };
+        return cb(clone(self.account));
+      }); // deriveKey
+    },
+
+    logout: function () {
+      this.account = {};
+      augur.rpc.clear();
+    },
+
+    submitTx: function (packaged, cb) {
+      var self = this;
+      var mutex = locks.createMutex();
+      mutex.lock(function () {
+        for (var rawTxHash in augur.rpc.rawTxs) {
+          if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
+          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
+                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
+            packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
+            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+              console.debug("[augur.js] duplicate nonce, incremented:",
+                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
+            }
+            break;
+          }
+        }
+        if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
+          packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
+        } else {
+          augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
+        }
+        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+          console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
+        }
+        mutex.unlock();
+        if (augur.rpc.debug.broadcast) {
+          console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
+        }
+        var etx = new EthTx(packaged);
+
+        // sign, validate, and send the transaction
+        etx.sign(self.account.privateKey);
+
+        // calculate the cost (in ether) of this transaction
+        // (note: this is just an upper bound on the cost, set by the gasLimit!)
+        var cost = etx.getUpfrontCost().toString();
+
+        // transaction validation
+        if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
+
+        // send the raw signed transaction to geth
+        augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+          if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
+          if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+          if (res.error) {
+            if (res.message.indexOf("rlp") > -1) {
+              var err = clone(errors.RLP_ENCODING_ERROR);
+              err.bubble = res;
+              err.packaged = packaged;
+              return cb(err);
+            } else if (res.message.indexOf("Nonce too low") > -1) {
+              if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
+              }
+              ++augur.rpc.rawTxMaxNonce;
+              delete packaged.nonce;
+              return self.getTxNonce(packaged, cb);
+            }
+            return cb(res);
+          }
+
+          // res is the txhash if nothing failed immediately
+          // (even if the tx is nulled, still index the hash)
+          augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
+
+          // nonce ok, execute callback
+          return cb(res);
+        });
+      });
+    },
+
+    // get nonce: number of transactions
+    getTxNonce: function (packaged, cb) {
+      var self = this;
+      if (packaged.nonce) return this.submitTx(packaged, cb);
+      augur.rpc.pendingTxCount(self.account.address, function (txCount) {
+        if (augur.rpc.debug.nonce) {
+          console.debug('[augur.js] txCount:', parseInt(txCount, 16));
+        }
+        if (txCount && !txCount.error && !(txCount instanceof Error)) {
+          packaged.nonce = abi.hex(txCount);
+        }
+        self.submitTx(packaged, cb);
+      });
+    },
+
+    invoke: function (payload, cb) {
+      var self = this;
+
+      // if this is just a call, use ethrpc's regular invoke method
+      if (!payload.send) {
+        if (augur.rpc.debug.broadcast) {
+          console.log("[augur.js] eth_call payload:", payload);
+        }
+        return augur.rpc.fire(payload, cb);
+      }
+
+      cb = cb || utils.pass;
+      if (!this.account.address || !this.account.privateKey) {
+        return cb(errors.NOT_LOGGED_IN);
+      }
+      if (!payload || payload.constructor !== Object) {
+        return cb(errors.TRANSACTION_FAILED);
+      }
+
+      // parse and serialize transaction parameters
+      var packaged = augur.rpc.packageRequest(payload);
+      packaged.from = this.account.address;
+      packaged.nonce = payload.nonce || "0x0";
+      packaged.value = payload.value || "0x0";
+      if (payload.gasLimit) {
+        packaged.gasLimit = abi.hex(payload.gasLimit);
+      } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
+        packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
+      } else {
+        packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
+      }
+      if (augur.rpc.debug.broadcast) {
+        console.log("[augur.js] payload:", payload);
+      }
+      if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
+        packaged.gasPrice = payload.gasPrice;
+        return this.getTxNonce(packaged, cb);
+      }
+      augur.rpc.getGasPrice(function (gasPrice) {
+        if (!gasPrice || gasPrice.error) {
+          return cb(errors.TRANSACTION_FAILED);
+        }
+        packaged.gasPrice = gasPrice;
+        self.getTxNonce(packaged, cb);
+      });
+    }
+
+  };
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
@@ -40713,82 +40676,82 @@ request = request.defaults({timeout: 1000});
 
 module.exports  = function () {
 
-    var augur = this;
+  var augur = this;
 
-    return {
+  return {
 
-        nodes: [],
+    nodes: [],
 
-        //(For now just takes list of nodes as input)
-        bootstrap: function (cache_nodes, cb) {
-            var self = this;
-            cb = cb || noop;
-            if (cache_nodes && cache_nodes.constructor === Array) {
-                self.nodes = cache_nodes;
-            }
-            return cb();
-        },
+    //(For now just takes list of nodes as input)
+    bootstrap: function (cache_nodes, cb) {
+      var self = this;
+      cb = cb || noop;
+      if (cache_nodes && cache_nodes.constructor === Array) {
+        self.nodes = cache_nodes;
+      }
+      return cb();
+    },
 
-        buildRequest: function (endpoint, params) {
-            if (this.nodes.length <= 0) return null;
+    buildRequest: function (endpoint, params) {
+      if (this.nodes.length <= 0) return null;
 
-            var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
-            url = url + "/" + endpoint;
-            var first = true;
-            for (var key in params) {
-                if (params.hasOwnProperty(key)) {
-                    if (first) {
-                        url += "?";
-                        first = false;
-                    } else {
-                        url += "&";
-                    }
-                    if (params[key].constructor === Array) {
-                        url = url + key + "=" + params[key].toString();
-                    } else {
-                        url = url + key + "=" + params[key];
-                    }
-                }
-            }
-            return url;
-        },
-
-        fetchHelper: function (url, cb) {
-            if (!url) return cb("no nodes to fetch from");
-            request(url, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                    return cb(null, body);
-                } else {
-                    return cb(url + " " + error);
-                }
-            });
-        },
-
-        getMarketsInfo: function (branch, cb) {
-            var url = this.buildRequest("getMarketsInfo", {branch: branch});
-            return this.fetchHelper(url, cb);
-        },
-
-        getMarketInfo: function (market, cb) {
-            var url = this.buildRequest("getMarketInfo", {id: market});
-            return this.fetchHelper(url, cb);
-        },
-
-        batchGetMarketInfo: function (marketIds, cb) {
-            var url = this.buildRequest("batchGetMarketInfo", {ids: marketIds});
-            return this.fetchHelper(url, cb);
-        },
-
-        getMarketPriceHistory: function (options, cb) {
-            var url = this.buildRequest("getMarketPriceHistory", options);
-            return this.fetchHelper(url, cb);
-        },
-
-        getAccountTrades: function (options, cb) {
-            var url = this.buildRequest("getAccountTrades", options);
-            return this.fetchHelper(url, cb);
+      var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+      url = url + "/" + endpoint;
+      var first = true;
+      for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+          if (first) {
+            url += "?";
+            first = false;
+          } else {
+            url += "&";
+          }
+          if (params[key].constructor === Array) {
+            url = url + key + "=" + params[key].toString();
+          } else {
+            url = url + key + "=" + params[key];
+          }
         }
-    };
+      }
+      return url;
+    },
+
+    fetchHelper: function (url, cb) {
+      if (!url) return cb("no nodes to fetch from");
+      request(url, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+          return cb(null, body);
+        } else {
+          return cb(url + " " + error);
+        }
+      });
+    },
+
+    getMarketsInfo: function (branch, cb) {
+      var url = this.buildRequest("getMarketsInfo", {branch: branch});
+      return this.fetchHelper(url, cb);
+    },
+
+    getMarketInfo: function (market, cb) {
+      var url = this.buildRequest("getMarketInfo", {id: market});
+      return this.fetchHelper(url, cb);
+    },
+
+    batchGetMarketInfo: function (marketIds, cb) {
+      var url = this.buildRequest("batchGetMarketInfo", {ids: marketIds});
+      return this.fetchHelper(url, cb);
+    },
+
+    getMarketPriceHistory: function (options, cb) {
+      var url = this.buildRequest("getMarketPriceHistory", options);
+      return this.fetchHelper(url, cb);
+    },
+
+    getAccountTrades: function (options, cb) {
+      var url = this.buildRequest("getAccountTrades", options);
+      return this.fetchHelper(url, cb);
+    }
+  };
 };
 
 }).call(this,require('_process'))
@@ -40806,26 +40769,26 @@ module.exports  = function () {
 var clone = require("clone");
 
 var Batch = function (tx, rpc) {
-    this.tx = tx;
-    this.rpc = rpc;
-    this.txlist = [];
+  this.tx = tx;
+  this.rpc = rpc;
+  this.txlist = [];
 };
 
 Batch.prototype.add = function (contract, method, params, callback) {
-    if (method && contract) {
-        var tx = clone(this.tx[contract][method]);
-        tx.params = params;
-        if (callback) tx.callback = callback;
-        this.txlist.push(tx);
-    }
+  if (method && contract) {
+    var tx = clone(this.tx[contract][method]);
+    tx.params = params;
+    if (callback) tx.callback = callback;
+    this.txlist.push(tx);
+  }
 };
 
 Batch.prototype.execute = function () {
-    this.rpc.batch(this.txlist, true);
+  this.rpc.batch(this.txlist, true);
 };
 
 module.exports = function () {
-    return new Batch(this.tx, this.rpc);
+  return new Batch(this.tx, this.rpc);
 };
 
 },{"clone":121}],241:[function(require,module,exports){
@@ -40835,95 +40798,95 @@ var abi = require("augur-abi");
 
 module.exports = function () {
 
-    var rpc = this.rpc;
+  var rpc = this.rpc;
 
-    return {
+  return {
 
-        POLL_INTERVAL: 3000, // poll for updates every 3 seconds
+    POLL_INTERVAL: 3000, // poll for updates every 3 seconds
 
-        whisper: {
-            id: null,
-            filters: {augur: null}
-        },
+    whisper: {
+      id: null,
+      filters: {augur: null}
+    },
 
-        parseMessage: function (message) {
-            return JSON.parse(abi.decode_hex(message));
-        },
+    parseMessage: function (message) {
+      return JSON.parse(abi.decode_hex(message));
+    },
 
-        parseMessages: function (messages) {
-            var parsedMessages = [];
-            if (messages && messages.constructor === Array && messages.length) {
-                for (var i = 0, numMessages = messages.length; i < numMessages; ++i) {
-                    parsedMessages.push(this.parseMessage(messages[i].payload));
-                }
-            }
-            return parsedMessages;
-        },
-
-        joinRoom: function (roomName, onMessages) {
-            var self = this;
-            if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
-            if (!this.whisper.filters[roomName]) {
-                this.whisper.filters[roomName] = {
-                    id: rpc.shh("newFilter", {
-                        topics: [abi.prefix_hex(abi.encode_hex(roomName))]
-                    }),
-                    heartbeat: setInterval(function () {
-                        self.getNewMessages(roomName, function (err, messages) {
-                            if (err) return console.error(err);
-                            onMessages(messages);
-                        });
-                    }, this.POLL_INTERVAL)
-                };
-            }
-            rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
-                onMessages(self.parseMessages(messages));
-            });
-        },
-
-        getNewMessages: function (roomName, callback) {
-            var self = this;
-            if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
-                rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
-                    callback(null, self.parseMessages(messages));
-                });
-            }
-        },
-
-        postMessage: function (roomName, message, senderAddress, senderName, callback) {
-            var payload = {
-                name: senderName,
-                address: senderAddress,
-                message: message,
-                timestamp: new Date().getTime()
-            };
-            rpc.shh("post", {
-                from: this.whisper.id,
-                topics: [abi.prefix_hex(abi.encode_hex(roomName))],
-                payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
-                priority: "0x64",
-                ttl: "0x93a80"
-            }, function (posted) {
-                if (!posted) return callback("couldn't post message: " + message);
-                callback(null);
-            });
-        },
-
-        leaveRoom: function (roomName, callback) {
-            var self = this;
-            rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
-                if (!uninstalled) return callback("couldn't leave room: " + roomName);
-                clearInterval(self.whisper.filters[roomName].heartbeat);
-                self.whisper.filters[roomName] = null;
-                callback(null, uninstalled);
-            });
+    parseMessages: function (messages) {
+      var parsedMessages = [];
+      if (messages && messages.constructor === Array && messages.length) {
+        for (var i = 0, numMessages = messages.length; i < numMessages; ++i) {
+          parsedMessages.push(this.parseMessage(messages[i].payload));
         }
+      }
+      return parsedMessages;
+    },
 
-    };
+    joinRoom: function (roomName, onMessages) {
+      var self = this;
+      if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
+      if (!this.whisper.filters[roomName]) {
+        this.whisper.filters[roomName] = {
+          id: rpc.shh("newFilter", {
+            topics: [abi.prefix_hex(abi.encode_hex(roomName))]
+          }),
+          heartbeat: setInterval(function () {
+            self.getNewMessages(roomName, function (err, messages) {
+              if (err) return console.error(err);
+              onMessages(messages);
+            });
+          }, this.POLL_INTERVAL)
+        };
+      }
+      rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
+        onMessages(self.parseMessages(messages));
+      });
+    },
+
+    getNewMessages: function (roomName, callback) {
+      var self = this;
+      if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
+        rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
+          callback(null, self.parseMessages(messages));
+        });
+      }
+    },
+
+    postMessage: function (roomName, message, senderAddress, senderName, callback) {
+      var payload = {
+        name: senderName,
+        address: senderAddress,
+        message: message,
+        timestamp: new Date().getTime()
+      };
+      rpc.shh("post", {
+        from: this.whisper.id,
+        topics: [abi.prefix_hex(abi.encode_hex(roomName))],
+        payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
+        priority: "0x64",
+        ttl: "0x93a80"
+      }, function (posted) {
+        if (!posted) return callback("couldn't post message: " + message);
+        callback(null);
+      });
+    },
+
+    leaveRoom: function (roomName, callback) {
+      var self = this;
+      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
+        if (!uninstalled) return callback("couldn't leave room: " + roomName);
+        clearInterval(self.whisper.filters[roomName].heartbeat);
+        self.whisper.filters[roomName] = null;
+        callback(null, uninstalled);
+      });
+    }
+
+  };
 };
 
 },{"augur-abi":1}],242:[function(require,module,exports){
-/** 
+/**
  * augur.js constants
  */
 
@@ -40937,78 +40900,78 @@ var multiple = ten.toPower(decimals);
 var ONE = ten.toPower(18);
 
 module.exports = {
-    ZERO: new BigNumber(0),
-    ONE: ONE,
-    ETHER: ONE,
+  ZERO: new BigNumber(0),
+  ONE: ONE,
+  ETHER: ONE,
 
-    PRECISION: {
-        decimals: decimals.toNumber(),
-        limit: ten.dividedBy(multiple),
-        zero: new BigNumber(1, 10).dividedBy(multiple),
-        multiple: multiple
-    },
-    // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
-    MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+  PRECISION: {
+    decimals: decimals.toNumber(),
+    limit: ten.dividedBy(multiple),
+    zero: new BigNumber(1, 10).dividedBy(multiple),
+    multiple: multiple
+  },
+  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
-    // default branch info: "root branch", 1010101
-    DEFAULT_BRANCH_ID: "0xf69b5",
-    DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
+  // default branch info: "root branch", 1010101
+  DEFAULT_BRANCH_ID: "0xf69b5",
+  DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
 
-    BID: 1,
-    ASK: 2,
+  BID: 1,
+  ASK: 2,
 
-    // milliseconds to wait between getMarketsInfo batches
-    PAUSE_BETWEEN_MARKET_BATCHES: 50,
+  // milliseconds to wait between getMarketsInfo batches
+  PAUSE_BETWEEN_MARKET_BATCHES: 50,
 
-    // milliseconds to wait before the rpc.getLogs method times out
-    GET_LOGS_TIMEOUT: 480000,
+  // milliseconds to wait before the rpc.getLogs method times out
+  GET_LOGS_TIMEOUT: 480000,
 
-    GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
-    GET_LOGS_DEFAULT_TO_BLOCK: "latest",
+  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
+  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
 
-    COST_PER_REPORTER: new BigNumber("0.0000000000035", 10),
+  COST_PER_REPORTER: new BigNumber("0.0000000000035", 10),
 
-    // int256 type codes for log filters
-    LOG_TYPE_CODES: {
-        buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
-        sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
-    },
+  // int256 type codes for log filters
+  LOG_TYPE_CODES: {
+    buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
+    sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
+  },
 
-    // maximum number of transactions to auto-submit in parallel
-    PARALLEL_LIMIT: 5,
+  // maximum number of transactions to auto-submit in parallel
+  PARALLEL_LIMIT: 5,
 
-    // fixed-point indeterminate: 1.5 * 10^18
-    BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
-    CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
-    INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
+  // fixed-point indeterminate: 1.5 * 10^18
+  BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
+  CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
+  INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
 
-    // default gas: 3.135M
-    DEFAULT_GAS: 3135000,
+  // default gas: 3.135M
+  DEFAULT_GAS: 3135000,
 
-    // gas needed for trade transactions (values from pyethereum tester)
-    MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
-    TRADE_GAS: [
+  // gas needed for trade transactions (values from pyethereum tester)
+  MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
+  TRADE_GAS: [
         {sell: 756374, buy: 787421}, // first trade_id only
         {sell: 615817, buy: 661894} // each additional trade_id
-    ],
-    CANCEL_GAS: {sell: 288060, buy: 230059},
+  ],
+  CANCEL_GAS: {sell: 288060, buy: 230059},
 
-    // expected block interval
-    SECONDS_PER_BLOCK: 12,
+  // expected block interval
+  SECONDS_PER_BLOCK: 12,
 
-    // keythereum crypto parameters
-    // KDF: "pbkdf2",
-    KDF: "scrypt",
-    ROUNDS: 4096,
+  // keythereum crypto parameters
+  // KDF: "pbkdf2",
+  KDF: "scrypt",
+  ROUNDS: 4096,
     // ROUNDS: 65536,
-    KEYSIZE: 32,
-    IVSIZE: 16,
+  KEYSIZE: 32,
+  IVSIZE: 16,
 
-    // cipher used to encrypt/decrypt reports
-    REPORT_CIPHER: "aes-256-ctr",
+  // cipher used to encrypt/decrypt reports
+  REPORT_CIPHER: "aes-256-ctr",
 
-    // Morden testnet faucet endpoint
-    FAUCET: "https://faucet.augur.net/faucet/"
+  // Morden testnet faucet endpoint
+  FAUCET: "https://faucet.augur.net/faucet/"
 };
 
 },{"bignumber.js":83}],243:[function(require,module,exports){
@@ -41028,526 +40991,526 @@ var errors = augur_contracts.errors;
 
 // non-event filters
 var filters = {
-    block: {id: null, heartbeat: null},
-    contracts: {id: null, heartbeat: null}
+  block: {id: null, heartbeat: null},
+  contracts: {id: null, heartbeat: null}
 };
 
 // event filters
 var events_api = new augur_contracts.Tx().events;
 for (var label in events_api) {
-    if (!events_api.hasOwnProperty(label)) continue;
-    filters[label] = {id: null, heartbeat: null};
+  if (!events_api.hasOwnProperty(label)) continue;
+  filters[label] = {id: null, heartbeat: null};
 }
 
 module.exports = function () {
 
-    var augur = this;
+  var augur = this;
 
-    return {
+  return {
 
-        PULSE: constants.SECONDS_PER_BLOCK * 500,
+    PULSE: constants.SECONDS_PER_BLOCK * 500,
 
-        filter: filters,
+    filter: filters,
 
-        format_trade_type: function (type) {
-            return (parseInt(type, 16) === 1) ? "buy" : "sell";
-        },
-        format_common_fields: function (msg) {
-            var fmt = clone(msg);
-            if (msg.sender) fmt.sender = abi.format_address(msg.sender);
-            if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
-            if (msg.type) fmt.type = this.format_trade_type(msg.type);
-            if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
-            if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
-            return fmt;
-        },
-        format_event_message: function (label, msg) {
-            var fmt;
-            switch (label) {
-                case "Approval":
-                    fmt = clone(msg);
-                    fmt._owner = abi.format_address(msg._owner);
-                    fmt._spender = abi.format_address(msg._spender);
-                    fmt.value = abi.unfix(msg.value);
-                    return fmt;
-                case "collectedFees":
-                    fmt = this.format_common_fields(msg);
-                    fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
-                    fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
-                    fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
-                    fmt.repGain = abi.unfix_signed(msg.repGain, "string");
-                    fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-                    fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
-                    fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
-                    fmt.period = parseInt(msg.period, 16);
-                    return fmt;
-                case "deposit":
-                    fmt = this.format_common_fields(msg);
-                    fmt.value = abi.unfix(msg.value, "string");
-                    return fmt;
-                case "fundedAccount":
-                    fmt = this.format_common_fields(msg);
-                    fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-                    fmt.repBalance = abi.unfix(msg.repBalance, "string");
-                    return fmt;
-                case "log_add_tx":
-                    fmt = this.format_common_fields(msg);
-                    fmt.outcome = parseInt(msg.outcome, 16);
-                    fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
-                    return fmt;
-                case "log_cancel":
-                    fmt = this.format_common_fields(msg);
-                    fmt.outcome = parseInt(msg.outcome, 16);
-                    fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
-                    return fmt;
-                case "log_fill_tx":
-                case "log_short_fill_tx":
-                    fmt = this.format_common_fields(msg);
-                    if (!fmt.type) {
-                        fmt.type = "sell";
-                        fmt.isShortSell = true;
-                    }
-                    fmt.owner = abi.format_address(msg.owner); // maker
-                    fmt.takerFee = abi.unfix(msg.takerFee, "string");
-                    fmt.makerFee = abi.unfix(msg.makerFee, "string");
-                    fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
-                    fmt.outcome = parseInt(msg.outcome, 16);
-                    return fmt;
-                case "marketCreated":
-                    fmt = this.format_common_fields(msg);
-                    fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
-                    fmt.eventBond = abi.unfix(msg.eventBond, "string");
-                    return fmt;
-                case "payout":
-                    fmt = this.format_common_fields(msg);
-                    fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
-                    fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-                    fmt.shares = abi.unfix(msg.shares, "string");
-                    return fmt;
-                case "penalizationCaughtUp":
-                    fmt = this.format_common_fields(msg);
-                    fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
-                    fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-                    fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
-                    fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-                    return fmt;
-                case "penalize":
-                    fmt = this.format_common_fields(msg);
-                    fmt.oldrep = abi.unfix(msg.oldrep, "string");
-                    fmt.repchange = abi.unfix_signed(msg.repchange, "string");
-                    fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
-                    fmt.p = abi.unfix(msg.p, "string");
-                    fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-                    return fmt;
-                case "sentCash":
-                case "Transfer":
-                    fmt = clone(msg);
-                    fmt._from = abi.format_address(msg._from);
-                    fmt._to = abi.format_address(msg._to);
-                    fmt._value = abi.unfix(msg._value);
-                    return fmt;
-                case "submittedReport":
-                case "submittedReportHash":
-                    fmt = this.format_common_fields(msg);
-                    fmt.ethics = abi.unfix(msg.ethics, "string");
-                    return fmt;
-                case "tradingFeeUpdated":
-                    fmt = this.format_common_fields(msg);
-                    fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-                    return fmt;
-                case "withdraw":
-                    fmt = this.format_common_fields(msg);
-                    fmt.to = abi.format_address(msg.to);
-                    fmt.value = abi.unfix(msg.value, "string");
-                    return fmt;
-                default:
-                    return this.format_common_fields(msg);
-            }
-        },
-        parse_event_message: function (label, msg, onMessage) {
-            var i;
-						if (augur.options.debug.filters) {
+    format_trade_type: function (type) {
+      return (parseInt(type, 16) === 1) ? "buy" : "sell";
+    },
+    format_common_fields: function (msg) {
+      var fmt = clone(msg);
+      if (msg.sender) fmt.sender = abi.format_address(msg.sender);
+      if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
+      if (msg.type) fmt.type = this.format_trade_type(msg.type);
+      if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
+      if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
+      return fmt;
+    },
+    format_event_message: function (label, msg) {
+      var fmt;
+      switch (label) {
+        case "Approval":
+          fmt = clone(msg);
+          fmt._owner = abi.format_address(msg._owner);
+          fmt._spender = abi.format_address(msg._spender);
+          fmt.value = abi.unfix(msg.value);
+          return fmt;
+        case "collectedFees":
+          fmt = this.format_common_fields(msg);
+          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
+          fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
+          fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
+          fmt.repGain = abi.unfix_signed(msg.repGain, "string");
+          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+          fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
+          fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
+          fmt.period = parseInt(msg.period, 16);
+          return fmt;
+        case "deposit":
+          fmt = this.format_common_fields(msg);
+          fmt.value = abi.unfix(msg.value, "string");
+          return fmt;
+        case "fundedAccount":
+          fmt = this.format_common_fields(msg);
+          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+          fmt.repBalance = abi.unfix(msg.repBalance, "string");
+          return fmt;
+        case "log_add_tx":
+          fmt = this.format_common_fields(msg);
+          fmt.outcome = parseInt(msg.outcome, 16);
+          fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
+          return fmt;
+        case "log_cancel":
+          fmt = this.format_common_fields(msg);
+          fmt.outcome = parseInt(msg.outcome, 16);
+          fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
+          return fmt;
+        case "log_fill_tx":
+        case "log_short_fill_tx":
+          fmt = this.format_common_fields(msg);
+          if (!fmt.type) {
+            fmt.type = "sell";
+            fmt.isShortSell = true;
+          }
+          fmt.owner = abi.format_address(msg.owner); // maker
+          fmt.takerFee = abi.unfix(msg.takerFee, "string");
+          fmt.makerFee = abi.unfix(msg.makerFee, "string");
+          fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
+          fmt.outcome = parseInt(msg.outcome, 16);
+          return fmt;
+        case "marketCreated":
+          fmt = this.format_common_fields(msg);
+          fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
+          fmt.eventBond = abi.unfix(msg.eventBond, "string");
+          return fmt;
+        case "payout":
+          fmt = this.format_common_fields(msg);
+          fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
+          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+          fmt.shares = abi.unfix(msg.shares, "string");
+          return fmt;
+        case "penalizationCaughtUp":
+          fmt = this.format_common_fields(msg);
+          fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
+          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+          fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
+          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+          return fmt;
+        case "penalize":
+          fmt = this.format_common_fields(msg);
+          fmt.oldrep = abi.unfix(msg.oldrep, "string");
+          fmt.repchange = abi.unfix_signed(msg.repchange, "string");
+          fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
+          fmt.p = abi.unfix(msg.p, "string");
+          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+          return fmt;
+        case "sentCash":
+        case "Transfer":
+          fmt = clone(msg);
+          fmt._from = abi.format_address(msg._from);
+          fmt._to = abi.format_address(msg._to);
+          fmt._value = abi.unfix(msg._value);
+          return fmt;
+        case "submittedReport":
+        case "submittedReportHash":
+          fmt = this.format_common_fields(msg);
+          fmt.ethics = abi.unfix(msg.ethics, "string");
+          return fmt;
+        case "tradingFeeUpdated":
+          fmt = this.format_common_fields(msg);
+          fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
+          return fmt;
+        case "withdraw":
+          fmt = this.format_common_fields(msg);
+          fmt.to = abi.format_address(msg.to);
+          fmt.value = abi.unfix(msg.value, "string");
+          return fmt;
+        default:
+          return this.format_common_fields(msg);
+      }
+    },
+    parse_event_message: function (label, msg, onMessage) {
+      var i;
+      if (augur.options.debug.filters) {
 	            console.log("parse_event_message label:", label);
 	            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
-						}
-            if (msg) {
-                switch (msg.constructor) {
-                    case Array:
-                        for (i = 0; i < msg.length; ++i) {
-                            this.parse_event_message(label, msg[i], onMessage);
-                        }
-                        break;
-                    case Object:
-                        if (!msg.error && msg.topics && msg.data) {
-                            var inputs = augur.api.events[label].inputs;
-                            var parsed = {};
-                            var topicIndex = 0;
-                            var dataIndex = 0;
-                            var topics = msg.topics;
-                            var numIndexed = topics.length - 1;
-                            var data = augur.rpc.unmarshal(msg.data);
-                            if (data && data.constructor !== Array) data = [data];
-                            for (i = 0; i < inputs.length; ++i) {
-                                parsed[inputs[i].name] = 0;
-                                if (inputs[i].indexed) {
-                                    parsed[inputs[i].name] = topics[topicIndex + 1];
-                                    ++topicIndex;
-                                } else {
-                                    parsed[inputs[i].name] = data[dataIndex];
-                                    ++dataIndex;
-                                }
-                            }
-                            parsed.blockNumber = parseInt(msg.blockNumber, 16);
-                            parsed.transactionHash = msg.transactionHash;
-                            parsed.removed = msg.removed;
-                            if (!onMessage) {
-                                return this.format_event_message(label, parsed);
-                            }
-                            onMessage(this.format_event_message(label, parsed));
-                        }
-                        break;
-                    default:
-                        console.warn("unknown event message:", msg);
-                }
+      }
+      if (msg) {
+        switch (msg.constructor) {
+          case Array:
+            for (i = 0; i < msg.length; ++i) {
+              this.parse_event_message(label, msg[i], onMessage);
             }
-        },
-        parse_block_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i] && message[i].number) {
-                            onMessage(message[i].number);
-                        } else {
-                            onMessage(message[i]);
-                        }
-                    }
-                } else if (message.number) {
-                    onMessage(message.number);
+            break;
+          case Object:
+            if (!msg.error && msg.topics && msg.data) {
+              var inputs = augur.api.events[label].inputs;
+              var parsed = {};
+              var topicIndex = 0;
+              var dataIndex = 0;
+              var topics = msg.topics;
+              var numIndexed = topics.length - 1;
+              var data = augur.rpc.unmarshal(msg.data);
+              if (data && data.constructor !== Array) data = [data];
+              for (i = 0; i < inputs.length; ++i) {
+                parsed[inputs[i].name] = 0;
+                if (inputs[i].indexed) {
+                  parsed[inputs[i].name] = topics[topicIndex + 1];
+                  ++topicIndex;
+                } else {
+                  parsed[inputs[i].name] = data[dataIndex];
+                  ++dataIndex;
                 }
+              }
+              parsed.blockNumber = parseInt(msg.blockNumber, 16);
+              parsed.transactionHash = msg.transactionHash;
+              parsed.removed = msg.removed;
+              if (!onMessage) {
+                return this.format_event_message(label, parsed);
+              }
+              onMessage(this.format_event_message(label, parsed));
             }
-        },
-        parse_contracts_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
-                    }
-                }
+            break;
+          default:
+            console.warn("unknown event message:", msg);
+        }
+      }
+    },
+    parse_block_message: function (message, onMessage) {
+      if (message) {
+        if (message.length && message.constructor === Array) {
+          for (var i = 0, len = message.length; i < len; ++i) {
+            if (message[i] && message[i].number) {
+              onMessage(message[i].number);
+            } else {
+              onMessage(message[i]);
             }
-        },
-        poll_filter: function (label, onMessage) {
-            var callback, self = this;
-            if (this.filter[label]) {
-                switch (label) {
-                    case "contracts":
-                        callback = function (msg) {
-                            self.parse_contracts_message(msg, onMessage);
-                        };
-                        break;
-                    case "block":
-                        callback = function (msg) {
-                            self.parse_block_message(msg, onMessage);
-                        };
-                        break;
-                    default:
-                        callback = function (msg) {
-                            self.parse_event_message(label, msg, onMessage);
-                        };
-                }
-                augur.rpc.getFilterChanges(this.filter[label].id, callback);
+          }
+        } else if (message.number) {
+          onMessage(message.number);
+        }
+      }
+    },
+    parse_contracts_message: function (message, onMessage) {
+      if (message && message.length && message.constructor === Array) {
+        for (var i = 0, len = message.length; i < len; ++i) {
+          if (message[i]) {
+            if (message[i].constructor === Object && message[i].data) {
+              message[i].data = augur.rpc.unmarshal(message[i].data);
             }
-        },
+            onMessage(message[i]);
+          }
+        }
+      }
+    },
+    poll_filter: function (label, onMessage) {
+      var callback, self = this;
+      if (this.filter[label]) {
+        switch (label) {
+          case "contracts":
+            callback = function (msg) {
+              self.parse_contracts_message(msg, onMessage);
+            };
+            break;
+          case "block":
+            callback = function (msg) {
+              self.parse_block_message(msg, onMessage);
+            };
+            break;
+          default:
+            callback = function (msg) {
+              self.parse_event_message(label, msg, onMessage);
+            };
+        }
+        augur.rpc.getFilterChanges(this.filter[label].id, callback);
+      }
+    },
 
         // clear/uninstall filters
-        clear_filter: function (label, cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter[label].id, function (uninst) {
-                    self.filter[label].id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter[label].id);
-                this.filter[label].id = null;
-                return uninst;
-            }
-        },
+    clear_filter: function (label, cb) {
+      if (utils.is_function(cb)) {
+        var self = this;
+        this.unsubscribe(this.filter[label].id, function (uninst) {
+          self.filter[label].id = null;
+          cb(uninst);
+        });
+      } else {
+        var uninst = this.unsubscribe(this.filter[label].id);
+        this.filter[label].id = null;
+        return uninst;
+      }
+    },
 
         // set up filters
-        setup_event_filter: function (contract, label, f) {
-            return this.subscribeLogs({
-                address: augur.contracts[contract],
-                topics: [augur.api.events[label].signature]
-            }, f);
-        },
-        setup_contracts_filter: function (f) {
-            var self = this;
-            var contract_list = [];
-            for (var c in augur.contracts) {
-                if (!augur.contracts.hasOwnProperty(c)) continue;
-                contract_list.push(augur.contracts[c]);
-            }
-            var params = {
-                address: contract_list,
-                fromBlock: "0x01",
-                toBlock: "latest"
-            };
-            if (!utils.is_function(f)) {
-                this.filter.contracts = {
-                    id: this.subscribeLogs(params),
-                    heartbeat: null
-                };
-                return this.filter.contracts;
-            }
-            this.subscribeLogs(params, function (filter_id) {
-                self.filter.contracts = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                f(self.filter.contracts);
-            });
-        },
-        setup_block_filter: function (f) {
-            var self = this;
-            if (!utils.is_function(f)) {
-                this.filter.block = {
-                    id: this.subscribeNewBlocks(),
-                    heartbeat: null
-                };
-                return this.filter.block;
-            }
-            this.subscribeNewBlocks(function (filter_id) {
-                self.filter.block = {id: filter_id, heartbeat: null};
-                f(self.filter.block);
-            });
-        },
+    setup_event_filter: function (contract, label, f) {
+      return this.subscribeLogs({
+        address: augur.contracts[contract],
+        topics: [augur.api.events[label].signature]
+      }, f);
+    },
+    setup_contracts_filter: function (f) {
+      var self = this;
+      var contract_list = [];
+      for (var c in augur.contracts) {
+        if (!augur.contracts.hasOwnProperty(c)) continue;
+        contract_list.push(augur.contracts[c]);
+      }
+      var params = {
+        address: contract_list,
+        fromBlock: "0x01",
+        toBlock: "latest"
+      };
+      if (!utils.is_function(f)) {
+        this.filter.contracts = {
+          id: this.subscribeLogs(params),
+          heartbeat: null
+        };
+        return this.filter.contracts;
+      }
+      this.subscribeLogs(params, function (filter_id) {
+        self.filter.contracts = {
+          id: filter_id,
+          heartbeat: null
+        };
+        f(self.filter.contracts);
+      });
+    },
+    setup_block_filter: function (f) {
+      var self = this;
+      if (!utils.is_function(f)) {
+        this.filter.block = {
+          id: this.subscribeNewBlocks(),
+          heartbeat: null
+        };
+        return this.filter.block;
+      }
+      this.subscribeNewBlocks(function (filter_id) {
+        self.filter.block = {id: filter_id, heartbeat: null};
+        f(self.filter.block);
+      });
+    },
 
         // start listeners
-        start_event_listener: function (label, cb) {
-            var self = this;
-            var contract = augur.api.events[label].contract;
-            if (this.filter[label] && this.filter[label].id) {
-                if (!utils.is_function(cb)) return this.filter[label].id;
-                return cb(this.filter[label].id);
-            }
-            if (!utils.is_function(cb)) {
-                var filter_id = this.setup_event_filter(contract, label);
-                if (!filter_id || filter_id === "0x") {
-                    return errors.FILTER_NOT_CREATED;
-                }
-                if (filter_id.error) return filter_id;
-                self.filter[label] = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                return filter_id;
-            }
-            this.setup_event_filter(contract, label, function (filter_id) {
-                if (!filter_id || filter_id === "0x") {
-                    return cb(errors.FILTER_NOT_CREATED);
-                }
-                if (filter_id.error) return cb(filter_id);
-                self.filter[label] = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                cb(filter_id);
-            });
-        },
-        start_contracts_listener: function (cb) {
-            if (this.filter.contracts.id === null) {
-                if (!utils.is_function(cb)) {
-                    return this.setup_contracts_filter();
-                }
-                this.setup_contracts_filter(cb);
-            }
-        },
-        start_block_listener: function (cb) {
-            if (this.filter.block.id === null) {
-                if (!utils.is_function(cb)) {
-                    return this.setup_block_filter();
-                }
-                this.setup_block_filter(cb);
-            }
-        },
+    start_event_listener: function (label, cb) {
+      var self = this;
+      var contract = augur.api.events[label].contract;
+      if (this.filter[label] && this.filter[label].id) {
+        if (!utils.is_function(cb)) return this.filter[label].id;
+        return cb(this.filter[label].id);
+      }
+      if (!utils.is_function(cb)) {
+        var filter_id = this.setup_event_filter(contract, label);
+        if (!filter_id || filter_id === "0x") {
+          return errors.FILTER_NOT_CREATED;
+        }
+        if (filter_id.error) return filter_id;
+        self.filter[label] = {
+          id: filter_id,
+          heartbeat: null
+        };
+        return filter_id;
+      }
+      this.setup_event_filter(contract, label, function (filter_id) {
+        if (!filter_id || filter_id === "0x") {
+          return cb(errors.FILTER_NOT_CREATED);
+        }
+        if (filter_id.error) return cb(filter_id);
+        self.filter[label] = {
+          id: filter_id,
+          heartbeat: null
+        };
+        cb(filter_id);
+      });
+    },
+    start_contracts_listener: function (cb) {
+      if (this.filter.contracts.id === null) {
+        if (!utils.is_function(cb)) {
+          return this.setup_contracts_filter();
+        }
+        this.setup_contracts_filter(cb);
+      }
+    },
+    start_block_listener: function (cb) {
+      if (this.filter.block.id === null) {
+        if (!utils.is_function(cb)) {
+          return this.setup_block_filter();
+        }
+        this.setup_block_filter(cb);
+      }
+    },
 
         // start/stop polling
-        pacemaker: function (cb) {
-            var self = this;
-            if (!cb || cb.constructor !== Object) return;
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                async.forEachOf(this.filter, function (filter, label, next) {
-                    if (utils.is_function(cb[label])) {
-                        self.poll_filter(label, cb[label]);
-                        self.filter[label].heartbeat = setInterval(function () {
-                            self.poll_filter(label, cb[label]);
-                        }, self.PULSE);
-                    }
-                    next();
-                });
-            } else {
-                async.forEachOf(this.filter, function (filter, label, next) {
-                    if (utils.is_function(cb[label])) {
-                        var callback = cb[label];
-                        switch (label) {
-                            case "contracts":
-                                cb[label] = function (msg) {
-                                    self.parse_contracts_message(msg, callback);
-                                };
-                                break;
-                            case "block":
-                                cb[label] = function (msg) {
-                                    self.parse_block_message(msg, callback);
-                                };
-                                break;
-                            default:
-                                cb[label] = function (msg) {
-                                    self.parse_event_message(label, msg, callback);
-                                };
-                        }
-                        augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
-                        next();
-                    }
-                });
+    pacemaker: function (cb) {
+      var self = this;
+      if (!cb || cb.constructor !== Object) return;
+      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+        async.forEachOf(this.filter, function (filter, label, next) {
+          if (utils.is_function(cb[label])) {
+            self.poll_filter(label, cb[label]);
+            self.filter[label].heartbeat = setInterval(function () {
+              self.poll_filter(label, cb[label]);
+            }, self.PULSE);
+          }
+          next();
+        });
+      } else {
+        async.forEachOf(this.filter, function (filter, label, next) {
+          if (utils.is_function(cb[label])) {
+            var callback = cb[label];
+            switch (label) {
+              case "contracts":
+                cb[label] = function (msg) {
+                  self.parse_contracts_message(msg, callback);
+                };
+                break;
+              case "block":
+                cb[label] = function (msg) {
+                  self.parse_block_message(msg, callback);
+                };
+                break;
+              default:
+                cb[label] = function (msg) {
+                  self.parse_event_message(label, msg, callback);
+                };
             }
-        },
+            augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
+            next();
+          }
+        });
+      }
+    },
 
-        listen: function (cb, setup_complete) {
-            var self = this;
+    listen: function (cb, setup_complete) {
+      var self = this;
 
-            function listenHelper(callback, label, next) {
-                switch (label) {
-                    case "contracts":
-                        self.start_contracts_listener(function () {
-                            self.pacemaker({contracts: callback});
-                            next(null, [label, self.filter[label].id]);
-                        });
-                        break;
-                    case "block":
-                        self.start_block_listener(function () {
-                            self.pacemaker({block: callback});
-                            next(null, [label, self.filter[label].id]);
-                        });
-                        break;
-                    default:
-                        self.start_event_listener(label, function () {
-                            var p = {};
-                            p[label] = callback;
-                            self.pacemaker(p);
-                            next(null, [label, self.filter[label].id]);
-                        });
-                }
-            }
+      function listenHelper(callback, label, next) {
+        switch (label) {
+          case "contracts":
+            self.start_contracts_listener(function () {
+              self.pacemaker({contracts: callback});
+              next(null, [label, self.filter[label].id]);
+            });
+            break;
+          case "block":
+            self.start_block_listener(function () {
+              self.pacemaker({block: callback});
+              next(null, [label, self.filter[label].id]);
+            });
+            break;
+          default:
+            self.start_event_listener(label, function () {
+              var p = {};
+              p[label] = callback;
+              self.pacemaker(p);
+              next(null, [label, self.filter[label].id]);
+            });
+        }
+      }
 
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-            } else {
-                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.subscribeNewHeads.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-            }
-            async.forEachOfSeries(cb, function (callback, label, next) {
+      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+        this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+        this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+        this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+      } else {
+        this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+        this.subscribeNewBlocks = augur.rpc.subscribeNewHeads.bind(augur.rpc);
+        this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+      }
+      async.forEachOfSeries(cb, function (callback, label, next) {
 
                 // skip invalid labels, undefined callbacks
-                if (!self.filter[label] || !callback) {
-                    next(null, null);
-                } else if (self.filter[label].id === null && callback) {
-                    listenHelper(callback, label, next);
+        if (!self.filter[label] || !callback) {
+          next(null, null);
+        } else if (self.filter[label].id === null && callback) {
+          listenHelper(callback, label, next);
 
                 // callback already registered. uninstall, and reinstall new callback.
-                } else if (self.filter[label].id && callback) {
-                    if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
-                        augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
-                    }
-                    self.clear_filter(label, function () {
-                        listenHelper(callback, label, next);
-                    });
-                }
-            }, function (err) {
-                if (err) console.error(err);
-                augur.rpc.customSubscriptionCallback = cb;
-                augur.rpc.resetCustomSubscription = function () {
-                    self.listen(augur.rpc.customSubscriptionCallback);
-                }.bind(self);
-                if (utils.is_function(setup_complete)) setup_complete(self.filter);
-            });
-        },
-
-        all_filters_removed: function () {
-            var f, isRemoved = true;
-            for (var label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                f = this.filter[label];
-                if (f.heartbeat !== null || f.id !== null) {
-                    isRemoved = false;
-                    break;
-                }
-            }
-            return isRemoved;
-        },
-
-        ignore: function (uninstall, cb, complete) {
-            var label, self = this;
-            augur.rpc.resetCustomSubscription = null;
-
-            function cleared(uninst, callback, complete) {
-                callback(uninst);
-                if (uninst && uninst.constructor === Object) {
-                    return complete(uninst);
-                }
-                if (self.all_filters_removed()) complete();
-            }
-
-            if (!complete && utils.is_function(cb)) {
-                complete = cb;
-                cb = null;
-            }
-            if (uninstall && uninstall.constructor === Object) {
-                cb = {};
-                for (label in this.filter) {
-                    if (!this.filter.hasOwnProperty(label)) continue;
-                    if (utils.is_function(uninstall[label])) {
-                        cb[label] = uninstall[label];
-                    }
-                }
-                uninstall = false;
-            }
-            cb = cb || {}; // individual filter removal callbacks
-            for (label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
-            }
-            complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-            for (label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                if (this.filter[label].heartbeat !== null) {
-                    clearInterval(this.filter[label].heartbeat);
-                    this.filter[label].heartbeat = null;
-                    if (!uninstall && utils.is_function(cb[label])) {
-                        cb[label]();
-                        if (this.all_filters_removed()) complete();
-                    }
-                }
-            }
-            if (uninstall) {
-                async.forEachOfSeries(this.filter, function (filter, label, next) {
-                    if (filter.id === null) return next();
-                    if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
-                        augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
-                    }
-                    self.clear_filter(label, function (uninst) {
-                        cleared(uninst, cb[label], complete);
-                        next();
-                    });
-                });
-            }
+        } else if (self.filter[label].id && callback) {
+          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
+            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
+          }
+          self.clear_filter(label, function () {
+            listenHelper(callback, label, next);
+          });
         }
-    };
+      }, function (err) {
+        if (err) console.error(err);
+        augur.rpc.customSubscriptionCallback = cb;
+        augur.rpc.resetCustomSubscription = function () {
+          self.listen(augur.rpc.customSubscriptionCallback);
+        }.bind(self);
+        if (utils.is_function(setup_complete)) setup_complete(self.filter);
+      });
+    },
+
+    all_filters_removed: function () {
+      var f, isRemoved = true;
+      for (var label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        f = this.filter[label];
+        if (f.heartbeat !== null || f.id !== null) {
+          isRemoved = false;
+          break;
+        }
+      }
+      return isRemoved;
+    },
+
+    ignore: function (uninstall, cb, complete) {
+      var label, self = this;
+      augur.rpc.resetCustomSubscription = null;
+
+      function cleared(uninst, callback, complete) {
+        callback(uninst);
+        if (uninst && uninst.constructor === Object) {
+          return complete(uninst);
+        }
+        if (self.all_filters_removed()) complete();
+      }
+
+      if (!complete && utils.is_function(cb)) {
+        complete = cb;
+        cb = null;
+      }
+      if (uninstall && uninstall.constructor === Object) {
+        cb = {};
+        for (label in this.filter) {
+          if (!this.filter.hasOwnProperty(label)) continue;
+          if (utils.is_function(uninstall[label])) {
+            cb[label] = uninstall[label];
+          }
+        }
+        uninstall = false;
+      }
+      cb = cb || {}; // individual filter removal callbacks
+      for (label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
+      }
+      complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
+      for (label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        if (this.filter[label].heartbeat !== null) {
+          clearInterval(this.filter[label].heartbeat);
+          this.filter[label].heartbeat = null;
+          if (!uninstall && utils.is_function(cb[label])) {
+            cb[label]();
+            if (this.all_filters_removed()) complete();
+          }
+        }
+      }
+      if (uninstall) {
+        async.forEachOfSeries(this.filter, function (filter, label, next) {
+          if (filter.id === null) return next();
+          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
+            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
+          }
+          self.clear_filter(label, function (uninst) {
+            cleared(uninst, cb[label], complete);
+            next();
+          });
+        });
+      }
+    }
+  };
 };
 
 },{"./constants":242,"./utilities":266,"async":80,"augur-abi":1,"augur-contracts":59,"clone":121}],244:[function(require,module,exports){
@@ -41577,216 +41540,216 @@ var abi = require("augur-abi");
 var constants = require("./constants");
 
 module.exports = function (p, cb) {
-    var self = this;
-    var liquidity = abi.bignum(p.liquidity);
-    var numOutcomes = p.initialFairPrices.length;
-    var initialFairPrices = new Array(numOutcomes);
-    for (var i = 0; i < numOutcomes; ++i) {
-        initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
+  var self = this;
+  var liquidity = abi.bignum(p.liquidity);
+  var numOutcomes = p.initialFairPrices.length;
+  var initialFairPrices = new Array(numOutcomes);
+  for (var i = 0; i < numOutcomes; ++i) {
+    initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
+  }
+  var startingQuantity = abi.bignum(p.startingQuantity);
+  var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
+  var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
+  cb = cb || {};
+  var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
+  var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
+  var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
+  var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
+  var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
+  this.getMarketInfo(p.market, null, function (marketInfo) {
+    var minValue, maxValue;
+    if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
+    if (marketInfo.numOutcomes !== numOutcomes) {
+      return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
     }
-    var startingQuantity = abi.bignum(p.startingQuantity);
-    var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
-    var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
-    cb = cb || {};
-    var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
-    var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
-    var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
-    var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
-    var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
-    this.getMarketInfo(p.market, null, function (marketInfo) {
-        var minValue, maxValue;
-        if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
-        if (marketInfo.numOutcomes !== numOutcomes) {
-            return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
-        }
-        var scalarMinMax;
-        if (marketInfo.type === "scalar") {
-            minValue = abi.bignum(marketInfo.events[0].minValue);
-            maxValue = abi.bignum(marketInfo.events[0].maxValue);
-            scalarMinMax = {minValue: minValue, maxValue: maxValue};
-        } else {
-            minValue = new BigNumber(0);
-            maxValue = new BigNumber(1);
-        }
+    var scalarMinMax;
+    if (marketInfo.type === "scalar") {
+      minValue = abi.bignum(marketInfo.events[0].minValue);
+      maxValue = abi.bignum(marketInfo.events[0].maxValue);
+      scalarMinMax = {minValue: minValue, maxValue: maxValue};
+    } else {
+      minValue = new BigNumber(0);
+      maxValue = new BigNumber(1);
+    }
 
-        var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
-        if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
-            return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
+    var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+    if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
+      return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
+    }
+    var buyPrices = new Array(numOutcomes);
+    var sellPrices = new Array(numOutcomes);
+    var numSellOrders = new Array(numOutcomes);
+    var numBuyOrders = new Array(numOutcomes);
+    var shares = new BigNumber(0);
+    var i, j, buyPrice, sellPrice, outcomeShares;
+    for (i = 0; i < numOutcomes; ++i) {
+      if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
+          initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+            console.log("priceDepth:", priceDepth.toFixed());
+            console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+            console.log("minValue:", minValue.toFixed());
+            console.log("maxValue:", maxValue.toFixed());
+            console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+            console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+            console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+            console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+            return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+          }
+      if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
+        initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
+          return onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
         }
-        var buyPrices = new Array(numOutcomes);
-        var sellPrices = new Array(numOutcomes);
-        var numSellOrders = new Array(numOutcomes);
-        var numBuyOrders = new Array(numOutcomes);
-        var shares = new BigNumber(0);
-        var i, j, buyPrice, sellPrice, outcomeShares;
-        for (i = 0; i < numOutcomes; ++i) {
-            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
-                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-                console.log("priceDepth:", priceDepth.toFixed());
-                console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-                console.log("minValue:", minValue.toFixed());
-                console.log("maxValue:", maxValue.toFixed());
-                console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-                console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-                console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-                console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-                return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
-            }
-            if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
-                initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
-                return onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
-            }
-            buyPrice = initialFairPrices[i].minus(halfPriceWidth);
-            sellPrice = initialFairPrices[i].plus(halfPriceWidth);
-            numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
-            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
-            numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
-            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
-            outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
-            if (outcomeShares.gt(shares)) shares = outcomeShares;
-            numSellOrders[i] = numSellOrders[i].toNumber();
-            buyPrices[i] = new Array(numBuyOrders[i]);
-            buyPrices[i][0] = buyPrice;
-            for (j = 1; j < numBuyOrders[i]; ++j) {
-                buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
-                if (buyPrices[i][j].lte(minValue)) {
-                    buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-            }
-            sellPrices[i] = new Array(numSellOrders[i]);
-            sellPrices[i][0] = sellPrice;
-            for (j = 1; j < numSellOrders[i]; ++j) {
-                sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
-                if (sellPrices[i][j].gte(maxValue)) {
-                    sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-            }
+      buyPrice = initialFairPrices[i].minus(halfPriceWidth);
+      sellPrice = initialFairPrices[i].plus(halfPriceWidth);
+      numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+      if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
+      numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+      if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
+      outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
+      if (outcomeShares.gt(shares)) shares = outcomeShares;
+      numSellOrders[i] = numSellOrders[i].toNumber();
+      buyPrices[i] = new Array(numBuyOrders[i]);
+      buyPrices[i][0] = buyPrice;
+      for (j = 1; j < numBuyOrders[i]; ++j) {
+        buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
+        if (buyPrices[i][j].lte(minValue)) {
+          buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
         }
-        var numTransactions = 0;
-        for (i = 0; i < numOutcomes; ++i) {
-            numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
+      }
+      sellPrices[i] = new Array(numSellOrders[i]);
+      sellPrices[i][0] = sellPrice;
+      for (j = 1; j < numSellOrders[i]; ++j) {
+        sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
+        if (sellPrices[i][j].gte(maxValue)) {
+          sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
         }
-        var onSimulate = cb.onSimulate || p.onSimulate;
-        if (self.utils.is_function(onSimulate)) {
-            onSimulate({
-                shares: shares.toFixed(),
-                numBuyOrders: numBuyOrders,
-                numSellOrders: numSellOrders,
-                buyPrices: abi.string(buyPrices),
-                sellPrices: abi.string(sellPrices),
-                numTransactions: numTransactions,
-                priceDepth: priceDepth.toFixed()
-            });
-            if (p.isSimulation) return;
+      }
+    }
+    var numTransactions = 0;
+    for (i = 0; i < numOutcomes; ++i) {
+      numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
+    }
+    var onSimulate = cb.onSimulate || p.onSimulate;
+    if (self.utils.is_function(onSimulate)) {
+      onSimulate({
+        shares: shares.toFixed(),
+        numBuyOrders: numBuyOrders,
+        numSellOrders: numSellOrders,
+        buyPrices: abi.string(buyPrices),
+        sellPrices: abi.string(sellPrices),
+        numTransactions: numTransactions,
+        priceDepth: priceDepth.toFixed()
+      });
+      if (p.isSimulation) return;
+    }
+    self.buyCompleteSets({
+      market: p.market,
+      amount: abi.hex(shares),
+      onSent: function (res) {
+        // console.log("generateOrderBook.buyCompleteSets sent:", res);
+      },
+      onSuccess: function (res) {
+        // console.log("generateOrderBook.buyCompleteSets success:", res);
+        onBuyCompleteSets(res);
+        var outcomes = new Array(numOutcomes);
+        for (var i = 0; i < numOutcomes; ++i) {
+          outcomes[i] = i + 1;
         }
-        self.buyCompleteSets({
-            market: p.market,
-            amount: abi.hex(shares),
-            onSent: function (res) {
-                // console.log("generateOrderBook.buyCompleteSets sent:", res);
-            },
-            onSuccess: function (res) {
-                // console.log("generateOrderBook.buyCompleteSets success:", res);
-                onBuyCompleteSets(res);
-                var outcomes = new Array(numOutcomes);
-                for (var i = 0; i < numOutcomes; ++i) {
-                    outcomes[i] = i + 1;
-                }
-                async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
-                    async.parallelLimit([
-                        function (callback) {
-                            async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
-                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                self.buy({
-                                    amount: amount.toFixed(),
-                                    price: buyPrice,
-                                    market: p.market,
-                                    outcome: outcome,
-                                    scalarMinMax: scalarMinMax,
-                                    onSent: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
-                                    },
-                                    onSuccess: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
-                                        onSetupOrder({
-                                            tradeId: res.callReturn,
-                                            market: p.market,
-                                            outcome: outcome,
-                                            amount: amount.toFixed(),
-                                            buyPrice: buyPrice,
-                                            timestamp: res.timestamp,
-                                            hash: res.hash,
-                                            gasUsed: res.gasUsed
-                                        });
-                                        nextBuyPrice();
-                                    },
-                                    onFailed: function (err) {
-                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
-                                        nextBuyPrice(err);
-                                    }
-                                });
-                            }, function (err) {
-                                if (err) console.error("async.each buy:", err);
-                                callback(err);
-                            });
-                        },
-                        function (callback) {
-                            async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
-                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                self.sell({
-                                    amount: amount.toFixed(),
-                                    price: sellPrice,
-                                    market: p.market,
-                                    outcome: outcome,
-                                    scalarMinMax: scalarMinMax,
-                                    onSent: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
-                                    },
-                                    onSuccess: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
-                                        onSetupOrder({
-                                            tradeId: res.callReturn,
-                                            market: p.market,
-                                            outcome: outcome,
-                                            amount: amount.toFixed(),
-                                            sellPrice: sellPrice,
-                                            timestamp: res.timestamp,
-                                            hash: res.hash,
-                                            gasUsed: res.gasUsed
-                                        });
-                                        nextSellPrice();
-                                    },
-                                    onFailed: function (err) {
-                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
-                                        nextSellPrice(err);
-                                    }
-                                });
-                            }, function (err) {
-                                if (err) console.error("async.each sell:", err);
-                                callback(err);
-                            });
-                        }
-                    ], constants.PARALLEL_LIMIT, function (err) {
-                        // if (err) console.error("buy/sell:", err);
-                        onSetupOutcome({market: p.market, outcome: outcome});
-                        nextOutcome(err);
-                    });
-                }, function (err) {
-                    if (err) return onFailed(err);
-                    var scalarMinMax = {};
-                    if (marketInfo.type === "scalar") {
-                        scalarMinMax.minValue = minValue;
-                        scalarMinMax.maxValue = maxValue;
-                    }
-                    self.getOrderBook(p.market, scalarMinMax, onSuccess);
+        async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
+          async.parallelLimit([
+            function (callback) {
+              async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
+                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                self.buy({
+                  amount: amount.toFixed(),
+                  price: buyPrice,
+                  market: p.market,
+                  outcome: outcome,
+                  scalarMinMax: scalarMinMax,
+                  onSent: function (res) {
+                    // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
+                  },
+                  onSuccess: function (res) {
+                    // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
+                    onSetupOrder({
+                        tradeId: res.callReturn,
+                        market: p.market,
+                        outcome: outcome,
+                        amount: amount.toFixed(),
+                        buyPrice: buyPrice,
+                        timestamp: res.timestamp,
+                        hash: res.hash,
+                        gasUsed: res.gasUsed
+                      });
+                    nextBuyPrice();
+                  },
+                  onFailed: function (err) {
+                    console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                    nextBuyPrice(err);
+                  }
                 });
+              }, function (err) {
+                if (err) console.error("async.each buy:", err);
+                callback(err);
+              });
             },
-            onFailed: function (err) {
-                console.error("generateOrderBook.buyCompleteSets failed:", err);
-                onFailed(err);
+            function (callback) {
+              async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
+                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                self.sell({
+                  amount: amount.toFixed(),
+                  price: sellPrice,
+                  market: p.market,
+                  outcome: outcome,
+                  scalarMinMax: scalarMinMax,
+                  onSent: function (res) {
+                    // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
+                  },
+                  onSuccess: function (res) {
+                    // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
+                    onSetupOrder({
+                        tradeId: res.callReturn,
+                        market: p.market,
+                        outcome: outcome,
+                        amount: amount.toFixed(),
+                        sellPrice: sellPrice,
+                        timestamp: res.timestamp,
+                        hash: res.hash,
+                        gasUsed: res.gasUsed
+                      });
+                    nextSellPrice();
+                  },
+                  onFailed: function (err) {
+                    console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                    nextSellPrice(err);
+                  }
+                });
+              }, function (err) {
+                if (err) console.error("async.each sell:", err);
+                callback(err);
+              });
             }
+          ], constants.PARALLEL_LIMIT, function (err) {
+            // if (err) console.error("buy/sell:", err);
+            onSetupOutcome({market: p.market, outcome: outcome});
+            nextOutcome(err);
+          });
+        }, function (err) {
+          if (err) return onFailed(err);
+          var scalarMinMax = {};
+          if (marketInfo.type === "scalar") {
+            scalarMinMax.minValue = minValue;
+            scalarMinMax.maxValue = maxValue;
+          }
+          self.getOrderBook(p.market, scalarMinMax, onSuccess);
         });
+      },
+      onFailed: function (err) {
+        console.error("generateOrderBook.buyCompleteSets failed:", err);
+        onFailed(err);
+      }
     });
+  });
 };
 
 },{"./constants":242,"async":80,"augur-abi":1,"bignumber.js":83}],245:[function(require,module,exports){
@@ -41803,79 +41766,79 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var BigNumber = require("bignumber.js");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 var modules = [
-    require("./modules/connect"),
-    require("./modules/transact"),
-    require("./modules/cash"),
-    require("./modules/events"),
-    require("./modules/markets"),
-    require("./modules/buyAndSellShares"),
-    require("./modules/trade"),
-    require("./modules/createBranch"),
-    require("./modules/sendReputation"),
-    require("./modules/makeReports"),
-    require("./modules/collectFees"),
-    require("./modules/createMarket"),
-    require("./modules/compositeGetters"),
-    require("./modules/logs"),
-    require("./modules/abacus"),
-    require("./modules/reporting"),
-    require("./modules/payout"),
-    require("./modules/tradingActions"),
-    require("./modules/positions"),
-    require("./modules/register")
+  require("./modules/connect"),
+  require("./modules/transact"),
+  require("./modules/cash"),
+  require("./modules/events"),
+  require("./modules/markets"),
+  require("./modules/buyAndSellShares"),
+  require("./modules/trade"),
+  require("./modules/createBranch"),
+  require("./modules/sendReputation"),
+  require("./modules/makeReports"),
+  require("./modules/collectFees"),
+  require("./modules/createMarket"),
+  require("./modules/compositeGetters"),
+  require("./modules/logs"),
+  require("./modules/abacus"),
+  require("./modules/reporting"),
+  require("./modules/payout"),
+  require("./modules/tradingActions"),
+  require("./modules/positions"),
+  require("./modules/register")
 ];
 
 function Augur() {
-    this.version = "3.7.0";
+  this.version = "3.7.1";
 
-    this.options = {
-        debug: {
-            tools: false,       // if true, testing tools (test/tools.js) included
-            abi: false,         // debug logging in augur-abi
-            broadcast: false,   // broadcast debug logging in ethrpc
-            connect: false,     // connection debug logging in ethereumjs-connect
-            trading: false,     // trading-related debug logging
-            reporting: false,   // reporting-related debug logging
-            filters: false      // filters-related debug logging
-        },
-        loadZeroVolumeMarkets: true
-    };
-    this.protocol = NODE_JS || document.location.protocol;
+  this.options = {
+    debug: {
+      tools: false,       // if true, testing tools (test/tools.js) included
+      abi: false,         // debug logging in augur-abi
+      broadcast: false,   // broadcast debug logging in ethrpc
+      connect: false,     // connection debug logging in ethereumjs-connect
+      trading: false,     // trading-related debug logging
+      reporting: false,   // reporting-related debug logging
+      filters: false      // filters-related debug logging
+    },
+    loadZeroVolumeMarkets: true
+  };
+  this.protocol = NODE_JS || document.location.protocol;
 
-    this.connection = null;
-    this.coinbase = null;
-    this.from = null;
+  this.connection = null;
+  this.coinbase = null;
+  this.from = null;
 
-    this.constants = require("./constants");
-    this.abi = require("augur-abi");
-    this.utils = require("./utilities");
-    this.errors = require("augur-contracts").errors;
-    this.rpc = require("ethrpc");
-    this.abi.debug = this.options.debug.abi;
-    this.rpc.debug = this.options.debug;
+  this.constants = require("./constants");
+  this.abi = require("augur-abi");
+  this.utils = require("./utilities");
+  this.errors = require("augur-contracts").errors;
+  this.rpc = require("ethrpc");
+  this.abi.debug = this.options.debug.abi;
+  this.rpc.debug = this.options.debug;
 
-    // Load submodules
-    for (var i = 0, len = modules.length; i < len; ++i) {
-        for (var fn in modules[i]) {
-            if (!modules[i].hasOwnProperty(fn)) continue;
-            this[fn] = modules[i][fn].bind(this);
-            this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
-        }
+  // Load submodules
+  for (var i = 0, len = modules.length; i < len; ++i) {
+    for (var fn in modules[i]) {
+      if (!modules[i].hasOwnProperty(fn)) continue;
+      this[fn] = modules[i][fn].bind(this);
+      this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
     }
-    this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.createBatch = require("./batch").bind(this);
-    this.accounts = this.Accounts();
-    this.web = this.accounts; // deprecated
-    this.filters = this.Filters();
-    this.chat = this.Chat();
-    this.augurNode = this.AugurNode();
-    if (this.options.debug.tools) this.tools = require("../test/tools");
-    this.sync();
+  }
+  this.generateOrderBook = require("./generateOrderBook").bind(this);
+  this.createBatch = require("./batch").bind(this);
+  this.accounts = this.Accounts();
+  this.web = this.accounts; // deprecated
+  this.filters = this.Filters();
+  this.chat = this.Chat();
+  this.augurNode = this.AugurNode();
+  if (this.options.debug.tools) this.tools = require("../test/tools");
+  this.sync();
 }
 
 Augur.prototype.Accounts = require("./accounts");
@@ -41905,8 +41868,8 @@ var constants = require("../constants");
 var makeReports = require("./makeReports");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 var ONE = new BigNumber("1", 10);
@@ -41915,398 +41878,398 @@ var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
 
 module.exports = {
 
-    /**
-     * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
-     * @param tradingfee BigNumber
-     * @param price BigNumber
-     * @param range BigNumber
-     * @return BigNumber
-     */
-    calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
-        return tradingFee.times(4).times(price).times(
+  /**
+   * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
+   * @param tradingfee BigNumber
+   * @param price BigNumber
+   * @param range BigNumber
+   * @return BigNumber
+   */
+  calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
+    return tradingFee.times(4).times(price).times(
             constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())
         ).dividedBy(range.times(constants.ONE)).floor();
-    },
+  },
 
-    /**
-     * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
-     * @param tradingfee BigNumber
-     * @param price BigNumber
-     * @param range BigNumber
-     * @return BigNumber
-     */
-    calculateAdjustedTradingFee: function (tradingFee, price, range) {
-        return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
-    },
+  /**
+   * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
+   * @param tradingfee BigNumber
+   * @param price BigNumber
+   * @param range BigNumber
+   * @return BigNumber
+   */
+  calculateAdjustedTradingFee: function (tradingFee, price, range) {
+    return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
+  },
 
-    // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
-    // @return {BigNumbers}
-    calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
-        var fxpAmount = abi.fix(amount);
-        var fxpPrice = abi.fix(price);
-        var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
-        var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
-        var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
-        return {
-            fee: abi.unfix(fee),
-            percentFee: (noFeeCost.gt(constants.ZERO)) ?
-                abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) :
-                constants.ZERO,
-            cost: abi.unfix(noFeeCost.plus(fee)),
-            cash: abi.unfix(noFeeCost.minus(fee))
-        };
-    },
+  // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
+  // @return {BigNumbers}
+  calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
+    var fxpAmount = abi.fix(amount);
+    var fxpPrice = abi.fix(price);
+    var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
+    var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+    var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
+    var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
+    return {
+      fee: abi.unfix(fee),
+      percentFee: (noFeeCost.gt(constants.ZERO)) ?
+        abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) :
+        constants.ZERO,
+      cost: abi.unfix(noFeeCost.plus(fee)),
+      cash: abi.unfix(noFeeCost.minus(fee))
+    };
+  },
 
-    // Calculates adjusted total trade cost at a specified price
-    // @return {BigNumbers}
-    calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
-        var bnAmount = abi.bignum(amount);
-        var bnPrice = abi.bignum(price);
-        var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
-        var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-        var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
-        var noFeeCost = bnAmount.times(bnPrice);
-        return {
-            fee: fee,
-            percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
-            cost: noFeeCost.plus(fee),
-            cash: noFeeCost.minus(fee)
-        };
-    },
+  // Calculates adjusted total trade cost at a specified price
+  // @return {BigNumbers}
+  calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
+    var bnAmount = abi.bignum(amount);
+    var bnPrice = abi.bignum(price);
+    var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+    var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+    var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
+    var noFeeCost = bnAmount.times(bnPrice);
+    return {
+      fee: fee,
+      percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
+      cost: noFeeCost.plus(fee),
+      cash: noFeeCost.minus(fee)
+    };
+  },
 
-    calculateValidityBond: function (tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod) {
-        var bnPeriodLength = abi.bignum(periodLength);
-        var bnBaseReporters = abi.bignum(baseReporters);
-        var bnPast24 = abi.bignum(numEventsCreatedInPast24Hours);
-        var bnNumberEvents = abi.bignum(numEventsInReportPeriod);
-        var bnGasPrice = abi.bignum(this.rpc.gasPrice);
-        var creationFee = abi.bignum("0.03").times(bnBaseReporters).dividedBy(tradingFee);
-        var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
-        if (creationFee.lt(minFee)) creationFee = minFee;
-        return creationFee.plus(bnPast24.dividedBy(bnPeriodLength).plus(1))
+  calculateValidityBond: function (tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod) {
+    var bnPeriodLength = abi.bignum(periodLength);
+    var bnBaseReporters = abi.bignum(baseReporters);
+    var bnPast24 = abi.bignum(numEventsCreatedInPast24Hours);
+    var bnNumberEvents = abi.bignum(numEventsInReportPeriod);
+    var bnGasPrice = abi.bignum(this.rpc.gasPrice);
+    var creationFee = abi.bignum("0.03").times(bnBaseReporters).dividedBy(tradingFee);
+    var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
+    if (creationFee.lt(minFee)) creationFee = minFee;
+    return creationFee.plus(bnPast24.dividedBy(bnPeriodLength).plus(1))
             .dividedBy(bnNumberEvents.plus(1))
             .dividedBy(2)
             .toFixed();
-    },
+  },
 
-    // type: "buy" or "sell"
-    // gasLimit (optional): block gas limit as an integer
-    maxOrdersPerTrade: function (type, gasLimit) {
-        return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
-    },
+  // type: "buy" or "sell"
+  // gasLimit (optional): block gas limit as an integer
+  maxOrdersPerTrade: function (type, gasLimit) {
+    return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
+  },
 
-    // tradeTypes: array of "buy" and/or "sell"
-    sumTradeGas: function (tradeTypes) {
-        var gas = 0;
-        for (var i = 0, n = tradeTypes.length; i < n; ++i) {
-            gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
-        }
-        return gas;
-    },
-
-    sumTrades: function (trade_ids) {
-        var trades = new BigNumber(0);
-        for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
-            trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
-        }
-        return abi.hex(trades, true);
-    },
-
-    makeTradeHash: function (max_value, max_amount, trade_ids) {
-        return utils.sha3([
-            this.sumTrades(trade_ids),
-            abi.fix(max_amount, "hex"),
-            abi.fix(max_value, "hex")
-        ]);
-    },
-
-    calculateFxpTradingFees: function (makerFee, takerFee) {
-        var fxpMakerFee = abi.fix(makerFee);
-        var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
-        var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
-        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-    },
-
-    calculateTradingFees: function (makerFee, takerFee) {
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-    },
-
-    calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
-        var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
-        fxpTradingFee = abi.bignum(tradingFee);
-        fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
-        makerFee = fxpTradingFee.times(fxpMakerProportionOfFee).dividedBy(constants.ONE).floor();
-        takerFee = ONE_POINT_FIVE.times(fxpTradingFee).dividedBy(constants.ONE).floor().minus(makerFee);
-        return {
-            trading: fxpTradingFee,
-            maker: makerFee,
-            taker: takerFee
-        };
-    },
-
-    // expects fixed-point inputs if !isUnfixed
-    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
-        var bnTradingFee, bnMakerProportionOfFee, makerFee;
-        if (!isUnfixed) {
-            bnTradingFee = abi.unfix(tradingFee);
-            bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
-        } else {
-            bnTradingFee = abi.bignum(tradingFee);
-            bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
-        }
-        makerFee = bnTradingFee.times(bnMakerProportionOfFee);
-        if (returnBigNumber) {
-            return {
-                trading: bnTradingFee,
-                maker: makerFee,
-                taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
-            };
-        }
-        return {
-            trading: bnTradingFee.toFixed(),
-            maker: makerFee.toFixed(),
-            taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
-        };
-    },
-
-    parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 9;
-        var OUTCOMES_FIELDS = 3;
-        var info = {};
-        if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-            // marketInfo[0] = marketID
-            // marketInfo[1] = MARKETS.getMakerFees(marketID)
-            // marketInfo[2] = numOutcomes
-            // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
-            // marketInfo[4] = MARKETS.getTradingFee(marketID)
-            // marketInfo[5] = MARKETS.getBranchID(marketID)
-            // marketInfo[6] = MARKETS.getCumScale(marketID)
-            // marketInfo[7] = MARKETS.getCreationTime(marketID)
-            // marketInfo[8] = MARKETS.getVolume(marketID)
-            // marketInfo[9] = INFO.getCreationFee(marketID)
-            // marketInfo[10] = INFO.getCreator(marketID)
-            // tags = MARKETS.returnTags(marketID, outitems=3)
-            // marketInfo[11] = tags[0]
-            // marketInfo[12] = tags[1]
-            // marketInfo[13] = tags[2]
-            var index = 14;
-            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-            info = {
-                id: abi.format_int256(rawInfo[0]),
-                network: this.network_id,
-                makerFee: fees.maker,
-                takerFee: fees.taker,
-                tradingFee: fees.trading,
-                numOutcomes: parseInt(rawInfo[2], 16),
-                tradingPeriod: parseInt(rawInfo[3], 16),
-                branchId: rawInfo[5],
-                numEvents: 1,
-                cumulativeScale: abi.unfix(rawInfo[6], "string"),
-                creationTime: parseInt(rawInfo[7], 16),
-                volume: abi.unfix(rawInfo[8], "string"),
-                creationFee: abi.unfix(rawInfo[9], "string"),
-                author: abi.format_address(rawInfo[10]),
-                tags: [
-                    this.decodeTag(rawInfo[11]),
-                    this.decodeTag(rawInfo[12]),
-                    this.decodeTag(rawInfo[13])
-                ]
-            };
-            info.outcomes = new Array(info.numOutcomes);
-
-            // organize event info
-            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var event = {
-                id: abi.format_int256(rawInfo[index]),
-                endDate: parseInt(rawInfo[index + 1], 16),
-                minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
-                maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
-                numOutcomes: parseInt(rawInfo[index + 5], 16),
-                bond: abi.unfix_signed(rawInfo[index + 6], "string")
-            };
-
-            // event type: binary, categorical, or scalar
-            if (event.numOutcomes > 2) {
-                event.type = "categorical";
-            } else if (event.minValue === "1" && event.maxValue === "2") {
-                event.type = "binary";
-            } else {
-                event.type = "scalar";
-            }
-            info.type = event.type;
-            info.endDate = event.endDate;
-            info.minValue = event.minValue;
-            info.maxValue = event.maxValue;
-            var outcome, proportionCorrect;
-            if (parseInt(rawInfo[index + 2], 16) !== 0) {
-                var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
-                outcome = unfixed.report;
-                info.isIndeterminate = unfixed.isIndeterminate;
-            }
-            if (parseInt(rawInfo[index + 8], 16) !== 0) {
-                proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-            }
-            if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
-            info.reportedOutcome = outcome;
-            info.proportionCorrect = proportionCorrect;
-            info.events = [event];
-            index += EVENTS_FIELDS;
-
-            // organize outcome info
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                info.outcomes[i] = {
-                    id: i + 1,
-                    outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix_signed(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
-                    sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
-                };
-            }
-            index += info.numOutcomes*OUTCOMES_FIELDS;
-
-            // convert description byte array to unicode
-            var descriptionLength = parseInt(rawInfo[index], 16);
-            ++index;
-            if (descriptionLength) {
-                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
-                index += descriptionLength;
-            }
-
-            // convert resolution byte array to unicode
-            var resolutionLength = parseInt(rawInfo[index], 16);
-            ++index;
-            if (resolutionLength) {
-                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-                index += resolutionLength;
-            }
-
-            // convert extraInfo byte array to unicode
-            var extraInfoLength = parseInt(rawInfo[index], 16);
-            if (extraInfoLength) {
-                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
-            }
-        }
-        return info;
-    },
-
-    formatTags: function (tags) {
-        var formattedTags = clone(tags);
-        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
-        if (formattedTags.length) {
-            for (var i = 0; i < formattedTags.length; ++i) {
-                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-                    formattedTags[i] = "0x0";
-                } else {
-                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-                }
-            }
-        }
-        while (formattedTags.length < 3) {
-            formattedTags.push("0x0");
-        }
-        return formattedTags;
-    },
-
-    calculateRequiredMarketValue: function (gasPrice) {
-        gasPrice = abi.bignum(gasPrice);
-        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-    },
-
-    // expects BigNumber inputs
-    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-    },
-
-    shrinkScalarPrice: function (minValue, price) {
-        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-        if (price.constructor !== BigNumber) price = abi.bignum(price);
-        return price.minus(minValue).toFixed();
-    },
-
-    expandScalarPrice: function (minValue, price) {
-        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-        if (price.constructor !== BigNumber) price = abi.bignum(price);
-        return price.plus(minValue).toFixed();
-    },
-
-    adjustScalarSellPrice: function (maxValue, price) {
-        if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
-        if (price.constructor !== BigNumber) price = abi.bignum(price);
-        return maxValue.minus(price).toFixed();
-    },
-
-    roundToPrecision: function (value, minimum, round, roundingMode) {
-        if (value.lt(minimum || constants.PRECISION.zero)) return null;
-        if (value.lt(constants.PRECISION.limit)) {
-            value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
-        } else {
-            value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
-        }
-        return value;
-    },
-
-    parseTradeInfo: function (trade) {
-        var type, round, roundingMode;
-        if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
-
-        // 0x1=buy, 0x2=sell
-        switch (trade[1]) {
-        case "0x1":
-            type = "buy";
-            round = "floor";
-            roundingMode = BigNumber.ROUND_DOWN;
-            break;
-        case "0x2":
-            type = "sell";
-            round = "ceil";
-            roundingMode = BigNumber.ROUND_UP;
-            break;
-        default:
-            return null;
-        }
-
-        var fullPrecisionAmount = abi.unfix(trade[3]);
-        var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
-        if (amount === null) return null;
-
-        var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
-        var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
-        if (price === null) return null;
-
-        return {
-            id: trade[0],
-            type: type,
-            market: trade[2],
-            amount: amount,
-            fullPrecisionAmount: fullPrecisionAmount.toFixed(),
-            price: price,
-            fullPrecisionPrice: fullPrecisionPrice.toFixed(),
-            owner: abi.format_address(trade[5]),
-            block: parseInt(trade[6], 16),
-            outcome: abi.string(trade[7])
-        };
-    },
-
-    decodeTag: function (tag) {
-        try {
-            return (tag && tag !== "0x0" && tag !== "0x") ?
-                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-        } catch (exc) {
-            if (this.options.debug.broadcast) console.error(exc, tag);
-            return null;
-        }
-    },
-
-    base58Decode: function (encoded) {
-        return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
-    },
-
-    base58Encode: function (o) {
-        return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
+  // tradeTypes: array of "buy" and/or "sell"
+  sumTradeGas: function (tradeTypes) {
+    var gas = 0;
+    for (var i = 0, n = tradeTypes.length; i < n; ++i) {
+      gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
     }
+    return gas;
+  },
+
+  sumTrades: function (trade_ids) {
+    var trades = new BigNumber(0);
+    for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+      trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
+    }
+    return abi.hex(trades, true);
+  },
+
+  makeTradeHash: function (max_value, max_amount, trade_ids) {
+    return utils.sha3([
+      this.sumTrades(trade_ids),
+      abi.fix(max_amount, "hex"),
+      abi.fix(max_value, "hex")
+    ]);
+  },
+
+  calculateFxpTradingFees: function (makerFee, takerFee) {
+    var fxpMakerFee = abi.fix(makerFee);
+    var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
+    var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
+    return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+  },
+
+  calculateTradingFees: function (makerFee, takerFee) {
+    var bnMakerFee = abi.bignum(makerFee);
+    var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
+    var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+    return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+  },
+
+  calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+    var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
+    fxpTradingFee = abi.bignum(tradingFee);
+    fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+    makerFee = fxpTradingFee.times(fxpMakerProportionOfFee).dividedBy(constants.ONE).floor();
+    takerFee = ONE_POINT_FIVE.times(fxpTradingFee).dividedBy(constants.ONE).floor().minus(makerFee);
+    return {
+      trading: fxpTradingFee,
+      maker: makerFee,
+      taker: takerFee
+    };
+  },
+
+  // expects fixed-point inputs if !isUnfixed
+  calculateMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+    var bnTradingFee, bnMakerProportionOfFee, makerFee;
+    if (!isUnfixed) {
+      bnTradingFee = abi.unfix(tradingFee);
+      bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
+    } else {
+      bnTradingFee = abi.bignum(tradingFee);
+      bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+    }
+    makerFee = bnTradingFee.times(bnMakerProportionOfFee);
+    if (returnBigNumber) {
+      return {
+        trading: bnTradingFee,
+        maker: makerFee,
+        taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
+      };
+    }
+    return {
+      trading: bnTradingFee.toFixed(),
+      maker: makerFee.toFixed(),
+      taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
+    };
+  },
+
+  parseMarketInfo: function (rawInfo) {
+    var EVENTS_FIELDS = 9;
+    var OUTCOMES_FIELDS = 3;
+    var info = {};
+    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+    // marketInfo[0] = marketID
+    // marketInfo[1] = MARKETS.getMakerFees(marketID)
+    // marketInfo[2] = numOutcomes
+    // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+    // marketInfo[4] = MARKETS.getTradingFee(marketID)
+    // marketInfo[5] = MARKETS.getBranchID(marketID)
+    // marketInfo[6] = MARKETS.getCumScale(marketID)
+    // marketInfo[7] = MARKETS.getCreationTime(marketID)
+    // marketInfo[8] = MARKETS.getVolume(marketID)
+    // marketInfo[9] = INFO.getCreationFee(marketID)
+    // marketInfo[10] = INFO.getCreator(marketID)
+    // tags = MARKETS.returnTags(marketID, outitems=3)
+    // marketInfo[11] = tags[0]
+    // marketInfo[12] = tags[1]
+    // marketInfo[13] = tags[2]
+      var index = 14;
+      var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+      info = {
+        id: abi.format_int256(rawInfo[0]),
+        network: this.network_id,
+        makerFee: fees.maker,
+        takerFee: fees.taker,
+        tradingFee: fees.trading,
+        numOutcomes: parseInt(rawInfo[2], 16),
+        tradingPeriod: parseInt(rawInfo[3], 16),
+        branchId: rawInfo[5],
+        numEvents: 1,
+        cumulativeScale: abi.unfix(rawInfo[6], "string"),
+        creationTime: parseInt(rawInfo[7], 16),
+        volume: abi.unfix(rawInfo[8], "string"),
+        creationFee: abi.unfix(rawInfo[9], "string"),
+        author: abi.format_address(rawInfo[10]),
+        tags: [
+          this.decodeTag(rawInfo[11]),
+          this.decodeTag(rawInfo[12]),
+          this.decodeTag(rawInfo[13])
+        ]
+      };
+      info.outcomes = new Array(info.numOutcomes);
+
+      // organize event info
+      // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+      var event = {
+        id: abi.format_int256(rawInfo[index]),
+        endDate: parseInt(rawInfo[index + 1], 16),
+        minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
+        maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
+        numOutcomes: parseInt(rawInfo[index + 5], 16),
+        bond: abi.unfix_signed(rawInfo[index + 6], "string")
+      };
+
+      // event type: binary, categorical, or scalar
+      if (event.numOutcomes > 2) {
+        event.type = "categorical";
+      } else if (event.minValue === "1" && event.maxValue === "2") {
+        event.type = "binary";
+      } else {
+        event.type = "scalar";
+      }
+      info.type = event.type;
+      info.endDate = event.endDate;
+      info.minValue = event.minValue;
+      info.maxValue = event.maxValue;
+      var outcome, proportionCorrect;
+      if (parseInt(rawInfo[index + 2], 16) !== 0) {
+        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        outcome = unfixed.report;
+        info.isIndeterminate = unfixed.isIndeterminate;
+      }
+      if (parseInt(rawInfo[index + 8], 16) !== 0) {
+        proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+      }
+      if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
+      info.reportedOutcome = outcome;
+      info.proportionCorrect = proportionCorrect;
+      info.events = [event];
+      index += EVENTS_FIELDS;
+
+      // organize outcome info
+      for (var i = 0; i < info.numOutcomes; ++i) {
+        info.outcomes[i] = {
+          id: i + 1,
+          outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
+          price: abi.unfix_signed(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
+          sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
+        };
+      }
+      index += info.numOutcomes*OUTCOMES_FIELDS;
+
+      // convert description byte array to unicode
+      var descriptionLength = parseInt(rawInfo[index], 16);
+      ++index;
+      if (descriptionLength) {
+        info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+        index += descriptionLength;
+      }
+
+      // convert resolution byte array to unicode
+      var resolutionLength = parseInt(rawInfo[index], 16);
+      ++index;
+      if (resolutionLength) {
+        info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+        index += resolutionLength;
+      }
+
+      // convert extraInfo byte array to unicode
+      var extraInfoLength = parseInt(rawInfo[index], 16);
+      if (extraInfoLength) {
+        info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+      }
+    }
+    return info;
+  },
+
+  formatTags: function (tags) {
+    var formattedTags = clone(tags);
+    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+    if (formattedTags.length) {
+      for (var i = 0; i < formattedTags.length; ++i) {
+        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+          formattedTags[i] = "0x0";
+        } else {
+          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
+        }
+      }
+    }
+    while (formattedTags.length < 3) {
+      formattedTags.push("0x0");
+    }
+    return formattedTags;
+  },
+
+  calculateRequiredMarketValue: function (gasPrice) {
+    gasPrice = abi.bignum(gasPrice);
+    return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+  },
+
+  // expects BigNumber inputs
+  calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+  },
+
+  shrinkScalarPrice: function (minValue, price) {
+    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return price.minus(minValue).toFixed();
+  },
+
+  expandScalarPrice: function (minValue, price) {
+    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return price.plus(minValue).toFixed();
+  },
+
+  adjustScalarSellPrice: function (maxValue, price) {
+    if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return maxValue.minus(price).toFixed();
+  },
+
+  roundToPrecision: function (value, minimum, round, roundingMode) {
+    if (value.lt(minimum || constants.PRECISION.zero)) return null;
+    if (value.lt(constants.PRECISION.limit)) {
+      value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
+    } else {
+      value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
+    }
+    return value;
+  },
+
+  parseTradeInfo: function (trade) {
+    var type, round, roundingMode;
+    if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
+
+    // 0x1=buy, 0x2=sell
+    switch (trade[1]) {
+      case "0x1":
+        type = "buy";
+        round = "floor";
+        roundingMode = BigNumber.ROUND_DOWN;
+        break;
+      case "0x2":
+        type = "sell";
+        round = "ceil";
+        roundingMode = BigNumber.ROUND_UP;
+        break;
+      default:
+        return null;
+    }
+
+    var fullPrecisionAmount = abi.unfix(trade[3]);
+    var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
+    if (amount === null) return null;
+
+    var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
+    var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+    if (price === null) return null;
+
+    return {
+      id: trade[0],
+      type: type,
+      market: trade[2],
+      amount: amount,
+      fullPrecisionAmount: fullPrecisionAmount.toFixed(),
+      price: price,
+      fullPrecisionPrice: fullPrecisionPrice.toFixed(),
+      owner: abi.format_address(trade[5]),
+      block: parseInt(trade[6], 16),
+      outcome: abi.string(trade[7])
+    };
+  },
+
+  decodeTag: function (tag) {
+    try {
+      return (tag && tag !== "0x0" && tag !== "0x") ?
+        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+    } catch (exc) {
+      if (this.options.debug.broadcast) console.error(exc, tag);
+      return null;
+    }
+  },
+
+  base58Decode: function (encoded) {
+    return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
+  },
+
+  base58Encode: function (o) {
+    return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
+  }
 };
 
 }).call(this,require("buffer").Buffer)
@@ -42325,160 +42288,160 @@ var constants = require("../constants");
 
 module.exports = {
 
-    cancel: function (trade_id, onSent, onSuccess, onFailed) {
-        if (this.options.debug.trading) {
-            console.log("cancel:", JSON.stringify(trade_id, null, 2));
-        }
-        var self = this;
-        if (trade_id.constructor === Object) {
-            onSent = trade_id.onSent;
-            onSuccess = trade_id.onSuccess;
-            onFailed = trade_id.onFailed;
-            trade_id = trade_id.trade_id;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.BuyAndSellShares.cancel);
-        tx.params = trade_id;
-        if (this.options.debug.trading) {
-            console.log("cancel tx:", JSON.stringify(tx, null, 2));
-        }
-        var prepare = function (result, cb) {
-            if (!result || !result.callReturn) return cb(result);
-            self.rpc.receipt(result.hash, function (receipt) {
-                if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                if (receipt.error) return onFailed(receipt);
-                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    var logs = receipt.logs;
-                    var sig = self.api.events.log_cancel.signature;
-                    result.cashRefund = "0";
-                    var numLogs = logs.length;
-                    var logdata;
-                    for (var i = 0; i < numLogs; ++i) {
-                        if (logs[i].topics[0] === sig) {
-                            logdata = self.rpc.unmarshal(logs[i].data);
-                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                result.cashRefund = abi.unfix(logdata[5], "string");
-                                break;
-                            }
-                        }
-                    }
-                }
-                cb(result);
-            });
-        };
-        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
-    },
-
-    buy: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-        if (this.options.debug.trading) {
-            console.log("buy:", JSON.stringify(amount, null, 2));
-        }
-        if (amount.constructor === Object && amount.amount) {
-            price = amount.price;
-            market = amount.market;
-            outcome = amount.outcome;
-            tradeGroupID = amount.tradeGroupID;
-            scalarMinMax = amount.scalarMinMax;
-            onSent = amount.onSent;
-            onSuccess = amount.onSuccess;
-            onFailed = amount.onFailed;
-            amount = amount.amount;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-        }
-        var tx = clone(this.tx.BuyAndSellShares.buy);
-        tx.params = [
-            abi.fix(amount, "hex"),
-            abi.fix(price, "hex"),
-            market,
-            outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            tradeGroupID || 0
-        ];
-        if (this.options.debug.trading) {
-            console.log("buy tx:", JSON.stringify(tx, null, 2));
-        }
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    sell: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-        if (this.options.debug.trading) {
-            console.log("sell:", JSON.stringify(amount, null, 2));
-        }
-        if (amount.constructor === Object && amount.amount) {
-            price = amount.price;
-            market = amount.market;
-            outcome = amount.outcome;
-            tradeGroupID = amount.tradeGroupID;
-            scalarMinMax = amount.scalarMinMax;
-            onSent = amount.onSent;
-            onSuccess = amount.onSuccess;
-            onFailed = amount.onFailed;
-            amount = amount.amount;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-        }
-        var tx = clone(this.tx.BuyAndSellShares.sell);
-        tx.params = [
-            abi.fix(amount, "hex"),
-            abi.fix(price, "hex"),
-            market,
-            outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            "0x0",
-            tradeGroupID || 0
-        ];
-        if (this.options.debug.trading) {
-            console.log("sell tx:", JSON.stringify(tx, null, 2));
-        }
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    shortAsk: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-        if (this.options.debug.trading) {
-            console.log("shortAsk:", JSON.stringify(amount, null, 2));
-        }
-        if (amount.constructor === Object && amount.amount) {
-            price = amount.price;
-            market = amount.market;
-            outcome = amount.outcome;
-            tradeGroupID = amount.tradeGroupID;
-            scalarMinMax = amount.scalarMinMax;
-            onSent = amount.onSent;
-            onSuccess = amount.onSuccess;
-            onFailed = amount.onFailed;
-            amount = amount.amount;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-            price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-        }
-        var tx = clone(this.tx.BuyAndSellShares.shortAsk);
-        tx.params = [
-            abi.fix(amount, "hex"),
-            abi.fix(price, "hex"),
-            market,
-            outcome,
-            abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-            tradeGroupID || 0
-        ];
-        if (this.options.debug.trading) {
-            console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
-        }
-        return this.transact(tx, onSent, onSuccess, onFailed);
+  cancel: function (trade_id, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("cancel:", JSON.stringify(trade_id, null, 2));
     }
+    var self = this;
+    if (trade_id.constructor === Object) {
+      onSent = trade_id.onSent;
+      onSuccess = trade_id.onSuccess;
+      onFailed = trade_id.onFailed;
+      trade_id = trade_id.trade_id;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    var tx = clone(this.tx.BuyAndSellShares.cancel);
+    tx.params = trade_id;
+    if (this.options.debug.trading) {
+      console.log("cancel tx:", JSON.stringify(tx, null, 2));
+    }
+    var prepare = function (result, cb) {
+      if (!result || !result.callReturn) return cb(result);
+      self.rpc.receipt(result.hash, function (receipt) {
+        if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+        if (receipt.error) return onFailed(receipt);
+        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+          var logs = receipt.logs;
+          var sig = self.api.events.log_cancel.signature;
+          result.cashRefund = "0";
+          var numLogs = logs.length;
+          var logdata;
+          for (var i = 0; i < numLogs; ++i) {
+            if (logs[i].topics[0] === sig) {
+              logdata = self.rpc.unmarshal(logs[i].data);
+              if (logdata && logdata.constructor === Array && logdata.length) {
+                result.cashRefund = abi.unfix(logdata[5], "string");
+                break;
+              }
+            }
+          }
+        }
+        cb(result);
+      });
+    };
+    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+  },
+
+  buy: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("buy:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.buy);
+    tx.params = [
+      abi.fix(amount, "hex"),
+      abi.fix(price, "hex"),
+      market,
+      outcome,
+      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+      tradeGroupID || 0
+    ];
+    if (this.options.debug.trading) {
+      console.log("buy tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  sell: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("sell:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.sell);
+    tx.params = [
+      abi.fix(amount, "hex"),
+      abi.fix(price, "hex"),
+      market,
+      outcome,
+      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+      "0x0",
+      tradeGroupID || 0
+    ];
+    if (this.options.debug.trading) {
+      console.log("sell tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  shortAsk: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("shortAsk:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.shortAsk);
+    tx.params = [
+      abi.fix(amount, "hex"),
+      abi.fix(price, "hex"),
+      market,
+      outcome,
+      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
+      tradeGroupID || 0
+    ];
+    if (this.options.debug.trading) {
+      console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"clone":121}],248:[function(require,module,exports){
@@ -42496,42 +42459,42 @@ var constants = require("../constants");
 
 module.exports = {
 
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        if (to && to.constructor === Object) {
-            value = to.value;
-            from = to.from;
-            onSent = to.onSent;
-            onSuccess = to.onSuccess;
-            onFailed = to.onFailed;
-            to = to.to;
-        }
-        return this.transact({
-            from: from,
-            to: to,
-            value: abi.fix(value, "hex"),
-            returns: "null",
-            gas: "0xcf08"
-        }, onSent, onSuccess, onFailed);
-    },
-
-    depositEther: function (value, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.Cash.depositEther);
-        var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
-        tx.value = abi.fix(unpacked.params[0], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    getCashBalance: function (account, callback) {
-        return this.Cash.balance(account, callback);
-    },
-
-    sendCash: function (recver, value, onSent, onSuccess, onFailed) {
-        return this.Cash.send(recver, value, onSent, onSuccess, onFailed);
-    },
-
-    sendCashFrom: function (recver, value, from, onSent, onSuccess, onFailed) {
-        return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
+  sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
+    if (to && to.constructor === Object) {
+      value = to.value;
+      from = to.from;
+      onSent = to.onSent;
+      onSuccess = to.onSuccess;
+      onFailed = to.onFailed;
+      to = to.to;
     }
+    return this.transact({
+      from: from,
+      to: to,
+      value: abi.fix(value, "hex"),
+      returns: "null",
+      gas: "0xcf08"
+    }, onSent, onSuccess, onFailed);
+  },
+
+  depositEther: function (value, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.Cash.depositEther);
+    var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
+    tx.value = abi.fix(unpacked.params[0], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+  },
+
+  getCashBalance: function (account, callback) {
+    return this.Cash.balance(account, callback);
+  },
+
+  sendCash: function (recver, value, onSent, onSuccess, onFailed) {
+    return this.Cash.send(recver, value, onSent, onSuccess, onFailed);
+  },
+
+  sendCashFrom: function (recver, value, from, onSent, onSuccess, onFailed) {
+    return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"clone":121}],249:[function(require,module,exports){
@@ -42549,58 +42512,58 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (branch && branch.constructor === Object) {
-            sender = branch.sender;
-            periodLength = branch.periodLength;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        if (this.getCurrentPeriodProgress(periodLength) < 50) {
-            return onFailed({
-                "-2": "needs to be second half of reporting period to claim rep"
-            });
-        }
-        var tx = clone(this.tx.CollectFees.collectFees);
-        tx.params = [branch, sender];
-        this.getVotePeriod(branch, function (period) {
-            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                if (self.options.debug.reporting) {
-                    console.log("Fees collected:", branch, sender, period - 1, feesCollected);
-                }
-                if (feesCollected === "1") return onSuccess({callReturn: "2"});
-                self.rpc.getGasPrice(function (gasPrice) {
-                    tx.gasPrice = gasPrice;
-                    tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-                    var prepare = function (res, cb) {
-                        if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                            return cb(res);
-                        }
-                        self.getVotePeriod(branch, function (period) {
-                            self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                                if (feesCollected !== "1") {
-                                    res.callReturn = "2";
-                                    return cb(res);
-                                }
-                                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                                    if (parseInt(afterRep, 10) <= 1) {
-                                        res.callReturn = "2";
-                                        return cb(res);
-                                    }
-                                    res.callReturn = "1";
-                                    return cb(res);
-                                });
-                            });
-                        });
-                    };
-                    return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
-                });
-            });
-        });
+  collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch && branch.constructor === Object) {
+      sender = branch.sender;
+      periodLength = branch.periodLength;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
     }
+    if (this.getCurrentPeriodProgress(periodLength) < 50) {
+      return onFailed({
+        "-2": "needs to be second half of reporting period to claim rep"
+      });
+    }
+    var tx = clone(this.tx.CollectFees.collectFees);
+    tx.params = [branch, sender];
+    this.getVotePeriod(branch, function (period) {
+      self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+        if (self.options.debug.reporting) {
+          console.log("Fees collected:", branch, sender, period - 1, feesCollected);
+        }
+        if (feesCollected === "1") return onSuccess({callReturn: "2"});
+        self.rpc.getGasPrice(function (gasPrice) {
+          tx.gasPrice = gasPrice;
+          tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
+          var prepare = function (res, cb) {
+            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
+              return cb(res);
+            }
+            self.getVotePeriod(branch, function (period) {
+              self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                if (feesCollected !== "1") {
+                  res.callReturn = "2";
+                  return cb(res);
+                }
+                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                  if (parseInt(afterRep, 10) <= 1) {
+                    res.callReturn = "2";
+                    return cb(res);
+                  }
+                  res.callReturn = "1";
+                  return cb(res);
+                });
+              });
+            });
+          };
+          return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+        });
+      });
+    });
+  }
 };
 
 },{"../utilities":266,"augur-abi":1,"bignumber.js":83,"clone":121}],250:[function(require,module,exports){
@@ -42619,343 +42582,343 @@ var constants = require("../constants");
 
 module.exports = {
 
-    // load each batch of marketdata sequentially and recursively until complete
-    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-        var self = this;
-        var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
-        this.getMarketsInfo({
-            branch: branchID,
-            offset: startIndex,
-            numMarketsToLoad: numMarketsToLoad,
-            volumeMin: volumeMin,
-            volumeMax: volumeMax
-        }, function (marketsData) {
-            if (!marketsData || marketsData.error) {
-                chunkCB(marketsData);
-            } else {
-                chunkCB(null, marketsData);
-            }
-            var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
-            if (isDesc && startIndex > 0) {
-                setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-                }, pause);
-            } else if (!isDesc && startIndex + chunkSize < numMarkets) {
-                setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-                }, pause);
-            } else if (utils.is_function(nextPass)) {
-                setTimeout(function () { nextPass(); }, pause);
-            }
-        });
-    },
+  // load each batch of marketdata sequentially and recursively until complete
+  loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+    var self = this;
+    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
+    this.getMarketsInfo({
+      branch: branchID,
+      offset: startIndex,
+      numMarketsToLoad: numMarketsToLoad,
+      volumeMin: volumeMin,
+      volumeMax: volumeMax
+    }, function (marketsData) {
+      if (!marketsData || marketsData.error) {
+        chunkCB(marketsData);
+      } else {
+        chunkCB(null, marketsData);
+      }
+      var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
+      if (isDesc && startIndex > 0) {
+        setTimeout(function () {
+          self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        }, pause);
+      } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+        setTimeout(function () {
+          self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        }, pause);
+      } else if (utils.is_function(nextPass)) {
+        setTimeout(function () { nextPass(); }, pause);
+      }
+    });
+  },
 
-    loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
-        var self = this;
+  loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
+    var self = this;
 
-        // load the total number of markets
-        this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-            var numMarkets = parseInt(numMarketsRaw, 10);
-            var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+    // load the total number of markets
+    this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+      var numMarkets = parseInt(numMarketsRaw, 10);
+      var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
 
-            // load markets in batches
-            // first pass: only markets with nonzero volume
-            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
+      // load markets in batches
+      // first pass: only markets with nonzero volume
+      self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
 
-                // second pass: zero-volume markets
-                if (self.options.loadZeroVolumeMarkets) {
-                    self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
-                }
-            });
-        });
-    },
+        // second pass: zero-volume markets
+        if (self.options.loadZeroVolumeMarkets) {
+          self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+        }
+      });
+    });
+  },
 
-    loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
-        var self = this;
+  loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
+    var self = this;
 
         // Try hitting a cache node, if available
-        if (!this.augurNode.nodes.length) {
-            return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-        }
-        this.augurNode.getMarketsInfo(branchID, function (err, result) {
-            if (err) {
-                console.warn("cache node getMarketsInfo failed:", err);
-
-                // Abandon the use of cache nodes since there was a connection issue.
-                self.augurNode.nodes = [];
-
-                // fallback to loading in batches from chain
-                return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-            }
-            chunkCB(null, JSON.parse(result));
-        });
-    },
-
-    loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
-        this.getCashBalance(accountID, function (result) {
-            if (!result || result.error) return cbEther(result);
-            return cbEther(null, abi.string(result));
-        });
-        this.getRepBalance(branchID, accountID, function (result) {
-            if (!result || result.error) return cbRep(result);
-            return cbRep(null, abi.string(result));
-        });
-        this.rpc.balance(accountID, function (wei) {
-            if (!wei || wei.error) return cbRealEther(wei);
-            return cbRealEther(null, abi.unfix(wei, "string"));
-        });
-    },
-
-    finishLoadBranch: function (branch, callback) {
-        if (branch.periodLength && branch.description && branch.baseReporters) {
-            callback(null, branch);
-        }
-    },
-
-    loadBranch: function (branchID, callback) {
-        var self = this;
-        var branch = {id: abi.hex(branchID)};
-        this.getPeriodLength(branchID, function (periodLength) {
-            if (!periodLength || periodLength.error) return callback(periodLength);
-            branch.periodLength = periodLength;
-            self.finishLoadBranch(branch, callback);
-        });
-        this.getDescription(branchID, function (description) {
-            if (!description || description.error) return callback(description);
-            branch.description = description;
-            self.finishLoadBranch(branch, callback);
-        });
-        this.getBaseReporters(branchID, function (baseReporters) {
-            if (!baseReporters || baseReporters.error) return callback(baseReporters);
-            branch.baseReporters = parseInt(baseReporters, 10);
-            self.finishLoadBranch(branch, callback);
-        });
-    },
-
-    parsePositionInMarket: function (positionInMarket) {
-        if (!positionInMarket || positionInMarket.error) return positionInMarket;
-        var numOutcomes = positionInMarket.length;
-        var position = {};
-        for (var i = 0; i < numOutcomes; ++i) {
-            position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
-        }
-        return position;
-    },
-
-    getPositionInMarket: function (market, account, callback) {
-        if (!callback && utils.is_function(account)) {
-            callback = account;
-            account = null;
-        }
-        if (market && market.market) {
-            account = market.account;
-            callback = callback || market.callback;
-            market = market.market;
-        }
-        return this.CompositeGetters.getPositionInMarket(
-            market,
-            account || this.from,
-            callback);
-    },
-
-    adjustScalarOrder: function (order, minValue) {
-        order.price = this.expandScalarPrice(minValue, order.price);
-        order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
-        return order;
-    },
-
-    parseOrderBook: function (orderArray, scalarMinMax) {
-        if (!orderArray || orderArray.error) return orderArray;
-        var minValue, order;
-        var isScalar = scalarMinMax &&
-            scalarMinMax.minValue !== undefined &&
-            scalarMinMax.maxValue !== undefined;
-        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-        var numOrders = orderArray.length / 8;
-        var orderBook = {buy: {}, sell: {}};
-        for (var i = 0; i < numOrders; ++i) {
-            order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-            if (order) {
-                if (isScalar) order = this.adjustScalarOrder(order, minValue);
-                orderBook[order.type][order.id] = order;
-            }
-        }
-        return orderBook;
-    },
-
-    // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-    getOrderBook: function (market, scalarMinMax, callback) {
-        var self = this;
-        if (!callback && utils.is_function(scalarMinMax)) {
-            callback = scalarMinMax;
-            scalarMinMax = null;
-        }
-        var offset, numTradesToLoad;
-        if (market && market.market) {
-            offset = market.offset;
-            numTradesToLoad = market.numTradesToLoad;
-            scalarMinMax = scalarMinMax || market.scalarMinMax;
-            callback = callback || market.callback;
-            market = market.market;
-        }
-        var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = [market, offset || 0, numTradesToLoad || 0];
-        return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
-    },
-
-    validateMarketInfo: function (marketInfo) {
-        if (!marketInfo) return null;
-        var parsedMarketInfo = this.parseMarketInfo(marketInfo);
-        if (!parsedMarketInfo.numOutcomes) return null;
-        return parsedMarketInfo;
-    },
-
-    // account is optional, if provided will return sharesPurchased
-    getMarketInfo: function (market, account, callback) {
-        if (market && market.market) {
-            callback = callback || market.callback;
-            account = market.account;
-            market = market.market;
-        }
-        if (!callback && utils.is_function(account)) {
-            callback = account;
-            account = null;
-        }
-        return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
-    },
-
-    parseBatchMarketInfo: function (marketsArray, numMarkets) {
-        var len, shift, rawInfo, info, marketID;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
-        }
-        var marketsInfo = {};
-        var totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = abi.format_int256(marketsArray[shift]);
-            info = this.parseMarketInfo(rawInfo);
-            if (info && info.numOutcomes) {
-                marketsInfo[marketID] = info;
-                marketsInfo[marketID].sortOrder = i;
-            }
-            totalLen += len;
-        }
-        return marketsInfo;
-    },
-
-    batchGetMarketInfo: function (marketIDs, account, callback) {
-        if (!callback && utils.is_function(account)) {
-            callback = account;
-            account = null;
-        }
-        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-        tx.params = [marketIDs, account || 0];
-        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
-    },
-
-    parseMarketsInfo: function (marketsArray, branch) {
-        var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return null;
-        }
-        var numMarkets = parseInt(marketsArray.shift(), 16);
-        var marketsInfo = {};
-        var totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            marketID = abi.format_int256(marketsArray[shift]);
-            fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
-            minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
-            maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
-            numOutcomes = parseInt(marketsArray[shift + 13], 16);
-            if (numOutcomes > 2) {
-                type = "categorical";
-            } else if (minValue === "1" && maxValue === "2") {
-                type = "binary";
-            } else {
-                type = "scalar";
-            }
-            reportedOutcome = abi.hex(marketsArray[shift + 14], true);
-            if (!abi.unfix(reportedOutcome, "number")) {
-                reportedOutcome = undefined;
-                isIndeterminate = undefined;
-            } else {
-                unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
-                reportedOutcome = unfixed.report;
-                isIndeterminate = unfixed.isIndeterminate;
-            }
-            marketsInfo[marketID] = {
-                sortOrder: i,
-                id: marketID,
-                branchId: branch,
-                tradingPeriod: parseInt(marketsArray[shift + 1], 16),
-                tradingFee: fees.trading,
-                makerFee: fees.maker,
-                takerFee: fees.taker,
-                creationTime: parseInt(marketsArray[shift + 3], 16),
-                volume: abi.unfix(marketsArray[shift + 4], "string"),
-                tags: [
-                    this.decodeTag(marketsArray[shift + 5]),
-                    this.decodeTag(marketsArray[shift + 6]),
-                    this.decodeTag(marketsArray[shift + 7])
-                ],
-                endDate: parseInt(marketsArray[shift + 8], 16),
-                eventID: abi.format_int256(marketsArray[shift + 10]),
-                minValue: minValue,
-                maxValue: maxValue,
-                numOutcomes: numOutcomes,
-                type: type,
-                reportedOutcome: reportedOutcome,
-                isIndeterminate: isIndeterminate,
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
-            };
-            totalLen += len;
-        }
-        return marketsInfo;
-    },
-
-    getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
-        var self = this;
-        if (!callback && utils.is_function(offset)) {
-            callback = offset;
-            offset = null;
-            numMarketsToLoad = null;
-            volumeMin = null;
-            volumeMax = null;
-        }
-        if (branch && branch.branch) {
-            offset = branch.offset;
-            numMarketsToLoad = branch.numMarketsToLoad;
-            volumeMin = branch.volumeMin;
-            volumeMax = branch.volumeMax;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        // Only use cache if there are nodes available and no offset+numMarkets specified
-        // Can't rely on cache for partial markets fetches since no good way to verify partial data.
-        // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
-        branch = branch || this.constants.DEFAULT_BRANCH_ID;
-        offset = offset || 0;
-        numMarketsToLoad = numMarketsToLoad || 0;
-        volumeMin = volumeMin || 0;
-        volumeMax = volumeMax || 0;
-        if (!this.augurNode.nodes.length) {
-            var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-            tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
-            tx.timeout = 240000;
-            return this.fire(tx, callback, this.parseMarketsInfo, branch);
-        }
-        this.augurNode.getMarketsInfo(branch, function (err, result) {
-            if (err) {
-                return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
-            }
-            callback(JSON.parse(result));
-        });
+    if (!this.augurNode.nodes.length) {
+      return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
     }
+    this.augurNode.getMarketsInfo(branchID, function (err, result) {
+      if (err) {
+        console.warn("cache node getMarketsInfo failed:", err);
+
+        // Abandon the use of cache nodes since there was a connection issue.
+        self.augurNode.nodes = [];
+
+        // fallback to loading in batches from chain
+        return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+      }
+      chunkCB(null, JSON.parse(result));
+    });
+  },
+
+  loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
+    this.getCashBalance(accountID, function (result) {
+      if (!result || result.error) return cbEther(result);
+      return cbEther(null, abi.string(result));
+    });
+    this.getRepBalance(branchID, accountID, function (result) {
+      if (!result || result.error) return cbRep(result);
+      return cbRep(null, abi.string(result));
+    });
+    this.rpc.balance(accountID, function (wei) {
+      if (!wei || wei.error) return cbRealEther(wei);
+      return cbRealEther(null, abi.unfix(wei, "string"));
+    });
+  },
+
+  finishLoadBranch: function (branch, callback) {
+    if (branch.periodLength && branch.description && branch.baseReporters) {
+      callback(null, branch);
+    }
+  },
+
+  loadBranch: function (branchID, callback) {
+    var self = this;
+    var branch = {id: abi.hex(branchID)};
+    this.getPeriodLength(branchID, function (periodLength) {
+      if (!periodLength || periodLength.error) return callback(periodLength);
+      branch.periodLength = periodLength;
+      self.finishLoadBranch(branch, callback);
+    });
+    this.getDescription(branchID, function (description) {
+      if (!description || description.error) return callback(description);
+      branch.description = description;
+      self.finishLoadBranch(branch, callback);
+    });
+    this.getBaseReporters(branchID, function (baseReporters) {
+      if (!baseReporters || baseReporters.error) return callback(baseReporters);
+      branch.baseReporters = parseInt(baseReporters, 10);
+      self.finishLoadBranch(branch, callback);
+    });
+  },
+
+  parsePositionInMarket: function (positionInMarket) {
+    if (!positionInMarket || positionInMarket.error) return positionInMarket;
+    var numOutcomes = positionInMarket.length;
+    var position = {};
+    for (var i = 0; i < numOutcomes; ++i) {
+      position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
+    }
+    return position;
+  },
+
+  getPositionInMarket: function (market, account, callback) {
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    if (market && market.market) {
+      account = market.account;
+      callback = callback || market.callback;
+      market = market.market;
+    }
+    return this.CompositeGetters.getPositionInMarket(
+      market,
+      account || this.from,
+      callback);
+  },
+
+  adjustScalarOrder: function (order, minValue) {
+    order.price = this.expandScalarPrice(minValue, order.price);
+    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice);
+    return order;
+  },
+
+  parseOrderBook: function (orderArray, scalarMinMax) {
+    if (!orderArray || orderArray.error) return orderArray;
+    var minValue, order;
+    var isScalar = scalarMinMax &&
+      scalarMinMax.minValue !== undefined &&
+      scalarMinMax.maxValue !== undefined;
+    if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
+    var numOrders = orderArray.length / 8;
+    var orderBook = {buy: {}, sell: {}};
+    for (var i = 0; i < numOrders; ++i) {
+      order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+      if (order) {
+        if (isScalar) order = this.adjustScalarOrder(order, minValue);
+        orderBook[order.type][order.id] = order;
+      }
+    }
+    return orderBook;
+  },
+
+  // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
+  getOrderBook: function (market, scalarMinMax, callback) {
+    var self = this;
+    if (!callback && utils.is_function(scalarMinMax)) {
+      callback = scalarMinMax;
+      scalarMinMax = null;
+    }
+    var offset, numTradesToLoad;
+    if (market && market.market) {
+      offset = market.offset;
+      numTradesToLoad = market.numTradesToLoad;
+      scalarMinMax = scalarMinMax || market.scalarMinMax;
+      callback = callback || market.callback;
+      market = market.market;
+    }
+    var tx = clone(this.tx.CompositeGetters.getOrderBook);
+    tx.params = [market, offset || 0, numTradesToLoad || 0];
+    return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
+  },
+
+  validateMarketInfo: function (marketInfo) {
+    if (!marketInfo) return null;
+    var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+    if (!parsedMarketInfo.numOutcomes) return null;
+    return parsedMarketInfo;
+  },
+
+  // account is optional, if provided will return sharesPurchased
+  getMarketInfo: function (market, account, callback) {
+    if (market && market.market) {
+      callback = callback || market.callback;
+      account = market.account;
+      market = market.market;
+    }
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
+  },
+
+  parseBatchMarketInfo: function (marketsArray, numMarkets) {
+    var len, shift, rawInfo, info, marketID;
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+      return marketsArray;
+    }
+    var marketsInfo = {};
+    var totalLen = 0;
+    for (var i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen]);
+      shift = totalLen + 1;
+      rawInfo = marketsArray.slice(shift, shift + len - 1);
+      marketID = abi.format_int256(marketsArray[shift]);
+      info = this.parseMarketInfo(rawInfo);
+      if (info && info.numOutcomes) {
+        marketsInfo[marketID] = info;
+        marketsInfo[marketID].sortOrder = i;
+      }
+      totalLen += len;
+    }
+    return marketsInfo;
+  },
+
+  batchGetMarketInfo: function (marketIDs, account, callback) {
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+    tx.params = [marketIDs, account || 0];
+    return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+  },
+
+  parseMarketsInfo: function (marketsArray, branch) {
+    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+      return null;
+    }
+    var numMarkets = parseInt(marketsArray.shift(), 16);
+    var marketsInfo = {};
+    var totalLen = 0;
+    for (var i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen]);
+      shift = totalLen + 1;
+      marketID = abi.format_int256(marketsArray[shift]);
+      fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+      minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
+      maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
+      numOutcomes = parseInt(marketsArray[shift + 13], 16);
+      if (numOutcomes > 2) {
+        type = "categorical";
+      } else if (minValue === "1" && maxValue === "2") {
+        type = "binary";
+      } else {
+        type = "scalar";
+      }
+      reportedOutcome = abi.hex(marketsArray[shift + 14], true);
+      if (!abi.unfix(reportedOutcome, "number")) {
+        reportedOutcome = undefined;
+        isIndeterminate = undefined;
+      } else {
+        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+        reportedOutcome = unfixed.report;
+        isIndeterminate = unfixed.isIndeterminate;
+      }
+      marketsInfo[marketID] = {
+        sortOrder: i,
+        id: marketID,
+        branchId: branch,
+        tradingPeriod: parseInt(marketsArray[shift + 1], 16),
+        tradingFee: fees.trading,
+        makerFee: fees.maker,
+        takerFee: fees.taker,
+        creationTime: parseInt(marketsArray[shift + 3], 16),
+        volume: abi.unfix(marketsArray[shift + 4], "string"),
+        tags: [
+          this.decodeTag(marketsArray[shift + 5]),
+          this.decodeTag(marketsArray[shift + 6]),
+          this.decodeTag(marketsArray[shift + 7])
+        ],
+        endDate: parseInt(marketsArray[shift + 8], 16),
+        eventID: abi.format_int256(marketsArray[shift + 10]),
+        minValue: minValue,
+        maxValue: maxValue,
+        numOutcomes: numOutcomes,
+        type: type,
+        reportedOutcome: reportedOutcome,
+        isIndeterminate: isIndeterminate,
+        description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
+      };
+      totalLen += len;
+    }
+    return marketsInfo;
+  },
+
+  getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
+    var self = this;
+    if (!callback && utils.is_function(offset)) {
+      callback = offset;
+      offset = null;
+      numMarketsToLoad = null;
+      volumeMin = null;
+      volumeMax = null;
+    }
+    if (branch && branch.branch) {
+      offset = branch.offset;
+      numMarketsToLoad = branch.numMarketsToLoad;
+      volumeMin = branch.volumeMin;
+      volumeMax = branch.volumeMax;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    // Only use cache if there are nodes available and no offset+numMarkets specified
+    // Can't rely on cache for partial markets fetches since no good way to verify partial data.
+    // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
+    branch = branch || this.constants.DEFAULT_BRANCH_ID;
+    offset = offset || 0;
+    numMarketsToLoad = numMarketsToLoad || 0;
+    volumeMin = volumeMin || 0;
+    volumeMax = volumeMax || 0;
+    if (!this.augurNode.nodes.length) {
+      var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+      tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
+      tx.timeout = 240000;
+      return this.fire(tx, callback, this.parseMarketsInfo, branch);
+    }
+    this.augurNode.getMarketsInfo(branch, function (err, result) {
+      if (err) {
+        return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
+      }
+      callback(JSON.parse(result));
+    });
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"bignumber.js":83,"clone":121}],251:[function(require,module,exports){
@@ -42974,188 +42937,188 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    /**
-     * Direct no-frills bindings to Augur's Serpent (contract) API.
-     *  - Parameter positions and types are the same as the underlying
-     *    contract method's parameters.
-     *  - Parameters should be passed in exactly as they would be
-     *    passed to the contract method (e.g., if the contract method
-     *    expects a fixed-point number, you must do that conversion
-     *    yourself and pass the fixed-point number in).
-     */
-    bindContractMethod: function (contract, method) {
-        var self = this;
-        return function (args) {
-            var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
-            tx = clone(self.api.functions[contract][method]);
-            if (!arguments) {
-                if (!tx.send) return self.fire(tx);
-                return self.transact(tx);
+  /**
+   * Direct no-frills bindings to Augur's Serpent (contract) API.
+   *  - Parameter positions and types are the same as the underlying
+   *    contract method's parameters.
+   *  - Parameters should be passed in exactly as they would be
+   *    passed to the contract method (e.g., if the contract method
+   *    expects a fixed-point number, you must do that conversion
+   *    yourself and pass the fixed-point number in).
+   */
+  bindContractMethod: function (contract, method) {
+    var self = this;
+    return function (args) {
+      var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
+      tx = clone(self.api.functions[contract][method]);
+      if (!arguments) {
+        if (!tx.send) return self.fire(tx);
+        return self.transact(tx);
+      }
+      params = Array.prototype.slice.call(arguments);
+      numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
+      if (!tx.send) {
+        if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
+          cb = params[0].callback;
+          if (numInputs) {
+            tx.params = new Array(numInputs);
+            for (i = 0; i < numInputs; ++i) {
+              tx.params[i] = params[0][tx.inputs[i]];
             }
-            params = Array.prototype.slice.call(arguments);
-            numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
-            if (!tx.send) {
-                if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
-                    cb = params[0].callback;
-                    if (numInputs) {
-                        tx.params = new Array(numInputs);
-                        for (i = 0; i < numInputs; ++i) {
-                            tx.params[i] = params[0][tx.inputs[i]];
-                        }
-                    }
-                } else {
-                    if (numInputs) {
-                        tx.params = new Array(numInputs);
-                        for (i = 0; i < numInputs; ++i) {
-                            tx.params[i] = params[i];
-                        }
-                    }
-                    if (params.length > numInputs && utils.is_function(params[numInputs])) {
-                        cb = params[numInputs];
-                    }
-                }
-                if (tx.fixed && tx.fixed.length) {
-                    numFixed = tx.fixed.length;
-                    for (i = 0; i < numFixed; ++i) {
-                        tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
-                    }
-                }
-                if (!tx.parser) {
-                    if (!utils.is_function(cb)) return self.fire(tx);
-                    return self.fire(tx, cb);
-                }
-                if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
-                return self.fire(tx, cb, self[tx.parser]);
+          }
+        } else {
+          if (numInputs) {
+            tx.params = new Array(numInputs);
+            for (i = 0; i < numInputs; ++i) {
+              tx.params[i] = params[i];
             }
-            if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
-                onSent = params[0].onSent;
-                onSuccess = params[0].onSuccess;
-                onFailed = params[0].onFailed;
-                if (numInputs) {
-                    tx.params = new Array(numInputs);
-                    for (i = 0; i < tx.inputs.length; ++i) {
-                        tx.params[i] = params[0][tx.inputs[i]];
-                    }
-                }
-            } else {
-                if (numInputs) {
-                    tx.params = new Array(numInputs);
-                    for (i = 0; i < tx.inputs.length; ++i) {
-                        tx.params[i] = params[i];
-                    }
-                }
-                if (params.length > numInputs && utils.is_function(params[numInputs])) {
-                    onSent = params[numInputs];
-                }
-                if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
-                    onSuccess = params[numInputs + 1];
-                }
-                if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
-                    onFailed = params[numInputs + 2];
-                }
-            }
-            if (tx.fixed && tx.fixed.length) {
-                numFixed = tx.fixed.length;
-                for (i = 0; i < numFixed; ++i) {
-                    tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
-                }
-            }
-            if (!tx.parser) {
-                return self.transact(tx, onSent, onSuccess, onFailed);
-            }
-            return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
-        };
-    },
-    bindContractAPI: function (methods) {
-        methods = methods || this.api.functions;
-        for (var contract in methods) {
-            if (!methods.hasOwnProperty(contract)) continue;
-            this[contract] = {};
-            for (var method in methods[contract]) {
-                if (!methods[contract].hasOwnProperty(method)) continue;
-                this[contract][method] = this.bindContractMethod(contract, method);
-                if (!this[method]) this[method] = this[contract][method];
-            }
+          }
+          if (params.length > numInputs && utils.is_function(params[numInputs])) {
+            cb = params[numInputs];
+          }
         }
-        return methods;
-    },
-
-    sync: function () {
-        if (connector && connector.constructor === Object) {
-            this.network_id = connector.network_id;
-            this.from = connector.from;
-            this.coinbase = connector.coinbase;
-            this.rpc = connector.rpc;
-            this.api = connector.api;
-            this.tx = connector.tx;
-            this.contracts = connector.contracts;
-            this.init_contracts = connector.init_contracts;
-            this.bindContractAPI();
-            return true;
+        if (tx.fixed && tx.fixed.length) {
+          numFixed = tx.fixed.length;
+          for (i = 0; i < numFixed; ++i) {
+            tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+          }
         }
-        return false;
-    },
-
-    useAccount: function (account) {
-        connector.from = account;
-        connector.from_field_tx(account);
-        this.sync();
-    },
-
-    updateContracts: function (newContracts) {
-        if (connector && connector.constructor === Object) {
-            connector.contracts = clone(newContracts);
-            connector.update_contracts();
-            return this.sync();
+        if (!tx.parser) {
+          if (!utils.is_function(cb)) return self.fire(tx);
+          return self.fire(tx, cb);
         }
-        return false;
-    },
-
-    /** 
-     * @param rpcinfo {Object|string=} Two forms accepted:
-     *    1. Object with connection info fields:
-     *       { http: "https://eth3.augur.net",
-     *         ipc: "/path/to/geth.ipc",
-     *         ws: "wss://ws.augur.net" }
-     *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-     * @param cb {function=} Callback function.
-     */
-    connect: function (rpcinfo, cb) {
-        var options = {};
-        if (rpcinfo) {
-            switch (rpcinfo.constructor) {
-            case String:
-                options.http = rpcinfo;
-                break;
-            case Function:
-                cb = rpcinfo;
-                options.http = null;
-                break;
-            case Object:
-                options = rpcinfo;
-                break;
-            default:
-                options.http = null;
-            }
+        if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
+        return self.fire(tx, cb, self[tx.parser]);
+      }
+      if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
+        onSent = params[0].onSent;
+        onSuccess = params[0].onSuccess;
+        onFailed = params[0].onFailed;
+        if (numInputs) {
+          tx.params = new Array(numInputs);
+          for (i = 0; i < tx.inputs.length; ++i) {
+            tx.params[i] = params[0][tx.inputs[i]];
+          }
         }
-        if (!utils.is_function(cb)) {
-            var connection = connector.connect(options);
-            this.sync();
-            if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
-            return connection;
+      } else {
+        if (numInputs) {
+          tx.params = new Array(numInputs);
+          for (i = 0; i < tx.inputs.length; ++i) {
+            tx.params[i] = params[i];
+          }
         }
-        var self = this;
-        connector.connect(options, function (connection) {
-            self.sync();
-            if (options.augurNodes){
-                self.augurNode.bootstrap(options.augurNodes, function () {
-                    cb(connection);
-                });
-            }else{
-                cb(connection);
-            }
-        });
+        if (params.length > numInputs && utils.is_function(params[numInputs])) {
+          onSent = params[numInputs];
+        }
+        if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+          onSuccess = params[numInputs + 1];
+        }
+        if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+          onFailed = params[numInputs + 2];
+        }
+      }
+      if (tx.fixed && tx.fixed.length) {
+        numFixed = tx.fixed.length;
+        for (i = 0; i < numFixed; ++i) {
+          tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+        }
+      }
+      if (!tx.parser) {
+        return self.transact(tx, onSent, onSuccess, onFailed);
+      }
+      return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
+    };
+  },
+  bindContractAPI: function (methods) {
+    methods = methods || this.api.functions;
+    for (var contract in methods) {
+      if (!methods.hasOwnProperty(contract)) continue;
+      this[contract] = {};
+      for (var method in methods[contract]) {
+        if (!methods[contract].hasOwnProperty(method)) continue;
+        this[contract][method] = this.bindContractMethod(contract, method);
+        if (!this[method]) this[method] = this[contract][method];
+      }
     }
+    return methods;
+  },
+
+  sync: function () {
+    if (connector && connector.constructor === Object) {
+      this.network_id = connector.network_id;
+      this.from = connector.from;
+      this.coinbase = connector.coinbase;
+      this.rpc = connector.rpc;
+      this.api = connector.api;
+      this.tx = connector.tx;
+      this.contracts = connector.contracts;
+      this.init_contracts = connector.init_contracts;
+      this.bindContractAPI();
+      return true;
+    }
+    return false;
+  },
+
+  useAccount: function (account) {
+    connector.from = account;
+    connector.from_field_tx(account);
+    this.sync();
+  },
+
+  updateContracts: function (newContracts) {
+    if (connector && connector.constructor === Object) {
+      connector.contracts = clone(newContracts);
+      connector.update_contracts();
+      return this.sync();
+    }
+    return false;
+  },
+
+  /**
+   * @param rpcinfo {Object|string=} Two forms accepted:
+   *    1. Object with connection info fields:
+   *       { http: "https://eth3.augur.net",
+   *         ipc: "/path/to/geth.ipc",
+   *         ws: "wss://ws.augur.net" }
+   *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+   * @param cb {function=} Callback function.
+   */
+  connect: function (rpcinfo, cb) {
+    var options = {};
+    if (rpcinfo) {
+      switch (rpcinfo.constructor) {
+        case String:
+          options.http = rpcinfo;
+          break;
+        case Function:
+          cb = rpcinfo;
+          options.http = null;
+          break;
+        case Object:
+          options = rpcinfo;
+          break;
+        default:
+          options.http = null;
+      }
+    }
+    if (!utils.is_function(cb)) {
+      var connection = connector.connect(options);
+      this.sync();
+      if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
+      return connection;
+    }
+    var self = this;
+    connector.connect(options, function (connection) {
+      self.sync();
+      if (options.augurNodes){
+        self.augurNode.bootstrap(options.augurNodes, function () {
+          cb(connection);
+        });
+      }else{
+        cb(connection);
+      }
+    });
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"clone":121,"ethereumjs-connect":269}],252:[function(require,module,exports){
@@ -43172,90 +43135,90 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (description && description.parent) {
-            periodLength = description.periodLength;
-            parent = description.parent;
-            minTradingFee = description.minTradingFee;
-            oracleOnly = description.oracleOnly;
-            onSent = description.onSent;
-            onSuccess = description.onSuccess;
-            onFailed = description.onFailed;
-            description = description.description;
-        }
-        oracleOnly = oracleOnly || 0;
-        description = description.trim();
-        if (!utils.is_function(onSent)) {
-            var response = this.CreateBranch.createSubbranch({
-                description: description,
-                periodLength: periodLength,
-                parent: parent,
-                minTradingFee: abi.fix(minTradingFee, "hex"),
-                oracleOnly: oracleOnly
-            });
-            var block = this.rpc.getBlock(response.blockNumber);
-            response.branchID = utils.sha3([
-                response.from,
-                "0x28c418afbbb5c0000",
-                periodLength,
-                block.timestamp,
-                parent,
-                abi.fix(minTradingFee, "hex"),
-                oracleOnly,
-                description
-            ]);
-            return response;
-        }
-        this.createSubbranch({
-            description: description,
-            periodLength: periodLength,
-            parent: parent,
-            minTradingFee: minTradingFee,
-            oracleOnly: oracleOnly,
-            onSent: onSent,
-            onSuccess: function (response) {
-                self.rpc.getBlock(response.blockNumber, false, function (block) {
-                    response.branchID = utils.sha3([
-                        response.from,
-                        "0x28c418afbbb5c0000",
-                        periodLength,
-                        block.timestamp,
-                        parent,
-                        abi.fix(minTradingFee, "hex"),
-                        oracleOnly,
-                        description
-                    ]);
-                    onSuccess(response);
-                });
-            },
-            onFailed: onFailed
-        });
-    },
-
-    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-        if (description && description.parent) {
-            periodLength = description.periodLength;
-            parent = description.parent;
-            minTradingFee = description.minTradingFee;
-            oracleOnly = description.oracleOnly;
-            onSent = description.onSent;
-            onSuccess = description.onSuccess;
-            onFailed = description.onFailed;
-            description = description.description;
-        }
-        oracleOnly = oracleOnly || 0;
-        var tx = clone(this.tx.CreateBranch.createSubbranch);
-        tx.params = [
-            description.trim(),
+  createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (description && description.parent) {
+      periodLength = description.periodLength;
+      parent = description.parent;
+      minTradingFee = description.minTradingFee;
+      oracleOnly = description.oracleOnly;
+      onSent = description.onSent;
+      onSuccess = description.onSuccess;
+      onFailed = description.onFailed;
+      description = description.description;
+    }
+    oracleOnly = oracleOnly || 0;
+    description = description.trim();
+    if (!utils.is_function(onSent)) {
+      var response = this.CreateBranch.createSubbranch({
+        description: description,
+        periodLength: periodLength,
+        parent: parent,
+        minTradingFee: abi.fix(minTradingFee, "hex"),
+        oracleOnly: oracleOnly
+      });
+      var block = this.rpc.getBlock(response.blockNumber);
+      response.branchID = utils.sha3([
+        response.from,
+        "0x28c418afbbb5c0000",
+        periodLength,
+        block.timestamp,
+        parent,
+        abi.fix(minTradingFee, "hex"),
+        oracleOnly,
+        description
+      ]);
+      return response;
+    }
+    this.createSubbranch({
+      description: description,
+      periodLength: periodLength,
+      parent: parent,
+      minTradingFee: minTradingFee,
+      oracleOnly: oracleOnly,
+      onSent: onSent,
+      onSuccess: function (response) {
+        self.rpc.getBlock(response.blockNumber, false, function (block) {
+          response.branchID = utils.sha3([
+            response.from,
+            "0x28c418afbbb5c0000",
             periodLength,
+            block.timestamp,
             parent,
             abi.fix(minTradingFee, "hex"),
-            oracleOnly
-        ];
-        tx.description = description.trim();
-        return this.transact(tx, onSent, onSuccess, onFailed);
+            oracleOnly,
+            description
+          ]);
+          onSuccess(response);
+        });
+      },
+      onFailed: onFailed
+    });
+  },
+
+  createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    if (description && description.parent) {
+      periodLength = description.periodLength;
+      parent = description.parent;
+      minTradingFee = description.minTradingFee;
+      oracleOnly = description.oracleOnly;
+      onSent = description.onSent;
+      onSuccess = description.onSuccess;
+      onFailed = description.onFailed;
+      description = description.description;
     }
+    oracleOnly = oracleOnly || 0;
+    var tx = clone(this.tx.CreateBranch.createSubbranch);
+    tx.params = [
+      description.trim(),
+      periodLength,
+      parent,
+      abi.fix(minTradingFee, "hex"),
+      oracleOnly
+    ];
+    tx.description = description.trim();
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  }
 };
 
 },{"../utilities":266,"augur-abi":1,"clone":121}],253:[function(require,module,exports){
@@ -43273,163 +43236,163 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description;         // string
-            expDate = branchId.expDate;
-            minValue = branchId.minValue;               // integer (1 for binary)
-            maxValue = branchId.maxValue;               // integer (2 for binary)
-            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-            resolution = branchId.resolution;
-            takerFee = branchId.takerFee;
-            tags = branchId.tags;
-            makerFee = branchId.makerFee;
-            extraInfo = branchId.extraInfo;
-            onSent = branchId.onSent;                   // function
-            onSuccess = branchId.onSuccess;             // function
-            onFailed = branchId.onFailed;               // function
-            branchId = branchId.branchId;               // sha256 hash
-        }
-        var formattedTags = this.formatTags(tags);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        expDate = parseInt(expDate);
-        if (description) description = description.trim();
-        if (resolution) resolution = resolution.trim();
-        var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-        tx.params = [
-            branchId,
-            description,
-            expDate,
-            abi.fix(minValue, "hex"),
-            abi.fix(maxValue, "hex"),
-            numOutcomes,
-            resolution || "",
-            abi.fix(fees.tradingFee, "hex"),
-            formattedTags[0],
-            formattedTags[1],
-            formattedTags[2],
-            abi.fix(fees.makerProportionOfFee, "hex"),
-            extraInfo || ""
-        ];
-        if (!utils.is_function(onSent)) {
-            var gasPrice = this.rpc.getGasPrice();
-            tx.gasPrice = gasPrice;
-            tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return this.transact(tx);
-        }
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, function (res) {
-                if (res && res.callReturn) {
-                    res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
-                }
-                onSuccess(res);
-            }, onFailed);
-        });
-    },
-
-    createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description;         // string
-            minValue = branchId.minValue;               // integer (1 for binary)
-            maxValue = branchId.maxValue;               // integer (2 for binary)
-            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-            expDate = branchId.expDate;
-            resolution = branchId.resolution;
-            onSent = branchId.onSent;                   // function
-            onSuccess = branchId.onSuccess;             // function
-            onFailed = branchId.onFailed;               // function
-            branchId = branchId.branchId;               // sha256 hash
-        }
-        var tx = clone(this.tx.CreateMarket.createEvent);
-        if (description) description = description.trim();
-        if (resolution) resolution = resolution.trim();
-        tx.params = [
-            branchId,
-            description,
-            parseInt(expDate),
-            abi.fix(minValue, "hex"),
-            abi.fix(maxValue, "hex"),
-            numOutcomes,
-            resolution || ""
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description; // string
-            takerFee = branchId.takerFee;
-            events = branchId.events;           // array [sha256, ...]
-            tags = branchId.tags;
-            makerFee = branchId.makerFee;
-            extraInfo = branchId.extraInfo;
-            onSent = branchId.onSent;           // function
-            onSuccess = branchId.onSuccess;     // function
-            onFailed = branchId.onFailed;       // function
-            branchId = branchId.branchId;       // sha256 hash
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        var formattedTags = this.formatTags(tags);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        var tx = clone(this.tx.CreateMarket.createMarket);
-        if (description) description = description.trim();
-        tx.params = [
-            branchId,
-            description,
-            abi.fix(fees.tradingFee, "hex"),
-            events,
-            formattedTags[0],
-            formattedTags[1],
-            formattedTags[2],
-            abi.fix(fees.makerProportionOfFee, "hex"),
-            extraInfo || ""
-        ];
-        if (!utils.is_function(onSent)) {
-            var gasPrice = this.rpc.getGasPrice();
-            tx.gasPrice = gasPrice;
-            tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return this.transact(tx);
-        }
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, function (res) {
-                if (res && res.callReturn) {
-                    res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
-                }
-                onSuccess(res);
-            }, onFailed);
-        });
-    },
-
-    updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            market = branchId.market;         // string
-            takerFee = branchId.takerFee;
-            makerFee = branchId.makerFee;
-            onSent = branchId.onSent;         // function
-            onSuccess = branchId.onSuccess;   // function
-            onFailed = branchId.onFailed;     // function
-            branchId = branchId.branchId;     // sha256 hash
-        }
-        var tx = clone(this.tx.CreateMarket.updateTradingFee);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        tx.params = [
-            branchId,
-            market,
-            abi.fix(fees.tradingFee, "hex"),
-            abi.fix(fees.makerProportionOfFee, "hex"),
-        ];
-        if (!utils.is_function(onSent)) return this.transact(tx);
-        self.transact(tx, onSent, onSuccess, onFailed);
+  createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description;         // string
+      expDate = branchId.expDate;
+      minValue = branchId.minValue;               // integer (1 for binary)
+      maxValue = branchId.maxValue;               // integer (2 for binary)
+      numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+      resolution = branchId.resolution;
+      takerFee = branchId.takerFee;
+      tags = branchId.tags;
+      makerFee = branchId.makerFee;
+      extraInfo = branchId.extraInfo;
+      onSent = branchId.onSent;                   // function
+      onSuccess = branchId.onSuccess;             // function
+      onFailed = branchId.onFailed;               // function
+      branchId = branchId.branchId;               // sha256 hash
     }
+    var formattedTags = this.formatTags(tags);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    expDate = parseInt(expDate);
+    if (description) description = description.trim();
+    if (resolution) resolution = resolution.trim();
+    var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
+    tx.params = [
+      branchId,
+      description,
+      expDate,
+      abi.fix(minValue, "hex"),
+      abi.fix(maxValue, "hex"),
+      numOutcomes,
+      resolution || "",
+      abi.fix(fees.tradingFee, "hex"),
+      formattedTags[0],
+      formattedTags[1],
+      formattedTags[2],
+      abi.fix(fees.makerProportionOfFee, "hex"),
+      extraInfo || ""
+    ];
+    if (!utils.is_function(onSent)) {
+      var gasPrice = this.rpc.getGasPrice();
+      tx.gasPrice = gasPrice;
+      tx.value = this.calculateRequiredMarketValue(gasPrice);
+      return this.transact(tx);
+    }
+    this.rpc.getGasPrice(function (gasPrice) {
+      tx.gasPrice = gasPrice;
+      tx.value = self.calculateRequiredMarketValue(gasPrice);
+      self.transact(tx, onSent, function (res) {
+        if (res && res.callReturn) {
+          res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
+        }
+        onSuccess(res);
+      }, onFailed);
+    });
+  },
+
+  createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description;         // string
+      minValue = branchId.minValue;               // integer (1 for binary)
+      maxValue = branchId.maxValue;               // integer (2 for binary)
+      numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+      expDate = branchId.expDate;
+      resolution = branchId.resolution;
+      onSent = branchId.onSent;                   // function
+      onSuccess = branchId.onSuccess;             // function
+      onFailed = branchId.onFailed;               // function
+      branchId = branchId.branchId;               // sha256 hash
+    }
+    var tx = clone(this.tx.CreateMarket.createEvent);
+    if (description) description = description.trim();
+    if (resolution) resolution = resolution.trim();
+    tx.params = [
+      branchId,
+      description,
+      parseInt(expDate),
+      abi.fix(minValue, "hex"),
+      abi.fix(maxValue, "hex"),
+      numOutcomes,
+      resolution || ""
+    ];
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description; // string
+      takerFee = branchId.takerFee;
+      events = branchId.events;           // array [sha256, ...]
+      tags = branchId.tags;
+      makerFee = branchId.makerFee;
+      extraInfo = branchId.extraInfo;
+      onSent = branchId.onSent;           // function
+      onSuccess = branchId.onSuccess;     // function
+      onFailed = branchId.onFailed;       // function
+      branchId = branchId.branchId;       // sha256 hash
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    var formattedTags = this.formatTags(tags);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    var tx = clone(this.tx.CreateMarket.createMarket);
+    if (description) description = description.trim();
+    tx.params = [
+      branchId,
+      description,
+      abi.fix(fees.tradingFee, "hex"),
+      events,
+      formattedTags[0],
+      formattedTags[1],
+      formattedTags[2],
+      abi.fix(fees.makerProportionOfFee, "hex"),
+      extraInfo || ""
+    ];
+    if (!utils.is_function(onSent)) {
+      var gasPrice = this.rpc.getGasPrice();
+      tx.gasPrice = gasPrice;
+      tx.value = this.calculateRequiredMarketValue(gasPrice);
+      return this.transact(tx);
+    }
+    this.rpc.getGasPrice(function (gasPrice) {
+      tx.gasPrice = gasPrice;
+      tx.value = self.calculateRequiredMarketValue(gasPrice);
+      self.transact(tx, onSent, function (res) {
+        if (res && res.callReturn) {
+          res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
+        }
+        onSuccess(res);
+      }, onFailed);
+    });
+  },
+
+  updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      market = branchId.market;         // string
+      takerFee = branchId.takerFee;
+      makerFee = branchId.makerFee;
+      onSent = branchId.onSent;         // function
+      onSuccess = branchId.onSuccess;   // function
+      onFailed = branchId.onFailed;     // function
+      branchId = branchId.branchId;     // sha256 hash
+    }
+    var tx = clone(this.tx.CreateMarket.updateTradingFee);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    tx.params = [
+      branchId,
+      market,
+      abi.fix(fees.tradingFee, "hex"),
+      abi.fix(fees.makerProportionOfFee, "hex"),
+    ];
+    if (!utils.is_function(onSent)) return this.transact(tx);
+    self.transact(tx, onSent, onSuccess, onFailed);
+  }
 };
 
 },{"../utilities":266,"augur-abi":1,"bignumber.js":83,"clone":121}],254:[function(require,module,exports){
@@ -43444,39 +43407,39 @@ var abi = require("augur-abi");
 
 module.exports = {
 
-    parseMarket: function (market) {
-        return abi.format_int256(market);
-    },
+  parseMarket: function (market) {
+    return abi.format_int256(market);
+  },
 
-    parseMarkets: function (markets) {
-				if (!markets) return markets;
-        var numMarkets = markets.length;
-        var parsedMarkets = new Array(numMarkets);
-        for (var i = 0; i < numMarkets; ++i) {
-            parsedMarkets[i] = this.parseMarket(markets[i]);
-        }
-        return parsedMarkets;
-    },
-
-    parseEventInfo: function (info) {
-        // 0: self.Events[event].branch
-        // 1: self.Events[event].expirationDate
-        // 2: self.Events[event].outcome
-        // 3: self.Events[event].minValue
-        // 4: self.Events[event].maxValue
-        // 5: self.Events[event].numOutcomes
-        // 6: self.Events[event].bond
-        if (info && info.length) {
-            info[0] = abi.hex(info[0]);
-            info[1] = abi.bignum(info[1]).toFixed();
-            info[2] = abi.unfix(info[2], "string");
-            info[3] = abi.unfix(abi.hex(info[3], true), "string");
-            info[4] = abi.unfix(abi.hex(info[4], true), "string");
-            info[5] = parseInt(info[5]);
-            info[6] = abi.unfix(info[6], "string");
-        }
-        return info;
+  parseMarkets: function (markets) {
+    if (!markets) return markets;
+    var numMarkets = markets.length;
+    var parsedMarkets = new Array(numMarkets);
+    for (var i = 0; i < numMarkets; ++i) {
+      parsedMarkets[i] = this.parseMarket(markets[i]);
     }
+    return parsedMarkets;
+  },
+
+  parseEventInfo: function (info) {
+    // 0: self.Events[event].branch
+    // 1: self.Events[event].expirationDate
+    // 2: self.Events[event].outcome
+    // 3: self.Events[event].minValue
+    // 4: self.Events[event].maxValue
+    // 5: self.Events[event].numOutcomes
+    // 6: self.Events[event].bond
+    if (info && info.length) {
+      info[0] = abi.hex(info[0]);
+      info[1] = abi.bignum(info[1]).toFixed();
+      info[2] = abi.unfix(info[2], "string");
+      info[3] = abi.unfix(abi.hex(info[3], true), "string");
+      info[4] = abi.unfix(abi.hex(info[4], true), "string");
+      info[5] = parseInt(info[5]);
+      info[6] = abi.unfix(info[6], "string");
+    }
+    return info;
+  }
 };
 
 },{"augur-abi":1}],255:[function(require,module,exports){
@@ -43496,450 +43459,450 @@ var ONE = abi.bignum("1");
 
 module.exports = {
 
-    /***********
-     * Parsers *
-     ***********/
+  /***********
+   * Parsers *
+   ***********/
 
-    parseShortSellLogs: function (logs, isMaker) {
-        var marketID, logData, outcomeID, trades;
-        trades = {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                marketID = logs[i].topics[1];
-                logData = this.rpc.unmarshal(logs[i].data);
-                outcomeID = parseInt(logData[3], 16).toString();
-                if (!trades[marketID]) trades[marketID] = {};
-                if (!trades[marketID][outcomeID]) trades[marketID][outcomeID] = [];
-                trades[marketID][outcomeID].push({
-                    type: "sell",
-                    price: abi.unfix(abi.hex(logData[0], true), "string"),
-                    amount: abi.unfix(logData[1], "string"),
-                    tradeid: logData[2],
-                    blockNumber: parseInt(logs[i].blockNumber, 16),
-                    maker: !!isMaker
-                });
-            }
-        }
-        return trades;
-    },
-
-    parseCompleteSetsLogs: function (logs, mergeInto) {
-        var marketID, logData, numOutcomes, logType, parsed;
-        parsed = mergeInto || {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-                marketID = logs[i].topics[2];
-                logType = this.filters.format_trade_type(logs[i].topics[3]);
-                logData = this.rpc.unmarshal(logs[i].data);
-                numOutcomes = parseInt(logData[1], 16);
-                if (mergeInto) {
-                    if (!parsed[marketID]) parsed[marketID] = {};
-                    for (var j = 1; j <= numOutcomes; ++j) {
-                        if (!parsed[marketID][j]) parsed[marketID][j] = [];
-                        parsed[marketID][j].push({
-                            type: logType,
-                            isCompleteSet: true,
-                            amount: abi.unfix(logData[0], "string"),
-                            price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
-                            blockNumber: parseInt(logs[i].blockNumber, 16)
-                        });
-                    }
-                } else {
-                    if (!parsed[marketID]) parsed[marketID] = [];
-                    parsed[marketID].push({
-                        type: logType,
-                        amount: abi.unfix(logData[0], "string"),
-                        numOutcomes: numOutcomes,
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
-                    });
-                }
-            }
-        }
-        return parsed;
-    },
-
-    /***********
-     * Getters *
-     ***********/
-
-    getMarketPriceHistory: function (market, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        var params = clone(options);
-        params.market = market;
-        return this.getLogs("log_fill_tx", params, {index: "outcome"}, callback);
-    },
-
-    getShortSellLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var topics = [
-                this.api.events.log_short_fill_tx.signature,
-                options.market ? abi.format_int256(options.market) : null,
-                null,
-                null
-            ];
-            topics[options.maker ? 3 : 2] = abi.format_int256(account);
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Trade,
-                topics: topics,
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-                if (logs && logs.error) return callback(logs, null);
-								if (!logs || !logs.length) return callback(null, []);
-                callback(null, logs);
-            });
-        }
-    },
-
-    getCompleteSetsLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var typeCode = constants.LOG_TYPE_CODES[options.type] || null;
-            var market = options.market ? abi.format_int256(options.market) : null;
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: (options.shortAsk) ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
-                topics: [
-                    this.api.events.completeSets_logReturn.signature,
-                    abi.format_int256(account),
-                    market,
-                    typeCode
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-								if (logs && logs.error) return callback(logs, null);
-                if (!logs || !logs.length) return callback(null, []);
-                callback(null, logs);
-            });
-        }
-    },
-
-    sortByBlockNumber: function (a, b) {
-        return a.blockNumber - b.blockNumber;
-    },
-
-    buildTopicsList: function (event, params) {
-        var topics = [event.signature];
-        var inputs = event.inputs;
-        for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
-            if (inputs[i].indexed) {
-                if (params[inputs[i].name]) {
-                    topics.push(abi.format_int256(params[inputs[i].name]));
-                } else {
-                    topics.push(null);
-                }
-            }
-        }
-        return topics;
-    },
-
-    parametrizeFilter: function (event, params) {
-        return {
-            fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
-            toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
-            address: this.contracts[event.contract],
-            topics: this.buildTopicsList(event, params),
-            timeout: constants.GET_LOGS_TIMEOUT
-        };
-    },
-
-    // warning: mutates processedLogs
-    insertIndexedLog: function (processedLogs, parsed, index, log) {
-        if (index.constructor === Array) {
-            if (index.length === 1) {
-                if (!processedLogs[parsed[index[0]]]) {
-                    processedLogs[parsed[index[0]]] = [];
-                }
-                processedLogs[parsed[index[0]]].push(parsed);
-            } else if (index.length === 2) {
-                if (!processedLogs[parsed[index[0]]]) {
-                    processedLogs[parsed[index[0]]] = {};
-                }
-                if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
-                    processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
-                }
-                processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
-            }
-        } else {
-            if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];
-            processedLogs[parsed[index]].push(parsed);
-        }
-    },
-
-    // warning: mutates processedLogs, if passed
-    processLogs: function (label, index, logs, extraField, processedLogs) {
-        var parsed;
-        if (!processedLogs) processedLogs = (index) ? {} : [];
-        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (!logs[i].removed) {
-                parsed = this.filters.parse_event_message(label, logs[i]);
-                if (extraField && extraField.name) {
-                    parsed[extraField.name] = extraField.value;
-                }
-                if (index) {
-                    this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
-                } else {
-                    processedLogs.push(parsed);
-                }
-            }
-        }
-        return processedLogs;
-    },
-
-    getFilteredLogs: function (label, filterParams, callback) {
-        if (!callback && utils.is_function(filterParams)) {
-            callback = filterParams;
-            filterParams = null;
-        }
-        var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
-        if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-        this.rpc.getLogs(filter, function (logs) {
-						if (logs && logs.error) return callback(logs, null);
-            if (!logs || !logs.length) return callback(null, []);
-            callback(null, logs);
+  parseShortSellLogs: function (logs, isMaker) {
+    var marketID, logData, outcomeID, trades;
+    trades = {};
+    for (var i = 0, n = logs.length; i < n; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[1];
+        logData = this.rpc.unmarshal(logs[i].data);
+        outcomeID = parseInt(logData[3], 16).toString();
+        if (!trades[marketID]) trades[marketID] = {};
+        if (!trades[marketID][outcomeID]) trades[marketID][outcomeID] = [];
+        trades[marketID][outcomeID].push({
+          type: "sell",
+          price: abi.unfix(abi.hex(logData[0], true), "string"),
+          amount: abi.unfix(logData[1], "string"),
+          tradeid: logData[2],
+          blockNumber: parseInt(logs[i].blockNumber, 16),
+          maker: !!isMaker
         });
-    },
-
-    // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
-    getLogs: function (label, filterParams, aux, callback) {
-        var self = this;
-        if (!utils.is_function(callback) && utils.is_function(aux)) {
-            callback = aux;
-            aux = null;
-        }
-        aux = aux || {};
-        if (!utils.is_function(callback)) {
-            return this.processLogs(
-                label,
-                aux.index,
-                this.getFilteredLogs(label, filterParams || {}),
-                aux.extraField,
-                aux.mergedLogs
-            );
-        }
-        this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
-            if (err) return callback(err);
-            callback(null, self.processLogs(
-                label,
-                aux.index,
-                logs,
-                aux.extraField,
-                aux.mergedLogs
-            ));
-        });
-    },
-
-    getAccountTrades: function (account, filterParams, callback) {
-        var self = this;
-        if (!callback && utils.is_function(filterParams)) {
-            callback = filterParams;
-            filterParams = null;
-        }
-        filterParams = filterParams || {};
-        var takerTradesFilterParams = clone(filterParams);
-        takerTradesFilterParams.sender = account;
-        var aux = {
-            index: ["market", "outcome"],
-            mergedLogs: {},
-            extraField: {name: "maker", value: false}
-        };
-        this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
-            if (err) return callback(err);
-            var makerTradesFilterParams = clone(filterParams);
-            makerTradesFilterParams.owner = account;
-            aux.extraField.value = true;
-            self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
-                if (err) return callback(err);
-                var takerShortSellsFilterParams = clone(filterParams);
-                takerShortSellsFilterParams.sender = account;
-                aux.extraField.value = false;
-                self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
-                    if (err) return callback(err);
-                    var makerShortSellsFilterParams = clone(filterParams);
-                    makerShortSellsFilterParams.owner = account;
-                    aux.extraField.value = true;
-                    self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
-                        if (err) return callback(err);
-                        if (filterParams.noCompleteSets) {
-                            callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-                        } else {
-                            var completeSetsFilterParams = clone(filterParams);
-                            completeSetsFilterParams.shortAsk = false;
-                            completeSetsFilterParams.mergeInto = aux.mergedLogs;
-                            self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
-                                if (err) {
-                                    console.error("getAccountTrades:", err);
-                                    return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-                                }
-                                callback(null, self.sortTradesByBlockNumber(merged));
-                            });
-                        }
-                    });
-                });
-            });
-        });
-    },
-
-    sortTradesByBlockNumber: function (trades) {
-        var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
-        var marketIDs = Object.keys(trades);
-        var numMarkets = marketIDs.length;
-        for (var i = 0; i < numMarkets; ++i) {
-            marketTrades = trades[marketIDs[i]];
-            outcomeIDs = Object.keys(marketTrades);
-            numOutcomes = outcomeIDs.length;
-            for (var j = 0; j < numOutcomes; ++j) {
-                outcomeTrades = marketTrades[outcomeIDs[j]];
-                outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
-            }
-        }
-        return trades;
-    },
-
-    /************************
-     * Convenience wrappers *
-     ************************/
-
-    getMakerShortSellLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        options.maker = true;
-        return this.getShortSellLogs(account, options, callback);
-    },
-
-    getTakerShortSellLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        options.maker = false;
-        return this.getShortSellLogs(account, options, callback);
-    },
-
-    getMakerTakerShortSellLogs: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        this.getMakerShortSellLogs(account, clone(options), function (err, makerLogs) {
-            if (err) return callback(err);
-            self.getTakerShortSellLogs(account, clone(options), function (err, takerLogs) {
-                if (err) return callback(err);
-                callback(null, makerLogs.concat(takerLogs));
-            });
-        });
-    },
-
-    getParsedShortSellLogs: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        this.getShortSellLogs(account, options, function (err, logs) {
-            if (err) return callback(err);
-            callback(null, self.parseShortSellLogs(logs, options.maker));
-        });
-    },
-
-    getParsedCompleteSetsLogs: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-				options = options || {};
-        this.getCompleteSetsLogs(account, options, function (err, logs) {
-            if (err) return callback(err);
-            callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
-        });
-    },
-
-    getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        var opt = options ? clone(options) : {};
-        opt.shortAsk = true;
-        opt.type = "buy";
-        return this.getCompleteSetsLogs(account, opt, callback);
-    },
-
-    getRegularCompleteSetsLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        var opt = options ? clone(options) : {};
-        opt.shortAsk = false;
-        opt.type = null;
-        return this.getCompleteSetsLogs(account, opt, callback);
-    },
-
-    getBuyCompleteSetsLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        var opt = options ? clone(options) : {};
-        opt.shortAsk = false;
-        opt.type = "buy";
-        return this.getCompleteSetsLogs(account, opt, callback);
-    },
-
-    getSellCompleteSetsLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        var opt = options ? clone(options) : {};
-        opt.shortAsk = false;
-        opt.type = "sell";
-        return this.getCompleteSetsLogs(account, opt, callback);
-    },
-
-    getAccountMeanTradePrices: function (account, cb) {
-        var self = this;
-        if (!utils.is_function(cb)) return;
-        this.getAccountTrades(account, function (trades) {
-            if (!trades) return cb(null);
-            if (trades.error) return (trades);
-            var meanPrices = {buy: {}, sell: {}};
-            for (var marketId in trades) {
-                if (!trades.hasOwnProperty(marketId)) continue;
-                meanPrices.buy[marketId] = self.meanTradePrice(trades[marketId]);
-                meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
-            }
-            cb(null, meanPrices);
-        });
+      }
     }
+    return trades;
+  },
+
+  parseCompleteSetsLogs: function (logs, mergeInto) {
+    var marketID, logData, numOutcomes, logType, parsed;
+    parsed = mergeInto || {};
+    for (var i = 0, n = logs.length; i < n; ++i) {
+      if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        logType = this.filters.format_trade_type(logs[i].topics[3]);
+        logData = this.rpc.unmarshal(logs[i].data);
+        numOutcomes = parseInt(logData[1], 16);
+        if (mergeInto) {
+          if (!parsed[marketID]) parsed[marketID] = {};
+          for (var j = 1; j <= numOutcomes; ++j) {
+            if (!parsed[marketID][j]) parsed[marketID][j] = [];
+            parsed[marketID][j].push({
+              type: logType,
+              isCompleteSet: true,
+              amount: abi.unfix(logData[0], "string"),
+              price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
+              blockNumber: parseInt(logs[i].blockNumber, 16)
+            });
+          }
+        } else {
+          if (!parsed[marketID]) parsed[marketID] = [];
+          parsed[marketID].push({
+            type: logType,
+            amount: abi.unfix(logData[0], "string"),
+            numOutcomes: numOutcomes,
+            blockNumber: parseInt(logs[i].blockNumber, 16)
+          });
+        }
+      }
+    }
+    return parsed;
+  },
+
+  /***********
+   * Getters *
+   ***********/
+
+  getMarketPriceHistory: function (market, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    var params = clone(options);
+    params.market = market;
+    return this.getLogs("log_fill_tx", params, {index: "outcome"}, callback);
+  },
+
+  getShortSellLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var topics = [
+        this.api.events.log_short_fill_tx.signature,
+        options.market ? abi.format_int256(options.market) : null,
+        null,
+        null
+      ];
+      topics[options.maker ? 3 : 2] = abi.format_int256(account);
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Trade,
+        topics: topics,
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (logs && logs.error) return callback(logs, null);
+        if (!logs || !logs.length) return callback(null, []);
+        callback(null, logs);
+      });
+    }
+  },
+
+  getCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var typeCode = constants.LOG_TYPE_CODES[options.type] || null;
+      var market = options.market ? abi.format_int256(options.market) : null;
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: (options.shortAsk) ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
+        topics: [
+          this.api.events.completeSets_logReturn.signature,
+          abi.format_int256(account),
+          market,
+          typeCode
+        ],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (logs && logs.error) return callback(logs, null);
+        if (!logs || !logs.length) return callback(null, []);
+        callback(null, logs);
+      });
+    }
+  },
+
+  sortByBlockNumber: function (a, b) {
+    return a.blockNumber - b.blockNumber;
+  },
+
+  buildTopicsList: function (event, params) {
+    var topics = [event.signature];
+    var inputs = event.inputs;
+    for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
+      if (inputs[i].indexed) {
+        if (params[inputs[i].name]) {
+          topics.push(abi.format_int256(params[inputs[i].name]));
+        } else {
+          topics.push(null);
+        }
+      }
+    }
+    return topics;
+  },
+
+  parametrizeFilter: function (event, params) {
+    return {
+      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+      toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
+      address: this.contracts[event.contract],
+      topics: this.buildTopicsList(event, params),
+      timeout: constants.GET_LOGS_TIMEOUT
+    };
+  },
+
+  // warning: mutates processedLogs
+  insertIndexedLog: function (processedLogs, parsed, index, log) {
+    if (index.constructor === Array) {
+      if (index.length === 1) {
+        if (!processedLogs[parsed[index[0]]]) {
+          processedLogs[parsed[index[0]]] = [];
+        }
+        processedLogs[parsed[index[0]]].push(parsed);
+      } else if (index.length === 2) {
+        if (!processedLogs[parsed[index[0]]]) {
+          processedLogs[parsed[index[0]]] = {};
+        }
+        if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
+          processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
+        }
+        processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
+      }
+    } else {
+      if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];
+      processedLogs[parsed[index]].push(parsed);
+    }
+  },
+
+  // warning: mutates processedLogs, if passed
+  processLogs: function (label, index, logs, extraField, processedLogs) {
+    var parsed;
+    if (!processedLogs) processedLogs = (index) ? {} : [];
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (!logs[i].removed) {
+        parsed = this.filters.parse_event_message(label, logs[i]);
+        if (extraField && extraField.name) {
+          parsed[extraField.name] = extraField.value;
+        }
+        if (index) {
+          this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
+        } else {
+          processedLogs.push(parsed);
+        }
+      }
+    }
+    return processedLogs;
+  },
+
+  getFilteredLogs: function (label, filterParams, callback) {
+    if (!callback && utils.is_function(filterParams)) {
+      callback = filterParams;
+      filterParams = null;
+    }
+    var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
+    if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+    this.rpc.getLogs(filter, function (logs) {
+      if (logs && logs.error) return callback(logs, null);
+      if (!logs || !logs.length) return callback(null, []);
+      callback(null, logs);
+    });
+  },
+
+  // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
+  getLogs: function (label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (!utils.is_function(callback)) {
+      return this.processLogs(
+        label,
+        aux.index,
+        this.getFilteredLogs(label, filterParams || {}),
+        aux.extraField,
+        aux.mergedLogs
+      );
+    }
+    this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.processLogs(
+        label,
+        aux.index,
+        logs,
+        aux.extraField,
+        aux.mergedLogs
+      ));
+    });
+  },
+
+  getAccountTrades: function (account, filterParams, callback) {
+    var self = this;
+    if (!callback && utils.is_function(filterParams)) {
+      callback = filterParams;
+      filterParams = null;
+    }
+    filterParams = filterParams || {};
+    var takerTradesFilterParams = clone(filterParams);
+    takerTradesFilterParams.sender = account;
+    var aux = {
+      index: ["market", "outcome"],
+      mergedLogs: {},
+      extraField: {name: "maker", value: false}
+    };
+    this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
+      if (err) return callback(err);
+      var makerTradesFilterParams = clone(filterParams);
+      makerTradesFilterParams.owner = account;
+      aux.extraField.value = true;
+      self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
+        if (err) return callback(err);
+        var takerShortSellsFilterParams = clone(filterParams);
+        takerShortSellsFilterParams.sender = account;
+        aux.extraField.value = false;
+        self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
+          if (err) return callback(err);
+          var makerShortSellsFilterParams = clone(filterParams);
+          makerShortSellsFilterParams.owner = account;
+          aux.extraField.value = true;
+          self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
+            if (err) return callback(err);
+            if (filterParams.noCompleteSets) {
+              callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
+            } else {
+              var completeSetsFilterParams = clone(filterParams);
+              completeSetsFilterParams.shortAsk = false;
+              completeSetsFilterParams.mergeInto = aux.mergedLogs;
+              self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
+                if (err) {
+                  console.error("getAccountTrades:", err);
+                  return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
+                }
+                callback(null, self.sortTradesByBlockNumber(merged));
+              });
+            }
+          });
+        });
+      });
+    });
+  },
+
+  sortTradesByBlockNumber: function (trades) {
+    var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
+    var marketIDs = Object.keys(trades);
+    var numMarkets = marketIDs.length;
+    for (var i = 0; i < numMarkets; ++i) {
+      marketTrades = trades[marketIDs[i]];
+      outcomeIDs = Object.keys(marketTrades);
+      numOutcomes = outcomeIDs.length;
+      for (var j = 0; j < numOutcomes; ++j) {
+        outcomeTrades = marketTrades[outcomeIDs[j]];
+        outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
+      }
+    }
+    return trades;
+  },
+
+  /************************
+   * Convenience wrappers *
+   ************************/
+
+  getMakerShortSellLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    options.maker = true;
+    return this.getShortSellLogs(account, options, callback);
+  },
+
+  getTakerShortSellLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    options.maker = false;
+    return this.getShortSellLogs(account, options, callback);
+  },
+
+  getMakerTakerShortSellLogs: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    this.getMakerShortSellLogs(account, clone(options), function (err, makerLogs) {
+      if (err) return callback(err);
+      self.getTakerShortSellLogs(account, clone(options), function (err, takerLogs) {
+        if (err) return callback(err);
+        callback(null, makerLogs.concat(takerLogs));
+      });
+    });
+  },
+
+  getParsedShortSellLogs: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    this.getShortSellLogs(account, options, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.parseShortSellLogs(logs, options.maker));
+    });
+  },
+
+  getParsedCompleteSetsLogs: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    this.getCompleteSetsLogs(account, options, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
+    });
+  },
+
+  getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = true;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getRegularCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = null;
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getBuyCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getSellCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "sell";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getAccountMeanTradePrices: function (account, cb) {
+    var self = this;
+    if (!utils.is_function(cb)) return;
+    this.getAccountTrades(account, function (trades) {
+      if (!trades) return cb(null);
+      if (trades.error) return (trades);
+      var meanPrices = {buy: {}, sell: {}};
+      for (var marketId in trades) {
+        if (!trades.hasOwnProperty(marketId)) continue;
+        meanPrices.buy[marketId] = self.meanTradePrice(trades[marketId]);
+        meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
+      }
+      cb(null, meanPrices);
+    });
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"clone":121}],256:[function(require,module,exports){
@@ -43960,232 +43923,232 @@ var constants = require("../constants");
 
 module.exports = {
 
-    // rules: http://docs.augur.net/#reporting-outcomes
-    fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
-        var fixedReport, rescaledReport, bnMinValue;
-        if (isIndeterminate) {
-            if (type === "binary") {
-                fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
-            } else {
-                fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
-            }
+  // rules: http://docs.augur.net/#reporting-outcomes
+  fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
+    var fixedReport, rescaledReport, bnMinValue;
+    if (isIndeterminate) {
+      if (type === "binary") {
+        fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
+      } else {
+        fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
+      }
+    } else {
+      if (type === "binary") {
+        fixedReport = abi.fix(report, "hex");
+      } else {
+        // y = (x - min)/(max - min)
+        bnMinValue = abi.bignum(minValue);
+        rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(
+          abi.bignum(maxValue).minus(bnMinValue)
+        );
+        if (rescaledReport.eq(constants.ZERO)) {
+          fixedReport = "0x1";
         } else {
-            if (type === "binary") {
-                fixedReport = abi.fix(report, "hex");
-            } else {
-                // y = (x - min)/(max - min)
-                bnMinValue = abi.bignum(minValue);
-                rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(
-                    abi.bignum(maxValue).minus(bnMinValue)
-                );
-                if (rescaledReport.eq(constants.ZERO)) {
-                    fixedReport = "0x1";
-                } else {
-                    fixedReport = abi.fix(rescaledReport, "hex");
-                }
-            }
+          fixedReport = abi.fix(rescaledReport, "hex");
+        }
+      }
 
-            // if report is equal to fix(0.5) but is not indeterminate,
-            // then set report to fix(0.5) + 1
-            if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-                fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
-            }
-        }
-        return fixedReport;
-    },
-
-    unfixReport: function (fixedReport, minValue, maxValue, type) {
-        var report, bnMinValue, bnFixedReport;
-        bnFixedReport = abi.bignum(fixedReport);
-        if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
-            return {report: "1.5", isIndeterminate: true};
-        } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-            return {report: "0.5", isIndeterminate: true};
-        } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
-            return {report: "0.5", isIndeterminate: false};
-        }
-        if (type === "binary") {
-            report = abi.unfix(fixedReport);
-        } else {
-            if (bnFixedReport.eq(abi.bignum(1))) {
-                fixedReport = "0";
-            }
-            // x = (max - min)*y + min
-            bnMinValue = abi.bignum(minValue);
-            report = abi.unfix(fixedReport).times(
-                abi.bignum(maxValue).minus(bnMinValue)
-            ).plus(bnMinValue);
-        }
-        if (type !== "scalar") {
-            report = report.round();
-        }
-        return {report: report.toFixed(), isIndeterminate: false};
-    },
-
-    // report in fixed-point
-    makeHash: function (salt, report, event, from) {
-        return utils.sha3([from || this.from, abi.hex(salt), report, event]);
-    },
-
-    // report in fixed-point
-    encryptReport: function (report, key, salt) {
-        if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
-        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-        if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        return abi.prefix_hex(
-            new Buffer(
-                keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
-                "base64"
-            ).toString("hex")
-        );
-    },
-
-    // returns plaintext fixed-point report
-    decryptReport: function (encryptedReport, key, salt) {
-        if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
-        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-        if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        return abi.prefix_hex(
-            keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
-        );
-    },
-
-    parseAndDecryptReport: function (arr, secret) {
-        if (!arr || arr.constructor !== Array || arr.length < 2) return null;
-        var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
-        return {
-            salt: salt,
-            report: this.decryptReport(arr[0], secret.derivedKey, salt),
-            ethics: (arr.length > 2) ? arr[2] : false
-        };
-    },
-
-    getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
-        var self = this;
-        if (branch.constructor === Object) {
-            expDateIndex = branch.expDateIndex;
-            reporter = branch.reporter;
-            event = branch.event;
-            secret = branch.secret;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
-        tx.params = [branch, expDateIndex, reporter, event];
-        return this.fire(tx, callback, this.parseAndDecryptReport, secret);
-    },
-
-    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (event.constructor === Object) {
-            reportHash = event.reportHash;
-            encryptedReport = event.encryptedReport;
-            encryptedSalt = event.encryptedSalt;
-            ethics = event.ethics;
-            branch = event.branch;
-            period = event.period;
-            periodLength = event.periodLength;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            event = event.event;
-        }
-        if (this.getCurrentPeriodProgress(periodLength) >= 50) {
-            return onFailed({"-2": "not in first half of period (commit phase)"});
-        }
-        var tx = clone(this.tx.MakeReports.submitReportHash);
-        tx.params = [
-            event,
-            reportHash,
-            encryptedReport || 0,
-            encryptedSalt || 0,
-            abi.fix(ethics, "hex")
-        ];
-        if (this.options.debug.reporting) {
-            console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
-        }
-        return this.transact(tx, onSent, function (res) {
-            if (self.options.debug.reporting) {
-                console.log('submitReportHash response:', res.callReturn);
-            }
-            res.callReturn = abi.bignum(res.callReturn, "string", true);
-            if (res.callReturn === "0") {
-                return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
-                    if (err) return onFailed(err);
-                    self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-                        if (self.options.debug.reporting) {
-                            console.log('rep redistribution done:', repRedistributionDone);
-                        }
-                        if (repRedistributionDone === "0") {
-                            return onFailed("rep redistribution not done");
-                        }
-                        self.submitReportHash({
-                            event: event,
-                            reportHash: reportHash,
-                            encryptedReport: encryptedReport,
-                            encryptedSalt: encryptedSalt,
-                            ethics: ethics,
-                            branch: branch,
-                            period: period,
-                            periodLength: periodLength,
-                            onSent: onSent,
-                            onSuccess: onSuccess,
-                            onFailed: onFailed
-                        });
-                    });
-                });
-            } else if (res.callReturn !== "-2") {
-                return onSuccess(res);
-            }
-            self.ExpiringEvents.getReportHash({
-                branch: branch,
-                expDateIndex: period,
-                reporter: res.from,
-                event: event,
-                callback: function (storedReportHash) {
-                    if (parseInt(storedReportHash, 16)) {
-                        res.callReturn = "1";
-                        return onSuccess(res);
-                    }
-                    onFailed({"-2": "not in first half of period (commit phase)"});
-                }
-            });
-        }, onFailed);
-    },
-
-    submitReport: function (event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
-        if (event.constructor === Object) {
-            salt = event.salt;
-            report = event.report;
-            ethics = event.ethics;
-            minValue = event.minValue;
-            maxValue = event.maxValue;
-            type = event.type;
-            isIndeterminate = event.isIndeterminate;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            event = event.event;
-        }
-        if (this.options.debug.reporting) {
-            console.log('MakeReports.submitReport params:',
-                event,
-                abi.hex(salt),
-                this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-                ethics);
-        }
-        return this.MakeReports.submitReport(
-            event,
-            abi.hex(salt),
-            this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-            ethics,
-            onSent,
-            onSuccess,
-            onFailed
-        );
+      // if report is equal to fix(0.5) but is not indeterminate,
+      // then set report to fix(0.5) + 1
+      if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+        fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
+      }
     }
+    return fixedReport;
+  },
+
+  unfixReport: function (fixedReport, minValue, maxValue, type) {
+    var report, bnMinValue, bnFixedReport;
+    bnFixedReport = abi.bignum(fixedReport);
+    if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
+      return {report: "1.5", isIndeterminate: true};
+    } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+      return {report: "0.5", isIndeterminate: true};
+    } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
+      return {report: "0.5", isIndeterminate: false};
+    }
+    if (type === "binary") {
+      report = abi.unfix(fixedReport);
+    } else {
+      if (bnFixedReport.eq(abi.bignum(1))) {
+        fixedReport = "0";
+      }
+      // x = (max - min)*y + min
+      bnMinValue = abi.bignum(minValue);
+      report = abi.unfix(fixedReport).times(
+        abi.bignum(maxValue).minus(bnMinValue)
+      ).plus(bnMinValue);
+    }
+    if (type !== "scalar") {
+      report = report.round();
+    }
+    return {report: report.toFixed(), isIndeterminate: false};
+  },
+
+  // report in fixed-point
+  makeHash: function (salt, report, event, from) {
+    return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+  },
+
+  // report in fixed-point
+  encryptReport: function (report, key, salt) {
+    if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
+    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    return abi.prefix_hex(
+      new Buffer(
+        keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
+        "base64"
+      ).toString("hex")
+    );
+  },
+
+  // returns plaintext fixed-point report
+  decryptReport: function (encryptedReport, key, salt) {
+    if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
+    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    return abi.prefix_hex(
+      keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
+    );
+  },
+
+  parseAndDecryptReport: function (arr, secret) {
+    if (!arr || arr.constructor !== Array || arr.length < 2) return null;
+    var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
+    return {
+      salt: salt,
+      report: this.decryptReport(arr[0], secret.derivedKey, salt),
+      ethics: (arr.length > 2) ? arr[2] : false
+    };
+  },
+
+  getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
+    var self = this;
+    if (branch.constructor === Object) {
+      expDateIndex = branch.expDateIndex;
+      reporter = branch.reporter;
+      event = branch.event;
+      secret = branch.secret;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+    tx.params = [branch, expDateIndex, reporter, event];
+    return this.fire(tx, callback, this.parseAndDecryptReport, secret);
+  },
+
+  submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (event.constructor === Object) {
+      reportHash = event.reportHash;
+      encryptedReport = event.encryptedReport;
+      encryptedSalt = event.encryptedSalt;
+      ethics = event.ethics;
+      branch = event.branch;
+      period = event.period;
+      periodLength = event.periodLength;
+      onSent = event.onSent;
+      onSuccess = event.onSuccess;
+      onFailed = event.onFailed;
+      event = event.event;
+    }
+    if (this.getCurrentPeriodProgress(periodLength) >= 50) {
+      return onFailed({"-2": "not in first half of period (commit phase)"});
+    }
+    var tx = clone(this.tx.MakeReports.submitReportHash);
+    tx.params = [
+      event,
+      reportHash,
+      encryptedReport || 0,
+      encryptedSalt || 0,
+      abi.fix(ethics, "hex")
+    ];
+    if (this.options.debug.reporting) {
+      console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, function (res) {
+      if (self.options.debug.reporting) {
+        console.log('submitReportHash response:', res.callReturn);
+      }
+      res.callReturn = abi.bignum(res.callReturn, "string", true);
+      if (res.callReturn === "0") {
+        return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
+          if (err) return onFailed(err);
+          self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
+            if (self.options.debug.reporting) {
+              console.log('rep redistribution done:', repRedistributionDone);
+            }
+            if (repRedistributionDone === "0") {
+              return onFailed("rep redistribution not done");
+            }
+            self.submitReportHash({
+              event: event,
+              reportHash: reportHash,
+              encryptedReport: encryptedReport,
+              encryptedSalt: encryptedSalt,
+              ethics: ethics,
+              branch: branch,
+              period: period,
+              periodLength: periodLength,
+              onSent: onSent,
+              onSuccess: onSuccess,
+              onFailed: onFailed
+            });
+          });
+        });
+      } else if (res.callReturn !== "-2") {
+        return onSuccess(res);
+      }
+      self.ExpiringEvents.getReportHash({
+        branch: branch,
+        expDateIndex: period,
+        reporter: res.from,
+        event: event,
+        callback: function (storedReportHash) {
+          if (parseInt(storedReportHash, 16)) {
+            res.callReturn = "1";
+            return onSuccess(res);
+          }
+          onFailed({"-2": "not in first half of period (commit phase)"});
+        }
+      });
+    }, onFailed);
+  },
+
+  submitReport: function (event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
+    if (event.constructor === Object) {
+      salt = event.salt;
+      report = event.report;
+      ethics = event.ethics;
+      minValue = event.minValue;
+      maxValue = event.maxValue;
+      type = event.type;
+      isIndeterminate = event.isIndeterminate;
+      onSent = event.onSent;
+      onSuccess = event.onSuccess;
+      onFailed = event.onFailed;
+      event = event.event;
+    }
+    if (this.options.debug.reporting) {
+      console.log('MakeReports.submitReport params:',
+        event,
+        abi.hex(salt),
+        this.fixReport(report, minValue, maxValue, type, isIndeterminate),
+        ethics);
+    }
+    return this.MakeReports.submitReport(
+      event,
+      abi.hex(salt),
+      this.fixReport(report, minValue, maxValue, type, isIndeterminate),
+      ethics,
+      onSent,
+      onSuccess,
+      onFailed
+    );
+  }
 };
 
 }).call(this,require("buffer").Buffer)
@@ -44202,33 +44165,33 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    getWinningOutcomes: function (market, callback) {
-        // market: hash id
-        var self = this;
-        var tx = clone(this.tx.Markets.getWinningOutcomes);
-        tx.params = market;
-        if (!utils.is_function(callback)) {
-            var winningOutcomes = this.fire(tx);
-            if (!winningOutcomes) return null;
-            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-                return winningOutcomes;
-            }
-						var numOutcomes = this.getMarketNumOutcomes(market);
-            return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
-        }
-        this.fire(tx, function (winningOutcomes) {
-            if (!winningOutcomes) return callback(null);
-            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-                return callback(winningOutcomes);
-            }
-            self.getMarketNumOutcomes(market, function (numOutcomes) {
-                if (numOutcomes && numOutcomes.error) {
-                    return callback(numOutcomes);
-                }
-                callback(winningOutcomes.slice(0, numOutcomes));
-            });
-        });
+  getWinningOutcomes: function (market, callback) {
+    // market: hash id
+    var self = this;
+    var tx = clone(this.tx.Markets.getWinningOutcomes);
+    tx.params = market;
+    if (!utils.is_function(callback)) {
+      var winningOutcomes = this.fire(tx);
+      if (!winningOutcomes) return null;
+      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+        return winningOutcomes;
+      }
+      var numOutcomes = this.getMarketNumOutcomes(market);
+      return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
     }
+    this.fire(tx, function (winningOutcomes) {
+      if (!winningOutcomes) return callback(null);
+      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+        return callback(winningOutcomes);
+      }
+      self.getMarketNumOutcomes(market, function (numOutcomes) {
+        if (numOutcomes && numOutcomes.error) {
+          return callback(numOutcomes);
+        }
+        callback(winningOutcomes.slice(0, numOutcomes));
+      });
+    });
+  }
 };
 
 },{"../utilities":266,"clone":121}],258:[function(require,module,exports){
@@ -44246,100 +44209,100 @@ var constants = require("../constants");
 
 module.exports = {
 
-    closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
-        if (branch.constructor === Object) {
-            market = branch.market;
-            sender = branch.sender;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.CloseMarket.closeMarket);
-        tx.params = [branch, market, sender];
-        this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    // markets: array of market IDs for which to claim proceeds
-    claimMarketsProceeds: function (branch, markets, callback) {
-        if (this.options.debug.reporting) {
-            console.log("claimMarketsProceeds:", branch, markets);
-        }
-        var self = this;
-        var claimedMarkets = [];
-        async.eachSeries(markets, function (market, nextMarket) {
-            if (self.options.debug.reporting) {
-                console.log("claimMarketsProceeds", market);
-            }
-            self.getWinningOutcomes(market.id, function (winningOutcomes) {
-                // market not yet resolved
-                if (self.options.debug.reporting) {
-                    console.log("got winning outcomes:", winningOutcomes);
-                }
-                if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
-                    if (self.options.debug.reporting) {
-                        console.log("market not yet resolved", market.id);
-                    }
-                    return nextMarket();
-                }
-                self.claimProceeds({
-                    branch: branch,
-                    market: market.id,
-                    onSent: function (res) {
-                        if (self.options.debug.reporting) {
-                            console.log("claim proceeds sent:", market.id, res);
-                        }
-                    },
-                    onSuccess: function (res) {
-                        if (self.options.debug.reporting) {
-                            console.log("claim proceeds success:", market.id, res);
-                        }
-                        claimedMarkets.push(market.id);
-                        nextMarket();
-                    },
-                    onFailed: nextMarket
-                });
-            });
-        }, function (err) {
-            if (err) return callback(err);
-            callback(null, claimedMarkets);
-        });
-    },
-
-    claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (branch.constructor === Object) {
-            market = branch.market;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        var tx = clone(self.tx.CloseMarket.claimProceeds);
-        tx.params = [branch, market];
-        if (self.options.debug.reporting) {
-            console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
-        }
-        self.transact(tx, onSent, function (res) {
-            if (self.options.debug.reporting) {
-                console.log("claimProceeds success:", market, res);
-            }
-            if (res.callReturn !== "1") return onFailed(res.callReturn);
-            self.rpc.receipt(res.hash, function (receipt) {
-                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    var logs = receipt.logs;
-                    var sig = self.api.events.payout.signature;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                        if (logs[i].topics[0] === sig) {
-                            res.callReturn = self.filters.parse_event_message("payout", logs[i]);
-                            break;
-                        }
-                    }
-                }
-                onSuccess(res);
-            });
-        }, onFailed);
+  closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object) {
+      market = branch.market;
+      sender = branch.sender;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
     }
+    var tx = clone(this.tx.CloseMarket.closeMarket);
+    tx.params = [branch, market, sender];
+    this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  // markets: array of market IDs for which to claim proceeds
+  claimMarketsProceeds: function (branch, markets, callback) {
+    if (this.options.debug.reporting) {
+      console.log("claimMarketsProceeds:", branch, markets);
+    }
+    var self = this;
+    var claimedMarkets = [];
+    async.eachSeries(markets, function (market, nextMarket) {
+      if (self.options.debug.reporting) {
+        console.log("claimMarketsProceeds", market);
+      }
+      self.getWinningOutcomes(market.id, function (winningOutcomes) {
+        // market not yet resolved
+        if (self.options.debug.reporting) {
+          console.log("got winning outcomes:", winningOutcomes);
+        }
+        if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+          if (self.options.debug.reporting) {
+            console.log("market not yet resolved", market.id);
+          }
+          return nextMarket();
+        }
+        self.claimProceeds({
+          branch: branch,
+          market: market.id,
+          onSent: function (res) {
+            if (self.options.debug.reporting) {
+              console.log("claim proceeds sent:", market.id, res);
+            }
+          },
+          onSuccess: function (res) {
+            if (self.options.debug.reporting) {
+              console.log("claim proceeds success:", market.id, res);
+            }
+            claimedMarkets.push(market.id);
+            nextMarket();
+          },
+          onFailed: nextMarket
+        });
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, claimedMarkets);
+    });
+  },
+
+  claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch.constructor === Object) {
+      market = branch.market;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(self.tx.CloseMarket.claimProceeds);
+    tx.params = [branch, market];
+    if (self.options.debug.reporting) {
+      console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
+    }
+    self.transact(tx, onSent, function (res) {
+      if (self.options.debug.reporting) {
+        console.log("claimProceeds success:", market, res);
+      }
+      if (res.callReturn !== "1") return onFailed(res.callReturn);
+      self.rpc.receipt(res.hash, function (receipt) {
+        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+          var logs = receipt.logs;
+          var sig = self.api.events.payout.signature;
+          for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+            if (logs[i].topics[0] === sig) {
+              res.callReturn = self.filters.parse_event_message("payout", logs[i]);
+              break;
+            }
+          }
+        }
+        onSuccess(res);
+      });
+    }, onFailed);
+  }
 };
 
 },{"../constants":242,"async":80,"augur-abi":1,"clone":121}],259:[function(require,module,exports){
@@ -44360,548 +44323,548 @@ var ONE = new BigNumber("1", 10);
 
 module.exports = {
 
-    /**
-     * @param {string} typeCode Type code (buy=1, sell=2); integer 32-byte hex.
-     * @param {BigNumber} position Starting number of shares.
-     * @param {string} numShares Shares to add or subtract; fixedpoint 32-byte hex.
-     * @return {BigNumber} Modified number of shares.
-     */
-    modifyPosition: function (typeCode, position, numShares) {
-        var unfixedNumShares = abi.unfix(numShares);
-        var newPosition;
-        switch (parseInt(typeCode, 16)) {
-        case 1: // buy
-            newPosition = position.plus(unfixedNumShares);
-            break;
-        default: // sell
-            newPosition = position.minus(unfixedNumShares);
-            break;
-        }
-        return newPosition;
-    },
+  /**
+   * @param {string} typeCode Type code (buy=1, sell=2); integer 32-byte hex.
+   * @param {BigNumber} position Starting number of shares.
+   * @param {string} numShares Shares to add or subtract; fixedpoint 32-byte hex.
+   * @return {BigNumber} Modified number of shares.
+   */
+  modifyPosition: function (typeCode, position, numShares) {
+    var unfixedNumShares = abi.unfix(numShares);
+    var newPosition;
+    switch (parseInt(typeCode, 16)) {
+      case 1: // buy
+        newPosition = position.plus(unfixedNumShares);
+        break;
+      default: // sell
+        newPosition = position.minus(unfixedNumShares);
+        break;
+    }
+    return newPosition;
+  },
 
-    /**
-     * Calculates the total number of complete sets bought/sold.
-     *
-     * @param {Array} logs Event logs from eth_getLogs request.
-     * @return {Object} Total number of complete sets keyed by market ID.
-     */
-    calculateCompleteSetsShareTotals: function (logs) {
-        if (!logs) return {};
-        var marketID, logData, shareTotals;
-        shareTotals = {};
-        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                marketID = logs[i].topics[2];
-                if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
-                logData = this.rpc.unmarshal(logs[i].data);
-                if (logData && logData.length) {
-                    shareTotals[marketID] = this.modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
-                }
-            }
+  /**
+   * Calculates the total number of complete sets bought/sold.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Total number of complete sets keyed by market ID.
+   */
+  calculateCompleteSetsShareTotals: function (logs) {
+    if (!logs) return {};
+    var marketID, logData, shareTotals;
+    shareTotals = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
+        logData = this.rpc.unmarshal(logs[i].data);
+        if (logData && logData.length) {
+          shareTotals[marketID] = this.modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
         }
-        return shareTotals;
-    },
+      }
+    }
+    return shareTotals;
+  },
 
-    /**
-     * Calculates the effective price of each complete set (1/numOutcomes).
-     *
-     * @param {Array} logs Event logs from eth_getLogs request.
-     * @return {Object} Effective price keyed by market ID.
-     */
-    calculateCompleteSetsEffectivePrice: function (logs) {
-        if (!logs) return {};
-        var marketID, logData, effectivePrice;
-        effectivePrice = {};
-        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                marketID = logs[i].topics[2];
-                if (!effectivePrice[marketID]) {
-                    logData = this.rpc.unmarshal(logs[i].data);
-                    if (logData && logData.length) {
-                        effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
-                    }
-                }
-            }
+  /**
+   * Calculates the effective price of each complete set (1/numOutcomes).
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Effective price keyed by market ID.
+   */
+  calculateCompleteSetsEffectivePrice: function (logs) {
+    if (!logs) return {};
+    var marketID, logData, effectivePrice;
+    effectivePrice = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        if (!effectivePrice[marketID]) {
+          logData = this.rpc.unmarshal(logs[i].data);
+          if (logData && logData.length) {
+            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
+          }
         }
-        return effectivePrice;
-    },
+      }
+    }
+    return effectivePrice;
+  },
 
-    /**
-     * Calculates the effective price of each complete set (1/numOutcomes).
-     *
-     * @param {Array} logs Event logs from eth_getLogs request.
-     * @return {Object} Effective price keyed by market ID.
-     */
-    calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
-        if (!logs) return {};
-        var marketID, logData, effectivePrice, outcomeID;
-        effectivePrice = {};
-        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                marketID = logs[i].topics[1];
-                if (!effectivePrice[marketID]) {
-                    logData = this.rpc.unmarshal(logs[i].data);
-                    if (logData && logData.length && logData.length === 8) {
-                        effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
-                    }
-                }
-            }
+  /**
+   * Calculates the effective price of each complete set (1/numOutcomes).
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Effective price keyed by market ID.
+   */
+  calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
+    if (!logs) return {};
+    var marketID, logData, effectivePrice, outcomeID;
+    effectivePrice = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[1];
+        if (!effectivePrice[marketID]) {
+          logData = this.rpc.unmarshal(logs[i].data);
+          if (logData && logData.length && logData.length === 8) {
+            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
+          }
         }
-        return effectivePrice;
-    },
+      }
+    }
+    return effectivePrice;
+  },
 
-    /**
-     * Calculates the largest number of shares short sold in any outcome per market.
-     *
-     * @param {Array} logs Event logs from eth_getLogs request.
-     * @return Object Largest total number of shares sold keyed by market ID.
-     */
-    calculateShortSellShareTotals: function (logs) {
-        if (!logs) return {};
-        var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
-        shareTotals = {};
-        sharesOutcomes = {};
-        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-                marketID = logs[i].topics[1];
-                logData = this.rpc.unmarshal(logs[i].data);
-                if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
-                outcomeID = parseInt(logData[3], 16).toString();
-                if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
-                sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
-                shareTotals[marketID] = BigNumber.max(
+  /**
+   * Calculates the largest number of shares short sold in any outcome per market.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return Object Largest total number of shares sold keyed by market ID.
+   */
+  calculateShortSellShareTotals: function (logs) {
+    if (!logs) return {};
+    var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
+    shareTotals = {};
+    sharesOutcomes = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[1];
+        logData = this.rpc.unmarshal(logs[i].data);
+        if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
+        outcomeID = parseInt(logData[3], 16).toString();
+        if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
+        sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
+        shareTotals[marketID] = BigNumber.max(
                     sharesOutcomes[marketID][outcomeID],
                     shareTotals[marketID] || constants.ZERO);
-            }
-        }
-        return shareTotals;
-    },
+      }
+    }
+    return shareTotals;
+  },
 
-    /**
-     * @param {Object} position Starting position in a market {outcomeID: String{decimal}}.
-     * @param {BigNumber} adjustment Amount to decrease all positions by.
-     * @return {Object} Decreased market position {outcomeID: String{decimal}}.
-     */
-    decreasePosition: function (position, adjustment) {
-        var newPosition = {};
-        var outcomeIDs = Object.keys(position);
-        for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
-            newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
-        }
-        return newPosition;
-    },
+  /**
+   * @param {Object} position Starting position in a market {outcomeID: String{decimal}}.
+   * @param {BigNumber} adjustment Amount to decrease all positions by.
+   * @return {Object} Decreased market position {outcomeID: String{decimal}}.
+   */
+  decreasePosition: function (position, adjustment) {
+    var newPosition = {};
+    var outcomeIDs = Object.keys(position);
+    for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
+      newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
+    }
+    return newPosition;
+  },
 
-    /**
-     * Adjusts positions by subtracting out contributions from auto-generated
-     * buyCompleteSets during shortAsk (or implicitly during short_sell).
-     *
-     * Standalone (non-delegated) buyCompleteSets are assumed to be part of
-     * generateOrderBook, and are included in the user's position.
-     *
-     * sellCompleteSets - shortAskBuyCompleteSets
-     *
-     * Note: short_sell on-contract does not create a buyCompleteSets log.
-     *
-     * @param {string} account Ethereum account address.
-     * @param {Array} marketIDs List of market IDs for position adjustment.
-     * @param {Object} shareTotals Share totals keyed by log type.
-     * @param {function=} callback Callback function (optional).
-     * @return {Object} Adjusted positions keyed by marketID.
-     */
-    adjustPositions: function (account, marketIDs, shareTotals, callback) {
-        var self = this;
-        var adjustedPositions = {};
-        if (!utils.is_function(callback)) {
-            var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
-            for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
-                marketID = marketIDs[i];
-                onChainPosition = this.getPositionInMarket(marketID, account);
-                shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
-                shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-                sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
-                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
-                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
-                }
-                adjustedPositions[marketID] = this.decreasePosition(
-                    onChainPosition,
-                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
-            }
-            return adjustedPositions;
+  /**
+   * Adjusts positions by subtracting out contributions from auto-generated
+   * buyCompleteSets during shortAsk (or implicitly during short_sell).
+   *
+   * Standalone (non-delegated) buyCompleteSets are assumed to be part of
+   * generateOrderBook, and are included in the user's position.
+   *
+   * sellCompleteSets - shortAskBuyCompleteSets
+   *
+   * Note: short_sell on-contract does not create a buyCompleteSets log.
+   *
+   * @param {string} account Ethereum account address.
+   * @param {Array} marketIDs List of market IDs for position adjustment.
+   * @param {Object} shareTotals Share totals keyed by log type.
+   * @param {function=} callback Callback function (optional).
+   * @return {Object} Adjusted positions keyed by marketID.
+   */
+  adjustPositions: function (account, marketIDs, shareTotals, callback) {
+    var self = this;
+    var adjustedPositions = {};
+    if (!utils.is_function(callback)) {
+      var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
+      for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
+        marketID = marketIDs[i];
+        onChainPosition = this.getPositionInMarket(marketID, account);
+        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
+        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
+        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
         }
-        async.eachSeries(marketIDs, function (marketID, nextMarket) {
-            self.getPositionInMarket(marketID, account, function (onChainPosition) {
-                if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
-                if (onChainPosition.error) return nextMarket(onChainPosition);
-                shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
-                shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-                sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
-                if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
-                    sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
-                }
-                adjustedPositions[marketID] = self.decreasePosition(
-                    onChainPosition,
-                    shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
-                nextMarket();
-            });
-        }, function (err) {
-            if (err) return callback(err);
-            callback(null, adjustedPositions);
-        });
-    },
+        adjustedPositions[marketID] = this.decreasePosition(
+          onChainPosition,
+          shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
+      }
+      return adjustedPositions;
+    }
+    async.eachSeries(marketIDs, function (marketID, nextMarket) {
+      self.getPositionInMarket(marketID, account, function (onChainPosition) {
+        if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
+        if (onChainPosition.error) return nextMarket(onChainPosition);
+        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
+        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
+        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+        }
+        adjustedPositions[marketID] = self.decreasePosition(
+          onChainPosition,
+          shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
+        nextMarket();
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, adjustedPositions);
+    });
+  },
 
-    /**
-     * @param {Object} shareTotals Share totals keyed by log type.
-     * @return {Array} marketIDs List of market IDs for position adjustment.
-     */
-    findUniqueMarketIDs: function (shareTotals) {
-        return Object.keys(shareTotals.shortAskBuyCompleteSets)
+  /**
+   * @param {Object} shareTotals Share totals keyed by log type.
+   * @return {Array} marketIDs List of market IDs for position adjustment.
+   */
+  findUniqueMarketIDs: function (shareTotals) {
+    return Object.keys(shareTotals.shortAskBuyCompleteSets)
             .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
             .concat(Object.keys(shareTotals.sellCompleteSets))
             .filter(utils.unique);
-    },
+  },
 
-    /**
-     * @param {Object} logs Event logs from eth_getLogs request.
-     * @return {Object} Share totals keyed by log type.
-     */
-    calculateShareTotals: function (logs) {
-        return {
-            shortAskBuyCompleteSets: this.calculateCompleteSetsShareTotals(logs.shortAskBuyCompleteSets),
-            shortSellBuyCompleteSets: this.calculateShortSellShareTotals(logs.shortSellBuyCompleteSets),
-            sellCompleteSets: this.calculateCompleteSetsShareTotals(logs.sellCompleteSets)
-        };
-    },
+  /**
+   * @param {Object} logs Event logs from eth_getLogs request.
+   * @return {Object} Share totals keyed by log type.
+   */
+  calculateShareTotals: function (logs) {
+    return {
+      shortAskBuyCompleteSets: this.calculateCompleteSetsShareTotals(logs.shortAskBuyCompleteSets),
+      shortSellBuyCompleteSets: this.calculateShortSellShareTotals(logs.shortSellBuyCompleteSets),
+      sellCompleteSets: this.calculateCompleteSetsShareTotals(logs.sellCompleteSets)
+    };
+  },
 
-    /**
-     * @param {string} account Ethereum account address.
-     * @param {Object=} options eth_getLogs parameters (optional).
-     * @param {function=} callback Callback function (optional).
-     * @return {Object} Adjusted positions keyed by marketID.
-     */
-    getAdjustedPositions: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
+  /**
+   * @param {string} account Ethereum account address.
+   * @param {Object=} options eth_getLogs parameters (optional).
+   * @param {function=} callback Callback function (optional).
+   * @return {Object} Adjusted positions keyed by marketID.
+   */
+  getAdjustedPositions: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (!utils.is_function(callback)) {
+      var shareTotals = this.calculateShareTotals({
+        shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
+        shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
+        sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
+      });
+      var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
+      return this.adjustPositions(account, marketIDs, shareTotals);
+    }
+    async.parallel({
+      shortAskBuyCompleteSets: function (done) {
+        self.getShortAskBuyCompleteSetsLogs(account, options, done);
+      },
+      shortSellBuyCompleteSets: function (done) {
+        self.getTakerShortSellLogs(account, options, done);
+      },
+      sellCompleteSets: function (done) {
+        self.getSellCompleteSetsLogs(account, options, done);
+      }
+    }, function (err, logs) {
+      if (err) return callback(err);
+      var shareTotals = self.calculateShareTotals(logs);
+      var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
+      self.adjustPositions(account, marketIDs, shareTotals, callback);
+    });
+  },
+
+  /**
+   * Calculates aggregate trade from buy/sell complete sets.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return Object Aggregate trades keyed by market ID.
+   */
+  calculateNetEffectiveTrades: function (logs) {
+    var marketID, shareTotal, effectivePrice;
+    var shareTotals = this.calculateShareTotals({
+      shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
+      shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
+      sellCompleteSets: logs.sellCompleteSets
+    });
+    var effectivePrices = {
+      shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
+      shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
+      sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
+    };
+    var netEffectiveTrades = {};
+    var marketIDs = this.findUniqueMarketIDs(effectivePrices);
+    var numMarketIDs = marketIDs.length;
+    for (var i = 0; i < numMarketIDs; ++i) {
+      marketID = marketIDs[i];
+      if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
+      var completeSetsTypes = Object.keys(effectivePrices);
+      var numCompleteSetsTypes = completeSetsTypes.length;
+      for (var j = 0; j < numCompleteSetsTypes; ++j) {
+        var completeSetsType = completeSetsTypes[j];
+        shareTotal = shareTotals[completeSetsType][marketID];
+        effectivePrice = effectivePrices[completeSetsType][marketID];
+        if (shareTotal && effectivePrice) {
+          netEffectiveTrades[marketID][completeSetsType] = {
+            type: completeSetsType === "sellCompleteSets" ? "sell" : "buy",
+            price: effectivePrice,
+            shares: shareTotal.abs()
+          };
         }
-        options = options || {};
-        if (!utils.is_function(callback)) {
-            var shareTotals = this.calculateShareTotals({
-                shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
-                shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
-                sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
-            });
-            var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
-            return this.adjustPositions(account, marketIDs, shareTotals);
-        }
-        async.parallel({
-            shortAskBuyCompleteSets: function (done) {
-                self.getShortAskBuyCompleteSetsLogs(account, options, done);
-            },
-            shortSellBuyCompleteSets: function (done) {
-                self.getTakerShortSellLogs(account, options, done);
-            },
-            sellCompleteSets: function (done) {
-                self.getSellCompleteSetsLogs(account, options, done);
-            }
-        }, function (err, logs) {
-            if (err) return callback(err);
-            var shareTotals = self.calculateShareTotals(logs);
-            var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
-            self.adjustPositions(account, marketIDs, shareTotals, callback);
-        });
-    },
+      }
+    }
+    return netEffectiveTrades;
+  },
 
-    /**
-     * Calculates aggregate trade from buy/sell complete sets.
-     *
-     * @param {Array} logs Event logs from eth_getLogs request.
-     * @return Object Aggregate trades keyed by market ID.
-     */
-    calculateNetEffectiveTrades: function (logs) {
-        var marketID, shareTotal, effectivePrice;
-        var shareTotals = this.calculateShareTotals({
-            shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
-            shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
-            sellCompleteSets: logs.sellCompleteSets
-        });
-        var effectivePrices = {
-            shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
-            shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
-            sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
-        };
-        var netEffectiveTrades = {};
-        var marketIDs = this.findUniqueMarketIDs(effectivePrices);
-        var numMarketIDs = marketIDs.length;
-        for (var i = 0; i < numMarketIDs; ++i) {
-            marketID = marketIDs[i];
-            if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
-            var completeSetsTypes = Object.keys(effectivePrices);
-            var numCompleteSetsTypes = completeSetsTypes.length;
-            for (var j = 0; j < numCompleteSetsTypes; ++j) {
-                var completeSetsType = completeSetsTypes[j];
-                shareTotal = shareTotals[completeSetsType][marketID];
-                effectivePrice = effectivePrices[completeSetsType][marketID];
-                if (shareTotal && effectivePrice) {
-                    netEffectiveTrades[marketID][completeSetsType] = {
-                        type: completeSetsType === "sellCompleteSets" ? "sell" : "buy",
-                        price: effectivePrice,
-                        shares: shareTotal.abs()
-                    };
-                }
-            }
-        }
-        return netEffectiveTrades;
-    },
+  updateRealizedPL: function (meanOpenPrice, realized, shares, price) {
+    return realized.plus(shares.times(price.minus(meanOpenPrice)));
+  },
 
-    updateRealizedPL: function (meanOpenPrice, realized, shares, price) {
-        return realized.plus(shares.times(price.minus(meanOpenPrice)));
-    },
-
-    updateMeanOpenPrice: function (position, meanOpenPrice, shares, price) {
-        return position.dividedBy(shares.plus(position))
+  updateMeanOpenPrice: function (position, meanOpenPrice, shares, price) {
+    return position.dividedBy(shares.plus(position))
             .times(meanOpenPrice)
             .plus(shares.dividedBy(shares.plus(position)).times(price));
-    },
+  },
 
-    sellCompleteSetsPL: function (PL, shares, price) {
-        var updatedPL = {
-            position: PL.position,
-            meanOpenPrice: PL.meanOpenPrice,
-            realized: PL.realized,
-            completeSetsBought: PL.completeSetsBought,
-            queued: PL.queued,
-            tradeQueue: PL.tradeQueue
-        };
+  sellCompleteSetsPL: function (PL, shares, price) {
+    var updatedPL = {
+      position: PL.position,
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
 
-        // If position <= 0, user is closing out a short position:
-        //  - update realized P/L
-        if (PL.position.lte(constants.ZERO)) {
-            if (shares.gt(constants.ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
-                while (updatedPL.tradeQueue.length) {
-                    if (updatedPL.tradeQueue[0].shares.gt(shares)) {
-                        updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
-                        updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
-                        break;
-                    } else {
-                        updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
-                        updatedPL.tradeQueue.splice(0, 1);
-                    }
-                }
-            }
-
-        // If position > 0, user is decreasing their long position:
-        //  - decrease position
-        } else {
-            updatedPL.position = updatedPL.position.minus(shares);
-            updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+    // If position <= 0, user is closing out a short position:
+    //  - update realized P/L
+    if (PL.position.lte(constants.ZERO)) {
+      if (shares.gt(constants.ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
+        while (updatedPL.tradeQueue.length) {
+          if (updatedPL.tradeQueue[0].shares.gt(shares)) {
+            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
+            updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
+            break;
+          } else {
+            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
+            updatedPL.tradeQueue.splice(0, 1);
+          }
         }
+      }
 
-        return updatedPL;
-    },
-
-    // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-    // realized P/L = shares sold * (price on cash out - price on buy in)
-    longerPositionPL: function (PL, shares, price) {
-        var updatedPL = {
-            position: PL.position.plus(shares),
-            meanOpenPrice: PL.meanOpenPrice,
-            realized: PL.realized,
-            completeSetsBought: PL.completeSetsBought,
-            queued: PL.queued,
-            tradeQueue: PL.tradeQueue
-        };
-
-        // If position >= 0, user is increasing a long position:
-        //  - update weighted price of open positions
-        if (PL.position.abs().lte(constants.PRECISION.zero)) {
-            updatedPL.meanOpenPrice = price;
-        } else if (PL.position.gt(constants.PRECISION.zero)) {
-            updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
-
-        // If position < 0, user is decreasing a short position:
-        } else {
-            if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
-
-            // If |position| >= shares, user is buying back a short position:
-            //  - update queued P/L (becomes realized P/L when complete sets sold)
-            if (PL.position.abs().gte(shares)) {
-                updatedPL.tradeQueue.push({
-                    meanOpenPrice: PL.meanOpenPrice,
-                    realized: PL.realized,
-                    shares: shares,
-                    price: price
-                });
-
-            // If |position| < shares, user is buying back short then going long:
-            //  - update queued P/L for the short position (buy to 0)
-            //  - update mean open price for the remainder of shares
-            } else {
-                updatedPL.tradeQueue.push({
-                    meanOpenPrice: PL.meanOpenPrice,
-                    realized: PL.realized,
-                    shares: PL.position.abs(),
-                    price: price
-                });
-                updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
-            }
-        }
-
-        return updatedPL;
-    },
-
-    shorterPositionPL: function (PL, shares, price) {
-        var updatedPL = {
-            position: PL.position.minus(shares),
-            meanOpenPrice: PL.meanOpenPrice,
-            realized: PL.realized,
-            completeSetsBought: PL.completeSetsBought,
-            queued: PL.queued,
-            tradeQueue: PL.tradeQueue
-        };
-
-        // If position < 0, user is increasing a short position:
-        //  - treat as a "negative buy" for P/L
-        //  - update weighted price of open positions
-        if (PL.position.abs().lte(constants.PRECISION.zero)) {
-            updatedPL.meanOpenPrice = price;
-        } else if (PL.position.lt(constants.PRECISION.zero)) {
-            updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
-
-        // If position > 0, user is decreasing a long position
-        } else {
-
-            // If position >= shares, user is doing a regular sale:
-            //  - update realized P/L
-            if (PL.position.gte(shares)) {
-                updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
-
-            // If position < shares, user is selling then short selling:
-            //  - update realized P/L for the current position (sell to 0)
-            //  - update mean open price for the remainder of shares (short sell)
-            } else {
-                updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
-                updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
-            }
-        }
-
-        return updatedPL;
-    },
-
-    // Trades where user is the maker:
-    //  - buy orders (matched user's ask): user loses shares, gets cash
-    //  - sell orders (matched user's bid): user loses cash, gets shares
-    calculateMakerPL: function (PL, type, price, shares) {
-
-        // Sell: matched user's bid order
-        if (type === "sell") {
-            // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-            return this.longerPositionPL(PL, shares, price);
-        }
-
-        // Buy: matched user's ask order
-        // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-        return this.shorterPositionPL(PL, shares, price);
-    },
-
-    // Trades where user is the taker:
-    //  - buy orders: user loses cash, gets shares
-    //  - sell orders: user loses shares, gets cash
-    calculateTakerPL: function (PL, type, price, shares) {
-
-        // Buy order
-        if (type === "buy") {
-            // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-            return this.longerPositionPL(PL, shares, price);
-        }
-
-        // Sell order
-        // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-        return this.shorterPositionPL(PL, shares, price);
-    },
-
-    calculateTradePL: function (PL, trade) {
-        if (trade.isCompleteSet) {
-            if (trade.type === "buy") {
-                // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-                return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-            }
-            // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-            return this.sellCompleteSetsPL(PL, abi.bignum(trade.amount), abi.bignum(trade.price));
-        } else if (trade.maker) {
-            return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-        }
-        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-    },
-
-    calculateTradesPL: function (PL, trades) {
-        var numTrades = trades.length;
-        if (numTrades) {
-            for (var i = 0; i < numTrades; ++i) {
-                PL = this.calculateTradePL(PL, trades[i]);
-            }
-        }
-        return PL;
-    },
-
-    // unrealized P/L: shares held * (last trade price - price on buy in)
-    calculateUnrealizedPL: function (position, meanOpenPrice, lastTradePrice) {
-        if (lastTradePrice.eq(constants.ZERO)) return constants.ZERO;
-        return position.times(abi.bignum(lastTradePrice).minus(meanOpenPrice));
-    },
-
-    /**
-     * Calculates realized and unrealized profit/loss for trades in a single outcome.
-     *
-     * Note: buy/sell labels are from taker's point-of-view.
-     *
-     * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
-     * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
-     * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
-     */
-    calculateProfitLoss: function (trades, lastTradePrice) {
-        var PL = {
-            position: constants.ZERO,
-            meanOpenPrice: constants.ZERO,
-            realized: constants.ZERO,
-            unrealized: constants.ZERO,
-            queued: constants.ZERO,
-            completeSetsBought: constants.ZERO,
-            tradeQueue: []
-        };
-        var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
-        if (trades) {
-            PL = this.calculateTradesPL(PL, trades);
-            // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
-            var queuedShares = constants.ZERO;
-            if (PL.tradeQueue && PL.tradeQueue.length) {
-                // console.log('Trade queue:', JSON.stringify(PL.tradeQueue));
-                for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
-                    queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
-                    PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
-                }
-            }
-            // console.log('Queued shares:', queuedShares.toFixed());
-            // console.log('Last trade price:', bnLastTradePrice.toFixed());
-            PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, bnLastTradePrice);
-            // console.log('Unrealized P/L:', PL.unrealized.toFixed());
-            if (PL.position.abs().lt(constants.PRECISION.zero)) {
-                PL.position = constants.ZERO;
-                PL.meanOpenPrice = constants.ZERO;
-                PL.unrealized = constants.ZERO;
-            }
-        }
-        PL.position = PL.position.toFixed();
-        PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
-        PL.realized = PL.realized.toFixed();
-        PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
-        PL.queued = PL.queued.toFixed();
-        // console.log('Queued P/L:', PL.queued);
-        delete PL.completeSetsBought;
-        delete PL.tradeQueue;
-        return PL;
+    // If position > 0, user is decreasing their long position:
+    //  - decrease position
+    } else {
+      updatedPL.position = updatedPL.position.minus(shares);
+      updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
     }
+
+    return updatedPL;
+  },
+
+  // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+  // realized P/L = shares sold * (price on cash out - price on buy in)
+  longerPositionPL: function (PL, shares, price) {
+    var updatedPL = {
+      position: PL.position.plus(shares),
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
+
+    // If position >= 0, user is increasing a long position:
+    //  - update weighted price of open positions
+    if (PL.position.abs().lte(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = price;
+    } else if (PL.position.gt(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
+
+    // If position < 0, user is decreasing a short position:
+    } else {
+      if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
+
+      // If |position| >= shares, user is buying back a short position:
+      //  - update queued P/L (becomes realized P/L when complete sets sold)
+      if (PL.position.abs().gte(shares)) {
+        updatedPL.tradeQueue.push({
+          meanOpenPrice: PL.meanOpenPrice,
+          realized: PL.realized,
+          shares: shares,
+          price: price
+        });
+
+      // If |position| < shares, user is buying back short then going long:
+      //  - update queued P/L for the short position (buy to 0)
+      //  - update mean open price for the remainder of shares
+      } else {
+        updatedPL.tradeQueue.push({
+          meanOpenPrice: PL.meanOpenPrice,
+          realized: PL.realized,
+          shares: PL.position.abs(),
+          price: price
+        });
+        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
+      }
+    }
+
+    return updatedPL;
+  },
+
+  shorterPositionPL: function (PL, shares, price) {
+    var updatedPL = {
+      position: PL.position.minus(shares),
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
+
+    // If position < 0, user is increasing a short position:
+    //  - treat as a "negative buy" for P/L
+    //  - update weighted price of open positions
+    if (PL.position.abs().lte(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = price;
+    } else if (PL.position.lt(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
+
+    // If position > 0, user is decreasing a long position
+    } else {
+
+      // If position >= shares, user is doing a regular sale:
+      //  - update realized P/L
+      if (PL.position.gte(shares)) {
+        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+
+      // If position < shares, user is selling then short selling:
+      //  - update realized P/L for the current position (sell to 0)
+      //  - update mean open price for the remainder of shares (short sell)
+      } else {
+        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
+        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
+      }
+    }
+
+    return updatedPL;
+  },
+
+  // Trades where user is the maker:
+  //  - buy orders (matched user's ask): user loses shares, gets cash
+  //  - sell orders (matched user's bid): user loses cash, gets shares
+  calculateMakerPL: function (PL, type, price, shares) {
+
+    // Sell: matched user's bid order
+    if (type === "sell") {
+      // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+      return this.longerPositionPL(PL, shares, price);
+    }
+
+    // Buy: matched user's ask order
+    // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return this.shorterPositionPL(PL, shares, price);
+  },
+
+  // Trades where user is the taker:
+  //  - buy orders: user loses cash, gets shares
+  //  - sell orders: user loses shares, gets cash
+  calculateTakerPL: function (PL, type, price, shares) {
+
+    // Buy order
+    if (type === "buy") {
+      // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+      return this.longerPositionPL(PL, shares, price);
+    }
+
+    // Sell order
+    // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return this.shorterPositionPL(PL, shares, price);
+  },
+
+  calculateTradePL: function (PL, trade) {
+    if (trade.isCompleteSet) {
+      if (trade.type === "buy") {
+        // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+      }
+      // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+      return this.sellCompleteSetsPL(PL, abi.bignum(trade.amount), abi.bignum(trade.price));
+    } else if (trade.maker) {
+      return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+    }
+    return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+  },
+
+  calculateTradesPL: function (PL, trades) {
+    var numTrades = trades.length;
+    if (numTrades) {
+      for (var i = 0; i < numTrades; ++i) {
+        PL = this.calculateTradePL(PL, trades[i]);
+      }
+    }
+    return PL;
+  },
+
+  // unrealized P/L: shares held * (last trade price - price on buy in)
+  calculateUnrealizedPL: function (position, meanOpenPrice, lastTradePrice) {
+    if (lastTradePrice.eq(constants.ZERO)) return constants.ZERO;
+    return position.times(abi.bignum(lastTradePrice).minus(meanOpenPrice));
+  },
+
+  /**
+   * Calculates realized and unrealized profit/loss for trades in a single outcome.
+   *
+   * Note: buy/sell labels are from taker's point-of-view.
+   *
+   * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
+   * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
+   * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
+   */
+  calculateProfitLoss: function (trades, lastTradePrice) {
+    var PL = {
+      position: constants.ZERO,
+      meanOpenPrice: constants.ZERO,
+      realized: constants.ZERO,
+      unrealized: constants.ZERO,
+      queued: constants.ZERO,
+      completeSetsBought: constants.ZERO,
+      tradeQueue: []
+    };
+    var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
+    if (trades) {
+      PL = this.calculateTradesPL(PL, trades);
+      // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
+      var queuedShares = constants.ZERO;
+      if (PL.tradeQueue && PL.tradeQueue.length) {
+        // console.log('Trade queue:', JSON.stringify(PL.tradeQueue));
+        for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
+          queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
+          PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
+        }
+      }
+      // console.log('Queued shares:', queuedShares.toFixed());
+      // console.log('Last trade price:', bnLastTradePrice.toFixed());
+      PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, bnLastTradePrice);
+      // console.log('Unrealized P/L:', PL.unrealized.toFixed());
+      if (PL.position.abs().lt(constants.PRECISION.zero)) {
+        PL.position = constants.ZERO;
+        PL.meanOpenPrice = constants.ZERO;
+        PL.unrealized = constants.ZERO;
+      }
+    }
+    PL.position = PL.position.toFixed();
+    PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
+    PL.realized = PL.realized.toFixed();
+    PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
+    PL.queued = PL.queued.toFixed();
+    // console.log('Queued P/L:', PL.queued);
+    delete PL.completeSetsBought;
+    delete PL.tradeQueue;
+    return PL;
+  }
 };
 
 },{"../constants":242,"../utilities":266,"async":80,"augur-abi":1,"bignumber.js":83}],260:[function(require,module,exports){
@@ -44919,101 +44882,101 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    parseLastTime: function (logs) {
-        return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
-    },
+  parseLastTime: function (logs) {
+    return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
+  },
 
-    parseLastBlock: function (logs) {
-        return parseInt(logs[logs.length - 1].blockNumber, 16);
-    },
+  parseLastBlock: function (logs) {
+    return parseInt(logs[logs.length - 1].blockNumber, 16);
+  },
 
-    getRegisterBlockNumber: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Register,
-                topics: [
-                    this.api.events.registration.signature,
-                    abi.format_int256(account)
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) {
-                var logs = this.rpc.getLogs(filter);
-                if (!logs || !logs.length || (logs && logs.error)) return null;
-                return this.parseLastBlock(logs);
-            }
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, null);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, self.parseLastBlock(logs));
-            });
-        }
-    },
-
-    getRegisterTime: function (account, options, callback) {
-        var self = this;
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Register,
-                topics: [
-                    this.api.events.registration.signature,
-                    abi.format_int256(account)
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) {
-                var logs = this.rpc.getLogs(filter);
-                if (!logs || !logs.length || (logs && logs.error)) return null;
-                return this.parseLastTime(logs);
-            }
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, null);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, self.parseLastTime(logs));
-            });
-        }
-    },
-
-    getRegisterLogs: function (account, options, callback) {
-        if (!callback && utils.is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (account !== undefined && account !== null) {
-            var filter = {
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.contracts.Register,
-                topics: [
-                    this.api.events.registration.signature,
-                    abi.format_int256(account)
-                ],
-                timeout: constants.GET_LOGS_TIMEOUT
-            };
-            if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-            this.rpc.getLogs(filter, function (logs) {
-                if (!logs || !logs.length) return callback(null, []);
-                if (logs && logs.error) return callback(logs, null);
-                callback(null, logs);
-            });
-        }
+  getRegisterBlockNumber: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
     }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [
+          this.api.events.registration.signature,
+          abi.format_int256(account)
+        ],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) {
+        var logs = this.rpc.getLogs(filter);
+        if (!logs || !logs.length || (logs && logs.error)) return null;
+        return this.parseLastBlock(logs);
+      }
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, null);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, self.parseLastBlock(logs));
+      });
+    }
+  },
+
+  getRegisterTime: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [
+          this.api.events.registration.signature,
+          abi.format_int256(account)
+        ],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) {
+        var logs = this.rpc.getLogs(filter);
+        if (!logs || !logs.length || (logs && logs.error)) return null;
+        return this.parseLastTime(logs);
+      }
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, null);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, self.parseLastTime(logs));
+      });
+    }
+  },
+
+  getRegisterLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [
+          this.api.events.registration.signature,
+          abi.format_int256(account)
+        ],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, []);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, logs);
+      });
+    }
+  }
 };
 
 },{"../constants":242,"../utilities":266,"augur-abi":1,"clone":121}],261:[function(require,module,exports){
@@ -45032,362 +44995,362 @@ var constants = require("../constants");
 
 module.exports = {
 
-    getCurrentPeriod: function (periodLength, timestamp) {
-        var t = timestamp || parseInt(new Date().getTime() / 1000);
-        return Math.floor(t / periodLength);
-    },
+  getCurrentPeriod: function (periodLength, timestamp) {
+    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    return Math.floor(t / periodLength);
+  },
 
-    getCurrentPeriodProgress: function (periodLength, timestamp) {
-        var t = timestamp || parseInt(new Date().getTime() / 1000);
-        return 100 * (t % periodLength) / periodLength;
-    },
+  getCurrentPeriodProgress: function (periodLength, timestamp) {
+    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    return 100 * (t % periodLength) / periodLength;
+  },
 
-    hashSenderPlusEvent: function (sender, event) {
-        return abi.wrap(
-            utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
-        ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
-    },
+  hashSenderPlusEvent: function (sender, event) {
+    return abi.wrap(
+      utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
+    ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
+  },
 
-    getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
-        var self = this;
-        if (branch.constructor === Object) {
-            period = branch.period;
-            event = branch.event;
-            sender = branch.sender;
-            minValue = branch.minValue;
-            maxValue = branch.maxValue;
-            type = branch.type;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
-            if (!rawReport || rawReport.error) {
-                return callback(rawReport || self.errors.REPORT_NOT_FOUND);
-            }
-            if (!parseInt(rawReport, 16)) {
-                return callback({report: "0", isIndeterminate: false});
-            }
-            var report = self.unfixReport(rawReport, minValue, maxValue, type);
-            if (self.options.debug.reporting) {
-                console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
-            }
-            callback(report);
-        });
-    },
-
-    penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
-        if (branch.constructor === Object) {
-            event = branch.event;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.Consensus.penalizeWrong);
-        tx.params = [branch, event];
-        this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    // Increment vote period until vote period = current period - 1
-    checkPeriod: function (branch, periodLength, sender, callback) {
-        var self = this;
-        if (self.options.debug.reporting) {
-            console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength, sender);
-        }
-        this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
-            if (self.options.debug.reporting) {
-                console.log("[checkPeriod] periodCatchUp:", err, votePeriod);
-            }
-            if (err) return callback(err);
-            if (self.options.debug.reporting) {
-                console.log("[checkPeriod] calling feePenaltyCatchUp...", branch, votePeriod - 1);
-            }
-            self.feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
-                if (self.options.debug.reporting) {
-                    console.log("[checkPeriod] feePenaltyCatchUp:", err);
-                }
-                if (err) return callback(err);
-                callback(null, votePeriod);
-            });
-        });
-    },
-
-    periodCatchUp: function (branch, periodLength, callback) {
-        var self = this;
-        if (self.options.debug.reporting) {
-            console.log("calling getVotePeriod...", branch);
-        }
-        self.getVotePeriod(branch, function (votePeriod) {
-            if (self.options.debug.reporting) {
-                console.log("votePeriod:", votePeriod);
-            }
-            if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
-                if (self.options.debug.reporting) {
-                    console.log("votePeriod < currentPeriod - 1, calling increment period...");
-                }
-                self.incrementPeriodAfterReporting({
-                    branch: branch,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("Incremented period:", r.callReturn);
-                        }
-                        self.periodCatchUp(branch, periodLength, callback);
-                    },
-                    onFailed: callback
-                });
-            } else {
-                if (self.options.debug.reporting) {
-                    console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
-                }
-                callback(null, votePeriod);
-            }
-        });
-    },
-
-    feePenaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
-        var self = this;
-        if (self.options.debug.reporting) {
-            console.log("[feePenaltyCatchUp] params:", branch, periodToCheck, sender);
-        }
-        // If reported last period and called collectfees then call the penalization functions in
-        // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
-        // last period then call penalizationCatchup in order to allow submitReportHash to work.
-        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-            lastPeriodPenalized = parseInt(lastPeriodPenalized);
-            if (self.options.debug.reporting) {
-                console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
-                console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
-            }
-            self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
-                console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
-                if (!feesCollected || feesCollected.error) {
-                    return callback(feesCollected || "couldn't get fees collected");
-                }
-                if (self.options.debug.reporting) {
-                    console.log("[feePenaltyCatchUp] feesCollected:", feesCollected);
-                }
-                if (feesCollected === "1") {
-                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
-                }
-                if (self.getCurrentPeriodProgress(periodLength) < 50) {
-                    return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
-                }
-                self.collectFees({
-                    branch: branch,
-                    sender: sender,
-                    periodLength: periodLength,
-                    onSent: function (r) {
-                        console.log("collectFees sent:", r);
-                    },
-                    onSuccess: function (r) {
-                        console.log("collectFees success:", r);
-                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
-                    },
-                    onFailed: function (e) {
-                        if (e.error !== "-1") return callback(e);
-                        console.info("collectFees:", e.message);
-                        self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
-                    }
-                });
-            });
-        });
-    },
-
-    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
-        var self = this;
-        self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-            lastPeriodPenalized = parseInt(lastPeriodPenalized);
-            if (self.options.debug.reporting) {
-                console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
-                console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
-            }
-            if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
-                if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] Penalties caught up!");
-                }
-                return callback(null);
-            } else if (lastPeriodPenalized < periodToCheck - 1) {
-                if (self.getCurrentPeriodProgress(periodLength) >= 50) {
-                    if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
-                    }
-                    return callback(null);
-                }
-                return self.penalizationCatchup({
-                    branch: branch,
-                    sender: sender,
-                    onSent: utils.noop,
-                    onSuccess: function (r) {
-                        if (self.options.debug.reporting) {
-                            console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
-                        }
-                        callback(null);
-                    },
-                    onFailed: function (e) {
-                        console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
-                        callback(e);
-                    }
-                });
-            }
-            self.getEvents(branch, periodToCheck, function (events) {
-                if (!events || events.constructor !== Array || !events.length) {
-                    if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-                    }
-                    self.penalizeWrong({
-                        branch: branch,
-                        event: 0,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
-                            }
-                            callback(null);
-                        },
-                        onFailed: function (e) {
-                            console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-                            callback(null);
-                        }
-                    });
-                } else {
-                    if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
-                    }
-                    async.eachSeries(events, function (event, nextEvent) {
-                        self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
-                            }
-                            if (parseInt(canReportOn) === 0) return nextEvent(null);
-                            if (self.options.debug.reporting) {
-                                console.log("[penaltyCatchUp] penalizeWrong:", event);
-                            }
-                            self.penalizeWrong({
-                                branch: branch,
-                                event: event,
-                                onSent: utils.noop,
-                                onSuccess: function (r) {
-                                    if (self.options.debug.reporting) {
-                                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                                    }
-                                    self.closeExtraMarkets(branch, event, sender, function (err, markets) {
-                                        if (err) return nextEvent(err);
-                                        nextEvent(null);
-                                    });
-                                },
-                                onFailed: function (e) {
-                                    console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                                    nextEvent(null);
-                                }
-                            });
-                        });
-                    }, callback);
-                }
-            });
-        });
-    },
-
-    closeExtraMarkets: function (branch, event, sender, callback) {
-        var self = this;
-        if (self.options.debug.reporting) {
-            console.log("[closeExtraMarkets] Closing extra markets for event", event);
-        }
-        self.getMarkets(event, function (markets) {
-            if (!markets || !markets.length) {
-                return callback("no markets found for " + event);
-            }
-            if (markets && markets.error) return callback(markets);
-            async.eachSeries(markets, function (market, nextMarket) {
-                self.getWinningOutcomes(market, function (winningOutcomes) {
-                    console.log("winning outcomes for", market, winningOutcomes);
-                    if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
-                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-                        self.closeMarket({
-                            branch: branch,
-                            market: market,
-                            sender: sender,
-                            onSent: function (r) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[closeExtraMarkets] closeMarket sent:", market, r);
-                                }
-                            },
-                            onSuccess: function (r) {
-                                if (self.options.debug.reporting) {
-                                    console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
-                                }
-                                nextMarket(null);
-                            },
-                            onFailed: function (e) {
-                                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
-                                self.getWinningOutcomes(market, function (winningOutcomes) {
-                                    if (!winningOutcomes) return nextMarket(e);
-                                    if (winningOutcomes.error) return nextMarket(winningOutcomes);
-                                    if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-                                        return nextMarket(winningOutcomes);
-                                    }
-                                    nextMarket(null);
-                                });
-                            }
-                        });
-                    }
-                });
-            }, callback);
-        });
-    },
-
-    // Make sure current period = expiration period + periodGap
-    // If not, wait until it is:
-    // expPeriod - currentPeriod periods
-    // t % periodLength seconds
-    checkTime: function (branch, event, periodLength, periodGap, callback) {
-        var self = this;
-        if (!callback && utils.is_function(periodGap)) {
-            callback = periodGap;
-            periodGap = null;
-        }
-        periodGap = periodGap || 1;
-        function wait(branch, secondsToWait, next) {
-            console.log("Waiting", secondsToWait / 60, "minutes...");
-            setTimeout(function () {
-                self.Consensus.incrementPeriodAfterReporting({
-                    branch: branch,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        console.log("Incremented period:", r.callReturn);
-                        self.getVotePeriod(branch, function (votePeriod) {
-                            next(null, votePeriod);
-                        });
-                    },
-                    onFailed: next
-                });
-            }, secondsToWait*1000);
-        }
-        this.getExpiration(event, function (expTime) {
-            var expPeriod = Math.floor(expTime / periodLength);
-            var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("\nreporting.checkTime:");
-            console.log(" - Expiration period:", expPeriod);
-            console.log(" - Current period:   ", currentPeriod);
-            console.log(" - Target period:    ", expPeriod + periodGap);
-            if (currentPeriod < expPeriod + periodGap) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
-                console.log("Full periods to wait:", fullPeriodsToWait);
-                var secondsToWait = periodLength;
-                if (fullPeriodsToWait === 0) {
-                    secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
-                }
-                console.log("Seconds to wait:", secondsToWait);
-                wait(branch, secondsToWait, function (err, votePeriod) {
-                    if (err) return callback(err);
-                    console.log("New vote period:", votePeriod);
-                    self.checkTime(branch, event, periodLength, callback);
-                });
-            } else {
-                callback(null);
-            }
-        });
+  getReport: function (branch, period, event, sender, minValue, maxValue, type, callback) {
+    var self = this;
+    if (branch.constructor === Object) {
+      period = branch.period;
+      event = branch.event;
+      sender = branch.sender;
+      minValue = branch.minValue;
+      maxValue = branch.maxValue;
+      type = branch.type;
+      callback = callback || branch.callback;
+      branch = branch.branch;
     }
+    this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+      if (!rawReport || rawReport.error) {
+        return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+      }
+      if (!parseInt(rawReport, 16)) {
+        return callback({report: "0", isIndeterminate: false});
+      }
+      var report = self.unfixReport(rawReport, minValue, maxValue, type);
+      if (self.options.debug.reporting) {
+        console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+      }
+      callback(report);
+    });
+  },
+
+  penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object) {
+      event = branch.event;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.Consensus.penalizeWrong);
+    tx.params = [branch, event];
+    this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  // Increment vote period until vote period = current period - 1
+  checkPeriod: function (branch, periodLength, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength, sender);
+    }
+    this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
+      if (self.options.debug.reporting) {
+        console.log("[checkPeriod] periodCatchUp:", err, votePeriod);
+      }
+      if (err) return callback(err);
+      if (self.options.debug.reporting) {
+        console.log("[checkPeriod] calling feePenaltyCatchUp...", branch, votePeriod - 1);
+      }
+      self.feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
+        if (self.options.debug.reporting) {
+          console.log("[checkPeriod] feePenaltyCatchUp:", err);
+        }
+        if (err) return callback(err);
+        callback(null, votePeriod);
+      });
+    });
+  },
+
+  periodCatchUp: function (branch, periodLength, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("calling getVotePeriod...", branch);
+    }
+    self.getVotePeriod(branch, function (votePeriod) {
+      if (self.options.debug.reporting) {
+        console.log("votePeriod:", votePeriod);
+      }
+      if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+        if (self.options.debug.reporting) {
+          console.log("votePeriod < currentPeriod - 1, calling increment period...");
+        }
+        self.incrementPeriodAfterReporting({
+          branch: branch,
+          onSent: function (r) {},
+          onSuccess: function (r) {
+            if (self.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
+            self.periodCatchUp(branch, periodLength, callback);
+          },
+          onFailed: callback
+        });
+      } else {
+        if (self.options.debug.reporting) {
+          console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
+        }
+        callback(null, votePeriod);
+      }
+    });
+  },
+
+  feePenaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[feePenaltyCatchUp] params:", branch, periodToCheck, sender);
+    }
+    // If reported last period and called collectfees then call the penalization functions in
+    // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
+    // last period then call penalizationCatchup in order to allow submitReportHash to work.
+    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      if (self.options.debug.reporting) {
+        console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+      }
+      self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+        console.log('getFeesCollected:', lastPeriodPenalized, feesCollected);
+        if (!feesCollected || feesCollected.error) {
+          return callback(feesCollected || "couldn't get fees collected");
+        }
+        if (self.options.debug.reporting) {
+          console.log("[feePenaltyCatchUp] feesCollected:", feesCollected);
+        }
+        if (feesCollected === "1") {
+          return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        }
+        if (self.getCurrentPeriodProgress(periodLength) < 50) {
+          return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        }
+        self.collectFees({
+          branch: branch,
+          sender: sender,
+          periodLength: periodLength,
+          onSent: function (r) {
+            console.log("collectFees sent:", r);
+          },
+          onSuccess: function (r) {
+            console.log("collectFees success:", r);
+            self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          },
+          onFailed: function (e) {
+            if (e.error !== "-1") return callback(e);
+            console.info("collectFees:", e.message);
+            self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          }
+        });
+      });
+    });
+  },
+
+  penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
+    var self = this;
+    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      if (self.options.debug.reporting) {
+        console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+      }
+      if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
+        if (self.options.debug.reporting) {
+          console.log("[penaltyCatchUp] Penalties caught up!");
+        }
+        return callback(null);
+      } else if (lastPeriodPenalized < periodToCheck - 1) {
+        if (self.getCurrentPeriodProgress(periodLength) >= 50) {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
+          }
+          return callback(null);
+        }
+        return self.penalizationCatchup({
+          branch: branch,
+          sender: sender,
+          onSent: utils.noop,
+          onSuccess: function (r) {
+            if (self.options.debug.reporting) {
+              console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
+            }
+            callback(null);
+          },
+          onFailed: function (e) {
+            console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+            callback(e);
+          }
+        });
+      }
+      self.getEvents(branch, periodToCheck, function (events) {
+        if (!events || events.constructor !== Array || !events.length) {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
+          }
+          self.penalizeWrong({
+            branch: branch,
+            event: 0,
+            onSent: utils.noop,
+            onSuccess: function (r) {
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
+              }
+              callback(null);
+            },
+            onFailed: function (e) {
+              console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+              callback(null);
+            }
+          });
+        } else {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+          }
+          async.eachSeries(events, function (event, nextEvent) {
+            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+              }
+              if (parseInt(canReportOn) === 0) return nextEvent(null);
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] penalizeWrong:", event);
+              }
+              self.penalizeWrong({
+                branch: branch,
+                event: event,
+                onSent: utils.noop,
+                onSuccess: function (r) {
+                  if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                  }
+                  self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                    if (err) return nextEvent(err);
+                    nextEvent(null);
+                  });
+                },
+                onFailed: function (e) {
+                  console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                  nextEvent(null);
+                }
+              });
+            });
+          }, callback);
+        }
+      });
+    });
+  },
+
+  closeExtraMarkets: function (branch, event, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[closeExtraMarkets] Closing extra markets for event", event);
+    }
+    self.getMarkets(event, function (markets) {
+      if (!markets || !markets.length) {
+        return callback("no markets found for " + event);
+      }
+      if (markets && markets.error) return callback(markets);
+      async.eachSeries(markets, function (market, nextMarket) {
+        self.getWinningOutcomes(market, function (winningOutcomes) {
+          console.log("winning outcomes for", market, winningOutcomes);
+          if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
+          if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+            self.closeMarket({
+              branch: branch,
+              market: market,
+              sender: sender,
+              onSent: function (r) {
+                if (self.options.debug.reporting) {
+                  console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                }
+              },
+              onSuccess: function (r) {
+                if (self.options.debug.reporting) {
+                  console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                }
+                nextMarket(null);
+              },
+              onFailed: function (e) {
+                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
+                self.getWinningOutcomes(market, function (winningOutcomes) {
+                  if (!winningOutcomes) return nextMarket(e);
+                  if (winningOutcomes.error) return nextMarket(winningOutcomes);
+                  if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                    return nextMarket(winningOutcomes);
+                  }
+                  nextMarket(null);
+                });
+              }
+            });
+          }
+        });
+      }, callback);
+    });
+  },
+
+  // Make sure current period = expiration period + periodGap
+  // If not, wait until it is:
+  // expPeriod - currentPeriod periods
+  // t % periodLength seconds
+  checkTime: function (branch, event, periodLength, periodGap, callback) {
+    var self = this;
+    if (!callback && utils.is_function(periodGap)) {
+      callback = periodGap;
+      periodGap = null;
+    }
+    periodGap = periodGap || 1;
+    function wait(branch, secondsToWait, next) {
+      console.log("Waiting", secondsToWait / 60, "minutes...");
+      setTimeout(function () {
+        self.Consensus.incrementPeriodAfterReporting({
+          branch: branch,
+          onSent: function (r) {},
+          onSuccess: function (r) {
+            console.log("Incremented period:", r.callReturn);
+            self.getVotePeriod(branch, function (votePeriod) {
+              next(null, votePeriod);
+            });
+          },
+          onFailed: next
+        });
+      }, secondsToWait*1000);
+    }
+    this.getExpiration(event, function (expTime) {
+      var expPeriod = Math.floor(expTime / periodLength);
+      var currentPeriod = self.getCurrentPeriod(periodLength);
+      console.log("\nreporting.checkTime:");
+      console.log(" - Expiration period:", expPeriod);
+      console.log(" - Current period:   ", currentPeriod);
+      console.log(" - Target period:    ", expPeriod + periodGap);
+      if (currentPeriod < expPeriod + periodGap) {
+        var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
+        console.log("Full periods to wait:", fullPeriodsToWait);
+        var secondsToWait = periodLength;
+        if (fullPeriodsToWait === 0) {
+          secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
+        }
+        console.log("Seconds to wait:", secondsToWait);
+        wait(branch, secondsToWait, function (err, votePeriod) {
+          if (err) return callback(err);
+          console.log("New vote period:", votePeriod);
+          self.checkTime(branch, event, periodLength, callback);
+        });
+      } else {
+        callback(null);
+      }
+    });
+  }
 };
 
 },{"../constants":242,"../utilities":266,"async":80,"augur-abi":1,"clone":121}],262:[function(require,module,exports){
@@ -45404,50 +45367,50 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
-        // branch: hash id
-        // recver: ethereum address of recipient
-        // value: number -> fixed-point
-        var self = this;
-        if (branch && branch.branch) {
-            recver = branch.recver;
-            value = branch.value;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.SendReputation.sendReputation);
-        tx.params = [branch, recver, abi.fix(value, "hex")];
-
-        // if callReturn is 0, but account has sufficient Reputation and Rep
-        // redistribution is done, then re-invoke sendReputation
-        // (penalizationCatchup is being called)
-        var prepare = function (result, cb) {
-            if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
-                return cb(result);
-            }
-            self.getRepBalance(branch, result.from, function (repBalance) {
-                if (!repBalance || repBalance.error) {
-                    return onFailed(repBalance);
-                }
-                if (abi.bignum(repBalance).lt(abi.bignum(value))) {
-                    return onFailed({error: "0", message: "not enough reputation"});
-                }
-                self.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
-                    if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
-                        return onFailed({error: "-3", message: "cannot send reputation until redistribution is complete"});
-                    }
-                    self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
-                });
-            });
-        };
-
-        this.transact(tx,
-            onSent,
-            utils.compose(prepare, onSuccess),
-            onFailed);
+  sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
+    // branch: hash id
+    // recver: ethereum address of recipient
+    // value: number -> fixed-point
+    var self = this;
+    if (branch && branch.branch) {
+      recver = branch.recver;
+      value = branch.value;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
     }
+    var tx = clone(this.tx.SendReputation.sendReputation);
+    tx.params = [branch, recver, abi.fix(value, "hex")];
+
+    // if callReturn is 0, but account has sufficient Reputation and Rep
+    // redistribution is done, then re-invoke sendReputation
+    // (penalizationCatchup is being called)
+    var prepare = function (result, cb) {
+      if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
+        return cb(result);
+      }
+      self.getRepBalance(branch, result.from, function (repBalance) {
+        if (!repBalance || repBalance.error) {
+          return onFailed(repBalance);
+        }
+        if (abi.bignum(repBalance).lt(abi.bignum(value))) {
+          return onFailed({error: "0", message: "not enough reputation"});
+        }
+        self.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
+          if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
+            return onFailed({error: "-3", message: "cannot send reputation until redistribution is complete"});
+          }
+          self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
+        });
+      });
+    };
+
+    this.transact(tx,
+      onSent,
+      utils.compose(prepare, onSuccess),
+      onFailed);
+  }
 };
 
 },{"../utilities":266,"augur-abi":1,"clone":121}],263:[function(require,module,exports){
@@ -45468,301 +45431,301 @@ var abacus = require("./abacus");
 
 module.exports = {
 
-    // tradeTypes: array of "buy" and/or "sell"
-    // gasLimit (optional): block gas limit as integer
-    isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
-        if (utils.is_function(gasLimit) && !callback) {
-            callback = gasLimit;
-            gasLimit = null;
-        }
-        var gas = abacus.sumTradeGas(tradeTypes);
-        if (!utils.is_function(callback)) {
-            if (gasLimit) return gas <= gasLimit;
-            return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-        }
-        if (gasLimit) return callback(gas <= gasLimit);
-        var self = this;
-        this.rpc.blockNumber(function (blockNumber) {
-            self.rpc.getBlock(blockNumber, false, function (block) {
-                callback(gas <= parseInt(block.gasLimit, 16));
-            });
-        });
-    },
-
-    checkGasLimit: function (trade_ids, sender, callback) {
-        var self = this;
-        var gas = 0;
-        var count = {buy: 0, sell: 0};
-        self.rpc.blockNumber(function (blockNumber) {
-            self.rpc.getBlock(blockNumber, false, function (block) {
-                var checked_trade_ids = trade_ids.slice();
-                async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-                    self.get_trade(trade_id, function (trade) {
-                        if (!trade || !trade.id) {
-                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-                            if (!checked_trade_ids.length) {
-                                return callback(self.errors.TRADE_NOT_FOUND);
-                            }
-                            console.warn('[augur.js] checkGasLimit:', self.errors.TRADE_NOT_FOUND);
-                        } else if (trade.owner === sender) {
-                            checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-                            if (!checked_trade_ids.length) {
-                                return callback({error: "-5", message: self.errors.trade["-5"]});
-                            }
-                            console.warn('[augur.js] checkGasLimit:', self.errors.trade["-5"]);
-                        }
-                        ++count[trade.type];
-                        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-                        next();
-                    });
-                }, function (e) {
-                    if (e) return callback(e);
-                    if (gas <= parseInt(block.gasLimit, 16)) {
-                        return callback(null, checked_trade_ids);
-                    } else if (!count.buy || !count.sell) {
-                        var type = (count.buy) ? "buy" : "sell";
-                        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
-                    }
-                    callback(self.errors.GAS_LIMIT_EXCEEDED);
-                });
-            });
-        });
-    },
-
-    trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-        var self = this;
-        if (this.options.debug.trading) {
-            console.log("trade:", JSON.stringify(max_value, null, 2));
-        }
-        if (max_value.constructor === Object) {
-            max_amount = max_value.max_amount;
-            trade_ids = max_value.trade_ids;
-            tradeGroupID = max_value.tradeGroupID;
-            sender = max_value.sender;
-            onTradeHash = max_value.onTradeHash;
-            onCommitSent = max_value.onCommitSent;
-            onCommitSuccess = max_value.onCommitSuccess;
-            onCommitFailed = max_value.onCommitFailed;
-            onNextBlock = max_value.onNextBlock;
-            onTradeSent = max_value.onTradeSent;
-            onTradeSuccess = max_value.onTradeSuccess;
-            onTradeFailed = max_value.onTradeFailed;
-            max_value = max_value.max_value;
-        }
-        onTradeHash = onTradeHash || utils.noop;
-        onCommitSent = onCommitSent || utils.noop;
-        onCommitSuccess = onCommitSuccess || utils.noop;
-        onCommitFailed = onCommitFailed || utils.noop;
-        onNextBlock = onNextBlock || utils.noop;
-        onTradeSent = onTradeSent || utils.noop;
-        onTradeSuccess = onTradeSuccess || utils.noop;
-        onTradeFailed = onTradeFailed || utils.noop;
-        this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
-            if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
-            if (err) return onTradeFailed(err);
-            var bn_max_value = abi.bignum(max_value);
-            if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
-                return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
-            }
-            var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
-            if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
-            onTradeHash(tradeHash);
-            self.commitTrade({
-                hash: tradeHash,
-                onSent: onCommitSent,
-                onSuccess: function (res) {
-                    if (self.options.debug.trading) console.log('commitTrade:', res);
-                    onCommitSuccess(res);
-                    self.rpc.fastforward(1, function (blockNumber) {
-                        if (self.options.debug.trading) console.log('fastforward:', blockNumber);
-                        onNextBlock(blockNumber);
-                        var tx = clone(self.tx.Trade.trade);
-                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
-                        if (self.options.debug.trading) {
-                            console.log("trade tx:", JSON.stringify(tx, null, 2));
-                        }
-                        var prepare = function (result, cb) {
-                            if (self.options.debug.trading) {
-                                console.log("trade response:", JSON.stringify(result, null, 2));
-                            }
-                            var err;
-                            var txHash = result.hash;
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                                    err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
-                                    if (!err) {
-                                        err = clone(self.errors.TRADE_FAILED);
-                                        err.message += result.callReturn[0].toString();
-                                        return onTradeFailed(err);
-                                    }
-                                    return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx});
-                                }
-                                self.rpc.receipt(txHash, function (receipt) {
-                                    if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                    if (receipt.error) return onTradeFailed(receipt);
-                                    var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
-                                    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        logs = receipt.logs;
-                                        sig = self.api.events.log_fill_tx.signature;
-                                        sharesBought = constants.ZERO;
-                                        cashFromTrade = constants.ZERO;
-                                        tradingFees = constants.ZERO;
-                                        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                            if (logs[i].topics[0] === sig) {
-                                                logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length > 6) {
-                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
-
-                                                    // buy (matched sell order)
-                                                    if (parseInt(logdata[0], 16) === 1) {
-                                                        sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
-
-                                                    // sell (matched buy order)
-                                                    // cash received = price per share * shares sold
-                                                    } else {
-                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    cb({
-                                        hash: txHash,
-                                        unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
-                                        unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                                        sharesBought: abi.string(sharesBought),
-                                        cashFromTrade: abi.string(cashFromTrade),
-                                        tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees,
-                                        timestamp: result.timestamp
-                                    });
-                                });
-                            } else {
-                                err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                                if (!err) {
-                                    err = clone(self.errors.TRADE_FAILED);
-                                    err.message += result.callReturn.toString();
-                                    return onTradeFailed(result);
-                                }
-                                onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                            }
-                        };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
-                    });
-                },
-                onFailed: onCommitFailed
-            });
-        });
-    },
-
-    short_sell: function (buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-        var self = this;
-        if (this.options.debug.trading) {
-            console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
-        }
-        if (buyer_trade_id.constructor === Object) {
-            max_amount = buyer_trade_id.max_amount;
-            tradeGroupID = buyer_trade_id.tradeGroupID;
-            sender = buyer_trade_id.sender;
-            onTradeHash = buyer_trade_id.onTradeHash;
-            onCommitSent = buyer_trade_id.onCommitSent;
-            onCommitSuccess = buyer_trade_id.onCommitSuccess;
-            onCommitFailed = buyer_trade_id.onCommitFailed;
-            onNextBlock = buyer_trade_id.onNextBlock;
-            onTradeSent = buyer_trade_id.onTradeSent;
-            onTradeSuccess = buyer_trade_id.onTradeSuccess;
-            onTradeFailed = buyer_trade_id.onTradeFailed;
-            buyer_trade_id = buyer_trade_id.buyer_trade_id;
-        }
-        onTradeHash = onTradeHash || utils.noop;
-        onCommitSent = onCommitSent || utils.noop;
-        onCommitSuccess = onCommitSuccess || utils.noop;
-        onCommitFailed = onCommitFailed || utils.noop;
-        onNextBlock = onNextBlock || utils.noop;
-        onTradeSent = onTradeSent || utils.noop;
-        onTradeSuccess = onTradeSuccess || utils.noop;
-        onTradeFailed = onTradeFailed || utils.noop;
-        this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
-            if (err) return onTradeFailed(err);
-            var tradeHash = self.makeTradeHash(0, max_amount, trade_ids);
-            onTradeHash(tradeHash);
-            self.commitTrade({
-                hash: tradeHash,
-                onSent: onCommitSent,
-                onSuccess: function (res) {
-                    onCommitSuccess(res);
-                    self.rpc.fastforward(1, function (blockNumber) {
-                        onNextBlock(blockNumber);
-                        var tx = clone(self.tx.Trade.short_sell);
-                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
-                        if (self.options.debug.trading) {
-                            console.log("short_sell tx:", JSON.stringify(tx, null, 2));
-                        }
-                        var prepare = function (result, cb) {
-                            if (self.options.debug.trading) {
-                                console.log("short_sell response:", JSON.stringify(result, null, 2));
-                            }
-                            var err;
-                            var txHash = result.hash;
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                                if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
-                                    err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
-                                    if (!err) {
-                                        err = clone(self.errors.TRADE_FAILED);
-                                        err.message += result.callReturn[0].toString();
-                                        return onTradeFailed(err);
-                                    }
-                                    return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-                                }
-                                self.rpc.receipt(txHash, function (receipt) {
-                                    if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                    if (receipt.error) return onTradeFailed(receipt);
-                                    var cashFromTrade, tradingFees, logs, sig, logdata;
-                                    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                        logs = receipt.logs;
-                                        sig = self.api.events.log_short_fill_tx.signature;
-                                        cashFromTrade = constants.ZERO;
-                                        tradingFees = constants.ZERO;
-                                        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                            if (logs[i].topics[0] === sig) {
-                                                logdata = self.rpc.unmarshal(logs[i].data);
-                                                if (logdata && logdata.constructor === Array && logdata.length > 8) {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
-                                                    tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
-                                                }
-                                            }
-                                        }
-                                    }
-                                    cb({
-                                        hash: txHash,
-                                        unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                                        matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
-                                        cashFromTrade: abi.string(cashFromTrade),
-                                        price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
-                                        tradingFees: abi.string(tradingFees),
-                                        gasFees: result.gasFees,
-                                        timestamp: result.timestamp
-                                    });
-                                });
-                            } else {
-                                err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                                if (!err) {
-                                    err = clone(self.errors.TRADE_FAILED);
-                                    err.message += result.callReturn.toString();
-                                    return onTradeFailed(result);
-                                }
-                                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-                            }
-                        };
-                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
-                    });
-                },
-                onFailed: onCommitFailed
-            });
-        });
+  // tradeTypes: array of "buy" and/or "sell"
+  // gasLimit (optional): block gas limit as integer
+  isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
+    if (utils.is_function(gasLimit) && !callback) {
+      callback = gasLimit;
+      gasLimit = null;
     }
+    var gas = abacus.sumTradeGas(tradeTypes);
+    if (!utils.is_function(callback)) {
+      if (gasLimit) return gas <= gasLimit;
+      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
+    }
+    if (gasLimit) return callback(gas <= gasLimit);
+    var self = this;
+    this.rpc.blockNumber(function (blockNumber) {
+      self.rpc.getBlock(blockNumber, false, function (block) {
+        callback(gas <= parseInt(block.gasLimit, 16));
+      });
+    });
+  },
+
+  checkGasLimit: function (trade_ids, sender, callback) {
+    var self = this;
+    var gas = 0;
+    var count = {buy: 0, sell: 0};
+    self.rpc.blockNumber(function (blockNumber) {
+      self.rpc.getBlock(blockNumber, false, function (block) {
+        var checked_trade_ids = trade_ids.slice();
+        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+          self.get_trade(trade_id, function (trade) {
+            if (!trade || !trade.id) {
+              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+              if (!checked_trade_ids.length) {
+                return callback(self.errors.TRADE_NOT_FOUND);
+              }
+              console.warn('[augur.js] checkGasLimit:', self.errors.TRADE_NOT_FOUND);
+            } else if (trade.owner === sender) {
+              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+              if (!checked_trade_ids.length) {
+                return callback({error: "-5", message: self.errors.trade["-5"]});
+              }
+              console.warn('[augur.js] checkGasLimit:', self.errors.trade["-5"]);
+            }
+            ++count[trade.type];
+            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+            next();
+          });
+        }, function (e) {
+          if (e) return callback(e);
+          if (gas <= parseInt(block.gasLimit, 16)) {
+            return callback(null, checked_trade_ids);
+          } else if (!count.buy || !count.sell) {
+            var type = (count.buy) ? "buy" : "sell";
+            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+          }
+          callback(self.errors.GAS_LIMIT_EXCEEDED);
+        });
+      });
+    });
+  },
+
+  trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (this.options.debug.trading) {
+      console.log("trade:", JSON.stringify(max_value, null, 2));
+    }
+    if (max_value.constructor === Object) {
+      max_amount = max_value.max_amount;
+      trade_ids = max_value.trade_ids;
+      tradeGroupID = max_value.tradeGroupID;
+      sender = max_value.sender;
+      onTradeHash = max_value.onTradeHash;
+      onCommitSent = max_value.onCommitSent;
+      onCommitSuccess = max_value.onCommitSuccess;
+      onCommitFailed = max_value.onCommitFailed;
+      onNextBlock = max_value.onNextBlock;
+      onTradeSent = max_value.onTradeSent;
+      onTradeSuccess = max_value.onTradeSuccess;
+      onTradeFailed = max_value.onTradeFailed;
+      max_value = max_value.max_value;
+    }
+    onTradeHash = onTradeHash || utils.noop;
+    onCommitSent = onCommitSent || utils.noop;
+    onCommitSuccess = onCommitSuccess || utils.noop;
+    onCommitFailed = onCommitFailed || utils.noop;
+    onNextBlock = onNextBlock || utils.noop;
+    onTradeSent = onTradeSent || utils.noop;
+    onTradeSuccess = onTradeSuccess || utils.noop;
+    onTradeFailed = onTradeFailed || utils.noop;
+    this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
+      if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
+      if (err) return onTradeFailed(err);
+      var bn_max_value = abi.bignum(max_value);
+      if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
+        return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
+      }
+      var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+      if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
+      onTradeHash(tradeHash);
+      self.commitTrade({
+        hash: tradeHash,
+        onSent: onCommitSent,
+        onSuccess: function (res) {
+          if (self.options.debug.trading) console.log('commitTrade:', res);
+          onCommitSuccess(res);
+          self.rpc.fastforward(1, function (blockNumber) {
+            if (self.options.debug.trading) console.log('fastforward:', blockNumber);
+            onNextBlock(blockNumber);
+            var tx = clone(self.tx.Trade.trade);
+            tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
+            if (self.options.debug.trading) {
+              console.log("trade tx:", JSON.stringify(tx, null, 2));
+            }
+            var prepare = function (result, cb) {
+              if (self.options.debug.trading) {
+                console.log("trade response:", JSON.stringify(result, null, 2));
+              }
+              var err;
+              var txHash = result.hash;
+              if (result.callReturn && result.callReturn.constructor === Array) {
+                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                  err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
+                  if (!err) {
+                    err = clone(self.errors.TRADE_FAILED);
+                    err.message += result.callReturn[0].toString();
+                    return onTradeFailed(err);
+                  }
+                  return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx});
+                }
+                self.rpc.receipt(txHash, function (receipt) {
+                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                  if (receipt.error) return onTradeFailed(receipt);
+                  var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
+                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    logs = receipt.logs;
+                    sig = self.api.events.log_fill_tx.signature;
+                    sharesBought = constants.ZERO;
+                    cashFromTrade = constants.ZERO;
+                    tradingFees = constants.ZERO;
+                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                      if (logs[i].topics[0] === sig) {
+                        logdata = self.rpc.unmarshal(logs[i].data);
+                        if (logdata && logdata.constructor === Array && logdata.length > 6) {
+                          tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+
+                              // buy (matched sell order)
+                          if (parseInt(logdata[0], 16) === 1) {
+                            sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+
+                                  // sell (matched buy order)
+                                  // cash received = price per share * shares sold
+                          } else {
+                            cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
+                          }
+                        }
+                      }
+                    }
+                  }
+                  cb({
+                    hash: txHash,
+                    unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
+                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                    sharesBought: abi.string(sharesBought),
+                    cashFromTrade: abi.string(cashFromTrade),
+                    tradingFees: abi.string(tradingFees),
+                    gasFees: result.gasFees,
+                    timestamp: result.timestamp
+                  });
+                });
+              } else {
+                err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                if (!err) {
+                  err = clone(self.errors.TRADE_FAILED);
+                  err.message += result.callReturn.toString();
+                  return onTradeFailed(result);
+                }
+                onTradeFailed({error: err, message: self.errors[err], tx: tx});
+              }
+            };
+            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
+          });
+        },
+        onFailed: onCommitFailed
+      });
+    });
+  },
+
+  short_sell: function (buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (this.options.debug.trading) {
+      console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
+    }
+    if (buyer_trade_id.constructor === Object) {
+      max_amount = buyer_trade_id.max_amount;
+      tradeGroupID = buyer_trade_id.tradeGroupID;
+      sender = buyer_trade_id.sender;
+      onTradeHash = buyer_trade_id.onTradeHash;
+      onCommitSent = buyer_trade_id.onCommitSent;
+      onCommitSuccess = buyer_trade_id.onCommitSuccess;
+      onCommitFailed = buyer_trade_id.onCommitFailed;
+      onNextBlock = buyer_trade_id.onNextBlock;
+      onTradeSent = buyer_trade_id.onTradeSent;
+      onTradeSuccess = buyer_trade_id.onTradeSuccess;
+      onTradeFailed = buyer_trade_id.onTradeFailed;
+      buyer_trade_id = buyer_trade_id.buyer_trade_id;
+    }
+    onTradeHash = onTradeHash || utils.noop;
+    onCommitSent = onCommitSent || utils.noop;
+    onCommitSuccess = onCommitSuccess || utils.noop;
+    onCommitFailed = onCommitFailed || utils.noop;
+    onNextBlock = onNextBlock || utils.noop;
+    onTradeSent = onTradeSent || utils.noop;
+    onTradeSuccess = onTradeSuccess || utils.noop;
+    onTradeFailed = onTradeFailed || utils.noop;
+    this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
+      if (err) return onTradeFailed(err);
+      var tradeHash = self.makeTradeHash(0, max_amount, trade_ids);
+      onTradeHash(tradeHash);
+      self.commitTrade({
+        hash: tradeHash,
+        onSent: onCommitSent,
+        onSuccess: function (res) {
+          onCommitSuccess(res);
+          self.rpc.fastforward(1, function (blockNumber) {
+            onNextBlock(blockNumber);
+            var tx = clone(self.tx.Trade.short_sell);
+            tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
+            if (self.options.debug.trading) {
+              console.log("short_sell tx:", JSON.stringify(tx, null, 2));
+            }
+            var prepare = function (result, cb) {
+              if (self.options.debug.trading) {
+                console.log("short_sell response:", JSON.stringify(result, null, 2));
+              }
+              var err;
+              var txHash = result.hash;
+              if (result.callReturn && result.callReturn.constructor === Array) {
+                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                  err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
+                  if (!err) {
+                    err = clone(self.errors.TRADE_FAILED);
+                    err.message += result.callReturn[0].toString();
+                    return onTradeFailed(err);
+                  }
+                  return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
+                }
+                self.rpc.receipt(txHash, function (receipt) {
+                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                  if (receipt.error) return onTradeFailed(receipt);
+                  var cashFromTrade, tradingFees, logs, sig, logdata;
+                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    logs = receipt.logs;
+                    sig = self.api.events.log_short_fill_tx.signature;
+                    cashFromTrade = constants.ZERO;
+                    tradingFees = constants.ZERO;
+                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                      if (logs[i].topics[0] === sig) {
+                        logdata = self.rpc.unmarshal(logs[i].data);
+                        if (logdata && logdata.constructor === Array && logdata.length > 8) {
+                          cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
+                          tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
+                        }
+                      }
+                    }
+                  }
+                  cb({
+                    hash: txHash,
+                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                    matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
+                    cashFromTrade: abi.string(cashFromTrade),
+                    price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
+                    tradingFees: abi.string(tradingFees),
+                    gasFees: result.gasFees,
+                    timestamp: result.timestamp
+                  });
+                });
+              } else {
+                err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                if (!err) {
+                  err = clone(self.errors.TRADE_FAILED);
+                  err.message += result.callReturn.toString();
+                  return onTradeFailed(result);
+                }
+                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
+              }
+            };
+            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
+          });
+        },
+        onFailed: onCommitFailed
+      });
+    });
+  }
 };
 
 },{"../constants":242,"../utilities":266,"./abacus":246,"async":80,"augur-abi":1,"clone":121,"ethrpc":271}],264:[function(require,module,exports){
@@ -45780,382 +45743,382 @@ var ONE = new BigNumber(1, 10);
 
 module.exports = {
 
-    /**
-     * Calculates (approximately) gas needed to run the transaction
-     *
-     * @param {Object} tx
-     * @param {Number} gasPrice
-     * @return {BigNumber}
-     */
-    getTxGasEth: function (tx, gasPrice) {
-        tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
-        tx.gasPrice = gasPrice;
-        var etx = new EthTx(tx);
-        return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
-    },
+  /**
+   * Calculates (approximately) gas needed to run the transaction
+   *
+   * @param {Object} tx
+   * @param {Number} gasPrice
+   * @return {BigNumber}
+   */
+  getTxGasEth: function (tx, gasPrice) {
+    tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
+    tx.gasPrice = gasPrice;
+    var etx = new EthTx(tx);
+    return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
+  },
 
-    /**
-     * Bids are sorted descendingly, asks are sorted ascendingly
-     *
-     * @param {Array} orders Bids or asks
-     * @param {String} traderOrderType What trader want to do (buy or sell)
-     * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
-     * @param {String} outcomeId
-     * @param {String} userAddress
-     * @return {Array.<Object>}
-     */
-    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-        if (!orders) return [];
-        var isMarketOrder = limitPrice === null || limitPrice === undefined;
-        return Object.keys(orders)
+  /**
+   * Bids are sorted descendingly, asks are sorted ascendingly
+   *
+   * @param {Array} orders Bids or asks
+   * @param {String} traderOrderType What trader want to do (buy or sell)
+   * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
+   * @param {String} outcomeId
+   * @param {String} userAddress
+   * @return {Array.<Object>}
+   */
+  filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    if (!orders) return [];
+    var isMarketOrder = limitPrice === null || limitPrice === undefined;
+    return Object.keys(orders)
             .map(function (orderId) {
-                return orders[orderId];
+              return orders[orderId];
             })
             .filter(function (order) {
-                var isMatchingPrice;
-                if (isMarketOrder) {
-                    isMatchingPrice = true;
-                } else {
-                    isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
-                }
-                return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+              var isMatchingPrice;
+              if (isMarketOrder) {
+                isMatchingPrice = true;
+              } else {
+                isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+              }
+              return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
             })
             .sort(function compareOrdersByPrice(order1, order2) {
-                return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+              return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
             });
-    },
+  },
 
-    /**
-     *
-     * @param {BigNumber} shares
-     * @param {BigNumber} limitPrice
-     * @param {BigNumber} makerFee
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
-        var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
-        var etherToBid = shares.times(limitPrice).dividedBy(constants.ONE).floor();
-        var feeEth = etherToBid.times(makerFee).dividedBy(constants.ONE).floor();
-        return {
-            action: "BID",
-            shares: abi.unfix(shares, "string"),
-            gasEth: bidGasEth.toFixed(),
-            feeEth: abi.unfix(feeEth, "string"),
-            feePercent: abi.unfix(makerFee).times(100).toFixed(),
-            costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
-            avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(limitPrice, "string")
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
+    var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
+    var etherToBid = shares.times(limitPrice).dividedBy(constants.ONE).floor();
+    var feeEth = etherToBid.times(makerFee).dividedBy(constants.ONE).floor();
+    return {
+      action: "BID",
+      shares: abi.unfix(shares, "string"),
+      gasEth: bidGasEth.toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
+      avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string")
+    };
+  },
 
-    /**
-     *
-     * @param {BigNumber} buyEth
-     * @param {BigNumber} sharesFilled
-     * @param {BigNumber} takerFeeEth
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getBuyAction: function (buyEth, sharesFilled, takerFeeEth, gasPrice) {
-        var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-        var fxpBuyEth = abi.fix(buyEth);
-        var fxpTakerFeeEth = abi.fix(takerFeeEth);
-        var fxpSharesFilled = abi.fix(sharesFilled);
-        return {
-            action: "BUY",
-            shares: sharesFilled.toFixed(),
-            gasEth: tradeGasEth.toFixed(),
-            feeEth: takerFeeEth.toFixed(),
-            feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
-            costEth: buyEth.toFixed(),
-            avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} buyEth
+   * @param {BigNumber} sharesFilled
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getBuyAction: function (buyEth, sharesFilled, takerFeeEth, gasPrice) {
+    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var fxpBuyEth = abi.fix(buyEth);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    var fxpSharesFilled = abi.fix(sharesFilled);
+    return {
+      action: "BUY",
+      shares: sharesFilled.toFixed(),
+      gasEth: tradeGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: buyEth.toFixed(),
+      avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
+    };
+  },
 
-    /**
-     *
-     * @param {BigNumber} shares
-     * @param {BigNumber} limitPrice
-     * @param {BigNumber} makerFee
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-        var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-        var costEth = shares.times(limitPrice).dividedBy(constants.ONE).floor();
-        var feeEth = costEth.times(makerFee).dividedBy(constants.ONE).floor();
-        return {
-            action: "ASK",
-            shares: abi.unfix(shares, "string"),
-            gasEth: askGasEth.toFixed(),
-            feeEth: abi.unfix(feeEth, "string"),
-            feePercent: abi.unfix(makerFee).times(100).toFixed(),
-            costEth: abi.unfix(costEth.minus(feeEth), "string"),
-            avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(limitPrice, "string")
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
+    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var costEth = shares.times(limitPrice).dividedBy(constants.ONE).floor();
+    var feeEth = costEth.times(makerFee).dividedBy(constants.ONE).floor();
+    return {
+      action: "ASK",
+      shares: abi.unfix(shares, "string"),
+      gasEth: askGasEth.toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(costEth.minus(feeEth), "string"),
+      avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string")
+    };
+  },
 
-    /**
-     *
-     * @param {BigNumber} sellEth
-     * @param {BigNumber} sharesFilled
-     * @param {BigNumber} takerFeeEth
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getSellAction: function (sellEth, sharesFilled, takerFeeEth, gasPrice) {
-        var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-        var fxpSellEth = abi.fix(sellEth);
-        var fxpSharesFilled = abi.fix(sharesFilled);
-        var fxpTakerFeeEth = abi.fix(takerFeeEth);
-        return {
-            action: "SELL",
-            shares: sharesFilled.toFixed(),
-            gasEth: tradeGasEth.toFixed(),
-            feeEth: takerFeeEth.toFixed(),
-            feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100), "string"),
-            costEth: sellEth.toFixed(),
-            avgPrice: abi.unfix(fxpSellEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(fxpSellEth.plus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} sellEth
+   * @param {BigNumber} sharesFilled
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getSellAction: function (sellEth, sharesFilled, takerFeeEth, gasPrice) {
+    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var fxpSellEth = abi.fix(sellEth);
+    var fxpSharesFilled = abi.fix(sharesFilled);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    return {
+      action: "SELL",
+      shares: sharesFilled.toFixed(),
+      gasEth: tradeGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: sellEth.toFixed(),
+      avgPrice: abi.unfix(fxpSellEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpSellEth.plus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
+    };
+  },
 
-    /**
-     *
-     * @param {BigNumber} shortSellEth
-     * @param {BigNumber} shares
-     * @param {BigNumber} takerFeeEth
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
-        var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
-        var fxpShortSellEth = abi.fix(shortSellEth);
-        var fxpTakerFeeEth = abi.fix(takerFeeEth);
-        var fxpShares = abi.fix(shares);
-        return {
-            action: "SHORT_SELL",
-            shares: shares.toFixed(),
-            gasEth: shortSellGasEth.toFixed(),
-            feeEth: takerFeeEth.toFixed(),
-            feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
-            costEth: shortSellEth.toFixed(),
-            avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} shortSellEth
+   * @param {BigNumber} shares
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
+    var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
+    var fxpShortSellEth = abi.fix(shortSellEth);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    var fxpShares = abi.fix(shares);
+    return {
+      action: "SHORT_SELL",
+      shares: shares.toFixed(),
+      gasEth: shortSellGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: shortSellEth.toFixed(),
+      avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
+    };
+  },
 
-    /**
-     *
-     * @param {BigNumber} shares
-     * @param {BigNumber} limitPrice
-     * @param {BigNumber} makerFee
-     * @param {Number} gasPrice
-     * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
-     */
-    getShortAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-        var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
-        var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-        var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
-        // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
-        var costEth = shares.neg().minus(feeEth);
-        return {
-            action: "SHORT_ASK",
-            shares: abi.unfix(shares, "string"),
-            gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
-            feeEth: abi.unfix(feeEth, "string"),
-            feePercent: abi.unfix(makerFee).times(100).toFixed(),
-            costEth: abi.unfix(costEth, "string"),
-            avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
-            noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
-        };
-    },
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getShortAskAction: function (shares, limitPrice, makerFee, gasPrice) {
+    var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
+    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
+    // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
+    var costEth = shares.neg().minus(feeEth);
+    return {
+      action: "SHORT_ASK",
+      shares: abi.unfix(shares, "string"),
+      gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(costEth, "string"),
+      avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
+    };
+  },
 
-    /**
-     * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
-     * much they pay for trading
-     *
-     * @param {String} type 'buy' or 'sell'
-     * @param {String|BigNumber} orderShares
-     * @param {String|BigNumber=} orderLimitPrice null value results in market order
-     * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
-     * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
-     * @param {String} userAddress Address of trader to exclude orders from order book
-     * @param {String|BigNumber} userPositionShares
-     * @param {String} outcomeId
-     * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
-     * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
-     * @return {Array}
-     */
-    getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
-        var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
-        if (type.constructor === Object) {
-            orderShares = type.orderShares;
-            orderLimitPrice = type.orderLimitPrice;
-            takerFee = type.takerFee;
-            makerFee = type.makerFee;
-            userAddress = type.userAddress;
-            userPositionShares = type.userPositionShares;
-            outcomeId = type.outcomeId;
-            marketOrderBook = type.marketOrderBook;
-            range = type.range;
-            scalarMinMax = type.scalarMinMax;
-            type = type.type;
+  /**
+   * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+   * much they pay for trading
+   *
+   * @param {String} type 'buy' or 'sell'
+   * @param {String|BigNumber} orderShares
+   * @param {String|BigNumber=} orderLimitPrice null value results in market order
+   * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
+   * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
+   * @param {String} userAddress Address of trader to exclude orders from order book
+   * @param {String|BigNumber} userPositionShares
+   * @param {String} outcomeId
+   * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
+   * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
+   * @return {Array}
+   */
+  getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
+    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
+    if (type.constructor === Object) {
+      orderShares = type.orderShares;
+      orderLimitPrice = type.orderLimitPrice;
+      takerFee = type.takerFee;
+      makerFee = type.makerFee;
+      userAddress = type.userAddress;
+      userPositionShares = type.userPositionShares;
+      outcomeId = type.outcomeId;
+      marketOrderBook = type.marketOrderBook;
+      range = type.range;
+      scalarMinMax = type.scalarMinMax;
+      type = type.type;
+    }
+
+    userAddress = abi.format_address(userAddress);
+    orderShares = new BigNumber(orderShares, 10);
+    orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
+      null :
+      new BigNumber(orderLimitPrice, 10);
+    var bnTakerFee = new BigNumber(takerFee, 10);
+    var bnMakerFee = new BigNumber(makerFee, 10);
+    var bnRange = new BigNumber(range, 10);
+    userPositionShares = new BigNumber(userPositionShares, 10);
+    isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
+    fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+    if (!isMarketOrder) {
+      adjustedFees = abacus.calculateFxpMakerTakerFees(
+        abacus.calculateFxpAdjustedTradingFee(
+          fees.tradingFee,
+          abi.fix(orderLimitPrice),
+          abi.fix(bnRange)
+        ),
+        fees.makerProportionOfFee,
+        false,
+        true
+      );
+    }
+
+    var augur = this;
+    var gasPrice = augur.rpc.gasPrice;
+    var tradingCost, fullPrecisionPrice;
+    if (type === "buy") {
+      var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
+      var areSuitableOrders = matchingSortedAsks.length > 0;
+      if (!areSuitableOrders) {
+        if (isMarketOrder) {
+          return [];
+        }
+        return [augur.getBidAction(abi.fix(orderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice)];
+      } else {
+        var buyActions = [];
+
+        var etherToTrade = constants.ZERO;
+        totalTakerFeeEth = constants.ZERO;
+        remainingOrderShares = orderShares;
+        length = matchingSortedAsks.length;
+        for (i = 0; i < length; i++) {
+          ask = matchingSortedAsks[i];
+          orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
+          fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
+            abacus.shrinkScalarPrice(scalarMinMax.minValue, ask.fullPrecisionPrice) :
+            ask.fullPrecisionPrice;
+          tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+          totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+          etherToTrade = etherToTrade.plus(tradingCost.cost);
+          remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+          if (remainingOrderShares.lte(constants.PRECISION.zero)) {
+            break;
+          }
+        }
+        buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
+
+        if (!remainingOrderShares.lte(constants.PRECISION.zero) && !isMarketOrder) {
+          buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
         }
 
-        userAddress = abi.format_address(userAddress);
-        orderShares = new BigNumber(orderShares, 10);
-        orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
-            null :
-            new BigNumber(orderLimitPrice, 10);
-        var bnTakerFee = new BigNumber(takerFee, 10);
-        var bnMakerFee = new BigNumber(makerFee, 10);
-        var bnRange = new BigNumber(range, 10);
-        userPositionShares = new BigNumber(userPositionShares, 10);
-        isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
-        fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
-        if (!isMarketOrder) {
-            adjustedFees = abacus.calculateFxpMakerTakerFees(
-                abacus.calculateFxpAdjustedTradingFee(
-                    fees.tradingFee,
-                    abi.fix(orderLimitPrice),
-                    abi.fix(bnRange)
-                ),
-                fees.makerProportionOfFee,
-                false,
-                true
-            );
-        }
+        return buyActions;
+      }
+    } else {
+      var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
 
-        var augur = this;
-        var gasPrice = augur.rpc.gasPrice;
-        var tradingCost, fullPrecisionPrice;
-        if (type === "buy") {
-            var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-            var areSuitableOrders = matchingSortedAsks.length > 0;
-            if (!areSuitableOrders) {
-                if (isMarketOrder) {
-                    return [];
-                }
-                return [augur.getBidAction(abi.fix(orderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice)];
+      var areSuitableBids = matchingSortedBids.length > 0;
+      var userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
+      var sellActions = [];
+
+      if (userHasPosition) {
+        var etherToSell = constants.ZERO;
+        remainingOrderShares = orderShares;
+        var remainingPositionShares = userPositionShares;
+        if (areSuitableBids) {
+          totalTakerFeeEth = constants.ZERO;
+          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+            bid = matchingSortedBids[i];
+            bidAmount = new BigNumber(bid.amount, 10);
+            orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
+            fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
+              abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
+              bid.fullPrecisionPrice;
+            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+            etherToSell = etherToSell.plus(tradingCost.cash);
+            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
+            if (orderSharesFilled.equals(bidAmount)) {
+              // since this order is filled we remove it. Change for-cycle variables accordingly
+              matchingSortedBids.splice(i, 1);
+              i--;
+              length--;
             } else {
-                var buyActions = [];
-
-                var etherToTrade = constants.ZERO;
-                totalTakerFeeEth = constants.ZERO;
-                remainingOrderShares = orderShares;
-                length = matchingSortedAsks.length;
-                for (i = 0; i < length; i++) {
-                    ask = matchingSortedAsks[i];
-                    orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-                    fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
-                        abacus.shrinkScalarPrice(scalarMinMax.minValue, ask.fullPrecisionPrice) :
-                        ask.fullPrecisionPrice;
-                    tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-                    totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-                    etherToTrade = etherToTrade.plus(tradingCost.cost);
-                    remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-                    if (remainingOrderShares.lte(constants.PRECISION.zero)) {
-                        break;
-                    }
-                }
-                buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-
-                if (!remainingOrderShares.lte(constants.PRECISION.zero) && !isMarketOrder) {
-                    buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-                }
-
-                return buyActions;
+              var newBid = clone(bid);
+              newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
+              matchingSortedBids[i] = newBid;
             }
+            if (remainingOrderShares.lte(constants.PRECISION.zero) || remainingPositionShares.lte(constants.PRECISION.zero)) {
+              break;
+            }
+          }
+          sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
         } else {
-            var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
+          if (!isMarketOrder) {
+            var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+            remainingOrderShares = remainingOrderShares.minus(askShares);
+            remainingPositionShares = remainingPositionShares.minus(askShares);
+            sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+          }
+        }
 
-            var areSuitableBids = matchingSortedBids.length > 0;
-            var userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
-            var sellActions = [];
+        if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
+          // recursion
+          sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax));
+        }
+      } else {
+        if (isMarketOrder) {
+          return sellActions;
+        }
 
-            if (userHasPosition) {
-                var etherToSell = constants.ZERO;
-                remainingOrderShares = orderShares;
-                var remainingPositionShares = userPositionShares;
-                if (areSuitableBids) {
-                    totalTakerFeeEth = constants.ZERO;
-                    for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-                        bid = matchingSortedBids[i];
-                        bidAmount = new BigNumber(bid.amount, 10);
-                        orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-                        fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
-                            abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
-                            bid.fullPrecisionPrice;
-                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-                        etherToSell = etherToSell.plus(tradingCost.cash);
-                        remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-                        remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
-                        if (orderSharesFilled.equals(bidAmount)) {
-                            // since this order is filled we remove it. Change for-cycle variables accordingly
-                            matchingSortedBids.splice(i, 1);
-                            i--;
-                            length--;
-                        } else {
-                            var newBid = clone(bid);
-                            newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
-                            matchingSortedBids[i] = newBid;
-                        }
-                        if (remainingOrderShares.lte(constants.PRECISION.zero) || remainingPositionShares.lte(constants.PRECISION.zero)) {
-                            break;
-                        }
-                    }
-                    sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-                } else {
-                    if (!isMarketOrder) {
-                        var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
-                        remainingOrderShares = remainingOrderShares.minus(askShares);
-                        remainingPositionShares = remainingPositionShares.minus(askShares);
-                        sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-                    }
-                }
-
-                if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
-                    // recursion
-                    sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax));
-                }
-            } else {
-                if (isMarketOrder) {
-                    return sellActions;
-                }
-
-                var etherToShortSell = constants.ZERO;
-                remainingOrderShares = orderShares;
-                if (areSuitableBids) {
-                    totalTakerFeeEth = constants.ZERO;
-                    for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-                        bid = matchingSortedBids[i];
-                        orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-                        fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
+        var etherToShortSell = constants.ZERO;
+        remainingOrderShares = orderShares;
+        if (areSuitableBids) {
+          totalTakerFeeEth = constants.ZERO;
+          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+            bid = matchingSortedBids[i];
+            orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
+            fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
                             abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
                             bid.fullPrecisionPrice;
-                        tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-                        totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-                        etherToShortSell = etherToShortSell.plus(tradingCost.cash);
-                        remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-                        if (remainingOrderShares.lte(constants.PRECISION.zero)) {
-                            break;
-                        }
-                    }
-                    sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-                }
-                if (remainingOrderShares.gt(constants.PRECISION.zero)) {
-                    sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-                }
+            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+            etherToShortSell = etherToShortSell.plus(tradingCost.cash);
+            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            if (remainingOrderShares.lte(constants.PRECISION.zero)) {
+              break;
             }
-
-            return sellActions;
+          }
+          sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
         }
+        if (remainingOrderShares.gt(constants.PRECISION.zero)) {
+          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+        }
+      }
+
+      return sellActions;
     }
+  }
 };
 
 },{"../constants":242,"./abacus":246,"augur-abi":1,"bignumber.js":83,"clone":121,"ethereumjs-tx":159}],265:[function(require,module,exports){
@@ -46168,24 +46131,24 @@ module.exports = {
 
 module.exports = {
 
-    fire: function (tx, callback, wrapper, aux) {
-        if (this.web && this.web.account && this.web.account.address) {
-            tx.from = this.web.account.address;
-        } else {
-            tx.from = tx.from || this.from || this.coinbase;
-        }
-        return this.rpc.fire(tx, callback, wrapper, aux);
-    },
-
-    transact: function (tx, onSent, onSuccess, onFailed) {
-        if (this.web && this.web.account && this.web.account.address) {
-            tx.from = this.web.account.address;
-            tx.invocation = {invoke: this.web.invoke, context: this.web};
-        } else {
-            tx.from = tx.from || this.from || this.coinbase;
-        }
-        return this.rpc.transact(tx, onSent, onSuccess, onFailed);
+  fire: function (tx, callback, wrapper, aux) {
+    if (this.web && this.web.account && this.web.account.address) {
+      tx.from = this.web.account.address;
+    } else {
+      tx.from = tx.from || this.from || this.coinbase;
     }
+    return this.rpc.fire(tx, callback, wrapper, aux);
+  },
+
+  transact: function (tx, onSent, onSuccess, onFailed) {
+    if (this.web && this.web.account && this.web.account.address) {
+      tx.from = this.web.account.address;
+      tx.invocation = {invoke: this.web.invoke, context: this.web};
+    } else {
+      tx.from = tx.from || this.from || this.coinbase;
+    }
+    return this.rpc.transact(tx, onSent, onSuccess, onFailed);
+  }
 };
 
 },{}],266:[function(require,module,exports){
@@ -46201,121 +46164,120 @@ var abi = require("augur-abi");
 var constants = require("./constants");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 module.exports = {
 
-    noop: function () {},
+  noop: function () {},
 
-    pass: function (o) { return o; },
+  pass: function (o) { return o; },
 
-    is_function: function (f) {
-        return Object.prototype.toString.call(f) === "[object Function]";
-    },
+  is_function: function (f) {
+    return Object.prototype.toString.call(f) === "[object Function]";
+  },
 
-    STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
+  STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
 
-    ARGUMENT_NAMES: /([^\s,]+)/g,
+  ARGUMENT_NAMES: /([^\s,]+)/g,
 
-    compose: function (prepare, callback) {
-        if (!this.is_function(callback)) return null;
-        if (!this.is_function(prepare)) return callback;
-        return function (result) { return prepare(result, callback); };
-    },
+  compose: function (prepare, callback) {
+    if (!this.is_function(callback)) return null;
+    if (!this.is_function(prepare)) return callback;
+    return function (result) { return prepare(result, callback); };
+  },
 
-    labels: function (func) {
-        var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
-        var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
-        if (result === null) result = [];
-        return result;
-    },
+  labels: function (func) {
+    var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
+    var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
+    if (result === null) result = [];
+    return result;
+  },
 
-    unpack: function (o, labels, args) {
-        var params = [], cb = [];
+  unpack: function (o, labels, args) {
+    var params = [], cb = [];
 
-        // unpack object argument
-        if (o !== undefined && o !== null && o.constructor === Object &&
-            labels && labels.constructor === Array && labels.length) {
-            for (var i = 0, len = labels.length; i < len; ++i) {
-                if (o[labels[i]] !== undefined) {
-                    if (o[labels[i]].constructor === Function) {
-                        cb.push(o[labels[i]]);
-                    } else {
-                        params.push(o[labels[i]]);
-                    }
-                }
-            }
-
-        // unpack positional arguments
-        } else {
-            for (var j = 0, arglen = args.length; j < arglen; ++j) {
-                if (args[j] !== undefined) {
-                    if (args[j] && args[j].constructor === Function) {
-                        cb.push(args[j]);
-                    } else {
-                        params.push(args[j]);
-                    }
-                }
-            }
+    // unpack object argument
+    if (o !== undefined && o !== null && o.constructor === Object &&
+      labels && labels.constructor === Array && labels.length) {
+      for (var i = 0, len = labels.length; i < len; ++i) {
+        if (o[labels[i]] !== undefined) {
+          if (o[labels[i]].constructor === Function) {
+            cb.push(o[labels[i]]);
+          } else {
+            params.push(o[labels[i]]);
+          }
         }
-
-        return { params: params, cb: cb };
-    },
-
-    unique: function (value, index, self) {
-        return self.indexOf(value) === index;
-    },
-
-    serialize: function (x) {
-        var serialized, bn;
-        if (x !== null && x !== undefined) {
-
-            // if x is an array, serialize and concatenate its individual elements
-            if (x.constructor === Array || Buffer.isBuffer(x)) {
-                serialized = "";
-                for (var i = 0, n = x.length; i < n; ++i) {
-                    serialized += this.serialize(x[i]);
-                }
-            } else {
-
-                // input is a base-10 javascript number
-                if (x.constructor === Number) {
-                    bn = abi.bignum(x);
-                    if (bn.lt(constants.ZERO)) {
-                        bn = bn.add(abi.constants.MOD);
-                    }
-                    serialized = abi.encode_int(bn);
-
-                // input is a utf8 or hex string
-                } else if (x.constructor === String) {
-
-                    // negative hex
-                    if (x.slice(0,1) === '-') {
-                        serialized = abi.encode_int(abi.bignum(x).add(abi.constants.MOD).toFixed());
-
-                    // positive hex
-                    } else if (x.slice(0,2) === "0x") {
-                        serialized = abi.pad_left(x.slice(2));
-
-                    // text string
-                    } else {
-                        serialized = new Buffer(x, "utf8").toString("hex");
-                    }
-                }
-            }
+      }
+    // unpack positional arguments
+    } else {
+      for (var j = 0, arglen = args.length; j < arglen; ++j) {
+        if (args[j] !== undefined) {
+          if (args[j] && args[j].constructor === Function) {
+            cb.push(args[j]);
+          } else {
+            params.push(args[j]);
+          }
         }
-        return serialized;
-    },
-
-    sha256: function (hashable) {
-        return abi.hex(abi.prefix_hex(crypto.createHash("sha256").update(this.serialize(hashable)).digest("hex")), true);
-    },
-
-    sha3: function (hashable) {
-        return abi.prefix_hex(abi.sha3(this.serialize(hashable)));
+      }
     }
+
+    return { params: params, cb: cb };
+  },
+
+  unique: function (value, index, self) {
+    return self.indexOf(value) === index;
+  },
+
+  serialize: function (x) {
+    var serialized, bn;
+    if (x !== null && x !== undefined) {
+
+      // if x is an array, serialize and concatenate its individual elements
+      if (x.constructor === Array || Buffer.isBuffer(x)) {
+        serialized = "";
+        for (var i = 0, n = x.length; i < n; ++i) {
+          serialized += this.serialize(x[i]);
+        }
+      } else {
+
+        // input is a base-10 javascript number
+        if (x.constructor === Number) {
+          bn = abi.bignum(x);
+          if (bn.lt(constants.ZERO)) {
+            bn = bn.add(abi.constants.MOD);
+          }
+          serialized = abi.encode_int(bn);
+
+        // input is a utf8 or hex string
+        } else if (x.constructor === String) {
+
+          // negative hex
+          if (x.slice(0,1) === '-') {
+            serialized = abi.encode_int(abi.bignum(x).add(abi.constants.MOD).toFixed());
+
+          // positive hex
+          } else if (x.slice(0,2) === "0x") {
+            serialized = abi.pad_left(x.slice(2));
+
+          // text string
+          } else {
+            serialized = new Buffer(x, "utf8").toString("hex");
+          }
+        }
+      }
+    }
+    return serialized;
+  },
+
+  sha256: function (hashable) {
+    return abi.hex(abi.prefix_hex(crypto.createHash("sha256").update(this.serialize(hashable)).digest("hex")), true);
+  },
+
+  sha3: function (hashable) {
+    return abi.prefix_hex(abi.sha3(this.serialize(hashable)));
+  }
 
 };
 
@@ -46324,30 +46286,30 @@ module.exports = {
 "use strict";
 
 module.exports = {
-    streetName: function () {
-        return "streetName";
-    },
-    action: function () {
-        return "action";
-    },
-    city: function () {
-        return "city";
-    },
-    noun: function () {
-        return "noun";
-    },
-    tld: function () {
-        return "tld";
-    },
-    adjective: function () {
-        return "adjective";
-    },
-    usState: function () {
-        return "usState";
-    },
-    transportation: function () {
-        return "transportation";
-    }    
+  streetName: function () {
+    return "streetName";
+  },
+  action: function () {
+    return "action";
+  },
+  city: function () {
+    return "city";
+  },
+  noun: function () {
+    return "noun";
+  },
+  tld: function () {
+    return "tld";
+  },
+  adjective: function () {
+    return "adjective";
+  },
+  usState: function () {
+    return "usState";
+  },
+  transportation: function () {
+    return "transportation";
+  }    
 };
 
 },{}],268:[function(require,module,exports){
@@ -46363,718 +46325,718 @@ var chalk = require("chalk");
 var clone = require("clone");
 var path, madlibs;
 try {
-    path = require("path");
-    madlibs = require("madlibs");
+  path = require("path");
+  madlibs = require("madlibs");
 } catch (exc) {
-    path = null;
-    madlibs = require("./madlibs");
+  path = null;
+  madlibs = require("./madlibs");
 }
 var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reporting");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 var displayed_connection_info = false;
 
 module.exports = {
 
-    DEBUG: true,
+  DEBUG: true,
 
-    // maximum number of accounts/samples for testing
-    MAX_TEST_ACCOUNTS: 3,
-    UNIT_TEST_SAMPLES: 100,
-    MAX_TEST_SAMPLES: 10,
+  // maximum number of accounts/samples for testing
+  MAX_TEST_ACCOUNTS: 3,
+  UNIT_TEST_SAMPLES: 100,
+  MAX_TEST_SAMPLES: 10,
 
-    // unit test timeout
-    TIMEOUT: 600000,
+  // unit test timeout
+  TIMEOUT: 600000,
 
-    // approximately equals threshold
-    EPSILON: 1e-6,
+  // approximately equals threshold
+  EPSILON: 1e-6,
 
-    print_residual: function (periodLength, label) {
-        var t = parseInt(new Date().getTime() / 1000);
-        periodLength = parseInt(periodLength);
-        var residual = (t % periodLength) + "/" + periodLength + " (" + reptools.getCurrentPeriodProgress(periodLength) + "%)";
-        if (label) console.log("\n" + chalk.blue.bold(label));
-        console.log(chalk.white.dim(" - Residual:"), chalk.cyan.dim(residual));
-    },
+  print_residual: function (periodLength, label) {
+    var t = parseInt(new Date().getTime() / 1000);
+    periodLength = parseInt(periodLength);
+    var residual = (t % periodLength) + "/" + periodLength + " (" + reptools.getCurrentPeriodProgress(periodLength) + "%)";
+    if (label) console.log("\n" + chalk.blue.bold(label));
+    console.log(chalk.white.dim(" - Residual:"), chalk.cyan.dim(residual));
+  },
 
-    print_reporting_status: function (augur, eventID, label) {
-        var sender = augur.accounts.account.address || augur.from;
-        var branch = augur.Events.getBranch(eventID);
-        var periodLength = parseInt(augur.Branches.getPeriodLength(branch));
-        var redistributed = augur.ConsensusData.getRepRedistributionDone(branch, sender);
-        var votePeriod = augur.Branches.getVotePeriod(branch);
-        var lastPeriodPenalized = augur.ConsensusData.getPenalizedUpTo(branch, sender);
-        if (label) console.log("\n" + chalk.blue.bold(label));
-        console.log(chalk.white.dim(" - Vote period:          "), chalk.blue(votePeriod));
-        console.log(chalk.white.dim(" - Expiration period:    "), chalk.blue(Math.floor(augur.getExpiration(eventID) / periodLength)));
-        console.log(chalk.white.dim(" - Current period:       "), chalk.blue(reptools.getCurrentPeriod(periodLength)));
-        console.log(chalk.white.dim(" - Last period:          "), chalk.blue(votePeriod - 1));
-        console.log(chalk.white.dim(" - Last period penalized:"), chalk.blue(lastPeriodPenalized));
-        console.log(chalk.white.dim(" - Rep redistribution:   "), chalk.cyan.dim(redistributed));
-        this.print_residual(periodLength);
-    },
+  print_reporting_status: function (augur, eventID, label) {
+    var sender = augur.accounts.account.address || augur.from;
+    var branch = augur.Events.getBranch(eventID);
+    var periodLength = parseInt(augur.Branches.getPeriodLength(branch));
+    var redistributed = augur.ConsensusData.getRepRedistributionDone(branch, sender);
+    var votePeriod = augur.Branches.getVotePeriod(branch);
+    var lastPeriodPenalized = augur.ConsensusData.getPenalizedUpTo(branch, sender);
+    if (label) console.log("\n" + chalk.blue.bold(label));
+    console.log(chalk.white.dim(" - Vote period:          "), chalk.blue(votePeriod));
+    console.log(chalk.white.dim(" - Expiration period:    "), chalk.blue(Math.floor(augur.getExpiration(eventID) / periodLength)));
+    console.log(chalk.white.dim(" - Current period:       "), chalk.blue(reptools.getCurrentPeriod(periodLength)));
+    console.log(chalk.white.dim(" - Last period:          "), chalk.blue(votePeriod - 1));
+    console.log(chalk.white.dim(" - Last period penalized:"), chalk.blue(lastPeriodPenalized));
+    console.log(chalk.white.dim(" - Rep redistribution:   "), chalk.cyan.dim(redistributed));
+    this.print_residual(periodLength);
+  },
 
-    top_up: function (augur, branch, accountList, password, callback) {
-        var unlocked = [];
-        var self = this;
-        var active = augur.from;
-        branch = branch || constants.DEFAULT_BRANCH_ID;
-        var clientSideAccount;
-        var accounts = clone(accountList);
-        if (augur.accounts.account.address) {
-            accounts = [augur.accounts.account.address].concat(accounts);
+  top_up: function (augur, branch, accountList, password, callback) {
+    var unlocked = [];
+    var self = this;
+    var active = augur.from;
+    branch = branch || constants.DEFAULT_BRANCH_ID;
+    var clientSideAccount;
+    var accounts = clone(accountList);
+    if (augur.accounts.account.address) {
+      accounts = [augur.accounts.account.address].concat(accounts);
+    }
+    async.eachSeries(accounts, function (account, nextAccount) {
+      augur.rpc.personal("unlockAccount", [account, password], function (res) {
+        if (res && res.error) {
+          console.warn("Couldn't unlock account:", account);
+          return nextAccount();
         }
-        async.eachSeries(accounts, function (account, nextAccount) {
-            augur.rpc.personal("unlockAccount", [account, password], function (res) {
-                if (res && res.error) {
-                    console.warn("Couldn't unlock account:", account);
-                    return nextAccount();
+        if (self.DEBUG) console.log(chalk.white.dim("Unlocked account:"), chalk.green(account));
+        augur.Cash.balance(account, function (cashBalance) {
+          augur.Reporting.getRepBalance({
+            branch: branch,
+            address: account,
+            callback: function (repBalance) {
+              function next() {
+                if (augur.accounts.account.address) {
+                  clientSideAccount = clone(augur.accounts.account);
+                  augur.accounts.account = {};
                 }
-                if (self.DEBUG) console.log(chalk.white.dim("Unlocked account:"), chalk.green(account));
-                augur.Cash.balance(account, function (cashBalance) {
-                    augur.Reporting.getRepBalance({
-                        branch: branch,
-                        address: account,
-                        callback: function (repBalance) {
-                            function next() {
-                                if (augur.accounts.account.address) {
-                                    clientSideAccount = clone(augur.accounts.account);
-                                    augur.accounts.account = {};
-                                }
-                                nextAccount();
-                            }
-                            if (!augur.accounts.account.address) {
-                                augur.useAccount(account);
-                            }
-                            if (parseFloat(cashBalance) >= 10000000000 && parseFloat(repBalance) >= 47) {
-                                if (augur.accounts.account.address) {
-                                    clientSideAccount = clone(augur.accounts.account);
-                                    augur.accounts.account = {};
-                                } else {
-                                    unlocked.push(account);
-                                }
-                                return next();
-                            }
-                            augur.fundNewAccount({
-                                branch: branch,
-                                onSent: utils.noop,
-                                onSuccess: function (r) {
-                                    if (r.callReturn !== "1") return next();
-                                    augur.setCash({
-                                        address: account,
-                                        balance: "10000000000",
-                                        onSent: utils.noop,
-                                        onSuccess: function (r) {
-                                            if (r.callReturn === "1" && !augur.accounts.account.address) { 
-                                                unlocked.push(account);
-                                            }
-                                            next();
-                                        },
-                                        onFailed: function () { next(); }
-                                    });
-                                },
-                                onFailed: function () { next(); }
-                            });
-                        }
-                    });
-                });
-            });
-        }, function (err) {
-            if (clientSideAccount) {
-                augur.accounts.account = clientSideAccount;
+                nextAccount();
+              }
+              if (!augur.accounts.account.address) {
+                augur.useAccount(account);
+              }
+              if (parseFloat(cashBalance) >= 10000000000 && parseFloat(repBalance) >= 47) {
+                if (augur.accounts.account.address) {
+                  clientSideAccount = clone(augur.accounts.account);
+                  augur.accounts.account = {};
+                } else {
+                  unlocked.push(account);
+                }
+                return next();
+              }
+              augur.fundNewAccount({
+                branch: branch,
+                onSent: utils.noop,
+                onSuccess: function (r) {
+                  if (r.callReturn !== "1") return next();
+                  augur.setCash({
+                    address: account,
+                    balance: "10000000000",
+                    onSent: utils.noop,
+                    onSuccess: function (r) {
+                      if (r.callReturn === "1" && !augur.accounts.account.address) {
+                        unlocked.push(account);
+                      }
+                      next();
+                    },
+                    onFailed: function () { next(); }
+                  });
+                },
+                onFailed: function () { next(); }
+              });
             }
-            augur.useAccount(active);
-            if (err) return callback(err);
-            callback(null, unlocked);
+          });
         });
-    },
+      });
+    }, function (err) {
+      if (clientSideAccount) {
+        augur.accounts.account = clientSideAccount;
+      }
+      augur.useAccount(active);
+      if (err) return callback(err);
+      callback(null, unlocked);
+    });
+  },
 
-    // Create a new branch and get Reputation on it
-    setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
-        var self = this;
-        var branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
-        var tradingFee = "0.01";
-        var accounts = clone(accountList);
-        if (this.DEBUG) {
-            console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"));
-            console.log(chalk.white.dim("Account(s):"), chalk.green(accounts));
-        }
-        var sender = augur.from;
-        var clientSideAccount;
-        var parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
-        console.log("from:", sender);
-        console.log("web.account.address:", augur.accounts.account.address);
-        console.log("parent branch ID:", parentBranchID);
-        console.log("parent branch rep balance:", parentBranchRepBalance);
-        augur.createBranch({
-            description: branchDescription,
-            periodLength: periodLength,
-            parent: parentBranchID,
-            minTradingFee: tradingFee,
-            oracleOnly: 0,
-            onSent: function (res) {
-                console.log("createBranch sent:", res);
-            },
-            onSuccess: function (res) {
-                console.log("createBranch success:", res);
-                var newBranchID = res.branchID;
-                if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                var block = augur.rpc.getBlock(res.blockNumber);
+  // Create a new branch and get Reputation on it
+  setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
+    var self = this;
+    var branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
+    var tradingFee = "0.01";
+    var accounts = clone(accountList);
+    if (this.DEBUG) {
+      console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"));
+      console.log(chalk.white.dim("Account(s):"), chalk.green(accounts));
+    }
+    var sender = augur.from;
+    var clientSideAccount;
+    var parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
+    console.log("from:", sender);
+    console.log("web.account.address:", augur.accounts.account.address);
+    console.log("parent branch ID:", parentBranchID);
+    console.log("parent branch rep balance:", parentBranchRepBalance);
+    augur.createBranch({
+      description: branchDescription,
+      periodLength: periodLength,
+      parent: parentBranchID,
+      minTradingFee: tradingFee,
+      oracleOnly: 0,
+      onSent: function (res) {
+        console.log("createBranch sent:", res);
+      },
+      onSuccess: function (res) {
+        console.log("createBranch success:", res);
+        var newBranchID = res.branchID;
+        if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
+        var block = augur.rpc.getBlock(res.blockNumber);
 
                 // get reputation on the new branch
-                if (augur.accounts.account.address) {
-                    accounts = [augur.accounts.account.address].concat(accounts);
-                }
-                async.each(accounts, function (account, nextAccount) {
-                    if (self.DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(account));
-                    function next() {
-                        if (augur.accounts.account.address) {
-                            clientSideAccount = clone(augur.accounts.account);
-                            augur.accounts.account = {};
-                        }
-                        nextAccount();
-                    }
-                    if (account !== augur.accounts.account.address) {
-                        augur.useAccount(account);
-                    }
-                    augur.fundNewAccount({
-                        branch: newBranchID,
-                        onSent: function () {},
-                        onSuccess: function () {
-                            nextAccount();
-                        },
-                        onFailed: next
-                    });
-                }, function (err) {
-                    if (clientSideAccount) {
-                        augur.accounts.account = clientSideAccount;
-                    }
-                    augur.useAccount(sender);
-                    if (err) return callback(err);
-                    callback(null, newBranchID);
-                });
-            },
-            onFailed: function (err) {
-                if (clientSideAccount) {
-                    augur.accounts.account = clientSideAccount;
-                }
-                augur.useAccount(sender);
-                callback(err);
-            }
-        });
-    },
-
-    is_created: function (markets) {
-        return markets.scalar && markets.categorical && markets.binary;
-    },
-
-    create_each_market_type: function (augur, branchID, expDate, callback) {
-        var self = this;
-
-        // markets have matching descriptions, tags, fees, etc.
-        branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
-        var binaryDescription = "Binary test market";
-        var categoricalDescription = "Categorical test market";
-        var scalarDescription = "Scalar test market";
-        var streetName = madlibs.streetName();
-        var action = madlibs.action();
-        var city = madlibs.city();
-        var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
-        var tags = [streetName, action, city];
-        var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
-        expDate = expDate || parseInt(new Date().getTime() / 995, 10);
-        var takerFee = "0.02";
-        var makerFee = "0.01";
-        var numCategories = 7;
-        var categories = new Array(numCategories);
-        for (var i = 1; i <= numCategories; ++i) {
-            categories[i - 1] = "Outcome " + i.toString();
-        }
-        console.log('creating categories:', categories);
-        var markets = {};
-
-        // create a binary market
-        console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
-        var active = augur.from;
-        var clientSideAccount;
         if (augur.accounts.account.address) {
-            clientSideAccount = clone(augur.accounts.account);
-            augur.accounts.account = {};
+          accounts = [augur.accounts.account.address].concat(accounts);
         }
-        augur.createSingleEventMarket({
-            branchId: branchID,
-            description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
-            expDate: expDate,
-            minValue: 1,
-            maxValue: 2,
-            numOutcomes: 2,
-            resolution: resolution,
-            takerFee: takerFee,
-            makerFee: makerFee,
-            tags: tags,
-            extraInfo: extraInfo,
-            onSent: function (res) {
-
-                // create a categorical market
-                augur.createSingleEventMarket({
-                    branchId: branchID,
-                    description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
-                    expDate: expDate,
-                    minValue: 1,
-                    maxValue: numCategories,
-                    numOutcomes: numCategories,
-                    resolution: resolution,
-                    takerFee: takerFee,
-                    makerFee: makerFee,
-                    tags: tags,
-                    extraInfo: extraInfo,
-                    onSent: function (res) {
-
-                        // create a scalar market
-                        augur.createSingleEventMarket({
-                            branchId: branchID,
-                            description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
-                            expDate: expDate,
-                            minValue: -5,
-                            maxValue: 20,
-                            numOutcomes: 2,
-                            resolution: resolution,
-                            takerFee: takerFee,
-                            makerFee: makerFee,
-                            tags: tags,
-                            extraInfo: extraInfo,
-                            onSent: function () {},
-                            onSuccess: function (res) {
-                                if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
-                                markets.scalar = res.callReturn;
-                                if (self.is_created(markets)) {
-                                    if (clientSideAccount) {
-                                        augur.accounts.account = clientSideAccount;
-                                    }
-                                    augur.useAccount(active);
-                                    callback(null, markets);
-                                }
-                            },
-                            onFailed: function (err) {
-                                if (self.DEBUG) console.error("Scalar createSingleEventMarket failed:", err);
-                                callback(new Error(self.pp(err)));
-                            }
-                        });
-                    },
-                    onSuccess: function (res) {
-                        if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
-                        markets.categorical = res.callReturn;
-                        if (self.is_created(markets)) {
-                            if (clientSideAccount) {
-                                augur.accounts.account = clientSideAccount;
-                            }
-                            augur.useAccount(active);
-                            callback(null, markets);
-                        }
-                    },
-                    onFailed: function (err) {
-                        if (self.DEBUG) console.error("Categorical createSingleEventMarket failed:", err);
-                        callback(new Error(self.pp(err)));
-                    }
-                });
-            },
-            onSuccess: function (res) {
-                if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
-                markets.binary = res.callReturn;
-                if (self.is_created(markets)) {
-                    if (clientSideAccount) {
-                        augur.accounts.account = clientSideAccount;
-                    }
-                    augur.useAccount(active);
-                    callback(null, markets);
-                }
-            },
-            onFailed: function (err) {
-                if (self.DEBUG) console.error("Binary createSingleEventMarket failed:", err);
-                callback(new Error(self.pp(err)));
+        async.each(accounts, function (account, nextAccount) {
+          if (self.DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(account));
+          function next() {
+            if (augur.accounts.account.address) {
+              clientSideAccount = clone(augur.accounts.account);
+              augur.accounts.account = {};
             }
-        });
-    },
-
-    trade_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
-        var self = this;
-        var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
-        var periodLength = augur.getPeriodLength(branch);
-        var active = augur.from;
-        var clientSideAccount;
-        if (augur.accounts.account.address) {
-            clientSideAccount = clone(augur.accounts.account);
-            augur.accounts.account = {};
-        }
-        if (this.DEBUG) {
-            console.log(chalk.blue.bold("\nTrading in each market..."));
-            console.log(chalk.white.dim("Maker:"), chalk.green(maker));
-            console.log(chalk.white.dim("Taker:"), chalk.green(taker));
-        }
-        async.forEachOf(markets, function (market, type, nextMarket) {
-            augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
-                if (unlocked && unlocked.error) return nextMarket(unlocked);
-                augur.useAccount(maker);
-                if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
-                augur.buyCompleteSets({
-                    market: market,
-                    amount: amountPerMarket,
-                    onSent: function (r) {
-                    },
-                    onSuccess: function (r) {
-                        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
-                        augur.sell({
-                            amount: amountPerMarket,
-                            price: "0.7",
-                            market: market,
-                            outcome: 2,
-                            onSent: function () {},
-                            onSuccess: function () {
-                                nextMarket(null);
-                            },
-                            onFailed: nextMarket
-                        });
-                    },
-                    onFailed: nextMarket
-                });
-            });
+            nextAccount();
+          }
+          if (account !== augur.accounts.account.address) {
+            augur.useAccount(account);
+          }
+          augur.fundNewAccount({
+            branch: newBranchID,
+            onSent: function () {},
+            onSuccess: function () {
+              nextAccount();
+            },
+            onFailed: next
+          });
         }, function (err) {
-            augur.useAccount(taker);
-            var trades = {};
-            async.forEachOf(markets, function (market, type, nextMarket) {
-                if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
-                var marketTrades = augur.get_trade_ids(market);
-                if (!marketTrades || !marketTrades.length) {
-                    return nextMarket("no trades found for " + market);
-                }
-                async.eachSeries(marketTrades, function (thisTrade, nextTrade) {
-                    var tradeInfo = augur.get_trade(thisTrade);
-                    if (!tradeInfo) return nextTrade("no trade info found");
-                    if (tradeInfo.owner === taker) return nextTrade(null);
-                    if (tradeInfo.type === "buy") return nextTrade(null);
-                    if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
-                    nextTrade(thisTrade);
-                }, function (trade) {
-                    trades[type] = trade;
-                    nextMarket(null);
-                });
-            }, function (err) {
-                if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
-                augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
-                    if (unlocked && unlocked.error) return callback(unlocked);
-                    async.forEachOfSeries(markets, function (market, type, nextMarket) {
-                        augur.trade({
-                            max_value: amountPerMarket / 2,
-                            max_amount: 0,
-                            trade_ids: [trades[type]],
-                            sender: taker,
-                            onTradeHash: function (tradeHash) {
-                                if (self.DEBUG) {
-                                    self.print_residual(periodLength, "Trade hash: " + tradeHash);
-                                }
-                            },
-                            onCommitSent: function () {},
-                            onCommitSuccess: function (r) {
-                                if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
-                            },
-                            onCommitFailed: function (e) {
-                                if (clientSideAccount) {
-                                    augur.accounts.account = clientSideAccount;
-                                }
-                                augur.useAccount(active);
-                                nextMarket(e);
-                            },
-                            onNextBlock: function (block) {
-                                if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
-                            },
-                            onTradeSent: function () {},
-                            onTradeSuccess: function (r) {
-                                if (self.DEBUG) {
-                                    self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
-                                }
-                                if (clientSideAccount) {
-                                    augur.accounts.account = clientSideAccount;
-                                }
-                                augur.useAccount(active);
-                                nextMarket(null);
-                            },
-                            onTradeFailed: function (e) {
-                                if (clientSideAccount) {
-                                    augur.accounts.account = clientSideAccount;
-                                }
-                                augur.useAccount(active);
-                                nextMarket(e);
-                            }
-                        });
-                    }, callback);
-                });
-            });
+          if (clientSideAccount) {
+            augur.accounts.account = clientSideAccount;
+          }
+          augur.useAccount(sender);
+          if (err) return callback(err);
+          callback(null, newBranchID);
         });
-    },
-
-    make_order_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
-        var self = this;
-        var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
-        var periodLength = augur.getPeriodLength(branch);
-        var active = augur.from;
-        var clientSideAccount;
-        if (augur.accounts.account.address) {
-            clientSideAccount = clone(augur.accounts.account);
-            augur.accounts.account = {};
+      },
+      onFailed: function (err) {
+        if (clientSideAccount) {
+          augur.accounts.account = clientSideAccount;
         }
-        if (this.DEBUG) {
-            console.log(chalk.blue.bold("\nTrading in each market..."));
-            console.log(chalk.white.dim("Maker:"), chalk.green(maker));
-            console.log(chalk.white.dim("Taker:"), chalk.green(taker));
-        }
-        async.forEachOf(markets, function (market, type, nextMarket) {
-            augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
-                if (unlocked && unlocked.error) return nextMarket(unlocked);
-                augur.useAccount(maker);
-                if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
-                augur.buyCompleteSets({
-                    market: market,
-                    amount: amountPerMarket,
-                    onSent: function () {},
-                    onSuccess: function (r) {
-                        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
-                        var price = (type === "scalar") ? "12.3" : "0.7";
-                        augur.sell({
-                            amount: amountPerMarket,
-                            price: price,
-                            market: market,
-                            outcome: 2,
-                            onSent: function () {},
-                            onSuccess: function () {
-                                nextMarket(null);
-                            },
-                            onFailed: nextMarket
-                        });
-                    },
-                    onFailed: nextMarket
-                });
-            });
-        }, function (err) {
-            if (clientSideAccount) {
-                augur.accounts.account = clientSideAccount;
-            }
-            augur.useAccount(active);
-            callback(err);
-        });
-    },
+        augur.useAccount(sender);
+        callback(err);
+      }
+    });
+  },
 
-    wait_until_expiration: function (augur, eventID, callback) {
-        var periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-        var t = parseInt(new Date().getTime() / 1000);
-        var currentPeriod = augur.getCurrentPeriod(periodLength);
-        var expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
-        var periodsToGo = expirationPeriod - currentPeriod;
-        var secondsToGo = periodsToGo*periodLength + periodLength - (t % periodLength);
-        if (this.DEBUG) {
-            this.print_reporting_status(augur, eventID, "Waiting until period after new events expire...");
-            console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
-            console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
-        }
-        setTimeout(function () { callback(null); }, secondsToGo*1000);
-    },
+  is_created: function (markets) {
+    return markets.scalar && markets.categorical && markets.binary;
+  },
 
-    chunk32: function (string, stride, offset) {
-        var elements, chunked, position;
-        if (string.length >= 66) {
-            stride = stride || 64;
-            if (offset) {
-                elements = Math.ceil(string.slice(offset).length / stride) + 1;
-            } else {
-                elements = Math.ceil(string.length / stride);
-            }
-            chunked = new Array(elements);
-            position = 0;
-            for (var i = 0; i < elements; ++i) {
-                if (offset && i === 0) {
-                    chunked[i] = string.slice(position, position + offset);
-                    position += offset;
-                } else {
-                    chunked[i] = string.slice(position, position + stride);
-                    position += stride;
-                }
-            }
-            return chunked;
-        } else {
-            return string;
-        }
-    },
+  create_each_market_type: function (augur, branchID, expDate, callback) {
+    var self = this;
 
-    pp: function (obj, indent) {
-        var o = clone(obj);
-        for (var k in o) {
-            if (!o.hasOwnProperty(k)) continue;
-            if (o[k] && o[k].constructor === Function) {
-                o[k] = o[k].toString();
-                if (o[k].length > 64) {
-                    o[k] = o[k].match(/function (\w*)/).slice(0, 1).join('');
-                }
-            }
-        }
-        return chalk.green(JSON.stringify(o, null, indent || 4));
-    },
-
-    print_nodes: function (nodes) {
-        var node;
-        if (nodes && nodes.length) {
-            process.stdout.write(chalk.green.bold("hosted:   "));
-            for (var i = 0, len = nodes.length; i < len; ++i) {
-                node = nodes[i];
-                node = (i === 0) ? chalk.green(node) : chalk.gray(node);
-                process.stdout.write(node + ' ');
-                if (i === len - 1) process.stdout.write('\n');
-            }
-        }
-    },
-
-    setup: function (augur, args, rpcinfo) {
-        var defaulthost, ipcpath, wsUrl;
-        if (NODE_JS) {
-            defaulthost = process.env.GETH_HTTP || "http://127.0.0.1:8545";
-            ipcpath = process.env.GETH_IPC;
-            wsUrl = process.env.GETH_WS || "ws://127.0.0.1:8546";
-        }
-        if (process.env.CONTINUOUS_INTEGRATION) {
-            this.TIMEOUT = 131072;
-        }
-        augur.rpc.retryDroppedTxs = true;
-        augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
-        if (defaulthost) augur.rpc.setLocalNode(defaulthost);
-        if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
-                console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
-                console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
-                console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
-                this.print_nodes(augur.rpc.nodes.hosted);
-                console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
-                console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
-                console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
-                displayed_connection_info = true;
-            }
-            augur.rpc.clear();
-        }
-        return augur;
-    },
-
-    reset: function (mod) {
-        mod = path.join(__dirname, "..", "src", path.parse(mod).name);
-        delete require.cache[require.resolve(mod)];
-        return require(mod);
-    },
-
-    get_test_accounts: function (augur, max_accounts) {
-        var accounts;
-        if (augur) {
-            if (typeof augur === "object") {
-                accounts = augur.rpc.accounts();
-            } else if (typeof augur === "string") {
-                accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
-                for (var i = 0, len = accounts.length; i < len; ++i) {
-                    accounts[i] = abi.prefix_hex(accounts[i]);
-                }
-            }
-            if (max_accounts && accounts && accounts.length > max_accounts) {
-                accounts = accounts.slice(0, max_accounts);
-            }
-            return accounts;
-        }
-    },
-
-    wait: function (seconds) {
-        var start, delay;
-        start = new Date();
-        delay = seconds * 1000;
-        while ((new Date()) - start <= delay) {}
-        return true;
-    },
-
-    get_balances: function (augur, account, branch) {
-        if (augur) {
-            branch = branch || augur.constants.DEFAULT_BRANCH_ID;
-            account = account || augur.coinbase;
-            return {
-                cash: augur.getCashBalance(account),
-                reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
-                ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
-            };
-        }
-    },
-
-    copy: function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    },
-
-    remove_duplicates: function (arr) {
-        return arr.filter(function (element, position, array) {
-            return array.indexOf(element) === position;
-        });
-    },
-
-    has_value: function (o, v) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (o[p] === v) return p;
-            }
-        }
-    },
-
-    linspace: function (a, b, n) {
-        if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
-        if (n < 2) return (n === 1) ? [a] : [];
-        var i, ret = new Array(n);
-        n--;
-        for (i = n; i >= 0; i--) {
-            ret[i] = (i*b + (n - i)*a) / n;
-        }
-        return ret;
-    },
-
-    select_random: function (arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    },
-
-    fold: function (arr, num_cols) {
-        var i, j, folded, num_rows, row;
-        folded = [];
-        num_cols = parseInt(num_cols);
-        num_rows = arr.length / num_cols;
-        num_rows = parseInt(num_rows);
-        for (i = 0; i < parseInt(num_rows); ++i) {
-            row = [];
-            for (j = 0; j < num_cols; ++j) {
-                row.push(arr[i*num_cols + j]);
-            }
-            folded.push(row);
-        }
-        return folded;
-    },
-
-    gteq0: function (n) { return (new BigNumber(n)).toNumber() >= 0; },
-
-    print_matrix: function (m) {
-        for (var i = 0, rows = m.length; i < rows; ++i) {
-            process.stdout.write("\t");
-            for (var j = 0, cols = m[0].length; j < cols; ++j) {
-                process.stdout.write(chalk.cyan(m[i][j] + "\t"));
-            }
-            process.stdout.write("\n");
-        }
+    // markets have matching descriptions, tags, fees, etc.
+    branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
+    var binaryDescription = "Binary test market";
+    var categoricalDescription = "Categorical test market";
+    var scalarDescription = "Scalar test market";
+    var streetName = madlibs.streetName();
+    var action = madlibs.action();
+    var city = madlibs.city();
+    var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+    var tags = [streetName, action, city];
+    var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
+    expDate = expDate || parseInt(new Date().getTime() / 995, 10);
+    var takerFee = "0.02";
+    var makerFee = "0.01";
+    var numCategories = 7;
+    var categories = new Array(numCategories);
+    for (var i = 1; i <= numCategories; ++i) {
+      categories[i - 1] = "Outcome " + i.toString();
     }
+    console.log('creating categories:', categories);
+    var markets = {};
+
+    // create a binary market
+    console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
+    var active = augur.from;
+    var clientSideAccount;
+    if (augur.accounts.account.address) {
+      clientSideAccount = clone(augur.accounts.account);
+      augur.accounts.account = {};
+    }
+    augur.createSingleEventMarket({
+      branchId: branchID,
+      description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
+      expDate: expDate,
+      minValue: 1,
+      maxValue: 2,
+      numOutcomes: 2,
+      resolution: resolution,
+      takerFee: takerFee,
+      makerFee: makerFee,
+      tags: tags,
+      extraInfo: extraInfo,
+      onSent: function (res) {
+
+        // create a categorical market
+        augur.createSingleEventMarket({
+          branchId: branchID,
+          description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
+          expDate: expDate,
+          minValue: 1,
+          maxValue: numCategories,
+          numOutcomes: numCategories,
+          resolution: resolution,
+          takerFee: takerFee,
+          makerFee: makerFee,
+          tags: tags,
+          extraInfo: extraInfo,
+          onSent: function (res) {
+
+            // create a scalar market
+            augur.createSingleEventMarket({
+              branchId: branchID,
+              description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
+              expDate: expDate,
+              minValue: -5,
+              maxValue: 20,
+              numOutcomes: 2,
+              resolution: resolution,
+              takerFee: takerFee,
+              makerFee: makerFee,
+              tags: tags,
+              extraInfo: extraInfo,
+              onSent: function () {},
+              onSuccess: function (res) {
+                if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
+                markets.scalar = res.callReturn;
+                if (self.is_created(markets)) {
+                  if (clientSideAccount) {
+                    augur.accounts.account = clientSideAccount;
+                  }
+                  augur.useAccount(active);
+                  callback(null, markets);
+                }
+              },
+              onFailed: function (err) {
+                if (self.DEBUG) console.error("Scalar createSingleEventMarket failed:", err);
+                callback(new Error(self.pp(err)));
+              }
+            });
+          },
+          onSuccess: function (res) {
+            if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
+            markets.categorical = res.callReturn;
+            if (self.is_created(markets)) {
+              if (clientSideAccount) {
+                augur.accounts.account = clientSideAccount;
+              }
+              augur.useAccount(active);
+              callback(null, markets);
+            }
+          },
+          onFailed: function (err) {
+            if (self.DEBUG) console.error("Categorical createSingleEventMarket failed:", err);
+            callback(new Error(self.pp(err)));
+          }
+        });
+      },
+      onSuccess: function (res) {
+        if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
+        markets.binary = res.callReturn;
+        if (self.is_created(markets)) {
+          if (clientSideAccount) {
+            augur.accounts.account = clientSideAccount;
+          }
+          augur.useAccount(active);
+          callback(null, markets);
+        }
+      },
+      onFailed: function (err) {
+        if (self.DEBUG) console.error("Binary createSingleEventMarket failed:", err);
+        callback(new Error(self.pp(err)));
+      }
+    });
+  },
+
+  trade_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
+    var self = this;
+    var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
+    var periodLength = augur.getPeriodLength(branch);
+    var active = augur.from;
+    var clientSideAccount;
+    if (augur.accounts.account.address) {
+      clientSideAccount = clone(augur.accounts.account);
+      augur.accounts.account = {};
+    }
+    if (this.DEBUG) {
+      console.log(chalk.blue.bold("\nTrading in each market..."));
+      console.log(chalk.white.dim("Maker:"), chalk.green(maker));
+      console.log(chalk.white.dim("Taker:"), chalk.green(taker));
+    }
+    async.forEachOf(markets, function (market, type, nextMarket) {
+      augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
+        if (unlocked && unlocked.error) return nextMarket(unlocked);
+        augur.useAccount(maker);
+        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
+        augur.buyCompleteSets({
+          market: market,
+          amount: amountPerMarket,
+          onSent: function (r) {
+          },
+          onSuccess: function (r) {
+            if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+            augur.sell({
+              amount: amountPerMarket,
+              price: "0.7",
+              market: market,
+              outcome: 2,
+              onSent: function () {},
+              onSuccess: function () {
+                nextMarket(null);
+              },
+              onFailed: nextMarket
+            });
+          },
+          onFailed: nextMarket
+        });
+      });
+    }, function (err) {
+      augur.useAccount(taker);
+      var trades = {};
+      async.forEachOf(markets, function (market, type, nextMarket) {
+        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
+        var marketTrades = augur.get_trade_ids(market);
+        if (!marketTrades || !marketTrades.length) {
+          return nextMarket("no trades found for " + market);
+        }
+        async.eachSeries(marketTrades, function (thisTrade, nextTrade) {
+          var tradeInfo = augur.get_trade(thisTrade);
+          if (!tradeInfo) return nextTrade("no trade info found");
+          if (tradeInfo.owner === taker) return nextTrade(null);
+          if (tradeInfo.type === "buy") return nextTrade(null);
+          if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
+          nextTrade(thisTrade);
+        }, function (trade) {
+          trades[type] = trade;
+          nextMarket(null);
+        });
+      }, function (err) {
+        if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
+        augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
+          if (unlocked && unlocked.error) return callback(unlocked);
+          async.forEachOfSeries(markets, function (market, type, nextMarket) {
+            augur.trade({
+              max_value: amountPerMarket / 2,
+              max_amount: 0,
+              trade_ids: [trades[type]],
+              sender: taker,
+              onTradeHash: function (tradeHash) {
+                if (self.DEBUG) {
+                  self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                }
+              },
+              onCommitSent: function () {},
+              onCommitSuccess: function (r) {
+                if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
+              },
+              onCommitFailed: function (e) {
+                if (clientSideAccount) {
+                  augur.accounts.account = clientSideAccount;
+                }
+                augur.useAccount(active);
+                nextMarket(e);
+              },
+              onNextBlock: function (block) {
+                if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
+              },
+              onTradeSent: function () {},
+              onTradeSuccess: function (r) {
+                if (self.DEBUG) {
+                  self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
+                }
+                if (clientSideAccount) {
+                  augur.accounts.account = clientSideAccount;
+                }
+                augur.useAccount(active);
+                nextMarket(null);
+              },
+              onTradeFailed: function (e) {
+                if (clientSideAccount) {
+                  augur.accounts.account = clientSideAccount;
+                }
+                augur.useAccount(active);
+                nextMarket(e);
+              }
+            });
+          }, callback);
+        });
+      });
+    });
+  },
+
+  make_order_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
+    var self = this;
+    var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
+    var periodLength = augur.getPeriodLength(branch);
+    var active = augur.from;
+    var clientSideAccount;
+    if (augur.accounts.account.address) {
+      clientSideAccount = clone(augur.accounts.account);
+      augur.accounts.account = {};
+    }
+    if (this.DEBUG) {
+      console.log(chalk.blue.bold("\nTrading in each market..."));
+      console.log(chalk.white.dim("Maker:"), chalk.green(maker));
+      console.log(chalk.white.dim("Taker:"), chalk.green(taker));
+    }
+    async.forEachOf(markets, function (market, type, nextMarket) {
+      augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
+        if (unlocked && unlocked.error) return nextMarket(unlocked);
+        augur.useAccount(maker);
+        if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
+        augur.buyCompleteSets({
+          market: market,
+          amount: amountPerMarket,
+          onSent: function () {},
+          onSuccess: function (r) {
+            if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+            var price = (type === "scalar") ? "12.3" : "0.7";
+            augur.sell({
+              amount: amountPerMarket,
+              price: price,
+              market: market,
+              outcome: 2,
+              onSent: function () {},
+              onSuccess: function () {
+                nextMarket(null);
+              },
+              onFailed: nextMarket
+            });
+          },
+          onFailed: nextMarket
+        });
+      });
+    }, function (err) {
+      if (clientSideAccount) {
+        augur.accounts.account = clientSideAccount;
+      }
+      augur.useAccount(active);
+      callback(err);
+    });
+  },
+
+  wait_until_expiration: function (augur, eventID, callback) {
+    var periodLength = augur.getPeriodLength(augur.getBranch(eventID));
+    var t = parseInt(new Date().getTime() / 1000);
+    var currentPeriod = augur.getCurrentPeriod(periodLength);
+    var expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+    var periodsToGo = expirationPeriod - currentPeriod;
+    var secondsToGo = periodsToGo*periodLength + periodLength - (t % periodLength);
+    if (this.DEBUG) {
+      this.print_reporting_status(augur, eventID, "Waiting until period after new events expire...");
+      console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
+      console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
+    }
+    setTimeout(function () { callback(null); }, secondsToGo*1000);
+  },
+
+  chunk32: function (string, stride, offset) {
+    var elements, chunked, position;
+    if (string.length >= 66) {
+      stride = stride || 64;
+      if (offset) {
+        elements = Math.ceil(string.slice(offset).length / stride) + 1;
+      } else {
+        elements = Math.ceil(string.length / stride);
+      }
+      chunked = new Array(elements);
+      position = 0;
+      for (var i = 0; i < elements; ++i) {
+        if (offset && i === 0) {
+          chunked[i] = string.slice(position, position + offset);
+          position += offset;
+        } else {
+          chunked[i] = string.slice(position, position + stride);
+          position += stride;
+        }
+      }
+      return chunked;
+    } else {
+      return string;
+    }
+  },
+
+  pp: function (obj, indent) {
+    var o = clone(obj);
+    for (var k in o) {
+      if (!o.hasOwnProperty(k)) continue;
+      if (o[k] && o[k].constructor === Function) {
+        o[k] = o[k].toString();
+        if (o[k].length > 64) {
+          o[k] = o[k].match(/function (\w*)/).slice(0, 1).join('');
+        }
+      }
+    }
+    return chalk.green(JSON.stringify(o, null, indent || 4));
+  },
+
+  print_nodes: function (nodes) {
+    var node;
+    if (nodes && nodes.length) {
+      process.stdout.write(chalk.green.bold("hosted:   "));
+      for (var i = 0, len = nodes.length; i < len; ++i) {
+        node = nodes[i];
+        node = (i === 0) ? chalk.green(node) : chalk.gray(node);
+        process.stdout.write(node + ' ');
+        if (i === len - 1) process.stdout.write('\n');
+      }
+    }
+  },
+
+  setup: function (augur, args, rpcinfo) {
+    var defaulthost, ipcpath, wsUrl;
+    if (NODE_JS) {
+      defaulthost = process.env.GETH_HTTP || "http://127.0.0.1:8545";
+      ipcpath = process.env.GETH_IPC;
+      wsUrl = process.env.GETH_WS || "ws://127.0.0.1:8546";
+    }
+    if (process.env.CONTINUOUS_INTEGRATION) {
+      this.TIMEOUT = 131072;
+    }
+    augur.rpc.retryDroppedTxs = true;
+    augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
+    if (defaulthost) augur.rpc.setLocalNode(defaulthost);
+    if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
+      if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
+        console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
+        console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
+        console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
+        this.print_nodes(augur.rpc.nodes.hosted);
+        console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
+        console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
+        console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
+        displayed_connection_info = true;
+      }
+      augur.rpc.clear();
+    }
+    return augur;
+  },
+
+  reset: function (mod) {
+    mod = path.join(__dirname, "..", "src", path.parse(mod).name);
+    delete require.cache[require.resolve(mod)];
+    return require(mod);
+  },
+
+  get_test_accounts: function (augur, max_accounts) {
+    var accounts;
+    if (augur) {
+      if (typeof augur === "object") {
+        accounts = augur.rpc.accounts();
+      } else if (typeof augur === "string") {
+        accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
+        for (var i = 0, len = accounts.length; i < len; ++i) {
+          accounts[i] = abi.prefix_hex(accounts[i]);
+        }
+      }
+      if (max_accounts && accounts && accounts.length > max_accounts) {
+        accounts = accounts.slice(0, max_accounts);
+      }
+      return accounts;
+    }
+  },
+
+  wait: function (seconds) {
+    var start, delay;
+    start = new Date();
+    delay = seconds * 1000;
+    while ((new Date()) - start <= delay) {}
+    return true;
+  },
+
+  get_balances: function (augur, account, branch) {
+    if (augur) {
+      branch = branch || augur.constants.DEFAULT_BRANCH_ID;
+      account = account || augur.coinbase;
+      return {
+        cash: augur.getCashBalance(account),
+        reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
+        ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
+      };
+    }
+  },
+
+  copy: function (obj) {
+    if (null === obj || "object" !== typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+  },
+
+  remove_duplicates: function (arr) {
+    return arr.filter(function (element, position, array) {
+      return array.indexOf(element) === position;
+    });
+  },
+
+  has_value: function (o, v) {
+    for (var p in o) {
+      if (o.hasOwnProperty(p)) {
+        if (o[p] === v) return p;
+      }
+    }
+  },
+
+  linspace: function (a, b, n) {
+    if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
+    if (n < 2) return (n === 1) ? [a] : [];
+    var i, ret = new Array(n);
+    n--;
+    for (i = n; i >= 0; i--) {
+      ret[i] = (i*b + (n - i)*a) / n;
+    }
+    return ret;
+  },
+
+  select_random: function (arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  },
+
+  fold: function (arr, num_cols) {
+    var i, j, folded, num_rows, row;
+    folded = [];
+    num_cols = parseInt(num_cols);
+    num_rows = arr.length / num_cols;
+    num_rows = parseInt(num_rows);
+    for (i = 0; i < parseInt(num_rows); ++i) {
+      row = [];
+      for (j = 0; j < num_cols; ++j) {
+        row.push(arr[i*num_cols + j]);
+      }
+      folded.push(row);
+    }
+    return folded;
+  },
+
+  gteq0: function (n) { return (new BigNumber(n)).toNumber() >= 0; },
+
+  print_matrix: function (m) {
+    for (var i = 0, rows = m.length; i < rows; ++i) {
+      process.stdout.write("\t");
+      for (var j = 0, cols = m[0].length; j < cols; ++j) {
+        process.stdout.write(chalk.cyan(m[i][j] + "\t"));
+      }
+      process.stdout.write("\n");
+    }
+  }
 
 };
 
@@ -47425,12 +47387,12 @@ arguments[4][80][0].apply(exports,arguments)
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var net, request, syncRequest;
 if (NODE_JS) {
-    net = require("net");
-    request = require("request");
-    syncRequest = require("sync-request");
-    console.debug = console.log;
+  net = require("net");
+  request = require("request");
+  syncRequest = require("sync-request");
+  console.debug = console.log;
 } else {
-    request = require("browser-request");
+  request = require("browser-request");
 }
 var async = require("async");
 var clone = require("clone");
@@ -47441,25 +47403,25 @@ var errors = require("augur-contracts").errors;
 var abi = require("augur-abi");
 
 BigNumber.config({
-    MODULO_MODE: BigNumber.EUCLID,
-    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
 function RPCError(err) {
-    this.name = "RPCError";
-    this.message = JSON.stringify(err);
+  this.name = "RPCError";
+  this.message = JSON.stringify(err);
 }
 
 RPCError.prototype = Error.prototype;
 
 function isFunction(f) {
-    return Object.prototype.toString.call(f) === "[object Function]";
+  return Object.prototype.toString.call(f) === "[object Function]";
 }
 
 function wait(delay) {
-    var until = new Date().getTime() + delay;
-    while (new Date().getTime() < until) {}
-    return;
+  var until = new Date().getTime() + delay;
+  while (new Date().getTime() < until) {}
+  return;
 }
 
 var HOSTED_NODES = ["https://eth3.augur.net"];
@@ -47469,1891 +47431,2510 @@ var noop = function () {};
 
 module.exports = {
 
-    debug: {
-        tx: false,
-        broadcast: false,
-        nonce: false,
-        sync: true
-    },
+  debug: {
+    tx: false,
+    broadcast: false,
+    nonce: false,
+    sync: true
+  },
 
-    // if set to true, dropped transactions are automatically resubmitted
-    retryDroppedTxs: true,
+  // if set to true, dropped transactions are automatically resubmitted
+  retryDroppedTxs: true,
 
-    // geth IPC endpoint (Node-only)
-    ipcpath: null,
-    socket: null,
+  // geth IPC endpoint (Node-only)
+  ipcpath: null,
+  socket: null,
 
-    // geth websocket endpoint
-    wsUrl: process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET,
+  // geth websocket endpoint
+  wsUrl: process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET,
 
-    // active websocket (if connected)
-    websocket: null,
+  // active websocket (if connected)
+  websocket: null,
 
-    // local ethereum node address
-    localnode: "http://127.0.0.1:8545",
+  // local ethereum node address
+  localnode: "http://127.0.0.1:8545",
 
-    // reconnect websocket automatically
-    AUTO_RECONNECT: true,
+  // reconnect websocket automatically
+  AUTO_RECONNECT: true,
 
-    // Number of required confirmations for transact sequence
-    REQUIRED_CONFIRMATIONS: 0,
+  // Number of required confirmations for transact sequence
+  REQUIRED_CONFIRMATIONS: 0,
 
-    // Maximum number of retry attempts for dropped transactions
-    TX_RETRY_MAX: 5,
+  // Maximum number of retry attempts for dropped transactions
+  TX_RETRY_MAX: 5,
 
-    // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 1000,
+  // Maximum number of transaction verification attempts
+  TX_POLL_MAX: 1000,
 
-    // Transaction polling interval
-    TX_POLL_INTERVAL: 10000,
+  // Transaction polling interval
+  TX_POLL_INTERVAL: 10000,
 
-    // Default timeout for asynchronous POST
-    POST_TIMEOUT: 30000,
+  // Default timeout for asynchronous POST
+  POST_TIMEOUT: 30000,
 
-    DEFAULT_GAS: "0x2fd618",
+  DEFAULT_GAS: "0x2fd618",
 
-    ETHER: new BigNumber(10, 10).toPower(18),
+  ETHER: new BigNumber(10, 10).toPower(18),
 
-    Error: RPCError,
+  Error: RPCError,
 
-    errors: errors,
+  errors: errors,
 
-    DEFAULT_HOSTED_NODES: HOSTED_NODES.slice(),
+  DEFAULT_HOSTED_NODES: HOSTED_NODES.slice(),
 
-    DEFAULT_HOSTED_WEBSOCKET: HOSTED_WEBSOCKET,
+  DEFAULT_HOSTED_WEBSOCKET: HOSTED_WEBSOCKET,
 
-    nodes: {
-        hosted: HOSTED_NODES.slice(),
-        local: null
-    },
+  nodes: {
+    hosted: HOSTED_NODES.slice(),
+    local: null
+  },
 
-    requests: 1,
+  requests: 1,
 
-    // Hook for transaction callbacks
-    txRelay: null,
+  // Hook for transaction callbacks
+  txRelay: null,
 
-    // Do not call txRelay for these methods
-    excludedFromTxRelay: {},
+  // Do not call txRelay for these methods
+  excludedFromTxRelay: {},
 
-    txs: {},
+  txs: {},
 
-    rawTxs: {},
+  rawTxs: {},
 
-    rawTxMaxNonce: -1,
+  rawTxMaxNonce: -1,
 
-    notifications: {},
+  notifications: {},
 
-    gasPrice: 20000000000,
+  gasPrice: 20000000000,
 
-    registerTxRelay: function (txRelay) {
-        this.txRelay = txRelay;
-    },
+  registerTxRelay: function (txRelay) {
+    this.txRelay = txRelay;
+  },
 
-    unregisterTxRelay: function () {
-        this.txRelay = null;
-    },
+  unregisterTxRelay: function () {
+    this.txRelay = null;
+  },
 
-    wrapTxRelayCallback: function (status, payload, callback) {
-        var self = this;
-        return function (response) {
-            if (isFunction(callback)) callback(response);
-            if (payload.method && !self.excludedFromTxRelay[payload.method]) {
-                self.txRelay({
-                    type: payload.label || payload.method,
-                    status: status,
-                    data: payload,
-                    response: response
-                });
-            }
-        };
-    },
+  wrapTxRelayCallback: function (status, payload, callback) {
+    var self = this;
+    return function (response) {
+      if (isFunction(callback)) callback(response);
+      if (payload.method && !self.excludedFromTxRelay[payload.method]) {
+        self.txRelay({
+          type: payload.label || payload.method,
+          status: status,
+          data: payload,
+          response: response
+        });
+      }
+    };
+  },
 
-    excludeFromTxRelay: function (method) {
-        if (method) {
-            if (method.constructor === Array && method.length) {
-                for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
-                    this.excludedFromTxRelay[method[i]] = true;
-                }
-            } else {
-                this.excludedFromTxRelay[method] = true;
-            }
+  excludeFromTxRelay: function (method) {
+    if (method) {
+      if (method.constructor === Array && method.length) {
+        for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
+          this.excludedFromTxRelay[method[i]] = true;
         }
-    },
+      } else {
+        this.excludedFromTxRelay[method] = true;
+      }
+    }
+  },
 
-    includeInTxRelay: function (method) {
-        if (method) {
-            if (method.constructor === Array && method.length) {
-                for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
-                    this.excludedFromTxRelay[method[i]] = false;
-                }
-            } else {
-                this.excludedFromTxRelay[method] = false;
-            }
+  includeInTxRelay: function (method) {
+    if (method) {
+      if (method.constructor === Array && method.length) {
+        for (var i = 0, numMethods = method.length; i < numMethods; ++i) {
+          this.excludedFromTxRelay[method[i]] = false;
         }
-    },
+      } else {
+        this.excludedFromTxRelay[method] = false;
+      }
+    }
+  },
 
-    unmarshal: function (string, returns, stride, init) {
-        var elements, array, position;
-        if (string && string.length >= 66) {
-            stride = stride || 64;
-            elements = Math.ceil((string.length - 2) / stride);
-            array = new Array(elements);
-            position = init || 2;
-            for (var i = 0; i < elements; ++i) {
-                array[i] = abi.prefix_hex(
+  unmarshal: function (string, returns, stride, init) {
+    var elements, array, position;
+    if (string && string.length >= 66) {
+      stride = stride || 64;
+      elements = Math.ceil((string.length - 2) / stride);
+      array = new Array(elements);
+      position = init || 2;
+      for (var i = 0; i < elements; ++i) {
+        array[i] = abi.prefix_hex(
                     string.slice(position, position + stride)
                 );
-                position += stride;
-            }
-            if (array.length) {
-                if (parseInt(array[1], 16) === array.length - 2 ||
+        position += stride;
+      }
+      if (array.length) {
+        if (parseInt(array[1], 16) === array.length - 2 ||
                     parseInt(array[1], 16) / 32 === array.length - 2) {
-                    array.splice(0, 2);
-                }
-            }
-            for (i = 0; i < array.length; ++i) {
-                if (returns === "number[]") {
-                    array[i] = abi.string(array[i]);
-                } else if (returns === "unfix[]") {
-                    array[i] = abi.unfix(array[i], "string");
-                }
-            }
-            return array;
-        } else {
-            return string;
+          array.splice(0, 2);
         }
-    },
+      }
+      for (i = 0; i < array.length; ++i) {
+        if (returns === "number[]") {
+          array[i] = abi.string(array[i]);
+        } else if (returns === "unfix[]") {
+          array[i] = abi.unfix(array[i], "string");
+        }
+      }
+      return array;
+    } else {
+      return string;
+    }
+  },
 
-    applyReturns: function (returns, result) {
-        var res;
-        if (!returns) return result;
-        if (result && result !== "0x") {
-            if (result.error) return result;
-            returns = returns.toLowerCase();
-            res = clone(result);
-            if (returns && returns.slice(-2) === "[]") {
-                res = this.unmarshal(res, returns);
-                if (returns === "hash[]") res = abi.hex(res);
-            } else if (returns === "string") {
-                res = abi.raw_decode_hex(res);
-            } else if (returns === "number") {
-                res = abi.string(res, true);
-            } else if (returns === "int") {
-                res = abi.number(res, true);
-            } else if (returns === "bignumber") {
-                res = abi.bignum(res, null, true);
-            } else if (returns === "unfix") {
-                res = abi.unfix(res, "string");
-            } else if (returns === "null") {
-                res = null;
-            } else if (returns === "address" || returns === "address[]") {
-                res = abi.format_address(res);
-            }
-        } else {
-            res = result;
-        }
-        return res;
-    },
+  applyReturns: function (returns, result) {
+    var res;
+    if (!returns) return result;
+    if (result && result !== "0x") {
+      if (result.error) return result;
+      returns = returns.toLowerCase();
+      res = clone(result);
+      if (returns && returns.slice(-2) === "[]") {
+        res = this.unmarshal(res, returns);
+        if (returns === "hash[]") res = abi.hex(res);
+      } else if (returns === "string") {
+        res = abi.raw_decode_hex(res);
+      } else if (returns === "number") {
+        res = abi.string(res, true);
+      } else if (returns === "int") {
+        res = abi.number(res, true);
+      } else if (returns === "bignumber") {
+        res = abi.bignum(res, null, true);
+      } else if (returns === "unfix") {
+        res = abi.unfix(res, "string");
+      } else if (returns === "null") {
+        res = null;
+      } else if (returns === "address" || returns === "address[]") {
+        res = abi.format_address(res);
+      }
+    } else {
+      res = result;
+    }
+    return res;
+  },
 
-    parse: function (origResponse, returns, callback) {
-        var results, len, err;
-        var response = clone(origResponse);
-        if ((this.debug.tx && (response && response.error)) || this.debug.broadcast) {
-            console.debug("[ethrpc] response:", response);
+  parse: function (origResponse, returns, callback) {
+    var results, len, err;
+    var response = clone(origResponse);
+    if ((this.debug.tx && (response && response.error)) || this.debug.broadcast) {
+      console.debug("[ethrpc] response:", response);
+    }
+    if (response && typeof response === "string") {
+      try {
+        response = JSON.parse(response);
+      } catch (e) {
+        err = e;
+        if (e && e.name === "SyntaxError") {
+          err = errors.INVALID_RESPONSE;
         }
-        if (response && typeof response === "string") {
-            try {
-                response = JSON.parse(response);
-            } catch (e) {
-                err = e;
-                if (e && e.name === "SyntaxError") {
-                    err = errors.INVALID_RESPONSE;
-                }
-                if (isFunction(callback)) return callback(err);
-                throw new this.Error(err);
+        if (isFunction(callback)) return callback(err);
+        throw new this.Error(err);
+      }
+    }
+    if (response !== undefined && typeof response === "object" && response !== null) {
+      if (response.error) {
+        response = {
+          error: response.error.code,
+          message: response.error.message
+        };
+        if (!isFunction(callback)) return response;
+        return callback(response);
+      } else if (response.result !== undefined) {
+        if (!isFunction(callback)) return response.result;
+        return callback(response.result);
+      } else if (response.constructor === Array && response.length) {
+        len = response.length;
+        results = new Array(len);
+        for (var i = 0; i < len; ++i) {
+          results[i] = response[i].result;
+          if (response.error || (response[i] && response[i].error)) {
+            if (this.debug.broadcast) {
+              if (isFunction(callback)) return callback(response.error);
+              throw new this.Error(response.error);
             }
+          }
         }
-        if (response !== undefined && typeof response === "object" && response !== null) {
-            if (response.error) {
-                response = {
-                    error: response.error.code,
-                    message: response.error.message
-                };
-                if (!isFunction(callback)) return response;
-                return callback(response);
-            } else if (response.result !== undefined) {
-                if (!isFunction(callback)) return response.result;
-                return callback(response.result);
-            } else if (response.constructor === Array && response.length) {
-                len = response.length;
-                results = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    results[i] = response[i].result;
-                    if (response.error || (response[i] && response[i].error)) {
-                        if (this.debug.broadcast) {
-                            if (isFunction(callback)) return callback(response.error);
-                            throw new this.Error(response.error);
-                        }
-                    }
-                }
-                if (!isFunction(callback)) return results;
-                return callback(results);
-            }
+        if (!isFunction(callback)) return results;
+        return callback(results);
+      }
 
             // no result or error field
-            err = errors.NO_RESPONSE;
-            err.bubble = response;
-            if (isFunction(callback)) return callback(err);
-            throw new this.Error(err);
+      err = errors.NO_RESPONSE;
+      err.bubble = response;
+      if (isFunction(callback)) return callback(err);
+      throw new this.Error(err);
+    }
+  },
+
+  strip: function (tx) {
+    var returns;
+    if (tx.method === "eth_coinbase") return "address";
+    if (tx.params !== undefined && tx.params.length && tx.params[0]) {
+      if (tx.params[0].returns) {
+        returns = tx.params[0].returns;
+        delete tx.params[0].returns;
+      }
+      if (tx.params[0].invocation) {
+        delete tx.params[0].invocation;
+      }
+    }
+    return returns;
+  },
+
+  subscriptions: {},
+
+  unregisterSubscriptionCallback: function (id) {
+    delete this.subscriptions[id];
+  },
+
+  registerSubscriptionCallback: function (id, callback) {
+    this.subscriptions[id] = callback;
+  },
+
+  rpcRequests: {ipc: {}, ws: {}},
+
+  // initial value 0
+  // if connection fails: -1
+  // if connection succeeds: 1
+  rpcStatus: {ipc: 0, ws: 0},
+
+  messageAction: function (type, msg) {
+    if (msg.constructor === Array) {
+      for (var i = 0, n = msg.length; i < n; ++i) {
+        this.messageAction(type, msg[i]);
+      }
+    } else {
+      if (msg.id !== undefined && msg.id !== null) {
+        if (this.debug.broadcast) {
+          console.debug("[" + type + "] matched message ID", msg.id, "to", this.rpcRequests[type]);
         }
-    },
-
-    strip: function (tx) {
-        var returns;
-        if (tx.method === "eth_coinbase") return "address";
-        if (tx.params !== undefined && tx.params.length && tx.params[0]) {
-            if (tx.params[0].returns) {
-                returns = tx.params[0].returns;
-                delete tx.params[0].returns;
-            }
-            if (tx.params[0].invocation) {
-                delete tx.params[0].invocation;
-            }
-        }
-        return returns;
-    },
-
-    subscriptions: {},
-
-    unregisterSubscriptionCallback: function (id) {
-        delete this.subscriptions[id];
-    },
-
-    registerSubscriptionCallback: function (id, callback) {
-        this.subscriptions[id] = callback;
-    },
-
-    rpcRequests: {ipc: {}, ws: {}},
-
-    // initial value 0
-    // if connection fails: -1
-    // if connection succeeds: 1
-    rpcStatus: {ipc: 0, ws: 0},
-
-    messageAction: function (type, msg) {
-        if (msg.constructor === Array) {
-            for (var i = 0, n = msg.length; i < n; ++i) {
-                this.messageAction(type, msg[i]);
-            }
-        } else {
-            if (msg.id !== undefined && msg.id !== null) {
-                if (this.debug.broadcast) {
-                    console.debug("[" + type + "] matched message ID", msg.id, "to", this.rpcRequests[type]);
-                }
-                var req = this.rpcRequests[type][msg.id];
-                delete this.rpcRequests[type][msg.id];
-                return this.parse(msg, req.returns, req.callback);
-            } else if (msg.method === "eth_subscription" && msg.params &&
+        var req = this.rpcRequests[type][msg.id];
+        delete this.rpcRequests[type][msg.id];
+        return this.parse(msg, req.returns, req.callback);
+      } else if (msg.method === "eth_subscription" && msg.params &&
                 msg.params.subscription && msg.params.result &&
                 this.subscriptions[msg.params.subscription]) {
-                return this.subscriptions[msg.params.subscription](msg.params.result);
-            } else {
-                if (this.debug.broadcast) {
-                    console.warn("[" + type + "] Unknown message received:", msg.data || msg);
-                }
-            }
-        }
-    },
-
-    ipcConnect: function (callback) {
-        var self = this;
-        var received = "";
-        this.socket = new net.Socket();
-        this.socket.setEncoding("utf8");
-        this.socket.on("data", function (data) {
-            var parsed;
-            try {
-                parsed = JSON.parse(data);
-            } catch (exc) {
-                if (self.debug.broadcast) console.debug(exc);
-                received += data;
-                try {
-                    parsed = JSON.parse(received);
-                } catch (ex) {
-                    if (self.debug.broadcast) console.debug(ex);
-                }
-            }
-            if (parsed) {
-                received = "";
-                return self.messageAction("ipc", parsed);
-            }
-        });
-        this.socket.on("end", function () { received = ""; });
-        this.socket.on("error", function (err) {
-            self.rpcStatus.ipc = -1;
-            self.socket.destroy();
-            received = "";
-            if (self.debug.broadcast) {
-                console.error("[ethrpc] IPC socket error", self.ipcpath, self.rpcStatus.ipc, err);
-            }
-        });
-        this.socket.on("close", function (err) {
-            self.rpcStatus.ipc = (err) ? -1 : 0;
-            received = "";
-            if (self.debug.broadcast) {
-                console.warn("[ethrpc] IPC socket closed", self.ipcpath, self.rpcStatus.ipc);
-            }
-        });
-        this.socket.connect({path: this.ipcpath}, function () {
-            self.rpcStatus.ipc = 1;
-            self.resetNewBlockSubscription(callback);
-        });
-    },
-
-    wsConnect: function (callback) {
-        var self = this;
-        var calledCallback = false;
-        if (!this.wsUrl) {
-            this.rpcStatus.ws = -1;
-            return callback(false);
-        }
-        this.websocket = new W3CWebSocket(this.wsUrl);
-        this.websocket.onerror = function () {
-            if (self.debug.broadcast) {
-                console.error("[ethrpc] WebSocket error", self.wsUrl, self.rpcStatus.ws);
-            }
-            self.rpcStatus.ws = -1;
-            self.wsUrl = null;
-        };
-        this.websocket.onclose = function () {
-            if (self.debug.broadcast) {
-                console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.rpcStatus.ws);
-            }
-            var status = self.rpcStatus.ws;
-            if (status !== -1) self.rpcStatus.ws = 0;
-            if (status === 1 && self.AUTO_RECONNECT) {
-                if (self.debug.broadcast) {
-                    console.debug("[ethrpc] WebSocket reconnecting...");
-                }
-                self.wsConnect(function (connected) {
-                    if (self.debug.broadcast) {
-                        console.debug("[ethrpc] WebSocket reconnected:", connected);
-                    }
-                });
-            }
-            if (!calledCallback) callback(false);
-        };
-        this.websocket.onmessage = function (msg) {
-            if (msg && msg.data && typeof msg.data === "string") {
-                return self.messageAction("ws", JSON.parse(msg.data));
-            }
-        };
-        this.websocket.onopen = function () {
-            self.rpcStatus.ws = 1;
-            calledCallback = true;
-            self.resetNewBlockSubscription(callback);
-            if (isFunction(self.resetCustomSubscription)) {
-                self.resetCustomSubscription();
-            }
-        };
-    },
-
-    resetCustomSubscription: null,
-
-    subscribeToNewBlockHeaders: function (callback) {
-        var self = this;
-        this.subscribeNewHeads(function (filterID) {
-            if (self.debug.broadcast) console.log("subscribed:", filterID);
-            if (!filterID || filterID.error) {
-                console.error("error subscribing to new blocks", filterID);
-                return callback(false);
-            }
-            self.blockFilter.id = filterID;
-            self.registerSubscriptionCallback(filterID, self.onNewBlock.bind(self));
-            if (!self.block) return callback(true);
-            self.blockNumber(function (blockNumber) {
-                var blockGap = parseInt(blockNumber, 16) - self.block.number;
-                if (!blockGap) return callback(true);
-                if (self.debug.tx) console.debug("Block gap", blockGap, "found, catching up...");
-                for (var i = 1; i <= blockGap; ++i) {
-                    self.onNewBlock({number: "0x" + (self.block.number + i).toString(16)});
-                }
-                callback(true);
-            });
-        });
-    },
-
-    resetNewBlockSubscription: function (callback) {
-        var self = this;
-        if (this.blockFilter.id === null) {
-            return this.subscribeToNewBlockHeaders(callback);
-        }
-        this.unregisterSubscriptionCallback(this.blockFilter.id);
-        this.unsubscribe(this.blockFilter.id, function () {
-            self.blockFilter.id = null;
-            self.subscribeToNewBlockHeaders(callback);
-        });
-    },
-
-    send: function (type, command, returns, callback) {
-        var self = this;
+        return this.subscriptions[msg.params.subscription](msg.params.result);
+      } else {
         if (this.debug.broadcast) {
-            if (type === "ws") {
-                console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
-            } else if (type === "ipc") {
-                console.debug("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
-            }
+          console.warn("[" + type + "] Unknown message received:", msg.data || msg);
         }
-        if (command.constructor === Array) {
-            var commandList = [];
-            for (var i = 0, n = command.length; i < n; ++i) {
-                commandList.push({command: command[i], returns: returns[i], callback: callback[i]});
-            }
-            async.each(commandList, function (thisCommand, nextCommand) {
-                if (!thisCommand.returns) {
-                    self.rpcRequests[type][thisCommand.command.id] = {
-                        returns: thisCommand.returns,
-                        callback: thisCommand.callback
-                    };
-                } else {
-                    self.rpcRequests[type][thisCommand.command.id] = {
-                        returns: thisCommand.returns,
-                        callback: function (res) {
-                            thisCommand.callback(self.applyReturns(thisCommand.returns, res));
-                        }
-                    };
-                }
-                nextCommand();
-            }, function (err) {
-                if (err) return console.error("[" + type + "] send failed:", err);
-                self.rpcRequests[type][command.id] = {returns: returns, callback: callback};
-                if (type === "ws") {
-                    if (self.websocket.readyState === self.websocket.OPEN) {
-                        self.websocket.send(JSON.stringify(command));
-                    }
-                } else if (type === "ipc") {
-                    if (self.rpcStatus.ipc === 1) {
-                        self.socket.write(JSON.stringify(command));
-                    }
-                }
-            });
-        } else {
-            this.rpcRequests[type][command.id] = {returns: returns, callback: callback};
-            if (type === "ws") {
-                if (this.websocket.readyState === this.websocket.OPEN) {
-                    this.websocket.send(JSON.stringify(command));
-                }
-            } else if (type === "ipc") {
-                if (this.rpcStatus.ipc === 1) {
-                    this.socket.write(JSON.stringify(command));
-                }
-            }
-        }
-    },
+      }
+    }
+  },
 
-    postSync: function (rpcUrl, command, returns) {
-        var timeout, req = null;
-        if (command.timeout) {
-            timeout = command.timeout;
-            delete command.timeout;
-        } else {
-            timeout = this.POST_TIMEOUT;
+  ipcConnect: function (callback) {
+    var self = this;
+    var received = "";
+    this.socket = new net.Socket();
+    this.socket.setEncoding("utf8");
+    this.socket.on("data", function (data) {
+      var parsed;
+      try {
+        parsed = JSON.parse(data);
+      } catch (exc) {
+        if (self.debug.broadcast) console.debug(exc);
+        received += data;
+        try {
+          parsed = JSON.parse(received);
+        } catch (ex) {
+          if (self.debug.broadcast) console.debug(ex);
         }
-        if (this.debug.sync) {
-            console.warn("[ethrpc] Synchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
-        }
-        if (NODE_JS) {
-            req = syncRequest("POST", rpcUrl, {json: command, timeout: timeout});
-            var response = req.getBody().toString();
-            return this.parse(response, returns);
-        }
-        if (window.XMLHttpRequest) {
-            req = new window.XMLHttpRequest();
-        } else {
-            req = new window.ActiveXObject("Microsoft.XMLHTTP");
-        }
-        req.open("POST", rpcUrl, false);
-        req.setRequestHeader("Content-type", "application/json");
-        req.send(JSON.stringify(command));
-        return this.parse(req.responseText, returns);
-    },
+      }
+      if (parsed) {
+        received = "";
+        return self.messageAction("ipc", parsed);
+      }
+    });
+    this.socket.on("end", function () { received = ""; });
+    this.socket.on("error", function (err) {
+      self.rpcStatus.ipc = -1;
+      self.socket.destroy();
+      received = "";
+      if (self.debug.broadcast) {
+        console.error("[ethrpc] IPC socket error", self.ipcpath, self.rpcStatus.ipc, err);
+      }
+    });
+    this.socket.on("close", function (err) {
+      self.rpcStatus.ipc = (err) ? -1 : 0;
+      received = "";
+      if (self.debug.broadcast) {
+        console.warn("[ethrpc] IPC socket closed", self.ipcpath, self.rpcStatus.ipc);
+      }
+    });
+    this.socket.connect({path: this.ipcpath}, function () {
+      self.rpcStatus.ipc = 1;
+      self.resetNewBlockSubscription(callback);
+    });
+  },
 
-    post: function (rpcUrl, command, returns, callback) {
-        var timeout, self = this;
-        if (command.timeout) {
-            timeout = command.timeout;
-            delete command.timeout;
-        } else {
-            timeout = this.POST_TIMEOUT;
+  wsConnect: function (callback) {
+    var self = this;
+    var calledCallback = false;
+    if (!this.wsUrl) {
+      this.rpcStatus.ws = -1;
+      return callback(false);
+    }
+    this.websocket = new W3CWebSocket(this.wsUrl);
+    this.websocket.onerror = function () {
+      if (self.debug.broadcast) {
+        console.error("[ethrpc] WebSocket error", self.wsUrl, self.rpcStatus.ws);
+      }
+      self.rpcStatus.ws = -1;
+      self.wsUrl = null;
+    };
+    this.websocket.onclose = function () {
+      if (self.debug.broadcast) {
+        console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.rpcStatus.ws);
+      }
+      var status = self.rpcStatus.ws;
+      if (status !== -1) self.rpcStatus.ws = 0;
+      if (status === 1 && self.AUTO_RECONNECT) {
+        if (self.debug.broadcast) {
+          console.debug("[ethrpc] WebSocket reconnecting...");
         }
-        if (this.debug.broadcast) {
-            console.debug("[ethrpc] Asynchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
-        }
-        request({
-            url: rpcUrl,
-            method: 'POST',
-            json: command,
-            timeout: timeout
-        }, function (err, response, body) {
-            var e;
-            if (err) {
-                self.primaryNode = null;
-                if (self.nodes.local) {
-                    e = errors.LOCAL_NODE_FAILURE;
-                    e.bubble = err;
-                    e.command = command;
-                    return callback(e);
-                }
-                console.warn("[ethrpc] asynchronous RPC timed out", rpcUrl, command);
-                e = errors.RPC_TIMEOUT;
-                e.bubble = err;
-                e.command = command;
-                callback(e);
-            } else if (response.statusCode === 200) {
-                self.parse(body, returns, callback);
-            }
+        self.wsConnect(function (connected) {
+          if (self.debug.broadcast) {
+            console.debug("[ethrpc] WebSocket reconnected:", connected);
+          }
         });
-    },
+      }
+      if (!calledCallback) callback(false);
+    };
+    this.websocket.onmessage = function (msg) {
+      if (msg && msg.data && typeof msg.data === "string") {
+        return self.messageAction("ws", JSON.parse(msg.data));
+      }
+    };
+    this.websocket.onopen = function () {
+      self.rpcStatus.ws = 1;
+      calledCallback = true;
+      self.resetNewBlockSubscription(callback);
+      if (isFunction(self.resetCustomSubscription)) {
+        self.resetCustomSubscription();
+      }
+    };
+  },
 
-    selectNodes: function () {
-        if (this.nodes.local) return [this.nodes.local];
-        return this.nodes.hosted.slice();
-    },
+  resetCustomSubscription: null,
+
+  subscribeToNewBlockHeaders: function (callback) {
+    var self = this;
+    this.subscribeNewHeads(function (filterID) {
+      if (self.debug.broadcast) console.log("subscribed:", filterID);
+      if (!filterID || filterID.error) {
+        console.error("error subscribing to new blocks", filterID);
+        return callback(false);
+      }
+      self.blockFilter.id = filterID;
+      self.registerSubscriptionCallback(filterID, self.onNewBlock.bind(self));
+      if (!self.block) return callback(true);
+      self.blockNumber(function (blockNumber) {
+        var blockGap = parseInt(blockNumber, 16) - self.block.number;
+        if (!blockGap) return callback(true);
+        if (self.debug.tx) console.debug("Block gap", blockGap, "found, catching up...");
+        for (var i = 1; i <= blockGap; ++i) {
+          self.onNewBlock({number: "0x" + (self.block.number + i).toString(16)});
+        }
+        callback(true);
+      });
+    });
+  },
+
+  resetNewBlockSubscription: function (callback) {
+    var self = this;
+    if (this.blockFilter.id === null) {
+      return this.subscribeToNewBlockHeaders(callback);
+    }
+    this.unregisterSubscriptionCallback(this.blockFilter.id);
+    this.unsubscribe(this.blockFilter.id, function () {
+      self.blockFilter.id = null;
+      self.subscribeToNewBlockHeaders(callback);
+    });
+  },
+
+  send: function (type, command, returns, callback) {
+    var self = this;
+    if (this.debug.broadcast) {
+      if (type === "ws") {
+        console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
+      } else if (type === "ipc") {
+        console.debug("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
+      }
+    }
+    if (command.constructor === Array) {
+      var commandList = [];
+      for (var i = 0, n = command.length; i < n; ++i) {
+        commandList.push({command: command[i], returns: returns[i], callback: callback[i]});
+      }
+      async.each(commandList, function (thisCommand, nextCommand) {
+        if (!thisCommand.returns) {
+          self.rpcRequests[type][thisCommand.command.id] = {
+            returns: thisCommand.returns,
+            callback: thisCommand.callback
+          };
+        } else {
+          self.rpcRequests[type][thisCommand.command.id] = {
+            returns: thisCommand.returns,
+            callback: function (res) {
+              thisCommand.callback(self.applyReturns(thisCommand.returns, res));
+            }
+          };
+        }
+        nextCommand();
+      }, function (err) {
+        if (err) return console.error("[" + type + "] send failed:", err);
+        self.rpcRequests[type][command.id] = {returns: returns, callback: callback};
+        if (type === "ws") {
+          if (self.websocket.readyState === self.websocket.OPEN) {
+            self.websocket.send(JSON.stringify(command));
+          }
+        } else if (type === "ipc") {
+          if (self.rpcStatus.ipc === 1) {
+            self.socket.write(JSON.stringify(command));
+          }
+        }
+      });
+    } else {
+      this.rpcRequests[type][command.id] = {returns: returns, callback: callback};
+      if (type === "ws") {
+        if (this.websocket.readyState === this.websocket.OPEN) {
+          this.websocket.send(JSON.stringify(command));
+        }
+      } else if (type === "ipc") {
+        if (this.rpcStatus.ipc === 1) {
+          this.socket.write(JSON.stringify(command));
+        }
+      }
+    }
+  },
+
+  postSync: function (rpcUrl, command, returns) {
+    var timeout, req = null;
+    if (command.timeout) {
+      timeout = command.timeout;
+      delete command.timeout;
+    } else {
+      timeout = this.POST_TIMEOUT;
+    }
+    if (this.debug.sync) {
+      console.warn("[ethrpc] Synchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
+    }
+    if (NODE_JS) {
+      req = syncRequest("POST", rpcUrl, {json: command, timeout: timeout});
+      var response = req.getBody().toString();
+      return this.parse(response, returns);
+    }
+    if (window.XMLHttpRequest) {
+      req = new window.XMLHttpRequest();
+    } else {
+      req = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    req.open("POST", rpcUrl, false);
+    req.setRequestHeader("Content-type", "application/json");
+    req.send(JSON.stringify(command));
+    return this.parse(req.responseText, returns);
+  },
+
+  post: function (rpcUrl, command, returns, callback) {
+    var timeout, self = this;
+    if (command.timeout) {
+      timeout = command.timeout;
+      delete command.timeout;
+    } else {
+      timeout = this.POST_TIMEOUT;
+    }
+    if (this.debug.broadcast) {
+      console.debug("[ethrpc] Asynchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
+    }
+    request({
+      url: rpcUrl,
+      method: 'POST',
+      json: command,
+      timeout: timeout
+    }, function (err, response, body) {
+      var e;
+      if (err) {
+        self.primaryNode = null;
+        if (self.nodes.local) {
+          e = errors.LOCAL_NODE_FAILURE;
+          e.bubble = err;
+          e.command = command;
+          return callback(e);
+        }
+        console.warn("[ethrpc] asynchronous RPC timed out", rpcUrl, command);
+        e = errors.RPC_TIMEOUT;
+        e.bubble = err;
+        e.command = command;
+        callback(e);
+      } else if (response.statusCode === 200) {
+        self.parse(body, returns, callback);
+      }
+    });
+  },
+
+  selectNodes: function () {
+    if (this.nodes.local) return [this.nodes.local];
+    return this.nodes.hosted.slice();
+  },
 
     // Post JSON-RPC command to all Ethereum nodes
-    broadcast: function (cmd, callback) {
-        var command, nodes, numCommands, returns, result, completed, self = this;
-        if (!cmd || (cmd.constructor === Object && !cmd.method) ||
+  broadcast: function (cmd, callback) {
+    var command, nodes, numCommands, returns, result, completed, self = this;
+    if (!cmd || (cmd.constructor === Object && !cmd.method) ||
             (cmd.constructor === Array && !cmd.length)) {
-            if (!callback) return null;
-            return callback(null);
-        }
-        command = clone(cmd);
+      if (!callback) return null;
+      return callback(null);
+    }
+    command = clone(cmd);
 
         // make sure the ethereum node list isn't empty
-        if (!this.nodes.local && !this.nodes.hosted.length && !this.ipcpath && !this.wsUrl) {
-            if (isFunction(callback)) return callback(errors.ETHEREUM_NOT_FOUND);
-            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-        }
+    if (!this.nodes.local && !this.nodes.hosted.length && !this.ipcpath && !this.wsUrl) {
+      if (isFunction(callback)) return callback(errors.ETHEREUM_NOT_FOUND);
+      throw new this.Error(errors.ETHEREUM_NOT_FOUND);
+    }
 
-        // parse batched commands and strip "returns" and "invocation" fields
-        if (command.constructor === Array) {
-            numCommands = command.length;
-            returns = new Array(numCommands);
-            for (var i = 0; i < numCommands; ++i) {
-                returns[i] = this.strip(command[i]);
-            }
+    // parse batched commands and strip "returns" and "invocation" fields
+    if (command.constructor === Array) {
+      numCommands = command.length;
+      returns = new Array(numCommands);
+      for (var i = 0; i < numCommands; ++i) {
+        returns[i] = this.strip(command[i]);
+      }
 
-        // parse commands and strip "returns" and "invocation" fields
-        } else {
-            returns = this.strip(command);
-        }
+      // parse commands and strip "returns" and "invocation" fields
+    } else {
+      returns = this.strip(command);
+    }
 
-        if (this.debug.broadcast) {
-            console.log("[ethrpc] broadcast: " + JSON.stringify(command, null, 2));
-            console.log(" - HTTP: " + JSON.stringify(this.nodes));
-            console.log(" - WS:   " + this.wsUrl);
-            console.log(" - IPC:  " + this.ipcpath);
-        }
+    if (this.debug.broadcast) {
+      console.log("[ethrpc] broadcast: " + JSON.stringify(command, null, 2));
+      console.log(" - HTTP: " + JSON.stringify(this.nodes));
+      console.log(" - WS:   " + this.wsUrl);
+      console.log(" - IPC:  " + this.ipcpath);
+    }
 
-        // if we're on Node, use IPC if available and ipcpath is specified
-        if (NODE_JS && this.ipcpath && command.method) {
-            var loopback = this.nodes.local && (
+    // if we're on Node, use IPC if available and ipcpath is specified
+    if (NODE_JS && this.ipcpath && command.method) {
+      var loopback = this.nodes.local && (
                 (this.nodes.local.indexOf("127.0.0.1") > -1 ||
                 this.nodes.local.indexOf("localhost") > -1));
-            if (!isFunction(callback) && !loopback) {
-                throw new this.Error(errors.LOOPBACK_NOT_FOUND);
-            }
-            if (isFunction(callback)) {
-                if (!this.ipcpath) this.rpcStatus.ipc = -1;
-                switch (this.rpcStatus.ipc) {
+      if (!isFunction(callback) && !loopback) {
+        throw new this.Error(errors.LOOPBACK_NOT_FOUND);
+      }
+      if (isFunction(callback)) {
+        if (!this.ipcpath) this.rpcStatus.ipc = -1;
+        switch (this.rpcStatus.ipc) {
 
-                // [0] IPC socket closed / not connected: try to connect
-                case 0:
-                    return this.ipcConnect(function (connected) {
-                        if (!connected) return self.broadcast(cmd, callback);
-                        self.send("ipc", command, returns, callback);
-                    });
+          // [0] IPC socket closed / not connected: try to connect
+          case 0:
+            return this.ipcConnect(function (connected) {
+              if (!connected) return self.broadcast(cmd, callback);
+              self.send("ipc", command, returns, callback);
+            });
 
-                // [1] IPC socket connected
-                case 1:
-                    return this.send("ipc", command, returns, callback);
-                }
-            }
+          // [1] IPC socket connected
+          case 1:
+            return this.send("ipc", command, returns, callback);
         }
+      }
+    }
 
-        // select local / hosted node(s) to receive RPC
-        nodes = this.selectNodes();
+    // select local / hosted node(s) to receive RPC
+    nodes = this.selectNodes();
 
-        // asynchronous request if callback exists
-        if (callback) {
+    // asynchronous request if callback exists
+    if (callback) {
 
-            // use websocket if available
-            switch (this.rpcStatus.ws) {
+      // use websocket if available
+      switch (this.rpcStatus.ws) {
 
-            // [0] websocket closed / not connected: try to connect
-            case 0:
-                this.wsConnect(function (connected) {
-                    if (!connected) return self.broadcast(cmd, callback);
-                    self.send("ws", command, returns, callback);
-                });
-                break;
+        // [0] websocket closed / not connected: try to connect
+        case 0:
+          this.wsConnect(function (connected) {
+            if (!connected) return self.broadcast(cmd, callback);
+            self.send("ws", command, returns, callback);
+          });
+          break;
 
-            // [1] websocket connected
-            case 1:
-                this.send("ws", command, returns, callback);
-                break;
+        // [1] websocket connected
+        case 1:
+          this.send("ws", command, returns, callback);
+          break;
 
-            // [-1] websocket errored or unavailable: fallback to HTTP RPC
-            default:
-                async.eachSeries(nodes, function (node, nextNode) {
-                    if (!completed) {
-                        self.post(node, command, returns, function (res) {
-                            if (node === nodes[nodes.length - 1] ||
+        // [-1] websocket errored or unavailable: fallback to HTTP RPC
+        default:
+          async.eachSeries(nodes, function (node, nextNode) {
+            if (!completed) {
+              self.post(node, command, returns, function (res) {
+                if (node === nodes[nodes.length - 1] ||
                                 (res !== undefined && res !== null &&
                                 !res.error && res !== "0x")) {
-                                completed = true;
-                                return nextNode({output: res});
-                            }
-                            nextNode();
-                        });
-                    }
-                }, function (res) {
-                    if (!res && res.output === undefined) return callback();
-                    callback(res.output);
-                });
+                  completed = true;
+                  return nextNode({output: res});
+                }
+                nextNode();
+              });
             }
+          }, function (res) {
+            if (!res && res.output === undefined) return callback();
+            callback(res.output);
+          });
+      }
 
-        // use synchronous http if no callback provided
-        } else {
-            for (var j = 0, len = nodes.length; j < len; ++j) {
-                try {
-                    result = this.postSync(nodes[j], command, returns);
-                } catch (e) {
-                    if (this.nodes.local) {
-                        var err = errors.LOCAL_NODE_FAILURE;
-                        err.bubble = e;
-                        err.command = command;
-                        throw new this.Error(err);
-                    }
-                }
-                if (result !== undefined) return result;
-            }
-            throw new this.Error(errors.NO_RESPONSE);
+      // use synchronous http if no callback provided
+    } else {
+      for (var j = 0, len = nodes.length; j < len; ++j) {
+        try {
+          result = this.postSync(nodes[j], command, returns);
+        } catch (e) {
+          if (this.nodes.local) {
+            var err = errors.LOCAL_NODE_FAILURE;
+            err.bubble = e;
+            err.command = command;
+            throw new this.Error(err);
+          }
         }
-    },
+        if (result !== undefined) return result;
+      }
+      throw new this.Error(errors.NO_RESPONSE);
+    }
+  },
 
-    marshal: function (command, params, prefix) {
-        var payload, action;
-        if (prefix === "null") {
-            action = command.toString();
-        } else {
-            action = (prefix || "eth_") + command.toString();
+  marshal: function (command, params, prefix) {
+    var payload, action;
+    if (prefix === "null") {
+      action = command.toString();
+    } else {
+      action = (prefix || "eth_") + command.toString();
+    }
+    payload = {
+      id: this.requests++,
+      jsonrpc: "2.0",
+      method: action
+    };
+    if (params !== undefined && params !== null) {
+      if (params.constructor === Object) {
+        if (this.debug.broadcast && params.debug) {
+          payload.debug = clone(params.debug);
+          delete params.debug;
         }
-        payload = {
-            id: this.requests++,
-            jsonrpc: "2.0",
-            method: action
-        };
-        if (params !== undefined && params !== null) {
-            if (params.constructor === Object) {
-                if (this.debug.broadcast && params.debug) {
-                    payload.debug = clone(params.debug);
-                    delete params.debug;
-                }
-                if (params.timeout) {
-                    payload.timeout = params.timeout;
-                    delete params.timeout;
-                }
-                if (JSON.stringify(params) === "{}") {
-                    params = [];
-                }
-            }
-            if (params.constructor === Array) {
-                for (var i = 0, len = params.length; i < len; ++i) {
-                    if (params[i] !== null && params[i] !== undefined &&
+        if (params.timeout) {
+          payload.timeout = params.timeout;
+          delete params.timeout;
+        }
+        if (JSON.stringify(params) === "{}") {
+          params = [];
+        }
+      }
+      if (params.constructor === Array) {
+        for (var i = 0, len = params.length; i < len; ++i) {
+          if (params[i] !== null && params[i] !== undefined &&
                         params[i].constructor === Number) {
-                        params[i] = abi.prefix_hex(params[i].toString(16));
-                    }
-                }
-                payload.params = params;
-            } else {
-                payload.params = [params];
-            }
-        } else {
-            payload.params = [];
+            params[i] = abi.prefix_hex(params[i].toString(16));
+          }
         }
-        return payload;
-    },
+        payload.params = params;
+      } else {
+        payload.params = [params];
+      }
+    } else {
+      payload.params = [];
+    }
+    return payload;
+  },
 
-    setLocalNode: function (urlstr) {
-        this.nodes.local = urlstr || this.localnode;
-    },
+  setLocalNode: function (urlstr) {
+    this.nodes.local = urlstr || this.localnode;
+  },
 
-    useHostedNode: function (host) {
-        this.nodes.local = null;
-        if (host) {
-            if (host.constructor === Object) {
-                if (host.http) this.nodes.hosted = [host.http];
-                if (host.ws) this.wsUrl = host.ws;
-            } else {
-                this.nodes.hosted = [host];
-            }
-        }
-    },
+  useHostedNode: function (host) {
+    this.nodes.local = null;
+    if (host) {
+      if (host.constructor === Object) {
+        if (host.http) this.nodes.hosted = [host.http];
+        if (host.ws) this.wsUrl = host.ws;
+      } else {
+        this.nodes.hosted = [host];
+      }
+    }
+  },
 
-    // delete cached network, notification, and transaction data
-    clear: function () {
-        this.txs = {};
-        for (var n in this.notifications) {
-            if (!this.notifications.hasOwnProperty(n)) continue;
-            if (this.notifications[n]) {
-                clearTimeout(this.notifications[n]);
-            }
-        }
-        this.notifications = {};
-        this.rawTxs = {};
-        this.txs = {};
-        this.rawTxMaxNonce = -1;
-    },
+  // delete cached network, notification, and transaction data
+  clear: function () {
+    this.txs = {};
+    for (var n in this.notifications) {
+      if (!this.notifications.hasOwnProperty(n)) continue;
+      if (this.notifications[n]) {
+        clearTimeout(this.notifications[n]);
+      }
+    }
+    this.notifications = {};
+    this.rawTxs = {};
+    this.txs = {};
+    this.rawTxMaxNonce = -1;
+  },
 
-    // reset to default Ethereum nodes
-    reset: function (deleteData) {
-        this.nodes.hosted = this.DEFAULT_HOSTED_NODES.slice();
-        this.wsUrl = process.env.GETH_WEBSOCKET_URL || this.DEFAULT_HOSTED_WEBSOCKET;
-        if (deleteData) this.clear();
-    },
+  // reset to default Ethereum nodes
+  reset: function (deleteData) {
+    this.nodes.hosted = this.DEFAULT_HOSTED_NODES.slice();
+    this.wsUrl = process.env.GETH_WEBSOCKET_URL || this.DEFAULT_HOSTED_WEBSOCKET;
+    if (deleteData) this.clear();
+  },
 
-    /******************************
-     * Ethereum JSON-RPC bindings *
-     ******************************/
+  /******************************
+   * Ethereum JSON-RPC bindings *
+   ******************************/
 
-    raw: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "null"), f);
-    },
+  raw: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "null"), f);
+  },
 
-    eth: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params), f);
-    },
+  eth: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params), f);
+  },
 
-    net: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "net_"), f);
-    },
+  net: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "net_"), f);
+  },
 
-    web3: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "web3_"), f);
-    },
+  web3: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "web3_"), f);
+  },
 
-    shh: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "shh_"), f);
-    },
+  shh: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "shh_"), f);
+  },
 
-    miner: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "miner_"), f);
-    },
+  miner: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "miner_"), f);
+  },
 
-    admin: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "admin_"), f);
-    },
+  admin: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "admin_"), f);
+  },
 
-    personal: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "personal_"), f);
-    },
+  personal: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "personal_"), f);
+  },
 
-    txpool: function (command, params, f) {
-        return this.broadcast(this.marshal(command, params, "txpool_"), f);
-    },
+  txpool: function (command, params, f) {
+    return this.broadcast(this.marshal(command, params, "txpool_"), f);
+  },
 
-    sha3: function (data, isHex) {
-        if (isHex) data = abi.decode_hex(data);
-        return abi.prefix_hex(keccak_256(data));
-    },
+  sha3: function (data, isHex) {
+    if (isHex) data = abi.decode_hex(data);
+    return abi.prefix_hex(keccak_256(data));
+  },
 
-    getGasPrice: function (f) {
-        return this.broadcast(this.marshal("gasPrice"), f);
-    },
+  getGasPrice: function (f) {
+    return this.broadcast(this.marshal("gasPrice"), f);
+  },
 
-    blockNumber: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("blockNumber"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("blockNumber")), 16);
-        }
-    },
+  blockNumber: function (f) {
+    if (isFunction(f)) {
+      this.broadcast(this.marshal("blockNumber"), f);
+    } else {
+      return parseInt(this.broadcast(this.marshal("blockNumber")), 16);
+    }
+  },
 
-    coinbase: function (f) {
-        return this.broadcast(this.marshal("coinbase"), f);
-    },
+  coinbase: function (f) {
+    return this.broadcast(this.marshal("coinbase"), f);
+  },
 
-    balance: function (address, block, f) {
-        if (!f && isFunction(block)) {
-            f = block;
-            block = null;
-        }
-        block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [address, block]), f);
-    },
-    getBalance: function (address, block, f) {
-        if (!f && isFunction(block)) {
-            f = block;
-            block = null;
-        }
-        block = block || "latest";
-        return this.broadcast(this.marshal("getBalance", [address, block]), f);
-    },
+  balance: function (address, block, f) {
+    if (!f && isFunction(block)) {
+      f = block;
+      block = null;
+    }
+    block = block || "latest";
+    return this.broadcast(this.marshal("getBalance", [address, block]), f);
+  },
+  getBalance: function (address, block, f) {
+    if (!f && isFunction(block)) {
+      f = block;
+      block = null;
+    }
+    block = block || "latest";
+    return this.broadcast(this.marshal("getBalance", [address, block]), f);
+  },
 
-    txCount: function (address, f) {
-        return this.broadcast(this.marshal("getTransactionCount", [address, "latest"]), f);
-    },
-    getTransactionCount: function (address, f) {
-        return this.broadcast(this.marshal("getTransactionCount", [address, "latest"]), f);
-    },
-    pendingTxCount: function (address, f) {
-        return this.broadcast(
+  txCount: function (address, f) {
+    return this.broadcast(this.marshal("getTransactionCount", [address, "latest"]), f);
+  },
+  getTransactionCount: function (address, f) {
+    return this.broadcast(this.marshal("getTransactionCount", [address, "latest"]), f);
+  },
+  pendingTxCount: function (address, f) {
+    return this.broadcast(
             this.marshal("getTransactionCount", [address, "pending"]), f
         );
-    },
+  },
 
-    sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-        if (to && to.constructor === Object) {
-            value = to.value;
-            from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        return this.transact({
-            from: from,
-            to: to,
-            value: abi.fix(value, "hex"),
-            returns: "null",
-            gas: "0xcf08"
-        }, onSent, onSuccess, onFailed);
-    },
+  sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
+    if (to && to.constructor === Object) {
+      value = to.value;
+      from = to.from;
+      if (to.onSent) onSent = to.onSent;
+      if (to.onSuccess) onSuccess = to.onSuccess;
+      if (to.onFailed) onFailed = to.onFailed;
+      to = to.to;
+    }
+    return this.transact({
+      from: from,
+      to: to,
+      value: abi.fix(value, "hex"),
+      returns: "null",
+      gas: "0xcf08"
+    }, onSent, onSuccess, onFailed);
+  },
 
-    sign: function (address, data, f) {
-        return this.broadcast(this.marshal("sign", [address, data]), f);
-    },
+  sign: function (address, data, f) {
+    return this.broadcast(this.marshal("sign", [address, data]), f);
+  },
 
-    getTx: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
-    getTransaction: function (hash, f) {
-        return this.broadcast(this.marshal("getTransactionByHash", hash), f);
-    },
+  getTx: function (hash, f) {
+    return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+  },
+  getTransaction: function (hash, f) {
+    return this.broadcast(this.marshal("getTransactionByHash", hash), f);
+  },
 
-    peerCount: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("peerCount", [], "net_"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
-        }
-    },
+  peerCount: function (f) {
+    if (isFunction(f)) {
+      this.broadcast(this.marshal("peerCount", [], "net_"), f);
+    } else {
+      return parseInt(this.broadcast(this.marshal("peerCount", [], "net_")));
+    }
+  },
 
-    accounts: function (f) {
-        return this.broadcast(this.marshal("accounts"), f);
-    },
+  accounts: function (f) {
+    return this.broadcast(this.marshal("accounts"), f);
+  },
 
-    mining: function (f) {
-        return this.broadcast(this.marshal("mining"), f);
-    },
+  mining: function (f) {
+    return this.broadcast(this.marshal("mining"), f);
+  },
 
-    hashrate: function (f) {
-        if (isFunction(f)) {
-            this.broadcast(this.marshal("hashrate"), f);
-        } else {
-            return parseInt(this.broadcast(this.marshal("hashrate")));
-        }
-    },
+  hashrate: function (f) {
+    if (isFunction(f)) {
+      this.broadcast(this.marshal("hashrate"), f);
+    } else {
+      return parseInt(this.broadcast(this.marshal("hashrate")));
+    }
+  },
 
-    getBlockByHash: function (hash, full, f) {
-        full = (full !== undefined) ? full : true;
-        return this.broadcast(this.marshal("getBlockByHash", [hash, full]), f);
-    },
+  getBlockByHash: function (hash, full, f) {
+    full = (full !== undefined) ? full : true;
+    return this.broadcast(this.marshal("getBlockByHash", [hash, full]), f);
+  },
 
-    getBlock: function (number, full, f) {
-        full = (full !== undefined) ? full : true;
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full]), f);
-    },
-    getBlockByNumber: function (number, full, f) {
-        full = (full !== undefined) ? full : true;
-        return this.broadcast(this.marshal("getBlockByNumber", [number, full]), f);
-    },
-    getUncle: function (blockNumber, index, f) {
-        return this.broadcast(this.marshal("getUncleByBlockNumberAndIndex", [blockNumber, index]), f);
-    },
-    getUncleByBlockHashAndIndex: function (blockHash, index, f) {
-        return this.broadcast(this.marshal("getUncleByBlockHashAndIndex", [blockHash, index]), f);
-    },
-    getUncleCount: function (blockNumber, f) {
-        return this.broadcast(this.marshal("getUncleCountByBlockNumber", blockNumber), f);
-    },
-    getUncleCountByBlockHash: function (blockHash, f) {
-        return this.broadcast(this.marshal("getUncleCountByBlockHash", blockHash), f);
-    },
+  getBlock: function (number, full, f) {
+    full = (full !== undefined) ? full : true;
+    return this.broadcast(this.marshal("getBlockByNumber", [number, full]), f);
+  },
+  getBlockByNumber: function (number, full, f) {
+    full = (full !== undefined) ? full : true;
+    return this.broadcast(this.marshal("getBlockByNumber", [number, full]), f);
+  },
+  getUncle: function (blockNumber, index, f) {
+    return this.broadcast(this.marshal("getUncleByBlockNumberAndIndex", [blockNumber, index]), f);
+  },
+  getUncleByBlockHashAndIndex: function (blockHash, index, f) {
+    return this.broadcast(this.marshal("getUncleByBlockHashAndIndex", [blockHash, index]), f);
+  },
+  getUncleCount: function (blockNumber, f) {
+    return this.broadcast(this.marshal("getUncleCountByBlockNumber", blockNumber), f);
+  },
+  getUncleCountByBlockHash: function (blockHash, f) {
+    return this.broadcast(this.marshal("getUncleCountByBlockHash", blockHash), f);
+  },
 
-    version: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
-    netVersion: function (f) {
-        return this.broadcast(this.marshal("version", [], "net_"), f);
-    },
+  version: function (f) {
+    return this.broadcast(this.marshal("version", [], "net_"), f);
+  },
+  netVersion: function (f) {
+    return this.broadcast(this.marshal("version", [], "net_"), f);
+  },
 
     // estimate a transaction's gas cost
-    estimateGas: function (tx, f) {
-        return this.broadcast(this.marshal("estimateGas", tx), f);
-    },
+  estimateGas: function (tx, f) {
+    return this.broadcast(this.marshal("estimateGas", tx), f);
+  },
 
     // execute functions on contracts on the blockchain
-    call: function (tx, f) {
-        return this.broadcast(this.marshal("call", [tx, "latest"]), f);
-    },
+  call: function (tx, f) {
+    return this.broadcast(this.marshal("call", [tx, "latest"]), f);
+  },
 
-    sendTx: function (tx, f) {
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
-    sendTransaction: function (tx, f) {
-        return this.broadcast(this.marshal("sendTransaction", tx), f);
-    },
+  sendTx: function (tx, f) {
+    return this.broadcast(this.marshal("sendTransaction", tx), f);
+  },
+  sendTransaction: function (tx, f) {
+    return this.broadcast(this.marshal("sendTransaction", tx), f);
+  },
 
     // sendRawTx(RLP(tx.signed(privateKey))) -> txhash
-    sendRawTx: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
-    },
-    sendRawTransaction: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
-    },
+  sendRawTx: function (rawTx, f) {
+    return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
+  },
+  sendRawTransaction: function (rawTx, f) {
+    return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
+  },
 
-    receipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
-    getTransactionReceipt: function (txhash, f) {
-        return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
-    },
+  receipt: function (txhash, f) {
+    return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+  },
+  getTransactionReceipt: function (txhash, f) {
+    return this.broadcast(this.marshal("getTransactionReceipt", txhash), f);
+  },
 
-    clientVersion: function (f) {
-        return this.broadcast(this.marshal("clientVersion", [], "web3_"), f);
-    },
+  clientVersion: function (f) {
+    return this.broadcast(this.marshal("clientVersion", [], "web3_"), f);
+  },
 
-    compileSerpent: function (code, f) {
-        return this.broadcast(this.marshal("compileSerpent", code), f);
-    },
+  compileSerpent: function (code, f) {
+    return this.broadcast(this.marshal("compileSerpent", code), f);
+  },
 
-    compileSolidity: function (code, f) {
-        return this.broadcast(this.marshal("compileSolidity", code), f);
-    },
+  compileSolidity: function (code, f) {
+    return this.broadcast(this.marshal("compileSolidity", code), f);
+  },
 
-    compileLLL: function (code, f) {
-        return this.broadcast(this.marshal("compileLLL", code), f);
-    },
+  compileLLL: function (code, f) {
+    return this.broadcast(this.marshal("compileLLL", code), f);
+  },
 
-    subscribe: function (label, options, f) {
-        return this.broadcast(this.marshal("subscribe", [label, options]), f);
-    },
+  subscribe: function (label, options, f) {
+    return this.broadcast(this.marshal("subscribe", [label, options]), f);
+  },
 
-    subscribeLogs: function (options, f) {
-        return this.broadcast(this.marshal("subscribe", ["logs", options]), f);
-    },
+  subscribeLogs: function (options, f) {
+    return this.broadcast(this.marshal("subscribe", ["logs", options]), f);
+  },
 
-    subscribeNewHeads: function (f) {
-        return this.broadcast(this.marshal("subscribe", "newHeads"), f);
-    },    
+  subscribeNewHeads: function (f) {
+    return this.broadcast(this.marshal("subscribe", "newHeads"), f);
+  },    
 
-    unsubscribe: function (label, f) {
-        return this.broadcast(this.marshal("unsubscribe", label), f);
-    },
+  unsubscribe: function (label, f) {
+    return this.broadcast(this.marshal("unsubscribe", label), f);
+  },
 
-    newFilter: function (params, f) {
-        return this.broadcast(this.marshal("newFilter", params), f);
-    },
+  newFilter: function (params, f) {
+    return this.broadcast(this.marshal("newFilter", params), f);
+  },
 
-    newBlockFilter: function (f) {
-        return this.broadcast(this.marshal("newBlockFilter"), f);
-    },
+  newBlockFilter: function (f) {
+    return this.broadcast(this.marshal("newBlockFilter"), f);
+  },
 
-    newPendingTransactionFilter: function (f) {
-        return this.broadcast(this.marshal("newPendingTransactionFilter"), f);
-    },
+  newPendingTransactionFilter: function (f) {
+    return this.broadcast(this.marshal("newPendingTransactionFilter"), f);
+  },
 
-    getFilterChanges: function (filter, f) {
-        return this.broadcast(this.marshal("getFilterChanges", filter), f);
-    },
+  getFilterChanges: function (filter, f) {
+    return this.broadcast(this.marshal("getFilterChanges", filter), f);
+  },
 
-    getFilterLogs: function (filter, f) {
-        return this.broadcast(this.marshal("getFilterLogs", filter), f);
-    },
+  getFilterLogs: function (filter, f) {
+    return this.broadcast(this.marshal("getFilterLogs", filter), f);
+  },
 
-    getLogs: function (filter, f) {
-        return this.broadcast(this.marshal("getLogs", filter), f);
-    },
+  getLogs: function (filter, f) {
+    return this.broadcast(this.marshal("getLogs", filter), f);
+  },
 
-    uninstallFilter: function (filter, f) {
-        return this.broadcast(this.marshal("uninstallFilter", filter), f);
-    },
+  uninstallFilter: function (filter, f) {
+    return this.broadcast(this.marshal("uninstallFilter", filter), f);
+  },
 
-    // publish a new contract to the blockchain (from the coinbase account)
-    publish: function (compiled, f) {
-        return this.sendTx({from: this.coinbase(), data: compiled}, f);
-    },
+  // publish a new contract to the blockchain (from the coinbase account)
+  publish: function (compiled, f) {
+    return this.sendTx({from: this.coinbase(), data: compiled}, f);
+  },
 
-    // Read the code in a contract on the blockchain
-    read: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
-    getCode: function (address, block, f) {
-        return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
-    },
+  // Read the code in a contract on the blockchain
+  read: function (address, block, f) {
+    return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+  },
+  getCode: function (address, block, f) {
+    return this.broadcast(this.marshal("getCode", [address, block || "latest"]), f);
+  },
 
-    // Fast-forward a specified number of blocks
-    fastforward: function (blocks, mine, callback) {
-        var startBlock, endBlock, self = this;
-        function fastforward() {
-            self.blockNumber(function (blockNumber) {
-                blockNumber = parseInt(blockNumber, 16);
-                if (startBlock === undefined) {
-                    startBlock = blockNumber;
-                    endBlock = blockNumber + parseInt(blocks);
-                }
-                if (blockNumber >= endBlock) {
-                    if (!mine) return callback(endBlock);
-                    self.miner("stop", [], function () {
-                        callback(endBlock);
-                    });
-                } else {
-                    setTimeout(fastforward, 3000);
-                }
-            });
+  // Fast-forward a specified number of blocks
+  fastforward: function (blocks, mine, callback) {
+    var startBlock, endBlock, self = this;
+    function fastforward() {
+      self.blockNumber(function (blockNumber) {
+        blockNumber = parseInt(blockNumber, 16);
+        if (startBlock === undefined) {
+          startBlock = blockNumber;
+          endBlock = blockNumber + parseInt(blocks);
         }
-        if (!callback && isFunction(mine)) {
-            callback = mine;
-            mine = null;
+        if (blockNumber >= endBlock) {
+          if (!mine) return callback(endBlock);
+          self.miner("stop", [], function () {
+            callback(endBlock);
+          });
+        } else {
+          setTimeout(fastforward, 3000);
         }
-        if (!mine) return fastforward();
-        this.miner("start", [], fastforward);
-    },
+      });
+    }
+    if (!callback && isFunction(mine)) {
+      callback = mine;
+      mine = null;
+    }
+    if (!mine) return fastforward();
+    this.miner("start", [], fastforward);
+  },
 
-    // Ethereum node status checks
+  // Ethereum node status checks
 
-    listening: function (f) {
-        var response, self = this;
-        try {
-            if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
-                throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-            }
-            if (isFunction(f)) {
-                var timeout = setTimeout(function () {
-                    if (!response) f(false);
-                }, 2500);
-                setTimeout(function () {
-                    self.net("listening", [], function (res) {
-                        clearTimeout(timeout);
-                        f(!!res);
-                    });
-                }, 0);
-            } else {
-                return !!this.net("listening");
-            }
-        } catch (e) {
-            if (isFunction(f)) return f(false);
+  listening: function (f) {
+    var response, self = this;
+    try {
+      if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
+        throw new this.Error(errors.ETHEREUM_NOT_FOUND);
+      }
+      if (isFunction(f)) {
+        var timeout = setTimeout(function () {
+          if (!response) f(false);
+        }, 2500);
+        setTimeout(function () {
+          self.net("listening", [], function (res) {
+            clearTimeout(timeout);
+            f(!!res);
+          });
+        }, 0);
+      } else {
+        return !!this.net("listening");
+      }
+    } catch (e) {
+      if (isFunction(f)) return f(false);
+      return false;
+    }
+  },
+
+  unlocked: function (account, f) {
+    if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
+      throw new this.Error(errors.ETHEREUM_NOT_FOUND);
+    }
+    try {
+      if (isFunction(f)) {
+        this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5", function (res) {
+          if (res) {
+            if (res.error) return f(false);
+            return f(true);
+          }
+          f(false);
+        });
+      } else {
+        var res = this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5");
+        if (res) {
+          if (res.error) {
             return false;
+          }
+          return true;
         }
-    },
+        return false;
+      }
+    } catch (e) {
+      if (isFunction(f)) return f(false);
+      return false;
+    }
+  },
 
-    unlocked: function (account, f) {
-        if (!this.nodes.hosted.length && !this.nodes.local && !this.ipcpath) {
-            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
-        }
-        try {
-            if (isFunction(f)) {
-                this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5", function (res) {
-                    if (res) {
-                        if (res.error) return f(false);
-                        return f(true);
-                    }
-                    f(false);
-                });
-            } else {
-                var res = this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5");
-                if (res) {
-                    if (res.error) {
-                        return false;
-                    }
-                    return true;
-                }
-                return false;
-            }
-        } catch (e) {
-            if (isFunction(f)) return f(false);
-            return false;
-        }
-    },
-
-    packageRequest: function (payload) {
-        var tx = clone(payload);
-        if (tx.params === undefined || tx.params === null) {
-            tx.params = [];
-        } else if (tx.params.constructor !== Array) {
-            tx.params = [tx.params];
-        }
-        var numParams = tx.params.length;
-        if (numParams) {
-            if (tx.signature && tx.signature.length !== numParams) {
-                throw new this.Error(errors.PARAMETER_NUMBER_ERROR);
-            }
-            for (var j = 0; j < numParams; ++j) {
-                if (tx.params[j] !== undefined && tx.params[j] !== null && tx.signature[j]) {
-                    if (tx.params[j].constructor === Number) {
-                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                    }
-                    if (tx.signature[j] === "int256") {
-                        tx.params[j] = abi.unfork(tx.params[j], true);
-                    } else if (tx.signature[j] === "int256[]" &&
+  packageRequest: function (payload) {
+    var tx = clone(payload);
+    if (tx.params === undefined || tx.params === null) {
+      tx.params = [];
+    } else if (tx.params.constructor !== Array) {
+      tx.params = [tx.params];
+    }
+    var numParams = tx.params.length;
+    if (numParams) {
+      if (tx.signature && tx.signature.length !== numParams) {
+        throw new this.Error(errors.PARAMETER_NUMBER_ERROR);
+      }
+      for (var j = 0; j < numParams; ++j) {
+        if (tx.params[j] !== undefined && tx.params[j] !== null && tx.signature[j]) {
+          if (tx.params[j].constructor === Number) {
+            tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+          }
+          if (tx.signature[j] === "int256") {
+            tx.params[j] = abi.unfork(tx.params[j], true);
+          } else if (tx.signature[j] === "int256[]" &&
                         tx.params[j].constructor === Array && tx.params[j].length) {
-                        for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
-                            tx.params[j][k] = abi.unfork(tx.params[j][k], true);
-                        }
-                    }
-                }
+            for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
+              tx.params[j][k] = abi.unfork(tx.params[j][k], true);
             }
+          }
         }
-        if (tx.to) tx.to = abi.format_address(tx.to);
-        if (tx.from) tx.from = abi.format_address(tx.from);
-        var packaged = {
-            from: tx.from,
-            to: tx.to,
-            data: abi.encode(tx),
-            gas: tx.gas ? abi.hex(tx.gas) : this.DEFAULT_GAS
-        };
-        if (tx.gasPrice) packaged.gasPrice = abi.hex(tx.gasPrice);
-        if (tx.timeout) packaged.timeout = abi.hex(tx.timeout);
-        if (tx.value) packaged.value = abi.hex(tx.value);
-        if (tx.returns) packaged.returns = tx.returns;
-        if (tx.nonce) packaged.nonce = abi.hex(tx.nonce);
-        return packaged;
-    },
+      }
+    }
+    if (tx.to) tx.to = abi.format_address(tx.to);
+    if (tx.from) tx.from = abi.format_address(tx.from);
+    var packaged = {
+      from: tx.from,
+      to: tx.to,
+      data: abi.encode(tx),
+      gas: tx.gas ? abi.hex(tx.gas) : this.DEFAULT_GAS
+    };
+    if (tx.gasPrice) packaged.gasPrice = abi.hex(tx.gasPrice);
+    if (tx.timeout) packaged.timeout = abi.hex(tx.timeout);
+    if (tx.value) packaged.value = abi.hex(tx.value);
+    if (tx.returns) packaged.returns = tx.returns;
+    if (tx.nonce) packaged.nonce = abi.hex(tx.nonce);
+    return packaged;
+  },
 
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    method: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (payload, f) {
-        if (!payload || payload.constructor !== Object) {
-            if (!isFunction(f)) return errors.TRANSACTION_FAILED;
-            return f(errors.TRANSACTION_FAILED);
-        }
-        if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
-            return payload.invocation.invoke.call(payload.invocation.context, payload, f);
-        }
-        var packaged = this.packageRequest(payload);
-        if (this.debug.broadcast) {
-            packaged.debug = clone(payload);
-            packaged.debug.batch = false;
-        }
-        var invocation = (payload.send) ? this.sendTx : this.call;
-        return invocation.call(this, packaged, f);
-    },
+  /**
+   * Invoke a function from a contract on the blockchain.
+   *
+   * Input tx format:
+   * {
+   *    from: <sender's address> (hexstring; optional, coinbase default)
+   *    to: <contract address> (hexstring)
+   *    method: <function name> (string)
+   *    signature: <function signature, e.g. "iia"> (string)
+   *    params: <parameters passed to the function> (optional)
+   *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
+   *    send: <true to sendTransaction, false to call (default)>
+   * }
+   */
+  invoke: function (payload, f) {
+    if (!payload || payload.constructor !== Object) {
+      if (!isFunction(f)) return errors.TRANSACTION_FAILED;
+      return f(errors.TRANSACTION_FAILED);
+    }
+    if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
+      return payload.invocation.invoke.call(payload.invocation.context, payload, f);
+    }
+    var packaged = this.packageRequest(payload);
+    if (this.debug.broadcast) {
+      packaged.debug = clone(payload);
+      packaged.debug.batch = false;
+    }
+    var invocation = (payload.send) ? this.sendTx : this.call;
+    return invocation.call(this, packaged, f);
+  },
 
-    /**
-     * Batched RPC commands
-     */
-    batch: function (txlist, f) {
-        var self = this;
-        var numCommands, rpclist, callbacks, packaged, invocation, returns;
-        if (txlist.constructor !== Array) {
-            if (this.debug.broadcast) {
-                console.warn("expected array for batch RPC, invoking instead");
-            }
-            return this.invoke(txlist, f);
+  /**
+   * Batched RPC commands
+   */
+  batch: function (txlist, f) {
+    var self = this;
+    var numCommands, rpclist, callbacks, packaged, invocation, returns;
+    if (txlist.constructor !== Array) {
+      if (this.debug.broadcast) {
+        console.warn("expected array for batch RPC, invoking instead");
+      }
+      return this.invoke(txlist, f);
+    }
+    numCommands = txlist.length;
+    rpclist = new Array(numCommands);
+    callbacks = new Array(numCommands);
+    returns = [];
+    for (var i = 0; i < numCommands; ++i) {
+      packaged = this.packageRequest(txlist[i]);
+      if (isFunction(txlist[i].callback)) {
+        callbacks[i] = txlist[i].callback;
+        delete txlist[i].callback;
+      }
+      returns.push(txlist[i].returns);
+      if (this.debug.broadcast) {
+        packaged.debug = clone(txlist[i]);
+        packaged.debug.batch = true;
+      }
+      invocation = (txlist[i].send) ? "sendTransaction" : "call";
+      rpclist[i] = this.marshal(invocation, [packaged, "latest"]);
+    }
+    if (this.wsUrl || this.ipcpath) {
+      return this.broadcast(rpclist, (f === true) ? callbacks : f);
+    }
+    if (!f) {
+      var res = this.broadcast(rpclist);
+      var result = new Array(numCommands);
+      for (i = 0; i < numCommands; ++i) {
+        if (returns[i]) {
+          result[i] = self.applyReturns(returns[i], res[i]);
+        } else {
+          result[i] = res[i];
         }
-        numCommands = txlist.length;
-        rpclist = new Array(numCommands);
-        callbacks = new Array(numCommands);
-        returns = [];
-        for (var i = 0; i < numCommands; ++i) {
-            packaged = this.packageRequest(txlist[i]);
-            if (isFunction(txlist[i].callback)) {
-                callbacks[i] = txlist[i].callback;
-                delete txlist[i].callback;
-            }
-            returns.push(txlist[i].returns);
-            if (this.debug.broadcast) {
-                packaged.debug = clone(txlist[i]);
-                packaged.debug.batch = true;
-            }
-            invocation = (txlist[i].send) ? "sendTransaction" : "call";
-            rpclist[i] = this.marshal(invocation, [packaged, "latest"]);
-        }
-        if (this.wsUrl || this.ipcpath) {
-            return this.broadcast(rpclist, (f === true) ? callbacks : f);
-        }
-        if (!f) {
-            var res = this.broadcast(rpclist);
-            var result = new Array(numCommands);
-            for (i = 0; i < numCommands; ++i) {
-                if (returns[i]) {
-                    result[i] = self.applyReturns(returns[i], res[i]);
-                } else {
-                    result[i] = res[i];
-                }
-            }
-            return result;
-        }
+      }
+      return result;
+    }
 
         // callback on whole array
-        if (isFunction(f)) return this.broadcast(rpclist, function (res) {
-            var result = new Array(numCommands);
-            for (var i = 0; i < numCommands; ++i) {
-                if (returns[i]) {
-                    result[i] = self.applyReturns(returns[i], res[i]);
-                } else {
-                    result[i] = res[i];
-                }
-            }
-            f(result);
-        });
+    if (isFunction(f)) return this.broadcast(rpclist, function (res) {
+      var result = new Array(numCommands);
+      for (var i = 0; i < numCommands; ++i) {
+        if (returns[i]) {
+          result[i] = self.applyReturns(returns[i], res[i]);
+        } else {
+          result[i] = res[i];
+        }
+      }
+      f(result);
+    });
 
         // callback on each element
-        this.broadcast(rpclist, function (res) {
-            if (!res) return console.error(errors.TRANSACTION_FAILED);
-            if (res.constructor === Array && res.length) {
-                for (var j = 0; j < numCommands; ++j) {
-                    if (returns[j]) {
-                        res[j] = self.applyReturns(returns[j], res[j]);
-                    }
-                    if (res[j] && callbacks[j]) {
-                        callbacks[j](res[j]);
-                    }
-                }
-            } else {
-                if (callbacks.length && isFunction(callbacks[0])) {
-                    callbacks[0](res);
-                }
-            }
-        });
-    },
+    this.broadcast(rpclist, function (res) {
+      if (!res) return console.error(errors.TRANSACTION_FAILED);
+      if (res.constructor === Array && res.length) {
+        for (var j = 0; j < numCommands; ++j) {
+          if (returns[j]) {
+            res[j] = self.applyReturns(returns[j], res[j]);
+          }
+          if (res[j] && callbacks[j]) {
+            callbacks[j](res[j]);
+          }
+        }
+      } else {
+        if (callbacks.length && isFunction(callbacks[0])) {
+          callbacks[0](res);
+        }
+      }
+    });
+  },
 
-    errorCodes: function (method, returns, response) {
-        if (response) {
-            if (response.constructor === Array) {
-                for (var i = 0, len = response.length; i < len; ++i) {
-                    response[i] = this.errorCodes(method, returns, response[i]);
-                }
-            } else if (response.name && response.message && response.stack) {
-                response.error = response.name;
-            } else if (!response.error) {
-                if (returns && returns.indexOf("[]") > -1) {
-                    if (response.length >= 194) {
-                        response = "0x" + response.slice(130, 194);
-                    }
-                }
-                if (errors[response]) {
-                    response = {
-                        error: response,
-                        message: errors[response]
-                    };
-                } else {
-                    if (returns !== "null" && returns !== "string" ||
+  errorCodes: function (method, returns, response) {
+    if (response) {
+      if (response.constructor === Array) {
+        for (var i = 0, len = response.length; i < len; ++i) {
+          response[i] = this.errorCodes(method, returns, response[i]);
+        }
+      } else if (response.name && response.message && response.stack) {
+        response.error = response.name;
+      } else if (!response.error) {
+        if (returns && returns.indexOf("[]") > -1) {
+          if (response.length >= 194) {
+            response = "0x" + response.slice(130, 194);
+          }
+        }
+        if (errors[response]) {
+          response = {
+            error: response,
+            message: errors[response]
+          };
+        } else {
+          if (returns !== "null" && returns !== "string" ||
                         (response && response.constructor === String &&
                         response.slice(0,2) === "0x")) {
-                        var responseNumber = abi.bignum(response, "string", true);
-                        if (responseNumber) {
-                            if (errors[method] && errors[method][responseNumber]) {
-                                response = {
-                                    error: responseNumber,
-                                    message: errors[method][responseNumber]
-                                };
-                            }
-                        }
-                    }
-                }
+            var responseNumber = abi.bignum(response, "string", true);
+            if (responseNumber) {
+              if (errors[method] && errors[method][responseNumber]) {
+                response = {
+                  error: responseNumber,
+                  message: errors[method][responseNumber]
+                };
+              }
             }
+          }
         }
-        return response;
-    },
+      }
+    }
+    return response;
+  },
 
     // callback/wrapper composition: callback(wrapper(result, aux))
-    fire: function (payload, callback, wrapper, aux) {
-        var self = this;
-        var tx = clone(payload);
-        if (!isFunction(callback)) {
-            var res = this.invoke(tx);
-            if (res === undefined || res === null) {
-                throw new this.Error(errors.NO_RESPONSE);
-            }
-            var err = this.errorCodes(tx.method, tx.returns, res);
-            if (err && err.error) throw new this.Error(err);
-            var converted = this.applyReturns(tx.returns, res);
-            if (isFunction(wrapper)) return wrapper(converted, aux);
-            return converted;
+  fire: function (payload, callback, wrapper, aux) {
+    var self = this;
+    var tx = clone(payload);
+    if (!isFunction(callback)) {
+      var res = this.invoke(tx);
+      if (res === undefined || res === null) {
+        throw new this.Error(errors.NO_RESPONSE);
+      }
+      var err = this.errorCodes(tx.method, tx.returns, res);
+      if (err && err.error) throw new this.Error(err);
+      var converted = this.applyReturns(tx.returns, res);
+      if (isFunction(wrapper)) return wrapper(converted, aux);
+      return converted;
+    }
+    this.invoke(tx, function (res) {
+      if (res === undefined || res === null) {
+        return callback(errors.NO_RESPONSE);
+      }
+      var err = self.errorCodes(tx.method, tx.returns, res);
+      if (err && err.error) return callback(err);
+      var converted = self.applyReturns(tx.returns, res);
+      if (isFunction(wrapper)) converted = wrapper(converted, aux);
+      return callback(converted);
+    });
+  },
+
+  /***************************************
+   * Send-call-confirm callback sequence *
+   ***************************************/
+
+  blockFilter: {id: null, heartbeat: null},
+
+  block: null,
+
+  updatePendingTx: function (tx) {
+    var self = this;
+    this.getTx(tx.hash, function (onChainTx) {
+      tx.tx = abi.copy(onChainTx);
+
+      // if transaction is null, then it was dropped from the txpool
+      if (onChainTx === null) {
+        tx.payload.tries = (tx.payload.tries) ? tx.payload.tries + 1 : 1;
+
+        // if we have retries left, then resubmit the transaction
+        if (!self.retryDroppedTxs || tx.payload.tries > self.TX_RETRY_MAX) {
+          tx.status = "failed";
+          tx.locked = false;
+          if (isFunction(tx.onFailed)) {
+            tx.onFailed(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
+          }
+        } else {
+          --self.rawTxMaxNonce;
+          tx.status = "resubmitted";
+          tx.locked = false;
+          if (self.debug.tx) console.debug("resubmitting tx:", tx.hash);
+          self.transact(tx.payload, tx.onSent, tx.onSuccess, tx.onFailed);
         }
-        this.invoke(tx, function (res) {
-            if (res === undefined || res === null) {
-                return callback(errors.NO_RESPONSE);
-            }
-            var err = self.errorCodes(tx.method, tx.returns, res);
-            if (err && err.error) return callback(err);
-            var converted = self.applyReturns(tx.returns, res);
-            if (isFunction(wrapper)) converted = wrapper(converted, aux);
-            return callback(converted);
-        });
-    },
 
-    /***************************************
-     * Send-call-confirm callback sequence *
-     ***************************************/
+        // non-null transaction: transaction still alive and kicking!
+        // check if it has been mined yet (block number is non-null)
+      } else {
+        if (onChainTx.blockNumber) {
+          tx.tx.blockNumber = parseInt(onChainTx.blockNumber, 16);
+          tx.tx.blockHash = onChainTx.blockHash;
+          tx.status = "mined";
+          tx.confirmations = self.block.number - tx.tx.blockNumber;
+          self.updateMinedTx(tx);
+        } else {
+          tx.locked = false;
+        }
+      }
+    });
+  },
 
-    blockFilter: {id: null, heartbeat: null},
-
-    block: null,
-
-    updatePendingTx: function (tx) {
-        var self = this;
-        this.getTx(tx.hash, function (onChainTx) {
-            tx.tx = abi.copy(onChainTx);
-
-            // if transaction is null, then it was dropped from the txpool
-            if (onChainTx === null) {
-                tx.payload.tries = (tx.payload.tries) ? tx.payload.tries + 1 : 1;
-
-                // if we have retries left, then resubmit the transaction
-                if (!self.retryDroppedTxs || tx.payload.tries > self.TX_RETRY_MAX) {
-                    tx.status = "failed";
-                    tx.locked = false;
-                    if (isFunction(tx.onFailed)) {
-                        tx.onFailed(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
-                    }
-                } else {
-                    --self.rawTxMaxNonce;
-                    tx.status = "resubmitted";
-                    tx.locked = false;
-                    if (self.debug.tx) console.debug("resubmitting tx:", tx.hash);
-                    self.transact(tx.payload, tx.onSent, tx.onSuccess, tx.onFailed);
-                }
-
-            // non-null transaction: transaction still alive and kicking!
-            // check if it has been mined yet (block number is non-null)
-            } else {
-                if (onChainTx.blockNumber) {
-                    tx.tx.blockNumber = parseInt(onChainTx.blockNumber, 16);
-                    tx.tx.blockHash = onChainTx.blockHash;
-                    tx.status = "mined";
-                    tx.confirmations = self.block.number - tx.tx.blockNumber;
-                    self.updateMinedTx(tx);
-                } else {
-                    tx.locked = false;
-                }
-            }
-        });
-    },
-
-    updateMinedTx: function (tx) {
-        var self = this;
-        var onChainTx = tx.tx;
-        tx.confirmations = self.block.number - onChainTx.blockNumber;
-        if (self.debug.tx) console.debug("confirmations for", tx.hash, tx.confirmations);
-        if (tx.confirmations >= self.REQUIRED_CONFIRMATIONS) {
-            tx.status = "confirmed";
-            if (isFunction(tx.onSuccess)) {
-                self.getBlock(onChainTx.blockNumber, false, function (block) {
-                    if (block && block.timestamp) {
-                        onChainTx.timestamp = parseInt(block.timestamp, 16);
-                    }
-                    if (!tx.payload.mutable) {
-                        onChainTx.callReturn = tx.callReturn;
-                        self.getTransactionReceipt(tx.hash, function (receipt) {
-                            if (self.debug.tx) console.debug("got receipt:", receipt);
-                            if (receipt && receipt.gasUsed) {
-                                onChainTx.gasFees = new BigNumber(receipt.gasUsed, 16)
+  updateMinedTx: function (tx) {
+    var self = this;
+    var onChainTx = tx.tx;
+    tx.confirmations = self.block.number - onChainTx.blockNumber;
+    if (self.debug.tx) console.debug("confirmations for", tx.hash, tx.confirmations);
+    if (tx.confirmations >= self.REQUIRED_CONFIRMATIONS) {
+      tx.status = "confirmed";
+      if (isFunction(tx.onSuccess)) {
+        self.getBlock(onChainTx.blockNumber, false, function (block) {
+          if (block && block.timestamp) {
+            onChainTx.timestamp = parseInt(block.timestamp, 16);
+          }
+          if (!tx.payload.mutable) {
+            onChainTx.callReturn = tx.callReturn;
+            self.getTransactionReceipt(tx.hash, function (receipt) {
+              if (self.debug.tx) console.debug("got receipt:", receipt);
+              if (receipt && receipt.gasUsed) {
+                onChainTx.gasFees = new BigNumber(receipt.gasUsed, 16)
                                     .times(new BigNumber(onChainTx.gasPrice, 16))
                                     .dividedBy(self.ETHER)
                                     .toFixed();
-                            }
-                            tx.locked = false;
-                            tx.onSuccess(onChainTx);
-                        });
+              }
+              tx.locked = false;
+              tx.onSuccess(onChainTx);
+            });
+          } else {
+            self.getLoggedReturnValue(tx.hash, function (err, log) {
+              if (self.debug.tx) console.debug("loggedReturnValue:", err, log);
+              if (err) {
+                tx.payload.send = false;
+                self.fire(tx.payload, function (callReturn) {
+                  tx.locked = false;
+                  if (isFunction(tx.onFailed)) {
+                    if (err.error !== errors.NULL_CALL_RETURN.error) {
+                      tx.onFailed(err);
                     } else {
-                        self.getLoggedReturnValue(tx.hash, function (err, log) {
-                            if (self.debug.tx) console.debug("loggedReturnValue:", err, log);
-                            if (err) {
-                                tx.payload.send = false;
-                                self.fire(tx.payload, function (callReturn) {
-                                    tx.locked = false;
-                                    if (isFunction(tx.onFailed)) {
-                                        if (err.error !== errors.NULL_CALL_RETURN.error) {
-                                            tx.onFailed(err);
-                                        } else {
-                                            tx.onFailed(self.errorCodes(tx.payload.method, tx.payload.returns, callReturn));
-                                        }
-                                    }
-                                });
-                            } else {
-                                var e = self.errorCodes(tx.payload.method, tx.payload.returns, log.returnValue);
-                                if (self.debug.tx) console.debug("errorCodes:", e);
-                                if (e && e.error) {
-                                    e.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
-                                    tx.locked = false;
-                                    if (isFunction(tx.onFailed)) {
-                                        tx.onFailed(e);
-                                    }
-                                } else {
-                                    onChainTx.callReturn = self.applyReturns(tx.payload.returns, log.returnValue);
-                                    onChainTx.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
-                                    tx.locked = false;
-                                    tx.onSuccess(onChainTx);
-                                }
-                            }
-                        });
+                      tx.onFailed(self.errorCodes(tx.payload.method, tx.payload.returns, callReturn));
                     }
+                  }
                 });
-            } else {
-                tx.locked = false;
-            }
-        } else {
-            tx.locked = false;
-        }
-    },
-
-    updateTx: function (tx) {
-        if (!tx.locked) {
-            if (tx.tx === undefined) {
-                tx.locked = true;
-                return this.updatePendingTx(tx);
-            }
-            switch (tx.status) {
-            case "pending":
-                tx.locked = true;
-                this.updatePendingTx(tx);
-                break;
-            case "mined":
-                tx.locked = true;
-                this.updateMinedTx(tx);
-                break;
-            default:
-                break;
-            }
-        }
-    },
-
-    onNewBlock: function (block) {
-        if (block) {
-
-            // newHeads push notification
-            if (block.number) {
-                if (this.debug.tx) console.debug("new block:", parseInt(block.number, 16));
-                this.block = abi.copy(block);
-                this.block.number = parseInt(this.block.number, 16);
-                var hashes = Object.keys(this.txs);
-                var numTxs = hashes.length;
-                for (var i = 0; i < numTxs; ++i) {
-                    this.updateTx(this.txs[hashes[i]]);
+              } else {
+                var e = self.errorCodes(tx.payload.method, tx.payload.returns, log.returnValue);
+                if (self.debug.tx) console.debug("errorCodes:", e);
+                if (e && e.error) {
+                  e.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
+                  tx.locked = false;
+                  if (isFunction(tx.onFailed)) {
+                    tx.onFailed(e);
+                  }
+                } else {
+                  onChainTx.callReturn = self.applyReturns(tx.payload.returns, log.returnValue);
+                  onChainTx.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
+                  tx.locked = false;
+                  tx.onSuccess(onChainTx);
                 }
+              }
+            });
+          }
+        });
+      } else {
+        tx.locked = false;
+      }
+    } else {
+      tx.locked = false;
+    }
+  },
+
+  updateTx: function (tx) {
+    if (!tx.locked) {
+      if (tx.tx === undefined) {
+        tx.locked = true;
+        return this.updatePendingTx(tx);
+      }
+      switch (tx.status) {
+        case "pending":
+          tx.locked = true;
+          this.updatePendingTx(tx);
+          break;
+        case "mined":
+          tx.locked = true;
+          this.updateMinedTx(tx);
+          break;
+        default:
+          break;
+      }
+    }
+  },
+
+  onNewBlock: function (block) {
+    if (block) {
+
+      // newHeads push notification
+      if (block.number) {
+        if (this.debug.tx) console.debug("new block:", parseInt(block.number, 16));
+        this.block = abi.copy(block);
+        this.block.number = parseInt(this.block.number, 16);
+        var hashes = Object.keys(this.txs);
+        var numTxs = hashes.length;
+        for (var i = 0; i < numTxs; ++i) {
+          this.updateTx(this.txs[hashes[i]]);
+        }
 
             // regular (HTTP) block filter
-            } else if (block.constructor === Array && block.length) {
-                if (this.debug.tx) console.debug("new block:", block);
-                var self = this;
-                async.each(block, function (blockHash, nextBlock) {
-                    self.getBlockByHash(blockHash, false, function (thisBlock) {
-                        self.block = abi.copy(thisBlock);
-                        self.block.number = parseInt(self.block.number, 16);
-                        var hashes = Object.keys(self.txs);
-                        var numTxs = hashes.length;
-                        for (var i = 0; i < numTxs; ++i) {
-                            self.updateTx(self.txs[hashes[i]]);
-                        }
-                        nextBlock();
-                    });
-                });
-            }
-        }
-    },
-
-    verifyTxSubmitted: function (payload, txHash, callReturn, onSent, onSuccess, onFailed, callback) {
+      } else if (block.constructor === Array && block.length) {
+        if (this.debug.tx) console.debug("new block:", block);
         var self = this;
-        if (!isFunction(callback)) {
-            if (!payload || ((!payload.mutable && payload.returns !== "null") && (txHash === null || txHash === undefined))) {
-                throw new this.Error(errors.TRANSACTION_FAILED);
+        async.each(block, function (blockHash, nextBlock) {
+          self.getBlockByHash(blockHash, false, function (thisBlock) {
+            self.block = abi.copy(thisBlock);
+            self.block.number = parseInt(self.block.number, 16);
+            var hashes = Object.keys(self.txs);
+            var numTxs = hashes.length;
+            for (var i = 0; i < numTxs; ++i) {
+              self.updateTx(self.txs[hashes[i]]);
             }
-            if (this.txs[txHash]) throw new this.Error(errors.DUPLICATE_TRANSACTION);
-            this.txs[txHash] = {
-                hash: txHash,
-                payload: payload,
-                callReturn: callReturn,
-                count: 0,
-                status: "pending"
-            };
-            var tx = this.getTransaction(txHash);
-            if (!tx) throw new this.Error(errors.TRANSACTION_FAILED);
-            this.txs[txHash].tx = tx;
-            return;
-        }
-        if (!payload || txHash === null || txHash === undefined) {
-            console.error("payload undefined or txhash null/undefined:", payload, txHash);
-            return callback(errors.TRANSACTION_FAILED);
-        }
-        if (this.txs[txHash]) return callback(errors.DUPLICATE_TRANSACTION);
-        this.txs[txHash] = {
-            hash: txHash,
-            payload: payload,
-            callReturn: callReturn,
-            onSent: onSent,
-            onSuccess: onSuccess,
-            onFailed: onFailed,
-            count: 0,
-            status: "pending"
-        };
-        if (this.block && this.block.number) {
-            this.updateTx(this.txs[txHash]);
-            return callback(null);
-        }
-        this.blockNumber(function (blockNumber) {
-            if (!blockNumber || blockNumber.error) {
-                return callback(blockNumber || "rpc.blockNumber lookup failed");
-            }
-            self.block = {number: parseInt(blockNumber, 16)};
-            self.updateTx(self.txs[txHash]);
-            callback(null);
+            nextBlock();
+          });
         });
-    },
+      }
+    }
+  },
 
-    /**
-     * asynchronous / non-blocking transact:
-     *  - call onSent when the transaction is broadcast to the network
-     *  - call onSuccess when the transaction has REQUIRED_CONFIRMATIONS
-     *  - call onFailed if the transaction fails
-     */
-    transactAsync: function (payload, callReturn, onSent, onSuccess, onFailed) {
-        var self = this;
-        payload.send = true;
-        var returns = payload.returns;
-        delete payload.returns;
-        this.invoke(payload, function (txHash) {
-            if (self.debug.tx) console.debug("txHash:", txHash);
-            if (!txHash) return onFailed(errors.NULL_RESPONSE);
-            if (txHash.error) return onFailed(txHash);
-            payload.returns = returns;
-            txHash = abi.format_int256(txHash);
+  verifyTxSubmitted: function (payload, txHash, callReturn, onSent, onSuccess, onFailed, callback) {
+    var self = this;
+    if (!isFunction(callback)) {
+      if (!payload || ((!payload.mutable && payload.returns !== "null") && (txHash === null || txHash === undefined))) {
+        throw new this.Error(errors.TRANSACTION_FAILED);
+      }
+      if (this.txs[txHash]) throw new this.Error(errors.DUPLICATE_TRANSACTION);
+      this.txs[txHash] = {
+        hash: txHash,
+        payload: payload,
+        callReturn: callReturn,
+        count: 0,
+        status: "pending"
+      };
+      var tx = this.getTransaction(txHash);
+      if (!tx) throw new this.Error(errors.TRANSACTION_FAILED);
+      this.txs[txHash].tx = tx;
+      return;
+    }
+    if (!payload || txHash === null || txHash === undefined) {
+      console.error("payload undefined or txhash null/undefined:", payload, txHash);
+      return callback(errors.TRANSACTION_FAILED);
+    }
+    if (this.txs[txHash]) return callback(errors.DUPLICATE_TRANSACTION);
+    this.txs[txHash] = {
+      hash: txHash,
+      payload: payload,
+      callReturn: callReturn,
+      onSent: onSent,
+      onSuccess: onSuccess,
+      onFailed: onFailed,
+      count: 0,
+      status: "pending"
+    };
+    if (this.block && this.block.number) {
+      this.updateTx(this.txs[txHash]);
+      return callback(null);
+    }
+    this.blockNumber(function (blockNumber) {
+      if (!blockNumber || blockNumber.error) {
+        return callback(blockNumber || "rpc.blockNumber lookup failed");
+      }
+      self.block = {number: parseInt(blockNumber, 16)};
+      self.updateTx(self.txs[txHash]);
+      callback(null);
+    });
+  },
 
-            // send the transaction hash and return value back
-            // to the client, using the onSent callback
-            onSent({hash: txHash, txHash: txHash, callReturn: callReturn});
+  /**
+   * asynchronous / non-blocking transact:
+   *  - call onSent when the transaction is broadcast to the network
+   *  - call onSuccess when the transaction has REQUIRED_CONFIRMATIONS
+   *  - call onFailed if the transaction fails
+   */
+  transactAsync: function (payload, callReturn, onSent, onSuccess, onFailed) {
+    var self = this;
+    payload.send = true;
+    var returns = payload.returns;
+    delete payload.returns;
+    this.invoke(payload, function (txHash) {
+      if (self.debug.tx) console.debug("txHash:", txHash);
+      if (!txHash) return onFailed(errors.NULL_RESPONSE);
+      if (txHash.error) return onFailed(txHash);
+      payload.returns = returns;
+      txHash = abi.format_int256(txHash);
 
-            self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
-                if (err) return onFailed(err);
-                if (self.blockFilter.id === null && !self.wsUrl && !self.ipcpath) {
-                    self.newBlockFilter(function (filterID) {
-                        if (filterID && !filterID.error) {
-                            self.blockFilter.id = filterID;
-                            self.blockFilter.heartbeat = setInterval(function () {
-                                self.getFilterChanges(filterID, self.onNewBlock.bind(self));
-                            }, self.TX_POLL_INTERVAL);
-                        }
-                    });
-                }
-            });
-        });
-    },
+      // send the transaction hash and return value back
+      // to the client, using the onSent callback
+      onSent({hash: txHash, txHash: txHash, callReturn: callReturn});
 
-    waitForNextPoll: function (tx, callback) {
-        if (this.txs[tx.hash].count >= this.TX_POLL_MAX) {
-            this.txs[tx.hash].status = "unconfirmed";
-            if (!isFunction(callback)) {
-                throw new Error(errors.TRANSACTION_NOT_CONFIRMED);
+      self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
+        if (err) return onFailed(err);
+        if (self.blockFilter.id === null && !self.wsUrl && !self.ipcpath) {
+          self.newBlockFilter(function (filterID) {
+            if (filterID && !filterID.error) {
+              self.blockFilter.id = filterID;
+              self.blockFilter.heartbeat = setInterval(function () {
+                self.getFilterChanges(filterID, self.onNewBlock.bind(self));
+              }, self.TX_POLL_INTERVAL);
             }
-            return callback(errors.TRANSACTION_NOT_CONFIRMED);
+          });
         }
-        if (!isFunction(callback)) {
-            wait(this.TX_POLL_INTERVAL);
-            if (this.txs[tx.hash].status === "pending" || this.txs[tx.hash].status === "mined") {
-                return null;
-            }
-        } else {
-            var self = this;
-            this.notifications[tx.hash] = setTimeout(function () {
-                if (self.txs[tx.hash].status === "pending" || self.txs[tx.hash].status === "mined") {
-                    callback(null, null);
-                }
-            }, this.TX_POLL_INTERVAL);
-        }
-    },
+      });
+    });
+  },
 
-    completeTx: function (tx, callback) {
-        this.txs[tx.hash].status = "confirmed";
+  waitForNextPoll: function (tx, callback) {
+    if (this.txs[tx.hash].count >= this.TX_POLL_MAX) {
+      this.txs[tx.hash].status = "unconfirmed";
+      if (!isFunction(callback)) {
+        throw new Error(errors.TRANSACTION_NOT_CONFIRMED);
+      }
+      return callback(errors.TRANSACTION_NOT_CONFIRMED);
+    }
+    if (!isFunction(callback)) {
+      wait(this.TX_POLL_INTERVAL);
+      if (this.txs[tx.hash].status === "pending" || this.txs[tx.hash].status === "mined") {
+        return null;
+      }
+    } else {
+      var self = this;
+      this.notifications[tx.hash] = setTimeout(function () {
+        if (self.txs[tx.hash].status === "pending" || self.txs[tx.hash].status === "mined") {
+          callback(null, null);
+        }
+      }, this.TX_POLL_INTERVAL);
+    }
+  },
+
+  completeTx: function (tx, callback) {
+    this.txs[tx.hash].status = "confirmed";
+    clearTimeout(this.notifications[tx.hash]);
+    delete this.notifications[tx.hash];
+    if (!isFunction(callback)) return tx;
+    return callback(null, tx);
+  },
+
+  checkConfirmations: function (tx, numConfirmations, callback) {
+    var self = this;
+    var minedBlockNumber = parseInt(tx.blockNumber, 16);
+    this.blockNumber(function (currentBlockNumber) {
+      if (self.debug.tx) {
+        console.log("confirmations:", parseInt(currentBlockNumber, 16) - minedBlockNumber);
+      }
+      if (parseInt(currentBlockNumber, 16) - minedBlockNumber >= numConfirmations) {
+        return self.completeTx(tx, callback);
+      }
+      return self.waitForNextPoll(tx, callback);
+    });
+  },
+
+  checkBlockHash: function (tx, numConfirmations, callback) {
+    if (!this.txs[tx.hash]) this.txs[tx.hash] = {};
+    if (this.txs[tx.hash].count === undefined) this.txs[tx.hash].count = 0;
+    ++this.txs[tx.hash].count;
+    if (this.debug.tx) console.debug("checkBlockHash:", tx.blockHash);
+    if (tx && tx.blockHash && parseInt(tx.blockHash, 16) !== 0) {
+      tx.txHash = tx.hash;
+      if (!numConfirmations) {
+        this.txs[tx.hash].status = "mined";
         clearTimeout(this.notifications[tx.hash]);
         delete this.notifications[tx.hash];
         if (!isFunction(callback)) return tx;
         return callback(null, tx);
-    },
+      }
+      return this.checkConfirmations(tx, numConfirmations, callback);
+    }
+    return this.waitForNextPoll(tx, callback);
+  },
 
-    checkConfirmations: function (tx, numConfirmations, callback) {
-        var self = this;
-        var minedBlockNumber = parseInt(tx.blockNumber, 16);
-        this.blockNumber(function (currentBlockNumber) {
-            if (self.debug.tx) {
-                console.log("confirmations:", parseInt(currentBlockNumber, 16) - minedBlockNumber);
-            }
-            if (parseInt(currentBlockNumber, 16) - minedBlockNumber >= numConfirmations) {
-                return self.completeTx(tx, callback);
-            }
-            return self.waitForNextPoll(tx, callback);
-        });
-    },
+  getLoggedReturnValue: function (txHash, callback) {
+    var self = this;
+    if (!isFunction(callback)) {
+      var receipt = this.getTransactionReceipt(txHash);
+      if (!receipt || !receipt.logs || !receipt.logs.length) {
+        throw new this.Error(errors.NULL_CALL_RETURN);
+      }
+      var log = receipt.logs[receipt.logs.length - 1];
+      if (!log || log.data === null || log.data === undefined) {
+        throw new this.Error(errors.NULL_CALL_RETURN);
+      }
+      return {
+        returnValue: log.data,
+        gasUsed: new BigNumber(receipt.gasUsed, 16)
+      };
+    }
+    this.getTransactionReceipt(txHash, function (receipt) {
+      if (self.debug.tx) console.debug("got receipt:", receipt);
+      if (!receipt || !receipt.logs || !receipt.logs.length) {
+        return callback(errors.NULL_CALL_RETURN);
+      }
+      var log = receipt.logs[receipt.logs.length - 1];
+      if (!log || log.data === null || log.data === undefined) {
+        return callback(errors.NULL_CALL_RETURN);
+      }
+      callback(null, {
+        returnValue: log.data,
+        gasUsed: new BigNumber(receipt.gasUsed, 16)
+      });
+    });
+  },
 
-    checkBlockHash: function (tx, numConfirmations, callback) {
-        if (!this.txs[tx.hash]) this.txs[tx.hash] = {};
-        if (this.txs[tx.hash].count === undefined) this.txs[tx.hash].count = 0;
-        ++this.txs[tx.hash].count;
-        if (this.debug.tx) console.debug("checkBlockHash:", tx.blockHash);
-        if (tx && tx.blockHash && parseInt(tx.blockHash, 16) !== 0) {
-            tx.txHash = tx.hash;
-            if (!numConfirmations) {
-                this.txs[tx.hash].status = "mined";
-                clearTimeout(this.notifications[tx.hash]);
-                delete this.notifications[tx.hash];
-                if (!isFunction(callback)) return tx;
-                return callback(null, tx);
-            }
-            return this.checkConfirmations(tx, numConfirmations, callback);
-        }
-        return this.waitForNextPoll(tx, callback);
-    },
-
-    getLoggedReturnValue: function (txHash, callback) {
-        var self = this;
-        if (!isFunction(callback)) {
-            var receipt = this.getTransactionReceipt(txHash);
-            if (!receipt || !receipt.logs || !receipt.logs.length) {
-                throw new this.Error(errors.NULL_CALL_RETURN);
-            }
-            var log = receipt.logs[receipt.logs.length - 1];
-            if (!log || log.data === null || log.data === undefined) {
-                throw new this.Error(errors.NULL_CALL_RETURN);
-            }
-            return {
-                returnValue: log.data,
-                gasUsed: new BigNumber(receipt.gasUsed, 16)
-            };
-        }
-        this.getTransactionReceipt(txHash, function (receipt) {
-            if (self.debug.tx) console.debug("got receipt:", receipt);
-            if (!receipt || !receipt.logs || !receipt.logs.length) {
-                return callback(errors.NULL_CALL_RETURN);
-            }
-            var log = receipt.logs[receipt.logs.length - 1];
-            if (!log || log.data === null || log.data === undefined) {
-                return callback(errors.NULL_CALL_RETURN);
-            }
-            callback(null, {
-                returnValue: log.data,
-                gasUsed: new BigNumber(receipt.gasUsed, 16)
-            });
-        });
-    },
-
-    checkDroppedTxForDuplicateNonce: function (txHash, callback) {
-        var duplicateNonce;
-        if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
-        if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
-            if (!isFunction(callback)) {
-                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-            }
-            return callback(errors.TRANSACTION_NOT_FOUND);
-        }
-        for (var hash in this.rawTxs) {
-            if (!this.rawTxs.hasOwnProperty(hash)) continue;
-            if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
+  checkDroppedTxForDuplicateNonce: function (txHash, callback) {
+    var duplicateNonce;
+    if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+    if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
+      if (!isFunction(callback)) {
+        throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+      }
+      return callback(errors.TRANSACTION_NOT_FOUND);
+    }
+    for (var hash in this.rawTxs) {
+      if (!this.rawTxs.hasOwnProperty(hash)) continue;
+      if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
                 JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
-                duplicateNonce = true;
-                console.warn("Warning: duplicate nonce found on raw tx:", txHash);
-                break;
-            }
-        }
-        if (!duplicateNonce) {
-            if (!isFunction(callback)) {
-                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-            }
-            return callback(errors.TRANSACTION_NOT_FOUND);
-        }
-        if (!isFunction(callback)) return null;
-        callback(null);
-    },
+        duplicateNonce = true;
+        console.warn("Warning: duplicate nonce found on raw tx:", txHash);
+        break;
+      }
+    }
+    if (!duplicateNonce) {
+      if (!isFunction(callback)) {
+        throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+      }
+      return callback(errors.TRANSACTION_NOT_FOUND);
+    }
+    if (!isFunction(callback)) return null;
+    callback(null);
+  },
 
-    txNotify: function (txHash, callback) {
-        var self = this;
-        if (!isFunction(callback)) {
-            var tx = this.getTransaction(txHash);
-            if (tx) return tx;
-            --this.rawTxMaxNonce;
-            this.txs[txHash].status = "failed";
+  txNotify: function (txHash, callback) {
+    var self = this;
+    if (!isFunction(callback)) {
+      var tx = this.getTransaction(txHash);
+      if (tx) return tx;
+      --this.rawTxMaxNonce;
+      this.txs[txHash].status = "failed";
 
-            // only resubmit if this is a raw transaction and has a duplicate nonce
-            if (!this.retryDroppedTxs) this.checkDroppedTxForDuplicateNonce(txHash);
+      // only resubmit if this is a raw transaction and has a duplicate nonce
+      if (!this.retryDroppedTxs) this.checkDroppedTxForDuplicateNonce(txHash);
 
-            this.txs[txHash].status = "resubmitted";
-            return null;
-        }
-        this.getTransaction(txHash, function (tx) {
-            if (tx) return callback(null, tx);
-            --self.rawTxMaxNonce;
-            self.txs[txHash].status = "failed";
-            if (self.retryDroppedTxs) {
-                if (self.debug.broadcast) console.debug(" *** Re-submitting transaction:", txHash);
-                self.txs[txHash].status = "resubmitted";
-                return callback(null, null);
-            }
-            // only resubmit if this is a raw transaction and has a duplicate nonce
-            self.checkDroppedTxForDuplicateNonce(txHash, function (err) {
-                if (err !== null) return callback(err);
-                if (self.debug.broadcast) console.debug(" *** Re-submitting transaction:", txHash);
-                self.txs[txHash].status = "resubmitted";
-                return callback(null, null);
-            });
-        });
-    },
+      this.txs[txHash].status = "resubmitted";
+      return null;
+    }
+    this.getTransaction(txHash, function (tx) {
+      if (tx) return callback(null, tx);
+      --self.rawTxMaxNonce;
+      self.txs[txHash].status = "failed";
+      if (self.retryDroppedTxs) {
+        if (self.debug.broadcast) console.debug(" *** Re-submitting transaction:", txHash);
+        self.txs[txHash].status = "resubmitted";
+        return callback(null, null);
+      }
+      // only resubmit if this is a raw transaction and has a duplicate nonce
+      self.checkDroppedTxForDuplicateNonce(txHash, function (err) {
+        if (err !== null) return callback(err);
+        if (self.debug.broadcast) console.debug(" *** Re-submitting transaction:", txHash);
+        self.txs[txHash].status = "resubmitted";
+        return callback(null, null);
+      });
+    });
+  },
 
-    // poll the network until the transaction is included in a block
-    // (i.e., has a non-null blockHash field)
-    pollForTxConfirmation: function (txHash, numConfirmations, callback) {
-        var self = this;
-        if (!isFunction(callback)) {
-            var tx = this.txNotify(txHash);
-            if (tx === null) return null;
-            var minedTx = this.checkBlockHash(tx, numConfirmations);
-            if (minedTx !== null) return minedTx;
-            return this.pollForTxConfirmation(txHash, numConfirmations);
-        }
-        this.txNotify(txHash, function (err, tx) {
-            if (err) return callback(err);
-            if (tx === null) return callback(null, null);
-            self.checkBlockHash(tx, numConfirmations, function (err, minedTx) {
-                if (err) return callback(err);
-                if (minedTx !== null) return callback(null, minedTx);
-                self.pollForTxConfirmation(txHash, numConfirmations, callback);
-            });
-        });
-    },
+  // poll the network until the transaction is included in a block
+  // (i.e., has a non-null blockHash field)
+  pollForTxConfirmation: function (txHash, numConfirmations, callback) {
+    var self = this;
+    if (!isFunction(callback)) {
+      var tx = this.txNotify(txHash);
+      if (tx === null) return null;
+      var minedTx = this.checkBlockHash(tx, numConfirmations);
+      if (minedTx !== null) return minedTx;
+      return this.pollForTxConfirmation(txHash, numConfirmations);
+    }
+    this.txNotify(txHash, function (err, tx) {
+      if (err) return callback(err);
+      if (tx === null) return callback(null, null);
+      self.checkBlockHash(tx, numConfirmations, function (err, minedTx) {
+        if (err) return callback(err);
+        if (minedTx !== null) return callback(null, minedTx);
+        self.pollForTxConfirmation(txHash, numConfirmations, callback);
+      });
+    });
+  },
 
-    /**
-     * synchronous transact: block until the transaction is confirmed or fails
-     * (don't use this in the browser or you will be a sad panda)
-     */
-    transactSync: function (payload) {
-        var callReturn;
-        if (payload.mutable || payload.returns === "null") {
-            callReturn = null;
-        } else {
-            callReturn = this.fire(payload);
-            if (this.debug.tx) console.debug("callReturn:", callReturn);
-            if (callReturn === undefined || callReturn === null) {
-                throw new this.Error(errors.NULL_CALL_RETURN);
-            } else if (callReturn.error === "0x") {
-                callReturn = null;
-            } else if (callReturn.error) {
-                throw new this.Error(callReturn);
-            }
-        }
-        payload.send = true;
-        var returns = payload.returns;
-        delete payload.returns;
-        var txHash = this.invoke(payload);
-        if (this.debug.tx) console.debug("txHash:", txHash);
-        if (!txHash && !payload.mutable && payload.returns !== "null") {
-            throw new this.Error(errors.NULL_RESPONSE);
-        } else if (txHash && txHash.error) {
-            throw new this.Error(txHash);
-        }
-        payload.returns = returns;
-        txHash = abi.format_int256(txHash);
-        this.verifyTxSubmitted(payload, txHash, callReturn);
-        var tx = this.pollForTxConfirmation(txHash, null);
-        if (tx === null) {
-            payload.tries = (payload.tries) ? payload.tries + 1 : 1;
-            if (payload.tries > this.TX_RETRY_MAX) {
-                throw new this.Error(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
-            }
-            return this.transact(payload);
-        }
-        tx.timestamp = parseInt(this.getBlock(tx.blockNumber, false).timestamp, 16);
-        if (!payload.mutable) {
-            tx.callReturn = callReturn;
-            var receipt = this.getTransactionReceipt(txHash);
-            if (this.debug.tx) console.debug("got receipt:", receipt);
-            if (receipt && receipt.gasUsed) {
-                tx.gasFees = new BigNumber(receipt.gasUsed, 16)
+  /**
+   * synchronous transact: block until the transaction is confirmed or fails
+   * (don't use this in the browser or you will be a sad panda)
+   */
+  transactSync: function (payload) {
+    var callReturn;
+    if (payload.mutable || payload.returns === "null") {
+      callReturn = null;
+    } else {
+      callReturn = this.fire(payload);
+      if (this.debug.tx) console.debug("callReturn:", callReturn);
+      if (callReturn === undefined || callReturn === null) {
+        throw new this.Error(errors.NULL_CALL_RETURN);
+      } else if (callReturn.error === "0x") {
+        callReturn = null;
+      } else if (callReturn.error) {
+        throw new this.Error(callReturn);
+      }
+    }
+    payload.send = true;
+    var returns = payload.returns;
+    delete payload.returns;
+    var txHash = this.invoke(payload);
+    if (this.debug.tx) console.debug("txHash:", txHash);
+    if (!txHash && !payload.mutable && payload.returns !== "null") {
+      throw new this.Error(errors.NULL_RESPONSE);
+    } else if (txHash && txHash.error) {
+      throw new this.Error(txHash);
+    }
+    payload.returns = returns;
+    txHash = abi.format_int256(txHash);
+    this.verifyTxSubmitted(payload, txHash, callReturn);
+    var tx = this.pollForTxConfirmation(txHash, null);
+    if (tx === null) {
+      payload.tries = (payload.tries) ? payload.tries + 1 : 1;
+      if (payload.tries > this.TX_RETRY_MAX) {
+        throw new this.Error(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
+      }
+      return this.transact(payload);
+    }
+    tx.timestamp = parseInt(this.getBlock(tx.blockNumber, false).timestamp, 16);
+    if (!payload.mutable) {
+      tx.callReturn = callReturn;
+      var receipt = this.getTransactionReceipt(txHash);
+      if (this.debug.tx) console.debug("got receipt:", receipt);
+      if (receipt && receipt.gasUsed) {
+        tx.gasFees = new BigNumber(receipt.gasUsed, 16)
                     .times(new BigNumber(tx.gasPrice, 16))
                     .dividedBy(this.ETHER)
                     .toFixed();
-            }
-            return tx;
-        }
-
-        // if mutable return value, then lookup logged return
-        // value in transaction receipt (after confirmation)
-        var log = this.getLoggedReturnValue(txHash);
-        var e = this.errorCodes(payload.method, payload.returns, log.returnValue);
-        if (e && e.error) {
-            e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
-            if (e.error !== errors.NULL_CALL_RETURN.error) {
-                throw new Error(e);
-            }
-            callReturn = this.fire(payload);
-            throw new Error(this.errorCodes(payload.method, payload.returns, callReturn));
-        }
-        tx.callReturn = this.applyReturns(payload.returns, log.returnValue);
-        tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
-        return tx;
-    },
-
-    transact: function (payload, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (this.debug.tx) console.debug("payload transact:", payload);
-        payload.send = false;
-
-        // synchronous / blocking transact sequence
-        if (!isFunction(onSent)) return this.transactSync(payload);
-
-        // asynchronous / non-blocking transact sequence
-        var cb = (isFunction(this.txRelay)) ? {
-            sent: this.wrapTxRelayCallback("sent", payload, onSent),
-            success: this.wrapTxRelayCallback("success", payload, onSuccess),
-            failed: this.wrapTxRelayCallback("failed", payload, onFailed)
-        } : {
-            sent: onSent,
-            success: (isFunction(onSuccess)) ? onSuccess : noop,
-            failed: (isFunction(onFailed)) ? onFailed : noop
-        };
-        if (payload.mutable || payload.returns === "null") {
-            return this.transactAsync(payload, null, cb.sent, cb.success, cb.failed);
-        }
-        this.fire(payload, function (callReturn) {
-            if (self.debug.tx) console.debug("callReturn:", callReturn);
-            if (callReturn === undefined || callReturn === null) {
-                return cb.failed(errors.NULL_CALL_RETURN);
-            } else if (callReturn.error) {
-                return cb.failed(callReturn);
-            }
-            self.transactAsync(payload, callReturn, cb.sent, cb.success, cb.failed);
-        });
+      }
+      return tx;
     }
+
+    // if mutable return value, then lookup logged return
+    // value in transaction receipt (after confirmation)
+    var log = this.getLoggedReturnValue(txHash);
+    var e = this.errorCodes(payload.method, payload.returns, log.returnValue);
+    if (e && e.error) {
+      e.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
+      if (e.error !== errors.NULL_CALL_RETURN.error) {
+        throw new Error(e);
+      }
+      callReturn = this.fire(payload);
+      throw new Error(this.errorCodes(payload.method, payload.returns, callReturn));
+    }
+    tx.callReturn = this.applyReturns(payload.returns, log.returnValue);
+    tx.gasFees = log.gasUsed.times(new BigNumber(tx.gasPrice, 16)).dividedBy(this.ETHER).toFixed();
+    return tx;
+  },
+
+  transact: function (payload, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (this.debug.tx) console.debug("payload transact:", payload);
+    payload.send = false;
+
+    // synchronous / blocking transact sequence
+    if (!isFunction(onSent)) return this.transactSync(payload);
+
+    // asynchronous / non-blocking transact sequence
+    var cb = (isFunction(this.txRelay)) ? {
+      sent: this.wrapTxRelayCallback("sent", payload, onSent),
+      success: this.wrapTxRelayCallback("success", payload, onSuccess),
+      failed: this.wrapTxRelayCallback("failed", payload, onFailed)
+    } : {
+      sent: onSent,
+      success: (isFunction(onSuccess)) ? onSuccess : noop,
+      failed: (isFunction(onFailed)) ? onFailed : noop
+    };
+    if (payload.mutable || payload.returns === "null") {
+      return this.transactAsync(payload, null, cb.sent, cb.success, cb.failed);
+    }
+    this.fire(payload, function (callReturn) {
+      if (self.debug.tx) console.debug("callReturn:", callReturn);
+      if (callReturn === undefined || callReturn === null) {
+        return cb.failed(errors.NULL_CALL_RETURN);
+      } else if (callReturn.error) {
+        return cb.failed(callReturn);
+      }
+      self.transactAsync(payload, callReturn, cb.sent, cb.success, cb.failed);
+    });
+  }
 };
 
 }).call(this,require('_process'))
 },{"_process":192,"async":272,"augur-abi":273,"augur-contracts":59,"bignumber.js":274,"browser-request":278,"clone":281,"js-sha3":312,"net":115,"request":88,"sync-request":88,"websocket":88}],272:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
 },{"_process":192,"dup":80}],273:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"bignumber.js":274,"buffer":118,"dup":1,"ethereumjs-abi":302,"js-sha3":312}],274:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+var ethabi = require("ethereumjs-abi");
+
+BigNumber.config({
+    MODULO_MODE: BigNumber.EUCLID,
+    ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+module.exports = {
+
+    debug: false,
+
+    version: "1.0.0",
+
+    constants: {
+        ONE: new BigNumber(10).toPower(new BigNumber(18)),
+        BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+        // Serpent integers are bounded by [-2^255, 2^255-1]
+        SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+        SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
+        MOD: new BigNumber(2).toPower(new BigNumber(256))
+    },
+
+    abi: ethabi,
+
+    keccak_256: keccak_256,
+
+    // Convert hex to byte array for sha3
+    // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
+    hex_to_bytes: function (s) {
+        var o = [];
+        var alpha = "0123456789abcdef";
+        for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
+            var index1 = alpha.indexOf(s[i]);
+            var index2 = alpha.indexOf(s[i + 1]);
+            if (index1 < 0 || index2 < 0) {
+                throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
+            }
+            o.push(16*index1 + index2);
+        }
+        return o;
+    },
+
+    bytes_to_hex: function (b) {
+        var hexbyte, h = "";
+        for (var i = 0, n = b.length; i < n; ++i) {
+            hexbyte = this.strip_0x(b[i].toString(16));
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            h += hexbyte;
+        }
+        return h;
+    },
+
+    sha3: function (hexstr) {
+        return keccak_256(this.hex_to_bytes(hexstr));
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h, utf8) {
+        var hex = h.toString();
+        if (utf8) {
+            while (hex.slice(-1) === "\u0000") {
+                hex = hex.slice(0, -1);
+            }
+        } else {
+            while (hex.slice(-2) === "00") {
+                hex = hex.slice(0, -2);
+            }
+        }
+        return hex;
+    },
+
+    bytes_to_utf16: function (bytearray) {
+        if (bytearray.constructor === Array) {
+            var tmp = '';
+            for (var i = 0; i < bytearray.length; ++i) {
+                if (bytearray[i] !== undefined && bytearray[i] !== null) {
+                    if (bytearray[i].constructor === String) {
+                        tmp += this.strip_0x(bytearray[i]);
+                    } else if (bytearray[i].constructor === Number) {
+                        tmp += bytearray[i].toString(16);
+                    } else if (Buffer.isBuffer(bytearray[i])) {
+                        tmp += bytearray[i].toString("hex");
+                    }
+                }
+            }
+            bytearray = tmp;
+        }
+        if (bytearray.constructor === String) {
+            bytearray = this.strip_0x(bytearray);
+        }
+        if (!Buffer.isBuffer(bytearray)) {
+            try {
+                bytearray = new Buffer(bytearray, "hex");
+            } catch (ex) {
+                console.log("[augur-abi] bytes_to_utf16:", JSON.stringify(bytearray, null, 2));
+                throw ex;
+            }
+        }
+        return bytearray.toString("utf8");
+    },
+
+    short_string_to_int256: function (shortstring) {
+        var int256 = shortstring;
+        if (int256.length > 32) int256 = int256.slice(0, 32);
+        return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
+    },
+
+    int256_to_short_string: function (int256) {
+        return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str, toArray) {
+        var hexbyte, hex, i, len;
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        len = str.length;
+        if (toArray) {
+            hex = [];
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex.push(this.prefix_hex(hexbyte));
+            }
+        } else {
+            hex = '';
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex += hexbyte;
+            }
+        }
+        return hex;
+    },
+
+    raw_encode_hex: function (str) {
+        return ethabi.rawEncode(["string"], [str]).toString("hex");
+    },
+
+    raw_decode_hex: function (hex) {
+        if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
+        return ethabi.rawDecode(["string"], hex)[0];
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+            var unforked = this.bignum(forked);
+            if (unforked.constructor === BigNumber) {
+                var superforked = unforked.plus(this.constants.MOD);
+                if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                    unforked = superforked;
+                }
+                if (forked.constructor === BigNumber) return unforked;
+                unforked = this.pad_left(unforked.toString(16));
+                if (prefix) unforked = this.prefix_hex(unforked);
+                return unforked;
+            } else {
+                throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+            }
+        } else {
+            throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+        }
+    },
+
+    hex: function (n, wrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", wrap);
+                    break;
+                case BigNumber:
+                    if (wrap) {
+                        h = this.wrap(n.floor()).toString(16);
+                    } else {
+                        h = n.floor().toString(16);
+                    }
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = this.bignum(n, "hex", wrap);
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", wrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", wrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_int256: function (s) {
+        if (s === undefined || s === null || s === "0x") return s;
+        if (Buffer.isBuffer(s)) s = s.toString("hex");
+        if (s.constructor !== String) s = s.toString(16);
+        if (s.slice(0, 1) === "-") s = this.unfork(s);
+        s = this.strip_0x(s);
+        if (s.length > 64) {
+            if (this.debug) {
+                var overflow = (s.length / 2) - 32;
+                console.warn("input " + overflow + " bytes too large for int256, truncating");
+            }
+            s = s.slice(0, 64);
+        }
+        return this.prefix_hex(this.pad_left(s));
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n === undefined || n === null || n === "") return n;
+        if (n.constructor === Number || n.constructor === BigNumber) {
+            n = n.toString(16);
+        }
+        if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+            if (n.slice(0,1) === '-') {
+                n = "-0x" + n.slice(1);
+            } else {
+                n = "0x" + n;
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, wrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    bn = new BigNumber(n, 10);
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n, 10);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, wrap);
+                    }
+                    break;
+                default:
+                    if (this.is_hex(n)) {
+                        bn = new BigNumber(n, 16);
+                    } else {
+                        bn = new BigNumber(n, 10);
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (wrap) bn = this.wrap(bn);
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.floor().toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    wrap: function (bn) {
+        if (bn === undefined || bn === null) return bn;
+        if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+        if (bn.gt(this.constants.SERPINT_MAX)) {
+            return bn.sub(this.constants.MOD);
+        } else if (bn.lt(this.constants.SERPINT_MIN)) {
+            return bn.plus(this.constants.MOD);
+        }
+        return bn;
+    },
+
+    fix: function (n, encode, wrap) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (wrap) fixed = this.wrap(fixed);
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed.round());
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix_signed: function (n, encode) {
+        return this.unfix(this.hex(n, true), encode);
+    },
+
+    string: function (n, wrap) {
+        return this.bignum(n, "string", wrap);
+    },
+
+    number: function (s, wrap) {
+        return this.bignum(s, "number", wrap);
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return this.pad_left(prefix, 8, true);
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || [];
+        return this.prefix_hex(Buffer.concat([
+            ethabi.methodID(tx.method, tx.signature),
+            ethabi.rawEncode(tx.signature, tx.params)
+        ]).toString("hex"));
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":274,"buffer":118,"ethereumjs-abi":302,"js-sha3":312}],274:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
 },{"dup":2}],275:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
