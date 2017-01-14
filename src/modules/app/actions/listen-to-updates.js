@@ -27,7 +27,7 @@ export function listenToUpdates() {
   return (dispatch, getState) => {
     augur.filters.listen({
 
-			// block arrivals
+      // block arrivals
       block: (blockHash) => {
         dispatch(updateAssets());
         dispatch(syncBlockchain());
@@ -58,7 +58,7 @@ export function listenToUpdates() {
         }
       },
 
-			// Reporter penalization
+      // Reporter penalization
       penalize: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.debug('penalize:', msg);
@@ -90,7 +90,7 @@ export function listenToUpdates() {
         }
       },
 
-			// trade filled: { market, outcome (id), price }
+      // trade filled: { market, outcome (id), price }
       log_fill_tx: (msg) => {
         console.debug('log_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
@@ -110,7 +110,7 @@ export function listenToUpdates() {
         }
       },
 
-			// short sell filled
+      // short sell filled
       log_short_fill_tx: (msg) => {
         console.debug('log_short_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
@@ -118,7 +118,7 @@ export function listenToUpdates() {
           dispatch(fillOrder({ ...msg, type: 'sell' }));
           const { address } = getState().loginAccount;
 
-					// if the user is either the maker or taker, add it to the transaction display
+          // if the user is either the maker or taker, add it to the transaction display
           if (msg.sender === address || msg.owner === address) {
             dispatch(convertTradeLogToTransaction('log_fill_tx', {
               [msg.market]: { [msg.outcome]: [{
@@ -133,13 +133,13 @@ export function listenToUpdates() {
         }
       },
 
-			// order added to orderbook
+      // order added to orderbook
       log_add_tx: (msg) => {
         console.debug('log_add_tx:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(addOrder(msg));
 
-					// if this is the user's order, then add it to the transaction display
+          // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
             dispatch(convertTradeLogToTransaction('log_add_tx', {
               [msg.market]: { [msg.outcome]: [msg] }
@@ -149,13 +149,13 @@ export function listenToUpdates() {
         }
       },
 
-			// order removed from orderbook
+      // order removed from orderbook
       log_cancel: (msg) => {
         console.debug('log_cancel:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(removeOrder(msg));
 
-					// if this is the user's order, then add it to the transaction display
+          // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
             dispatch(convertTradeLogToTransaction('log_cancel', {
               [msg.market]: { [msg.outcome]: [msg] }
@@ -165,7 +165,7 @@ export function listenToUpdates() {
         }
       },
 
-			// new market: msg = { marketID }
+      // new market: msg = { marketID }
       marketCreated: (msg) => {
         if (msg && msg.marketID) {
           console.debug('marketCreated:', msg);
@@ -177,7 +177,7 @@ export function listenToUpdates() {
         }
       },
 
-			// market trading fee updated (decrease only)
+      // market trading fee updated (decrease only)
       tradingFeeUpdated: (msg) => {
         console.debug('tradingFeeUpdated:', msg);
         if (msg && msg.marketID) {
@@ -203,7 +203,7 @@ export function listenToUpdates() {
         }
       },
 
-			// Cash (ether) transfer
+      // Cash (ether) transfer
       cashSent: (msg) => {
         if (msg) {
           console.debug('cashSent:', msg);
@@ -216,7 +216,7 @@ export function listenToUpdates() {
       },
 
 
-			// Reputation transfer
+      // Reputation transfer
       Transfer: (msg) => {
         if (msg) {
           console.debug('Transfer:', msg);
