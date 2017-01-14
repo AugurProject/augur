@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import augur from 'augur.js';
 
 describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -146,5 +145,5 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
       });
     }
-  })
+  });
 });
