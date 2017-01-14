@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 89 tests total
+// 97 tests total
 
 /***********
  * Parsers *
@@ -1549,32 +1549,35 @@ describe("logs.getLogs", function() {
 	});
 });
 describe("logs.getAccountTrades", function() {
-	// 4 (so far - not talled at top) tests total
+	// 8 tests total
 	var getLogsCC = 0;
 	var test = function(t) {
 		it(t.description, function() {
 			var getLogs = augur.getLogs;
+			var getParsedCompleteSetsLogs = augur.getParsedCompleteSetsLogs;
+			augur.getParsedCompleteSetsLogs = t.getParsedCompleteSetsLogs;
 			augur.getLogs = t.getLogs;
+
 			getLogsCC = 0;
 
 			augur.getAccountTrades(t.account, t.filterParams, t.callback);
 
 			augur.getLogs = getLogs;
+			augur.getParsedCompleteSetsLogs = getParsedCompleteSetsLogs;
 		});
 	};
-
 	test({
 		description: 'Should handle no filter params passed as well as an error from getLogs on the first call.',
 		account: '0x0',
 		filterParams: undefined,
 		getLogs: function(label, filterParams, aux, callback) {
 			// just confirming we get the expected Aux object:
+			assert.deepEqual(filterParams, { sender: '0x0' });
 			assert.deepEqual(aux, {
 					index: ["market", "outcome"],
 					mergedLogs: {},
 					extraField: {name: "maker", value: false}
 			});
-			assert.deepEqual(filterParams, { sender: '0x0' });
 			callback({ error: 'Uh-Oh!' });
 		},
 		callback: function(err, trades) {
@@ -1583,7 +1586,6 @@ describe("logs.getAccountTrades", function() {
 			assert.deepEqual(err, { error: 'Uh-Oh!' });
 		}
 	});
-
 	test({
 		description: 'Should handle no filter params passed as well as an error from getLogs on the second call.',
 		account: '0x0',
@@ -1603,12 +1605,12 @@ describe("logs.getAccountTrades", function() {
 				break;
 			default:
 				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
 				assert.deepEqual(aux, {
 						index: ["market", "outcome"],
 						mergedLogs: {},
 						extraField: {name: "maker", value: false}
 				});
-				assert.deepEqual(filterParams, { sender: '0x0' });
 				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
 				callback(null, []);
 				break;
@@ -1621,7 +1623,6 @@ describe("logs.getAccountTrades", function() {
 			assert.deepEqual(err, { error: 'Uh-Oh!' });
 		}
 	});
-
 	test({
 		description: 'Should handle no filter params passed as well as an error from getLogs on the third call.',
 		account: '0x0',
@@ -1651,12 +1652,12 @@ describe("logs.getAccountTrades", function() {
 				break;
 			default:
 				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
 				assert.deepEqual(aux, {
 						index: ["market", "outcome"],
 						mergedLogs: {},
 						extraField: {name: "maker", value: false}
 				});
-				assert.deepEqual(filterParams, { sender: '0x0' });
 				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
 				callback(null, []);
 				break;
@@ -1669,7 +1670,6 @@ describe("logs.getAccountTrades", function() {
 			assert.deepEqual(err, { error: 'Uh-Oh!' });
 		}
 	});
-
 	test({
 		description: 'Should handle no filter params passed as well as an error from getLogs on the fourth call.',
 		account: '0x0',
@@ -1709,12 +1709,12 @@ describe("logs.getAccountTrades", function() {
 				break;
 			default:
 				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
 				assert.deepEqual(aux, {
 						index: ["market", "outcome"],
 						mergedLogs: {},
 						extraField: {name: "maker", value: false}
 				});
-				assert.deepEqual(filterParams, { sender: '0x0' });
 				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
 				callback(null, []);
 				break;
@@ -1725,6 +1725,890 @@ describe("logs.getAccountTrades", function() {
 			// this functions as our assertion function
 			assert.isUndefined(trades);
 			assert.deepEqual(err, { error: 'Uh-Oh!' });
+		}
+	});
+	test({
+		description: 'Should handle no filter params passed with a successfully sorted and returned trade logs including completeSets.',
+		account: '0x0',
+		filterParams: undefined,
+		getParsedCompleteSetsLogs: function(account, completeSetsFilterParams, cb) {
+			// console.log(account, completeSetsFilterParams);
+			var parsed = augur.parseCompleteSetsLogs([{
+				data: [ abi.fix('100'), '2' ],
+				topics: ['0x0c5', '0x0b5', '0x0a5', '1'],
+				blockNumber: '25'
+			}], completeSetsFilterParams.mergeInto);
+			cb(null, parsed);
+		},
+		getLogs: function(label, filterParams, aux, callback) {
+			// console.log(getLogsCC, filterParams, aux, label);
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 3:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]},
+						'0x0a3': {'1': [{
+							market: '0x0a3',
+							sender: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '8',
+							removed: false,
+							maker: false
+						}]}},
+						extraField: {name: "maker", value: true }
+				});
+				aux.mergedLogs['0x0a4'] = {'1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]}},
+						extraField: {name: "maker", value: false }
+				});
+				aux.mergedLogs['0x0a3'] = {'1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}]};
+				callback(null, []);
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {
+							'0x0a1': {
+								'1': [{
+									market: '0x0a1',
+									sender: '0x0',
+									type: 'buy',
+									outcome: 1,
+									isShortAsk: false,
+									blockNumber: '1',
+									removed: false,
+									maker: false
+								}]
+							}
+						},
+						extraField: {name: "maker", value: true}
+				});
+				aux.mergedLogs['0x0a2'] = {'1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			default:
+				// First Call
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				// manually modify mergedLogs in the aux object directly like processLogs does
+				aux.mergedLogs = {
+					'0x0a1': {
+						'1': [{
+							market: '0x0a1',
+							sender: '0x0',
+							type: 'buy',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '1',
+							removed: false,
+							maker: false
+						}]
+					}
+				};
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isNull(err);
+			assert.deepEqual(trades, {
+				'0x0a1': { '1': [{
+					market: '0x0a1',
+					sender: '0x0',
+					type: 'buy',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '1',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a2': { '1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a3': { '1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a4': { '1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a5': {
+					'1': [ { type: 'buy',
+					    isCompleteSet: true,
+					    amount: '100',
+					    price: '0.5',
+					    blockNumber: 37 } ],
+					'2': [ { type: 'buy',
+						isCompleteSet: true,
+						amount: '100',
+						price: '0.5',
+						blockNumber: 37 } ]
+					}
+			});
+		}
+	});
+	test({
+		description: 'Should handle no filter params passed with a successfully sorted and returned trade logs after Complete Sets returns an error.',
+		account: '0x0',
+		filterParams: undefined,
+		getParsedCompleteSetsLogs: function(account, completeSetsFilterParams, cb) {
+			// return an error
+			cb({ error: 'Uh-Oh!' });
+		},
+		getLogs: function(label, filterParams, aux, callback) {
+			// console.log(getLogsCC, filterParams, aux, label);
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 3:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]},
+						'0x0a3': {'1': [{
+							market: '0x0a3',
+							sender: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '8',
+							removed: false,
+							maker: false
+						}]}},
+						extraField: {name: "maker", value: true }
+				});
+				aux.mergedLogs['0x0a4'] = {'1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]}},
+						extraField: {name: "maker", value: false }
+				});
+				aux.mergedLogs['0x0a3'] = {'1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}]};
+				callback(null, []);
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {
+							'0x0a1': {
+								'1': [{
+									market: '0x0a1',
+									sender: '0x0',
+									type: 'buy',
+									outcome: 1,
+									isShortAsk: false,
+									blockNumber: '1',
+									removed: false,
+									maker: false
+								}]
+							}
+						},
+						extraField: {name: "maker", value: true}
+				});
+				aux.mergedLogs['0x0a2'] = {'1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			default:
+				// First Call
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				// manually modify mergedLogs in the aux object directly like processLogs does
+				aux.mergedLogs = {
+					'0x0a1': {
+						'1': [{
+							market: '0x0a1',
+							sender: '0x0',
+							type: 'buy',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '1',
+							removed: false,
+							maker: false
+						}]
+					}
+				};
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isNull(err);
+			assert.deepEqual(trades, {
+				'0x0a1': { '1': [{
+					market: '0x0a1',
+					sender: '0x0',
+					type: 'buy',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '1',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a2': { '1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a3': { '1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a4': { '1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}] }
+			});
+		}
+	});
+	test({
+		description: 'Should handle filter params passed with noCompleteSets = true and return a successfully sorted trade logs.',
+		account: '0x0',
+		filterParams: { noCompleteSets: true },
+		getLogs: function(label, filterParams, aux, callback) {
+			// console.log(getLogsCC, filterParams, aux, label);
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 3:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0', noCompleteSets: true });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]},
+						'0x0a3': {'1': [{
+							market: '0x0a3',
+							sender: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '8',
+							removed: false,
+							maker: false
+						}]}},
+						extraField: {name: "maker", value: true }
+				});
+				aux.mergedLogs['0x0a4'] = {'1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0', noCompleteSets: true });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]}},
+						extraField: {name: "maker", value: false }
+				});
+				aux.mergedLogs['0x0a3'] = {'1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}]};
+				callback(null, []);
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0', noCompleteSets: true });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {
+							'0x0a1': {
+								'1': [{
+									market: '0x0a1',
+									sender: '0x0',
+									type: 'buy',
+									outcome: 1,
+									isShortAsk: false,
+									blockNumber: '1',
+									removed: false,
+									maker: false
+								}]
+							}
+						},
+						extraField: {name: "maker", value: true}
+				});
+				aux.mergedLogs['0x0a2'] = {'1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			default:
+				// First Call
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0', noCompleteSets: true });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				// manually modify mergedLogs in the aux object directly like processLogs does
+				aux.mergedLogs = {
+					'0x0a1': {
+						'1': [{
+							market: '0x0a1',
+							sender: '0x0',
+							type: 'buy',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '1',
+							removed: false,
+							maker: false
+						}]
+					}
+				};
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+		},
+		callback: function(err, trades) {
+			// this functions as our assertion function
+			assert.isNull(err);
+			assert.deepEqual(trades, {
+				'0x0a1': { '1': [{
+					market: '0x0a1',
+					sender: '0x0',
+					type: 'buy',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '1',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a2': { '1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a3': { '1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a4': { '1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}] }
+			});
+		}
+	});
+	test({
+		description: 'Should handle filterParams passed as the callback with a successfully sorted and returned trade logs including completeSets.',
+		account: '0x0',
+		getParsedCompleteSetsLogs: function(account, completeSetsFilterParams, cb) {
+			// console.log(account, completeSetsFilterParams);
+			var parsed = augur.parseCompleteSetsLogs([{
+				data: [ abi.fix('100'), '2' ],
+				topics: ['0x0c5', '0x0b5', '0x0a5', '1'],
+				blockNumber: '25'
+			}], completeSetsFilterParams.mergeInto);
+			cb(null, parsed);
+		},
+		getLogs: function(label, filterParams, aux, callback) {
+			// console.log(getLogsCC, filterParams, aux, label);
+			// just confirming we get the expected Aux object:
+			switch(getLogsCC) {
+			case 3:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]},
+						'0x0a3': {'1': [{
+							market: '0x0a3',
+							sender: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '8',
+							removed: false,
+							maker: false
+						}]}},
+						extraField: {name: "maker", value: true }
+				});
+				aux.mergedLogs['0x0a4'] = {'1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			case 2:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {'0x0a1': {
+							'1': [{
+								market: '0x0a1',
+								sender: '0x0',
+								type: 'buy',
+								outcome: 1,
+								isShortAsk: false,
+								blockNumber: '1',
+								removed: false,
+								maker: false
+							}]
+						},
+						'0x0a2': {'1': [{
+							market: '0x0a2',
+							owner: '0x0',
+							type: 'sell',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '3',
+							removed: false,
+							maker: true
+						}]}},
+						extraField: {name: "maker", value: false }
+				});
+				aux.mergedLogs['0x0a3'] = {'1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}]};
+				callback(null, []);
+				break;
+			case 1:
+				getLogsCC++;
+				assert.deepEqual(filterParams, { owner: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {
+							'0x0a1': {
+								'1': [{
+									market: '0x0a1',
+									sender: '0x0',
+									type: 'buy',
+									outcome: 1,
+									isShortAsk: false,
+									blockNumber: '1',
+									removed: false,
+									maker: false
+								}]
+							}
+						},
+						extraField: {name: "maker", value: true}
+				});
+				aux.mergedLogs['0x0a2'] = {'1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}]};
+				callback(null, []);
+				break;
+			default:
+				// First Call
+				getLogsCC++;
+				assert.deepEqual(filterParams, { sender: '0x0' });
+				assert.deepEqual(aux, {
+						index: ["market", "outcome"],
+						mergedLogs: {},
+						extraField: {name: "maker", value: false}
+				});
+				// manually modify mergedLogs in the aux object directly like processLogs does
+				aux.mergedLogs = {
+					'0x0a1': {
+						'1': [{
+							market: '0x0a1',
+							sender: '0x0',
+							type: 'buy',
+							outcome: 1,
+							isShortAsk: false,
+							blockNumber: '1',
+							removed: false,
+							maker: false
+						}]
+					}
+				};
+				// 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
+				callback(null, []);
+				break;
+			}
+
+		},
+		callback: undefined,
+		filterParams: function(err, trades) {
+			// this functions as our assertion function
+			assert.isNull(err);
+			assert.deepEqual(trades, {
+				'0x0a1': { '1': [{
+					market: '0x0a1',
+					sender: '0x0',
+					type: 'buy',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '1',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a2': { '1': [{
+					market: '0x0a2',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '3',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a3': { '1': [{
+					market: '0x0a3',
+					sender: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '8',
+					removed: false,
+					maker: false
+				}] },
+				'0x0a4': { '1': [{
+					market: '0x0a4',
+					owner: '0x0',
+					type: 'sell',
+					outcome: 1,
+					isShortAsk: false,
+					blockNumber: '18',
+					removed: false,
+					maker: true
+				}] },
+				'0x0a5': {
+					'1': [ { type: 'buy',
+					    isCompleteSet: true,
+					    amount: '100',
+					    price: '0.5',
+					    blockNumber: 37 } ],
+					'2': [ { type: 'buy',
+						isCompleteSet: true,
+						amount: '100',
+						price: '0.5',
+						blockNumber: 37 } ]
+					}
+			});
 		}
 	});
 });
