@@ -20,7 +20,7 @@ module.exports = {
 
   debug: false,
 
-  version: "1.0.0",
+  version: "1.1.1",
 
   constants: {
     ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -106,33 +106,41 @@ module.exports = {
   },
 
   bytes_to_utf16: function (bytearray) {
+    var el, bytestring;
+    if (Buffer.isBuffer(bytearray)) {
+      return new Buffer(bytearray, "hex").toString("utf8");
+    }
     if (bytearray.constructor === Array) {
-      var tmp = '';
-      for (var i = 0; i < bytearray.length; ++i) {
-        if (bytearray[i] !== undefined && bytearray[i] !== null) {
-          if (bytearray[i].constructor === String) {
-            tmp += this.strip_0x(bytearray[i]);
-          } else if (bytearray[i].constructor === Number) {
-            tmp += bytearray[i].toString(16);
-          } else if (Buffer.isBuffer(bytearray[i])) {
-            tmp += bytearray[i].toString("hex");
+      bytestring = '';
+      for (var i = 0, numBytes = bytearray.length; i < numBytes; ++i) {
+        el = bytearray[i];
+        if (el !== undefined && el !== null) {
+          if (el.constructor === String) {
+            el = this.strip_0x(el);
+            if (el.length % 2 !== 0) el = '0' + el;
+            bytestring += el;
+          } else if (el.constructor === Number || el.constructor === BigNumber) {
+            el = el.toString(16);
+            if (el.length % 2 !== 0) el = '0' + el;
+            bytestring += el;
+          } else if (Buffer.isBuffer(el)) {
+            bytestring += el.toString("hex");
           }
         }
       }
-      bytearray = tmp;
     }
     if (bytearray.constructor === String) {
-      bytearray = this.strip_0x(bytearray);
+      bytestring = this.strip_0x(bytearray);
+    } else if (bytearray.constructor === Number || bytearray.constructor === BigNumber) {
+      bytestring = bytearray.toString(16);
     }
-    if (!Buffer.isBuffer(bytearray)) {
-      try {
-        bytearray = new Buffer(bytearray, "hex");
-      } catch (ex) {
-        console.log("[augur-abi] bytes_to_utf16:", JSON.stringify(bytearray, null, 2));
-        throw ex;
-      }
+    try {
+      bytestring = new Buffer(bytestring, "hex");
+    } catch (ex) {
+      console.error("[augur-abi] bytes_to_utf16:", JSON.stringify(bytestring, null, 2));
+      throw ex;
     }
-    return bytearray.toString("utf8");
+    return bytestring.toString("utf8");
   },
 
   short_string_to_int256: function (shortstring) {
@@ -572,13 +580,9 @@ module.exports = {
   },
 
   parse_params: function (params) {
-    if (params !== undefined && params !== null &&
-            params !== [] && params !== "")
-        {
+    if (params !== undefined && params !== null && params !== [] && params !== "") {
       if (params.constructor === String) {
-        if (params.slice(0,1) === "[" &&
-                    params.slice(-1) === "]")
-                {
+        if (params.slice(0,1) === "[" && params.slice(-1) === "]") {
           params = JSON.parse(params);
         }
         if (params.constructor === String) {
@@ -22463,41 +22467,41 @@ module.exports={
         "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
     }, 
     "3": {
-        "Backstops": "0x99739f6bfcd74b9c3f6718e6eff388a444219369", 
-        "Branches": "0xfbd3970615adf968293c23a9999e1efdbe369306", 
-        "BuyAndSellShares": "0x39ced95894e47bb9d2f6b1b8526f43d69987ac3e", 
-        "Cash": "0xb13db9a01f589a5384213d168860d29453f4db19", 
-        "CloseMarket": "0xb4c1865c7370ee181b4e5eee41c839dac06c4196", 
-        "CollectFees": "0x96916008eebbbcaf9a3425cde3cce6d4fe995f0a", 
-        "CompleteSets": "0x5561d257442a5c5d907ebe1f1d4f1e127b33f311", 
-        "CompositeGetters": "0x104943c46d858881695ee7a852d1cbe246c3c0f1", 
-        "Consensus": "0xf6b21754b16a84631eae27c6e93890ea62e63919", 
-        "ConsensusData": "0x0e32fb15e163402785476ddcc7496736afcef6ce", 
-        "CreateBranch": "0x170274de054120ffe47ccb13a1c269ae7bc1895a", 
-        "CreateMarket": "0x33d76d2434d5033297302ee0b27b72393b9a806c", 
-        "EventResolution": "0x9c9ff61d7931c5695b7433717fc5893516921519", 
-        "Events": "0x160f2dcef1bbeb993822a664f7f99501b4b79635", 
-        "ExpiringEvents": "0x46c2a2a1e20a529f22fc5189feb97bea86d1b9e9", 
-        "Faucets": "0x418cdf90976d007966488b4fa47a669b387e7e2b", 
-        "ForkPenalize": "0x177c8208b200e04c123f142d7d6c4e4887e7422c", 
-        "Forking": "0x9621bbea0e0170c31d44f4a98ef8dff7490dd51d", 
-        "FxpFunctions": "0x0db6461948e14b8e8f21abb10a7e0c69d82117a6", 
-        "Info": "0xa4d15709a2f8d88d1acb22fafa8424570222fd1c", 
-        "MakeReports": "0x43f642016d08c09b8addbfcdd794d6b986884a71", 
-        "Markets": "0x6c20a929731e787eb573c88fef254a9409f08fe2", 
-        "Payout": "0x7054ee417059e4f038c968c5084f5fb1b099d7c6", 
-        "PenalizationCatchup": "0x06cd646d6d675266b1aa986230f886bac2006cbb", 
-        "PenalizeNotEnoughReports": "0xc6b6f03104b2db5a9d3381915e284b57f225ad66", 
-        "ProportionCorrect": "0x3a48674cffdec5943ca3022f0e7c5e271ccb951e", 
-        "Register": "0x0fb8908ee430b8ea89c48464a1225675af5cfbae", 
-        "Reporting": "0x1c29f6340627dc14d267f7f579e67b282667456d", 
-        "ReportingThreshold": "0xd3a1881d01c808d1c6947307ad32afdfce0cca98", 
-        "RoundTwo": "0xa66e1aaede72fb23f98d0e4c1a178d88fe359860", 
-        "RoundTwoPenalize": "0xef1e195662133016b379f0d2b74f7d6d85b1a071", 
-        "SendReputation": "0xc6bb29557a9d9925cb4715fa1dd33078488e1dc1", 
-        "SlashRep": "0xb9e3ed9f364058c0f3401c7aef761515a1decf7a", 
-        "Trade": "0x98f77e5269a52719a9aa1653b27192490506af4b", 
-        "Trades": "0x3708ad269ec95d5348cd7af2b7a1c9dde04ea138"
+        "Backstops": "0x5f6623608a6dedff51c6258a1ac271b28ef79f07", 
+        "Branches": "0x6854670653257ac1329983a76cef7ccc7ff67674", 
+        "BuyAndSellShares": "0xce7da26e82cc7bcf6eefcc6761c27f37fe7550c0", 
+        "Cash": "0xe1f39399f38071ef38e4541a1615f1ef70ff5e18", 
+        "CloseMarket": "0xb1f9ebf616c79f0cdb30dc48b1a089598fa29f34", 
+        "CollectFees": "0xa5716c2b7fbbc9588ced046fedb71610d99f5d04", 
+        "CompleteSets": "0x0082b66b5ef1c857cc6d869e423343e7bfb03d8a", 
+        "CompositeGetters": "0x68d04b32e4dbf6844ee9a8f5419456048c56004e", 
+        "Consensus": "0xb86b84209aa3f7acaf9f1f7fc9e6dcca7e65db9e", 
+        "ConsensusData": "0x0862bd1a0901219bf81309f883f67ee82073a8b6", 
+        "CreateBranch": "0x16af93de362f97b96693f5b2c3a3bba3a27ae2b2", 
+        "CreateMarket": "0x049fd37576d74efe855452c9c61578df41554ff0", 
+        "EventResolution": "0x19e1fc9cbaf968e1eb035385c62221238968d7a0", 
+        "Events": "0xd7b6f43b43090b597caba32faacdb8841512fc65", 
+        "ExpiringEvents": "0x043ac01ed52d549accb0f1f7616fc34fb5657b51", 
+        "Faucets": "0x5a5874d5268519e2233e2f6e14f32eceaedd59aa", 
+        "ForkPenalize": "0xdeb142a7691923c301be4a89509f736a86bb681f", 
+        "Forking": "0x40fe8524eb4e141c12c16412afe4bab5c94551de", 
+        "FxpFunctions": "0xa1b1d11bd71e30aed95602fcbc7ed6be8ea8b7d2", 
+        "Info": "0x5ded30c21f6ac3e2567ee6052d2f2aa48a167bcd", 
+        "MakeReports": "0x123c6edfcde7cf8eff3928782456b42014118204", 
+        "Markets": "0x3b063fafcba91081219cd85df7acd390191609bb", 
+        "Payout": "0x3ec1b5396fd39101bfe5b3670f904807c996535e", 
+        "PenalizationCatchup": "0x80989ad93e2cd3bef55f97f770ee184138478ae0", 
+        "PenalizeNotEnoughReports": "0x1c2ac827157f6250ff65f6294bfde77f1713e34c", 
+        "ProportionCorrect": "0x425a2e7b655f2625b0eef9c2c6300db98b29464a", 
+        "Register": "0xd209c792467417d71e5ab38440c9cc2769fc8e37", 
+        "Reporting": "0x87cb32509f665364b6b53afbe1141cf37cdd2d4a", 
+        "ReportingThreshold": "0x30924e8620e38407c24f4954fc8c8dddc27b1443", 
+        "RoundTwo": "0xf19a64c011fe95492d190325731873bc3bb28bde", 
+        "RoundTwoPenalize": "0x13dc24a2cd15acaed004cf011a7d283aa798e202", 
+        "SendReputation": "0x7f3eff49bfc9757a4eea1204f8b54abfdbe24cd7", 
+        "SlashRep": "0x92395ed2899261ed61fba48131eb80f0d4917e8a", 
+        "Trade": "0xccf55a273ae3230c128732afb9abd8675a662d98", 
+        "Trades": "0x9fae2352f99dd6e829fa9c6bf3ee4de4f568f68a"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -41755,7 +41759,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.4";
+  this.version = "3.7.5";
 
   this.options = {
     debug: {
