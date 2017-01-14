@@ -92,20 +92,20 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       });
       sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID]);
       sinon.stub(ConstructTransaction, 'constructTradingTransaction', (label, trade, marketID, outcomeID, status) => (
-				(dispatch) => {
-  dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
-  return { label, trade, marketID, outcomeID, status };
-}
-			));
+        (dispatch) => {
+          dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
+          return { label, trade, marketID, outcomeID, status };
+        }
+      ));
       sinon.stub(ConstructTransaction, 'constructTransaction', (label, log) => (
-				(dispatch) => {
-  dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
-  return { label, log };
-}
-			));
+        (dispatch) => {
+          dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
+          return { label, log };
+        }
+      ));
       sinon.stub(UpdateTradeCommitment, 'updateTradeCommitment', tradeCommitment => dispatch => (
-				dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
-			));
+        dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
+      ));
       const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
       t.assertions(store.getActions(), relayTransaction);
       store.clearActions();
