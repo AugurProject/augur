@@ -387,7 +387,7 @@ module.exports = {
     if (price === null) return null;
 
     return {
-      id: trade[0],
+      id: abi.format_int256(trade[0]),
       type: type,
       market: trade[2],
       amount: amount,
