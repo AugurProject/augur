@@ -7,7 +7,7 @@ import { constructRelayTransaction } from '../../transactions/actions/construct-
 
 export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
-    // console.log('txRelay:', JSON.stringify(tx, null, 4));
+    console.log('txRelay:', tx);
     const hash = tx.response.hash;
     const { loginAccount, transactionsData } = getState();
     if (hash && tx.data.from === loginAccount.address) {

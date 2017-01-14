@@ -92,7 +92,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         tradeid: p.buyer_trade_id,
         tradeHash,
         takerFee: tradingFees,
-        gasFees
+        gasFees,
+        isShortSell: true
       }, order.market, order.outcome, status));
     }
     case 'trade': {
