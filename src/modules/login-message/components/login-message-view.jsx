@@ -56,6 +56,12 @@ const LoginMessagePage = p => (
       <h3>January 13, 2017</h3>
       <ol>
         <li>
+          Fixed a trade ID formatting bug that was causing some trades to show up twice on the transactions page.
+        </li>
+        <li>
+          All contracts have been reuploaded on Ropsten (network 3) as well as our private testing chain (network 9000).  Transaction history is now &quot;portable&quot;: it will still be viewable even if you login on a different browser or computer!
+        </li>
+        <li>
           The upgraded transactions subsystem is now merged into the master branch!
         </li>
         <li>
