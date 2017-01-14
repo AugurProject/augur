@@ -111,7 +111,7 @@ export function constructPenalizationCaughtUpTransaction(log) {
   const transaction = { data: {} };
   transaction.type = 'Reporting Cycle Catch-Up';
   transaction.description = `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`;
-	// TODO link to this cycle in My Reports
+  // TODO link to this cycle in My Reports
   if (log.repLost && log.newRepBalance) {
     transaction.data.balances = [{
       change: formatRep(log.repLost, { positiveSign: true }),
@@ -304,6 +304,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 }
 
 export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+  if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
@@ -418,10 +419,10 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
   const fxpShares = abi.fix(trade.amount);
   const fxpPrice = abi.fix(trade.price);
   const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
-		.floor()
-		.times(fxpPrice)
-		.dividedBy(constants.ONE)
-		.floor();
+    .floor()
+    .times(fxpPrice)
+    .dividedBy(constants.ONE)
+    .floor();
   let noFeeCost;
   if (trade.isShortAsk) {
     noFeeCost = fxpShares;
@@ -431,8 +432,8 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
   const totalCost = noFeeCost.plus(tradingFees);
   const totalCostPerShare = totalCost.dividedBy(fxpShares).times(constants.ONE).floor();
   const totalReturn = fxpPrice.times(fxpShares).dividedBy(constants.ONE)
-		.floor()
-		.minus(tradingFees);
+    .floor()
+    .minus(tradingFees);
   const totalReturnPerShare = totalReturn.dividedBy(fxpShares).times(constants.ONE).floor();
   return {
     [trade.transactionHash]: {
