@@ -9,6 +9,7 @@ const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
 if(process.argv[2] === 'dev' || process.argv[2] === 'development') {
   process.env.NODE_ENV = 'development';
+  process.env.DEBUG_BUILD = true;
 } else {
   process.env.NODE_ENV = 'production';
 }
