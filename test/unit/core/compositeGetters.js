@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 15 tests total
+// 17 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -151,7 +151,30 @@ describe('CompositeGetters.getPositionInMarket', function() {
         }
     });
 });
-describe.skip('CompositeGetters.adjustScalarOrder', function() {});
+describe('CompositeGetters.adjustScalarOrder', function() {
+    // 2 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.adjustScalarOrder(t.order, t.minValue));
+        });
+    };
+    test({
+        description: 'Should handle adjusting an order passed with just a price',
+        order: { price: '25' },
+        minValue: '10',
+        assertions: function(o) {
+            assert.deepEqual(o, { price: '35', fullPrecisionPrice: '45' });
+        }
+    });
+    test({
+        description: 'Should handle adjusting an order passed with a price and fullPrecisionPrice',
+        order: { price: '15', fullPrecisionPrice: '30' },
+        minValue: '-5',
+        assertions: function(o) {
+            assert.deepEqual(o, { price: '10', fullPrecisionPrice: '25' });
+        }
+    });
+});
 describe.skip('CompositeGetters.parseOrderBook', function() {});
 describe.skip('CompositeGetters.getOrderBook', function() {});
 describe.skip('CompositeGetters.validateMarketInfo', function() {});
