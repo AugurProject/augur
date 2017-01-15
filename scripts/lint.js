@@ -14,54 +14,54 @@ shell.echo(colors.title(`
 `));
 
 const lintSource = new Promise((resolve, reject) => {
-	shell.exec(`eslint --ext .js,.jsx ${srcPath}`, (code) => {
-		if (code !== 0) {
-			reject(new Error());
-			shell.exit(code);
-		}
+  shell.exec(`eslint --ext .js,.jsx ${srcPath}`, (code) => {
+    if (code !== 0) {
+      reject(new Error());
+      shell.exit(code);
+    }
 
-		resolve();
-	});
+    resolve();
+  });
 });
 
 const lintTests = new Promise((resolve, reject) => {
-	shell.exec(`eslint --ext .js ${testPath}`, (code) => {
-		if (code !== 0) {
-			reject(new Error());
-			shell.exit(code);
-		}
+  shell.exec(`eslint --ext .js ${testPath}`, (code) => {
+    if (code !== 0) {
+      reject(new Error());
+      shell.exit(code);
+    }
 
-		resolve();
-	});
+    resolve();
+  });
 });
 
 const lintStyles = new Promise((resolve, reject) => {
-	shell.exec(`stylelint '${srcPath}/**/*.less'`, (code) => {
-		if (code !== 0) {
-			reject(new Error());
-			shell.exit(code);
-		}
+  shell.exec(`stylelint '${srcPath}/**/*.less'`, (code) => {
+    if (code !== 0) {
+      reject(new Error());
+      shell.exit(code);
+    }
 
-		resolve();
-	});
+    resolve();
+  });
 });
 
 const tasks = new Listr([
-	{
-		title: 'Linting Source',
-		task: () => lintSource
-	},
-	{
-		title: 'Linting Tests',
-		task: () => lintTests
-	},
-	{
-		title: 'Linting Styles',
-		task: () => lintStyles
-	},
+  {
+    title: 'Linting Source',
+    task: () => lintSource
+  },
+  {
+    title: 'Linting Tests',
+    task: () => lintTests
+  },
+  {
+    title: 'Linting Styles',
+    task: () => lintStyles
+  },
 ], {
-	concurrent: true,
-	renderer: 'verbose'
+  concurrent: true,
+  renderer: 'verbose'
 });
 
 tasks.run().catch((err) => {});

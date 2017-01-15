@@ -1,44 +1,44 @@
 button,
 .button {
 
-	.border();
-	.font-size-normal();
-	.font-weight-normal();
+  .border();
+  .font-size-normal();
+  .font-weight-normal();
 
-	background-color: @color-blue;
-	color: @color-text-light;
-	cursor: default;
-	padding: 1em 1.5em;
+  background-color: @color-blue;
+  color: @color-text-light;
+  cursor: default;
+  padding: 1em 1.5em;
 
-	// Types
-	&.unstyled {
+  // Types
+  &.unstyled {
 
-		.font-defaults();
+    .font-defaults();
 
-		background-color: transparent;
-		color: inherit;
-		cursor: default;
-		padding: 0;
-	}
+    background-color: transparent;
+    color: inherit;
+    cursor: default;
+    padding: 0;
+  }
 
-	&.button-text-only {
-		background-color: transparent;
-		color: inherit;
-		cursor: default;
-	}
+  &.button-text-only {
+    background-color: transparent;
+    color: inherit;
+    cursor: default;
+  }
 
-	&.imperative {
-		background-color: @color-red;
-		color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up
-	}
+  &.imperative {
+    background-color: @color-red;
+    color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up
+  }
 
-	&.navigational {
-		cursor: pointer;
-	}
+  &.navigational {
+    cursor: pointer;
+  }
 
-	&:visited {
-		color: @color-text-light;
-	}
+  &:visited {
+    color: @color-text-light;
+  }
 }
 
 // OLD -- ref only, to be removed

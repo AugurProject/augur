@@ -1,22 +1,22 @@
 import React from 'react';
 
 const Dropdown = p => (
-	<div className="dropdown">
-		<select
-			onChange={(event) => { p.onChange(event.target.value); }}
-			defaultValue={p.default}
-		>
-			{p.options.map(option => (
-				<option
-					key={option.value}
-					value={option.value}
-				>
-					{option.label}
-				</option>
+  <div className="dropdown">
+    <select
+      onChange={(event) => { p.onChange(event.target.value); }}
+      defaultValue={p.default}
+    >
+      {p.options.map(option => (
+        <option
+          key={option.value}
+          value={option.value}
+        >
+          {option.label}
+        </option>
 			))}
-		</select>
-		<i className="fa"></i>
-	</div>
+    </select>
+    <i className="fa"></i>
+  </div>
 );
 
 // TODO -- Prop Validations

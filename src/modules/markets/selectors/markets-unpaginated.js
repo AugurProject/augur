@@ -6,10 +6,10 @@ import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-head
 import store from '../../../store';
 
 export default function () {
-	const { activeView, selectedMarketsHeader } = store.getState();
-	const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
+  const { activeView, selectedMarketsHeader } = store.getState();
+  const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
 
-	return selectUnpaginatedMarkets(
+  return selectUnpaginatedMarkets(
 		allMarkets,
 		filteredMarkets,
 		favoriteMarkets,
@@ -27,17 +27,17 @@ export const selectPositions = memoizerific(1)(markets =>
 );
 
 export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
-	if (activeView === MY_POSITIONS) {
-		return selectPositions(allMarkets);
-	}
+  if (activeView === MY_POSITIONS) {
+    return selectPositions(allMarkets);
+  }
 
-	if (selectedMarketsHeader === PENDING_REPORTS) {
-		return selectPendingReports(allMarkets);
-	}
+  if (selectedMarketsHeader === PENDING_REPORTS) {
+    return selectPendingReports(allMarkets);
+  }
 
-	if (selectedMarketsHeader === FAVORITES) {
-		return favoriteMarkets;
-	}
+  if (selectedMarketsHeader === FAVORITES) {
+    return favoriteMarkets;
+  }
 
-	return filteredMarkets;
+  return filteredMarkets;
 });

@@ -1,166 +1,74 @@
 import async from 'async';
-import BigNumber from 'bignumber.js';
+import { ROUND_DOWN } from 'bignumber.js';
+import uuid from 'uuid';
+import uuidParse from 'uuid-parse';
 import { BUY, SELL } from '../../trade/constants/types';
 import { augur, abi, constants } from '../../../services/augurjs';
-import { addTradeTransaction } from '../../transactions/actions/add-trade-transaction';
-import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
-import { updateTradeCommitLock } from '../../trade/actions/update-trade-commit-lock';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
-import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
-import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
-import { addShortSellTransaction } from '../../transactions/actions/add-short-sell-transaction';
-import { addShortAskTransaction } from '../../transactions/actions/add-short-ask-transaction';
+import { splitAskAndShortAsk } from '../../trade/actions/split-order';
+import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
+import { placeBuy, placeSell, placeShortSell } from '../../trade/actions/take-order';
 
 export function placeTrade(marketID, outcomeID) {
-	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
-		const marketTradeInProgress = tradesInProgress[marketID];
-		const market = selectMarket(marketID);
-		if (!marketTradeInProgress || !market) {
-			return;
-		}
+  return (dispatch, getState) => {
+    if (!marketID) return null;
+    const { loginAccount, marketsData, orderBooks, tradesInProgress } = getState();
+    const market = marketsData[marketID];
+    if (!tradesInProgress[marketID] || !market || outcomeID == null) {
+      console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
+      return dispatch(clearTradeInProgress(marketID));
+    }
+    async.eachSeries(tradesInProgress[marketID], (tradeInProgress, nextTradeInProgress) => {
+      if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {
+        return nextTradeInProgress();
+      }
+      console.debug('tradeInProgress:', tradeInProgress);
+      const totalCost = abi.bignum(tradeInProgress.totalCost).abs().toFixed();
+      const limitPrice = tradeInProgress.limitPrice;
+      const numShares = tradeInProgress.numShares;
+      const tradingFees = tradeInProgress.tradingFeesEth;
+      const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString('hex'));
+      if (tradeInProgress.side === BUY) {
+        const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
+        if (tradeIDs && tradeIDs.length) {
+          dispatch(placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
+        } else {
+          placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID);
+        }
+        nextTradeInProgress();
+      } else if (tradeInProgress.side === SELL) {
 
-		// Just submit the currently selected outcome's trade
-		// This is primarily a slight refactor to allow for single outcome trading, while leaving in place the functionality for multi-trade
-		const singleOutcomeMarketTradeInProgress = { [outcomeID]: marketTradeInProgress[outcomeID] };
-
-		async.forEachOf(singleOutcomeMarketTradeInProgress, (outcomeTradeInProgress, outcomeID, nextOutcome) => {
-			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
-				return nextOutcome(outcomeTradeInProgress || 'outcome trade in progress not found');
-			}
-			console.log('outcomeTradeInProgress:', outcomeTradeInProgress);
-			const totalCost = abi.bignum(outcomeTradeInProgress.totalCost).abs().toFixed();
-			if (outcomeTradeInProgress.side === BUY) {
-				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.address);
-				if (tradeIDs && tradeIDs.length) {
-					dispatch(updateTradeCommitLock(true));
-					dispatch(addTradeTransaction(
-						BUY,
-						marketID,
-						outcomeID,
-						market.type,
-						market.description,
-						outcomesData[marketID][outcomeID].name,
-						outcomeTradeInProgress.numShares,
-						outcomeTradeInProgress.limitPrice,
-						totalCost,
-						outcomeTradeInProgress.tradingFeesEth,
-						outcomeTradeInProgress.feePercent,
-						outcomeTradeInProgress.gasFeesRealEth));
-				} else {
-					dispatch(addBidTransaction(
-						marketID,
-						outcomeID,
-						market.type,
-						market.description,
-						outcomesData[marketID][outcomeID].name,
-						outcomeTradeInProgress.numShares,
-						outcomeTradeInProgress.limitPrice,
-						totalCost,
-						outcomeTradeInProgress.tradingFeesEth,
-						outcomeTradeInProgress.feePercent,
-						outcomeTradeInProgress.gasFeesRealEth));
-				}
-				nextOutcome();
-			} else if (outcomeTradeInProgress.side === SELL) {
-
-				// check if user has position
-				//  - if so, sell/ask
-				//  - if not, short sell/short ask
-				augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
-					if (!sharesPurchased || sharesPurchased.error) {
-						console.error('getParticipantSharesPurchased:', sharesPurchased);
-						return nextOutcome(sharesPurchased || 'shares lookup failed');
-					}
-					const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.address);
-					if (position && position.gt(constants.PRECISION.zero)) {
-						if (tradeIDs && tradeIDs.length) {
-							dispatch(updateTradeCommitLock(true));
-							dispatch(addTradeTransaction(
-								SELL,
-								marketID,
-								outcomeID,
-								market.type,
-								market.description,
-								outcomesData[marketID][outcomeID].name,
-								outcomeTradeInProgress.numShares,
-								outcomeTradeInProgress.limitPrice,
-								totalCost,
-								outcomeTradeInProgress.tradingFeesEth,
-								outcomeTradeInProgress.feePercent,
-								outcomeTradeInProgress.gasFeesRealEth));
-						} else {
-							let askShares;
-							let shortAskShares;
-							const numShares = abi.bignum(outcomeTradeInProgress.numShares);
-							if (position.gt(numShares)) {
-								askShares = outcomeTradeInProgress.numShares;
-								shortAskShares = '0';
-							} else {
-								askShares = position.toFixed();
-								shortAskShares = numShares.minus(position).toFixed();
-							}
-							dispatch(addAskTransaction(
-								marketID,
-								outcomeID,
-								market.type,
-								market.description,
-								outcomesData[marketID][outcomeID].name,
-								askShares,
-								outcomeTradeInProgress.limitPrice,
-								totalCost,
-								outcomeTradeInProgress.tradingFeesEth,
-								outcomeTradeInProgress.feePercent,
-								outcomeTradeInProgress.gasFeesRealEth));
-							if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-								dispatch(addShortAskTransaction(
-									marketID,
-									outcomeID,
-									market.type,
-									market.description,
-									outcomesData[marketID][outcomeID].name,
-									shortAskShares,
-									outcomeTradeInProgress.limitPrice,
-									totalCost,
-									outcomeTradeInProgress.tradingFeesEth,
-									outcomeTradeInProgress.feePercent,
-									outcomeTradeInProgress.gasFeesRealEth));
-							}
-						}
-					} else if (tradeIDs && tradeIDs.length) {
-						dispatch(updateTradeCommitLock(true));
-						dispatch(addShortSellTransaction(
-								marketID,
-								outcomeID,
-								market.type,
-								market.description,
-								outcomesData[marketID][outcomeID].name,
-								outcomeTradeInProgress.numShares,
-								outcomeTradeInProgress.limitPrice,
-								totalCost,
-								outcomeTradeInProgress.tradingFeesEth,
-								outcomeTradeInProgress.feePercent,
-								outcomeTradeInProgress.gasFeesRealEth));
-					} else {
-						dispatch(addShortAskTransaction(
-								marketID,
-								outcomeID,
-								market.type,
-								market.description,
-								outcomesData[marketID][outcomeID].name,
-								outcomeTradeInProgress.numShares,
-								outcomeTradeInProgress.limitPrice,
-								totalCost,
-								outcomeTradeInProgress.tradingFeesEth,
-								outcomeTradeInProgress.feePercent,
-								outcomeTradeInProgress.gasFeesRealEth));
-					}
-					nextOutcome();
-				});
-			}
-		});
-		dispatch(clearTradeInProgress(marketID));
-	};
+        // check if user has position
+        //  - if so, sell/ask
+        //  - if not, short sell/short ask
+        augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
+          if (!sharesPurchased || sharesPurchased.error) return nextTradeInProgress(sharesPurchased);
+          const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, ROUND_DOWN);
+          const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
+          if (position && position.gt(constants.PRECISION.zero)) {
+            if (tradeIDs && tradeIDs.length) {
+              dispatch(placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
+            } else {
+              const { askShares, shortAskShares } = splitAskAndShortAsk(abi.bignum(numShares), position);
+              if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
+                placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
+              }
+              if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
+                placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
+              }
+            }
+          } else if (tradeIDs && tradeIDs.length) {
+            dispatch(placeShortSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
+          } else {
+            placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID);
+          }
+          nextTradeInProgress();
+        });
+      }
+    }, (err) => {
+      if (err) console.error('place trade:', err);
+      dispatch(clearTradeInProgress(marketID));
+    });
+  };
 }

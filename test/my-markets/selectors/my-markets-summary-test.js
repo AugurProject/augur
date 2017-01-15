@@ -8,44 +8,44 @@ import proxyquire from 'proxyquire';
 import * as mockStore from 'test/mockStore';
 
 describe('modules/my-markets/selectors/my-markets-summary', () => {
-	proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru();
 
-	let actual;
+  let actual;
 
-	const { store } = mockStore.default;
-	const { loginAccount, allMarkets } = store.getState();
+  const { store } = mockStore.default;
+  const { loginAccount, allMarkets } = store.getState();
 
-	const stubbedSelectors = { loginAccount, allMarkets };
+  const stubbedSelectors = { loginAccount, allMarkets };
 
-	const proxiedMyMarkets = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-		'../../../selectors': stubbedSelectors,
-		'../../../store': store
-	});
+  const proxiedMyMarkets = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+    '../../../selectors': stubbedSelectors,
+    '../../../store': store
+  });
 
-	const spiedMyMarkets = sinon.spy(proxiedMyMarkets, 'default');
+  const spiedMyMarkets = sinon.spy(proxiedMyMarkets, 'default');
 
-	const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets-summary', {
-		'../../../modules/my-markets/selectors/my-markets': proxiedMyMarkets
-	});
+  const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets-summary', {
+    '../../../modules/my-markets/selectors/my-markets': proxiedMyMarkets
+  });
 
-	const expected = {
-		numMarkets: 2,
-		totalValue: 21
-	};
+  const expected = {
+    numMarkets: 2,
+    totalValue: 21
+  };
 
-	before(() => {
-		actual = proxiedSelector.default();
-	});
+  before(() => {
+    actual = proxiedSelector.default();
+  });
 
-	it(`should call 'selectMyMarkets' once`, () => {
-		assert(spiedMyMarkets.calledOnce, `Didn't call 'selectMyMarkets' once as expected`);
-	});
+  it(`should call 'selectMyMarkets' once`, () => {
+    assert(spiedMyMarkets.calledOnce, `Didn't call 'selectMyMarkets' once as expected`);
+  });
 
-	it(`should return the correct object`, () => {
-		assert.deepEqual(expected, actual, `Didn't return the expected object`);
-	});
+  it(`should return the correct object`, () => {
+    assert.deepEqual(expected, actual, `Didn't return the expected object`);
+  });
 
-	it('should return the correct object to augur-ui-react-components', () => {
-		myMarketsSummaryAssertions(actual);
-	});
+  it('should return the correct object to augur-ui-react-components', () => {
+    myMarketsSummaryAssertions(actual);
+  });
 });

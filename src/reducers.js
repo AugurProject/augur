@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import env from './modules/app/reducers/env';
 import requests from './modules/app/reducers/requests';
 import blockchain from './modules/app/reducers/blockchain';
-import branch from './modules/app/reducers/branch';
+import branch from './modules/branch/reducers/branch';
 import connection from './modules/app/reducers/connection';
 import url from './modules/link/reducers/url';
 
@@ -12,8 +12,8 @@ import loginAccount from './modules/auth/reducers/login-account';
 import activeView from './modules/app/reducers/active-view';
 
 import marketsData from './modules/markets/reducers/markets-data';
-import marketDataTimestamps from './modules/markets/reducers/market-data-timestamps';
 import outcomesData from './modules/markets/reducers/outcomes-data';
+import eventMarketsMap from './modules/markets/reducers/event-markets-map';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
@@ -35,6 +35,7 @@ import selectedMarketsHeader from './modules/markets/reducers/selected-markets-h
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
+import tradeCommitment from './modules/trade/reducers/trade-commitment';
 import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-sets-lock';
 import smallestPositions from './modules/my-positions/reducers/smallest-positions';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
@@ -52,56 +53,57 @@ import loginMessage from './modules/login-message/reducers/login-message';
 import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
 
 export function createReducer() {
-	return combineReducers({
-		env,
-		requests,
-		blockchain,
-		branch,
-		connection,
-		url,
+  return combineReducers({
+    env,
+    requests,
+    blockchain,
+    branch,
+    connection,
+    url,
 
-		auth,
-		loginAccount,
-		activeView,
+    auth,
+    loginAccount,
+    activeView,
 
-		marketsData,
-		marketDataTimestamps,
-		outcomesData,
-		favorites,
-		pagination,
+    marketsData,
+    outcomesData,
+    eventMarketsMap,
+    favorites,
+    pagination,
 
-		reports,
-		oldestLoadedEventPeriod,
-		eventsWithAccountReport,
+    reports,
+    oldestLoadedEventPeriod,
+    eventsWithAccountReport,
 
-		selectedMarketID,
-		selectedMarketsHeader,
-		keywords,
-		selectedTags,
-		selectedFilterSort,
-		priceHistory,
-		selectedOutcomeID,
-		loginMessage,
+    selectedMarketID,
+    selectedMarketsHeader,
+    keywords,
+    selectedTags,
+    selectedFilterSort,
+    priceHistory,
+    selectedOutcomeID,
+    loginMessage,
 
-		tradesInProgress,
-		tradeCommitLock,
-		sellCompleteSetsLock,
-		smallestPositions,
-		createMarketInProgress,
+    tradesInProgress,
+    tradeCommitLock,
+    tradeCommitment,
+    sellCompleteSetsLock,
+    smallestPositions,
+    createMarketInProgress,
 
-		orderBooks,
-		orderCancellation,
-		marketTrades,
-		accountTrades,
-		accountPositions,
-		completeSetsBought,
-		netEffectiveTrades,
-		transactionsData,
-		scalarMarketsShareDenomination,
+    orderBooks,
+    orderCancellation,
+    marketTrades,
+    accountTrades,
+    accountPositions,
+    completeSetsBought,
+    netEffectiveTrades,
+    transactionsData,
+    scalarMarketsShareDenomination,
 
-		settings,
-		chatMessages,
+    settings,
+    chatMessages,
 
-		marketCreatorFees
-	});
+    marketCreatorFees
+  });
 }
