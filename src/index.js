@@ -38,7 +38,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.6";
+  this.version = "3.7.7";
 
   this.options = {
     debug: {
@@ -48,7 +48,8 @@ function Augur() {
       connect: false,     // connection debug logging in ethereumjs-connect
       trading: false,     // trading-related debug logging
       reporting: false,   // reporting-related debug logging
-      filters: false      // filters-related debug logging
+      filters: false,     // filters-related debug logging
+      sync: true          // show warning on synchronous RPC request
     },
     loadZeroVolumeMarkets: true
   };
