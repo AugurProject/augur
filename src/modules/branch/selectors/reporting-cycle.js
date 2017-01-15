@@ -1,9 +1,8 @@
-import memoizerific from 'memoizerific';
 import moment from 'moment';
 import { augur, abi } from '../../../services/augurjs';
 import { ONE } from '../../trade/constants/numbers';
 
-export const reportingCycle = memoizerific(1)((periodLength, timestamp) => {
+export const reportingCycle = (periodLength, timestamp) => {
   const currentPeriod = augur.getCurrentPeriod(periodLength, timestamp);
   const currentPeriodProgress = augur.getCurrentPeriodProgress(periodLength, timestamp);
   const isReportRevealPhase = currentPeriodProgress > 50;
@@ -19,4 +18,4 @@ export const reportingCycle = memoizerific(1)((periodLength, timestamp) => {
     phaseTimeRemaining = moment.duration(secondsRemaining.minus(bnPeriodLength.dividedBy(2)).toNumber(), 'seconds').humanize(true);
   }
   return { currentPeriod, currentPeriodProgress, isReportRevealPhase, phaseLabel, phaseTimeRemaining };
-});
+};
