@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 17 tests total
+// 21 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -176,7 +176,64 @@ describe('CompositeGetters.adjustScalarOrder', function() {
     });
 });
 describe.skip('CompositeGetters.parseOrderBook', function() {});
-describe.skip('CompositeGetters.getOrderBook', function() {});
+describe('CompositeGetters.getOrderBook', function() {
+    // 4 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var fire = augur.fire;
+            // use fire as our assertions...
+            augur.fire = t.assertions;
+
+            augur.getOrderBook(t.market, t.scalarMinMax, t.callback);
+
+            augur.fire = fire;
+        });
+    };
+    test({
+        description: 'Should handle scalarMinMax being passed as a callback',
+        market: '0x0a1',
+        scalarMinMax: utils.noop,
+        callback: undefined,
+        assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+            assert.isNull(scalarMinMax);
+            assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+        }
+    });
+    test({
+        description: 'Should handle a market Object with only minimal key/values with an undefined scalarMinMax and a callback passed',
+        market: { market: '0x0a1' },
+        scalarMinMax: undefined,
+        callback: utils.noop,
+        assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+            assert.isUndefined(scalarMinMax);
+            assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+        }
+    });
+    test({
+        description: 'Should handle a market Object as only argument with an undefined scalarMinMax',
+        market: { market: '0x0a1', offset: 2, numTradesToLoad: 10, scalarMinMax: undefined, callback: utils.noop },
+        scalarMinMax: undefined,
+        callback: undefined,
+        assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+            assert.isUndefined(scalarMinMax);
+            assert.deepEqual(tx.params, ['0x0a1', 2, 10]);
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+        }
+    });
+    test({
+        description: 'Should handle a market Object as only argument with a scalarMinMax',
+        market: { market: '0x0a1', offset: 1, numTradesToLoad: 25, scalarMinMax: { minValue: '-10', maxValue: '110' }, callback: utils.noop },
+        scalarMinMax: undefined,
+        callback: undefined,
+        assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+            assert.deepEqual(scalarMinMax, { minValue: '-10', maxValue: '110' });
+            assert.deepEqual(tx.params, ['0x0a1', 1, 25]);
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+        }
+    });
+});
 describe.skip('CompositeGetters.validateMarketInfo', function() {});
 describe('CompositeGetters.getMarketInfo', function() {
     // 5 tests total
