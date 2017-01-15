@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 21 tests total
+// 24 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -234,7 +234,48 @@ describe('CompositeGetters.getOrderBook', function() {
         }
     });
 });
-describe.skip('CompositeGetters.validateMarketInfo', function() {});
+describe('CompositeGetters.validateMarketInfo', function() {
+    // 3 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var parseMarketInfo = augur.parseMarketInfo;
+            augur.parseMarketInfo = t.parseMarketInfo;
+
+            t.assertions(augur.validateMarketInfo(t.marketInfo));
+
+            augur.parseMarketInfo = parseMarketInfo;
+        });
+    };
+    test({
+        description: 'Should return null if marketInfo is undefined',
+        marketInfo: undefined,
+        assertions: function(o) {
+            assert.isNull(o);
+        }
+    });
+    test({
+        description: 'Should return null if parseMarketInfo returns parsedMarketInfo that does not contain a numOutcomes key',
+        marketInfo: {},
+        parseMarketInfo: function(marketInfo) {
+            // return an empty object so it fails the next conditional statement.
+            return {};
+        },
+        assertions: function(o) {
+            assert.isNull(o);
+        }
+    });
+    test({
+        description: 'Should return parsedMarketInfo',
+        marketInfo: {},
+        parseMarketInfo: function(marketInfo) {
+            // return an object that has a numOutcomes key so that it will pass the next conditional and return our parsedMarketInfo.
+            return { numOutcomes: 2 };
+        },
+        assertions: function(o) {
+            assert.deepEqual(o, { numOutcomes: 2 });
+        }
+    });
+});
 describe('CompositeGetters.getMarketInfo', function() {
     // 5 tests total
     var test = function(t) {
