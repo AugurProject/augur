@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>January 14, 2017</h3>
+      <ol>
+        <li>
+          Moved update-branch and sync-branch actions to the branch module.
+        </li>
+        <li>
+          Restructured sync-branch tests: assertions, selectors, and state are now specified inside each test case.
+        </li>
+      </ol>
       <h3>January 13, 2017</h3>
       <ol>
         <li>
