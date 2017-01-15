@@ -3396,7 +3396,23 @@ describe.skip("logs.getAccountMeanTradePrices", function() {
 	// ? tests total
 	var test = function(t) {
 		it(t.description, function() {
+			var getAccountTrades = augur.getAccountTrades;
+			augur.getAccountTrades = t.getAccountTrades;
 
+			augur.getAccountMeanTradePrices(t.account, t.cb);
+
+			augur.getAccountTrades = getAccountTrades;
 		});
 	};
+	//
+	// test({
+	// 	description: '',
+	// 	account: '0x0',
+	// 	cb: function(err, meanPrices) {
+	// 		console.log('cb', meanPrices);
+	// 	},
+	// 	getAccountTrades: function(account, cb) {
+	//
+	// 	}
+	// });
 });
