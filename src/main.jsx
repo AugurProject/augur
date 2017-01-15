@@ -21,10 +21,10 @@ if (process.env.NODE_ENV === 'development') {
   window.augurjs = AugurJS;
   console.log(`
 *********************************************
-			DEVELOPMENT MODE
-	window.state		-- all state data
-	window.selectors 	-- component data
-	window.augurjs 		-- Augur API methods
+            DEVELOPMENT MODE
+  window.state		-- all state data
+  window.selectors 	-- component data
+  window.augurjs 	-- Augur API methods
 *********************************************
 	`);
 }
