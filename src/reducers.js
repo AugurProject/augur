@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import env from './modules/app/reducers/env';
 import requests from './modules/app/reducers/requests';
 import blockchain from './modules/app/reducers/blockchain';
-import branch from './modules/app/reducers/branch';
+import branch from './modules/branch/reducers/branch';
 import connection from './modules/app/reducers/connection';
 import url from './modules/link/reducers/url';
 

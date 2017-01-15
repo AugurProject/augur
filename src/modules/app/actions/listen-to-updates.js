@@ -1,7 +1,7 @@
 import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { syncBlockchain } from '../../app/actions/update-blockchain';
-import { syncBranch } from '../../app/actions/update-branch';
+import { syncBlockchain } from '../../app/actions/sync-blockchain';
+import { syncBranch } from '../../branch/actions/sync-branch';
 import { addOrder, removeOrder, fillOrder } from '../../bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';

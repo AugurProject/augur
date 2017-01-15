@@ -3,7 +3,7 @@ import { loadBranch } from '../../app/actions/load-branch';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 import { syncBlockchain } from '../../app/actions/update-blockchain';
-import { syncBranch } from '../../app/actions/update-branch';
+import { syncBranch } from '../../branch/actions/sync-branch';
 import { updateAssets } from '../../auth/actions/update-assets';
 
 export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';

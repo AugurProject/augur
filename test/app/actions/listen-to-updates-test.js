@@ -12,7 +12,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
   const store = mockStore(state);
-  const mockAugurJS = {
+  const AugurJS = {
     augur: {
       filters: { listen: () => {} },
       CompositeGetters: { getPositionInMarket: () => {} }
@@ -22,42 +22,43 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       bignum: () => {}
     }
   };
-  const mockUpdateBlockchain = {};
-  const mockUpdateBranch = {};
-  const mockUpdateAssets = {};
-  const mockOutcomePrice = {};
-  const mockLoadBidsAsks = {};
-  const mockLoadAccountTrades = {};
-  const mockLoadMarketsInfo = {
+  const SyncBlockchain = {};
+  const SyncBranch = {};
+  const UpdateBranch = {};
+  const UpdateAssets = {};
+  const OutcomePrice = {};
+  const LoadBidsAsks = {};
+  const LoadAccountTrades = {};
+  const LoadMarketsInfo = {
     loadMarketsInfo: () => {}
   };
-  mockUpdateAssets.updateAssets = sinon.stub().returns({
+  UpdateAssets.updateAssets = sinon.stub().returns({
     type: 'UPDATE_ASSETS'
   });
-  mockUpdateBlockchain.syncBlockchain = sinon.stub().returns({
+  SyncBlockchain.syncBlockchain = sinon.stub().returns({
     type: 'SYNC_BLOCKCHAIN'
   });
-  mockUpdateBranch.syncBranch = sinon.stub().returns({
+  SyncBranch.syncBranch = sinon.stub().returns({
     type: 'SYNC_BRANCH'
   });
-  mockUpdateBranch.updateBranch = sinon.stub().returns({
+  UpdateBranch.updateBranch = sinon.stub().returns({
     type: 'UPDATE_BRANCH'
   });
-  mockOutcomePrice.updateOutcomePrice = sinon.stub().returns({
+  OutcomePrice.updateOutcomePrice = sinon.stub().returns({
     type: 'UPDATE_OUTCOME_PRICE'
   });
-  mockLoadBidsAsks.loadBidsAsks = sinon.stub().returns({
+  LoadBidsAsks.loadBidsAsks = sinon.stub().returns({
     type: 'UPDATE_MARKET_ORDER_BOOK'
   });
-  mockLoadAccountTrades.loadAccountTrades = sinon.stub().returns({
+  LoadAccountTrades.loadAccountTrades = sinon.stub().returns({
     type: 'UPDATE_ACCOUNT_TRADES_DATA'
   });
-  sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', marketID => ({
+  sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', marketID => ({
     type: 'LOAD_BASIC_MARKET',
     marketID
   }));
-  mockAugurJS.abi.number = sinon.stub().returns([0, 1]);
-  sinon.stub(mockAugurJS.augur.filters, 'listen', (cb) => {
+  AugurJS.abi.number = sinon.stub().returns([0, 1]);
+  sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
     cb.block('blockhash');
     cb.log_fill_tx({
       market: 'testMarketID',
@@ -69,19 +70,20 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     cb.marketCreated({ marketID: 'testID1' });
     cb.tradingFeeUpdated({ marketID: 'testID1' });
   });
-  sinon.stub(mockAugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
+  sinon.stub(AugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
     cb(['0x0', '0x1']);
   });
 
   const action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
-    '../../../services/augurjs': mockAugurJS,
-    '../../app/actions/update-branch': mockUpdateBranch,
-    '../../app/actions/update-blockchain': mockUpdateBlockchain,
-    '../../auth/actions/update-assets': mockUpdateAssets,
-    '../../markets/actions/update-outcome-price': mockOutcomePrice,
-    '../../markets/actions/load-markets-info': mockLoadMarketsInfo,
-    '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
-    '../../my-positions/actions/load-account-trades': mockLoadAccountTrades
+    '../../../services/augurjs': AugurJS,
+    '../../branch/actions/sync-branch': SyncBranch,
+    '../../branch/actions/update-branch': UpdateBranch,
+    '../../app/actions/sync-blockchain': SyncBlockchain,
+    '../../auth/actions/update-assets': UpdateAssets,
+    '../../markets/actions/update-outcome-price': OutcomePrice,
+    '../../markets/actions/load-markets-info': LoadMarketsInfo,
+    '../../bids-asks/actions/load-bids-asks': LoadBidsAsks,
+    '../../my-positions/actions/load-account-trades': LoadAccountTrades
   });
 
   beforeEach(() => {

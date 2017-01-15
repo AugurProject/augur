@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { updateBranch } from '../../app/actions/update-branch';
+import { updateBranch } from '../../branch/actions/update-branch';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';

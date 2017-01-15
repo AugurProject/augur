@@ -4,7 +4,7 @@ import { loadBidsAsksHistory } from '../../../modules/bids-asks/actions/load-bid
 import { loadCreateMarketHistory } from '../../../modules/create-market/actions/load-create-market-history';
 import { loadFundingHistory, loadTransferHistory } from '../../../modules/account/actions/load-funding-history';
 import { loadReportingHistory } from '../../../modules/my-reports/actions/load-reporting-history';
-import { syncBranch } from '../../../modules/app/actions/update-branch';
+import { syncBranch } from '../../../modules/branch/actions/sync-branch';
 import { loadEventsWithSubmittedReport } from '../../../modules/my-reports/actions/load-events-with-submitted-report';
 import { updateReports, clearReports } from '../../../modules/reports/actions/update-reports';
 import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
