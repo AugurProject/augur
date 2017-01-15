@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 import { loadBranch } from '../../app/actions/load-branch';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
-import { syncBlockchain } from '../../app/actions/update-blockchain';
+import { syncBlockchain } from '../../app/actions/sync-blockchain';
 import { syncBranch } from '../../branch/actions/sync-branch';
 import { updateAssets } from '../../auth/actions/update-assets';
 
