@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>January 14, 2017</h3>
       <ol>
         <li>
+          Refactored sync-blockchain and separated sync methods from the update-blockchain action.
+        </li>
+        <li>
           Moved update-branch and sync-branch actions to the branch module.
         </li>
         <li>
