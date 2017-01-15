@@ -130,8 +130,8 @@ let config = {
   },
 };
 
-// DEVELOPMENT SPECIFIC CONFIG
-if (process.env.NODE_ENV === 'development') {
+// DEVELOPMENT CONFIG
+if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   config = merge(config, {
     entry: {
       main: [
@@ -154,7 +154,23 @@ if (process.env.NODE_ENV === 'development') {
       new webpack.NoErrorsPlugin(),
     ]
   });
-// PRODUCTION SPECIFIC CONFIG
+// PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
+} else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
+  config = merge(config, {
+    entry: {
+      main: `${PATHS.APP}/main`
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.less/,
+          loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
+        }
+      ]
+    },
+    devtool: 'eval-source-map'
+  });
+// PRODUCTION CONFIG
 } else {
   config = merge(config, {
     entry: {
