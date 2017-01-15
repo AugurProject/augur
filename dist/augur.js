@@ -41759,7 +41759,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.7.7";
+  this.version = "3.7.8";
 
   this.options = {
     debug: {
@@ -45736,21 +45736,22 @@ module.exports = {
     if (!orders) return [];
     var isMarketOrder = limitPrice === null || limitPrice === undefined;
     return Object.keys(orders)
-            .map(function (orderId) {
-              return orders[orderId];
-            })
-            .filter(function (order) {
-              var isMatchingPrice;
-              if (isMarketOrder) {
-                isMatchingPrice = true;
-              } else {
-                isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
-              }
-              return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
-            })
-            .sort(function compareOrdersByPrice(order1, order2) {
-              return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
-            });
+      .map(function (orderID) {
+        return orders[orderID];
+      })
+      .filter(function (order) {
+        if (!order || !order.price) return false;
+        var isMatchingPrice;
+        if (isMarketOrder) {
+          isMatchingPrice = true;
+        } else {
+          isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+        }
+        return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+      })
+      .sort(function compareOrdersByPrice(order1, order2) {
+        return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+      });
   },
 
   /**
