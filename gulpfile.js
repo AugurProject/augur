@@ -15,20 +15,27 @@ gulp.task("lint", function (callback) {
   });
 });
 
-gulp.task("build", function (callback) {
-  cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
-          "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
-          function (err, stdout) {
-            if (err) return callback(err);
-            if (stdout) process.stdout.write(stdout);
-            cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
-              "> ./dist/augur.js",
-              function (err, stdout) {
-                if (err) return callback(err);
-                if (stdout) process.stdout.write(stdout);
-                callback();
-              });
-          });
+gulp.task("test", function (callback) {
+  cp.exec("npm test", function (err, stdout) {
+  if (err) if (stdout) process.stdout.write(stdout);
+  callback(err);
+  });
 });
 
-gulp.task("default", ["lint", "build"]);
+gulp.task("build", function (callback) {
+  cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
+    "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
+    function (err, stdout) {
+      if (err) return callback(err);
+      if (stdout) process.stdout.write(stdout);
+      cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
+        "> ./dist/augur.js",
+        function (err, stdout) {
+          if (err) return callback(err);
+          if (stdout) process.stdout.write(stdout);
+          callback();
+        });
+    });
+});
+
+gulp.task("default", ["lint", "test", "build"]);
