@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 42 tests total
+// 48 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -780,7 +780,114 @@ describe('CompositeGetters.getMarketInfo', function() {
         }
     });
 });
-describe.skip('CompositeGetters.parseBatchMarketInfo', function() {});
-describe.skip('CompositeGetters.batchGetMarketInfo', function() {});
+describe('CompositeGetters.parseBatchMarketInfo', function() {
+    // 4 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var parseMarketInfo = augur.parseMarketInfo;
+            augur.parseMarketInfo = t.parseMarketInfo;
+
+            t.assertions(augur.parseBatchMarketInfo(t.marketsArray, t.numMarkets));
+
+            augur.parseMarketInfo = parseMarketInfo;
+        });
+    };
+    test({
+        description: 'Should return the marketsArray if it is undefined',
+        marketsArray: undefined,
+        numMarkets: 3,
+        parseMarketInfo: function(info) {
+            // shouldn't be reached
+            assert.isNull('parseMarketInfo hit');
+        },
+        assertions: function(o) {
+            assert.isUndefined(o);
+        }
+    });
+    test({
+        description: 'Should return the marketsArray if it is not an array',
+        marketsArray: {},
+        numMarkets: 3,
+        parseMarketInfo: function(info) {
+            // shouldn't be reached
+            assert.isNull('parseMarketInfo hit');
+        },
+        assertions: function(o) {
+            assert.deepEqual(o, {});
+        }
+    });
+    test({
+        description: 'Should return the marketsArray if it is an empty array',
+        marketsArray: [],
+        numMarkets: 3,
+        parseMarketInfo: function(info) {
+            // shouldn't be reached
+            assert.isNull('parseMarketInfo hit');
+        },
+        assertions: function(o) {
+            assert.deepEqual(o, []);
+        }
+    });
+    test({
+        description: 'Should return marketInfo after parsing the marketsArray',
+        marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
+        numMarkets: 2,
+        parseMarketInfo: function(info) {
+            return {marketID: info[0], numOutcomes: info[1], type: info[2]};
+        },
+        assertions: function(o) {
+            assert.deepEqual(o, {
+                '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary', sortOrder: 0 },
+                '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary', sortOrder: 1 },
+            });
+        }
+    });
+    test({
+        description: 'Should return empty marketInfo after parsing the marketsArray but parseMarket keeps returning empty objects',
+        marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
+        numMarkets: 2,
+        parseMarketInfo: function(info) {
+            return {};
+        },
+        assertions: function(o) {
+            assert.deepEqual(o, {});
+        }
+    });
+});
+describe('CompositeGetters.batchGetMarketInfo', function() {
+    // 2 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var fire = augur.fire;
+            augur.fire = t.assertions;
+
+            augur.batchGetMarketInfo(t.marketIDs, t.account, t.callback);
+
+            augur.fire = fire;
+        });
+    };
+    test({
+        description: 'Should prepare a batchGetMarketInfo transaction',
+        marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+        account: '0x0',
+        callback: utils.noop,
+        assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.batchGetMarketInfo.to);
+            assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
+            assert.deepEqual(numMarketIDs, 3);
+        }
+    });
+    test({
+        description: 'Should prepare a batchGetMarketInfo transaction with the callback passed as account',
+        marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+        account: utils.noop,
+        callback: undefined,
+        assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
+            assert.deepEqual(tx.to, augur.tx.CompositeGetters.batchGetMarketInfo.to);
+            assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'], 0]);
+            assert.deepEqual(numMarketIDs, 3);
+        }
+    });
+});
 describe.skip('CompositeGetters.parseMarketsInfo', function() {});
 describe.skip('CompositeGetters.getMarketsInfo', function() {});
