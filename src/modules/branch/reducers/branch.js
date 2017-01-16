@@ -1,4 +1,4 @@
-import { UPDATE_BRANCH } from '../../app/actions/update-branch';
+import { UPDATE_BRANCH } from '../../branch/actions/update-branch';
 
 export default function (branch = {}, action) {
   switch (action.type) {

@@ -12,10 +12,10 @@ process.env.FORCE_COLOR = true;
 // START DEVELOPMENT SERVER
 //	NOTE -- this will also automatically spin up webpack w/ HMR (Hot Module Reload)
 shell.echo(`
-${colors.title('== Starting Augur Development Server ==')}
+${colors.title('== Running Augur Development Environment ==')}
 
 ${colors.notice('NOTE')}	${colors.dim(`| The initial build takes a while.
-	| You'll need to wait until the full build is finished without errors to utilize.`)}
+	| You'll need to wait until the full build is finished without errors before utilization.`)}
 `
 );
 
@@ -32,7 +32,7 @@ const devServer = new Promise((resolve, reject) => {
 
 const tasks = new Listr([
   {
-    title: 'Development Server',
+    title: 'Development Build',
     task: () => devServer
   }
 ],

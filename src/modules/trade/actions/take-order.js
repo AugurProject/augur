@@ -1,10 +1,11 @@
-import BigNumber from 'bignumber.js';
+import { ROUND_DOWN } from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { updateTradeCommitLock } from '../../trade/actions/update-trade-commitment';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { trade } from '../../trade/actions/helpers/trade';
 import { shortSell } from '../../trade/actions/helpers/short-sell';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { splitAskAndShortAsk } from '../../trade/actions/split-order';
 import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 
 export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) {
@@ -36,19 +37,13 @@ export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, t
       if (err) return console.error('trade failed:', err);
       if (res.remainingShares.gt(constants.PRECISION.zero)) {
         augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
-          const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+          const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, ROUND_DOWN);
           const remainingShares = abi.bignum(res.remainingShares);
           if (position.gt(constants.PRECISION.zero)) {
-            let askShares;
-            let shortAskShares;
-            if (position.gt(remainingShares)) {
-              askShares = remainingShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-              shortAskShares = 0;
-            } else {
-              askShares = position.toFixed();
-              shortAskShares = remainingShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
+            const { askShares, shortAskShares } = splitAskAndShortAsk(remainingShares, position);
+            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
+              placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
             }
-            placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
             if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
               placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
             }

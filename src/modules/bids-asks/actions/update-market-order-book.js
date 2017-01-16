@@ -19,15 +19,18 @@ export function addOrder(log) {
     const orderBook = { ...getState().orderBooks[log.market] };
     if (orderBook) {
       const orderBookSide = orderBook[log.type];
-      if (orderBookSide) {
-        orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, getState().marketsData[log.market]);
-        dispatch(updateMarketOrderBook(log.market, orderBook));
-      } else {
-        const matchedType = log.type === 'buy' ? 'sell' : 'buy';
-        dispatch(updateMarketOrderBook(log.market, {
-          [log.type]: convertAddTxLogToOrder(log, getState().marketsData[log.market]),
-          [matchedType]: {}
-        }));
+      const market = getState().marketsData[log.market];
+      if (market) {
+        if (orderBookSide) {
+          orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, market);
+          dispatch(updateMarketOrderBook(log.market, orderBook));
+        } else {
+          const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+          dispatch(updateMarketOrderBook(log.market, {
+            [log.type]: convertAddTxLogToOrder(log, market),
+            [matchedType]: {}
+          }));
+        }
       }
     }
   };
@@ -38,7 +41,8 @@ export function removeOrder(log) {
     const orderBook = { ...getState().orderBooks[log.market] };
     if (orderBook) {
       const orderBookSide = orderBook[log.type];
-      if (orderBookSide) {
+      const market = getState().marketsData[log.market];
+      if (orderBookSide && market) {
         if (orderBookSide[log.tradeid]) {
           delete orderBookSide[log.tradeid];
           dispatch(updateMarketOrderBook(log.market, orderBook));
@@ -50,30 +54,33 @@ export function removeOrder(log) {
 
 export function fillOrder(log) {
   return (dispatch, getState) => {
-    const { orderBooks, priceHistory } = getState();
+    const { marketsData, orderBooks, priceHistory } = getState();
     const orderBook = { ...orderBooks[log.market] };
-    if (orderBook) {
-      const matchedType = log.type === 'buy' ? 'sell' : 'buy';
-      const orderBookSide = orderBook[matchedType];
-      if (orderBookSide) {
-        const order = orderBookSide[log.tradeid];
-        if (order) {
-          const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
-          if (updatedAmount.lte(constants.PRECISION.zero)) {
-            delete orderBookSide[log.tradeid];
-          } else {
-            order.fullPrecisionAount = updatedAmount.toFixed();
-            order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
+    const market = marketsData[log.market];
+    if (market) {
+      if (orderBook) {
+        const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+        const orderBookSide = orderBook[matchedType];
+        if (orderBookSide) {
+          const order = orderBookSide[log.tradeid];
+          if (order) {
+            const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
+            if (updatedAmount.lte(constants.PRECISION.zero)) {
+              delete orderBookSide[log.tradeid];
+            } else {
+              order.fullPrecisionAount = updatedAmount.toFixed();
+              order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
+            }
+            dispatch(updateMarketOrderBook(log.market, orderBook));
           }
-          dispatch(updateMarketOrderBook(log.market, orderBook));
         }
       }
+      const marketPriceHistory = priceHistory[log.market] ? { ...priceHistory[log.market] } : {};
+      if (!marketPriceHistory[log.outcome]) marketPriceHistory[log.outcome] = [];
+      marketPriceHistory[log.outcome].push(log);
+      dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
+      dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
     }
-    const marketPriceHistory = priceHistory[log.market] ? { ...priceHistory[log.market] } : {};
-    if (!marketPriceHistory[log.outcome]) marketPriceHistory[log.outcome] = [];
-    marketPriceHistory[log.outcome].push(log);
-    dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
-    dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
   };
 }
 

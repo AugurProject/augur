@@ -34,8 +34,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         gasFees
       }, p.market, p.outcome, status));
     case 'shortAsk':
+      p.isShortAsk = true; // eslint-disable-line no-fallthrough
     case 'sell':
-      p.isShortAsk = p.isShortAsk ? !!parseInt(p.isShortAsk, 16) : true;
       return dispatch(constructTradingTransaction('log_add_tx', {
         type: 'sell',
         ...p,
@@ -59,8 +59,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         const amount = abi.bignum(maxAmount).gt(ZERO) ?
-					maxAmount :
-					abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
+          maxAmount :
+          abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
         transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
           ...p,
           inProgress: true,
@@ -92,7 +92,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         tradeid: p.buyer_trade_id,
         tradeHash,
         takerFee: tradingFees,
-        gasFees
+        gasFees,
+        isShortSell: true
       }, order.market, order.outcome, status));
     }
     case 'trade': {
@@ -102,8 +103,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         const amount = abi.bignum(maxAmount).gt(ZERO) ?
-					maxAmount :
-					abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
+          maxAmount :
+          abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
         dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
         transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
           ...p,

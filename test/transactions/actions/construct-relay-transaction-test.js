@@ -92,20 +92,20 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       });
       sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID]);
       sinon.stub(ConstructTransaction, 'constructTradingTransaction', (label, trade, marketID, outcomeID, status) => (
-				(dispatch) => {
-  dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
-  return { label, trade, marketID, outcomeID, status };
-}
-			));
+        (dispatch) => {
+          dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
+          return { label, trade, marketID, outcomeID, status };
+        }
+      ));
       sinon.stub(ConstructTransaction, 'constructTransaction', (label, log) => (
-				(dispatch) => {
-  dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
-  return { label, log };
-}
-			));
+        (dispatch) => {
+          dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
+          return { label, log };
+        }
+      ));
       sinon.stub(UpdateTradeCommitment, 'updateTradeCommitment', tradeCommitment => dispatch => (
-				dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
-			));
+        dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
+      ));
       const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
       t.assertions(store.getActions(), relayTransaction);
       store.clearActions();
@@ -523,6 +523,216 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           timestamp: 1484210643,
           inProgress: false,
           isShortAsk: true,
+          gasFees: '0.01090406'
+        },
+        marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+        outcomeID: '2',
+        status: 'success'
+      };
+      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
+      assert.deepEqual(relayTransaction, expected);
+    }
+  });
+  test({
+    description: 'construct relayed sell transaction (sent)',
+    params: {
+      status: 'sent',
+      tx: {
+        type: 'Ask',
+        status: 'sent',
+        data: {
+          events: [
+            'sentCash',
+            'log_add_tx'
+          ],
+          gas: 1500000,
+          inputs: [
+            'amount',
+            'price',
+            'market',
+            'outcome',
+            'minimumTradeSize',
+            'tradeGroupID'
+          ],
+          label: 'Ask',
+          method: 'sell',
+          mutable: true,
+          signature: [
+            'int256',
+            'int256',
+            'int256',
+            'int256',
+            'int256',
+            'int256'
+          ],
+          to: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
+          from: '0xdceb761b558e202c993f447b470a89cec2a3b6e9',
+          params: [
+            '0x4563918244f40000',
+            '0x853a0d2313c0000',
+            '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+            '2',
+            '0x2386f26fc10000',
+            '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17'
+          ],
+          send: true,
+          returns: 'int256'
+        },
+        response: {
+          hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+          txHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+          callReturn: null
+        }
+      }
+    },
+    state: {
+      branch: {
+        id: '0xb1',
+        reportPeriod: 7,
+        baseReporters: 6,
+        numEventsCreatedInPast24Hours: 10,
+        numEventsInReportPeriod: 3
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b'
+      },
+      tradeCommitment: {}
+    },
+    selectors: {
+      marketFromEventID: {
+        '0xe1': {
+          id: '0xa1',
+          reportedOutcome: '2'
+        }
+      }
+    },
+    assertions: (actions, relayTransaction) => {
+      const expected = {
+        label: 'log_add_tx',
+        trade: {
+          type: 'sell',
+          amount: '5',
+          price: '0.6',
+          market: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+          outcome: '2',
+          minimumTradeSize: '0x2386f26fc10000',
+          tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
+          transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+          blockNumber: undefined,
+          timestamp: relayTransaction.trade.timestamp,
+          inProgress: true,
+          gasFees: '0.01393518'
+        },
+        marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+        outcomeID: '2',
+        status: 'sent'
+      };
+      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
+      assert.deepEqual(relayTransaction, expected);
+    }
+  });
+  test({
+    description: 'construct relayed sell transaction (success)',
+    params: {
+      status: 'success',
+      tx: {
+        type: 'Ask',
+        status: 'success',
+        data: {
+          events: [
+            'sentCash',
+            'log_add_tx'
+          ],
+          gas: 1500000,
+          inputs: [
+            'amount',
+            'price',
+            'market',
+            'outcome',
+            'minimumTradeSize',
+            'tradeGroupID'
+          ],
+          label: 'Ask',
+          method: 'sell',
+          mutable: true,
+          signature: [
+            'int256',
+            'int256',
+            'int256',
+            'int256',
+            'int256',
+            'int256'
+          ],
+          to: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
+          from: '0xdceb761b558e202c993f447b470a89cec2a3b6e9',
+          params: [
+            '0x4563918244f40000',
+            '0x853a0d2313c0000',
+            '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+            '2',
+            '0x2386f26fc10000',
+            '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17'
+          ],
+          send: true,
+          returns: 'int256'
+        },
+        response: {
+          blockHash: '0xa64a20e1a8b3e2f1cb610ef0f88ab0b5156d8805caeed634b555b74aa4510073',
+          blockNumber: 1805,
+          from: '0xdceb761b558e202c993f447b470a89cec2a3b6e9',
+          gas: '0x47e7c4',
+          gasPrice: '0x4a817c800',
+          hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+          input: '0x70f48c290000000000000000000000000000000000000000000000004563918244f400000000000000000000000000000000000000000000000000000853a0d2313c0000f7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a20000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000008a649a9af5874931863de583aea36e17',
+          nonce: '0x5b',
+          to: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
+          transactionIndex: '0x0',
+          value: '0x0',
+          v: '0x1b',
+          r: '0x802d88fbd1edfdee30697a67f1383965887540d02b64dcc5be52630d1916f721',
+          s: '0x76e5c667116873a6d1afef14e69c89648bc5231b35bfc4ed182f0665a232ba8b',
+          timestamp: 1484210643,
+          callReturn: '0x647788c0acbffb675493a93a3c0c8d10732c88be9166b8c5bb1299121841c161',
+          gasFees: '0.01090406'
+        }
+      }
+    },
+    state: {
+      branch: {
+        id: '0xb1',
+        reportPeriod: 7,
+        baseReporters: 6,
+        numEventsCreatedInPast24Hours: 10,
+        numEventsInReportPeriod: 3
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b'
+      },
+      tradeCommitment: {}
+    },
+    selectors: {
+      marketFromEventID: {
+        '0xe1': {
+          id: '0xa1',
+          reportedOutcome: '2'
+        }
+      }
+    },
+    assertions: (actions, relayTransaction) => {
+      const expected = {
+        label: 'log_add_tx',
+        trade: {
+          type: 'sell',
+          amount: '5',
+          market: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
+          outcome: '2',
+          price: '0.6',
+          minimumTradeSize: '0x2386f26fc10000',
+          tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
+          transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+          blockNumber: 1805,
+          timestamp: 1484210643,
+          inProgress: false,
           gasFees: '0.01090406'
         },
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',

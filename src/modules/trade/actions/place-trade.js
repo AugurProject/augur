@@ -1,11 +1,12 @@
 import async from 'async';
-import BigNumber from 'bignumber.js';
+import { ROUND_DOWN } from 'bignumber.js';
 import uuid from 'uuid';
 import uuidParse from 'uuid-parse';
 import { BUY, SELL } from '../../trade/constants/types';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
+import { splitAskAndShortAsk } from '../../trade/actions/split-order';
 import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 import { placeBuy, placeSell, placeShortSell } from '../../trade/actions/take-order';
 
@@ -38,30 +39,21 @@ export function placeTrade(marketID, outcomeID) {
         nextTradeInProgress();
       } else if (tradeInProgress.side === SELL) {
 
-				// check if user has position
-				//  - if so, sell/ask
-				//  - if not, short sell/short ask
+        // check if user has position
+        //  - if so, sell/ask
+        //  - if not, short sell/short ask
         augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
-          if (!sharesPurchased || sharesPurchased.error) {
-            return nextTradeInProgress('getParticipantSharesPurchased:', sharesPurchased);
-          }
-          const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+          if (!sharesPurchased || sharesPurchased.error) return nextTradeInProgress(sharesPurchased);
+          const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, ROUND_DOWN);
           const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
           if (position && position.gt(constants.PRECISION.zero)) {
             if (tradeIDs && tradeIDs.length) {
               dispatch(placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
             } else {
-              let askShares;
-              let shortAskShares;
-              const bnNumShares = abi.bignum(numShares);
-              if (position.gt(bnNumShares)) {
-                askShares = numShares;
-                shortAskShares = '0';
-              } else {
-                askShares = position.toFixed();
-                shortAskShares = bnNumShares.minus(position).toFixed();
+              const { askShares, shortAskShares } = splitAskAndShortAsk(abi.bignum(numShares), position);
+              if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
+                placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
               }
-              placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
               if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
                 placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
               }
