@@ -34,7 +34,7 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAcc
           }));
         }
       }));
-      if (links && links.marketsLink)	{
+      if (links && links.marketsLink) {
         links.marketsLink.onClick(links.marketsLink.href);
       }
     });

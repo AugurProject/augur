@@ -111,7 +111,7 @@ export const isValid = (formState) => {
         formState.halfPriceWidth,
         formState.scalarSmallNum,
         formState.scalarBigNum
-      )	||
+      ) ||
       validateInitialFairPrices(
         formState.type,
         formState.initialFairPrices.raw,
@@ -119,9 +119,9 @@ export const isValid = (formState) => {
         formState.halfPriceWidth,
         formState.scalarSmallNum,
         formState.scalarBigNum
-      )	||
+      ) ||
       validateBestStartingQuantity(formState.bestStartingQuantity) ||
-      validateStartingQuantity(formState.startingQuantity)	||
+      validateStartingQuantity(formState.startingQuantity) ||
       validatePriceWidth(formState.priceWidth)
     ))
   ) {

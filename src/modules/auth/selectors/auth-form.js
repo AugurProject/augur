@@ -121,7 +121,7 @@ export const selectLogin = (auth, dispatch) => {
     airbitzLink: selectAirbitzLink(LOGIN, dispatch),
     airbitzOnLoad: selectAirbitzOnLoad(dispatch),
 
-    onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) =>	dispatch(login(loginID, password, rememberMe))
+    onSubmit: (name, password, password2, loginID, rememberMe, keystore, account, cb) => dispatch(login(loginID, password, rememberMe))
   };
 };
 

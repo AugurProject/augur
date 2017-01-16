@@ -14,7 +14,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
     const { links } = require('../../../selectors');
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore)	{
+    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore) {
       if (rememberMe && localStorageRef && localStorageRef.setItem) {
         const persistentAccount = Object.assign({}, loginAccount);
         if (Buffer.isBuffer(persistentAccount.privateKey)) {

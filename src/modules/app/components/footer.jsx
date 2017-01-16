@@ -75,7 +75,7 @@ export default class Footer extends Component {
     }
   }
 
-	// Touch Events
+  // Touch Events
   attachTouchHandler() {
     const options = {
       dragLockToAxis: true,

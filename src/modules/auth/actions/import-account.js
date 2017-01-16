@@ -30,7 +30,7 @@ export function importAccount(name, password, rememberMe, keystore) {
             dispatch(fundNewAccount(e => e && console.error(e)));
           }
         }));
-        if (links && links.marketsLink)	{
+        if (links && links.marketsLink) {
           return links.marketsLink.onClick(links.marketsLink.href);
         }
       }

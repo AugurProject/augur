@@ -251,7 +251,7 @@ function denominateShares(shares, fromDenomination, toDenomination) {
 
   if (fromValue === toValue) {
     return shares;
-  } else	if (fromValue < toValue) {
+  } else if (fromValue < toValue) {
     return shares * (1000**(toValue - fromValue));
   }
 

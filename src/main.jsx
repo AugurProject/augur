@@ -22,9 +22,9 @@ if (process.env.NODE_ENV === 'development') {
   console.log(`
 *********************************************
             DEVELOPMENT MODE
-  window.state		-- all state data
-  window.selectors 	-- component data
-  window.augurjs 	-- Augur API methods
+  window.state    -- all state data
+  window.selectors    -- component data
+  window.augurjs    -- Augur API methods
 *********************************************
 `);
 }
