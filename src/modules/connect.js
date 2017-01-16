@@ -8,6 +8,7 @@
 var clone = require("clone");
 var abi = require("augur-abi");
 var connector = require("ethereumjs-connect");
+var Contracts = require("augur-contracts");
 var constants = require("../constants");
 var utils = require("../utilities");
 
@@ -105,6 +106,7 @@ module.exports = {
       return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
     };
   },
+
   bindContractAPI: function (methods) {
     methods = methods || this.api.functions;
     for (var contract in methods) {
@@ -121,14 +123,24 @@ module.exports = {
 
   sync: function () {
     if (connector && connector.constructor === Object) {
-      this.network_id = connector.network_id;
-      this.from = connector.from;
-      this.coinbase = connector.coinbase;
+      this.network_id = connector.state.networkID;
+      this.from = connector.state.from;
+      this.coinbase = connector.state.coinbase;
       this.rpc = connector.rpc;
-      this.api = connector.api;
-      this.tx = connector.tx;
-      this.contracts = connector.contracts;
-      this.init_contracts = connector.init_contracts;
+      if (!connector.state.contracts) {
+        connector.configure({contracts: Contracts, api: Contracts.api});
+        connector.state.networkID = constants.DEFAULT_NETWORK_ID;
+        connector.setContracts();
+      }
+      this.contracts = connector.state.contracts;
+      connector.setupFunctionsAPI();
+      connector.setupEventsAPI();
+      if (connector.state.api && connector.state.api.functions) {
+        this.api = connector.state.api;
+      } else {
+        this.api = Contracts.api;
+      }
+      this.tx = this.api.functions;
       this.bindContractAPI();
       return true;
     }
@@ -137,17 +149,8 @@ module.exports = {
 
   useAccount: function (account) {
     connector.from = account;
-    connector.from_field_tx(account);
+    connector.setFrom(account);
     this.sync();
-  },
-
-  updateContracts: function (newContracts) {
-    if (connector && connector.constructor === Object) {
-      connector.contracts = clone(newContracts);
-      connector.update_contracts();
-      return this.sync();
-    }
-    return false;
   },
 
   /**
@@ -160,7 +163,7 @@ module.exports = {
    * @param cb {function=} Callback function.
    */
   connect: function (rpcinfo, cb) {
-    var options = {};
+    var options = {contracts: Contracts, api: Contracts.api};
     if (rpcinfo) {
       switch (rpcinfo.constructor) {
         case String:
@@ -172,6 +175,8 @@ module.exports = {
           break;
         case Object:
           options = rpcinfo;
+          options.contracts = Contracts;
+          options.api = Contracts.api;
           break;
         default:
           options.http = null;
