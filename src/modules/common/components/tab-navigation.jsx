@@ -20,32 +20,32 @@ const TabNavigation = p => (
           <span className="nav-label">{navItem.label}</span>
 
           {(!!navItem.leadingValue || !!navItem.trailingValue) &&
-          <section className="nav-values">
-            {navItem.leadingValue &&
-            <ValueDenomination
-              data-tip data-for={`tab-${i}-leading-tooltip`}
-              {...navItem.leadingValue || {}}
-            />
-							}
-            {navItem.trailingValue &&
-            <ValueDenomination
-              data-tip data-for={`tab-${i}-trailing-tooltip`}
-              className="colorize"
-              {...navItem.trailingValue || {}}
-            />
-							}
-            <ReactTooltip id={`tab-${i}-leading-tooltip`} type="light" effect="solid" place="top">
-              <span className="tooltip-text">
-                {navItem.leadingTitle ? `${navItem.leadingTitle}: ${navItem.leadingValue.full}` : ''}
-              </span>
-            </ReactTooltip>
-            <ReactTooltip id={`tab-${i}-trailing-tooltip`} type="light" effect="solid" place="top">
-              <span className="tooltip-text">
-                {navItem.trailingTitle ? `${navItem.trailingTitle}: ${navItem.trailingValue.full}` : ''}
-              </span>
-            </ReactTooltip>
-          </section>
-					}
+            <section className="nav-values">
+              {navItem.leadingValue &&
+                <ValueDenomination
+                  data-tip data-for={`tab-${i}-leading-tooltip`}
+                  {...navItem.leadingValue || {}}
+                />
+              }
+              {navItem.trailingValue &&
+                <ValueDenomination
+                  data-tip data-for={`tab-${i}-trailing-tooltip`}
+                  className="colorize"
+                  {...navItem.trailingValue || {}}
+                />
+              }
+              <ReactTooltip id={`tab-${i}-leading-tooltip`} type="light" effect="solid" place="top">
+                <span className="tooltip-text">
+                  {navItem.leadingTitle ? `${navItem.leadingTitle}: ${navItem.leadingValue.full}` : ''}
+                </span>
+              </ReactTooltip>
+              <ReactTooltip id={`tab-${i}-trailing-tooltip`} type="light" effect="solid" place="top">
+                <span className="tooltip-text">
+                  {navItem.trailingTitle ? `${navItem.trailingTitle}: ${navItem.trailingValue.full}` : ''}
+                </span>
+              </ReactTooltip>
+            </section>
+          }
         </Link>
       );
     })}
@@ -55,8 +55,8 @@ const TabNavigation = p => (
 
 // TODO -- Prop Validations
 // TabNavigation.propTypes = {
-// 	activeView: React.PropTypes.string,
-// 	navItems: React.PropTypes.array
+//   activeView: React.PropTypes.string,
+//   navItems: React.PropTypes.array
 // };
 
 export default TabNavigation;

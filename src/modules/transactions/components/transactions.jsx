@@ -10,13 +10,13 @@ const Transactions = p => (
           {...transaction}
           index={p.transactions.length - i}
         />
-			)}
+      )}
     </div>
     {!!p.transactions.length &&
     <span className="feel-free">
       {"continue trading while transactions are running, just don't close the browser before they're done!"}
     </span>
-		}
+    }
   </article>
 );
 

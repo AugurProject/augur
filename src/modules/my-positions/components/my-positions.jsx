@@ -15,19 +15,19 @@ const Positions = p => (
           {...outcome}
           {...outcome.position}
         />
-				)}
+      )}
     </Link>
-		}
+    }
     {!p.marketLink &&
-			(p.market.myPositionOutcomes || []).map(outcome =>
-  <Position
-    key={outcome.id}
-    type={p.market.type}
-    {...outcome}
-    {...outcome.position}
-  />
-			)
-		}
+      (p.market.myPositionOutcomes || []).map(outcome =>
+        <Position
+          key={outcome.id}
+          type={p.market.type}
+          {...outcome}
+          {...outcome.position}
+        />
+      )
+    }
     {!p.settings.autoSellCompleteSets && p.market.hasCompleteSet &&
     <div className="complete-sets">
       <div className="close-position-button">
@@ -39,11 +39,11 @@ const Positions = p => (
             p.market.onSubmitClosePosition();
           }}
         >
-						Redeem {p.market.smallestPosition.formatted} Complete Sets
-					</button>
+            Redeem {p.market.smallestPosition.formatted} Complete Sets
+          </button>
       </div>
     </div>
-		}
+    }
     <ReactTooltip type="light" effect="solid" place="top" globalEventOff="click" />
   </article>
 );

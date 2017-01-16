@@ -26,11 +26,11 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
         '../../../selectors': Selectors
       });
       sinon.stub(Links, 'selectMarketLink', (market, dispatch) => (
-				{ onClick: () => dispatch({ type: 'UPDATE_URL', market }) }
-			));
+        { onClick: () => dispatch({ type: 'UPDATE_URL', market }) }
+      ));
       sinon.stub(Market, 'selectMarketFromEventID', (eventID) => {
         const marketID = Object.keys(t.state.marketsData).find(marketID =>
-					t.state.marketsData[marketID].eventID === eventID);
+          t.state.marketsData[marketID].eventID === eventID);
         return {
           id: marketID,
           ...t.state.marketsData[marketID]

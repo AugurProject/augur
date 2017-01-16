@@ -21,11 +21,11 @@ export function loadReportDescriptors(callback) {
         return nextReport();
       }
       const indeterminateOutcomeID = marketData.type === BINARY ?
-				BINARY_INDETERMINATE_OUTCOME_ID :
-				CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
+        BINARY_INDETERMINATE_OUTCOME_ID :
+        CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       report.isIndeterminate = report.reportedOutcomeID === indeterminateOutcomeID;
       augur.getEthicReport(branch.id, branch.reportPeriod, eventID, loginAccount.address, (ethics) => {
-				// ethics values: 0=unethical, 1=ethical
+        // ethics values: 0=unethical, 1=ethical
         report.isUnethical = ethics === '0';
         branchReports[eventID] = report;
         nextReport();

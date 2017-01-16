@@ -4,10 +4,10 @@ import Market from 'modules/my-markets/components/my-market';
 import MarketSummaryHeader from 'modules/my-markets/components/my-market-summary-header';
 
 export default class MarketSummary extends Component {
-	// TODO -- Prop Validations
-	// static propTypes = {
-	// 	marketSummary: PropTypes.object.isRequired
-	// };
+  // TODO -- Prop Validations
+  // static propTypes = {
+  // 	marketSummary: PropTypes.object.isRequired
+  // };
 
   constructor(props) {
     super(props);

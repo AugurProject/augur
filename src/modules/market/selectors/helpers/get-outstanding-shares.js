@@ -8,7 +8,7 @@ import { ZERO } from '../../../trade/constants/numbers';
  */
 export default function (marketOutcomesData) {
   return Object.keys(marketOutcomesData)
-		.map(outcomeId => marketOutcomesData[outcomeId])
-		.reduce((outstandingShares, outcome) => outstandingShares.plus(abi.bignum(outcome.outstandingShares)), ZERO)
-        .toNumber();
+    .map(outcomeId => marketOutcomesData[outcomeId])
+    .reduce((outstandingShares, outcome) => outstandingShares.plus(abi.bignum(outcome.outstandingShares)), ZERO)
+    .toNumber();
 }

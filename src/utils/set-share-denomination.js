@@ -25,7 +25,7 @@ function setShareDenomination(value, denomination) {
 function formatValue(value, amount) {
   let valueArray = value.split('');
 
-	// remove dot + determine 0 pad amount
+  // remove dot + determine 0 pad amount
   const dotIndex = valueArray.indexOf('.');
   let zeroPadAmount = amount;
   if (dotIndex !== -1) {
@@ -34,7 +34,7 @@ function formatValue(value, amount) {
     zeroPadAmount += 2;
   }
 
-	// Strip leading 0's OR returns original value if no values are positive
+  // Strip leading 0's OR returns original value if no values are positive
   let firstPositiveValue = -1;
   valueArray.some((value, i) => {
     if (parseInt(value, 10)) {
@@ -50,14 +50,14 @@ function formatValue(value, amount) {
     return value; // Returns original value
   }
 
-	// Strip Commas (added back in at the end)
+  // Strip Commas (added back in at the end)
   valueArray.forEach((value, i) => {
     if (value === ',') {
       valueArray.splice(i, 1);
     }
   });
 
-	// Handle postFixed denominations (part of the format-number method)
+  // Handle postFixed denominations (part of the format-number method)
   valueArray = handlePostfixedUnit(valueArray, zeroPadAmount);
 
   return addCommas(valueArray.join('')); // return joined string w/ comma separating thousands
@@ -69,7 +69,7 @@ function handlePostfixedUnit(valueArray, zeroPadAmount) {
   let newValueArray = valueArray;
 
   switch (valueArray[newValueArray.length - 1]) {
-	// Handle existing > 10000 values
+  // Handle existing > 10000 values
     case ('K'): {
       newValueArray[newValueArray.length - 1] = step ? 'M' : 'B';
       return newValueArray;
@@ -88,14 +88,14 @@ function handlePostfixedUnit(valueArray, zeroPadAmount) {
       return newValueArray;
     }
 
-	// Handle values that become greater than 10000
+  // Handle values that become greater than 10000
     default: {
-			// Append 0's
+      // Append 0's
       for (let i = 0; i < zeroPadAmount; i++) {
         newValueArray.push('0');
       }
 
-			// Mirrors logic present in format-number
+      // Mirrors logic present in format-number
       if (newValueArray.length >= 13) {
         newValueArray = gtTrillion;
       } else if (newValueArray.length >= 11) {

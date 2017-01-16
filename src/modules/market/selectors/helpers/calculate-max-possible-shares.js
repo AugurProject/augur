@@ -23,8 +23,9 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
   }
   const ordersLength = orders.length;
   const { tradingFee, makerProportionOfFee } = augur.calculateFxpTradingFees(
-		new BigNumber(makerFee, 10),
-		new BigNumber(takerFee, 10));
+    new BigNumber(makerFee, 10),
+    new BigNumber(takerFee, 10)
+  );
   let runningCost = ZERO;
   let updatedRunningCost;
   let maxPossibleShares = ZERO;
@@ -36,17 +37,18 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
     order = orders[i];
     orderAmount = new BigNumber(order.amount, 10);
     fullPrecisionPrice = scalarMinValue !== null ?
-			augur.shrinkScalarPrice(scalarMinValue, order.fullPrecisionPrice) :
-			order.fullPrecisionPrice;
+      augur.shrinkScalarPrice(scalarMinValue, order.fullPrecisionPrice) :
+      order.fullPrecisionPrice;
     orderCost = augur.calculateFxpTradingCost(
-			orderAmount,
-			new BigNumber(fullPrecisionPrice, 10),
-			tradingFee,
-			makerProportionOfFee,
-			range);
+      orderAmount,
+      new BigNumber(fullPrecisionPrice, 10),
+      tradingFee,
+      makerProportionOfFee,
+      range
+    );
     updatedRunningCost = order.type === 'buy' ?
-			runningCost.plus(orderCost.fee.abs()) :
-			runningCost.plus(orderCost.cost);
+      runningCost.plus(orderCost.fee.abs()) :
+      runningCost.plus(orderCost.cost);
     if (updatedRunningCost.lte(userEther)) {
       maxPossibleShares = maxPossibleShares.plus(orderAmount);
       runningCost = updatedRunningCost;
@@ -54,19 +56,19 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
       const remainingEther = abi.fix(userEther.minus(runningCost));
       let remainingShares;
       const feePerShare = abi.fix(orderCost.fee.abs())
-				.dividedBy(abi.fix(orderAmount))
-				.times(constants.ONE)
-				.floor();
+        .dividedBy(abi.fix(orderAmount))
+        .times(constants.ONE)
+        .floor();
       if (order.type === 'buy') {
         remainingShares = abi.unfix(
-					remainingEther.dividedBy(feePerShare)
-						.times(constants.ONE)
-						.floor());
+          remainingEther.dividedBy(feePerShare)
+            .times(constants.ONE)
+            .floor());
       } else {
         remainingShares = abi.unfix(
-					remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice)))
-						.times(constants.ONE)
-						.floor());
+          remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice)))
+            .times(constants.ONE)
+            .floor());
       }
       maxPossibleShares = maxPossibleShares.plus(remainingShares);
       break;

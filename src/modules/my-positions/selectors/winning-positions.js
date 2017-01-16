@@ -15,8 +15,8 @@ export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {
     if (!market.isOpen) {
       const marketID = market.id;
       const winningShares = market.type === SCALAR ?
-				selectTotalSharesInMarket(market, outcomesData[marketID]) :
-				selectWinningSharesInMarket(market, outcomesData[marketID]);
+        selectTotalSharesInMarket(market, outcomesData[marketID]) :
+        selectWinningSharesInMarket(market, outcomesData[marketID]);
       if (winningShares && winningShares.gt(ZERO)) {
         closedMarketsWithWinningShares.push({
           id: marketID,

@@ -5,15 +5,8 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
-import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
-} from 'modules/markets/constants/market-types';
-import {
-	SUCCESS,
-	FAILED
-} from 'modules/transactions/constants/statuses';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
@@ -62,18 +55,18 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
   }));
 
   const action = proxyquire(
-		'../../../src/modules/create-market/actions/submit-new-market',
+    '../../../src/modules/create-market/actions/submit-new-market',
     {
       '../../../services/augurjs': stubbedAugurJS,
       '../../create-market/actions/generate-order-book': stubbedGenerateOrderBook,
       '../../link/selectors/links': stubbedLink
     }
-	);
+  );
 
   before(() => {
     store.clearActions();
 
-		// Mock the window object
+    // Mock the window object
     global.window = {};
     global.window.location = {
       pathname: '/test',
@@ -229,9 +222,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         type: CATEGORICAL,
         isCreatingOrderBook: true,
         outcomes: [
-					{ id: 0, name: 'outcome1' },
-					{ id: 1, name: 'outcome2' },
-					{ id: 2, name: 'outcome3' }
+          { id: 0, name: 'outcome1' },
+          { id: 1, name: 'outcome2' },
+          { id: 2, name: 'outcome3' }
         ]
       };
       store.dispatch(action.submitNewMarket(marketData));
@@ -248,9 +241,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         type: CATEGORICAL,
         isCreatingOrderBook: true,
         outcomes: [
-					{ id: 0, name: 'outcome1' },
-					{ id: 1, name: 'outcome2' },
-					{ id: 2, name: 'outcome3' }
+          { id: 0, name: 'outcome1' },
+          { id: 1, name: 'outcome2' },
+          { id: 2, name: 'outcome3' }
         ],
         minValue: 1,
         maxValue: 3,
@@ -266,9 +259,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         description: 'test',
         type: CATEGORICAL,
         outcomes: [
-					{ id: 0, name: 'outcome1' },
-					{ id: 1, name: 'outcome2' },
-					{ id: 2, name: 'outcome3' }
+          { id: 0, name: 'outcome1' },
+          { id: 1, name: 'outcome2' },
+          { id: 2, name: 'outcome3' }
         ]
       };
       store.dispatch(action.submitNewMarket(marketData));
@@ -282,9 +275,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
         formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
         type: CATEGORICAL,
         outcomes: [
-					{ id: 0, name: 'outcome1' },
-					{ id: 1, name: 'outcome2' },
-					{ id: 2, name: 'outcome3' }
+          { id: 0, name: 'outcome1' },
+          { id: 1, name: 'outcome2' },
+          { id: 2, name: 'outcome3' }
         ],
         minValue: 1,
         maxValue: 3,

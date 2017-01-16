@@ -4,8 +4,8 @@ import classnames from 'classnames';
 const PositionsSummary = p => (
   <div className={classnames('positions-summary', p.className)}>
     {!!p.numPositions &&
-    <span className="num-positions">Positions</span>
-		}
+      <span className="num-positions">Positions</span>
+    }
   </div>
 );
 

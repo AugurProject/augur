@@ -13,11 +13,11 @@ export default function (orderBooks = {}, action) {
         ...orderBooks,
         [action.marketId]: {
           buy: (orderBook.buy)
-						? { ...orderBook.buy, ...action.marketOrderBook.buy }
-						: action.marketOrderBook.buy,
+            ? { ...orderBook.buy, ...action.marketOrderBook.buy }
+            : action.marketOrderBook.buy,
           sell: (orderBook.sell)
-						? { ...orderBook.sell, ...action.marketOrderBook.sell }
-						: action.marketOrderBook.sell
+            ? { ...orderBook.sell, ...action.marketOrderBook.sell }
+            : action.marketOrderBook.sell
         }
       };
     }

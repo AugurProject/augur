@@ -57,7 +57,7 @@ export default class App extends Component {
     handleScrollTop(this.props.url);
   }
 
-	// Sidebar
+  // Sidebar
   setSidebarAllowed(isSideBarAllowed) {
     this.setState({ isSideBarAllowed });
   }
@@ -65,8 +65,8 @@ export default class App extends Component {
     this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
   }
 
-	//	Bounding Element Dimentions
-	//	NOTE -- used by mobile side-bar
+  //	Bounding Element Dimentions
+  //	NOTE -- used by mobile side-bar
   updateHeaderHeight(headerHeight) {
     this.setState({ headerHeight });
   }
@@ -74,7 +74,7 @@ export default class App extends Component {
     this.setState({ footerHeight });
   }
 
-	//	Footer
+  //	Footer
   updateIsFooterCollapsed(isFooterCollapsed) {
     this.setState({ isFooterCollapsed });
   }
@@ -85,12 +85,12 @@ export default class App extends Component {
     }
   }
 
-	// Chat
+  // Chat
   toggleChat() {
     this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
   }
 
-	// Touch Events
+  // Touch Events
   attachTouchHandler() {
     delete Hammer.defaults.cssProps.userSelect; // Allows for text selection
 
@@ -148,22 +148,22 @@ export default class App extends Component {
       footerHeight: s.footerHeight
     };
 
-		// NOTE -- A few implementation details:
-		// An attention has been paid to avoid JS manipulation of app layout
-		// As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
-		// The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
+    // NOTE -- A few implementation details:
+    // An attention has been paid to avoid JS manipulation of app layout
+    // As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
+    // The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
     return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
         {p &&
         <div id="app_container" >
           {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-          <SidebarMask
-            style={{
-              top: s.headerHeight,
-              bottom: s.footerHeight
-            }}
-          />
-						}
+            <SidebarMask
+              style={{
+                top: s.headerHeight,
+                bottom: s.footerHeight
+              }}
+            />
+          }
           <div id="app_header">
             <Header
               {...navProps}
@@ -171,29 +171,29 @@ export default class App extends Component {
             />
             <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
               {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-              <div className="core-stats-bumper" />
-								}
+                <div className="core-stats-bumper" />
+              }
               {p.loginAccount && p.loginAccount.address &&
-              <CoreStats coreStats={p.coreStats} />
-								}
+                <CoreStats coreStats={p.coreStats} />
+              }
             </div>
           </div>
           <div id="app_views" >
             <Header {...navProps} />
             <div id="app_view_container">
               {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-              <div id="side_bar" >
-                <SideBar {...sideBarProps} />
-              </div>
-								}
+                <div id="side_bar" >
+                  <SideBar {...sideBarProps} />
+                </div>
+              }
               <div id="app_view">
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                <div className="core-stats-bumper" />
-									}
+                  <div className="core-stats-bumper" />
+                }
                 <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
                   {p.loginAccount && p.loginAccount.address &&
-                  <CoreStats coreStats={p.coreStats} />
-										}
+                    <CoreStats coreStats={p.coreStats} />
+                  }
                 </div>
                 <Routes
                   {...p}
@@ -204,14 +204,14 @@ export default class App extends Component {
             </div>
           </div>
           {!s.isChatCollapsed &&
-          <ChatView
-            {...p.chat.augur}
-            toggleChat={() => { this.toggleChat(); }}
-          />
-						}
+            <ChatView
+              {...p.chat.augur}
+              toggleChat={() => { this.toggleChat(); }}
+            />
+          }
           <button id="chat-button" onClick={() => { this.toggleChat(); }}>
-							Chat
-						</button>
+            Chat
+          </button>
           <Footer
             {...navProps}
             isFooterCollapsed={s.isFooterCollapsed}
@@ -219,7 +219,7 @@ export default class App extends Component {
             updateIsFooterCollapsed={this.updateIsFooterCollapsed}
           />
         </div>
-				}
+        }
       </main>
     );
   }

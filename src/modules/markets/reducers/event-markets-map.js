@@ -8,8 +8,8 @@ export default function (eventMarketsMap = {}, action) {
         return {
           ...eventMarketsMap,
           [action.eventID]: (eventMarketsMap[action.eventID].concat(action.marketIDs)).filter(el => (
-						isUnique.hasOwnProperty(el) ? false : (isUnique[el] = true))
-					)
+            isUnique.hasOwnProperty(el) ? false : (isUnique[el] = true))
+          )
         };
       }
       return {

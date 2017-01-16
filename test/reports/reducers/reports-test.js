@@ -1,9 +1,6 @@
 import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
-import {
-	UPDATE_REPORTS,
-	CLEAR_REPORTS
-} from 'modules/reports/actions/update-reports';
+import { UPDATE_REPORTS, CLEAR_REPORTS } from 'modules/reports/actions/update-reports';
 import testState from 'test/testState';
 import reducer from 'modules/reports/reducers/reports';
 

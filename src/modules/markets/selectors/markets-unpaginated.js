@@ -10,20 +10,20 @@ export default function () {
   const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
 
   return selectUnpaginatedMarkets(
-		allMarkets,
-		filteredMarkets,
-		favoriteMarkets,
-		activeView,
-		selectedMarketsHeader
-	);
+    allMarkets,
+    filteredMarkets,
+    favoriteMarkets,
+    activeView,
+    selectedMarketsHeader
+  );
 }
 
 export const selectPendingReports = memoizerific(1)(markets =>
-	markets.filter(market => !!market.isPendingReport)
+  markets.filter(market => !!market.isPendingReport)
 );
 
 export const selectPositions = memoizerific(1)(markets =>
-	markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
+  markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
 );
 
 export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {

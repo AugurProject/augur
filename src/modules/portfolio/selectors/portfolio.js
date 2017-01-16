@@ -11,7 +11,7 @@ export default function () {
   const navItems = portfolioNavItems();
   const totals = selectPortfolioTotals();
 
-	// console.log('loginAccountReports -- ', reports);
+  // console.log('loginAccountReports -- ', reports);
 
   return {
     navItems,

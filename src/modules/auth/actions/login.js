@@ -1,8 +1,5 @@
 import { accounts } from '../../../services/augurjs';
-import {
-	loadLoginAccountDependents,
-	loadLoginAccountLocalStorage
-} from '../../auth/actions/load-login-account';
+import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
@@ -42,7 +39,7 @@ export function login(loginID, password, rememberMe) {
           if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
         }));
 
-				// need to load selectors here as they get updated above
+        // need to load selectors here as they get updated above
         const { links } = require('../../../selectors');
         if (isCurrentLoginMessageRead(getState().loginMessage)) {
           links.marketsLink.onClick(links.marketsLink.href);

@@ -39,7 +39,7 @@ const Outcomes = p => (
           minLimitPrice={p.minLimitPrice}
           maxLimitPrice={p.maxLimitPrice}
         />
-			))}
+      ))}
     </div>
   </article>
 );

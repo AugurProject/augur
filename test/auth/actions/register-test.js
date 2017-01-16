@@ -47,7 +47,7 @@ describe(`modules/auth/actions/register.js`, () => {
   const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
   updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-	// ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
+  // ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
   sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
     if (cb) cb(null, 2.5);
     return { type: ldLoginAccDepTestString };
@@ -82,7 +82,7 @@ describe(`modules/auth/actions/register.js`, () => {
     }];
 
     store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
-		// Call again to simulate someone pasting loginID and then hitting signUp
+    // Call again to simulate someone pasting loginID and then hitting signUp
     store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
 
     assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);

@@ -9,13 +9,13 @@ const PortfolioMarkets = p => (
         <div className="">
           <span className="description">{market.description}</span>
           {!!market &&
-          <article className="portfolio-list">
-            <Market {...market} />
-          </article>
-					}
+            <article className="portfolio-list">
+              <Market {...market} />
+            </article>
+          }
         </div>
       </Link>
-		))}
+    ))}
   </div>
 );
 

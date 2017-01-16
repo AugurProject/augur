@@ -25,8 +25,8 @@ const SideBar = (p) => {
             isChecked={tag.isSelected}
             onClick={tag.onClick}
           />
-				) : <NullStateMessage message={nullMessage} />
-			}
+        ) : <NullStateMessage message={nullMessage} />
+      }
       </div>
     </aside>
   );

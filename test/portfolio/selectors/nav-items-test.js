@@ -56,20 +56,20 @@ describe('modules/portfolio/selectors/nav-items', () => {
       numPositions: formatNumber(10, { denomination: 'positions' }),
       totalNet: formatEther(2)
     }
-	));
+  ));
   const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
     {
       numMarkets: 30,
       totalValue: 10
     }
-	));
+  ));
 
   const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
     {
       numReports: 10,
       netRep: 5
     }
-	));
+  ));
 
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
     '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,

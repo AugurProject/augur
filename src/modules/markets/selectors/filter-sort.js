@@ -3,9 +3,9 @@ import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../
 import store from '../../../store';
 
 export default function () {
-	// NOTE -- the filtering + sorting of the markets are separated respectively
-	// 	filtering: `markets/selectores/markets-filtered.js`
-	//	sorting: `markets/selectors/markets-all.js`
+  // NOTE -- the filtering + sorting of the markets are separated respectively
+  // 	filtering: `markets/selectores/markets-filtered.js`
+  //	sorting: `markets/selectors/markets-all.js`
 
   const { selectedFilterSort } = store.getState();
 

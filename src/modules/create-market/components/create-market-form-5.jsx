@@ -23,10 +23,10 @@ const CreateMarketForm5 = p => (
 
 // TOOD -- Prop Validations
 // CreateMarketForm5.propTypes = {
-// 	marketCreationFee: PropTypes.object,
-// 	gasCost: PropTypes.object,
-// 	eventBond: PropTypes.object,
-// 	onSubmit: PropTypes.func
+//   marketCreationFee: PropTypes.object,
+//   gasCost: PropTypes.object,
+//   eventBond: PropTypes.object,
+//   onSubmit: PropTypes.func
 // };
 
 export default CreateMarketForm5;

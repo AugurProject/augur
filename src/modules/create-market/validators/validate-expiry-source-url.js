@@ -2,7 +2,7 @@ import { EXPIRY_SOURCE_SPECIFIC } from '../../create-market/constants/market-val
 
 export default function (expirySourceUrl, expirySource) {
   if (expirySource === EXPIRY_SOURCE_SPECIFIC &&
-		(!expirySourceUrl || !expirySourceUrl.length)) {
+    (!expirySourceUrl || !expirySourceUrl.length)) {
     return 'Please enter the full URL of the website';
   }
 }

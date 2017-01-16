@@ -27,7 +27,7 @@ describe('authForm selectors test: ', () => {
 
     assert.isDefined(authForm);  // TODO -- remove
 
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -36,7 +36,7 @@ describe('authForm selectors test: ', () => {
       err: null,
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -45,7 +45,7 @@ describe('authForm selectors test: ', () => {
       err: null,
       selectedAuthType: 'some incorrect value'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -56,7 +56,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -67,7 +67,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -78,7 +78,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -90,7 +90,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -101,7 +101,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 
@@ -113,7 +113,7 @@ describe('authForm selectors test: ', () => {
       },
       selectedAuthType: 'login'
     };
-		// console.log(authForm.default());
+    // console.log(authForm.default());
     authFormAssertions(authForm.default());
   });
 });

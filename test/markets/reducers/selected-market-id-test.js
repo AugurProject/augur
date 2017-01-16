@@ -1,8 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import {
-	UPDATE_URL
-} from 'modules/link/actions/update-url';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
 import reducer from 'modules/markets/reducers/selected-market-id';
 import testState from 'test/testState';
 

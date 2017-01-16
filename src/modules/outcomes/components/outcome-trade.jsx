@@ -76,8 +76,8 @@ export default class OutcomeTrade extends Component {
     const oldTradeOrders = getValue(this.props, 'tradeSummary.tradeOrders');
     const newTradeOrders = getValue(nextProps, 'tradeSummary.tradeOrders');
 
-		// Currently whenever a trade is submitted, all market's in-process orders are cleared
-		// Will re-render trade component upon tradeOrders clearing
+    // Currently whenever a trade is submitted, all market's in-process orders are cleared
+    // Will re-render trade component upon tradeOrders clearing
     if ((oldTradeOrders.length !== newTradeOrders.length) && newTradeOrders.length === 0) {
       this.updateTimestamp();
     }
@@ -150,73 +150,73 @@ export default class OutcomeTrade extends Component {
         {p.marketType !== SCALAR ?
           <h3>Create Order <EmDash /> {name && name}</h3> :
           <h3>Create Order</h3>
-				}
+        }
         {trade &&
-        <div
-          key={s.timestamp}
-          className="outcome-trade-inputs"
-        >
-          <div className="outcome-trade-inputs-sides">
-            <ComponentNav
-              navItems={p.outcomeTradeNavItems}
-              selectedNav={selectedTradeSide}
-              updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID); }}
-            />
+          <div
+            key={s.timestamp}
+            className="outcome-trade-inputs"
+          >
+            <div className="outcome-trade-inputs-sides">
+              <ComponentNav
+                navItems={p.outcomeTradeNavItems}
+                selectedNav={selectedTradeSide}
+                updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID); }}
+              />
+            </div>
+            <div className="outcome-trade-inputs-fields">
+              <Input
+                className={classNames({ 'input-error': !s.isSharesValueValid })}
+                placeholder={s.shareInputPlaceholder}
+                value={s.sharesDenominated}
+                isIncrementable
+                incrementAmount={s.incrementAmount}
+                updateValue={(value) => {
+                  this.validateShares(value, trade);
+                }}
+                onChange={(value) => {
+                  this.validateShares(value, trade);
+                }}
+              />
+              <span>@</span>
+              <Input
+                className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
+                placeholder="Price"
+                value={trade.limitPrice}
+                isIncrementable
+                incrementAmount={s.incrementAmount}
+                updateValue={(value) => {
+                  this.validatePrice(value, trade);
+                }}
+                onChange={(value) => {
+                  this.validatePrice(value, trade);
+                }}
+              />
+            </div>
           </div>
-          <div className="outcome-trade-inputs-fields">
-            <Input
-              className={classNames({ 'input-error': !s.isSharesValueValid })}
-              placeholder={s.shareInputPlaceholder}
-              value={s.sharesDenominated}
-              isIncrementable
-              incrementAmount={s.incrementAmount}
-              updateValue={(value) => {
-                this.validateShares(value, trade);
-              }}
-              onChange={(value) => {
-                this.validateShares(value, trade);
-              }}
-            />
-            <span>@</span>
-            <Input
-              className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
-              placeholder="Price"
-              value={trade.limitPrice}
-              isIncrementable
-              incrementAmount={s.incrementAmount}
-              updateValue={(value) => {
-                this.validatePrice(value, trade);
-              }}
-              onChange={(value) => {
-                this.validatePrice(value, trade);
-              }}
-            />
-          </div>
-        </div>
-				}
+        }
         {!s.isSharesValueValid &&
-        <span className="outcome-trade-input-error-message" >
-          {`Shares amount must be greater than 0.`}
-        </span>
-				}
+          <span className="outcome-trade-input-error-message" >
+            {`Shares amount must be greater than 0.`}
+          </span>
+        }
         {!s.isLimitPriceValueValid &&
-        <span className="outcome-trade-input-error-message" >
-          {`Limit price must be between ${s.minLimitPrice} - ${s.maxLimitPrice}.`}
-        </span>
-				}
+          <span className="outcome-trade-input-error-message" >
+            {`Limit price must be between ${s.minLimitPrice} - ${s.maxLimitPrice}.`}
+          </span>
+        }
         {tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid &&
-        <OutcomeTradeSummary
-          trade={trade}
-          tradeOrder={tradeOrder}
-        />
-				}
+          <OutcomeTradeSummary
+            trade={trade}
+            tradeOrder={tradeOrder}
+          />
+        }
         {tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid &&
-        <OutcomeTradeAction
-          hasFunds={hasFunds}
-          selectedID={selectedID}
-          submitTrade={p.submitTrade}
-        />
-				}
+          <OutcomeTradeAction
+            hasFunds={hasFunds}
+            selectedID={selectedID}
+            submitTrade={p.submitTrade}
+          />
+        }
       </article>
     );
   }
@@ -227,7 +227,7 @@ function denominateShares(shares, fromDenomination, toDenomination) {
     return shares;
   }
 
-	// Determine numerical representation of from/to values for shares mutation calc
+  // Determine numerical representation of from/to values for shares mutation calc
   const options = [SHARE, MILLI_SHARE, MICRO_SHARE];
   let fromValue = 0;
   options.some((value, i) => {
@@ -251,11 +251,11 @@ function denominateShares(shares, fromDenomination, toDenomination) {
 
   if (fromValue === toValue) {
     return shares;
-  } else	if (fromValue < toValue) {
+  } else if (fromValue < toValue) {
     return shares * (1000**(toValue - fromValue));
   }
 
-	// fromValue > toValue
+  // fromValue > toValue
   return shares / (1000**Math.abs(toValue - fromValue));
 }
 

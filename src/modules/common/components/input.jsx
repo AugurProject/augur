@@ -3,12 +3,12 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
 export default class Input extends Component {
-	// TODO -- Prop Validations
+  // TODO -- Prop Validations
   static propTypes = {
-		// type: PropTypes.string,
-		// className: PropTypes.string,
+    // type: PropTypes.string,
+    // className: PropTypes.string,
     value: PropTypes.any,
-		// isMultiline: PropTypes.bool,
+    // isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
     debounceMS: PropTypes.number,
     onChange: PropTypes.func,
@@ -72,81 +72,81 @@ export default class Input extends Component {
     return (
       <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable })} >
         {!p.isMultiline &&
-        <input
-          {...p}
-          className="box"
-          value={s.value}
-          onChange={this.handleOnChange}
-          onBlur={this.handleOnBlur}
-        />
-				}
+          <input
+            {...p}
+            className="box"
+            value={s.value}
+            onChange={this.handleOnChange}
+            onBlur={this.handleOnBlur}
+          />
+        }
 
         {p.isMultiline &&
-        <textarea
-          {...p}
-          className="box"
-          value={s.value}
-          onChange={this.handleOnChange}
-          onBlur={this.handleOnBlur}
-        />
-				}
+          <textarea
+            {...p}
+            className="box"
+            value={s.value}
+            onChange={this.handleOnChange}
+            onBlur={this.handleOnBlur}
+          />
+        }
 
         {isClearable && !p.isMultiline && !!s.value &&
-        <button type="button" className="button-text-only" onClick={this.handleClear}>
-          <i></i>
-        </button>
-				}
+          <button type="button" className="button-text-only" onClick={this.handleClear}>
+            <i></i>
+          </button>
+        }
 
         {isIncrementable &&
-        <div className="value-incrementers">
-          <button
-            className="increment-value unstyled"
-            onClick={() => {
-              if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                let newValue = new BigNumber(s.value || 0);
+          <div className="value-incrementers">
+            <button
+              className="increment-value unstyled"
+              onClick={() => {
+                if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  let newValue = new BigNumber(s.value || 0);
 
-                if (newValue > p.max) {
-                  newValue = new BigNumber(p.max);
-                } else if (newValue < p.min) {
-                  newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
-                } else {
-                  newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
                   if (newValue > p.max) {
                     newValue = new BigNumber(p.max);
+                  } else if (newValue < p.min) {
+                    newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+                  } else {
+                    newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+                    if (newValue > p.max) {
+                      newValue = new BigNumber(p.max);
+                    }
                   }
+
+                  updateValue(newValue);
                 }
+              }}
+            >
+              <i></i>
+            </button>
+            <button
+              className="decrement-value unstyled"
+              onClick={() => {
+                if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  let newValue = new BigNumber(s.value || 0);
 
-                updateValue(newValue);
-              }
-            }}
-          >
-            <i></i>
-          </button>
-          <button
-            className="decrement-value unstyled"
-            onClick={() => {
-              if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                let newValue = new BigNumber(s.value || 0);
-
-                if (newValue > p.max) {
-                  newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
-                } else if (newValue < p.min) {
-                  newValue = new BigNumber(p.min);
-                } else {
-                  newValue = newValue.minus(new BigNumber(incrementAmount));
-                  if (newValue < p.min) {
+                  if (newValue > p.max) {
+                    newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
+                  } else if (newValue < p.min) {
                     newValue = new BigNumber(p.min);
+                  } else {
+                    newValue = newValue.minus(new BigNumber(incrementAmount));
+                    if (newValue < p.min) {
+                      newValue = new BigNumber(p.min);
+                    }
                   }
-                }
 
-                updateValue(newValue);
-              }
-            }}
-          >
-            <i></i>
-          </button>
-        </div>
-				}
+                  updateValue(newValue);
+                }
+              }}
+            >
+              <i></i>
+            </button>
+          </div>
+        }
       </div>
     );
   }

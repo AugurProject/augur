@@ -71,7 +71,7 @@ export default class MarketOpenOrders extends Component {
               })}
             </div>
           </div>
-				}
+        }
       </article>
     );
   }

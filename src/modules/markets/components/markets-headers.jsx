@@ -10,21 +10,21 @@ const MarketsHeaders = p => (
     <div className="view-header">
       <div className="view-header-group">
         <h2>
-					Markets
-					{p.marketsHeader.selectedMarketsHeader === FAVORITES && <span> <EmDash /> Favorites</span>}
+          Markets
+          {p.marketsHeader.selectedMarketsHeader === FAVORITES && <span> <EmDash /> Favorites</span>}
           {p.marketsHeader.selectedMarketsHeader === PENDING_REPORTS && <span> <EmDash /> Pending Reports</span>}
         </h2>
       </div>
       <div className="view-header-group">
         {p.loginAccount && p.loginAccount.address &&
-        <Link
-          className="button imperative navigational"
-          disabled={!p.loginAccount.address}
-          {...p.createMarketLink}
-        >
-						+ Create New Market
-					</Link>
-				}
+          <Link
+            className="button imperative navigational"
+            disabled={!p.loginAccount.address}
+            {...p.createMarketLink}
+          >
+            + Create New Market
+          </Link>
+        }
       </div>
     </div>
     <MarketsFilterSort

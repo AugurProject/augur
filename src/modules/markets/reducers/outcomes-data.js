@@ -81,14 +81,14 @@ function parseOutcomes(newMarketsData, outcomesData) {
   }
 
   function parseCategoricalOutcomes(marketData, marketID) {
-		// parse outcome names from description
+    // parse outcome names from description
     const splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
     if (splitDescription.length < 2) {
       console.warn('Missing outcome names in description for categorical market:', marketID, marketData);
       return {};
     }
 
-		// parse individual outcomes from outcomes string
+    // parse individual outcomes from outcomes string
     const categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR);
     if (categoricalOutcomeNames.length !== marketData.outcomes.length) {
       console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market:', marketID, marketData);

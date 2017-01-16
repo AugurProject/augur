@@ -16,19 +16,19 @@ export const submitGenerateOrderBook = market => (dispatch) => {
     onSimulate: r => console.log('generateOrderBook onSimulate:', r),
     onBuyCompleteSets: r => console.log('generateOrderBook onBuyCompleteSets:', r),
     onSetupOutcome: r => console.log('generateOrderBook onSetupOutcome:', `Order book creation for outcome '${
-			market.outcomes[r.outcome - 1].name
-			}' completed.`, r),
+      market.outcomes[r.outcome - 1].name
+      }' completed.`, r),
     onSetupOrder: r => console.log('generateOrderBook onSetupOrder:', `${
-			r.buyPrice ? 'Bid' : 'Ask'
-			} for ${
-			r.amount
-			} share${
-			r.amount > 1 ? 's' : ''
-			} of outcome '${
-			market.outcomes[r.outcome - 1].name
-			}' at ${
-			r.buyPrice || r.sellPrice
-			} ETH created.`, r),
+      r.buyPrice ? 'Bid' : 'Ask'
+      } for ${
+      r.amount
+      } share${
+      r.amount > 1 ? 's' : ''
+      } of outcome '${
+      market.outcomes[r.outcome - 1].name
+      }' at ${
+      r.buyPrice || r.sellPrice
+      } ETH created.`, r),
     onSuccess: (r) => {
       console.log('generateOrderBook onSuccess:', r);
       dispatch(loadBidsAsks(market.id));

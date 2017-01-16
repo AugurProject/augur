@@ -19,7 +19,6 @@ export default class Routes extends Component {
 
     this.shouldComponentUpdate = shouldComponentUpdateOnStateChangeOnly;
     this.handleRouting = this.handleRouting.bind(this);
-
   }
 
   componentWillMount() {
@@ -111,7 +110,6 @@ export default class Routes extends Component {
         System.import('modules/create-market/components/create-market-view').then((module) => {
           const CreateMarketView = module.default;
           viewComponent = <CreateMarketView {...viewProps} />;
-
           this.setState({ viewProps, viewComponent });
         });
         break;
@@ -134,7 +132,6 @@ export default class Routes extends Component {
         System.import('modules/market/components/market-view').then((module) => {
           const MarketView = module.default;
           viewComponent = <MarketView {...viewProps} />;
-
           this.setState({ viewProps, viewComponent });
         });
         break;
@@ -156,7 +153,6 @@ export default class Routes extends Component {
         System.import('modules/markets/components/markets-view').then((module) => {
           const MarketsView = module.default;
           viewComponent = <MarketsView {...viewProps} />;
-
           this.setState({ viewProps, viewComponent });
         });
       }

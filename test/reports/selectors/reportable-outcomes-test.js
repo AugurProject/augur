@@ -24,7 +24,7 @@ describe('modules/reports/selectors/reportable-outcomes.js', () => {
     ];
 
     assert.deepEqual(actual, expected, `expected array for a BINARY market was not returned`);
-		// assertions.reportableOutcomes(actual);
+    // assertions.reportableOutcomes(actual);
   });
 
   it('should return the correct array for a CATEGORICAL market', () => {
