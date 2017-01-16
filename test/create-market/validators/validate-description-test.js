@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import {
-	DESCRIPTION_MIN_LENGTH,
-	DESCRIPTION_MAX_LENGTH
+  DESCRIPTION_MIN_LENGTH,
+  DESCRIPTION_MAX_LENGTH
 } from 'modules/create-market/constants/market-values-constraints';
 import validator from 'modules/create-market/validators/validate-description';
 
@@ -18,12 +18,12 @@ describe(`modules/market/validators/validate-description.js`, () => {
 
   it(`should make sure description is not too short`, () => {
     test = validator('1');
-		// Because the current minimum description is 1 character long
-		// we can't effectively test this yet, a blank description gives us
-		// the previous error we tested in the above test.
+    // Because the current minimum description is 1 character long
+    // we can't effectively test this yet, a blank description gives us
+    // the previous error we tested in the above test.
     out = null;
-		// delete above line and uncomment the below line when MIN LENGTH is > 1
-		// out = 'Text must be a minimum length of ' + DESCRIPTION_MIN_LENGTH;
+    // delete above line and uncomment the below line when MIN LENGTH is > 1
+    // out = 'Text must be a minimum length of ' + DESCRIPTION_MIN_LENGTH;
     assert.equal(test, out, `Didn't throw the correct error if description was too short. min length: ${DESCRIPTION_MIN_LENGTH}`);
   });
 

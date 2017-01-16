@@ -36,23 +36,23 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
       isOpen: true,
       description: 'test 1',
       outcomes: [
-				{ name: 'outcome1' },
-				{ name: 'outcome2' }
+        { name: 'outcome1' },
+        { name: 'outcome2' }
       ],
       tags: [
-				{ name: 'testtag' },
-				{ name: 'tag' }
+        { name: 'testtag' },
+        { name: 'tag' }
       ]
     }, {
       isOpen: true,
       description: 'test 2',
       outcomes: [
-				{ name: 'outcome3' },
-				{ name: 'outcome4' }
+        { name: 'outcome3' },
+        { name: 'outcome4' }
       ],
       tags: [
-				{ name: 'testtag' },
-				{ name: 'tag' }
+        { name: 'testtag' },
+        { name: 'tag' }
       ]
     }];
 

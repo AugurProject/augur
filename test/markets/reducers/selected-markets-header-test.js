@@ -1,8 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import {
-	UPDATED_SELECTED_MARKETS_HEADER
-} from 'modules/markets/actions/update-selected-markets-header';
+import { UPDATED_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
 import reducer from 'modules/markets/reducers/selected-markets-header';
 
 describe(`modules/markets/reducers/selected-markets-header.js`, () => {

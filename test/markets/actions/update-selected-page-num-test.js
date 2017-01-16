@@ -30,7 +30,7 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 
   beforeEach(() => {
     store.clearActions();
-		// Mock the Window object
+    // Mock the Window object
     global.window = {};
     global.window.location = {
       pathname: '/',

@@ -75,11 +75,11 @@ describe('modules/create-market/validators/validate-initial-fair-prices.js', () 
 
   function callValidateInitialFairPrices(type, currentObj) {
     return validateInitialFairPrices(
-			type,
-			currentObj.initialFairPrices,
-			currentObj.priceWidth,
-			currentObj.halfPriceWidth,
-			currentObj.scalarSmallNum,
-			currentObj.scalarBigNum);
+      type,
+      currentObj.initialFairPrices,
+      currentObj.priceWidth,
+      currentObj.halfPriceWidth,
+      currentObj.scalarSmallNum,
+      currentObj.scalarBigNum);
   }
 });

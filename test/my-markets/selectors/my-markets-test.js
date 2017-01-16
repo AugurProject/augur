@@ -32,7 +32,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       href: '/fake/path',
       onClick: 'fake function for testing'
     }
-	));
+  ));
 
   const stubbedSelectors = {
     loginAccount,

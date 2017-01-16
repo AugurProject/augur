@@ -80,7 +80,7 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
       updateTradeOrder: trade.updateTradeOrder, // self reference for function
       totalSharesUpToOrder: trade.totalSharesUpToOrder
     }
-		);
+    );
     assert.isFunction(trade.updateTradeOrder);
   });
 

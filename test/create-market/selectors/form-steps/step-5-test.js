@@ -47,15 +47,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 
     it('should call the correct action onSubmit', () => {
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       select.onSubmit();
 
@@ -91,15 +91,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: BINARY,
@@ -279,15 +279,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: BINARY,
@@ -419,15 +419,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: CATEGORICAL,
@@ -622,10 +622,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
 
       assert.deepEqual(
-				select,
-				out,
-				`correct object was not returned`
-			);
+        select,
+        out,
+        `correct object was not returned`
+      );
     });
 
     it('should return the correct object for a categorical market WITHOUT an order book', () => {
@@ -640,15 +640,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: CATEGORICAL,
@@ -781,15 +781,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: SCALAR,
@@ -974,15 +974,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
       };
 
       const select = selector.select(
-				formState,
-				state.blockchain.currentBlockNumber,
-				state.blockchain.currentBlockMillisSinceEpoch,
-				state.branch.periodLength,
-				state.branch.baseReporters,
-				state.branch.numEventsCreatedInPast24Hours,
-				state.branch.numEventsInReportPeriod,
-				store.dispatch
-			);
+        formState,
+        state.blockchain.currentBlockNumber,
+        state.blockchain.currentBlockMillisSinceEpoch,
+        state.branch.periodLength,
+        state.branch.baseReporters,
+        state.branch.numEventsCreatedInPast24Hours,
+        state.branch.numEventsInReportPeriod,
+        store.dispatch
+      );
 
       out = {
         type: SCALAR,

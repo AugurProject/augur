@@ -30,7 +30,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
     const expected = [{
       name: 'test',
       data: [
-				[1483228800000, 100]
+        [1483228800000, 100]
       ]
     }];
     assert.deepEqual(actual, expected, `Didn't produce the expected output`);

@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 import {
-	updateLoginAccount
+  updateLoginAccount
 } from '../../../src/modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/load-login-account.js`, () => {
