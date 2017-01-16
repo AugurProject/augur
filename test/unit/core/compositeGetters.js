@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 34 tests total
+// 39 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -423,7 +423,107 @@ describe('CompositeGetters.adjustScalarOrder', function() {
         }
     });
 });
-describe.skip('CompositeGetters.parseOrderBook', function() {});
+describe('CompositeGetters.parseOrderBook', function() {
+    // 5 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.parseOrderBook(t.orderArray, t.scalarMinMax));
+        });
+    };
+    test({
+        description: 'should handle an order array with 2 trade orders in it, no scalar markets',
+        orderArray: ['0x01', '0x1', '0x0a1', '100000000000000000000', '2530000000000000000', '0x0d1', '101010', '1', '0x02', '0x2', '0x0a2', '54200000000000000000000', '9320000000000000000000', '0x0d2', '101010', '2'],
+        scalarMinMax: {},
+        assertions: function(o) {
+            assert.deepEqual(o, { buy:
+               { '0x0000000000000000000000000000000000000000000000000000000000000001':
+                  { id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+                    type: 'buy',
+                    market: '0x0a1',
+                    amount: '100',
+                    fullPrecisionAmount: '100',
+                    price: '2.53',
+                    fullPrecisionPrice: '2.53',
+                    owner: '0x00000000000000000000000000000000000000d1',
+                    block: 1052688,
+                    outcome: '1' } },
+              sell:
+               { '0x0000000000000000000000000000000000000000000000000000000000000002':
+                  { id: '0x0000000000000000000000000000000000000000000000000000000000000002',
+                    type: 'sell',
+                    market: '0x0a2',
+                    amount: '54200',
+                    fullPrecisionAmount: '54200',
+                    price: '9320',
+                    fullPrecisionPrice: '9320',
+                    owner: '0x00000000000000000000000000000000000000d2',
+                    block: 1052688,
+                    outcome: '2' }
+                }
+            });
+        }
+    });
+    test({
+        description: 'should handle an order array with 2 trade orders in it, with scalar markets',
+        orderArray: ['0x01', '0x1', '0x0a1', '150000000000000000000', '80000000000000000000', '0x0d1', '101010', '1', '0x02', '0x1', '0x0a1', '736200000000000000000000', '12340000000000000000000', '0x0d1', '101010', '2'],
+        scalarMinMax: { minValue: '10', maxValue: '140'},
+        assertions: function(o) {
+            assert.deepEqual(o, {
+            	buy: {
+            		'0x0000000000000000000000000000000000000000000000000000000000000001': {
+            			id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+            			type: 'buy',
+            			market: '0x0a1',
+            			amount: '150',
+            			fullPrecisionAmount: '150',
+            			price: '90',
+            			fullPrecisionPrice: '90',
+            			owner: '0x00000000000000000000000000000000000000d1',
+            			block: 1052688,
+            			outcome: '1'
+            		},
+            		'0x0000000000000000000000000000000000000000000000000000000000000002': {
+            			id: '0x0000000000000000000000000000000000000000000000000000000000000002',
+            			type: 'buy',
+            			market: '0x0a1',
+            			amount: '736200',
+            			fullPrecisionAmount: '736200',
+            			price: '12350',
+            			fullPrecisionPrice: '12350',
+            			owner: '0x00000000000000000000000000000000000000d1',
+            			block: 1052688,
+            			outcome: '2'
+            		}
+            	},
+            	sell: {}
+            });
+        }
+    });
+    test({
+        description: 'should return a blank orderBook Object if orderArray is empty',
+        orderArray: [],
+        scalarMinMax: undefined,
+        assertions: function(o) {
+            assert.deepEqual(o, {buy: {}, sell: {}});
+        }
+    });
+    test({
+        description: 'should return orderArray passed in if orderArray is undefined',
+        orderArray: undefined,
+        scalarMinMax: undefined,
+        assertions: function(o) {
+            assert.isUndefined(o);
+        }
+    });
+    test({
+        description: 'should return orderArray passed in if orderArray is am object with an error key',
+        orderArray: { error: 'Uh-Oh!' },
+        scalarMinMax: { minValue: '10', maxValue: '140'},
+        assertions: function(o) {
+            assert.deepEqual(o, { error: 'Uh-Oh!' });
+        }
+    });
+});
 describe('CompositeGetters.getOrderBook', function() {
     // 4 tests total
     var test = function(t) {
