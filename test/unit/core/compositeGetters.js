@@ -4,11 +4,98 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 39 tests total
+// 42 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
-describe.skip('CompositeGetters.loadMarkets', function() {});
+describe('CompositeGetters.loadMarkets', function() {
+    // 3 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var loadMarketsHelper = augur.loadMarketsHelper;
+            var getMarketsInfo = augur.augurNode.getMarketsInfo;
+            augur.loadMarketsHelper = t.loadMarketsHelper;
+            augur.augurNode.getMarketsInfo = t.getMarketsInfo;
+            augur.augurNode.nodes = t.nodes;
+
+            augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, t.chunkCB);
+
+            loadMarketsHelper = augur.loadMarketsHelper;
+            getMarketsInfo = augur.augurNode.getMarketsInfo;
+        });
+    };
+    test({
+        description: 'Should pass args to loadMarketsHelper if augurNode.nodes is an empty array',
+        branchID: '101010',
+        chunkSize: '10',
+        isDesc: false,
+        chunkCB: function(err, o) {
+            // this isn't hit during this test - added an assertion that will fail if it gets hit.
+            assert.isNull('chunkCB called');
+        },
+        nodes: [],
+        loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
+            assert.deepEqual(branchID, '101010');
+            assert.deepEqual(chunkSize, '10');
+            assert.deepEqual(isDesc, false);
+            assert.isFunction(chunkCB);
+        },
+        getMarketsInfo: function(branchID, cb) {
+            // this isn't hit during this test - added an assertion that will fail if it gets hit.
+            assert.isNull('getMarketsInfo called');
+        }
+    });
+    test({
+        description: 'Should pass args to loadMarketsHelper if augurNode.nodes is populated but getMarketsInfo returns an error',
+        branchID: '101010',
+        chunkSize: '10',
+        isDesc: false,
+        chunkCB: function(err, o) {
+            // this isn't hit during this test - added an assertion that will fail if it gets hit.
+            assert.isNull('chunkCB called');
+        },
+        nodes: [],
+        loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
+            // we want to confirm that the augurNode.nodes was cleared after getting an error from getMarketsInfo
+            assert.deepEqual(augur.augurNode.nodes, []);
+            assert.deepEqual(branchID, '101010');
+            assert.deepEqual(chunkSize, '10');
+            assert.deepEqual(isDesc, false);
+            assert.isFunction(chunkCB);
+        },
+        getMarketsInfo: function(branchID, cb) {
+            assert.deepEqual(branchID, '101010');
+            // pass back an error object
+            cb({error: 'Uh-Oh!'});
+        }
+    });
+    test({
+        description: 'Should pass the loaded markets to chunkCB from getMarketsInfo',
+        branchID: '101010',
+        chunkSize: '10',
+        isDesc: false,
+        chunkCB: function(err, o) {
+            assert.isNull(err);
+            assert.deepEqual(o, { '0x0a1':
+               { id: '0x0a1',
+                 numOutcomes: '2',
+                 type: 'binary',
+                 blockNumber: '101010' } });
+            // confirm that augurNode.nodes wasn't wiped out
+            assert.deepEqual(augur.augurNode.nodes, ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake']);
+        },
+        nodes: ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake'],
+        loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
+            // This should not be called.
+            assert.isNull('loadMarketsHelper called');
+        },
+        getMarketsInfo: function(branchID, cb) {
+            assert.deepEqual(branchID, '101010');
+            // pass back a dummy market json string
+            cb(null, '{"0x0a1":{"id":"0x0a1","numOutcomes":"2","type":"binary","blockNumber":"101010"}}');
+        }
+    });
+});
 describe('CompositeGetters.loadAssets', function() {
     // 3 tests total
     var test = function(t) {
