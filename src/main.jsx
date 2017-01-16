@@ -20,12 +20,12 @@ if (process.env.NODE_ENV === 'development') {
   window.App = App;
   window.augurjs = AugurJS;
   console.log(`
-*********************************************
-            DEVELOPMENT MODE
-  window.state    -- all state data
-  window.selectors    -- component data
+*******************************************
+        AUGUR DEVELOPMENT MODE
+  window.state      -- all state data
+  window.selectors  -- component data
   window.augurjs    -- Augur API methods
-*********************************************
+*******************************************
 `);
 }
 
