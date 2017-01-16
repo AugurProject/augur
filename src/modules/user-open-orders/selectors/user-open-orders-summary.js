@@ -14,8 +14,8 @@ const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) =>
   }
 
   const openOrdersCount = (outcomes || []).reduce((openOrdersCount, outcome) => (
-		openOrdersCount + (outcome.userOpenOrders ? outcome.userOpenOrders.length : 0)
-	), 0);
+    openOrdersCount + (outcome.userOpenOrders ? outcome.userOpenOrders.length : 0)
+  ), 0);
 
   return {
     openOrdersCount: formatNumber(openOrdersCount, { denomination: 'Open Orders' })

@@ -7,8 +7,8 @@ import Branch from 'modules/branch/components/branch';
 const MarketsView = p => (
   <section id="markets_view">
     {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
-    <Branch {...p.branch} />
-		}
+      <Branch {...p.branch} />
+    }
     <MarketsHeaders
       createMarketLink={p.createMarketLink}
       loginAccount={p.loginAccount}

@@ -70,9 +70,9 @@ export function convertLogToTransaction(label, log, status, isRetry, cb) {
 }
 
 export const convertLogsToTransactions = (label, logs, isRetry) => (
-	(dispatch, getState) => (
-		async.eachSeries(logs, (log, nextLog) => (
-			dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
-		), err => (err && console.error(err)))
-	)
+  (dispatch, getState) => (
+    async.eachSeries(logs, (log, nextLog) => (
+      dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
+    ), err => (err && console.error(err)))
+  )
 );

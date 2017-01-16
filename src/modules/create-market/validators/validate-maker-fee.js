@@ -20,9 +20,9 @@ export default function (makerFee, takerFee) {
   }
   if (parsedMakerFee < MAKER_FEE_MIN || parsedMakerFee > parsedHalfTakerFee) {
     return `Maker fee must be between ${
-			formatPercent(MAKER_FEE_MIN, true).full
-			} and ${
-			formatPercent(parsedHalfTakerFee, true).full
-			}`;
+      formatPercent(MAKER_FEE_MIN, true).full
+      } and ${
+      formatPercent(parsedHalfTakerFee, true).full
+      }`;
   }
 }

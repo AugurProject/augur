@@ -27,5 +27,5 @@ export default function () {
 }
 
 export const selectPaginated = memoizerific(1)((markets, pageNum, numPerPage) =>
-	markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage)
+  markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage)
 );

@@ -3,13 +3,13 @@ import { ONE } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
 export default function validateInitialFairPrices(type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) {
-	// -- Constraints --
-	// 	Binary + Categorical:
-	//		min: priceWidth / 2
-	//  	max: 1 - (priceWidth / 2)
-	// 	Scalar:
-	// 		min: scalarMin + (priceWidth / 2)
-	// 		max: scalarMax - (priceWidth / 2)
+  // -- Constraints --
+  // 	Binary + Categorical:
+  //		min: priceWidth / 2
+  //  	max: 1 - (priceWidth / 2)
+  // 	Scalar:
+  // 		min: scalarMin + (priceWidth / 2)
+  // 		max: scalarMax - (priceWidth / 2)
   let max;
   let min;
   if (isNaN(parseFloat(halfWidth)) || isNaN(parseFloat(scalarMin)) || isNaN(parseFloat(scalarMax))) {

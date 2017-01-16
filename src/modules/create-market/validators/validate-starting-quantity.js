@@ -12,7 +12,7 @@ export default function validateStartingQuantity(startingQuantity) {
   }
   if (parsed < STARTING_QUANTITY_MIN) {
     return `Starting quantity must be at least ${
-			formatShares(STARTING_QUANTITY_MIN).full
-			}`;
+      formatShares(STARTING_QUANTITY_MIN).full
+    }`;
   }
 }

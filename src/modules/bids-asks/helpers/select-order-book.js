@@ -78,23 +78,23 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
   const currentUserAddress = store.getState().loginAccount.address;
 
   const shareCountPerPrice = Object.keys(orders)
-		.map(orderId => orders[orderId])
-		.filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CANCELLED)
-		.map(order => ({
-  ...order,
-  isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
-}))
-		.reduce(reduceSharesCountByPrice, {});
+    .map(orderId => orders[orderId])
+    .filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CANCELLED)
+    .map(order => ({
+      ...order,
+      isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
+    }))
+    .reduce(reduceSharesCountByPrice, {});
 
   return Object.keys(shareCountPerPrice)
-		.map((price) => {
-  const obj = {
-    isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
-    shares: formatShares(shareCountPerPrice[price].shares),
-    price: formatEther(parseFloat(price))
-  };
-  return obj;
-});
+    .map((price) => {
+      const obj = {
+        isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
+        shares: formatShares(shareCountPerPrice[price].shares),
+        price: formatEther(parseFloat(price))
+      };
+      return obj;
+    });
 });
 
 /**

@@ -75,48 +75,48 @@ export default class MarketData extends Component {
         />
 
         {s.selectedNav === MARKET_DATA_NAV_OUTCOMES &&
-        <Outcomes
-          marketType={p.marketType}
-          outcomes={p.market.outcomes}
-          selectedOutcome={p.selectedOutcome}
-          updateSelectedOutcome={p.updateSelectedOutcome}
-          selectedShareDenomination={p.selectedShareDenomination}
-          tradeSummary={p.tradeSummary}
-          submitTrade={p.submitTrade}
-          selectedTradeSide={p.selectedTradeSide}
-          updateSelectedTradeSide={p.updateSelectedTradeSide}
-          outcomeTradeNavItems={p.outcomeTradeNavItems}
-          updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-          minLimitPrice={p.minLimitPrice}
-          maxLimitPrice={p.maxLimitPrice}
-        />
-				}
+          <Outcomes
+            marketType={p.marketType}
+            outcomes={p.market.outcomes}
+            selectedOutcome={p.selectedOutcome}
+            updateSelectedOutcome={p.updateSelectedOutcome}
+            selectedShareDenomination={p.selectedShareDenomination}
+            tradeSummary={p.tradeSummary}
+            submitTrade={p.submitTrade}
+            selectedTradeSide={p.selectedTradeSide}
+            updateSelectedTradeSide={p.updateSelectedTradeSide}
+            outcomeTradeNavItems={p.outcomeTradeNavItems}
+            updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+            minLimitPrice={p.minLimitPrice}
+            maxLimitPrice={p.maxLimitPrice}
+          />
+        }
         {s.selectedNav === MARKET_DATA_ORDERS &&
-        <OrderBook
-          marketType={p.marketType}
-          outcome={p.selectedOutcome}
-          selectedTradeSide={p.selectedTradeSide}
-          updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-          selectedShareDenomination={p.selectedShareDenomination}
-        />
-				}
+          <OrderBook
+            marketType={p.marketType}
+            outcome={p.selectedOutcome}
+            selectedTradeSide={p.selectedTradeSide}
+            updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+            selectedShareDenomination={p.selectedShareDenomination}
+          />
+        }
         {s.selectedNav === MARKET_DATA_NAV_CHARTS &&
-        <MarketChart series={p.market.priceTimeSeries} />
-				}
+          <MarketChart series={p.market.priceTimeSeries} />
+        }
         {s.selectedNav === MARKET_DATA_NAV_DETAILS &&
-        <MarketDetails
-          {...p.market}
-          selectedShareDenomination={p.selectedShareDenomination}
-          shareDenominations={p.shareDenominations}
-        />
-				}
+          <MarketDetails
+            {...p.market}
+            selectedShareDenomination={p.selectedShareDenomination}
+            shareDenominations={p.shareDenominations}
+          />
+        }
         {s.selectedNav === MARKET_DATA_NAV_REPORT &&
-        <ReportForm
-          {...p.market}
-          isReported={p.market.isReported || p.market.isReportSubmitted}
-          onClickSubmit={p.market.report.onSubmitReport}
-        />
-				}
+          <ReportForm
+            {...p.market}
+            isReported={p.market.isReported || p.market.isReportSubmitted}
+            onClickSubmit={p.market.report.onSubmitReport}
+          />
+        }
       </article>
     );
   }

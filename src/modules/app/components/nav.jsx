@@ -24,13 +24,13 @@ const Nav = (p) => {
     <nav className={`app-nav ${p.className ? p.className : ''}`}>
       <div ref={p.navRef && p.navRef} />
       {p.isSideBarAllowed &&
-      <button
-        className="app-nav-link unstyled"
-        onClick={p.toggleSideBar}
-      >
-        {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i></i>}
-      </button>
-			}
+        <button
+          className="app-nav-link unstyled"
+          onClick={p.toggleSideBar}
+        >
+          {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i></i>}
+        </button>
+      }
       <Link
         {...p.marketsLink}
         onClick={() => {
@@ -40,36 +40,36 @@ const Nav = (p) => {
         className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
       >
         <i className="nav-icon"></i>
-				Markets
-			</Link>
+        Markets
+      </Link>
       {p.logged && !!p.numFavorites &&
-      <Link
-        {...p.favoritesLink}
-        onClick={() => {
-          p.favoritesLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
-      >
-        <i className="nav-icon"></i>
-        <span className="nav-count">{p.numFavorites} </span>
-					Favorites
-				</Link>
-			}
+        <Link
+          {...p.favoritesLink}
+          onClick={() => {
+            p.favoritesLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+        >
+          <i className="nav-icon"></i>
+          <span className="nav-count">{p.numFavorites} </span>
+          Favorites
+        </Link>
+      }
       {p.logged && !!p.numPendingReports &&
-      <Link
-        {...p.pendingReportsLink}
-        onClick={() => {
-          p.pendingReportsLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
-      >
-        <i className="nav-icon"></i>
-        <span className="nav-count">{p.numPendingReports} </span>
-					Pending Reports
-				</Link>
-			}
+        <Link
+          {...p.pendingReportsLink}
+          onClick={() => {
+            p.pendingReportsLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+        >
+          <i className="nav-icon"></i>
+          <span className="nav-count">{p.numPendingReports} </span>
+          Pending Reports
+        </Link>
+      }
       <Link
         className="augur-brand"
         {...p.marketsLink}
@@ -77,68 +77,68 @@ const Nav = (p) => {
         <AugurLogoFull />
       </Link>
       {p.logged && !!p.portfolioTotals &&
-      <Link
-        {...p.myPositionsLink}
-        onClick={() => {
-          p.myPositionsLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
-      >
-        <i className="nav-icon">
-						
-					</i>
-					Portfolio
-				</Link>
-			}
+        <Link
+          {...p.myPositionsLink}
+          onClick={() => {
+            p.myPositionsLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
+        >
+          <i className="nav-icon">
+            
+          </i>
+          Portfolio
+        </Link>
+      }
       {p.logged &&
-      <Link
-        {...p.transactionsLink}
-        onClick={() => {
-          p.transactionsLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
-      >
-        <i className="nav-icon">
-						
-					</i>
-        {!!p.numTransactionsWorking &&
-        <span className="nav-count">{p.numTransactionsWorking} </span>
-					}
-        {p.transactionsTotals.title}
-      </Link>
-			}
+        <Link
+          {...p.transactionsLink}
+          onClick={() => {
+            p.transactionsLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+        >
+          <i className="nav-icon">
+            
+          </i>
+          {!!p.numTransactionsWorking &&
+            <span className="nav-count">{p.numTransactionsWorking} </span>
+          }
+          {p.transactionsTotals.title}
+        </Link>
+      }
       {p.logged &&
-      <Link
-        {...p.accountLink}
-        onClick={() => {
-          p.accountLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
-      >
-        <i className="nav-icon">
-						
-					</i>
-					Account
-				</Link>
-			}
+        <Link
+          {...p.accountLink}
+          onClick={() => {
+            p.accountLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+        >
+          <i className="nav-icon">
+            
+          </i>
+          Account
+        </Link>
+      }
       {!p.logged &&
-      <Link
-        {...p.authLink}
-        onClick={() => {
-          p.authLink.onClick();
-          collapseFooter();
-        }}
-        className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
-      >
-        <i className="nav-icon">
-          <AugurLogoIcon />
-        </i>
-					Sign Up / Login
-				</Link>
-			}
+        <Link
+          {...p.authLink}
+          onClick={() => {
+            p.authLink.onClick();
+            collapseFooter();
+          }}
+          className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
+        >
+          <i className="nav-icon">
+            <AugurLogoIcon />
+          </i>
+          Sign Up / Login
+        </Link>
+      }
     </nav>
   );
 };

@@ -6,4 +6,5 @@ export default function () {
 }
 
 export const selectFavoriteMarkets = memoizerific(1)(markets =>
-	markets.filter(market => !!market.isFavorite));
+  markets.filter(market => !!market.isFavorite)
+);

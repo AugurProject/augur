@@ -1,17 +1,17 @@
 import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
+  BINARY,
+  CATEGORICAL,
+  SCALAR
 } from '../../../markets/constants/market-types';
 import {
-	TAKER_FEE_DEFAULT,
-	INITIAL_LIQUIDITY_DEFAULT,
-	MAKER_FEE_DEFAULT,
-	STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_DEFAULT,
-	PRICE_WIDTH_DEFAULT,
-	PRICE_DEPTH_DEFAULT,
-	IS_SIMULATION
+  TAKER_FEE_DEFAULT,
+  INITIAL_LIQUIDITY_DEFAULT,
+  MAKER_FEE_DEFAULT,
+  STARTING_QUANTITY_DEFAULT,
+  BEST_STARTING_QUANTITY_DEFAULT,
+  PRICE_WIDTH_DEFAULT,
+  PRICE_DEPTH_DEFAULT,
+  IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
 import { abi, constants } from '../../../../services/augurjs';
 import { ONE, TWO } from '../../../trade/constants/numbers';
@@ -50,20 +50,20 @@ export const initialFairPrices = (formState) => {
   const setInitialFairPrices = (labels) => {
     const halfPriceWidth = abi.bignum(PRICE_WIDTH_DEFAULT).dividedBy(TWO);
     const numOutcomes = formState.type === CATEGORICAL ?
-			abi.bignum(formState.categoricalOutcomes.length) : TWO;
-		// Sets the initialFairPrices to midpoint of min/max
+      abi.bignum(formState.categoricalOutcomes.length) : TWO;
+    // Sets the initialFairPrices to midpoint of min/max
     const defaultValue = formState.type === SCALAR ?
-					(abi.bignum(formState.scalarBigNum).plus(halfPriceWidth))
-						.plus(abi.bignum(formState.scalarSmallNum).minus(halfPriceWidth))
-						.dividedBy(TWO)
-						.round(constants.PRECISION.decimals)
-						.toNumber() :
-					halfPriceWidth.neg()
-						.plus(ONE)
-						.plus(halfPriceWidth)
-						.dividedBy(numOutcomes)
-						.round(constants.PRECISION.decimals)
-						.toNumber();
+          (abi.bignum(formState.scalarBigNum).plus(halfPriceWidth))
+            .plus(abi.bignum(formState.scalarSmallNum).minus(halfPriceWidth))
+            .dividedBy(TWO)
+            .round(constants.PRECISION.decimals)
+            .toNumber() :
+          halfPriceWidth.neg()
+            .plus(ONE)
+            .plus(halfPriceWidth)
+            .dividedBy(numOutcomes)
+            .round(constants.PRECISION.decimals)
+            .toNumber();
 
     const values = [];
     const raw = [];
@@ -101,30 +101,30 @@ export const initialFairPrices = (formState) => {
 
 export const isValid = (formState) => {
   if (validateTakerFee(formState.takerFee) ||
-		validateMakerFee(formState.makerFee, formState.takerFee) ||
-		(!!formState.isCreatingOrderBook && (
-			validateInitialLiquidity(
-				formState.type,
-				formState.initialLiquidity,
-				formState.startingQuantity,
-				formState.bestStartingQuantity,
-				formState.halfPriceWidth,
-				formState.scalarSmallNum,
-				formState.scalarBigNum
-			)	||
-			validateInitialFairPrices(
-				formState.type,
-				formState.initialFairPrices.raw,
-				formState.priceWidth,
-				formState.halfPriceWidth,
-				formState.scalarSmallNum,
-				formState.scalarBigNum
-			)	||
-			validateBestStartingQuantity(formState.bestStartingQuantity) ||
-			validateStartingQuantity(formState.startingQuantity)	||
-			validatePriceWidth(formState.priceWidth)
-		))
-	) {
+    validateMakerFee(formState.makerFee, formState.takerFee) ||
+    (!!formState.isCreatingOrderBook && (
+      validateInitialLiquidity(
+        formState.type,
+        formState.initialLiquidity,
+        formState.startingQuantity,
+        formState.bestStartingQuantity,
+        formState.halfPriceWidth,
+        formState.scalarSmallNum,
+        formState.scalarBigNum
+      )	||
+      validateInitialFairPrices(
+        formState.type,
+        formState.initialFairPrices.raw,
+        formState.priceWidth,
+        formState.halfPriceWidth,
+        formState.scalarSmallNum,
+        formState.scalarBigNum
+      )	||
+      validateBestStartingQuantity(formState.bestStartingQuantity) ||
+      validateStartingQuantity(formState.startingQuantity)	||
+      validatePriceWidth(formState.priceWidth)
+    ))
+  ) {
     return false;
   }
 
@@ -142,24 +142,24 @@ export const errors = (formState) => {
   }
   if (formState.hasOwnProperty('initialLiquidity')) {
     errs.initialLiquidity = validateInitialLiquidity(
-			formState.type,
-			formState.initialLiquidity,
-			formState.startingQuantity,
-			formState.bestStartingQuantity,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		);
+      formState.type,
+      formState.initialLiquidity,
+      formState.startingQuantity,
+      formState.bestStartingQuantity,
+      formState.halfPriceWidth,
+      formState.scalarSmallNum,
+      formState.scalarBigNum
+    );
   }
   if (formState.hasOwnProperty('initialFairPrices')) {
     errs.initialFairPrice = validateInitialFairPrices(
-			formState.type,
-			formState.initialFairPrices.raw,
-			formState.priceWidth,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		);
+      formState.type,
+      formState.initialFairPrices.raw,
+      formState.priceWidth,
+      formState.halfPriceWidth,
+      formState.scalarSmallNum,
+      formState.scalarBigNum
+    );
   }
   if (formState.hasOwnProperty('bestStartingQuantity')) {
     errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity);

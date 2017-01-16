@@ -63,8 +63,8 @@ export function completeSetsCheck(marketID, callback) {
           }
           for (i = 0; i < numPositions; ++i) {
             position[outcomes[i]] = BigNumber.max(new BigNumber(position[outcomes[i]], 10)
-							.minus(totalCompleteSetsBought)
-							.toFixed(), ZERO);
+              .minus(totalCompleteSetsBought)
+              .toFixed(), ZERO);
           }
         }
       }
@@ -74,23 +74,23 @@ export function completeSetsCheck(marketID, callback) {
 }
 
 export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (
-	augur.sellCompleteSets({
-  market: marketID,
-  amount: numberOfCompleteSets,
-  onSent: r => console.log('sellCompleteSets sent:', r),
-  onSuccess: (r) => {
-    console.log('sellCompleteSets success:', r);
-    dispatch(updateAssets());
-    dispatch(loadAccountTrades(marketID));
-    dispatch(updateSellCompleteSetsLock(marketID, false));
-    if (callback) callback(null);
-  },
-  onFailed: (e) => {
-    console.error('sellCompleteSets failed:', e);
-    dispatch(updateSellCompleteSetsLock(marketID, false));
-    if (callback) callback(e);
-  }
-})
+  augur.sellCompleteSets({
+    market: marketID,
+    amount: numberOfCompleteSets,
+    onSent: r => console.log('sellCompleteSets sent:', r),
+    onSuccess: (r) => {
+      console.log('sellCompleteSets success:', r);
+      dispatch(updateAssets());
+      dispatch(loadAccountTrades(marketID));
+      dispatch(updateSellCompleteSetsLock(marketID, false));
+      if (callback) callback(null);
+    },
+    onFailed: (e) => {
+      console.error('sellCompleteSets failed:', e);
+      dispatch(updateSellCompleteSetsLock(marketID, false));
+      if (callback) callback(e);
+    }
+  })
 );
 
 export function getSmallestPositionInMarket(position) {

@@ -11,5 +11,5 @@ export default function () {
 }
 
 export const selectOnChangeKeywords = memoizerific(1)(dispatch =>
-	keywords => dispatch(updateKeywords(keywords))
+  keywords => dispatch(updateKeywords(keywords))
 );

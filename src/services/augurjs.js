@@ -36,41 +36,41 @@ ex.connect = function connect(env, cb) {
 ex.loadLoginAccount = function loadLoginAccount(env, cb) {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-	// if available, use the client-side account
+  // if available, use the client-side account
   if (augur.accounts.account.address && augur.accounts.account.privateKey) {
     console.log('using client-side account:', augur.accounts.account.address);
     return cb(null, { ...augur.accounts.account });
   }
-	// if the user has a persistent login, use it
+  // if the user has a persistent login, use it
   if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
     const account = JSON.parse(localStorageRef.getItem('account'));
     if (account && account.privateKey) {
-			// local storage account exists, load it spawn the callback using augur.accounts.account
+      // local storage account exists, load it spawn the callback using augur.accounts.account
       augur.accounts.loadLocalLoginAccount(account, loginAccount =>
-				cb(null, { ...augur.accounts.account })
-			);
-			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
+        cb(null, { ...augur.accounts.account })
+      );
+      //	break out of ex.loadLoginAccount as we don't want to login the local geth node.
       return;
     }
   }
 
-	// Short circuit if autologin disabled in env.json
+  // Short circuit if autologin disabled in env.json
   if (!env.autoLogin) {
     return cb(null);
   }
 
-	// local node: if it's unlocked, use the coinbase account
-	// check to make sure the account is unlocked
+  // local node: if it's unlocked, use the coinbase account
+  // check to make sure the account is unlocked
   augur.rpc.unlocked(augur.from, (unlocked) => {
 
-		// use augur.from address if unlocked
+    // use augur.from address if unlocked
     if (unlocked && !unlocked.error) {
       augur.accounts.logout();
       console.log('using unlocked account:', augur.from);
       return cb(null, { address: augur.from });
     }
 
-		// otherwise, no account available
+    // otherwise, no account available
     console.log('account is locked: ', augur.from);
     return cb(null);
   });
@@ -86,7 +86,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
     if (r) console.log(r);
   };
 
-	// create an event (and market) of each type on the new branch
+  // create an event (and market) of each type on the new branch
   const t = new Date().getTime() / 1000;
   const untilNextPeriod = periodLength - (parseInt(t, 10) % periodLength);
   const expDate = parseInt(t + untilNextPeriod + 1, 10);
@@ -111,13 +111,13 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
     console.debug('Categorical event:', events.categorical);
     console.debug('Scalar event:', events.scalar);
 
-		// make a single trade in each new market
+    // make a single trade in each new market
     const password = process.env.GETH_PASSWORD;
     tools.make_order_in_each_market(augur, 1, markets, accounts[1], accounts[2], password, (err) => {
       if (err) return callback(err);
       callback(null, 3);
 
-			// wait until the period after the new events expire
+      // wait until the period after the new events expire
       tools.wait_until_expiration(augur, events.binary, (err) => {
         if (err) return callback(err);
         callback(null, 4);
@@ -128,7 +128,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
         console.log('Expiration period + 1:', expirationPeriod + 1);
         callback(null, 5);
 
-				// wait for second period to start
+        // wait for second period to start
         augur.checkPeriod(branchID, periodLength, sender, (err, votePeriod) => {
           if (err) console.error('checkVotePeriod failed:', err);
           callback(null, 6);

@@ -24,7 +24,7 @@ export const select = (formState) => {
 export const selectBinary = (formState) => {
   const obj = {
     descriptionPlaceholder: 'Will "Batman v Superman: Dawn of Justice" take more'
-		+ ' than $150 million box in office receipts opening weekend?',
+    + ' than $150 million box in office receipts opening weekend?',
     descriptionMinLength: DESCRIPTION_MIN_LENGTH,
     descriptionMaxLength: DESCRIPTION_MAX_LENGTH
   };
@@ -46,7 +46,7 @@ export const selectCategorical = (formState) => {
 export const selectScalar = (formState) => {
   const obj = {
     descriptionPlaceholder: 'What will the temperature (in degrees Fahrenheit)'
-		+ ' be in San Francisco, California, on July 1, 2016?',
+    + ' be in San Francisco, California, on July 1, 2016?',
     descriptionMinLength: DESCRIPTION_MIN_LENGTH,
     descriptionMaxLength: DESCRIPTION_MAX_LENGTH,
     scalarSmallNum: formState.scalarSmallNum,
@@ -128,8 +128,8 @@ export const errors = (formState) => {
     case SCALAR:
       if (formState.scalarSmallNum !== undefined) {
         errs.scalarSmallNum = validateScalarSmallNum(
-					formState.scalarSmallNum,
-					formState.scalarBigNum);
+          formState.scalarSmallNum,
+          formState.scalarBigNum);
       }
       if (formState.scalarBigNum !== undefined) {
         errs.scalarBigNum = validateScalarBigNum(formState.scalarSmallNum, formState.scalarBigNum);

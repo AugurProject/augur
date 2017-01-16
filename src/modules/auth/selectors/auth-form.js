@@ -1,14 +1,14 @@
 import memoizerific from 'memoizerific';
 import { REGISTER, LOGIN, IMPORT } from '../../auth/constants/auth-types';
 import {
-	INVALID_USERNAME_OR_PASSWORD,
-	USERNAME_REQUIRED,
-	PASSWORDS_DO_NOT_MATCH,
-	PASSWORD_TOO_SHORT,
-	USERNAME_TAKEN,
-	PASSWORD_NEEDS_LOWERCASE,
-	PASSWORD_NEEDS_UPPERCASE,
-	PASSWORD_NEEDS_NUMBER
+  INVALID_USERNAME_OR_PASSWORD,
+  USERNAME_REQUIRED,
+  PASSWORDS_DO_NOT_MATCH,
+  PASSWORD_TOO_SHORT,
+  USERNAME_TAKEN,
+  PASSWORD_NEEDS_LOWERCASE,
+  PASSWORD_NEEDS_UPPERCASE,
+  PASSWORD_NEEDS_NUMBER
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
 import { register } from '../../auth/actions/register';

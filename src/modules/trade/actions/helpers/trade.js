@@ -8,7 +8,7 @@ import selectOrder from '../../../bids-asks/selectors/select-order';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export const trade = (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, takerAddress, getTradeIDs, cb) => (dispatch) => {
-	// undefined/null arguments get zero'ed out to gracefully fail
+  // undefined/null arguments get zero'ed out to gracefully fail
   const bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
   const bnNumShares = abi.bignum(numShares) || ZERO;
   const res = {
@@ -29,9 +29,9 @@ export const trade = (marketID, outcomeID, numShares, totalEthWithFee, tradingFe
     console.log('sharesPurchased:', bnSharesPurchased.toFixed());
     console.log('balance:', bnCashBalance.toFixed());
     return !matchingTradeIDs || !matchingTradeIDs.length ||
-			(res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
-			(bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
-			(bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
+      (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
+      (bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
+      (bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
   }, (nextTrade) => {
     let tradeIDs = matchingTradeIDs;
     tradeIDs = tradeIDs.slice(0, 3);

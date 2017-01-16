@@ -1,10 +1,7 @@
 import secureRandom from 'secure-random';
 import { augur } from '../../../services/augurjs';
 import { AIRBITZ_WALLET_TYPE } from '../../auth/constants/auth-types';
-import {
-	loadLoginAccountDependents,
-	loadLoginAccountLocalStorage
-} from '../../auth/actions/load-login-account';
+import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
@@ -48,7 +45,7 @@ export function loginWithAirbitz(airbitzAccount) {
   return (dispatch, getState) => {
     const ethereumWallet = airbitzAccount.getFirstWallet(AIRBITZ_WALLET_TYPE);
 
-		// Create an ethereum wallet if one doesn't exist
+    // Create an ethereum wallet if one doesn't exist
     if (ethereumWallet == null) {
       const keys = {
         ethereumKey: new Buffer(secureRandom(32)).toString('hex')

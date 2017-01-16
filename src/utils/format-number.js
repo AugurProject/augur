@@ -5,7 +5,7 @@ import { ZERO, TEN } from '../modules/trade/constants/numbers';
 import addCommas from '../utils/add-commas-to-number';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	Produces a formatted number object used for display and calculations
+  Produces a formatted number object used for display and calculations
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
@@ -13,17 +13,17 @@ The main function is `formatNumber`, however there are top-level functions that 
 A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
 
 The formatted number object that is returned looks something like this:
-	{
-		value: the parsed number in numerical form, 0 if a bad input was passed in, can be used in calculations
+  {
+    value: the parsed number in numerical form, 0 if a bad input was passed in, can be used in calculations
 
-		formattedValue: the value in numerical form, possibly rounded, can be used in calculations
-		formatted: the value in string form with possibly additional formatting, like comma separator, used for display
+    formattedValue: the value in numerical form, possibly rounded, can be used in calculations
+    formatted: the value in string form with possibly additional formatting, like comma separator, used for display
 
-		o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
-		o.rounded: the value in string form, with extra rounding and possibly additional formatting, like comma separator, used for display
+    o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
+    o.rounded: the value in string form, with extra rounding and possibly additional formatting, like comma separator, used for display
 
-		o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
-	}
+    o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
+  }
 
 The reason the number object has multiple states of rounding simultaneously,
 is because the ui can use it for multiple purposes. For example, when showing ether,
@@ -33,13 +33,13 @@ Similar logic applies for `minimized`, sometimes we don't need to be consistent 
 and just show the prettiest, smallest representation of the value.
 
 The options object that is passed into `formatNumber` that enables all of this looks like:
-	{
-		decimals: the number of decimals for the precise case, can be 0-infinity
-		decimalsRounded: the number of decimals for the prettier case, can be 0-infinity
-		denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
-		positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
-		zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
-	}
+  {
+    decimals: the number of decimals for the precise case, can be 0-infinity
+    decimalsRounded: the number of decimals for the prettier case, can be 0-infinity
+    denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
+    positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
+    zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
+  }
 
 TIP
 Sometimes (not always) it is a good idea to use the formatted values in calculations,
@@ -51,7 +51,7 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 export function formatEther(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -62,12 +62,12 @@ export function formatEther(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatRealEther(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -78,12 +78,12 @@ export function formatRealEther(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatEtherEstimate(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -94,12 +94,12 @@ export function formatEtherEstimate(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatRealEtherEstimate(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -110,12 +110,12 @@ export function formatRealEtherEstimate(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatPercent(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: 1,
       decimalsRounded: 0,
@@ -126,12 +126,12 @@ export function formatPercent(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatShares(num, opts) {
   const formattedShares = formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: 2,
       decimalsRounded: 2,
@@ -143,7 +143,7 @@ export function formatShares(num, opts) {
       bigUnitPostfix: true,
       ...opts
     }
-	);
+  );
 
   if (formattedShares.formattedValue === 1) {
     formattedShares.full = makeFull(formattedShares.formatted, ' share');
@@ -154,7 +154,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
   return formatNumber(
-		abi.number(num),
+    abi.number(num),
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -165,7 +165,7 @@ export function formatRep(num, opts) {
       bigUnitPostfix: false,
       ...opts
     }
-	);
+  );
 }
 
 export function formatNone() {
@@ -248,19 +248,19 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
       }
     } else {
       o.formattedValue = value.times(decimalsValue)[round]()
-				.dividedBy(decimalsValue)
-				.toFixed(decimals);
+        .dividedBy(decimalsValue)
+        .toFixed(decimals);
     }
     o.formatted = (bigUnitPostfix)
-			? addBigUnitPostfix(value, o.formattedValue)
-			: addCommas(o.formattedValue);
+      ? addBigUnitPostfix(value, o.formattedValue)
+      : addCommas(o.formattedValue);
     if (bigUnitPostfix && value.gt(abi.bignum('10000'))) {
       o.fullPrecision = value.toFixed();
     }
     o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
     o.rounded = (bigUnitPostfix)
-			? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
-			: addCommas(o.roundedValue.toFixed(decimalsRounded));
+      ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
+      : addCommas(o.roundedValue.toFixed(decimalsRounded));
     o.minimized = addCommas(abi.string(o.formattedValue));
     o.formattedValue = abi.number(o.formattedValue);
     o.roundedValue = o.roundedValue.toNumber();

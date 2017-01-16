@@ -1,7 +1,4 @@
-import {
-	DESCRIPTION_MIN_LENGTH,
-	DESCRIPTION_MAX_LENGTH
-} from '../../create-market/constants/market-values-constraints';
+import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH } from '../../create-market/constants/market-values-constraints';
 
 export default function (description) {
   if (!description || !description.length) {

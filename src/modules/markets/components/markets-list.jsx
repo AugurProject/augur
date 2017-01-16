@@ -25,8 +25,8 @@ const MarketsList = (p) => {
         );
       }) : <NullStateMessage message={nullMessage} /> }
       {!!p.pagination && !!p.pagination.numUnpaginated &&
-      <MarketsPagination pagination={p.pagination} />
-			}
+        <MarketsPagination pagination={p.pagination} />
+      }
     </article>
   );
 };

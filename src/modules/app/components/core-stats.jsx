@@ -18,19 +18,18 @@ const CoreStats = p => (
               data-tip={p.coreStats[i][stat].title}
             >
               {p.coreStats[i][stat].label}:
-						</span>
+            </span>
             {p.coreStats[i][stat].value && p.coreStats[i][stat].value.value ?
               <ValueDenomination
                 className={`${p.coreStats[i][stat].colorize ? 'colorize' : ''}`}
                 {...p.coreStats[i][stat].value}
               /> :
               <span className="core-stat-value">—</span>
-						}
-
+            }
           </div>
-				))}
+        ))}
       </div>
-		))}
+    ))}
   </article>
 );
 

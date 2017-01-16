@@ -7,13 +7,13 @@ import Input from 'modules/common/components/input';
 import Checkbox from 'modules/common/components/checkbox';
 
 export default class AccountPage extends Component {
-	// TODO -- Prop Validations
+  // TODO -- Prop Validations
   static propTypes = {
-		// loginMessageLink: PropTypes.object.isRequired,
+    // loginMessageLink: PropTypes.object.isRequired,
     account: PropTypes.object,
     settings: PropTypes.object,
-		// siteHeader: PropTypes.object
-		// authLink: PropTypes.object
+    // siteHeader: PropTypes.object
+    // authLink: PropTypes.object
   }
 
   constructor(props) {
@@ -67,8 +67,8 @@ export default class AccountPage extends Component {
       <section id="account_view">
         <article className="page-content">
           {p.authLink &&
-          <Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
-					}
+            <Link {...p.authLink} >Sign Out (Temporarily Here)</Link>
+          }
           <div className="account-section">
             <h2 className="heading">Credentials</h2>
             <table className="account-info">
@@ -82,29 +82,29 @@ export default class AccountPage extends Component {
                         value={p.account.name}
                         onChange={name => this.setState({ name })}
                       />
-										}
+                    }
                     {!s.editName &&
                       <span data-tip data-for="edit-name-tooltip">
                         {p.account.name || 'Click here to add a name.'}
                       </span>
-										}
+                    }
                     {!s.editName &&
                       <button
                         data-tip data-for="change-name-tooltip"
                         className="link" onClick={() => this.setState({ editName: true })}
                       >
-												(change name)
-											</button>
-										}
+                      (change name)
+                      </button>
+                    }
                     {s.editName &&
                       <button
                         className="button"
                         data-tip data-for="cancel-edit-name-tooltip"
                         onClick={() => this.setState({ name: '', editName: false })}
                       >
-												cancel
-											</button>
-										}
+                        cancel
+                      </button>
+                    }
                     {s.editName &&
                       <button
                         className="button make"
@@ -114,9 +114,9 @@ export default class AccountPage extends Component {
                           this.setState({ name: '', editName: false });
                         }}
                       >
-												save change
-											</button>
-										}
+                        save change
+                      </button>
+                    }
                   </td>
                 </tr>
 
@@ -136,7 +136,7 @@ export default class AccountPage extends Component {
                       <span>
                         {p.account.prettyLoginID}
                       </span>
-										}
+                    }
                     {s.showFullID &&
                       <textarea
                         ref="fullLoginID"
@@ -145,7 +145,7 @@ export default class AccountPage extends Component {
                         readOnly
                         onClick={this.loginIDCopy}
                       />
-										}
+                    }
                     <button
                       className="link"
                       onClick={() => {
@@ -159,23 +159,23 @@ export default class AccountPage extends Component {
                         className="button"
                         onClick={this.loginIDCopy}
                       >
-												Copy Login ID
-											</button>
-										}
+                        Copy Login ID
+                      </button>
+                    }
                   </td>
                 </tr>
                 {
-									p.onAirbitzManageAccount ?
-									(
-  <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
-    <td colSpan="2">
-      <button className="button" onClick={p.onAirbitzManageAccount}>
+                  p.onAirbitzManageAccount ?
+                  (
+                    <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                      <td colSpan="2">
+                        <button className="button" onClick={p.onAirbitzManageAccount}>
                           Manage Airbitz Account
                         </button>
-    </td>
-  </tr>
-									) : null
-								}
+                      </td>
+                    </tr>
+                  ) : null
+                }
 
               </tbody>
             </table>
@@ -196,8 +196,8 @@ export default class AccountPage extends Component {
             <div className="account-info-item">
               <h2 className="heading">Transfer Funds</h2>
               <p>
-								You can transfer funds to another address by selecting the type of currency you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
-							</p>
+                You can transfer funds to another address by selecting the type of currency you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
+              </p>
               <div className="transfer-funds-section">
                 <span>Send:</span>
                 <input
@@ -234,8 +234,8 @@ export default class AccountPage extends Component {
                   className="button make"
                   onClick={this.handleTransfer}
                 >
-									Send Currency
-								</button>
+                  Send Currency
+                </button>
               </div>
             </div>
           </div>
@@ -243,23 +243,23 @@ export default class AccountPage extends Component {
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>
-								Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
-							</p>
+                Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
+              </p>
               <a
                 className="button download-account"
                 href={p.account.downloadAccountDataString}
                 download={p.account.downloadAccountFileName}
               >
-								Download Account Key File
-							</a>
+                Download Account Key File
+              </a>
             </div>
           </div>
           <div className={classnames('account-section')}>
             <div className="account-info-item">
               <h2 className="heading">Important Information</h2>
               <p>
-								Read <Link {...p.loginMessageLink}> important information</Link> about Augur
-							</p>
+                Read <Link {...p.loginMessageLink}> important information</Link> about Augur
+              </p>
             </div>
           </div>
           <ReactTooltip id="edit-name-tooltip" type="light" effect="solid" place="top">

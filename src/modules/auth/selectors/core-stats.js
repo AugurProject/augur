@@ -14,23 +14,23 @@ export function selectCoreStats() {
   const { accountTrades, blockchain, outcomesData } = store.getState();
   const { loginAccount, loginAccountPositions } = require('../../../selectors');
 
-	// Group 1
+  // Group 1
   const totalEth = loginAccount.ether;
   const totalRep = loginAccount.rep;
 
-	// console.log('accountPositions -- ', userOpenOrders);
+  // console.log('accountPositions -- ', userOpenOrders);
 
-	// NOTE -- group two is excluded for now due to not having all OPEN orders available without calling against every market
-	// Group 2
-	// Total Risked
-	// const totalRiskedEth = formatEther(0);
-	// // Total Available
-	// const totalAvailableEth = formatEther(0);
+  // NOTE -- group two is excluded for now due to not having all OPEN orders available without calling against every market
+  // Group 2
+  // Total Risked
+  // const totalRiskedEth = formatEther(0);
+  // // Total Available
+  // const totalAvailableEth = formatEther(0);
 
-	// Group 3
+  // Group 3
   const totalPL = getValue(loginAccountPositions, 'summary.totalNet');
-	// const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
-	// const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
+  // const totalPLMonth = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 30));
+  // const totalPLDay = formatEther(selectPeriodPL(accountTrades, loginAccountPositions.markets, blockchain, outcomesData, 1));
   const totalPLMonth = formatEther(selectPeriodPL(accountTrades, blockchain, outcomesData, 30));
   const totalPLDay = formatEther(selectPeriodPL(accountTrades, blockchain, outcomesData, 1));
 
@@ -52,18 +52,18 @@ export function selectCoreStats() {
         value: { ...totalRep, denomination: null }
       }
     },
-		// {
-		// 	totalRiskedEth: {
-		// 		label: 'Risked ETH',
-		// 		title: 'Risked Ether -- Ether tied up in positions',
-		// 		value: totalRiskedEth
-		// 	},
-		// 	totalAvailableEth: {
-		// 		label: 'Available ETH',
-		// 		title: 'Available Ether -- Ether not tied up in positions',
-		// 		value: totalAvailableEth
-		// 	}
-		// },
+    // {
+    // 	totalRiskedEth: {
+    // 		label: 'Risked ETH',
+    // 		title: 'Risked Ether -- Ether tied up in positions',
+    // 		value: totalRiskedEth
+    // 	},
+    // 	totalAvailableEth: {
+    // 		label: 'Available ETH',
+    // 		title: 'Available Ether -- Ether not tied up in positions',
+    // 		value: totalAvailableEth
+    // 	}
+    // },
     {
       totalPL: {
         label: 'Total P/L',

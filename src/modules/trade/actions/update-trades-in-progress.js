@@ -16,12 +16,12 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
     const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) || {};
     const market = marketsData[marketID];
-		// if nothing changed, exit
+    // if nothing changed, exit
     if (!market || (outcomeTradeInProgress.numShares === numShares && outcomeTradeInProgress.limitPrice === limitPrice && outcomeTradeInProgress.side === side && outcomeTradeInProgress.totalCost === maxCost)) {
       return;
     }
 
-		// if new side not provided, use old side
+    // if new side not provided, use old side
     const cleanSide = side || outcomeTradeInProgress.side;
 
     if ((numShares === '' || parseFloat(numShares) === 0) && limitPrice === null) { // numShares cleared
@@ -54,24 +54,24 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       });
     }
 
-		// find top order to default limit price to
+    // find top order to default limit price to
     const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
     const defaultPrice = market.type === SCALAR ?
-			abi.bignum(market.maxValue)
-				.plus(abi.bignum(market.minValue))
-				.dividedBy(TWO)
-				.toFixed() :
-			'0.5';
+      abi.bignum(market.maxValue)
+        .plus(abi.bignum(market.minValue))
+        .dividedBy(TWO)
+        .toFixed() :
+      '0.5';
     const topOrderPrice = cleanSide === BUY ?
-			((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
-			((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
+      ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
+      ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
     const bignumShares = abi.bignum(numShares);
     const bignumLimit = abi.bignum(limitPrice);
-		// clean num shares
+    // clean num shares
     const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : (numShares && bignumShares.abs().toFixed()) || outcomeTradeInProgress.numShares || '0';
 
-		// if current trade order limitPrice is equal to the best price, make sure it's equal to that; otherwise, use what the user has entered
+    // if current trade order limitPrice is equal to the best price, make sure it's equal to that; otherwise, use what the user has entered
     let cleanLimitPrice;
     const topAskPrice = ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
     const topBidPrice = ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
@@ -91,7 +91,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== '0') {
       cleanLimitPrice = topOrderPrice;
     }
-		// if this isn't a scalar market, limitPrice must be positive.
+    // if this isn't a scalar market, limitPrice must be positive.
     if (market.type !== SCALAR && limitPrice) {
       cleanLimitPrice = bignumLimit.abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
     }
@@ -104,7 +104,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       totalCost: 0
     };
 
-		// trade actions
+    // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
       const market = selectMarket(marketID);
       augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
@@ -121,20 +121,20 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
         }
         const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
         newTradeDetails.tradeActions = augur.getTradingActions(
-					newTradeDetails.side,
-					newTradeDetails.numShares,
-					newTradeDetails.limitPrice,
-					(market && market.takerFee) || 0,
-					(market && market.makerFee) || 0,
-					loginAccount.address,
-					position && position.toFixed(),
-					outcomeID,
-					market.cumulativeScale,
-					(orderBooks && orderBooks[marketID]) || {},
-					(market.type === SCALAR) ? {
-  minValue: market.minValue,
-  maxValue: market.maxValue
-} : null);
+          newTradeDetails.side,
+          newTradeDetails.numShares,
+          newTradeDetails.limitPrice,
+          (market && market.takerFee) || 0,
+          (market && market.makerFee) || 0,
+          loginAccount.address,
+          position && position.toFixed(),
+          outcomeID,
+          market.cumulativeScale,
+          (orderBooks && orderBooks[marketID]) || {},
+          (market.type === SCALAR) ? {
+            minValue: market.minValue,
+            maxValue: market.maxValue
+          } : null);
         if (newTradeDetails.tradeActions) {
           const numTradeActions = newTradeDetails.tradeActions.length;
           if (numTradeActions) {
@@ -152,12 +152,12 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
             newTradeDetails.totalFee = tradingFeesEth.toFixed();
             if (newTradeDetails.side === 'sell') {
               newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
-								.times(100).abs()
-								.toFixed();
+                .times(100).abs()
+                .toFixed();
             } else {
               newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
-								.times(100)
-								.toFixed();
+                .times(100)
+                .toFixed();
             }
           }
         }

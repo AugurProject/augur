@@ -6,5 +6,5 @@ export default function () {
 }
 
 export const selectPositionsMarkets = memoizerific(1)(markets => (
-	(markets || []).filter(market => market.myPositionsSummary && market.myPositionsSummary.numPositions && market.myPositionsSummary.numPositions.value))
+  (markets || []).filter(market => market.myPositionsSummary && market.myPositionsSummary.numPositions && market.myPositionsSummary.numPositions.value))
 );

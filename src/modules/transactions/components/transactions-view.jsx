@@ -5,8 +5,8 @@ import Branch from 'modules/branch/components/branch';
 const TransactionsPage = p => (
   <section id="transactions_view">
     {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
-    <Branch {...p.branch} />
-		}
+      <Branch {...p.branch} />
+    }
 
     <div className="view-header">
       <h2>Transactions</h2>

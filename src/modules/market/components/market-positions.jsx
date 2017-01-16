@@ -33,10 +33,10 @@ const MarketPositions = (p) => {
                 outcome={outcome}
                 selectedShareDenomination={p.selectedShareDenomination}
               />
-						)}
+            )}
           </div>
         </div>
-			}
+      }
     </article>
   );
 };

@@ -17,10 +17,10 @@ const MarketOpenOrdersRow = (p) => {
           {p.marketType === SCALAR ?
             <ValueDenomination formatted={p.lastPricePercent} /> :
             <span>{p.name}</span>
-					}
+          }
         </span> :
         <span />
-			}
+      }
       <span>{p.type}</span>
       <ValueDenomination formatted={unmatchedShares} />
       <ValueDenomination {...p.avgPrice} />
@@ -38,16 +38,16 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
             className="unstyled no confirm"
             onClick={(event) => { abortCancelOrderConfirmation(orderID, marketID, type); }}
           >
-						No
-					</button>
+            No
+          </button>
           <button
             className="unstyled yes confirm"
             onClick={(event) => {
               cancelOrder(orderID, marketID, type);
             }}
           >
-						Yes
-					</button>
+            Yes
+          </button>
         </span>
       );
     case cancellationStatuses.CANCELLING:
@@ -65,7 +65,7 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
           }}
         >
           <i></i> cancel
-				</button>
+        </button>
       );
   }
 }

@@ -5,8 +5,8 @@ const MyMarketsSummary = p => (
   <div className={p.className}>
     <span>My Markets</span>
     {!!p.fees &&
-    <ValueDenomination {...p.fees} />
-		}
+      <ValueDenomination {...p.fees} />
+    }
   </div>
 );
 

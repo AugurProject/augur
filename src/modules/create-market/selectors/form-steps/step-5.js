@@ -18,10 +18,10 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
   o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
   o.formattedDescription = o.description;
   o.outcomes = selectOutcomesFromForm(
-		formState.type,
-		formState.categoricalOutcomes,
-		formState.scalarSmallNum,
-		formState.scalarBigNum);
+    formState.type,
+    formState.categoricalOutcomes,
+    formState.scalarSmallNum,
+    formState.scalarBigNum);
   o.isFavorite = false;
   o.eventBond = formatEtherEstimate(validityBond);
   o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
@@ -52,10 +52,10 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 };
 
 export const selectOutcomesFromForm = (
-	type,
-	categoricalOutcomes,
-	scalarSmallNum,
-	scalarBigNum) => {
+  type,
+  categoricalOutcomes,
+  scalarSmallNum,
+  scalarBigNum) => {
   switch (type) {
     case BINARY:
       return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];

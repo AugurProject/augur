@@ -13,7 +13,7 @@ const Dropdown = p => (
         >
           {option.label}
         </option>
-			))}
+      ))}
     </select>
     <i className="fa"></i>
   </div>

@@ -19,7 +19,7 @@ export default function (marketsData = {}, action) {
 
 function processMarketsData(newMarketsData, existingMarketsData) {
 
-	// it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
+  // it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
   return Object.keys(newMarketsData).reduce((p, marketID) => {
     const normalizedMarketID = abi.format_int256(marketID);
 
@@ -28,7 +28,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
       ...newMarketsData[marketID]
     };
 
-		// clean description
+    // clean description
     if (marketData.type === CATEGORICAL) {
       marketData.description = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).slice(0, -1).join();
     }
@@ -39,13 +39,13 @@ function processMarketsData(newMarketsData, existingMarketsData) {
       }
     }
 
-		// parse out event, currently we only support single event markets, no combinatorial
+    // parse out event, currently we only support single event markets, no combinatorial
     parseEvent(marketData);
 
-		// mark whether details have been loaded
+    // mark whether details have been loaded
     marketData.isLoadedMarketInfo = !!marketData.cumulativeScale;
 
-		// save market (without outcomes)
+    // save market (without outcomes)
     p[normalizedMarketID] = marketData;
 
     return p;

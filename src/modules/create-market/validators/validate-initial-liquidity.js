@@ -11,14 +11,14 @@ export default function validateInitialLiquidity(type, liquidity, start, best, h
     priceDepth = NaN;
   } else if (type === SCALAR) {
     priceDepth = abi.bignum(start)
-				.times(abi.bignum(scalarMin).plus(abi.bignum(scalarMax)).minus(abi.bignum(halfWidth)))
-				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
-				.toNumber();
+      .times(abi.bignum(scalarMin).plus(abi.bignum(scalarMax)).minus(abi.bignum(halfWidth)))
+      .dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
+      .toNumber();
   } else {
     priceDepth = abi.bignum(start)
-				.times(ONE.minus(abi.bignum(halfWidth)))
-				.dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
-				.toNumber();
+      .times(ONE.minus(abi.bignum(halfWidth)))
+      .dividedBy(abi.bignum(liquidity).minus(TWO.times(abi.bignum(best))))
+      .toNumber();
   }
 
   if (!liquidity) {
@@ -32,7 +32,7 @@ export default function validateInitialLiquidity(type, liquidity, start, best, h
   }
   if (parsed < INITIAL_LIQUIDITY_MIN) {
     return `Initial liquidity must be at least ${
-			formatEther(INITIAL_LIQUIDITY_MIN).full
-			}`;
+      formatEther(INITIAL_LIQUIDITY_MIN).full
+    }`;
   }
 }

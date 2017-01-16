@@ -4,8 +4,8 @@ module.exports = {};
 
 Object.keys(rawSelectors).forEach(selectorKey =>
  Object.defineProperty(module.exports,
-		selectorKey,
-		{ get: rawSelectors[selectorKey], enumerable: true }
+    selectorKey,
+    { get: rawSelectors[selectorKey], enumerable: true }
 ));
 
 if (module.hot) {
@@ -17,9 +17,9 @@ if (module.hot) {
     module.exports = {};
 
     Object.keys(hotSelectors).forEach(selectorKey =>
-			Object.defineProperty(module.exports,
-				selectorKey,
-				{ get: hotSelectors[selectorKey], enumerable: true }
-		));
+      Object.defineProperty(module.exports,
+        selectorKey,
+        { get: hotSelectors[selectorKey], enumerable: true }
+    ));
   });
 }

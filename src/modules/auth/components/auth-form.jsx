@@ -120,21 +120,21 @@ export default class AuthForm extends Component {
         <h1 className="title">
           {p.title}
           {p.topLinkText &&
-          <Link
-            className="top-link"
-            href={p.topLink.href}
-            onClick={p.topLink.onClick}
-          >
-            {p.topLinkText}
-          </Link>
-					}
+            <Link
+              className="top-link"
+              href={p.topLink.href}
+              onClick={p.topLink.onClick}
+            >
+              {p.topLinkText}
+            </Link>
+          }
         </h1>
         {p.instruction && <p className={classnames('instruction')}>{p.instruction}</p>}
         {s.msg &&
-        <span className={classnames('msg', p.msgClass)}>
-          {s.msg}
-        </span>
-				}
+          <span className={classnames('msg', p.msgClass)}>
+            {s.msg}
+          </span>
+        }
         <input
           ref="accountName"
           className={classnames('auth-input', { displayNone: !p.isVisibleName })}
@@ -152,11 +152,11 @@ export default class AuthForm extends Component {
           autoFocus="autofocus"
         />
         {p.loginID &&
-        <textarea ref="loginIDDisplay" className={classnames('loginID-generated')} readOnly value={p.loginID} onClick={this.loginIDCopy} />
-				}
+          <textarea ref="loginIDDisplay" className={classnames('loginID-generated')} readOnly value={p.loginID} onClick={this.loginIDCopy} />
+        }
         {p.loginID &&
-        <button type="button" className={classnames('button submit-button')} onClick={this.loginIDCopy}>Copy Login ID</button>
-				}
+          <button type="button" className={classnames('button submit-button')} onClick={this.loginIDCopy}>Copy Login ID</button>
+        }
         <input
           name="username"
           id="username"
@@ -194,8 +194,8 @@ export default class AuthForm extends Component {
           onChange={this.handlePasswordInput}
         />
         <div className={classnames('instruction', { displayNone: !p.isVisibleRememberMe })}>
-					Select &ldquo;remember me&rdquo; to save your account and login automatically next time. (this will only remember your account on this device.)
-				</div>
+          Select &ldquo;remember me&rdquo; to save your account and login automatically next time. (this will only remember your account on this device.)
+        </div>
         <div className={classnames('bottom-container')}>
           <Link
             className={classnames('bottom-link', { displayNone: !p.bottomLink })}

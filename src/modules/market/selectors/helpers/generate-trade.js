@@ -29,19 +29,21 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
   let maxNumShares;
   if (limitPrice != null) {
     const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(
-			orderBooks[side === BUY ? ASK : BID],
-			side,
-			limitPrice,
-			outcome.id,
-			loginAccount.address);
+      orderBooks[side === BUY ? ASK : BID],
+      side,
+      limitPrice,
+      outcome.id,
+      loginAccount.address
+    );
     maxNumShares = formatShares(calculateMaxPossibleShares(
-			loginAccount,
-			orders,
-			market.makerFee,
-			market.takerFee,
-			market.cumulativeScale,
-			outcomeTradeInProgress,
-			market.type === 'scalar' ? market.minValue : null));
+      loginAccount,
+      orders,
+      market.makerFee,
+      market.takerFee,
+      market.cumulativeScale,
+      outcomeTradeInProgress,
+      market.type === 'scalar' ? market.minValue : null)
+    );
   } else {
     maxNumShares = formatShares(0);
   }
@@ -57,8 +59,8 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
     totalCost: formatEther(totalCost, { blankZero: true }),
 
     tradeTypeOptions: [
-			{ label: BUY, value: BUY },
-			{ label: SELL, value: SELL }
+      { label: BUY, value: BUY },
+      { label: SELL, value: SELL }
     ],
 
     tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
@@ -81,12 +83,12 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
   if (tradeOrders && tradeOrders.length) {
     tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
 
-			// total gas
+      // total gas
       if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
         p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
       }
 
-			// trade order
+      // trade order
       p.tradeOrders.push(tradeOrder);
 
       return p;
@@ -113,8 +115,8 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
     const numShares = abi.bignum(tradeAction.shares);
     const costEth = abi.bignum(tradeAction.costEth).abs();
     const avgPrice = tradeAction.action === 'SHORT_SELL' ?
-			costEth.minus(numShares).dividedBy(numShares) :
-			abi.bignum(costEth).dividedBy(abi.bignum(numShares));
+      costEth.minus(numShares).dividedBy(numShares) :
+      abi.bignum(costEth).dividedBy(abi.bignum(numShares));
     const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],

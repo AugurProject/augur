@@ -10,30 +10,30 @@ export function updateAssets(cb) {
     const balances = { ether: undefined, realEther: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
     augur.loadAssets(branch.id || BRANCH_ID, loginAccount.address,
-			(err, ether) => {
-  if (err) return callback(err);
-  balances.ether = ether;
-  if (!loginAccount.ether || loginAccount.ether !== ether) {
-    dispatch(updateLoginAccount({ ether }));
-  }
-  if (allAssetsLoaded(balances)) callback(null, balances);
-},
-			(err, rep) => {
-  if (err) return callback(err);
-  balances.rep = rep;
-  if (!loginAccount.rep || loginAccount.rep !== rep) {
-    dispatch(updateLoginAccount({ rep }));
-  }
-  if (allAssetsLoaded(balances)) callback(null, balances);
-},
-			(err, realEther) => {
-  if (err) return callback(err);
-  balances.realEther = realEther;
-  if (!loginAccount.realEther || loginAccount.realEther !== realEther) {
-    dispatch(updateLoginAccount({ realEther }));
-  }
-  if (allAssetsLoaded(balances)) callback(null, balances);
-}
-		);
+      (err, ether) => {
+        if (err) return callback(err);
+        balances.ether = ether;
+        if (!loginAccount.ether || loginAccount.ether !== ether) {
+          dispatch(updateLoginAccount({ ether }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      },
+      (err, rep) => {
+        if (err) return callback(err);
+        balances.rep = rep;
+        if (!loginAccount.rep || loginAccount.rep !== rep) {
+          dispatch(updateLoginAccount({ rep }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      },
+      (err, realEther) => {
+        if (err) return callback(err);
+        balances.realEther = realEther;
+        if (!loginAccount.realEther || loginAccount.realEther !== realEther) {
+          dispatch(updateLoginAccount({ realEther }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      }
+    );
   };
 }

@@ -5,12 +5,12 @@ import Checkbox from 'modules/common/components/checkbox';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 
 export default class ReportForm extends Component {
-	// TODO -- Prop Validations
+  // TODO -- Prop Validations
   static propTypes = {
     type: React.PropTypes.string,
     minValue: React.PropTypes.string,
     maxValue: React.PropTypes.string,
-		// reportableOutcomes: React.PropTypes.array,
+    // reportableOutcomes: React.PropTypes.array,
     reportedOutcomeID: React.PropTypes.any,
     isIndeterminate: React.PropTypes.bool,
     isUnethical: React.PropTypes.bool,
@@ -70,7 +70,7 @@ export default class ReportForm extends Component {
             />
           </label>
         </div>
-			);
+      );
     } else {
       outcomeOptions = (
         <div className="reportable-outcomes">
@@ -91,9 +91,9 @@ export default class ReportForm extends Component {
               />
               {outcome.name}
             </label>
-					))}
+          ))}
         </div>
-			);
+      );
     }
 
     return (
@@ -101,16 +101,16 @@ export default class ReportForm extends Component {
         <div className="outcome-options">
           <h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
           {p.type === SCALAR &&
-          <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</span>
-					}
+            <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</span>
+          }
           {outcomeOptions}
         </div>
 
         <div className="indeterminate">
           <h4>Is this question indeterminate?</h4>
           <span className="indeterminate-message">
-						If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
-					</span>
+            If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
+          </span>
 
           <Checkbox
             className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
@@ -126,8 +126,8 @@ export default class ReportForm extends Component {
         <div className="unethical">
           <h4>Is this question unethical?</h4>
           <span className="unethical-message">
-						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
-					</span>
+            The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
+          </span>
 
           <Checkbox
             className={classnames('unethical-checkbox', { disabled: s.isReported })}
@@ -139,22 +139,22 @@ export default class ReportForm extends Component {
 
         <div className="report-actions">
           {!s.isReported &&
-          <button
-            className="button report"
-            disabled={!s.reportedOutcomeID}
-            onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || undefined}
-          >
-							Submit Report
-						</button>
-					}
+            <button
+              className="button report"
+              disabled={!s.reportedOutcomeID}
+              onClick={(!!s.reportedOutcomeID && !s.isReported && this.handleSubmit) || undefined}
+            >
+              Submit Report
+            </button>
+          }
           {s.isReported &&
-          <button
-            className="button report-again"
-            onClick={() => this.setState({ isReported: false })}
-          >
-							Report Again
-						</button>
-					}
+            <button
+              className="button report-again"
+              onClick={() => this.setState({ isReported: false })}
+            >
+              Report Again
+            </button>
+          }
         </div>
       </article>
     );

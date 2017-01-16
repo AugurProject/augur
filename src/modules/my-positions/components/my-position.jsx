@@ -8,7 +8,7 @@ const Position = p => (
       {p.type === SCALAR ?
         <span className="position-name">{p.lastPricePercent.rounded}</span> :
         <span className="position-name">{p.name}</span>
-			}
+      }
       <ValueDenomination {...p.qtyShares} />
     </div>
     <div className="position-group">

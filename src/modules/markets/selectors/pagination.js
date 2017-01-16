@@ -1,4 +1,3 @@
-// import memoizerific from 'memoizerific';
 import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
 import store from '../../../store';
 import { makeLocation } from '../../../utils/parse-url';
@@ -27,7 +26,7 @@ export default function () {
     numPages: Math.ceil(marketsTotals.numUnpaginated / pagination.numPerPage),
     startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
     endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
-			marketsTotals.numUnpaginated),
+      marketsTotals.numUnpaginated),
     onUpdateSelectedPageNum: pageNum => store.dispatch(updateSelectedPageNum(pageNum))
   };
 

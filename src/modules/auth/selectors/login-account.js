@@ -17,15 +17,15 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
 
   const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
 
-	// if loginID is not defined it must be a local geth node account, otherwise it's a hosted node.
+  // if loginID is not defined it must be a local geth node account, otherwise it's a hosted node.
   const localNode = !loginAccount.loginID;
 
   const linkText = localNode ? prettyAddress : loginAccount.name || prettyLoginID;
 
   const date = new Date()
-		.toISOString()
-		.split(':')
-		.join('-');
+    .toISOString()
+    .split(':')
+    .join('-');
   const downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
   const accountData = encodeURIComponent(JSON.stringify({
     ...loginAccount.keystore
@@ -35,7 +35,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
   if (loginAccount.airbitzAccount) {
     loginAccount.onAirbitzManageAccount = () => {
       require('../../../selectors').abc.openManageWindow(loginAccount.airbitzAccount, (result, account) => {
-				// Possibly update the loginAccount
+        // Possibly update the loginAccount
       });
     };
   }
