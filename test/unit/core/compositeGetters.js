@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 24 tests total
+// 31 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
@@ -55,7 +55,150 @@ describe('CompositeGetters.finishLoadBranch', function() {
         }
     });
 });
-describe.skip('CompositeGetters.loadBranch', function() {});
+describe('CompositeGetters.loadBranch', function() {
+    // 7 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var getPeriodLength = augur.getPeriodLength;
+            var getDescription = augur.getDescription;
+            var getBaseReporters = augur.getBaseReporters;
+            augur.getPeriodLength = t.getPeriodLength;
+            augur.getDescription = t.getDescription;
+            augur.getBaseReporters = t.getBaseReporters;
+
+            augur.loadBranch(t.branchID, t.callback);
+
+            augur.getPeriodLength = getPeriodLength;
+            augur.getDescription = getDescription;
+            augur.getBaseReporters = getBaseReporters;
+        });
+    };
+    test({
+        description: 'Should return a branch after getPeriodLength, getDescription, and getBaseReporters return their expected values',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.isNull(err);
+            assert.deepEqual(branch, { id: '0xf69b5', periodLength: 100, description: 'this is a description for the branch', baseReporters: 25 });
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(100);
+        },
+        getDescription: function(branch, cb) {
+            cb('this is a description for the branch');
+        },
+        getBaseReporters: function(branch, cb) {
+            cb(25);
+        }
+    });
+    test({
+        description: 'Should return an error after getPeriodLength returns undefined.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.isUndefined(err);
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(undefined);
+        },
+        getDescription: function(branch, cb) {
+            // shouldn't be hit
+            cb('this is a description for the branch');
+        },
+        getBaseReporters: function(branch, cb) {
+            // shouldn't be hit
+            cb(25);
+        }
+    });
+    test({
+        description: 'Should return an error Object after getPeriodLength returns an Object with an error key.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.deepEqual(err, {error: 'Uh-Oh!'});
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb({error: 'Uh-Oh!'});
+        },
+        getDescription: function(branch, cb) {
+            // shouldn't be hit
+            cb('this is a description for the branch');
+        },
+        getBaseReporters: function(branch, cb) {
+            // shouldn't be hit
+            cb(25);
+        }
+    });
+    test({
+        description: 'Should return an error after getDescription returns undefined.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.isUndefined(err);
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(100);
+        },
+        getDescription: function(branch, cb) {
+            cb(undefined);
+        },
+        getBaseReporters: function(branch, cb) {
+            // shouldn't be hit
+            cb(25);
+        }
+    });
+    test({
+        description: 'Should return an error Object after getDescription returns an Object with an error key.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.deepEqual(err, {error: 'Uh-Oh!'});
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(100);
+        },
+        getDescription: function(branch, cb) {
+            cb({error: 'Uh-Oh!'});
+        },
+        getBaseReporters: function(branch, cb) {
+            // shouldn't be hit
+            cb(25);
+        }
+    });
+    test({
+        description: 'Should return an error after getBaseReporters returns undefined.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.isUndefined(err);
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(100);
+        },
+        getDescription: function(branch, cb) {
+            cb('this is a description for the branch');
+        },
+        getBaseReporters: function(branch, cb) {
+            cb(undefined);
+        }
+    });
+    test({
+        description: 'Should return an error Object after getBaseReporters returns an Object with an error key.',
+        branchID: '1010101',
+        callback: function(err, branch) {
+            assert.deepEqual(err, {error: 'Uh-Oh!'});
+            assert.isUndefined(branch);
+        },
+        getPeriodLength: function(branch, cb) {
+            cb(100);
+        },
+        getDescription: function(branch, cb) {
+            cb('this is a description for the branch');
+        },
+        getBaseReporters: function(branch, cb) {
+            cb({error: 'Uh-Oh!'});
+        }
+    });
+});
 describe('CompositeGetters.parsePositionInMarket', function() {
     // 4 tests total
     var test = function(t) {
