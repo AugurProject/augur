@@ -53,6 +53,27 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>January 16, 2017</h3>
+      <ol>
+        <li>
+          Completed ethereumjs-connect refactoring.
+        </li>
+        <li>
+          Replaced the ethereumjs-connect semi-functional integration tests with unit tests, resulting in significantly increased test coverage (from 68% to 98%).
+        </li>
+        <li>
+          Updated augur.js connection code for compatibility with ethereumjs-connect 2.0.
+        </li>
+        <li>
+          The augur-contracts module now attaches raw API data to its exported object.
+        </li>
+      </ol>
+      <h3>January 15, 2017</h3>
+      <ol>
+        <li>
+          Started ethereumjs-connect refactoring.  Eliminated ethereumjs-connect dependence on the augur-contracts module.
+        </li>
+      </ol>
       <h3>January 14, 2017</h3>
       <ol>
         <li>
