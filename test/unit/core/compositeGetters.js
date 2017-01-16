@@ -4,12 +4,117 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 31 tests total
+// 34 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
 describe.skip('CompositeGetters.loadMarketsHelper', function() {});
 describe.skip('CompositeGetters.loadMarkets', function() {});
-describe.skip('CompositeGetters.loadAssets', function() {});
+describe('CompositeGetters.loadAssets', function() {
+    // 3 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            var getCashBalance = augur.getCashBalance;
+            var getRepBalance = augur.getRepBalance;
+            var balance = augur.rpc.balance;
+            augur.getCashBalance = t.getCashBalance;
+            augur.getRepBalance = t.getRepBalance;
+            augur.rpc.balance = t.balance;
+
+            augur.loadAssets(t.branchID, t.accountID, t.cbEther, t.cbRep, t.cbRealEther);
+
+            augur.getCashBalance = getCashBalance;
+            augur.getRepBalance = getRepBalance;
+            augur.rpc.balance = balance;
+        });
+    };
+    test({
+        description: 'Should call all 3 callbacks passed with the values they expect when getCashBalance, getRepBalance, and rpc.balance all return non error values',
+        branchID: '1010101',
+        accountID: '0x0',
+        cbEther: function(err, ether) {
+            assert.isNull(err);
+            assert.deepEqual(ether, '10000');
+        },
+        cbRep: function(err, rep) {
+            assert.isNull(err);
+            assert.deepEqual(rep, '47');
+        },
+        cbRealEther: function(err, wei) {
+            assert.isNull(err);
+            assert.deepEqual(wei, '2.5');
+        },
+        getCashBalance: function(branchID, cb) {
+            // return 10,000 like the faucet
+            cb(10000);
+        },
+        getRepBalance: function(branchID, accountID, cb) {
+            // return 47 like the faucet
+            cb(47);
+        },
+        balance: function(branchID, cb) {
+            // return 2.5 like the faucet
+            cb(2500000000000000000);
+        }
+    });
+    test({
+        description: 'Should call all 3 callbacks with errors when getCashBalance, getRepBalance, rpc.balance return error objects',
+        branchID: '1010101',
+        accountID: '0x0',
+        cbEther: function(err, ether) {
+            assert.isUndefined(ether);
+            assert.deepEqual(err, { error: 'Uh-Oh!' });
+        },
+        cbRep: function(err, rep) {
+            assert.isUndefined(rep);
+            assert.deepEqual(err, { error: 'Uh-Oh!' });
+        },
+        cbRealEther: function(err, wei) {
+            assert.isUndefined(wei);
+            assert.deepEqual(err, { error: 'Uh-Oh!' });
+        },
+        getCashBalance: function(branchID, cb) {
+            // return an error object
+            cb({ error: 'Uh-Oh!' });
+        },
+        getRepBalance: function(branchID, accountID, cb) {
+            // return an error object
+            cb({ error: 'Uh-Oh!' });
+        },
+        balance: function(branchID, cb) {
+            // return an error object
+            cb({ error: 'Uh-Oh!' });
+        }
+    });
+    test({
+        description: 'Should call all 3 callbacks with undefined when getCashBalance, getRepBalance, rpc.balance return undefined',
+        branchID: '1010101',
+        accountID: '0x0',
+        cbEther: function(err, ether) {
+            assert.isUndefined(ether);
+            assert.isUndefined(err);
+        },
+        cbRep: function(err, rep) {
+            assert.isUndefined(rep);
+            assert.isUndefined(err);
+        },
+        cbRealEther: function(err, wei) {
+            assert.isUndefined(wei);
+            assert.isUndefined(err);
+        },
+        getCashBalance: function(branchID, cb) {
+            // return undefined
+            cb(undefined);
+        },
+        getRepBalance: function(branchID, accountID, cb) {
+            // return undefined
+            cb(undefined);
+        },
+        balance: function(branchID, cb) {
+            // return undefined
+            cb(undefined);
+        }
+    });
+});
 describe('CompositeGetters.finishLoadBranch', function() {
     // 2 tests total
     var callbackCallCount = 0;
