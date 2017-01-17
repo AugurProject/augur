@@ -106,10 +106,10 @@ module.exports = {
     params.market = market;
     if (!params.fromBlock) {
       if (!utils.is_function(callback)) {
-        params.fromBlock = this.getMarketCreationBlock(market, params);
+        params.fromBlock = this.getMarketCreationBlock(market);
         return this.getMarketPriceHistory(market, params);
       }
-      this.getMarketCreationBlock(market, params, function (err, fromBlock) {
+      this.getMarketCreationBlock(market, function (err, fromBlock) {
         params.fromBlock = fromBlock;
         self.getMarketPriceHistory(market, params, callback);
       });
@@ -124,7 +124,7 @@ module.exports = {
         if (err) return callback(err);
         self.getLogs("log_short_fill_tx", params, aux, function (err) {
           if (err) return callback(err);
-          callback(aux.mergedLogs);
+          callback(null, aux.mergedLogs);
         });
       });
     }
