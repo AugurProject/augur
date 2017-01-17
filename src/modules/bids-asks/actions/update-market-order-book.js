@@ -7,7 +7,7 @@ export const UPDATE_MARKET_ORDER_BOOK = 'UPDATE_MARKET_ORDER_BOOK';
 export const CLEAR_MARKET_ORDER_BOOK = 'CLEAR_MARKET_ORDER_BOOK';
 
 export const updateMarketOrderBook = (marketId, marketOrderBook) => ({ type: UPDATE_MARKET_ORDER_BOOK, marketId, marketOrderBook });
-export const clearMarketOrderBook = (marketId) => ({ type: CLEAR_MARKET_ORDER_BOOK, marketId });
+export const clearMarketOrderBook = marketId => ({ type: CLEAR_MARKET_ORDER_BOOK, marketId });
 
 export const addOrder = log => (dispatch, getState) => {
   const orderBook = { ...getState().orderBooks[log.market] };
