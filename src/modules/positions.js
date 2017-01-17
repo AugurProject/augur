@@ -125,9 +125,7 @@ module.exports = {
         outcomeID = parseInt(logData[3], 16).toString();
         if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
         sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
-        shareTotals[marketID] = BigNumber.max(
-                    sharesOutcomes[marketID][outcomeID],
-                    shareTotals[marketID] || constants.ZERO);
+        shareTotals[marketID] = BigNumber.max(sharesOutcomes[marketID][outcomeID], shareTotals[marketID] || constants.ZERO);
       }
     }
     return shareTotals;
@@ -211,9 +209,9 @@ module.exports = {
    */
   findUniqueMarketIDs: function (shareTotals) {
     return Object.keys(shareTotals.shortAskBuyCompleteSets)
-            .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
-            .concat(Object.keys(shareTotals.sellCompleteSets))
-            .filter(utils.unique);
+      .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
+      .concat(Object.keys(shareTotals.sellCompleteSets))
+      .filter(utils.unique);
   },
 
   /**
@@ -316,8 +314,8 @@ module.exports = {
 
   updateMeanOpenPrice: function (position, meanOpenPrice, shares, price) {
     return position.dividedBy(shares.plus(position))
-            .times(meanOpenPrice)
-            .plus(shares.dividedBy(shares.plus(position)).times(price));
+      .times(meanOpenPrice)
+      .plus(shares.dividedBy(shares.plus(position)).times(price));
   },
 
   sellCompleteSetsPL: function (PL, shares, price) {
