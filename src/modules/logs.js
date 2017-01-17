@@ -81,15 +81,54 @@ module.exports = {
    * Getters *
    ***********/
 
+  getFirstLogBlockNumber: function (logs) {
+    return (!logs || !logs.length) ? 1 : logs[0].blockNumber;
+  },
+
+  getMarketCreationBlock: function (marketID, callback) {
+    var self = this;
+    if (!utils.is_function(callback)) {
+      return this.getFirstLogBlockNumber(this.getLogs("marketCreated", {marketID: marketID}));
+    }
+    this.getLogs("marketCreated", {marketID: marketID}, function (err, logs) {
+      // TODO change on next contract reupload to callback(err)
+      if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      callback(null, self.getFirstLogBlockNumber(logs));
+    });
+  },
+
   getMarketPriceHistory: function (market, options, callback) {
+    var self = this;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
-    options = options || {};
-    var params = clone(options);
+    var params = clone(options || {});
     params.market = market;
-    return this.getLogs("log_fill_tx", params, {index: "outcome"}, callback);
+    if (!params.fromBlock) {
+      if (!utils.is_function(callback)) {
+        params.fromBlock = this.getMarketCreationBlock(market, params);
+        return this.getMarketPriceHistory(market, params);
+      }
+      this.getMarketCreationBlock(market, params, function (err, fromBlock) {
+        params.fromBlock = fromBlock;
+        self.getMarketPriceHistory(market, params, callback);
+      });
+    } else {
+      var aux = {index: "outcome", mergedLogs: {}};
+      if (!utils.is_function(callback)) {
+        this.getLogs("log_fill_tx", params, aux);
+        this.getLogs("log_short_fill_tx", params, aux);
+        return aux.mergedLogs;
+      }
+      this.getLogs("log_fill_tx", params, aux, function (err) {
+        if (err) return callback(err);
+        self.getLogs("log_short_fill_tx", params, aux, function (err) {
+          if (err) return callback(err);
+          callback(aux.mergedLogs);
+        });
+      });
+    }
   },
 
   getShortSellLogs: function (account, options, callback) {
