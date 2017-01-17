@@ -7,10 +7,10 @@
 var async = require("async");
 var clone = require("clone");
 var abi = require("augur-abi");
-var augur_contracts = require("augur-contracts");
+var errors = require("ethrpc").errors;
+var events_api = require("augur-contracts").api.events;
 var utils = require("./utilities");
 var constants = require("./constants");
-var errors = augur_contracts.errors;
 
 // non-event filters
 var filters = {
@@ -19,7 +19,6 @@ var filters = {
 };
 
 // event filters
-var events_api = new augur_contracts.Tx().events;
 for (var label in events_api) {
   if (!events_api.hasOwnProperty(label)) continue;
   filters[label] = {id: null, heartbeat: null};

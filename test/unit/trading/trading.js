@@ -12,7 +12,7 @@ var augurpath = "../../../src/index";
 var augur = require(augurpath);
 var utils = require("../../../src/utilities");
 var tools = require("../../tools");
-var errors = require("augur-contracts").errors;
+var errors = require("ethrpc").errors;
 var trade = require("../../../src/modules/trade");
 var DEBUG = false;
 

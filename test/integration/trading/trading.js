@@ -16,7 +16,7 @@ var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 var random = require("../../random");
-var errors = require("augur-contracts").errors;
+var errors = require("ethrpc").errors;
 var DEBUG = false;
 
 describe("makeTradeHash", function () {
