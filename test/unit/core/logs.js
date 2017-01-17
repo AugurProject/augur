@@ -40,13 +40,59 @@ describe("logs.getFirstLogBlockNumber", function() {
 		}
 	});
 });
-describe.skip("logs.getMarketCreationBlock", function() {
-	// ? tests total
+describe("logs.getMarketCreationBlock", function() {
+	// 2 tests total
 	var test = function(t) {
 		describe(t.description, function() {
-
+			var getLogs = augur.getLogs;
+			after(function() { augur.getLogs = getLogs; });
+			it("sync", function() {
+				augur.getLogs = t.getLogs;
+				t.assertions(null, augur.getMarketCreationBlock(t.marketID, undefined));
+			});
+			it("async", function(done) {
+				augur.getLogs = t.getLogs;
+				augur.getMarketCreationBlock(t.marketID, function(err, block) {
+					t.assertions(err, block);
+					done();
+				});
+			});
 		});
 	};
+	test({
+		description: 'should handle getting logs and returning the marketCreationBlock',
+		marketID: '0x0a1',
+		getLogs: function(label, filterParams, aux, cb) {
+			if (!cb && utils.is_function(aux)) {
+              cb = aux;
+              aux = null;
+            }
+            var logs = [{blockNumber: '101010', filterParams: filterParams }];
+            if (!cb) return logs;
+            cb(null, logs);
+		},
+		assertions: function(err, o) {
+			assert.isNull(err);
+			assert.deepEqual(o, '101010');
+		}
+	});
+	test({
+		description: 'should handle getting an empty array from getLogs',
+		marketID: '0x0a1',
+		getLogs: function(label, filterParams, aux, cb) {
+			if (!cb && utils.is_function(aux)) {
+              cb = aux;
+              aux = null;
+            }
+            var logs = [];
+            if (!cb) return logs;
+            cb(logs);
+		},
+		assertions: function(err, o) {
+			assert.isNull(err);
+			assert.deepEqual(o, 1);
+		}
+	});
 });
 describe("logs.getMarketPriceHistory", function() {
   // 3 tests total
@@ -121,14 +167,14 @@ describe("logs.getMarketPriceHistory", function() {
     market: '0x00a1',
     creationBlock: 1234,
     options: undefined,
-    getLogs: function (type, params, index, callback) {
-      if (!callback) return params;
-      callback(null, params);
-    },
-    getMarketCreationBlock: function (marketID, callback) {
-      if (!callback) return t.creationBlock;
-      callback(null, t.creationBlock);
-    },
+    // getLogs: function (type, params, index, callback) {
+    //   if (!callback) return params;
+    //   callback(null, params);
+    // },
+    // getMarketCreationBlock: function (marketID, callback) {
+    //   if (!callback) return t.creationBlock;
+    //   callback(null, t.creationBlock);
+    // },
     assertions: function (err, o) {
       assert.isNull(err);
       assert.deepEqual(o, { market: '0x00a1', fromBlock: 1234 });
@@ -139,14 +185,14 @@ describe("logs.getMarketPriceHistory", function() {
     description: 'Should be able to be passed just market and cb and still handle the request',
     market: '0x00a1',
     creationBlock: 1234,
-    getLogs: function (type, params, index, callback) {
-      if (!callback) return params;
-      callback(null, params);
-    },
-    getMarketCreationBlock: function (marketID, callback) {
-      if (!callback) return t.creationBlock;
-      callback(null, t.creationBlock);
-    },
+    // getLogs: function (type, params, index, callback) {
+    //   if (!callback) return params;
+    //   callback(null, params);
+    // },
+    // getMarketCreationBlock: function (marketID, callback) {
+    //   if (!callback) return t.creationBlock;
+    //   callback(null, t.creationBlock);
+    // },
     assertions: function (err, o) {
       assert.isNull(err);
       assert.deepEqual(o, { market: '0x00a1', fromBlock: 1234 });
