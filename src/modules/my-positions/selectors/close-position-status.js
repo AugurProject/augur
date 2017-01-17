@@ -11,29 +11,16 @@ import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 export default () => {
   const { closePositionTradeGroups, transactionsData } = store.getState();
 
-  // console.log('### closePositionStatus -- ', closePositionStatus, closePositionTradeGroups);
-
   return {
     ...selectClosePositionStatus(closePositionTradeGroups, transactionsData)
   };
 };
 
 const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, transactionsData) => {
-  console.log('transactionsData updated -- ', transactionsData);
-
-  // console.log('### closePositionStatus');
-  //
-  // console.log('### closePositionTradeGroups -- ', closePositionTradeGroups);
-  //
-  // console.log('### transactionsData -- ', transactionsData);
-
   const statuses = Object.keys(closePositionTradeGroups).reduce((p, marketID) => {
     const outcomeStatuses = Object.keys(closePositionTradeGroups[marketID]).reduce((p, outcomeID) => {
-
       const closePositionTransactionIDs = closePositionTradeGroups[marketID][outcomeID].reduce((p, tradeGroupID) => {
         const transactionIDs = Object.keys(transactionsData).filter(transactionHash => transactionsData[transactionHash].tradeGroupID === tradeGroupID);
-
-        console.log('transactionIDs -- ', transactionIDs);
 
         if (transactionIDs.length !== 0) {
           return [...p, ...transactionIDs];
@@ -41,10 +28,6 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
 
         return p;
       }, []);
-
-      console.log('LENGTH of Trade Group -- ', closePositionTradeGroups[marketID][outcomeID].length);
-
-      console.log('### closePositionTransactionIDs -- ', closePositionTransactionIDs);
 
       // Short Circuit until transactionsData is updated with the tradeGroupID
       if (closePositionTransactionIDs.length === 0 && closePositionTradeGroups[marketID][outcomeID]) {
@@ -89,18 +72,14 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
     return p;
   }, {});
 
-  console.log('###statuses -- ', statuses);
-
   return statuses;
 });
 
 function delayClearTradeGroupIDs(marketID, outcomeID) {
-  console.log('clear trade ids called');
   // waits, then clears tradeIDs from closePositionTradeGroups
   // This will ultimately clear the outcome status and allow for the user to try again if an action is available
 
   setTimeout(() => {
-    console.log('dispatch to clear ids');
     store.dispatch(clearClosePositionTradeGroup(marketID, outcomeID));
   }, 5000);
 }

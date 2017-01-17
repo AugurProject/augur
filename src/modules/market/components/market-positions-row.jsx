@@ -4,7 +4,6 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
-// import { POSITION_CLOSING, POSITION_CLOSING_CONFIRMATION, POSTION_CLOSED, POSITION_CLOSING_FAILED } from 'modules/market/constants/position-status';
 import { POSITION } from 'modules/market/constants/trade-close-type';
 
 import getValue from 'utils/get-value';
@@ -25,8 +24,6 @@ const MarketPositionsRow = (p) => {
   const isClosable = getValue(p, 'outcome.position.isClosable');
   const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
   const closePosition = getValue(p, 'outcome.position.closePosition');
-
-  // console.log('p.closePositionStatus -- ', p.closePositionStatus);
 
   const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
 

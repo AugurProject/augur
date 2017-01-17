@@ -23,8 +23,6 @@ export default class MarketTradeCloseDialog extends Component {
     const p = this.props;
     const s = this.state;
 
-    // console.log('### POSITION STATUS -- ', p.status, p.marketID, p.outcomeID);
-
     // Position -- No Available Actions
     if ((p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) || !p.isClosable) {
       return <EmDash />;
@@ -47,8 +45,7 @@ export default class MarketTradeCloseDialog extends Component {
               if (p.closeType === POSITION) {
                 p.closePosition(p.marketID, p.outcomeID);
               } else if (p.closeType === ORDER) {
-                console.log('TODO, cancel order');
-                // cancelOrder(orderID, marketID, type);
+                // TODO -- merge cancel order functionality in
               }
               this.setState({ isConfirming: false });
             }}
@@ -58,8 +55,6 @@ export default class MarketTradeCloseDialog extends Component {
         </span>
       );
     }
-
-    // console.log('p.status -- ', p.status);
 
     switch (p.status) {
       case CLOSE_DIALOG_CLOSING:
@@ -95,47 +90,3 @@ export default class MarketTradeCloseDialog extends Component {
     }
   }
 }
-
-// function renderCloseDialog(marketID, outcomeID, quantityOfShares, status, closePosition) {
-// 	if (!parseFloat(quantityOfShares, 10)) { // Position currently has no shares
-// 		return <EmDash />;
-// 	}
-// 	// switch (status) {
-// 	// 	case cancellationStatuses.CANCELLATION_CONFIRMATION:
-// 	// 		return (
-// 	// 			<span>
-// 	// 				<button
-// 	// 					className="unstyled no confirm"
-// 	// 					onClick={(event) => { abortCancelOrderConfirmation(orderID, marketID, type); }}
-// 	// 				>
-// 	// 					No
-// 	// 				</button>
-// 	// 				<button
-// 	// 					className="unstyled yes confirm"
-// 	// 					onClick={(event) => {
-// 	// 						cancelOrder(orderID, marketID, type);
-// 	// 					}}
-// 	// 				>
-// 	// 					Yes
-// 	// 				</button>
-// 	// 			</span>
-// 	// 		);
-// 	// 	case cancellationStatuses.CANCELLING:
-// 	// 		return 'Cancelling';
-// 	// 	case cancellationStatuses.CANCELLATION_FAILED:
-// 	// 		return 'Failure';
-// 	// 	case cancellationStatuses.CANCELLED:
-// 	// 		return null;
-// 	// 	default:
-// 	// 		return (
-// 	// 			<button
-// 	// 				className="unstyled cancel"
-// 	// 				onClick={(event) => {
-// 	// 					showCancelOrderConfirmation(orderID, marketID, type);
-// 	// 				}}
-// 	// 			>
-// 	// 				<i></i> cancel
-// 	// 			</button>
-// 	// 		);
-// 	// }
-// }

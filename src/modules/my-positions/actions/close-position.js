@@ -14,15 +14,10 @@ export function closePosition(marketID, outcomeID) {
     const { accountPositions, orderBooks } = getState();
 
     const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
-
     const bestFillParameters = getBestFillParameters(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
     dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, () => {
-      console.log('updateTradesInProgress success, submit trade');
-
       dispatch(placeTrade(marketID, outcomeID, true, (tradeGroupID) => {
-        console.log('tradeGroupID -- ', tradeGroupID);
-
         dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
       }));
     }));
