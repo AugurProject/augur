@@ -45,8 +45,7 @@ module.exports = {
     var marketID, logData, numOutcomes, logType, parsed;
     parsed = mergeInto || {};
     for (var i = 0, n = logs.length; i < n; ++i) {
-      if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
+      if (logs[i] && logs[i].data !== undefined && logs[i].data !== null && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         logType = this.filters.format_trade_type(logs[i].topics[3]);
         logData = this.rpc.unmarshal(logs[i].data);
