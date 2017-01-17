@@ -4,10 +4,214 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
-// 48 tests total
+// 51 tests total
 
 describe.skip('CompositeGetters.loadNextMarketsBatch', function() {});
-describe.skip('CompositeGetters.loadMarketsHelper', function() {});
+describe('CompositeGetters.loadMarketsHelper', function() {
+    // 3 tests total
+    var test = function(t) {
+        describe(t.description, function() {
+            var getNumMarketsBranch = augur.getNumMarketsBranch;
+            var loadNextMarketsBatch = augur.loadNextMarketsBatch;
+            var options = augur.options;
+            after(function() {
+            	augur.getNumMarketsBranch = getNumMarketsBranch;
+            	augur.loadNextMarketsBatch = loadNextMarketsBatch;
+            	augur.options = options;
+            });
+            it("async", function(done) {
+                var chunkCBcc = 0;
+                augur.getNumMarketsBranch = t.getNumMarketsBranch;
+                augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
+                augur.options = t.options;
+                augur.loadMarketsHelper(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
+                    chunkCBcc++;
+                    t.assertions(err, marketsData, chunkCBcc);
+                    if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
+                });
+            });
+        });
+    };
+    test({
+        description: 'Should return a batch of markets in ascending order, including zero volume markets',
+        branchID: '101010',
+        chunkSize: 5,
+        isDesc: false,
+        options: { loadZeroVolumeMarkets: true },
+        numMarkets: 10,
+        getNumMarketsBranch: function(branch, cb) {
+            cb(10);
+        },
+        loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+            assert.deepEqual(0, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 1st test');
+            if (volumeMax < 0) {
+                // send back 5 markets with volume
+                chunkCB(null, {
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                });
+                setTimeout(function () {
+                    nextPass();
+                }, 50);
+            } else {
+                // send back 5 markets with no volume
+                chunkCB(null, {
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+                });
+            }
+        },
+        assertions: function(err, marketsData, callCount) {
+            assert.isNull(err);
+            switch(callCount) {
+            case 1:
+                assert.deepEqual(marketsData, {
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                });
+                break;
+            default:
+                assert.deepEqual(marketsData, {
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+                });
+                break;
+            }
+        }
+    });
+    test({
+        description: 'Should return a batch of markets in descending order, including zero volume markets',
+        branchID: '101010',
+        chunkSize: 5,
+        isDesc: true,
+        options: { loadZeroVolumeMarkets: true },
+        numMarkets: 10,
+        getNumMarketsBranch: function(branch, cb) {
+            cb(10);
+        },
+        loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+            assert.deepEqual(6, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 2nd test');
+            if (volumeMax < 0) {
+                // send back 5 markets with volume
+                chunkCB(null, {
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                });
+                setTimeout(function () {
+                    nextPass();
+                }, 50);
+            } else {
+                // send back 5 markets with no volume
+                chunkCB(null, {
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+                });
+            }
+        },
+        assertions: function(err, marketsData, callCount) {
+            assert.isNull(err);
+            switch(callCount) {
+            case 1:
+                assert.deepEqual(marketsData, {
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                });
+                break;
+            default:
+                assert.deepEqual(marketsData, {
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+                });
+                break;
+            }
+        }
+    });
+    test({
+        description: 'Should return a batch of markets in ascending order, Do not include zero volume markets',
+        branchID: '101010',
+        chunkSize: 5,
+        isDesc: false,
+        options: { loadZeroVolumeMarkets: false },
+        numMarkets: 10,
+        getNumMarketsBranch: function(branch, cb) {
+            cb(10);
+        },
+        loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+            if (startIndex === 0) {
+                assert.deepEqual(0, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 1st pass.');
+                // send back 5 markets with volume
+                chunkCB(null, {
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                });
+                // numMarkets is 10, we have produced 5, call loadNextMarketsBatch again for the next chunk(5)
+                setTimeout(function () {
+                    augur.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+                }, 50);
+            } else {
+                assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 2nd pass');
+                // send back 5 more markets with volume
+                chunkCB(null, {
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '50'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '990'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '8800'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '1337'},
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '10000'},
+                });
+            }
+        },
+        assertions: function(err, marketsData, callCount) {
+            assert.isNull(err);
+            switch(callCount) {
+            case 1:
+                assert.deepEqual(marketsData, {
+                    '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+                    '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
+                    '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
+                    '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
+                    '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+                });
+                break;
+            default:
+                assert.deepEqual(marketsData, {
+                    '0x0a6': {id: '0x0a6', branchId: '101010', volume: '50'},
+                    '0x0a7': {id: '0x0a7', branchId: '101010', volume: '990'},
+                    '0x0a8': {id: '0x0a8', branchId: '101010', volume: '8800'},
+                    '0x0a9': {id: '0x0a9', branchId: '101010', volume: '1337'},
+                    '0x0aa': {id: '0x0aa', branchId: '101010', volume: '10000'},
+                });
+                break;
+            }
+        }
+    });
+});
 describe('CompositeGetters.loadMarkets', function() {
     // 3 tests total
     var test = function(t) {
