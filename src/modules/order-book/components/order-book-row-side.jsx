@@ -61,15 +61,15 @@ const OrderBookRowSide = (p) => {
                   place="top"
                 >
                   <span className="tooltip-text">
-											Your Order
-										</span>
+                    Your Order
+                  </span>
                 </ReactTooltip>
-								}
+                }
               </div>
             );
           })}
         </div>
-			}
+      }
     </article>
   );
 };

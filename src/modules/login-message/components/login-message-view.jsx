@@ -56,6 +56,18 @@ const LoginMessagePage = p => (
       <h3>January 16, 2017</h3>
       <ol>
         <li>
+          The market ID field in the marketCreated log is now indexed.
+        </li>
+        <li>
+          Improved the efficiency of market price history lookups: the price history getter now looks up the market creation block first and uses this to set the lower-bound of the log lookup.
+        </li>
+        <li>
+          Removed the &quot;mutable&quot; flag for createMarket and createSingleEventMarket from their static API data.  The return values from these functions are no longer state-dependent, so they can be used directly.
+        </li>
+        <li>
+          Moved the augur-contracts &quot;errors&quot; JSON file to the ethrpc repository, and updated augur.js to support this change.  ethrpc is now independent of the augur-contracts module.
+        </li>
+        <li>
           Completed ethereumjs-connect refactoring.
         </li>
         <li>

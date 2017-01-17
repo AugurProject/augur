@@ -37,7 +37,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
     store.clearActions();
   });
 
-	// marketsHeader = selector.default;
+  // marketsHeader = selector.default;
 
   it(`should select the correct Markets Header`, () => {
     const actual = selector.default();

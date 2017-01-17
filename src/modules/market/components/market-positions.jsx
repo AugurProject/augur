@@ -35,10 +35,10 @@ const MarketPositions = (p) => {
                 selectedShareDenomination={p.selectedShareDenomination}
                 positionStatus={p.positionStatus}
               />
-						)}
+            )}
           </div>
         </div>
-			}
+      }
     </article>
   );
 };

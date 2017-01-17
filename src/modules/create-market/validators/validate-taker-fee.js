@@ -12,9 +12,9 @@ export default function (takerFee) {
   }
   if (parsed < TAKER_FEE_MIN || parsed > TAKER_FEE_MAX) {
     return `Trading fee must be between ${
-			formatPercent(TAKER_FEE_MIN, true).full
-			} and ${
-			formatPercent(TAKER_FEE_MAX, true).full
-			}`;
+      formatPercent(TAKER_FEE_MIN, true).full
+      } and ${
+      formatPercent(TAKER_FEE_MAX, true).full
+      }`;
   }
 }

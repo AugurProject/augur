@@ -30,8 +30,8 @@ export function loadLoginAccountDependents(cb) {
       dispatch(loadTransferHistory());
       dispatch(loadCreateMarketHistory());
 
-			// clear and load reports for any markets that have been loaded
-			// (partly to handle signing out of one account and into another)
+      // clear and load reports for any markets that have been loaded
+      // (partly to handle signing out of one account and into another)
       dispatch(clearReports());
       dispatch(loadReportingHistory());
       dispatch(loadEventsWithSubmittedReport());

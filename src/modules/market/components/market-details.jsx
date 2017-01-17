@@ -16,59 +16,59 @@ const MarketDetails = (p) => {
     <div className="market-details market-content-scrollable">
       <ul className="properties">
         {p.type === 'binary' && outcomeName &&
-        <li className="property outcome">
-          <span className="property-label">result</span>
-          <span className="property-value">{outcomeName} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
-        </li>
-				}
+          <li className="property outcome">
+            <span className="property-label">result</span>
+            <span className="property-value">{outcomeName} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
+          </li>
+        }
         {p.type === 'categorical' && outcomeName &&
-        <li className="property outcome">
-          <span className="property-label">result</span>
-          <span className="property-value">{outcomeName}</span>
-        </li>
-				}
+          <li className="property outcome">
+            <span className="property-label">result</span>
+            <span className="property-value">{outcomeName}</span>
+          </li>
+        }
         {p.type === 'scalar' && p.reportedOutcome &&
-        <li className="property outcome">
-          <span className="property-label">result</span>
-          <span className="property-value">{p.reportedOutcome}</span>
-        </li>
-				}
+          <li className="property outcome">
+            <span className="property-label">result</span>
+            <span className="property-value">{p.reportedOutcome}</span>
+          </li>
+        }
         {p.author != null &&
-        <li className="property author">
-          <span className="property-label">author</span>
-          <span className="property-value">{p.author}</span>
-        </li>
-				}
+          <li className="property author">
+            <span className="property-label">author</span>
+            <span className="property-value">{p.author}</span>
+          </li>
+        }
         {p.isOpen && p.outstandingShares != null &&
-        <li className="property outstanding-shares">
-          <span className="property-label">outstanding shares</span>
-          <ValueDenomination className="property-value" formatted={outstandingShares} denomination={shareDenomination} />
-        </li>
-				}
+          <li className="property outstanding-shares">
+            <span className="property-label">outstanding shares</span>
+            <ValueDenomination className="property-value" formatted={outstandingShares} denomination={shareDenomination} />
+          </li>
+        }
         {p.extraInfo != null && p.extraInfo !== '' &&
-        <li className="property extra-info">
-          <span className="property-label">extra info</span>
-          <span className="property-value">{p.extraInfo}</span>
-        </li>
-				}
+          <li className="property extra-info">
+            <span className="property-label">extra info</span>
+            <span className="property-value">{p.extraInfo}</span>
+          </li>
+        }
         {p.resolution &&
-        <li className="property resolution">
-          <span className="property-label">resolution</span>
-          {getResolutionNode(p.resolution)}
-        </li>
-				}
+          <li className="property resolution">
+            <span className="property-label">resolution</span>
+            {getResolutionNode(p.resolution)}
+          </li>
+        }
         {p.type === 'scalar' && p.minValue != null &&
-        <li className="property min-value">
-          <span className="property-label">minimum value</span>
-          <span className="property-value">{p.minValue}</span>
-        </li>
-				}
+          <li className="property min-value">
+            <span className="property-label">minimum value</span>
+            <span className="property-value">{p.minValue}</span>
+          </li>
+        }
         {p.type === 'scalar' && p.maxValue != null &&
-        <li className="property max-value">
-          <span className="property-label">maximum value</span>
-          <span className="property-value">{p.maxValue}</span>
-        </li>
-				}
+          <li className="property max-value">
+            <span className="property-label">maximum value</span>
+            <span className="property-value">{p.maxValue}</span>
+          </li>
+        }
         <li className="property creation-date" data-tip={`created: ${p.creationTime.full}`}>
           <span className="property-label">created</span>
           <ValueDate className="property-value" {...p.creationTime} />
@@ -80,7 +80,7 @@ const MarketDetails = (p) => {
         <center><h4>This market is closed.</h4></center>
         <hr />
       </div>
-			}
+      }
     </div>
   );
 };

@@ -37,11 +37,11 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
   sinon.stub(stubbedAugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 
   const action = proxyquire(
-	'../../../src/modules/create-market/actions/generate-order-book',
+  '../../../src/modules/create-market/actions/generate-order-book',
     {
       '../../../services/augurjs': stubbedAugurJS
     }
-	);
+  );
 
   let clock;
   beforeEach(() => {

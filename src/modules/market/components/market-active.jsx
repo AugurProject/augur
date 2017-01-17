@@ -88,7 +88,7 @@ export default class MarketActive extends Component {
     }
   }
 
-	// NOTE -- only called if a market is of type SCALAR from `componentWillMount`
+  // NOTE -- only called if a market is of type SCALAR from `componentWillMount`
   determineDefaultShareDenomination() {
     const marketID = getValue(this.props, 'market.id');
     const shareDenomination = getValue(this.props, `scalarShareDenomination.markets.${marketID}`);
@@ -171,7 +171,7 @@ export default class MarketActive extends Component {
             maxLimitPrice={maxValue}
           />
         </div>
-				}
+        }
       </article>
     );
   }

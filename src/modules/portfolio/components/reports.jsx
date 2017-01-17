@@ -12,30 +12,30 @@ const PortfolioReports = p => (
           <span className="description">
             {market.description}
             {market.isChallenged &&
-            <span
-              className="fa outcome-challenged"
-              data-tip="This outcome is currently being challenged"
-            >
-								&#xf0e3;
-							</span>
-						}
+              <span
+                className="fa outcome-challenged"
+                data-tip="This outcome is currently being challenged"
+              >
+                &#xf0e3;
+              </span>
+            }
             {!market.isChallenged && market.isChallengeable &&
-            <span
-              className="fa outcome-challengeable"
-              data-tip="This outcome is eligible to be challenged"
-            >
-								&#xf06a;
-							</span>
-						}
+              <span
+                className="fa outcome-challengeable"
+                data-tip="This outcome is eligible to be challenged"
+              >
+                &#xf06a;
+              </span>
+            }
           </span>
           {!!market &&
-          <article className="portfolio-list">
-            <Report {...market} branch={p.branch} />
-          </article>
-					}
+            <article className="portfolio-list">
+              <Report {...market} branch={p.branch} />
+            </article>
+          }
         </div>
       </Link>
-		))}
+    ))}
     <ReactTooltip type="light" effect="solid" place="top" />
   </div>
 );

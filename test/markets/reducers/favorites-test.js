@@ -1,10 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import reducer from 'modules/markets/reducers/favorites';
-import {
-	UPDATE_FAVORITES,
-	TOGGLE_FAVORITE
-} from 'modules/markets/actions/update-favorites';
+import { UPDATE_FAVORITES, TOGGLE_FAVORITE } from 'modules/markets/actions/update-favorites';
 
 describe(`modules/markets/reducers/favorites.js`, () => {
   it(`should return an update favorites action with new favorites data`, () => {

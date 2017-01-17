@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react';
 
 export default class Link extends Component {
 
-	// TODO -- Prop Validations
+  // TODO -- Prop Validations
   static propTypes = {
-		// className: PropTypes.string,
+    // className: PropTypes.string,
     href: PropTypes.string,
     target: PropTypes.string,
     onClick: PropTypes.func,
@@ -17,11 +17,11 @@ export default class Link extends Component {
   }
 
   handleClick = (e) => {
-		// if target is set (e.g. to "_blank"), let the browser handle it
+    // if target is set (e.g. to "_blank"), let the browser handle it
     if (this.props.target || (this.props.href && this.props.href.indexOf('mailto:') === 0)) {
       return;
     }
-		// if not a left click or is a special click, let the browser handle it
+    // if not a left click or is a special click, let the browser handle it
     if (e.button !== 0 || e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
       return;
     }

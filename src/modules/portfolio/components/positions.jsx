@@ -14,15 +14,15 @@ const PortfolioPositions = p => (
           />
         </Link>
         {!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
-        <Positions
-          className="page-content positions-content"
-          market={market}
-          marketLink={market.marketLink}
-          settings={p.settings}
-        />
-				}
+          <Positions
+            className="page-content positions-content"
+            market={market}
+            marketLink={market.marketLink}
+            settings={p.settings}
+          />
+        }
       </div>
-		))}
+    ))}
   </div>
 );
 

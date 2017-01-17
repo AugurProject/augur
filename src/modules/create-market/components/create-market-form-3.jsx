@@ -37,14 +37,14 @@ const CreateMarketForm4 = p => (
       </div>
       {(p.errors.expirySource || p.errors.expirySourceUrl) &&
       <span className="error-message">{p.errors.expirySource || p.errors.expirySourceUrl}</span>
-			}
+      }
     </div>
     <div className="tags">
       <h4>Add some tags to your market (optional)</h4>
       <p>
-				Up to three tags can be added to categorize your market. For example: politics, sports,
-				entertainment or technology.
-			</p>
+        Up to three tags can be added to categorize your market. For example: politics, sports,
+        entertainment or technology.
+      </p>
       <InputList
         className="tags-list"
         list={p.tags}
@@ -77,17 +77,17 @@ const CreateMarketForm4 = p => (
 
 // TODO -- Prop Validations
 // CreateMarketForm4.propTypes = {
-// 	expirySource: PropTypes.string,
-// 	expirySourceUrl: PropTypes.string,
-// 	expirySourceTypes: PropTypes.object,
-// 	tags: PropTypes.array,
-// 	tagsMaxNum: PropTypes.number,
-// 	tagMaxLength: PropTypes.number,
-// 	description: PropTypes.string,
-// 	detailsText: PropTypes.string,
-// 	isValid: PropTypes.bool,
-// 	errors: PropTypes.object,
-// 	onValuesUpdated: PropTypes.func
+//   expirySource: PropTypes.string,
+//   expirySourceUrl: PropTypes.string,
+//   expirySourceTypes: PropTypes.object,
+//   tags: PropTypes.array,
+//   tagsMaxNum: PropTypes.number,
+//   tagMaxLength: PropTypes.number,
+//   description: PropTypes.string,
+//   detailsText: PropTypes.string,
+//   isValid: PropTypes.bool,
+//   errors: PropTypes.object,
+//   onValuesUpdated: PropTypes.func
 // };
 
 export default CreateMarketForm4;

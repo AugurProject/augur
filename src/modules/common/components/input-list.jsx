@@ -3,14 +3,14 @@ import classnames from 'classnames';
 import Input from 'modules/common/components/input';
 
 export default class InputList extends Component {
-	// TODO -- Prop Validations
+  // TODO -- Prop Validations
   static propTypes = {
-		// className: PropTypes.string,
+    // className: PropTypes.string,
     list: PropTypes.array,
-		// errors: PropTypes.array,
+    // errors: PropTypes.array,
     listMinElements: PropTypes.number,
-		// listMaxElements: PropTypes.number,
-		// itemMaxLength: PropTypes.number,
+    // listMaxElements: PropTypes.number,
+    // itemMaxLength: PropTypes.number,
     onChange: PropTypes.func
   };
 
@@ -73,10 +73,10 @@ export default class InputList extends Component {
               onChange={newValue => this.handleChange(i, newValue)}
             />
             {p.errors && p.errors[i] && p.errors[i].length &&
-            <span className="error-message">{p.errors[i]}</span>
-						}
+              <span className="error-message">{p.errors[i]}</span>
+            }
           </div>
-				))}
+        ))}
       </div>
     );
   }

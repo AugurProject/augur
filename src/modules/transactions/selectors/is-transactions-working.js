@@ -8,6 +8,7 @@ export default function () {
 }
 
 export const selectIsWorking = memoizerific(1)(transactionsData =>
-	Object.keys(transactionsData || {}).some(id =>
-		[PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0)
+  Object.keys(transactionsData || {}).some(id =>
+    [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0
+  )
 );

@@ -9,16 +9,16 @@ const MarketOutcomes = p => (
         className="outcome"
       >
         {!!outcome.lastPricePercent &&
-        <ValueDenomination
-          className="outcome-price"
-          {...outcome.lastPricePercent}
-          formatted={outcome.lastPricePercent.rounded}
-          formattedValue={outcome.lastPricePercent.roundedValue}
-        />
-				}
+          <ValueDenomination
+            className="outcome-price"
+            {...outcome.lastPricePercent}
+            formatted={outcome.lastPricePercent.rounded}
+            formattedValue={outcome.lastPricePercent.roundedValue}
+          />
+        }
         <span className="outcome-name">{outcome.name}</span>
       </div>
-		))}
+    ))}
   </div>
 );
 

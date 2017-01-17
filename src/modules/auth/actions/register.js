@@ -1,9 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { PASSWORDS_DO_NOT_MATCH } from '../../auth/constants/form-errors';
-import {
-	loadLoginAccountDependents,
-	loadLoginAccountLocalStorage
-} from '../../auth/actions/load-login-account';
+import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
@@ -17,7 +14,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
     const { links } = require('../../../selectors');
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore)	{
+    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore) {
       if (rememberMe && localStorageRef && localStorageRef.setItem) {
         const persistentAccount = Object.assign({}, loginAccount);
         if (Buffer.isBuffer(persistentAccount.privateKey)) {
@@ -40,7 +37,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
         }));
       }));
 
-			// decide if we need to display the loginMessage
+      // decide if we need to display the loginMessage
       const { loginMessage } = getState();
       if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
         return links.loginMessageLink.onClick();
@@ -66,7 +63,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
         return;
       }
       dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
-			// dispatch(addFundNewAccount(localLoginAccount.address));
+      // dispatch(addFundNewAccount(localLoginAccount.address));
       if (typeof cb === 'function') {
         cb(localLoginAccount);
       }

@@ -55,18 +55,18 @@ const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOr
  */
 function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation) {
   return Object.keys(orders)
-		.map(orderId => orders[orderId])
-		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && orderCancellation[order.id] !== CANCELLED)
-		.sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
-		.map(order => (
-  {
-    id: order.id,
-    marketID: order.market,
-    type: orderType,
-    originalShares: formatNone(),
-    avgPrice: formatEther(order.price),
-    matchedShares: formatNone(),
-    unmatchedShares: formatShares(order.amount)
-  }
-		));
+    .map(orderId => orders[orderId])
+    .filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && orderCancellation[order.id] !== CANCELLED)
+    .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
+    .map(order => (
+      {
+        id: order.id,
+        marketID: order.market,
+        type: orderType,
+        originalShares: formatNone(),
+        avgPrice: formatEther(order.price),
+        matchedShares: formatNone(),
+        unmatchedShares: formatShares(order.amount)
+      }
+    ));
 }

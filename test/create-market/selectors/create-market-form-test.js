@@ -62,7 +62,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
     '../../create-market/selectors/form-steps/step-5': step5
   });
 
-	// const createMarketForm = selector.default;
+  // const createMarketForm = selector.default;
 
   describe('step 1', () => {
     before(() => {
@@ -258,15 +258,15 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
       fullTestState = {
         ...state.createMarketInProgress,
         ...actualStep5.select(
-					state.createMarketInProgress,
-					state.blockchain.currentBlockNumber,
-					state.blockchain.currentBlockMillisSinceEpoch,
-					state.branch.periodLength,
-					state.branch.baseReporters,
-					state.branch.numEventsCreatedInPast24Hours,
-					state.branch.numEventsInReportPeriod,
-					store.dispatch
-				)
+          state.createMarketInProgress,
+          state.blockchain.currentBlockNumber,
+          state.blockchain.currentBlockMillisSinceEpoch,
+          state.branch.periodLength,
+          state.branch.baseReporters,
+          state.branch.numEventsCreatedInPast24Hours,
+          state.branch.numEventsInReportPeriod,
+          store.dispatch
+        )
       };
 
       createMarketFormAssertions(fullTestState);

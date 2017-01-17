@@ -23,7 +23,7 @@ describe(`modules/link/actions/update-url.js`, () => {
 
   beforeEach(() => {
     store.clearActions();
-		// Mock the window object
+    // Mock the window object
     global.window = {};
     global.window.location = {
       pathname: '/test',

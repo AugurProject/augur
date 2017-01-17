@@ -1,8 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import {
-	UPDATE_SELECTED_FILTER_SORT
-} from 'modules/markets/actions/update-selected-filter-sort';
+import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-selected-filter-sort';
 import reducer from 'modules/markets/reducers/selected-filter-sort';
 
 describe(`modules/markets/reducers/selected-sort.js`, () => {

@@ -185,13 +185,13 @@ export function loadAdditionalEventData(events) {
           }
         }
       });
-			// augur.getFinal(eventID, isFinal => !!isFinal && updateEvent(eventID, { isFinal: isFinal === '1' }));
-			// augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
+      // augur.getFinal(eventID, isFinal => !!isFinal && updateEvent(eventID, { isFinal: isFinal === '1' }));
+      // augur.getRepBalance(events[eventID].branch, loginAccount.address, repBalance => !!repBalance && updateEvent(eventID, { repBalance }));
       if (loginAccount.rep !== '0') {
         updateEvent(eventID, { repBalance: loginAccount.rep });
       }
-			// augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
-			// augur.getRoundTwo(eventID, isChallenged => !!isChallenged && updateEvent(eventID, { isChallenged: isChallenged === '1' }));
+      // augur.getEventWeight(events[eventID].branch, events[eventID].period, eventID, eventWeight => !!eventWeight && updateEvent(eventID, { eventWeight }));
+      // augur.getRoundTwo(eventID, isChallenged => !!isChallenged && updateEvent(eventID, { isChallenged: isChallenged === '1' }));
     });
   };
 }

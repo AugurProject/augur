@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'development') {
   const config = require('./webpack.config');
   const compiler = webpack(config);
 
-	// Hot Module Reload
+  // Hot Module Reload
   app.use(devMiddleware(compiler, {
     publicPath: config.output.publicPath,
     stats: {
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 
   app.use(hotMiddleware(compiler));
 } else {
-	// Static Path
+  // Static Path
   app.use(express.static('build'));
 }
 
@@ -31,7 +31,7 @@ app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN)
 
 // redirect production site to secure version
 app.get('*', (req, res, next) => {
-	// res.sendFile(path.resolve(__dirname, 'build/index.html'));
+  // res.sendFile(path.resolve(__dirname, 'build/index.html'));
   if (req.headers['x-forwarded-proto'] !== 'https' && req.get('host') === PROD_HOST) {
     res.redirect('https://' + PROD_HOST + req.url);
   } else {

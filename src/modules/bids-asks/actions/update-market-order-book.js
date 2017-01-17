@@ -6,83 +6,72 @@ import { updateMarketTradesData } from '../../portfolio/actions/update-market-tr
 export const UPDATE_MARKET_ORDER_BOOK = 'UPDATE_MARKET_ORDER_BOOK';
 export const CLEAR_MARKET_ORDER_BOOK = 'CLEAR_MARKET_ORDER_BOOK';
 
-export function updateMarketOrderBook(marketId, marketOrderBook) {
-  return { type: UPDATE_MARKET_ORDER_BOOK, marketId, marketOrderBook };
-}
+export const updateMarketOrderBook = (marketId, marketOrderBook) => ({ type: UPDATE_MARKET_ORDER_BOOK, marketId, marketOrderBook });
+export const clearMarketOrderBook = marketId => ({ type: CLEAR_MARKET_ORDER_BOOK, marketId });
 
-export function clearMarketOrderBook(marketId) {
-  return { type: CLEAR_MARKET_ORDER_BOOK, marketId };
-}
-
-export function addOrder(log) {
-  return (dispatch, getState) => {
-    const orderBook = { ...getState().orderBooks[log.market] };
-    if (orderBook) {
-      const orderBookSide = orderBook[log.type];
-      const market = getState().marketsData[log.market];
-      if (market) {
-        if (orderBookSide) {
-          orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, market);
-          dispatch(updateMarketOrderBook(log.market, orderBook));
-        } else {
-          const matchedType = log.type === 'buy' ? 'sell' : 'buy';
-          dispatch(updateMarketOrderBook(log.market, {
-            [log.type]: convertAddTxLogToOrder(log, market),
-            [matchedType]: {}
-          }));
-        }
-      }
-    }
-  };
-}
-
-export function removeOrder(log) {
-  return (dispatch, getState) => {
-    const orderBook = { ...getState().orderBooks[log.market] };
-    if (orderBook) {
-      const orderBookSide = orderBook[log.type];
-      const market = getState().marketsData[log.market];
-      if (orderBookSide && market) {
-        if (orderBookSide[log.tradeid]) {
-          delete orderBookSide[log.tradeid];
-          dispatch(updateMarketOrderBook(log.market, orderBook));
-        }
-      }
-    }
-  };
-}
-
-export function fillOrder(log) {
-  return (dispatch, getState) => {
-    const { marketsData, orderBooks, priceHistory } = getState();
-    const orderBook = { ...orderBooks[log.market] };
-    const market = marketsData[log.market];
+export const addOrder = log => (dispatch, getState) => {
+  const orderBook = { ...getState().orderBooks[log.market] };
+  if (orderBook) {
+    const orderBookSide = orderBook[log.type];
+    const market = getState().marketsData[log.market];
     if (market) {
-      if (orderBook) {
+      if (orderBookSide) {
+        orderBookSide[log.tradeid] = convertAddTxLogToOrder(log, market);
+        dispatch(updateMarketOrderBook(log.market, orderBook));
+      } else {
         const matchedType = log.type === 'buy' ? 'sell' : 'buy';
-        const orderBookSide = orderBook[matchedType];
-        if (orderBookSide) {
-          const order = orderBookSide[log.tradeid];
-          if (order) {
-            const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
-            if (updatedAmount.lte(constants.PRECISION.zero)) {
-              delete orderBookSide[log.tradeid];
-            } else {
-              order.fullPrecisionAount = updatedAmount.toFixed();
-              order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
-            }
-            dispatch(updateMarketOrderBook(log.market, orderBook));
+        dispatch(updateMarketOrderBook(log.market, {
+          [log.type]: convertAddTxLogToOrder(log, market),
+          [matchedType]: {}
+        }));
+      }
+    }
+  }
+};
+
+export const removeOrder = log => (dispatch, getState) => {
+  const orderBook = { ...getState().orderBooks[log.market] };
+  if (orderBook) {
+    const orderBookSide = orderBook[log.type];
+    const market = getState().marketsData[log.market];
+    if (orderBookSide && market) {
+      if (orderBookSide[log.tradeid]) {
+        delete orderBookSide[log.tradeid];
+        dispatch(updateMarketOrderBook(log.market, orderBook));
+      }
+    }
+  }
+};
+
+export const fillOrder = log => (dispatch, getState) => {
+  const { marketsData, orderBooks, priceHistory } = getState();
+  const orderBook = { ...orderBooks[log.market] };
+  const market = marketsData[log.market];
+  if (market) {
+    if (orderBook) {
+      const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+      const orderBookSide = orderBook[matchedType];
+      if (orderBookSide) {
+        const order = orderBookSide[log.tradeid];
+        if (order) {
+          const updatedAmount = abi.bignum(order.fullPrecisionAmount).minus(abi.bignum(log.amount));
+          if (updatedAmount.lte(constants.PRECISION.zero)) {
+            delete orderBookSide[log.tradeid];
+          } else {
+            order.fullPrecisionAount = updatedAmount.toFixed();
+            order.amount = augur.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
           }
+          dispatch(updateMarketOrderBook(log.market, orderBook));
         }
       }
-      const marketPriceHistory = priceHistory[log.market] ? { ...priceHistory[log.market] } : {};
-      if (!marketPriceHistory[log.outcome]) marketPriceHistory[log.outcome] = [];
-      marketPriceHistory[log.outcome].push(log);
-      dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
-      dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
     }
-  };
-}
+    const marketPriceHistory = priceHistory[log.market] ? { ...priceHistory[log.market] } : {};
+    if (!marketPriceHistory[log.outcome]) marketPriceHistory[log.outcome] = [];
+    marketPriceHistory[log.outcome].push(log);
+    dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
+    dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
+  }
+};
 
 function convertAddTxLogToOrder(log, market) {
   let round;

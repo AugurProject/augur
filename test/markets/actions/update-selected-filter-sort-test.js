@@ -28,7 +28,7 @@ describe('modules/markets/actions/update-selected-filter-sort', () => {
 
   beforeEach(() => {
     store.clearActions();
-		// Mock the Window object
+    // Mock the Window object
     global.window = {};
     global.window.location = {
       pathname: '/'

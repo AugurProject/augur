@@ -82,33 +82,33 @@ export const selectMarket = (marketID) => {
   const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
 
   return assembleMarket(
-		marketID,
-		marketsData[marketID],
-		priceHistory[marketID],
-		isMarketDataOpen(marketsData[marketID]),
-		isMarketDataExpired(marketsData[marketID], new Date().getTime()),
+    marketID,
+    marketsData[marketID],
+    priceHistory[marketID],
+    isMarketDataOpen(marketsData[marketID]),
+    isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
-		!!favorites[marketID],
-		outcomesData[marketID],
+    !!favorites[marketID],
+    outcomesData[marketID],
 
-		selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
-		(accountPositions || {})[marketID],
-		(netEffectiveTrades || {})[marketID],
-		(accountTrades || {})[marketID],
-		tradesInProgress[marketID],
+    selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
+    (accountPositions || {})[marketID],
+    (netEffectiveTrades || {})[marketID],
+    (accountTrades || {})[marketID],
+    tradesInProgress[marketID],
 
-		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
-		endDate.getFullYear(),
-		endDate.getMonth(),
-		endDate.getDate(),
+    // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
+    endDate.getFullYear(),
+    endDate.getMonth(),
+    endDate.getDate(),
 
-		branch && !!branch.isReportRevealPhase,
+    branch && !!branch.isReportRevealPhase,
 
-		orderBooks[marketID],
-		orderCancellation,
-		(smallestPositions || {})[marketID],
-		loginAccount,
-		store.dispatch);
+    orderBooks[marketID],
+    orderCancellation,
+    (smallestPositions || {})[marketID],
+    loginAccount,
+    store.dispatch);
 };
 
 export const selectScalarMinimum = (market) => {
@@ -128,51 +128,51 @@ export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFro
 const assembledMarketsCache = {};
 
 export function assembleMarket(
-		marketID,
-		marketData,
-		marketPriceHistory,
-		isOpen,
-		isExpired,
-		isFavorite,
-		marketOutcomesData,
-		marketReport,
-		marketAccountPositions,
-		marketNetEffectiveTrades,
-		marketAccountTrades,
-		marketTradeInProgress,
-		endDateYear,
-		endDateMonth,
-		endDateDay,
-		isReportRevealPhase,
-		orderBooks,
-		orderCancellation,
-		smallestPosition,
-		loginAccount,
-		dispatch) {
+    marketID,
+    marketData,
+    marketPriceHistory,
+    isOpen,
+    isExpired,
+    isFavorite,
+    marketOutcomesData,
+    marketReport,
+    marketAccountPositions,
+    marketNetEffectiveTrades,
+    marketAccountTrades,
+    marketTradeInProgress,
+    endDateYear,
+    endDateMonth,
+    endDateDay,
+    isReportRevealPhase,
+    orderBooks,
+    orderCancellation,
+    smallestPosition,
+    loginAccount,
+    dispatch) {
 
   if (!assembledMarketsCache[marketID]) {
     assembledMarketsCache[marketID] = memoizerific(1)((
-			marketID,
-			marketData,
-			marketPriceHistory,
-			isOpen,
-			isExpired,
-			isFavorite,
-			marketOutcomesData,
-			marketReport,
-			marketAccountPositions,
-			marketNetEffectiveTrades,
-			marketAccountTrades,
-			marketTradeInProgress,
-			endDateYear,
-			endDateMonth,
-			endDateDay,
-			isReportRevealPhase,
-			orderBooks,
-			orderCancellation,
-			smallestPosition,
-			loginAccount,
-			dispatch) => { // console.log('>>assembleMarket<<');
+      marketID,
+      marketData,
+      marketPriceHistory,
+      isOpen,
+      isExpired,
+      isFavorite,
+      marketOutcomesData,
+      marketReport,
+      marketAccountPositions,
+      marketNetEffectiveTrades,
+      marketAccountTrades,
+      marketTradeInProgress,
+      endDateYear,
+      endDateMonth,
+      endDateDay,
+      isReportRevealPhase,
+      orderBooks,
+      orderCancellation,
+      smallestPosition,
+      loginAccount,
+      dispatch) => { // console.log('>>assembleMarket<<');
 
       const market = {
         ...marketData,
@@ -250,7 +250,7 @@ export function assembleMarket(
         };
 
         if (market.isScalar) {
-					// note: not actually a percent
+          // note: not actually a percent
           if (outcome.lastPrice.value) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
@@ -304,8 +304,8 @@ export function assembleMarket(
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
       const indeterminateOutcomeID = market.type === BINARY ?
-				BINARY_INDETERMINATE_OUTCOME_ID :
-				CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
+        BINARY_INDETERMINATE_OUTCOME_ID :
+        CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
@@ -323,8 +323,8 @@ export function assembleMarket(
 
       market.myMarketSummary = selectMyMarket(market)[0];
 
-			// Update the `result` object
-			// This houses the reported outcome + the proportion correct of that outcome
+      // Update the `result` object
+      // This houses the reported outcome + the proportion correct of that outcome
       if (market.reportedOutcome) {
         market.result = { outcomeID: market.reportedOutcome };
         if (market.type !== SCALAR && market.reportableOutcomes.length) {

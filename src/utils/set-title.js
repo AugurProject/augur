@@ -10,7 +10,7 @@ export default function (title, params) {
         const m = params.m.split('_');
 
         if (m.length === 1) {
-					// TODO -- Improvement: lookup market based on ID
+          // TODO -- Improvement: lookup market based on ID
           setDocumentTitle(titles.MARKET);
         } else {
           const title = parseMarketTitle(m);

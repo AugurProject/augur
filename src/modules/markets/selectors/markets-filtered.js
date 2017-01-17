@@ -26,10 +26,10 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
       return true;
     }
     return keywordsArray.every(keyword => (
-			market.description.toLowerCase().indexOf(keyword) >= 0 ||
-			market.outcomes.some(outcome => outcome.name && outcome.name.indexOf(keyword) >= 0) ||
-			market.tags.some(tag => tag.name.indexOf(keyword) >= 0)
-		));
+      market.description.toLowerCase().indexOf(keyword) >= 0 ||
+      market.outcomes.some(outcome => outcome.name && outcome.name.indexOf(keyword) >= 0) ||
+      market.tags.some(tag => tag.name.indexOf(keyword) >= 0)
+    ));
   }
 
   function isOfType(market, type) {

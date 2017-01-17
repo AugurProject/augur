@@ -8,9 +8,9 @@ const Filters = p => (
         <span className="title">{filter.title}</span>
         {filter.options.map(option =>
           <Checkbox key={option.value} className="filter" text={option.name} text2={`(${option.numMatched})`} isChecked={option.isSelected} onClick={option.onClick} />
-				)}
+        )}
       </div>
-		)}
+    )}
   </div>
 );
 

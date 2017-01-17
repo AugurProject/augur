@@ -19,7 +19,7 @@ const MarketOpenOrdersGroup = p => (
         showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
         selectedShareDenomination={p.selectedShareDenomination}
       />
-		))}
+    ))}
   </article>
 );
 

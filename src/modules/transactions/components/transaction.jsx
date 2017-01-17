@@ -56,10 +56,10 @@ const Transaction = (p) => {
           <span className="action">{nodes.action}</span>
           <ValueDenomination className="shares" {...p.numShares} />
           {p.data.marketType === CATEGORICAL &&
-          <span>
-            <span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
-          </span>
-					}
+            <span>
+              <span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
+            </span>
+          }
           <span className="at">@</span>
           <ValueDenomination className="noFeePrice" {...p.noFeePrice} />
           <br className="hide-in-tx-display" />
@@ -68,10 +68,10 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br className="hide-in-trade-summary-display" />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+            <ValueTimestamp className="property-value" {...p.timestamp} />
+          }
         </span>
-			);
+      );
 
       break;
 
@@ -85,9 +85,9 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
 
     case FUND_ACCOUNT:
@@ -100,9 +100,9 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
 
     case CREATE_MARKET:
@@ -115,17 +115,17 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
 
     case COMMIT_REPORT:
     case REVEAL_REPORT: {
       nodes.action = p.type === COMMIT_REPORT ? 'Commit Report' : 'Reveal Report';
       const reportedOutcome = (p.data.isScalar || (p.data.market && p.data.market.type === SCALAR)) ?
-				p.data.reportedOutcomeID :
-				p.data.outcome && p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
+        p.data.reportedOutcomeID :
+        p.data.outcome && p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '');
       nodes.description = (
         <span className="description">
           <span className="action">{nodes.action}</span>
@@ -136,9 +136,9 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
     }
     case GENERATE_ORDER_BOOK:
@@ -151,9 +151,9 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
 
     case CANCEL_ORDER: {
@@ -169,10 +169,10 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
 
-			);
+      );
       break;
     }
     default:
@@ -184,32 +184,32 @@ const Transaction = (p) => {
           <br />
           {p.timestamp &&
           <ValueTimestamp className="property-value" {...p.timestamp} />
-					}
+          }
         </span>
-			);
+      );
       break;
   }
 
   return (
     <article className={classnames('transaction-item', p.className, p.status)}>
       {p.index &&
-      <span className="index">{`${p.index}.`}</span>
-			}
+        <span className="index">{`${p.index}.`}</span>
+      }
 
       {nodes.description}
 
       <span className="value-changes">
         {!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
-        <ValueDenomination className="value-change tradingFees" {...p.tradingFees} prefix="trading fees:" />
-				}
+          <ValueDenomination className="value-change tradingFees" {...p.tradingFees} prefix="trading fees:" />
+        }
         <span className="spacer">&nbsp;</span>
         {!!p.feePercent && p.feePercent.value !== null && p.feePercent !== undefined &&
-        <ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
-				}
+          <ValueDenomination className="value-change feePercent" {...p.feePercent} prefix="[" postfix="]" />
+        }
         <br />
         {!!p.gasFees && !!p.gasFees.value &&
-        <ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
-				}
+          <ValueDenomination className="value-change gasFees" {...p.gasFees} prefix="estimated gas cost:" />
+        }
       </span>
 
       {p.status && p.hash ?
@@ -217,7 +217,7 @@ const Transaction = (p) => {
           <TransactionMessage {...p} />
         </Link> :
         <TransactionMessage {...p} />
-			}
+      }
     </article>
   );
 };

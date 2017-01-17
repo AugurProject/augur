@@ -15,10 +15,10 @@ const Checkbox = p => (
         {p.text}
       </span>
       {p.text2 != null &&
-      <span className="checkbox-label2" >
-        {p.text2}
-      </span>
-			}
+        <span className="checkbox-label2" >
+          {p.text2}
+        </span>
+      }
     </button>
     <ReactTooltip type="light" effect="solid" place="top" />
   </article>

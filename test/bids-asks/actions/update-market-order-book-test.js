@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import {
-	UPDATE_MARKET_ORDER_BOOK,
-	updateMarketOrderBook
+  UPDATE_MARKET_ORDER_BOOK,
+  updateMarketOrderBook
 } from 'modules/bids-asks/actions/update-market-order-book';
 
 describe(`modules/bids-asks/actions/update-market-order-book.js`, () => {

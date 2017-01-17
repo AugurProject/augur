@@ -4,11 +4,11 @@ export default function () {
   const { allMarkets, filteredMarkets, unpaginatedMarkets, favoriteMarkets } = require('../../../selectors');
 
   return selectMarketsTotals(
-		allMarkets,
-		filteredMarkets.length,
-		unpaginatedMarkets.length,
-		favoriteMarkets.length
-	);
+    allMarkets,
+    filteredMarkets.length,
+    unpaginatedMarkets.length,
+    favoriteMarkets.length
+  );
 }
 
 export const selectMarketsTotals = memoizerific(1)((allMarkets, filteredMarketsLength, unpaginatedMarketsLength, favoriteMarketsLength) => {

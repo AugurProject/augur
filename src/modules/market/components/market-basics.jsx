@@ -19,19 +19,19 @@ const MarketBasics = p => (
                 {tag.name ? tag.name : tag}
               </button>
             </li>
-						))}
+          ))}
         </ul>
-				}
+        }
       </div>
       <div className="market-basics-header-group-2">
         {p.loginAccount && p.loginAccount.address && p.onClickToggleFavorite &&
-        <button
-          className={classnames('button unstyled favorite-button', { on: p.isFavorite })}
-          onClick={p.onClickToggleFavorite}
-        >
-          {p.isFavorite ? <i></i> : <i></i>}
-        </button>
-				}
+          <button
+            className={classnames('button unstyled favorite-button', { on: p.isFavorite })}
+            onClick={p.onClickToggleFavorite}
+          >
+            {p.isFavorite ? <i></i> : <i></i>}
+          </button>
+        }
       </div>
     </div>
 
@@ -44,7 +44,7 @@ const MarketBasics = p => (
         {p.description}
       </Link> :
       <span className="market-description">{p.description}</span>
-		}
+    }
 
     <MarketProperties {...p} />
   </article>

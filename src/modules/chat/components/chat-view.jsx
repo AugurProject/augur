@@ -37,38 +37,38 @@ export default class ChatView extends Component {
       <ul>
         <li>Welcome to Augur!</li>
         {p.messages &&
-					p.messages.map((payload) => {
-  const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
-  let displayName;
-  let tooltipID;
-  if (payload.name === '') {
-    displayName = payload.address;
-  } else if (payload.name === 'Anonymous Coward') {
-    displayName = payload.name;
-  } else {
-    displayName = payload.name;
-    tooltipID = `${key}-address-tooltip`;
-  }
-  messageCount += 1;
-  if (!tooltipID) {
-    return (
-      <li key={key}>
-        <span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
-      </li>
-    );
-  }
-  return (
-    <li key={key}>
-      <span data-tip data-for={tooltipID}>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
-      <ReactTooltip id={tooltipID} type="light" effect="solid" place="top">
-        <span className="tooltip-text">{payload.address}</span>
-      </ReactTooltip>
-    </li>
-  );
-})
-				}
+          p.messages.map((payload) => {
+            const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
+            let displayName;
+            let tooltipID;
+            if (payload.name === '') {
+              displayName = payload.address;
+            } else if (payload.name === 'Anonymous Coward') {
+              displayName = payload.name;
+            } else {
+              displayName = payload.name;
+              tooltipID = `${key}-address-tooltip`;
+            }
+            messageCount += 1;
+            if (!tooltipID) {
+              return (
+                <li key={key}>
+                  <span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
+                </li>
+              );
+            }
+            return (
+              <li key={key}>
+                <span data-tip data-for={tooltipID}>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
+                <ReactTooltip id={tooltipID} type="light" effect="solid" place="top">
+                  <span className="tooltip-text">{payload.address}</span>
+                </ReactTooltip>
+              </li>
+            );
+          })
+        }
       </ul>
-		);
+    );
     return (
       <article className="chat">
         <button
@@ -93,8 +93,8 @@ export default class ChatView extends Component {
                 placeholder="Say something!"
               />
               <button className="chat-message-button">
-								Chat
-							</button>
+                Chat
+              </button>
             </div>
           </form>
         </div>

@@ -20,31 +20,31 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
     }
     const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
     return assembleMarket(
-			marketID,
-			marketsData[marketID],
-			priceHistory[marketID],
-			isMarketDataOpen(marketsData[marketID]),
-			isMarketDataExpired(marketsData[marketID], new Date().getTime()),
+      marketID,
+      marketsData[marketID],
+      priceHistory[marketID],
+      isMarketDataOpen(marketsData[marketID]),
+      isMarketDataExpired(marketsData[marketID], new Date().getTime()),
 
-			!!favorites[marketID],
-			outcomesData[marketID],
+      !!favorites[marketID],
+      outcomesData[marketID],
 
-			selectMarketReport(marketID, reports[marketsData[marketID].branchId]),
-			(accountPositions || {})[marketID],
-			(netEffectiveTrades || {})[marketID],
-			(accountTrades || {})[marketID],
-			tradesInProgress[marketID],
+      selectMarketReport(marketID, reports[marketsData[marketID].branchId]),
+      (accountPositions || {})[marketID],
+      (netEffectiveTrades || {})[marketID],
+      (accountTrades || {})[marketID],
+      tradesInProgress[marketID],
 
-			// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, never hitting the memoization cache
-			endDate.getFullYear(),
-			endDate.getMonth(),
-			endDate.getDate(),
-			branch && branch.isReportRevealPhase,
-			orderBooks[marketID],
-			orderCancellation,
-			(smallestPositions || {})[marketID],
-			loginAccount,
-			dispatch);
+      // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, never hitting the memoization cache
+      endDate.getFullYear(),
+      endDate.getMonth(),
+      endDate.getDate(),
+      branch && branch.isReportRevealPhase,
+      orderBooks[marketID],
+      orderCancellation,
+      (smallestPositions || {})[marketID],
+      loginAccount,
+      dispatch);
 
   }).sort((a, b) => {
     const aVal = cleanSortVal(a[selectedFilterSort.sort]);
@@ -60,21 +60,21 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 });
 
 function cleanSortVal(val) {
-	// if a falsy simple value return it to sort as-is
+  // if a falsy simple value return it to sort as-is
   if (!val) {
     return val;
   }
 
-	// if this is a formatted number object, with a `value` prop, use that for sorting
+  // if this is a formatted number object, with a `value` prop, use that for sorting
   if (val.value || val.value === 0) {
     return val.value;
   }
 
-	// if the val is a string, lowercase it
+  // if the val is a string, lowercase it
   if (val.toLowerCase) {
     return val.toLowerCase();
   }
 
-	// otherwise the val is probably a number, either way return it as-is
+  // otherwise the val is probably a number, either way return it as-is
   return val;
 }

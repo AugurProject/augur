@@ -32,7 +32,7 @@ export function initAugur() {
           dispatch(loadLoginAccount());
           if (env.reportingTest) {
 
-						// 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
+            // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
             if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1' && env.reportingTest === true) {
               augur.getBranches((branches) => {
                 console.debug(window.location.hostname, branches[branches.length - 1]);

@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import testState from 'test/testState';
 import {
-	UPDATE_BLOCKCHAIN
+  UPDATE_BLOCKCHAIN
 } from 'modules/app/actions/update-blockchain';
 import reducer from 'modules/app/reducers/blockchain';
 

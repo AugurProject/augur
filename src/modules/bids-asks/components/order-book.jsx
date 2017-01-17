@@ -16,11 +16,11 @@ const OrderBook = p => (
         return null;
       })}
       {!p.bids.length &&
-      <article className="bid-ask ask">
-        <ValueDenomination className="price" />
-        <ValueDenomination className="shares" formatted="-" />
-      </article>
-			}
+        <article className="bid-ask ask">
+          <ValueDenomination className="price" />
+          <ValueDenomination className="shares" formatted="-" />
+        </article>
+      }
     </div>
     <div className="asks">
       {p.asks.map((ask, i) => {
@@ -35,11 +35,11 @@ const OrderBook = p => (
         return null;
       })}
       {!p.asks.length &&
-      <article className="bid-ask ask">
-        <ValueDenomination className="price" formatted="-" />
-        <ValueDenomination className="shares" />
-      </article>
-			}
+        <article className="bid-ask ask">
+          <ValueDenomination className="price" formatted="-" />
+          <ValueDenomination className="shares" />
+        </article>
+      }
     </div>
   </div>
 );

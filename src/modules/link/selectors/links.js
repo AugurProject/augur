@@ -37,7 +37,7 @@ export default function () {
     loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch)
   };
 
-	// NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
+  // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
 }
 
 export const selectAccountLink = memoizerific(1)((dispatch) => {
@@ -118,12 +118,12 @@ export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
 export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, dispatch) => {
   const params = {};
 
-	// search
+  // search
   if (keywords != null && keywords.length > 0) {
     params[SEARCH_PARAM_NAME] = keywords;
   }
 
-	// filter + sort
+  // filter + sort
   if (selectedFilterSort.type !== FILTER_SORT_TYPE) {
     params[FILTER_SORT_TYPE_PARAM_NAME] = `${selectedFilterSort.type}`;
   }
@@ -134,12 +134,12 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
     params[FILTER_SORT_ISDESC_PARAM_NAME] = `${selectedFilterSort.isDesc}`;
   }
 
-	// pagination
+  // pagination
   if (selectedPageNum > 1) {
     params[PAGE_PARAM_NAME] = selectedPageNum;
   }
 
-	// tags
+  // tags
   const tagsParams = Object.keys(selectedTags).filter(tag => !!selectedTags[tag]).join(',');
   if (tagsParams.length) {
     params[TAGS_PARAM_NAME] = tagsParams;

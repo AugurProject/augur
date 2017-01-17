@@ -16,13 +16,13 @@ describe(`modules/link/selectors/links.js`, () => {
   });
 
   afterEach(() => {
-		// global.window = {};
+    // global.window = {};
     store.clearActions();
   });
 
   it(`should have the expected shape`, () => {
     const actual = selector.default();
-		// console.log(actual);
+    // console.log(actual);
     linksAssertions(actual);
   });
 });

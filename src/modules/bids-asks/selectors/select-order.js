@@ -11,7 +11,7 @@ export function selectOrderFromOrderID(orderID, orderBooks) {
   for (let i = 0; i < numMarkets; ++i) {
     const orderBook = orderBooks[marketIDs[i]];
     const order = selectOrderInOrderBookSide(orderID, orderBook.buy) ||
-			selectOrderInOrderBookSide(orderID, orderBook.sell);
+      selectOrderInOrderBookSide(orderID, orderBook.sell);
     if (order) return order;
   }
 }

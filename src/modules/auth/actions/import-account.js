@@ -1,8 +1,5 @@
 import { accounts } from '../../../services/augurjs';
-import {
-	loadLoginAccountDependents,
-	loadLoginAccountLocalStorage
-} from '../../auth/actions/load-login-account';
+import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
@@ -33,7 +30,7 @@ export function importAccount(name, password, rememberMe, keystore) {
             dispatch(fundNewAccount(e => e && console.error(e)));
           }
         }));
-        if (links && links.marketsLink)	{
+        if (links && links.marketsLink) {
           return links.marketsLink.onClick(links.marketsLink.href);
         }
       }

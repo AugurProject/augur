@@ -33,7 +33,7 @@ const Outcome = (p) => {
         {p.marketType === SCALAR ?
           <ValueDenomination formatted={lastPricePercent} /> :
           <span className="outcome">{outcomeName}</span>
-				}
+        }
         <button
           className="unstyled"
           onClick={() => {
@@ -78,7 +78,7 @@ const Outcome = (p) => {
             <span className="outcome-name">{outcomeName}</span>
             <span>Last Price: <ValueDenomination formatted={lastPrice} /></span>
           </span>
-				}
+        }
         <span className="outcome-best-orders outcome-best-bid">
           <button
             className="unstyled"

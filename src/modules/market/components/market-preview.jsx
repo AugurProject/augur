@@ -11,22 +11,22 @@ const MarketPreview = p => (
       <MarketBasics {...p} />
 
       {!!p.marketLink &&
-      <div className="market-link">
-        <Link
-          {...p.marketLink}
-          className={classnames('button', p.marketLink.className)}
-        >
-          {p.marketLink.text}
-        </Link>
-      </div>
-			}
+        <div className="market-link">
+          <Link
+            {...p.marketLink}
+            className={classnames('button', p.marketLink.className)}
+          >
+            {p.marketLink.text}
+          </Link>
+        </div>
+      }
     </div>
 
     {p.outcomes &&
-    <div className="market-preview-group-2">
-      <MarketPreviewOutcomes outcomes={p.outcomes} />
-    </div>
-		}
+      <div className="market-preview-group-2">
+        <MarketPreviewOutcomes outcomes={p.outcomes} />
+      </div>
+    }
   </article>
 );
 

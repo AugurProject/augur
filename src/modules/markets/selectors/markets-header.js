@@ -7,11 +7,11 @@ export default function () {
   const { selectedMarketsHeader } = store.getState();
   const { marketsTotals } = require('../../../selectors');
   return selectMarketsHeader(
-		selectedMarketsHeader,
-		marketsTotals.numFiltered,
-		marketsTotals.numFavorites,
-		marketsTotals.numPendingReports,
-		store.dispatch);
+    selectedMarketsHeader,
+    marketsTotals.numFiltered,
+    marketsTotals.numFavorites,
+    marketsTotals.numPendingReports,
+    store.dispatch);
 }
 
 export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {

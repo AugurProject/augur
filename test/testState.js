@@ -10,7 +10,7 @@ const testState = {
   accountTrades: {
     testMarketID: {
       testoutcomeID: [
-				{ type: 1, price: '0.5', amount: '50' }
+        { type: 1, price: '0.5', amount: '50' }
       ]
     }
   },
@@ -186,22 +186,22 @@ const testState = {
     testMarketID: {},
     '0xMARKET1': {
       0: [
-				{ amount: 10 },
-				{ amount: 20 }
+        { amount: 10 },
+        { amount: 20 }
       ],
       1: [
-				{ amount: 10 },
-				{ amount: 20 }
+        { amount: 10 },
+        { amount: 20 }
       ]
     },
     '0xMARKET2': {
       0: [
-				{ amount: 10 },
-				{ amount: 20 }
+        { amount: 10 },
+        { amount: 20 }
       ],
       1: [
-				{ amount: 10 },
-				{ amount: 20 }
+        { amount: 10 },
+        { amount: 20 }
       ]
     },
   },
@@ -250,30 +250,30 @@ const testState = {
   marketTrades: {
     '0xMARKET1': {
       0: [
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' }
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' }
       ],
       1: [
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' }
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' }
       ]
     },
     '0xMARKET2': {
       0: [
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' }
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' }
       ],
       1: [
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' },
-				{ test: 'test' }
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' },
+        { test: 'test' }
       ]
     },
   },

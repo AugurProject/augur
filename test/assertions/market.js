@@ -7,7 +7,7 @@ import assertReportableOutcomes from 'assertions/reportable-outcomes';
 
 export default function (market) {
 
-	// market can be undefined
+  // market can be undefined
   if (!market.id) {
     return;
   }
@@ -178,7 +178,7 @@ export default function (market) {
         });
 
         it(`market.outcomes[${i}].trade.tradeSummary`, () => {
-					// NOTE -- shallow check here due to deep check further down of the same selector method
+          // NOTE -- shallow check here due to deep check further down of the same selector method
           assert.isDefined(trade.tradeSummary);
           assert.isObject(trade.tradeSummary);
         });
@@ -190,7 +190,7 @@ export default function (market) {
 
         const orderBook = outcome.orderBook;
         it(`market.outcomes[${i}].orderBook`, () => {
-					// NOTE -- shallow check here due to deep check further down of the same selector method
+          // NOTE -- shallow check here due to deep check further down of the same selector method
           assert.isDefined(orderBook);
           assert.isObject(orderBook);
         });
@@ -206,12 +206,12 @@ export default function (market) {
         });
 
         it(`market.outcomes[${i}].orderBook.topBid`, () => {
-					// NOTE -- shallow check here due to deep check further down of the same selector method
+          // NOTE -- shallow check here due to deep check further down of the same selector method
           assert.isDefined(outcome.topBid);
         });
 
         it(`market.outcomes[${i}].orderBook.topAsk`, () => {
-					// NOTE -- shallow check here due to deep check further down of the same selector method
+          // NOTE -- shallow check here due to deep check further down of the same selector method
           assert.isDefined(outcome.topAsk);
         });
 

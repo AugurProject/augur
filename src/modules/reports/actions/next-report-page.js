@@ -8,8 +8,8 @@ export function nextReportPage() {
     const branchReports = reports[branch.id];
     if (!branchReports) return links.marketsLink.onClick();
     const nextPendingReportEventID = Reflect.ownKeys(branchReports).find(
-			eventID => !branchReports[eventID].reportHash
-		);
+      eventID => !branchReports[eventID].reportHash
+    );
     if (!nextPendingReportEventID) return links.marketsLink.onClick();
     const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
     if (!nextPendingReportMarket || !nextPendingReportMarket.id) {

@@ -5,7 +5,7 @@ const NullStateMessage = p => (
     {!p.message ?
       <span>No Data Available</span> :
       <span>{p.message}</span>
-		}
+    }
   </article>
 );
 

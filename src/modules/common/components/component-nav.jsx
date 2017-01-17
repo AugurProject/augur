@@ -15,7 +15,7 @@ const ComponentNav = p => (
           {p.navItems[nav].label}
         </li>
       </Link>
-		))}
+    ))}
   </ul>
 );
 

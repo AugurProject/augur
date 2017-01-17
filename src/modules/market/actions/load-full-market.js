@@ -9,19 +9,19 @@ export function loadFullMarket(marketID) {
   return (dispatch, getState) => {
     dispatch(updateMarketDataLoading(marketID));
 
-		// load price history, and other non-basic market details here, dispatching
-		// the necessary actions to save each part in relevant state
+    // load price history, and other non-basic market details here, dispatching
+    // the necessary actions to save each part in relevant state
     const loadDetails = () => {
       dispatch(loadBidsAsks(marketID, () => {
         dispatch(loadAccountTrades(marketID, () => dispatch(loadPriceHistory(marketID))));
       }));
     };
 
-		// if the basic data hasn't loaded yet, load it first
+    // if the basic data hasn't loaded yet, load it first
     if (!getState().marketsData[marketID]) {
       dispatch(loadMarketsInfo([marketID], loadDetails));
     } else {
-		// if the basic data is already loaded, just load the details
+    // if the basic data is already loaded, just load the details
       loadDetails();
     }
   };

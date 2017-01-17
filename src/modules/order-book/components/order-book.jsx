@@ -13,7 +13,7 @@ const OrderBook = p => (
     {p.marketType !== SCALAR ?
       <h3>Order Book <EmDash /> {p.outcome.name}</h3> :
       <h3>Order Book</h3>
-		}
+    }
     <OrderBookHeader />
     <div className="market-content-scrollable" >
       <OrderBookRows

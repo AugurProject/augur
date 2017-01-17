@@ -38,20 +38,20 @@ export default class MarketUserData extends Component {
           updateSelectedNav={this.updateSelectedNav}
         />
         {s.selectedNav === MARKET_USER_DATA_NAV_POSITIONS &&
-        <MarketPositions
-          {...p}
-          marketType={p.marketType}
-          selectedShareDenomination={p.selectedShareDenomination}
-        />
-				}
+          <MarketPositions
+            {...p}
+            marketType={p.marketType}
+            selectedShareDenomination={p.selectedShareDenomination}
+          />
+        }
         {s.selectedNav === MARKET_USER_DATA_NAV_OPEN_ORDERS &&
-        <MarketOpenOrders
-          outcomes={outcomes}
-          marketType={p.marketType}
-          orderCancellation={p.orderCancellation}
-          selectedShareDenomination={p.selectedShareDenomination}
-        />
-				}
+          <MarketOpenOrders
+            outcomes={outcomes}
+            marketType={p.marketType}
+            orderCancellation={p.orderCancellation}
+            selectedShareDenomination={p.selectedShareDenomination}
+          />
+        }
       </article>
     );
   }

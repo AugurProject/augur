@@ -13,12 +13,12 @@ const MarketDataHeader = p => (
     </div>
     <div className="market-header-actions">
       {p.type === SCALAR && p.selectedShareDenomination && !p.isPendingReport &&
-      <Dropdown
-        default={p.selectedShareDenomination}
-        options={p.shareDenominations}
-        onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination); }}
-      />
-			}
+        <Dropdown
+          default={p.selectedShareDenomination}
+          options={p.shareDenominations}
+          onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination); }}
+        />
+      }
     </div>
   </article>
 );

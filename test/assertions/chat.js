@@ -9,5 +9,5 @@ export default function (chat) {
     assert.isObject(chat[room], `chat.${room} isn't an object`);
   });
 
-	// TODO -- flesh these test out
+  // TODO -- flesh these test out
 }

@@ -49,7 +49,7 @@ export default class MarketChart extends Component {
         {!p.series || !p.series.length ?
           <NullStateMessage message={nullMessage} /> :
           <ReactHighcharts config={config} />
-				}
+        }
       </article>
     );
   }

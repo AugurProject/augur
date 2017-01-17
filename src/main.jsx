@@ -20,13 +20,13 @@ if (process.env.NODE_ENV === 'development') {
   window.App = App;
   window.augurjs = AugurJS;
   console.log(`
-*********************************************
-            DEVELOPMENT MODE
-  window.state		-- all state data
-  window.selectors 	-- component data
-  window.augurjs 	-- Augur API methods
-*********************************************
-	`);
+*******************************************
+        AUGUR DEVELOPMENT MODE
+  window.state      -- all state data
+  window.selectors  -- component data
+  window.augurjs    -- Augur API methods
+*******************************************
+`);
 }
 
 store.dispatch(updateURL(window.location.pathname + window.location.search));
@@ -39,8 +39,8 @@ function render(appElement, selectors) {
     <AppContainer>
       <App {...selectors} />
     </AppContainer>,
-		appElement
-	);
+    appElement
+  );
 }
 // store.dispatch(MarketsActions.listenToMarkets());
 

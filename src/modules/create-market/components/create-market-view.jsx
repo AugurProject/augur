@@ -5,9 +5,9 @@ const CreateMarketPage = p => (
   <section id="create_market_view">
     <header className="page-header">
       <span className="big-line">Be the market maker</span>.
-			Earn fees by making markets for people to trade.
-			The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
-		</header>
+      Earn fees by making markets for people to trade.
+      The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
+    </header>
 
     <div className="page-content">
       <CreateMarketForm

@@ -30,7 +30,7 @@ const MarketPositionsRow = (p) => {
       {p.marketType === SCALAR ?
         <ValueDenomination formatted={lastPricePercent} /> :
         <span>{outcomeName}</span>
-			}
+      }
       <ValueDenomination formatted={quantityOfShares} />
       <ValueDenomination formatted={purchasePrice} />
       <ValueDenomination formatted={lastPrice} />

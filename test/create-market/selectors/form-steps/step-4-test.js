@@ -5,14 +5,14 @@ import proxyquire from 'proxyquire';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import {
-	TAKER_FEE_DEFAULT,
-	INITIAL_LIQUIDITY_DEFAULT,
-	MAKER_FEE_DEFAULT,
-	STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_DEFAULT,
-	PRICE_WIDTH_DEFAULT,
-	PRICE_DEPTH_DEFAULT,
-	IS_SIMULATION
+  TAKER_FEE_DEFAULT,
+  INITIAL_LIQUIDITY_DEFAULT,
+  MAKER_FEE_DEFAULT,
+  STARTING_QUANTITY_DEFAULT,
+  BEST_STARTING_QUANTITY_DEFAULT,
+  PRICE_WIDTH_DEFAULT,
+  PRICE_DEPTH_DEFAULT,
+  IS_SIMULATION
 } from 'modules/create-market/constants/market-values-constraints';
 
 import * as selector from 'modules/create-market/selectors/form-steps/step-4';
@@ -25,7 +25,7 @@ import * as validateStartingQuantity from 'modules/create-market/validators/vali
 import * as validatePriceWidth from 'modules/create-market/validators/validate-price-width';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
-	// NOTE -- We implicitly tested `initialFairPrices` via the `select` test.
+  // NOTE -- We implicitly tested `initialFairPrices` via the `select` test.
 
   let formState;
   let out;

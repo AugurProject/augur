@@ -7,9 +7,9 @@ import Input from 'modules/common/components/input';
 import DatePicker from 'modules/common/components/datepicker';
 
 const CreateMarketForm2 = (p) => {
-  let	typeSpecific;
-	// const tomorrow = new Date();
-	// tomorrow.setDate(tomorrow.getDate() + 1);
+  let typeSpecific;
+  // const tomorrow = new Date();
+  // tomorrow.setDate(tomorrow.getDate() + 1);
   switch (p.type) {
     case CATEGORICAL:
       typeSpecific = <Form2Categorical {...p} />;
@@ -25,8 +25,8 @@ const CreateMarketForm2 = (p) => {
     <div className="step-2">
       <div className="description">
         <h1>
-					What do you want to ask?
-				</h1>
+          What do you want to ask?
+        </h1>
         <Input
           type="text"
           value={p.description}
@@ -36,7 +36,7 @@ const CreateMarketForm2 = (p) => {
         />
         {p.errors.description &&
         <span className="error-message">{p.errors.description}</span>
-				}
+        }
       </div>
 
       {typeSpecific}
@@ -48,7 +48,7 @@ const CreateMarketForm2 = (p) => {
 
         {p.errors.endDate &&
         <span className="error-message">{p.errors.endDate}</span>
-				}
+        }
       </div>
       <FormButtons
         disabled={!p.isValid}
@@ -61,16 +61,16 @@ const CreateMarketForm2 = (p) => {
 
 // TODO -- Prop Validations
 // CreateMarketForm2.propTypes = {
-// 	type: PropTypes.string,
-// 	description: PropTypes.string,
-// 	endDate: PropTypes.object,
-// 	descriptionPlaceholder: PropTypes.string,
-// 	descriptionMaxLength: PropTypes.number,
-// 	minEndDate: PropTypes.object,
-// 	isValid: PropTypes.bool,
-// 	errors: PropTypes.object,
-// 	onValuesUpdated: PropTypes.func
+//   type: PropTypes.string,
+//   description: PropTypes.string,
+//   endDate: PropTypes.object,
+//   descriptionPlaceholder: PropTypes.string,
+//   descriptionMaxLength: PropTypes.number,
+//   minEndDate: PropTypes.object,
+//   isValid: PropTypes.bool,
+//   errors: PropTypes.object,
+//   onValuesUpdated: PropTypes.func
 // };
 
 export default CreateMarketForm2;
-// 	expanded={true}
+//   expanded={true}
