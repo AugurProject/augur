@@ -146,7 +146,7 @@ module.exports = function (p, cb) {
                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                 self.buy({
                   amount: amount.toFixed(),
-                  price: buyPrice,
+                  price: buyPrice.toFixed(),
                   market: p.market,
                   outcome: outcome,
                   scalarMinMax: scalarMinMax,
@@ -160,7 +160,7 @@ module.exports = function (p, cb) {
                         market: p.market,
                         outcome: outcome,
                         amount: amount.toFixed(),
-                        buyPrice: buyPrice,
+                        buyPrice: buyPrice.toFixed(),
                         timestamp: res.timestamp,
                         hash: res.hash,
                         gasUsed: res.gasUsed
@@ -168,7 +168,7 @@ module.exports = function (p, cb) {
                     nextBuyPrice();
                   },
                   onFailed: function (err) {
-                    console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                    console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                     nextBuyPrice(err);
                   }
                 });
@@ -182,7 +182,7 @@ module.exports = function (p, cb) {
                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                 self.sell({
                   amount: amount.toFixed(),
-                  price: sellPrice,
+                  price: sellPrice.toFixed(),
                   market: p.market,
                   outcome: outcome,
                   scalarMinMax: scalarMinMax,
@@ -196,7 +196,7 @@ module.exports = function (p, cb) {
                         market: p.market,
                         outcome: outcome,
                         amount: amount.toFixed(),
-                        sellPrice: sellPrice,
+                        sellPrice: sellPrice.toFixed(),
                         timestamp: res.timestamp,
                         hash: res.hash,
                         gasUsed: res.gasUsed
@@ -204,7 +204,7 @@ module.exports = function (p, cb) {
                     nextSellPrice();
                   },
                   onFailed: function (err) {
-                    console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                    console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                     nextSellPrice(err);
                   }
                 });
