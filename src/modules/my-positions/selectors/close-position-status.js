@@ -6,7 +6,7 @@ import { clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/trade-close-status';
 
-import { PENDING, SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
+import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 
 export default () => {
   const { closePositionTradeGroups, transactionsData } = store.getState();
