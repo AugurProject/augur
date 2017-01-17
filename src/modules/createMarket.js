@@ -60,12 +60,7 @@ module.exports = {
     this.rpc.getGasPrice(function (gasPrice) {
       tx.gasPrice = gasPrice;
       tx.value = self.calculateRequiredMarketValue(gasPrice);
-      self.transact(tx, onSent, function (res) {
-        if (res && res.callReturn) {
-          res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
-        }
-        onSuccess(res);
-      }, onFailed);
+      self.transact(tx, onSent, onSuccess, onFailed);
     });
   },
 
@@ -138,12 +133,7 @@ module.exports = {
     this.rpc.getGasPrice(function (gasPrice) {
       tx.gasPrice = gasPrice;
       tx.value = self.calculateRequiredMarketValue(gasPrice);
-      self.transact(tx, onSent, function (res) {
-        if (res && res.callReturn) {
-          res.callReturn = self.rpc.unmarshal(res.callReturn)[0];
-        }
-        onSuccess(res);
-      }, onFailed);
+      self.transact(tx, onSent, onSuccess, onFailed);
     });
   },
 

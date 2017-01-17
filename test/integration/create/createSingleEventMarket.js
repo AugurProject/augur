@@ -49,8 +49,8 @@ describe("CreateMarket.createSingleEventMarket", function () {
           if (DEBUG) console.log("marketID:", marketID);
           var periodLength = augur.getPeriodLength(t.branch);
           var block = augur.rpc.getBlock(r.blockNumber);
-          var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-          var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5"));
+          var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength, 10)).floor().toString(16));
+          var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5", 10));
           var formattedTags = augur.formatTags(t.tags);
           assert.strictEqual(utils.sha3([
             futurePeriod,
