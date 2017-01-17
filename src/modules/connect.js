@@ -129,7 +129,9 @@ module.exports = {
       this.rpc = connector.rpc;
       if (!connector.state.contracts) {
         connector.configure({contracts: Contracts, api: Contracts.api});
-        connector.state.networkID = constants.DEFAULT_NETWORK_ID;
+        if (!connector.state.networkID) {
+          connector.state.networkID = constants.DEFAULT_NETWORK_ID;
+        }
         connector.setContracts();
       }
       this.contracts = connector.state.contracts;
