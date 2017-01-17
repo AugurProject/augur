@@ -21,9 +21,14 @@ const MarketPositionsRow = (p) => {
   const realizedNet = getValue(p, 'outcome.position.realizedNet.formatted');
   const unrealizedNet = getValue(p, 'outcome.position.unrealizedNet.formatted');
   const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
+
   const isClosable = getValue(p, 'outcome.position.isClosable');
   const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
-  const closePosition = getValue(p, 'positionStatus.closePosition');
+  const closePosition = getValue(p, 'outcome.position.closePosition');
+
+  // console.log('p.closePositionStatus -- ', p.closePositionStatus);
+
+  const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
 
   return (
     <article className="market-positions-row not-selectable" >
@@ -45,6 +50,7 @@ const MarketPositionsRow = (p) => {
         closePosition={closePosition}
         isClosable={isClosable}
         isFullyClosable={isFullyClosable}
+        status={status}
       />
     </article>
   );

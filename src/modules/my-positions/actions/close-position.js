@@ -1,15 +1,13 @@
 import BigNumber from 'bignumber.js';
 
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
-// import { placeTrade } from 'modules/trade/actions/place-trade';
+import { placeTrade } from 'modules/trade/actions/place-trade';
+import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
-
 import { ZERO } from 'modules/trade/constants/numbers';
 
 import getValue from 'utils/get-value';
-
-export const UPDATE_POSITION_STATUS = 'UPDATE_POSITION_STATUS';
 
 export function closePosition(marketID, outcomeID) {
   return (dispatch, getState) => {
@@ -19,15 +17,14 @@ export function closePosition(marketID, outcomeID) {
 
     const bestFillParameters = getBestFillParameters(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
-    dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, (err) => {
-      if (err) {
-				// TODO -- update status
-        console.log('err!');
-      } else {
-				// TODO -- update status, req. transID
-        console.log('submit trade');
-        // dispatch(placeTrade(marketID, outcomeID));
-      }
+    dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, () => {
+      console.log('updateTradesInProgress success, submit trade');
+
+      dispatch(placeTrade(marketID, outcomeID, true, (tradeGroupID) => {
+        console.log('tradeGroupID -- ', tradeGroupID);
+
+        dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
+      }));
     }));
   };
 }

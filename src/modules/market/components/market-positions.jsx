@@ -33,7 +33,7 @@ const MarketPositions = (p) => {
                 marketType={p.marketType}
                 outcome={outcome}
                 selectedShareDenomination={p.selectedShareDenomination}
-                positionStatus={p.positionStatus}
+                closePositionStatus={p.closePositionStatus}
               />
             )}
           </div>

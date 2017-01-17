@@ -1,7 +1,10 @@
 import memoizerific from 'memoizerific';
 import BigNumber from 'bignumber.js';
 
+import store from 'src/store';
+
 import selectMyPositions from 'modules/my-positions/selectors/my-positions';
+import { closePosition } from 'modules/my-positions/actions/close-position';
 
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
@@ -27,7 +30,10 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
   return {
     ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
     isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false // Based on available orders, can this position be fully closed
+    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false, // Based on available orders, can this position be fully closed
+    closePosition: (marketID, outcomeID) => {
+      store.dispatch(closePosition(marketID, outcomeID));
+    }
   };
 });
 

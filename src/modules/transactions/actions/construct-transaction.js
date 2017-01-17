@@ -306,6 +306,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+  const tradeGroupID = trade.tradeGroupID;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const bnPrice = abi.bignum(trade.price);
@@ -335,6 +336,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
     [transactionID]: {
       type,
       hash: trade.transactionHash,
+      tradeGroupID,
       status,
       description,
       data: {
@@ -494,6 +496,8 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 }
 
 export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
+  console.log('constructTradingTransaction -- ', label, trade);
+
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
     const market = marketsData[marketID];

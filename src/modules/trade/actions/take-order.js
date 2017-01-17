@@ -8,7 +8,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { splitAskAndShortAsk } from '../../trade/actions/split-order';
 import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 
-export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) {
+export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID, isTakeOnly) {
   return (dispatch, getState) => {
     const { loginAccount, orderBooks } = getState();
     dispatch(updateTradeCommitLock(true));
@@ -18,7 +18,7 @@ export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tr
       dispatch(updateTradeCommitLock(false));
       if (err) return console.error('trade failed:', err);
       const sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
-      if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
+      if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit) && !isTakeOnly) {
         console.debug('buy remainder:', sharesRemaining.toFixed(), 'shares remaining,', res.remainingEth.toFixed(), 'cash remaining', constants.PRECISION.limit.toFixed(), 'precision limit');
         placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
       }
@@ -26,7 +26,7 @@ export function placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tr
   };
 }
 
-export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) {
+export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID, isTakeOnly) {
   return (dispatch, getState) => {
     const { loginAccount, orderBooks } = getState();
     dispatch(updateTradeCommitLock(true));
@@ -35,7 +35,7 @@ export function placeSell(market, outcomeID, numShares, limitPrice, totalCost, t
     dispatch(trade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, loginAccount.address, getTradeIDs, (err, res) => {
       dispatch(updateTradeCommitLock(false));
       if (err) return console.error('trade failed:', err);
-      if (res.remainingShares.gt(constants.PRECISION.zero)) {
+      if (res.remainingShares.gt(constants.PRECISION.zero) && !isTakeOnly) {
         augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
           const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, ROUND_DOWN);
           const remainingShares = abi.bignum(res.remainingShares);

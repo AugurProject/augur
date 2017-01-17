@@ -10,7 +10,7 @@ import { splitAskAndShortAsk } from '../../trade/actions/split-order';
 import { placeAsk, placeBid, placeShortAsk } from '../../trade/actions/make-order';
 import { placeBuy, placeSell, placeShortSell } from '../../trade/actions/take-order';
 
-export function placeTrade(marketID, outcomeID) {
+export function placeTrade(marketID, outcomeID, isTakeOnly, cb) {
   return (dispatch, getState) => {
     if (!marketID) return null;
     const { loginAccount, marketsData, orderBooks, tradesInProgress } = getState();
@@ -24,16 +24,22 @@ export function placeTrade(marketID, outcomeID) {
         return nextTradeInProgress();
       }
       console.debug('tradeInProgress:', tradeInProgress);
+
+      const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString('hex'));
+
+      console.log('TRADE GROUP ID -- ', tradeGroupID);
+      cb && cb(tradeGroupID); // For anything that needs to observe a set of transactions tied to a trade
+
       const totalCost = abi.bignum(tradeInProgress.totalCost).abs().toFixed();
       const limitPrice = tradeInProgress.limitPrice;
       const numShares = tradeInProgress.numShares;
       const tradingFees = tradeInProgress.tradingFeesEth;
-      const tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString('hex'));
+
       if (tradeInProgress.side === BUY) {
         const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
         if (tradeIDs && tradeIDs.length) {
-          dispatch(placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
-        } else {
+          dispatch(placeBuy(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID, isTakeOnly));
+        } else if (!isTakeOnly) {
           placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID);
         }
         nextTradeInProgress();
@@ -48,8 +54,8 @@ export function placeTrade(marketID, outcomeID) {
           const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, loginAccount.address);
           if (position && position.gt(constants.PRECISION.zero)) {
             if (tradeIDs && tradeIDs.length) {
-              dispatch(placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
-            } else {
+              dispatch(placeSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID, isTakeOnly));
+            } else if (!isTakeOnly) {
               const { askShares, shortAskShares } = splitAskAndShortAsk(abi.bignum(numShares), position);
               if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
                 placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
@@ -59,15 +65,18 @@ export function placeTrade(marketID, outcomeID) {
               }
             }
           } else if (tradeIDs && tradeIDs.length) {
-            dispatch(placeShortSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID));
-          } else {
+            dispatch(placeShortSell(market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID, isTakeOnly, cb));
+          } else if (!isTakeOnly) {
             placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID);
           }
           nextTradeInProgress();
         });
       }
     }, (err) => {
-      if (err) console.error('place trade:', err);
+      if (err) {
+        console.error('place trade:', err);
+      }
+
       dispatch(clearTradeInProgress(marketID));
     });
   };

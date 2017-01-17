@@ -35,7 +35,7 @@ import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
 import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import outcomeTradeNavItems from 'modules/outcomes/selectors/outcome-trade-nav-items';
-import positionStatus from 'modules/my-positions/selectors/position-status';
+import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 
 const selectors = {
   activeView,
@@ -75,7 +75,7 @@ const selectors = {
   marketUserDataNavItems,
   scalarShareDenomination,
   outcomeTradeNavItems,
-  positionStatus
+  closePositionStatus
 };
 
 export default selectors;
