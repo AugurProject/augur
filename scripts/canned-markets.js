@@ -625,6 +625,7 @@ augur.connect({
   ws: "ws://127.0.0.1:8546"
 }, function (connected) {
   if (!connected) return console.error("connect failed:", connected);
+  console.log('contracts:', augur.contracts);
   augur.setCash(augur.from, "10000000000000", augur.utils.noop, function (r) {
     console.debug("setCash success:", r.callReturn);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
@@ -706,7 +707,7 @@ augur.connect({
             market: marketID,
             amount: "0x" + largestOutcomeShares.toString(16),
             onSent: function (res) {
-                            // console.log("buyCompleteSets sent:", res.txHash);
+              // console.log("buyCompleteSets sent:", res.txHash);
             },
             onSuccess: function (res) {
               // console.log("buyCompleteSets success:", res.callReturn);
