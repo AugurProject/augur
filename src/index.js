@@ -38,7 +38,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.8.0";
+  this.version = "3.8.1";
 
   this.options = {
     debug: {
@@ -59,12 +59,11 @@ function Augur() {
   this.coinbase = null;
   this.from = null;
 
-  this.constants = require("./constants");
-  this.errors = require("augur-contracts").errors;
-
   this.abi = require("augur-abi");
+  this.constants = require("./constants");
   this.utils = require("./utilities");
   this.rpc = require("ethrpc");
+  this.errors = this.rpc.errors;
   this.abi.debug = this.options.debug.abi;
   this.rpc.debug = this.options.debug;
 

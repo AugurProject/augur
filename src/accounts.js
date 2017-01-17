@@ -15,7 +15,7 @@ var clone = require("clone");
 var locks = require("locks");
 var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
-var errors = require("augur-contracts").errors;
+var errors = require("ethrpc").errors;
 var constants = require("./constants");
 var utils = require("./utilities");
 
