@@ -17,22 +17,21 @@ export default class MarketTradeCloseDialog extends Component {
       isConfirming: false,
       status: props.status
     };
+
+    this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
   }
 
-  render() {
-    const p = this.props;
-    const s = this.state;
-
+  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status) {
     // Position -- No Available Actions
-    if ((p.closeType === POSITION && !parseFloat(p.quantityOfShares, 10)) || !p.isClosable) {
+    if ((closeType === POSITION && !parseFloat(quantityOfShares, 10)) || !isClosable) {
       return <EmDash />;
     }
 
-    if (s.isConfirming) {
+    if (isConfirming) {
       return (
-        <span>
+        <div className="confirming-dialog">
           <button
-            className="unstyled no confirm"
+            className="unstyled confirming-no"
             onClick={() => {
               this.setState({ isConfirming: false });
             }}
@@ -40,11 +39,11 @@ export default class MarketTradeCloseDialog extends Component {
             No
           </button>
           <button
-            className="unstyled yes confirm"
+            className="unstyled confirming-yes"
             onClick={(event) => {
-              if (p.closeType === POSITION) {
-                p.closePosition(p.marketID, p.outcomeID);
-              } else if (p.closeType === ORDER) {
+              if (closeType === POSITION) {
+                closePosition(marketID, orderID);
+              } else if (closeType === ORDER) {
                 // TODO -- merge cancel order functionality in
               }
               this.setState({ isConfirming: false });
@@ -52,11 +51,11 @@ export default class MarketTradeCloseDialog extends Component {
           >
             Yes
           </button>
-        </span>
+        </div>
       );
     }
 
-    switch (p.status) {
+    switch (status) {
       case CLOSE_DIALOG_CLOSING:
         return (
           <span>closing</span>
@@ -76,17 +75,42 @@ export default class MarketTradeCloseDialog extends Component {
       default:
         return (
           <button
-            className="unstyled cancel"
+            className="unstyled close-order-button"
             onClick={() => {
               this.setState({ isConfirming: true });
             }}
           >
-            {p.closeType === POSITION ?
-              <span>{p.isFullyClosable ? 'close' : 'minimize'}</span>
-              : 'cancel'
+            {closeType === POSITION ?
+              <span>{isFullyClosable ? 'close' : 'minimize'}</span> :
+              'cancel'
             }
           </button>
         );
     }
+  }
+
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID;
+
+    return (
+      <article className="close-dialog">
+        {
+          this.renderCloseDialogContent(
+            p.marketID,
+            orderID,
+            p.closeType,
+            p.isClosable,
+            p.isFullyClosable,
+            p.quantityOfShares,
+            s.isConfirming,
+            p.closePosition,
+            p.status
+          )
+        }
+      </article>
+    );
   }
 }
