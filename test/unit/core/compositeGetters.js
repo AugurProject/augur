@@ -5,37 +5,34 @@ var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 var constants = require("../../../src/constants");
-// 51 tests total
+// 56 tests total
 
-describe.skip('CompositeGetters.loadNextMarketsBatch', function() {
-    // ? tests total
+describe('CompositeGetters.loadNextMarketsBatch', function() {
+    // 5 tests total
     var assertionsCC = 0;
+    var getMarketsInfo = augur.getMarketsInfo;
+    afterEach(function() {
+        augur.getMarketsInfo = getMarketsInfo;
+    });
     var test = function(t) {
-        describe(t.description, function() {
-            var getMarketsInfo = augur.getMarketsInfo;
-            var testComplete = false;
-            assertionsCC = 0;
-            afterEach(function(done) { var interval = setInterval(function() {
-                if (testComplete) { augur.getMarketsInfo = getMarketsInfo; clearInterval(interval); testComplete = false; done(); }
-            }, 50); });
-            it("async", function(done) {
-                augur.getMarketsInfo = t.getMarketsInfo;
-                var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
-                constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
-                // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
-                var nextPass = t.nextPass
-                    ? function() { testComplete = true; done(); }
-                    : undefined;
-                augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function(err, marketsData) {
-                    // chunkCB
-                    var finished = t.assertions(err, marketsData);
-                    if (finished) { testComplete = true; done(); }
-                }, nextPass);
-            });
+        assertionsCC = 0;
+        it(t.description + " async", function(done) {
+            augur.getMarketsInfo = t.getMarketsInfo;
+            var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
+            constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
+            // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
+            var nextPass = t.nextPass
+                ? function() { done(); }
+                : undefined;
+            augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function(err, marketsData) {
+                // chunkCB
+                var finished = t.assertions(err, marketsData);
+                if (finished) { done(); }
+            }, nextPass);
         });
     };
     test({
-        description: 'Should get marketsData ascending, only non-zero volume markets, noNextPass',
+        description: 'Should get marketsData ascending, only non-zero volume markets, no NextPass',
         branchID: '101010',
         startIndex: 0,
         chunkSize: 5,
@@ -112,7 +109,7 @@ describe.skip('CompositeGetters.loadNextMarketsBatch', function() {
         }
     });
     test({
-        description: 'Should get marketsData descending, only non-zero volume markets, noNextPass',
+        description: 'Should get marketsData descending, only non-zero volume markets, no NextPass',
         branchID: '101010',
         startIndex: 10,
         chunkSize: 5,
@@ -134,38 +131,74 @@ describe.skip('CompositeGetters.loadNextMarketsBatch', function() {
         assertions: function(err, marketsData) {
             assert.isNull(err);
             // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
-            if (marketsData[0].id === '0x0a') {
+            if (marketsData.constructor === Array && !marketsData.length) {
+                // empty array back, we have completed getting records, return true to end the test.
+                return true;
+            } else if (marketsData[0].id === '0x0a') {
                 assert.deepEqual(marketsData, [{ id: '0x0a', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x06', volume: '1000'} ]);
                 return false;
             } else {
                 assert.deepEqual(marketsData, [{ id: '0x05', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x01', volume: '1000'}]);
-                return true;
+                return false;
+            }
+        }
+    });
+    test({
+        description: 'Should get marketsData descending, only zero volume markets, then call NextPass',
+        branchID: '101010',
+        startIndex: 10,
+        chunkSize: 5,
+        numMarkets: 10,
+        isDesc: true,
+        volumeMin: -1,
+        volumeMax: 0,
+        nextPass: true,
+        getMarketsInfo: function(branch, cb) {
+            var offset = branch.offset;
+            var numMarketsToLoad = branch.numMarketsToLoad;
+            var allMarkets = [{ id: '0x01', volume: '0'}, { id: '0x02', volume: '0'}, { id: '0x03', volume: '0'}, { id: '0x04', volume: '0'}, { id: '0x05', volume: '0'}, { id: '0x06', volume: '0'}, { id: '0x07', volume: '0'}, { id: '0x08', volume: '0'}, { id: '0x09', volume: '0'}, { id: '0x0a', volume: '0'}];
+            var output = [];
+            for (var i = 0; i < numMarketsToLoad; i++) {
+                output.push(allMarkets[(offset - 1) - i]);
+            }
+            cb(output);
+        },
+        assertions: function(err, marketsData) {
+            assert.isNull(err);
+            // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
+            if (marketsData.constructor === Array && !marketsData.length) {
+                // empty array back, we have completed getting records, return false to have the function call nextPass.
+                return false;
+            } else if (marketsData[0].id === '0x0a') {
+                assert.deepEqual(marketsData, [{ id: '0x0a', volume: '0'}, { id: '0x09', volume: '0'}, { id: '0x08', volume: '0'}, { id: '0x07', volume: '0'}, { id: '0x06', volume: '0'} ]);
+                return false;
+            } else {
+                assert.deepEqual(marketsData, [{ id: '0x05', volume: '0'}, { id: '0x04', volume: '0'}, { id: '0x03', volume: '0'}, { id: '0x02', volume: '0'}, { id: '0x01', volume: '0'}]);
+                return false;
             }
         }
     });
 });
 describe('CompositeGetters.loadMarketsHelper', function() {
     // 3 tests total
+    var getNumMarketsBranch = augur.getNumMarketsBranch;
+    var loadNextMarketsBatch = augur.loadNextMarketsBatch;
+    var options = augur.options;
+    afterEach(function() {
+        augur.getNumMarketsBranch = getNumMarketsBranch;
+        augur.loadNextMarketsBatch = loadNextMarketsBatch;
+        augur.options = options;
+    });
     var test = function(t) {
-        describe(t.description, function() {
-            var getNumMarketsBranch = augur.getNumMarketsBranch;
-            var loadNextMarketsBatch = augur.loadNextMarketsBatch;
-            var options = augur.options;
-            after(function() {
-            	augur.getNumMarketsBranch = getNumMarketsBranch;
-            	augur.loadNextMarketsBatch = loadNextMarketsBatch;
-            	augur.options = options;
-            });
-            it("async", function(done) {
-                var chunkCBcc = 0;
-                augur.getNumMarketsBranch = t.getNumMarketsBranch;
-                augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
-                augur.options = t.options;
-                augur.loadMarketsHelper(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
-                    chunkCBcc++;
-                    t.assertions(err, marketsData, chunkCBcc);
-                    if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
-                });
+        it(t.description + " async", function(done) {
+            var chunkCBcc = 0;
+            augur.getNumMarketsBranch = t.getNumMarketsBranch;
+            augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
+            augur.options = t.options;
+            augur.loadMarketsHelper(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
+                chunkCBcc++;
+                t.assertions(err, marketsData, chunkCBcc);
+                if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
             });
         });
     };
@@ -192,7 +225,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
                 });
                 setTimeout(function () {
                     nextPass();
-                }, 50);
+                }, 5);
             } else {
                 // send back 5 markets with no volume
                 chunkCB(null, {
@@ -251,7 +284,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
                 });
                 setTimeout(function () {
                     nextPass();
-                }, 50);
+                }, 5);
             } else {
                 // send back 5 markets with no volume
                 chunkCB(null, {
@@ -311,7 +344,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
                 // numMarkets is 10, we have produced 5, call loadNextMarketsBatch again for the next chunk(5)
                 setTimeout(function () {
                     augur.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-                }, 50);
+                }, 5);
             } else {
                 assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 2nd pass');
                 // send back 5 more markets with volume
