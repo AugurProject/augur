@@ -198,6 +198,7 @@ module.exports = {
   },
 
   validateMarketInfo: function (marketInfo) {
+    console.log(JSON.stringify(marketInfo, null, 2));
     if (!marketInfo) return null;
     var parsedMarketInfo = this.parseMarketInfo(marketInfo);
     if (!parsedMarketInfo.numOutcomes) return null;

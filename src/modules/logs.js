@@ -340,6 +340,17 @@ module.exports = {
     }
   },
 
+  getBuyCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
   getSellCompleteSetsLogs: function (account, options, callback) {
     if (!callback && utils.is_function(options)) {
       callback = options;

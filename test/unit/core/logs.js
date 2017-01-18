@@ -1533,6 +1533,56 @@ describe("logs.getShortAskBuyCompleteSetsLogs", function() {
     }
   });
 });
+describe("logs.getBuyCompleteSetsLogs", function() {
+  // 3 tests total
+  var test = function(t) {
+    it(t.description, function() {
+      var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+      augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+      t.assertions(augur.getBuyCompleteSetsLogs(t.account, t.options, t.callback));
+      augur.getCompleteSetsLogs = getCompleteSetsLogs;
+    });
+  };
+
+  test({
+    description: 'Should handle no options passed',
+    account: '0x0',
+    options: undefined,
+    callback: utils.noop,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
+    }
+  });
+
+  test({
+    description: 'Should handle options passed',
+    account: '0x0',
+    options: { market: '0x0c1' },
+    callback: utils.noop,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: false, type: 'buy' }, callback: utils.noop });
+    }
+  });
+
+  test({
+    description: 'Should handle options passed as the callback with no callback passed.',
+    account: '0x0',
+    options: utils.noop,
+    callback: undefined,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
+    }
+  });
+});
 describe("logs.getSellCompleteSetsLogs", function() {
   // 3 tests total
   var test = function(t) {
