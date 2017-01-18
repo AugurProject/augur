@@ -5,6 +5,289 @@ var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 
+describe("logs.parseCompleteSetsLogs", function() {
+  // 6 tests total
+  var test = function(t) {
+    it(t.description, function() {
+      t.assertions(augur.parseCompleteSetsLogs(t.logs, t.mergeInto));
+    });
+  };
+
+  test({
+    description: 'Should handle one log in the logs argument array without passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }]
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('43'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('985.23'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '43',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '985.23',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }],
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument and given multiple markets.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('43'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('985.23'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: "0x",
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('3245.22'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: "0x",
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('940'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('15.0203'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '43',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '985.23',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }],
+        '0x00c2': [{
+          amount: '3245.22',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        },{
+          amount: '940',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        },{
+          amount: '15.0203',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        }],
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle one log in the logs argument array while also passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: {
+      '0x00c1': [{
+        amount: '5',
+        blockNumber: 65793,
+        numOutcomes: 2,
+        type: 'buy'
+      }]
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [
+          {
+            amount: '5',
+            blockNumber: 65793,
+            numOutcomes: 2,
+            type: 'buy'
+          },
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }],
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }]
+        ]
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array while also passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('234'), '4' ],
+      topics: ['0x00a2', '0x00b2', '0x00c2', '2'],
+      blockNumber: '010101'
+    }],
+    mergeInto: {
+      '0x00c1': [{
+        amount: '50',
+        blockNumber: 65793,
+        numOutcomes: 2,
+        type: 'buy'
+      }],
+      '0x00c2': [{
+        amount: '120',
+        blockNumber: 65793,
+        numOutcomes: 4,
+        type: 'sell'
+      }]
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [
+          {
+            amount: '50',
+            blockNumber: 65793,
+            numOutcomes: 2,
+            type: 'buy'
+          },
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }],
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }]
+        ],
+        '0x00c2': [
+          {
+            amount: '120',
+            blockNumber: 65793,
+            numOutcomes: 4,
+            type: 'sell'
+          },
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }]
+        ]
+      });
+    }
+  });
+});
+
 /***********
  * Getters *
  ***********/
