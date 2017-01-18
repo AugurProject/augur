@@ -1816,6 +1816,134 @@ describe("logs.getShortAskBuyCompleteSetsLogs", function() {
     }
   });
 });
+describe("logs.getParsedCompleteSetsLogs", function() {
+  // 4 tests total
+  var test = function(t) {
+    it(t.description, function() {
+      var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+      var parseCompleteSetsLogs = augur.parseCompleteSetsLogs;
+      augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+      augur.parseCompleteSetsLogs = t.parseCompleteSetsLogs;
+
+      augur.getParsedCompleteSetsLogs(t.account, t.options, t.callback);
+
+      augur.getCompleteSetsLogs = getCompleteSetsLogs;
+      augur.parseCompleteSetsLogs = parseCompleteSetsLogs;
+    });
+  };
+
+  test({
+    description: 'Should handle no options passed and no error from getCompleteSetsLogs',
+    account: '0x0',
+    options: undefined,
+    callback: function(err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
+    },
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.isUndefined(mergeInto);
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
+    }
+  });
+
+  test({
+    description: 'Should handle no options passed and an error from getCompleteSetsLogs',
+    account: '0x0',
+    options: undefined,
+    callback: function(err, logs) {
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.isUndefined(logs);
+    },
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback({ error: 'Uh-Oh!' });
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      // Shouldn't be hit.
+    }
+  });
+
+  test({
+    description: 'Should handle options passed and no error from getCompleteSetsLogs',
+    account: '0x0',
+    options: { mergeInto: {} },
+    callback: function(err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
+    },
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, { mergeInto: {} });
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.deepEqual(mergeInto, {});
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
+    }
+  });
+
+  test({
+    description: 'Should handle options passed as the callback and no error from getCompleteSetsLogs',
+    account: '0x0',
+    options: function(err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
+    },
+    callback: undefined,
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.isUndefined(mergeInto);
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
+    }
+  });
+});
 describe("logs.getBuyCompleteSetsLogs", function() {
   // 3 tests total
   var test = function(t) {

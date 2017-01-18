@@ -345,6 +345,19 @@ module.exports = {
     return this.getCompleteSetsLogs(account, opt, callback);
   },
 
+  getParsedCompleteSetsLogs: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    this.getCompleteSetsLogs(account, options, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
+    });
+  },
+
   getCompleteSetsLogs: function (account, options, callback) {
     if (!callback && utils.is_function(options)) {
       callback = options;
