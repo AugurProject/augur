@@ -49,6 +49,7 @@ function getBestFillParameters(orderBooks, side, shares, marketID, outcomeID) {
     bestPrice = new BigNumber(order.fullPrecisionPrice);
 
     if (amountOfShares.toNumber() >= shares.toNumber()) {
+      amountOfShares = shares;
       return true;
     }
 
