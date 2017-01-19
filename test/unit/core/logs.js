@@ -5,6 +5,289 @@ var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 
+describe("logs.parseCompleteSetsLogs", function() {
+  // 6 tests total
+  var test = function(t) {
+    it(t.description, function() {
+      t.assertions(augur.parseCompleteSetsLogs(t.logs, t.mergeInto));
+    });
+  };
+
+  test({
+    description: 'Should handle one log in the logs argument array without passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }]
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('43'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('985.23'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '43',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '985.23',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }],
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument and given multiple markets.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('43'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('985.23'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: "0x",
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('3245.22'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: "0x",
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('940'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('15.0203'), '5' ],
+      topics: ['0x00a1', '0x00b1', '0x00c2', '2'],
+      blockNumber: '010101'
+    }],
+    mergeInto: undefined,
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [{
+          amount: '100',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '43',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        },{
+          amount: '985.23',
+          blockNumber: 65793,
+          numOutcomes: 2,
+          type: 'buy'
+        }],
+        '0x00c2': [{
+          amount: '3245.22',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        },{
+          amount: '940',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        },{
+          amount: '15.0203',
+          blockNumber: 65793,
+          numOutcomes: 5,
+          type: 'sell'
+        }],
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle one log in the logs argument array while also passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: {
+      '0x00c1': [{
+        amount: '5',
+        blockNumber: 65793,
+        numOutcomes: 2,
+        type: 'buy'
+      }]
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [
+          {
+            amount: '5',
+            blockNumber: 65793,
+            numOutcomes: 2,
+            type: 'buy'
+          },
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }],
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }]
+        ]
+      });
+    }
+  });
+
+  test({
+    description: 'Should handle multiple logs in the logs argument array while also passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    },
+    {
+      data: [ abi.fix('234'), '4' ],
+      topics: ['0x00a2', '0x00b2', '0x00c2', '2'],
+      blockNumber: '010101'
+    }],
+    mergeInto: {
+      '0x00c1': [{
+        amount: '50',
+        blockNumber: 65793,
+        numOutcomes: 2,
+        type: 'buy'
+      }],
+      '0x00c2': [{
+        amount: '120',
+        blockNumber: 65793,
+        numOutcomes: 4,
+        type: 'sell'
+      }]
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': [
+          {
+            amount: '50',
+            blockNumber: 65793,
+            numOutcomes: 2,
+            type: 'buy'
+          },
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }],
+          [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }]
+        ],
+        '0x00c2': [
+          {
+            amount: '120',
+            blockNumber: 65793,
+            numOutcomes: 4,
+            type: 'sell'
+          },
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }],
+          [{
+            amount: '234',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.25',
+            type: 'sell'
+          }]
+        ]
+      });
+    }
+  });
+});
+
 /***********
  * Getters *
 ***********/
@@ -1447,172 +1730,181 @@ describe("logs.getShortAskBuyCompleteSetsLogs", function() {
     }
   });
 });
-describe("logs.getCompleteSetsLogs", function() {
-  // 7 tests total
+describe("logs.getParsedCompleteSetsLogs", function() {
+  // 4 tests total
   var test = function(t) {
     it(t.description, function() {
-      var getLogs = augur.rpc.getLogs;
-      augur.rpc.getLogs = t.getLogs;
+      var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+      var parseCompleteSetsLogs = augur.parseCompleteSetsLogs;
+      augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+      augur.parseCompleteSetsLogs = t.parseCompleteSetsLogs;
 
-      t.assertions(augur.getCompleteSetsLogs(t.account, t.options, t.callback));
+      augur.getParsedCompleteSetsLogs(t.account, t.options, t.callback);
 
-      augur.rpc.getLogs = getLogs;
+      augur.getCompleteSetsLogs = getCompleteSetsLogs;
+      augur.parseCompleteSetsLogs = parseCompleteSetsLogs;
     });
   };
 
   test({
-    description: 'Should handle no options, no callback',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
+    description: 'Should handle no options passed and no error from getCompleteSetsLogs',
+    account: '0x0',
     options: undefined,
-    callback: undefined,
-    getLogs: function(filters) {
-      return filters;
-    },
-    assertions: function(o) {
-      assert.deepEqual(o, {
-        fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
-        toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
-        address: augur.contracts.CompleteSets,
-        topics: [
-          augur.api.events.completeSets_logReturn.signature,
-          '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
-          null,
-          null
-        ],
-        timeout: augur.constants.GET_LOGS_TIMEOUT
-      });
-    }
-  });
-
-  test({
-    description: 'Should handle options with shortAsk true but no market or type, no callback',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: true, fromBlock: '0x0b1', toBlock: '0x0b2'},
-    callback: undefined,
-    getLogs: function(filters) {
-      return filters;
-    },
-    assertions: function(o) {
-      assert.deepEqual(o, {
-        fromBlock: '0x0b1',
-        toBlock: '0x0b2',
-        address: augur.contracts.BuyAndSellShares,
-        topics: [
-          augur.api.events.completeSets_logReturn.signature,
-          '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
-          null,
-          null
-        ],
-        timeout: augur.constants.GET_LOGS_TIMEOUT
-      });
-    }
-  });
-
-  test({
-    description: 'Should handle options with shortAsk true, market, and type, no callback',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: true, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
-    callback: undefined,
-    getLogs: function(filters) {
-      return filters;
-    },
-    assertions: function(o) {
-      assert.deepEqual(o, {
-        fromBlock: '0x0b1',
-        toBlock: '0x0b2',
-        address: augur.contracts.BuyAndSellShares,
-        topics: [
-          augur.api.events.completeSets_logReturn.signature,
-          '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
-          '0x00000000000000000000000000000000000000000000000000000000000000a1',
-          '0x0000000000000000000000000000000000000000000000000000000000000001'
-        ],
-        timeout: augur.constants.GET_LOGS_TIMEOUT
-      });
-    }
-  });
-
-  test({
-    description: 'Should handle options with shortAsk false, market, and type, no callback',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
-    callback: undefined,
-    getLogs: function(filters) {
-      return filters;
-    },
-    assertions: function(o) {
-      assert.deepEqual(o, {
-        fromBlock: '0x0b1',
-        toBlock: '0x0b2',
-        address: augur.contracts.CompleteSets,
-        topics: [
-          augur.api.events.completeSets_logReturn.signature,
-          '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
-          '0x00000000000000000000000000000000000000000000000000000000000000a1',
-          '0x0000000000000000000000000000000000000000000000000000000000000001'
-        ],
-        timeout: augur.constants.GET_LOGS_TIMEOUT
-      });
-    }
-  });
-
-  test({
-    description: 'Should handle options with shortAsk false, market, and type, and a callback',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'sell', market: '0x0a1' },
     callback: function(err, logs) {
       assert.isNull(err);
-      assert.deepEqual(logs[0], {
-        fromBlock: '0x0b1',
-        toBlock: '0x0b2',
-        address: augur.contracts.CompleteSets,
-        topics: [
-          augur.api.events.completeSets_logReturn.signature,
-          '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12',
-          '0x00000000000000000000000000000000000000000000000000000000000000a1',
-          '0x0000000000000000000000000000000000000000000000000000000000000002'
-        ],
-        timeout: augur.constants.GET_LOGS_TIMEOUT
-      });
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
     },
-    getLogs: function(filters, cb) {
-      // simply return the filters in an array so we can test that we sent the expected filters to getLogs.
-      cb([filters]);
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
     },
-    assertions: function(o) {
-      // callback above will work as the assertion for this test
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.isUndefined(mergeInto);
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
     }
   });
 
   test({
-    description: 'Should handle options with a callback when logs returns an error object',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+    description: 'Should handle no options passed and an error from getCompleteSetsLogs',
+    account: '0x0',
+    options: undefined,
     callback: function(err, logs) {
-      assert.isNull(logs);
-      assert.deepEqual(err, { error: 'this is an error!' });
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.isUndefined(logs);
     },
-    getLogs: function(filters, cb) {
-      cb({ error: 'this is an error!' });
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback({ error: 'Uh-Oh!' });
     },
-    assertions: function(o) {
-      // callback above will work as the assertion for this test
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      // Shouldn't be hit.
     }
   });
 
   test({
-    description: 'Should handle options with a callback but getLogs returns undefined',
-    account: '0x02a32d32ca2b37495839dd932c9e92fea10cba12',
-    options: { shortAsk: false, fromBlock: '0x0b1', toBlock: '0x0b2', type: 'buy', market: '0x0a1' },
+    description: 'Should handle options passed and no error from getCompleteSetsLogs',
+    account: '0x0',
+    options: { mergeInto: {} },
     callback: function(err, logs) {
       assert.isNull(err);
-      assert.deepEqual(logs, []);
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
     },
-    getLogs: function(filters, cb) {
-      cb(undefined);
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, { mergeInto: {} });
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.deepEqual(mergeInto, {});
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
+    }
+  });
+
+  test({
+    description: 'Should handle options passed as the callback and no error from getCompleteSetsLogs',
+    account: '0x0',
+    options: function(err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, [{ '0x00c1': [ { amount: '100', blockNumber: 65793, numOutcomes: '2', type: 'buy' } ] }]);
+    },
+    callback: undefined,
+    getCompleteSetsLogs: function(account, options, callback) {
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(options, {});
+      assert.isFunction(callback);
+      callback(null, [{
+        data: [ abi.bignum('100'), '2' ],
+        topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+        blockNumber: '010101'
+      }]);
+    },
+    parseCompleteSetsLogs: function(logs, mergeInto) {
+      assert.isUndefined(mergeInto);
+      return [{
+        [logs[0].topics[2]]: [{
+          amount: logs[0].data[0].toFixed(),
+          blockNumber: parseInt(logs[0].blockNumber, 16),
+          numOutcomes: logs[0].data[1],
+          type: 'buy'
+        }]
+      }];
+    }
+  });
+});
+describe("logs.getBuyCompleteSetsLogs", function() {
+  // 3 tests total
+  var test = function(t) {
+    it(t.description, function() {
+      var getCompleteSetsLogs = augur.getCompleteSetsLogs;
+      augur.getCompleteSetsLogs = t.getCompleteSetsLogs;
+      t.assertions(augur.getBuyCompleteSetsLogs(t.account, t.options, t.callback));
+      augur.getCompleteSetsLogs = getCompleteSetsLogs;
+    });
+  };
+
+  test({
+    description: 'Should handle no options passed',
+    account: '0x0',
+    options: undefined,
+    callback: utils.noop,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
     },
     assertions: function(o) {
-      // callback above will work as the assertion for this test
+      assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
+    }
+  });
+
+  test({
+    description: 'Should handle options passed',
+    account: '0x0',
+    options: { market: '0x0c1' },
+    callback: utils.noop,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, { account: '0x0', options: { market: '0x0c1', shortAsk: false, type: 'buy' }, callback: utils.noop });
+    }
+  });
+
+  test({
+    description: 'Should handle options passed as the callback with no callback passed.',
+    account: '0x0',
+    options: utils.noop,
+    callback: undefined,
+    getCompleteSetsLogs: function(account, options, callback) {
+      return { account: account, options: options, callback: callback };
+    },
+    assertions: function(o) {
+      assert.deepEqual(o, { account: '0x0', options: { shortAsk: false, type: 'buy' }, callback: utils.noop });
     }
   });
 });

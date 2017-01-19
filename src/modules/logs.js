@@ -14,6 +14,41 @@ var ONE = abi.bignum("1");
 
 module.exports = {
 
+  parseCompleteSetsLogs: function (logs, mergeInto) {
+    var marketID, logData, numOutcomes, logType, parsed;
+    parsed = mergeInto || {};
+    for (var i = 0, n = logs.length; i < n; ++i) {
+      if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        logType = this.filters.format_trade_type(logs[i].topics[3]);
+        logData = this.rpc.unmarshal(logs[i].data);
+        numOutcomes = parseInt(logData[1], 16);
+        if (mergeInto) {
+          if (!parsed[marketID]) parsed[marketID] = {};
+          for (var j = 1; j <= numOutcomes; ++j) {
+            if (!parsed[marketID][j]) parsed[marketID][j] = [];
+            parsed[marketID][j].push({
+              type: logType,
+              isCompleteSet: true,
+              amount: abi.unfix(logData[0], "string"),
+              price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
+              blockNumber: parseInt(logs[i].blockNumber, 16)
+            });
+          }
+        } else {
+          if (!parsed[marketID]) parsed[marketID] = [];
+          parsed[marketID].push({
+            type: logType,
+            amount: abi.unfix(logData[0], "string"),
+            numOutcomes: numOutcomes,
+            blockNumber: parseInt(logs[i].blockNumber, 16)
+          });
+        }
+      }
+    }
+    return parsed;
+  },
 
   /***********
    * Getters *
@@ -310,6 +345,19 @@ module.exports = {
     return this.getCompleteSetsLogs(account, opt, callback);
   },
 
+  getParsedCompleteSetsLogs: function (account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    this.getCompleteSetsLogs(account, options, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
+    });
+  },
+
   getCompleteSetsLogs: function (account, options, callback) {
     if (!callback && utils.is_function(options)) {
       callback = options;
@@ -338,6 +386,17 @@ module.exports = {
         callback(null, logs);
       });
     }
+  },
+
+  getBuyCompleteSetsLogs: function (account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
   },
 
   getSellCompleteSetsLogs: function (account, options, callback) {
