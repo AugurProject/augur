@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 
-import AuthLogin from 'modules/auth/compoenents/auth-login';
-import AuthSignup from 'modules/auth/components/auth-signup';
+// import AuthLogin from 'modules/auth/compoenents/auth-login';
+// import AuthSignup from 'modules/auth/components/auth-signup';
 import ComponentNav from 'modules/common/components/component-nav';
 
-import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
+import { AUTH_SIGNUP } from 'modules/app/constants/views';
 
 class AuthPage extends Component {
   constructor(props) {
@@ -33,10 +33,6 @@ class AuthPage extends Component {
           navItems={p.authNavItems}
           selectedNav={s.selectedNav}
           updateSelectedNav={this.updateSelectedNav}
-        />
-        <AuthForm
-          className="auth-form"
-          {...p.authForm}
         />
       </section>
     );
