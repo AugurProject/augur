@@ -12,6 +12,8 @@ export const IMPORT = 'import';
 export const DEFAULT_VIEW = MARKETS;
 
 // Internal Navigation
+export const AUTH_LOGIN = 'AUTH_LOGIN';
+export const AUTH_SIGNUP = 'AUTH_SIGNUP';
 export const MY_POSITIONS = 'my-positions';
 export const MY_MARKETS = 'my-markets';
 export const MY_REPORTS = 'my-reports';

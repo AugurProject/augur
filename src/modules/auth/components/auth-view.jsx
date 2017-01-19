@@ -1,36 +1,43 @@
-import React, { PropTypes } from 'react';
-import classnames from 'classnames';
-import AuthForm from 'modules/auth/components/auth-form';
-import Link from 'modules/link/components/link';
+import React, { Component, PropTypes } from 'react';
 
-class AuthPage extends React.Component {
+import AuthLogin from 'modules/auth/compoenents/auth-login';
+import AuthSignup from 'modules/auth/components/auth-signup';
+import ComponentNav from 'modules/common/components/component-nav';
+
+import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
+
+class AuthPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedNav: AUTH_SIGNUP
+    };
+  }
+
   componentDidMount() {
     this.props.authForm.airbitzOnLoad.onLoad();
   }
 
+  updateSelectedNav(selectedNav) {
+    this.setState({ selectedNav });
+  }
+
   render() {
     const p = this.props;
+    const s = this.state;
+
     return (
       <section id="auth_view">
-        <header className="page-header">
-          <span className="big-line">Augur is a completely decentralized system</span> including user accounts.
-          Your credentials never leave the browser, and you are responsible for keeping them safe.
-          <br />
-          <b>
-            <i className="negative">
-              It is impossible to recover your account if your credentials get lost!
-            </i>
-          </b><br />
-          Click&nbsp;
-          <Link
-            className={classnames('airbitz-button')}
-            onClick={p.authForm.airbitzLink.onClick}
-          >
-            {p.authForm.airbitzLinkText}
-          </Link>
-          &nbsp;to create an encrypted and backed up account using a simple username and password.
-        </header>
-        <AuthForm className="auth-form" {...p.authForm} />
+        <ComponentNav
+          navItems={p.authNavItems}
+          selectedNav={s.selectedNav}
+          updateSelectedNav={this.updateSelectedNav}
+        />
+        <AuthForm
+          className="auth-form"
+          {...p.authForm}
+        />
       </section>
     );
   }

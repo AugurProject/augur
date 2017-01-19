@@ -39,7 +39,8 @@ export default class Routes extends Component {
       case IMPORT:
       case LOGOUT:
         viewProps = {
-          authForm: p.authForm
+          authForm: p.authForm,
+          authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {
           const AuthView = module.default;
