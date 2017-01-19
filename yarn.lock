@@ -368,19 +368,19 @@ augur-contracts@2.7.4:
   dependencies:
     clone "1.0.2"
 
-augur-contracts@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.8.1.tgz#5afde5e01440dedb5bb638d938e0c48388d40bbf"
+augur-contracts@2.8.2:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.8.2.tgz#d571eb0e0b6bc08210d964274e8d7b45ad48b637"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.8.2:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.2.tgz#fc58d2e31e8a6680a3d32e71e879845f05cb2065"
+augur.js@3.8.5:
+  version "3.8.5"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.5.tgz#f26c1748273a1d655dbfc987cf651dd4b4b2065b"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.8.1"
+    augur-contracts "2.8.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
@@ -389,7 +389,7 @@ augur.js@3.8.2:
     ethereumjs-connect "2.0.0"
     ethereumjs-tx "1.1.1"
     ethereumjs-util "4.4.1"
-    ethrpc "2.4.0"
+    ethrpc "2.4.1"
     keythereum "0.3.2"
     locks "0.2.2"
     request "2.74.0"
@@ -2918,9 +2918,9 @@ ethrpc@2.3.3:
     sync-request "2.0.1"
     websocket "1.0.23"
 
-ethrpc@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.4.0.tgz#538644afe528bbbd3c83b72a7d0605b8b90e4dca"
+ethrpc@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.4.1.tgz#6edb0aea49204e28f18cd2aec9596e32b63e288d"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
