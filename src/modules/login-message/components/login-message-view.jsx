@@ -53,6 +53,24 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>January 18, 2017</h3>
+      <ol>
+        <li>
+          A command queue and mutex is now used by ethrpc to handle multiple outgoing RPC requests during the initial socket (websocket or IPC socket) connection.
+        </li>
+        <li>
+          Fixed a bug caused by over-zealous log-getter removal from augur.js.
+        </li>
+      </ol>
+      <h3>January 17, 2017</h3>
+      <ol>
+        <li>
+          Expanded augur.js unit testing suite.
+        </li>
+        <li>
+          Progress on the inline close position functionality in the UI.
+        </li>
+      </ol>
       <h3>January 16, 2017</h3>
       <ol>
         <li>
