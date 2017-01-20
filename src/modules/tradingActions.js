@@ -1,6 +1,9 @@
 /*
  * Author: priecint
  */
+
+"use strict";
+
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
@@ -11,6 +14,16 @@ var abacus = require("./abacus");
 var ONE = new BigNumber(1, 10);
 
 module.exports = {
+
+  calculateBuyTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "buy", limitPrice, outcomeID, address).map(function (order) { return order.id; });
+  },
+
+  calculateSellTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "sell", limitPrice, outcomeID, address).map(function (order) { return order.id; });
+  },
 
   /**
    * Calculates (approximately) gas needed to run the transaction

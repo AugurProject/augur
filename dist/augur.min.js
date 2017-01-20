@@ -40339,7 +40339,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":242,"./utilities":266,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"browser-request":86,"buffer":117,"clone":120,"ethereumjs-tx":158,"ethrpc":273,"keythereum":279,"locks":175,"request":87,"uuid":236}],239:[function(require,module,exports){
+},{"./constants":242,"./utilities":272,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"browser-request":86,"buffer":117,"clone":120,"ethereumjs-tx":158,"ethrpc":279,"keythereum":285,"locks":175,"request":87,"uuid":236}],239:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -41195,7 +41195,7 @@ module.exports = function () {
   };
 };
 
-},{"./constants":242,"./utilities":266,"async":79,"augur-abi":1,"augur-contracts":58,"clone":120,"ethrpc":273}],244:[function(require,module,exports){
+},{"./constants":242,"./utilities":272,"async":79,"augur-abi":1,"augur-contracts":58,"clone":120,"ethrpc":279}],244:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -41471,12 +41471,16 @@ var modules = [
   require("./modules/reporting"),
   require("./modules/payout"),
   require("./modules/tradingActions"),
+  require("./modules/makeOrder"),
+  require("./modules/takeOrder"),
+  require("./modules/selectOrder"),
+  require("./modules/executeTrade"),
   require("./modules/positions"),
   require("./modules/register")
 ];
 
 function Augur() {
-  this.version = "3.8.6";
+  this.version = "3.8.7";
 
   this.options = {
     debug: {
@@ -41532,7 +41536,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"../test/tools":268,"./accounts":238,"./augurNode":239,"./batch":240,"./chat":241,"./constants":242,"./filters":243,"./generateOrderBook":244,"./modules/abacus":246,"./modules/buyAndSellShares":247,"./modules/cash":248,"./modules/collectFees":249,"./modules/compositeGetters":250,"./modules/connect":251,"./modules/createBranch":252,"./modules/createMarket":253,"./modules/events":254,"./modules/logs":255,"./modules/makeReports":256,"./modules/markets":257,"./modules/payout":258,"./modules/positions":259,"./modules/register":260,"./modules/reporting":261,"./modules/sendReputation":262,"./modules/trade":263,"./modules/tradingActions":264,"./modules/transact":265,"./utilities":266,"_process":191,"augur-abi":1,"bignumber.js":82,"ethrpc":273}],246:[function(require,module,exports){
+},{"../test/tools":274,"./accounts":238,"./augurNode":239,"./batch":240,"./chat":241,"./constants":242,"./filters":243,"./generateOrderBook":244,"./modules/abacus":246,"./modules/buyAndSellShares":247,"./modules/cash":248,"./modules/collectFees":249,"./modules/compositeGetters":250,"./modules/connect":251,"./modules/createBranch":252,"./modules/createMarket":253,"./modules/events":254,"./modules/executeTrade":255,"./modules/logs":256,"./modules/makeOrder":257,"./modules/makeReports":258,"./modules/markets":259,"./modules/payout":261,"./modules/positions":262,"./modules/register":263,"./modules/reporting":264,"./modules/selectOrder":265,"./modules/sendReputation":266,"./modules/takeOrder":268,"./modules/trade":269,"./modules/tradingActions":270,"./modules/transact":271,"./utilities":272,"_process":191,"augur-abi":1,"bignumber.js":82,"ethrpc":279}],246:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -41956,7 +41960,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":266,"./makeReports":256,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":115,"buffer":117,"clone":120}],247:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"./makeReports":258,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":115,"buffer":117,"clone":120}],247:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42127,7 +42131,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"clone":120}],248:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],248:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42180,7 +42184,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"clone":120}],249:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],249:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42249,7 +42253,7 @@ module.exports = {
   }
 };
 
-},{"../utilities":266,"augur-abi":1,"bignumber.js":82,"clone":120}],250:[function(require,module,exports){
+},{"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],250:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42604,7 +42608,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"bignumber.js":82,"clone":120}],251:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],251:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -42811,7 +42815,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"augur-contracts":58,"clone":120,"ethereumjs-connect":269}],252:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"augur-contracts":58,"clone":120,"ethereumjs-connect":275}],252:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -42911,7 +42915,7 @@ module.exports = {
   }
 };
 
-},{"../utilities":266,"augur-abi":1,"clone":120}],253:[function(require,module,exports){
+},{"../utilities":272,"augur-abi":1,"clone":120}],253:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -43075,7 +43079,7 @@ module.exports = {
   }
 };
 
-},{"../utilities":266,"augur-abi":1,"bignumber.js":82,"clone":120}],254:[function(require,module,exports){
+},{"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],254:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -43123,6 +43127,207 @@ module.exports = {
 };
 
 },{"augur-abi":1}],255:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var async = require("async");
+var abi = require("augur-abi");
+var selectOrder = require("./selectOrder").selectOrder;
+var constants = require("../constants");
+
+module.exports = {
+
+  // if buying numShares must be 0, if selling totalEthWithFee must be 0
+  executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+    console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
+    var self = this;
+    var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
+    var bnNumShares = abi.bignum(numShares) || constants.ZERO;
+    var res = {
+      remainingEth: bnTotalEth,
+      remainingShares: bnNumShares,
+      filledShares: constants.ZERO,
+      filledEth: constants.ZERO,
+      tradingFees: constants.ZERO,
+      gasFees: constants.ZERO
+    };
+    var matchingTradeIDs;
+    var bnSharesPurchased = bnNumShares;
+    var bnCashBalance = bnTotalEth;
+    async.until(function () {
+      matchingTradeIDs = getTradeIDs();
+      console.log("matchingTradeIDs:", matchingTradeIDs);
+      console.log("remainingEth:", res.remainingEth.toFixed());
+      console.log("remainingShares:", res.remainingShares.toFixed());
+      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
+      console.log("balance:", bnCashBalance.toFixed());
+      return !matchingTradeIDs || !matchingTradeIDs.length ||
+        (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
+        (bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
+        (bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
+    }, function (nextTrade) {
+      var tradeIDs = matchingTradeIDs;
+      tradeIDs = tradeIDs.slice(0, 3);
+      self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+        bnSharesPurchased = abi.bignum(sharesPurchased);
+        self.getCashBalance(address, function (cashBalance) {
+          bnCashBalance = abi.bignum(cashBalance);
+          var isRemainder;
+          var maxAmount;
+          if (res.remainingShares.gt(bnSharesPurchased)) {
+            maxAmount = bnSharesPurchased;
+            isRemainder = true;
+          } else {
+            maxAmount = res.remainingShares;
+            isRemainder = false;
+          }
+          var maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
+          self.trade({
+            max_value: maxValue.toFixed(),
+            max_amount: maxAmount.toFixed(),
+            trade_ids: tradeIDs,
+            tradeGroupID: tradeGroupID,
+            sender: address,
+            onTradeHash: function (tradeHash) {
+              tradeCommitmentCallback({
+                tradeHash: abi.format_int256(tradeHash),
+                orders: tradeIDs.map(function (tradeID) {
+                  return selectOrder(tradeID, orderBooks);
+                }),
+                maxValue: maxValue.toFixed(),
+                maxAmount: maxAmount.toFixed(),
+                remainingEth: res.remainingEth.toFixed(),
+                remainingShares: res.remainingShares.toFixed(),
+                filledEth: res.filledEth.toFixed(),
+                filledShares: res.filledShares.toFixed(),
+                tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
+                gasFees: res.gasFees.toFixed()
+              });
+            },
+            onCommitSent: function (data) { console.log("commit sent:", data); },
+            onCommitSuccess: function (data) {
+              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+              tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
+            },
+            onCommitFailed: nextTrade,
+            onNextBlock: function (data) { console.log("trade-onNextBlock", data); },
+            onTradeSent: function (data) { console.log("trade sent:", data); },
+            onTradeSuccess: function (data) {
+              console.log("trade success:", data);
+              res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
+              res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
+              if (isRemainder) {
+                res.remainingShares = res.remainingShares.minus(maxAmount).plus(abi.bignum(data.unmatchedShares));
+              } else {
+                res.remainingShares = abi.bignum(data.unmatchedShares);
+              }
+              res.remainingEth = abi.bignum(data.unmatchedCash);
+              res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
+              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+              tradeCommitmentCallback({
+                filledShares: res.filledShares.toFixed(),
+                filledEth: res.filledEth.toFixed(),
+                remainingShares: res.remainingShares.toFixed(),
+                remainingEth: res.remainingEth.toFixed(),
+                tradingFees: res.tradingFees.toFixed(),
+                gasFees: res.gasFees.toFixed()
+              });
+              self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+                bnSharesPurchased = abi.bignum(sharesPurchased);
+                self.getCashBalance(address, function (cashBalance) {
+                  bnCashBalance = abi.bignum(cashBalance);
+                  nextTrade();
+                });
+              });
+            },
+            onTradeFailed: nextTrade
+          });
+        });
+      });
+    }, function (err) {
+      if (err) return cb(err);
+      console.log("trade complete:", JSON.stringify(res, null, 2));
+      cb(null, res);
+    });
+  },
+
+  executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+    var self = this;
+    var res = {
+      remainingShares: abi.bignum(numShares) || constants.ZERO,
+      filledShares: constants.ZERO,
+      filledEth: constants.ZERO,
+      tradingFees: constants.ZERO,
+      gasFees: constants.ZERO
+    };
+    var matchingIDs = getTradeIDs();
+    console.log("matching trade IDs:", matchingIDs);
+    if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
+    async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
+      var maxAmount = res.remainingShares.toFixed();
+      self.short_sell({
+        max_amount: maxAmount,
+        buyer_trade_id: matchingID,
+        sender: address,
+        tradeGroupID: tradeGroupID,
+        onTradeHash: function (tradeHash) {
+          tradeCommitmentCallback({
+            tradeHash: abi.format_int256(tradeHash),
+            orders: [selectOrder(matchingID, orderBooks)],
+            maxValue: "0",
+            maxAmount: maxAmount,
+            remainingEth: "0",
+            remainingShares: res.remainingShares.toFixed(),
+            filledEth: res.filledEth.toFixed(),
+            filledShares: res.filledShares.toFixed(),
+            tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
+            gasFees: res.gasFees.toFixed()
+          });
+        },
+        onCommitSent: function (data) { console.log("short sell commit sent:", data); },
+        onCommitSuccess: function (data) {
+          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+          tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
+        },
+        onCommitFailed: nextMatchingID,
+        onNextBlock: function (data) { console.log("short_sell onNextBlock", data); },
+        onTradeSent: function (data) { console.debug("short sell sent", data); },
+        onTradeSuccess: function (data) {
+          if (data.unmatchedShares) {
+            res.remainingShares = abi.bignum(data.unmatchedShares);
+          } else {
+            res.remainingShares = constants.ZERO;
+          }
+          if (data.matchedShares) {
+            res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
+          }
+          if (data.cashFromTrade) {
+            res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
+          }
+          res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
+          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+          tradeCommitmentCallback({
+            filledShares: res.filledShares.toFixed(),
+            filledEth: res.filledEth.toFixed(),
+            remainingShares: res.remainingShares.toFixed(),
+            tradingFees: res.tradingFees.toFixed(),
+            gasFees: res.gasFees.toFixed()
+          });
+          if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
+          nextMatchingID({ isComplete: true });
+        },
+        onTradeFailed: nextMatchingID
+      });
+    }, function (err) {
+      if (err && !err.isComplete) return cb(err);
+      console.log("short_sell success:", JSON.stringify(res, null, 2));
+      cb(null, res);
+    });
+  }
+
+};
+
+},{"../constants":242,"./selectOrder":265,"async":79,"augur-abi":1,"bignumber.js":82}],256:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -43536,7 +43741,40 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"clone":120}],256:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],257:[function(require,module,exports){
+"use strict";
+
+var parametrizeOrder = require("./parametrizeOrder").parametrizeOrder;
+
+module.exports = {
+
+  placeBid: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) { console.log("bid sent:", res); };
+    params.onSuccess = function (res) { console.log("bid success:", res); };
+    params.onFailed = function (err) { console.error("bid failed:", err); };
+    return this.buy(params);
+  },
+
+  placeAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) { console.log("ask sent:", res); };
+    params.onSuccess = function (res) { console.log("ask success:", res); };
+    params.onFailed = function (err) { console.error("ask failed:", err); };
+    return this.sell(params);
+  },
+
+  placeShortAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) { console.log("short ask sent:", res); };
+    params.onSuccess = function (res) { console.log("short ask success:", res); };
+    params.onFailed = function (err) { console.error("short ask failed:", err); };
+    return this.shortAsk(params);
+  }
+
+};
+
+},{"./parametrizeOrder":260}],258:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -43783,7 +44021,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":266,"augur-abi":1,"augur-contracts":58,"buffer":117,"clone":120,"keythereum":279}],257:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"augur-contracts":58,"buffer":117,"clone":120,"keythereum":285}],259:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -43825,7 +44063,31 @@ module.exports = {
   }
 };
 
-},{"../utilities":266,"clone":120}],258:[function(require,module,exports){
+},{"../utilities":272,"clone":120}],260:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+
+  parametrizeOrder: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    return {
+      amount: numShares,
+      price: limitPrice,
+      market: market.id,
+      outcome: outcomeID,
+      tradeGroupID: tradeGroupID,
+      scalarMinMax: this.getScalarMinimum(market.type, market.minValue)
+    };
+  },
+
+  getScalarMinimum: function (type, minValue) {
+    var scalarMinimum = {};
+    if (type === "scalar") scalarMinimum.minValue = minValue;
+    return scalarMinimum;
+  }
+
+};
+
+},{}],261:[function(require,module,exports){
 /**
  * Cash payouts from closed markets
  * @author Jack Peterson (jack@tinybike.net)
@@ -43936,7 +44198,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"async":79,"augur-abi":1,"clone":120}],259:[function(require,module,exports){
+},{"../constants":242,"async":79,"augur-abi":1,"clone":120}],262:[function(require,module,exports){
 /**
  * Tools to adjust positions in Augur markets for display.
  * @author Jack Peterson (jack@tinybike.net)
@@ -44496,7 +44758,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"async":79,"augur-abi":1,"bignumber.js":82}],260:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"async":79,"augur-abi":1,"bignumber.js":82}],263:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -44608,7 +44870,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"augur-abi":1,"clone":120}],261:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],264:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -44981,7 +45243,33 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":266,"async":79,"augur-abi":1,"clone":120}],262:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"async":79,"augur-abi":1,"clone":120}],265:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+
+  selectOrder: function (orderID, orderBooks) {
+    var marketIDs = Object.keys(orderBooks);
+    var numMarkets = marketIDs.length;
+    for (var i = 0; i < numMarkets; ++i) {
+      var orderBook = orderBooks[marketIDs[i]];
+      var order = this.selectOrderInOrderBookSide(orderID, orderBook.buy) ||
+        this.selectOrderInOrderBookSide(orderID, orderBook.sell);
+      if (order) return order;
+    }
+  },
+
+  selectOrderInOrderBookSide: function (orderID, orderBookSide) {
+    var orderIDs = Object.keys(orderBookSide);
+    var numOrderIDs = orderIDs.length;
+    for (var j = 0; j < numOrderIDs; ++j) {
+      if (orderBookSide[orderID]) return orderBookSide[orderID];
+    }
+  }
+
+};
+
+},{}],266:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -45041,13 +45329,25 @@ module.exports = {
   }
 };
 
-},{"../utilities":266,"augur-abi":1,"clone":120}],263:[function(require,module,exports){
-(function (Buffer){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
+},{"../utilities":272,"augur-abi":1,"clone":120}],267:[function(require,module,exports){
+"use strict";
 
+var BigNumber = require("bignumber.js");
+var constants = require("../constants");
+
+module.exports = function (numShares, position) {
+  var askShares, shortAskShares;
+  if (position.gt(numShares)) {
+    askShares = numShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+    shortAskShares = 0;
+  } else {
+    askShares = position.toFixed();
+    shortAskShares = numShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
+  }
+  return { askShares: askShares, shortAskShares: shortAskShares };
+};
+
+},{"../constants":242,"bignumber.js":82}],268:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -45057,317 +45357,47 @@ var uuid = require("uuid");
 var uuidParse = require("uuid-parse");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var splitOrder = require("./splitOrder");
+var abacus = require("./abacus");
 var utils = require("../utilities");
 var constants = require("../constants");
-var abacus = require("./abacus");
 
 module.exports = {
 
-  selectOrder: function (orderID, orderBooks) {
-    var marketIDs = Object.keys(orderBooks);
-    var numMarkets = marketIDs.length;
-    for (var i = 0; i < numMarkets; ++i) {
-      var orderBook = orderBooks[marketIDs[i]];
-      var order = this.selectOrderInOrderBookSide(orderID, orderBook.buy) ||
-        this.selectOrderInOrderBookSide(orderID, orderBook.sell);
-      if (order) return order;
-    }
-  },
-
-  selectOrderInOrderBookSide: function (orderID, orderBookSide) {
-    var orderIDs = Object.keys(orderBookSide);
-    var numOrderIDs = orderIDs.length;
-    for (var j = 0; j < numOrderIDs; ++j) {
-      if (orderBookSide[orderID]) return orderBookSide[orderID];
-    }
-  },
-
-  // if buying numShares must be 0, if selling totalEthWithFee must be 0
-  executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    console.log('executeTrade:', marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
-    console.log('getTradeIDs:', getTradeIDs.toString());
-    var self = this;
-    var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
-    var bnNumShares = abi.bignum(numShares) || constants.ZERO;
-    var res = {
-      remainingEth: bnTotalEth,
-      remainingShares: bnNumShares,
-      filledShares: constants.ZERO,
-      filledEth: constants.ZERO,
-      tradingFees: constants.ZERO,
-      gasFees: constants.ZERO
-    };
-    var matchingTradeIDs;
-    var bnSharesPurchased = bnNumShares;
-    var bnCashBalance = bnTotalEth;
-    async.until(function () {
-      matchingTradeIDs = getTradeIDs();
-      console.log("matchingTradeIDs:", matchingTradeIDs);
-      console.log("remainingEth:", res.remainingEth.toFixed());
-      console.log("remainingShares:", res.remainingShares.toFixed());
-      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
-      console.log("balance:", bnCashBalance.toFixed());
-      return !matchingTradeIDs || !matchingTradeIDs.length ||
-        (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
-        (bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
-        (bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
-    }, function (nextTrade) {
-      var tradeIDs = matchingTradeIDs;
-      tradeIDs = tradeIDs.slice(0, 3);
-      self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-        bnSharesPurchased = abi.bignum(sharesPurchased);
-        self.getCashBalance(address, function (cashBalance) {
-          bnCashBalance = abi.bignum(cashBalance);
-          var isRemainder;
-          var maxAmount;
-          if (res.remainingShares.gt(bnSharesPurchased)) {
-            maxAmount = bnSharesPurchased;
-            isRemainder = true;
-          } else {
-            maxAmount = res.remainingShares;
-            isRemainder = false;
-          }
-          var maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
-          self.trade({
-            max_value: maxValue.toFixed(),
-            max_amount: maxAmount.toFixed(),
-            trade_ids: tradeIDs,
-            tradeGroupID: tradeGroupID,
-            sender: address,
-            onTradeHash: function (tradeHash) {
-              tradeCommitmentCallback({
-                tradeHash: abi.format_int256(tradeHash),
-                orders: tradeIDs.map(function (tradeID) {
-                  return self.selectOrder(tradeID, orderBooks);
-                }),
-                maxValue: maxValue.toFixed(),
-                maxAmount: maxAmount.toFixed(),
-                remainingEth: res.remainingEth.toFixed(),
-                remainingShares: res.remainingShares.toFixed(),
-                filledEth: res.filledEth.toFixed(),
-                filledShares: res.filledShares.toFixed(),
-                tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
-                gasFees: res.gasFees.toFixed()
-              });
-            },
-            onCommitSent: function (data) { console.log("commit sent:", data); },
-            onCommitSuccess: function (data) {
-              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-              tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
-            },
-            onCommitFailed: nextTrade,
-            onNextBlock: function (data) { console.log("trade-onNextBlock", data); },
-            onTradeSent: function (data) { console.log("trade sent:", data); },
-            onTradeSuccess: function (data) {
-              console.log("trade success:", data);
-              res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
-              res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
-              if (isRemainder) {
-                res.remainingShares = res.remainingShares.minus(maxAmount).plus(abi.bignum(data.unmatchedShares));
-              } else {
-                res.remainingShares = abi.bignum(data.unmatchedShares);
-              }
-              res.remainingEth = abi.bignum(data.unmatchedCash);
-              res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
-              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-              tradeCommitmentCallback({
-                filledShares: res.filledShares.toFixed(),
-                filledEth: res.filledEth.toFixed(),
-                remainingShares: res.remainingShares.toFixed(),
-                remainingEth: res.remainingEth.toFixed(),
-                tradingFees: res.tradingFees.toFixed(),
-                gasFees: res.gasFees.toFixed()
-              });
-              self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-                bnSharesPurchased = abi.bignum(sharesPurchased);
-                self.getCashBalance(address, function (cashBalance) {
-                  bnCashBalance = abi.bignum(cashBalance);
-                  nextTrade();
-                });
-              });
-            },
-            onTradeFailed: nextTrade
-          });
-        });
-      });
-    }, function (err) {
-      if (err) return cb(err);
-      console.log("trade complete:", JSON.stringify(res, null, 2));
-      cb(null, res);
-    });
-  },
-
-  executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    var self = this;
-    var res = {
-      remainingShares: abi.bignum(numShares) || constants.ZERO,
-      filledShares: constants.ZERO,
-      filledEth: constants.ZERO,
-      tradingFees: constants.ZERO,
-      gasFees: constants.ZERO
-    };
-    var matchingIDs = getTradeIDs();
-    console.log("matching trade IDs:", matchingIDs);
-    if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
-    async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
-      var maxAmount = res.remainingShares.toFixed();
-      self.short_sell({
-        max_amount: maxAmount,
-        buyer_trade_id: matchingID,
-        sender: address,
-        tradeGroupID: tradeGroupID,
-        onTradeHash: function (tradeHash) {
-          tradeCommitmentCallback({
-            tradeHash: abi.format_int256(tradeHash),
-            orders: [self.selectOrder(matchingID, orderBooks)],
-            maxValue: "0",
-            maxAmount: maxAmount,
-            remainingEth: "0",
-            remainingShares: res.remainingShares.toFixed(),
-            filledEth: res.filledEth.toFixed(),
-            filledShares: res.filledShares.toFixed(),
-            tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
-            gasFees: res.gasFees.toFixed()
-          });
-        },
-        onCommitSent: function (data) { console.log("short sell commit sent:", data); },
-        onCommitSuccess: function (data) {
-          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-          tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
-        },
-        onCommitFailed: nextMatchingID,
-        onNextBlock: function (data) { console.log("short_sell onNextBlock", data); },
-        onTradeSent: function (data) { console.debug("short sell sent", data); },
-        onTradeSuccess: function (data) {
-          if (data.unmatchedShares) {
-            res.remainingShares = abi.bignum(data.unmatchedShares);
-          } else {
-            res.remainingShares = constants.ZERO;
-          }
-          if (data.matchedShares) {
-            res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
-          }
-          if (data.cashFromTrade) {
-            res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
-          }
-          res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
-          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-          tradeCommitmentCallback({
-            filledShares: res.filledShares.toFixed(),
-            filledEth: res.filledEth.toFixed(),
-            remainingShares: res.remainingShares.toFixed(),
-            tradingFees: res.tradingFees.toFixed(),
-            gasFees: res.gasFees.toFixed()
-          });
-          if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
-          nextMatchingID({ isComplete: true });
-        },
-        onTradeFailed: nextMatchingID
-      });
-    }, function (err) {
-      if (err && !err.isComplete) return cb(err);
-      console.log("short_sell success:", JSON.stringify(res, null, 2));
-      cb(null, res);
-    });
-  },
-
-  splitAskAndShortAsk: function (numShares, position) {
-    var askShares, shortAskShares;
-    if (position.gt(numShares)) {
-      askShares = numShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-      shortAskShares = 0;
-    } else {
-      askShares = position.toFixed();
-      shortAskShares = numShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
-    }
-    return { askShares: askShares, shortAskShares: shortAskShares };
-  },
-
-  getScalarMinimum: function (type, minValue) {
-    var scalarMinimum = {};
-    if (type === "scalar") scalarMinimum.minValue = minValue;
-    return scalarMinimum;
-  },
-
-  parametrizeOrder: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    return {
-      amount: numShares,
-      price: limitPrice,
-      market: market.id,
-      outcome: outcomeID,
-      tradeGroupID: tradeGroupID,
-      scalarMinMax: this.getScalarMinimum(market.type, market.minValue)
-    };
-  },
-
-  placeBid: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = this.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("bid sent:", res); };
-    params.onSuccess = function (res) { console.log("bid success:", res); };
-    params.onFailed = function (err) { console.error("bid failed:", err); };
-    return this.buy(params);
-  },
-
-  placeAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = this.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("ask sent:", res); };
-    params.onSuccess = function (res) { console.log("ask success:", res); };
-    params.onFailed = function (err) { console.error("ask failed:", err); };
-    return this.sell(params);
-  },
-
-  placeShortAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = this.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("short ask sent:", res); };
-    params.onSuccess = function (res) { console.log("short ask success:", res); };
-    params.onFailed = function (err) { console.error("short ask failed:", err); };
-    return this.shortAsk(params);
-  },
-
-  calculateBuyTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
-    var orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
-    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "buy", limitPrice, outcomeID, address).map(function (order) { return order.id; });
-  },
-
-  calculateSellTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
-    var orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
-    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "sell", limitPrice, outcomeID, address).map(function (order) { return order.id; });
-  },
-
-  placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback) {
-    // dispatch(updateTradeCommitLock(true));
+  placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
     var getTradeIDs = function () {
       return self.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
-    this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback || utils.noop, function (err, res) {
-      // dispatch(updateTradeCommitLock(false));
+    this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
       if (err) return console.error("trade failed:", err);
       var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
       if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
-        console.debug("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
         self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
       }
     });
   },
 
-  placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback) {
+  placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
     var self = this;
-    // dispatch(updateTradeCommitLock(true));
+    tradeCommitLockCallback(true);
     var marketID = market.id;
     var getTradeIDs = function () {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
-    this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback || utils.noop, function (err, res) {
-      // dispatch(updateTradeCommitLock(false));
+    this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
       if (err) return console.error("trade failed:", err);
       if (res.remainingShares.gt(constants.PRECISION.zero)) {
         self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
           var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
           var remainingShares = abi.bignum(res.remainingShares);
           if (position.gt(constants.PRECISION.zero)) {
-            var shares = self.splitAskAndShortAsk(remainingShares, position);
+            var shares = splitOrder(remainingShares, position);
             var askShares = shares.askShares;
             var shortAskShares = shares.shortAskShares;
             if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
@@ -45394,71 +45424,36 @@ module.exports = {
     });
   },
 
-  placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback) {
+  placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
     var self = this;
-    // dispatch(updateTradeCommitLock(true));
+    tradeCommitLockCallback(true);
     var marketID = market.id;
     var getTradeIDs = function () {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
-    this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback || utils.noop, function (err, res) {
-      // dispatch(updateTradeCommitLock(false));
-      if (err) return console.error("shortSell failed:", err);
+    this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
+      if (err) return console.error("short sell failed:", err);
       if (res.remainingShares.gt(constants.PRECISION.zero)) {
         self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
       }
     });
-  },
+  }
 
-  // market: {id, type, minValue (for scalars)}
-  placeTrade: function (market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, tradeCommitmentCallback, callback) {
-    var self = this;
-    var marketID = market.id;
-    var tradeGroupID = abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString("hex"));
-    if (tradeType === "buy") {
-      var tradeIDs = this.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
-      console.log('buy trade IDs:', tradeIDs);
-      if (tradeIDs && tradeIDs.length) {
-        console.log('place buy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID);
-        this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
-      } else {
-        console.log('place bid:', market, outcomeID, numShares, limitPrice, tradeGroupID);
-        this.placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID);
-      }
-      callback(null);
-    } else if (tradeType === "sell") {
+};
 
-      // check if user has position
-      //  - if so, sell/ask
-      //  - if not, short sell/short ask
-      this.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-        if (!sharesPurchased || sharesPurchased.error) return callback(sharesPurchased);
-        var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
-        if (position && position.gt(constants.PRECISION.zero)) {
-          if (tradeIDs && tradeIDs.length) {
-            self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
-          } else {
-            var shares = self.splitAskAndShortAsk(abi.bignum(numShares), position);
-            var askShares = shares.askShares;
-            var shortAskShares = shares.shortAskShares;
-            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
-            }
-            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-            }
-          }
-        } else if (tradeIDs && tradeIDs.length) {
-          self.placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
-        } else {
-          self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID);
-        }
-        callback(null);
-      });
-    }
-    return tradeGroupID;
-  },
+},{"../constants":242,"../utilities":272,"./abacus":246,"./splitOrder":267,"async":79,"augur-abi":1,"bignumber.js":82,"clone":120,"ethrpc":279,"uuid":236,"uuid-parse":234}],269:[function(require,module,exports){
+"use strict";
+
+var clone = require("clone");
+var async = require("async");
+var abi = require("augur-abi");
+var rpc = require("ethrpc");
+var utils = require("../utilities");
+var constants = require("../constants");
+var abacus = require("./abacus");
+
+module.exports = {
 
   // tradeTypes: array of "buy" and/or "sell"
   // gasLimit (optional): block gas limit as integer
@@ -45757,11 +45752,13 @@ module.exports = {
   }
 };
 
-}).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":266,"./abacus":246,"async":79,"augur-abi":1,"bignumber.js":82,"buffer":117,"clone":120,"ethrpc":273,"uuid":236,"uuid-parse":234}],264:[function(require,module,exports){
+},{"../constants":242,"../utilities":272,"./abacus":246,"async":79,"augur-abi":1,"clone":120,"ethrpc":279}],270:[function(require,module,exports){
 /*
  * Author: priecint
  */
+
+"use strict";
+
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var EthTx = require("ethereumjs-tx");
@@ -45772,6 +45769,16 @@ var abacus = require("./abacus");
 var ONE = new BigNumber(1, 10);
 
 module.exports = {
+
+  calculateBuyTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "buy", limitPrice, outcomeID, address).map(function (order) { return order.id; });
+  },
+
+  calculateSellTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "sell", limitPrice, outcomeID, address).map(function (order) { return order.id; });
+  },
 
   /**
    * Calculates (approximately) gas needed to run the transaction
@@ -46152,7 +46159,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"./abacus":246,"augur-abi":1,"bignumber.js":82,"clone":120,"ethereumjs-tx":158}],265:[function(require,module,exports){
+},{"../constants":242,"./abacus":246,"augur-abi":1,"bignumber.js":82,"clone":120,"ethereumjs-tx":158}],271:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -46182,7 +46189,7 @@ module.exports = {
   }
 };
 
-},{}],266:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -46313,7 +46320,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":242,"_process":191,"augur-abi":1,"bignumber.js":82,"buffer":117,"clone":120,"crypto":127}],267:[function(require,module,exports){
+},{"./constants":242,"_process":191,"augur-abi":1,"bignumber.js":82,"buffer":117,"clone":120,"crypto":127}],273:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -46343,7 +46350,7 @@ module.exports = {
   }    
 };
 
-},{}],268:[function(require,module,exports){
+},{}],274:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -47072,7 +47079,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":242,"../src/modules/reporting":261,"../src/utilities":266,"./madlibs":267,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":118,"clone":120,"fs":114,"madlibs":180,"path":187}],269:[function(require,module,exports){
+},{"../src/constants":242,"../src/modules/reporting":264,"../src/utilities":272,"./madlibs":273,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":118,"clone":120,"fs":114,"madlibs":180,"path":187}],275:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -47315,11 +47322,11 @@ module.exports = {
   }
 };
 
-},{"async":270,"clone":271,"ethrpc":273}],270:[function(require,module,exports){
+},{"async":276,"clone":277,"ethrpc":279}],276:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],271:[function(require,module,exports){
+},{"_process":191,"dup":79}],277:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":117,"dup":59}],272:[function(require,module,exports){
+},{"buffer":117,"dup":59}],278:[function(require,module,exports){
 module.exports={
   "0x": "no response or bad input",
   "buy": {
@@ -47648,7 +47655,7 @@ module.exports={
   }
 }
 
-},{}],273:[function(require,module,exports){
+},{}],279:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -49627,17 +49634,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./errors":272,"_process":191,"async":274,"augur-abi":1,"bignumber.js":275,"browser-request":276,"clone":277,"js-sha3":278,"net":114,"request":87,"sync-request":87,"websocket":87}],274:[function(require,module,exports){
+},{"./errors":278,"_process":191,"async":280,"augur-abi":1,"bignumber.js":281,"browser-request":282,"clone":283,"js-sha3":284,"net":114,"request":87,"sync-request":87,"websocket":87}],280:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],275:[function(require,module,exports){
+},{"_process":191,"dup":79}],281:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],276:[function(require,module,exports){
+},{"dup":2}],282:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"dup":86}],277:[function(require,module,exports){
+},{"dup":86}],283:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":117,"dup":59}],278:[function(require,module,exports){
+},{"buffer":117,"dup":59}],284:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],279:[function(require,module,exports){
+},{"dup":38}],285:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -50268,7 +50275,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":280,"./lib/scrypt":281,"_process":191,"buffer":117,"crypto":127,"elliptic":285,"ethereumjs-util":302,"fs":114,"path":187,"sjcl":312,"uuid":314,"validator":315}],280:[function(require,module,exports){
+},{"./lib/keccak":286,"./lib/scrypt":287,"_process":191,"buffer":117,"crypto":127,"elliptic":291,"ethereumjs-util":308,"fs":114,"path":187,"sjcl":318,"uuid":320,"validator":321}],286:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -50462,7 +50469,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],281:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -62183,7 +62190,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":191,"fs":114,"path":187}],282:[function(require,module,exports){
+},{"_process":191,"fs":114,"path":187}],288:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -64632,9 +64639,9 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],283:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"crypto":87,"dup":5}],284:[function(require,module,exports){
+},{"crypto":87,"dup":5}],290:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -64660,9 +64667,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"js-sha3":310}],285:[function(require,module,exports){
+},{"buffer":117,"js-sha3":316}],291:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":301,"./elliptic/curve":288,"./elliptic/curves":291,"./elliptic/ec":292,"./elliptic/eddsa":295,"./elliptic/hmac-drbg":298,"./elliptic/utils":300,"brorand":283,"dup":11}],286:[function(require,module,exports){
+},{"../package.json":307,"./elliptic/curve":294,"./elliptic/curves":297,"./elliptic/ec":298,"./elliptic/eddsa":301,"./elliptic/hmac-drbg":304,"./elliptic/utils":306,"brorand":289,"dup":11}],292:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -65015,7 +65022,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":285,"bn.js":282}],287:[function(require,module,exports){
+},{"../../elliptic":291,"bn.js":288}],293:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -65423,9 +65430,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":285,"../curve":288,"bn.js":282,"inherits":309}],288:[function(require,module,exports){
+},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],294:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":286,"./edwards":287,"./mont":289,"./short":290,"dup":14}],289:[function(require,module,exports){
+},{"./base":292,"./edwards":293,"./mont":295,"./short":296,"dup":14}],295:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -65603,7 +65610,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":285,"../curve":288,"bn.js":282,"inherits":309}],290:[function(require,module,exports){
+},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],296:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -66512,7 +66519,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":285,"../curve":288,"bn.js":282,"inherits":309}],291:[function(require,module,exports){
+},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],297:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -66671,7 +66678,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":285,"./precomputed/secp256k1":299,"hash.js":303}],292:[function(require,module,exports){
+},{"../elliptic":291,"./precomputed/secp256k1":305,"hash.js":309}],298:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -66883,7 +66890,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":285,"./key":293,"./signature":294,"bn.js":282}],293:[function(require,module,exports){
+},{"../../elliptic":291,"./key":299,"./signature":300,"bn.js":288}],299:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -66992,7 +66999,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":282}],294:[function(require,module,exports){
+},{"bn.js":288}],300:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67064,9 +67071,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":285,"bn.js":282}],295:[function(require,module,exports){
+},{"../../elliptic":291,"bn.js":288}],301:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":285,"./key":296,"./signature":297,"dup":21,"hash.js":303}],296:[function(require,module,exports){
+},{"../../elliptic":291,"./key":302,"./signature":303,"dup":21,"hash.js":309}],302:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -67164,7 +67171,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":285}],297:[function(require,module,exports){
+},{"../../elliptic":291}],303:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67232,11 +67239,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":285,"bn.js":282}],298:[function(require,module,exports){
+},{"../../elliptic":291,"bn.js":288}],304:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":285,"dup":24,"hash.js":303}],299:[function(require,module,exports){
+},{"../elliptic":291,"dup":24,"hash.js":309}],305:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],300:[function(require,module,exports){
+},{"dup":25}],306:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -67410,7 +67417,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":282}],301:[function(require,module,exports){
+},{"bn.js":288}],307:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -67510,7 +67517,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],302:[function(require,module,exports){
+},{}],308:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -67858,23 +67865,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":282,"buffer":117,"elliptic":285,"rlp":311,"sha3":284}],303:[function(require,module,exports){
+},{"assert":78,"bn.js":288,"buffer":117,"elliptic":291,"rlp":317,"sha3":290}],309:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":304,"./hash/hmac":305,"./hash/ripemd":306,"./hash/sha":307,"./hash/utils":308,"dup":31}],304:[function(require,module,exports){
+},{"./hash/common":310,"./hash/hmac":311,"./hash/ripemd":312,"./hash/sha":313,"./hash/utils":314,"dup":31}],310:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":303,"dup":32}],305:[function(require,module,exports){
+},{"../hash":309,"dup":32}],311:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":303,"dup":33}],306:[function(require,module,exports){
+},{"../hash":309,"dup":33}],312:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":303,"dup":34}],307:[function(require,module,exports){
+},{"../hash":309,"dup":34}],313:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":303,"dup":35}],308:[function(require,module,exports){
+},{"../hash":309,"dup":35}],314:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":309}],309:[function(require,module,exports){
+},{"dup":36,"inherits":315}],315:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],310:[function(require,module,exports){
+},{"dup":37}],316:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],311:[function(require,module,exports){
+},{"dup":38}],317:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -68103,7 +68110,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"buffer":117}],312:[function(require,module,exports){
+},{"assert":78,"buffer":117}],318:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -68165,11 +68172,11 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":127}],313:[function(require,module,exports){
+},{"crypto":127}],319:[function(require,module,exports){
 arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],314:[function(require,module,exports){
+},{"dup":235}],320:[function(require,module,exports){
 arguments[4][236][0].apply(exports,arguments)
-},{"./lib/rng":313,"dup":236}],315:[function(require,module,exports){
+},{"./lib/rng":319,"dup":236}],321:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *

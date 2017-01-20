@@ -33,12 +33,16 @@ var modules = [
   require("./modules/reporting"),
   require("./modules/payout"),
   require("./modules/tradingActions"),
+  require("./modules/makeOrder"),
+  require("./modules/takeOrder"),
+  require("./modules/selectOrder"),
+  require("./modules/executeTrade"),
   require("./modules/positions"),
   require("./modules/register")
 ];
 
 function Augur() {
-  this.version = "3.8.6";
+  this.version = "3.8.7";
 
   this.options = {
     debug: {
