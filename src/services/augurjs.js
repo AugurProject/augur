@@ -17,7 +17,7 @@ ex.connect = function connect(env, cb) {
     if (!isEnvWss) options.ws = null;
   }
   if (options.http) augur.rpc.nodes.hosted = [options.http];
-  augur.options.debug.trading = false;
+  augur.options.debug.trading = true;
   augur.options.debug.reporting = true;
   augur.options.debug.nonce = false;
   augur.rpc.debug.broadcast = false;
