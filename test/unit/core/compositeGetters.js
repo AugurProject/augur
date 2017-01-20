@@ -21,9 +21,9 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
             var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
             constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
             // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
-            var nextPass = t.nextPass
-                ? function() { done(); }
-                : undefined;
+            var nextPass = t.nextPass ?
+                function() { done(); } :
+                undefined;
             augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function(err, marketsData) {
                 // chunkCB
                 var finished = t.assertions(err, marketsData);
@@ -1264,4 +1264,54 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     });
 });
 describe.skip('CompositeGetters.parseMarketsInfo', function() {});
-describe.skip('CompositeGetters.getMarketsInfo', function() {});
+describe('CompositeGetters.getMarketsInfo', function() {
+    // ? tests total
+    var fire = augur.fire;
+    var augurNodeGetMarketsInfo = augur.augurNode.getMarketsInfo;
+    var augurNodes = augur.augurNode.nodes;
+    var augurNodeGetMarketsInfoCC = 0;
+    afterEach(function() {
+        augur.fire = fire;
+        augur.augurNode.getMarketsInfo = augurNodeGetMarketsInfo;
+        augur.augurNode.nodes = augurNodes;
+        augurNodeGetMarketsInfoCC = 0;
+    });
+    var test = function(t) {
+        it(t.description + ' sync', function() {
+            augur.augurNode.nodes = t.nodes;
+            augur.fire = t.fire;
+            augur.augurNode.getMarketsInfo = t.augurNodeGetMarketsInfo;
+            augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, function(data) {
+                t.assertions(data);
+            });
+        });
+        // it(t.description + ' async', function(done) {
+        //     augur.augurNode.nodes = t.nodes;
+        //     augur.fire = t.fire;
+        //     augur.augurNode.getMarketsInfo = t.augurNodeGetMarketsInfo;
+        //     augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, function(data) {
+        //         t.assertions(data);
+        //         done();
+        //     });
+        // });
+    };
+    test({
+        description: 'Should return a markets object, augurNodes available, all args passed in expected positions',
+        branch: '101010',
+        offset: 1,
+        numMarketsToLoad: 1,
+        volumeMin: 0,
+        volumeMax: -1,
+        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+        fire: function(tx, callback, parseMarketsInfo, branch) {
+            // in this case, this function shouldn't be hit.
+            callback(tx);
+        },
+        augurNodeGetMarketsInfo: function(branch, cb) {
+            cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
+        },
+        assertions: function(data) {
+            assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
+        }
+    });
+});
