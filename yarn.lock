@@ -374,9 +374,9 @@ augur-contracts@2.8.2:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.8.5:
-  version "3.8.5"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.5.tgz#f26c1748273a1d655dbfc987cf651dd4b4b2065b"
+augur.js@3.8.7:
+  version "3.8.7"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.7.tgz#aae2adbc4cb6ebb376a059af6bbb2aeb7c1b4618"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -394,6 +394,7 @@ augur.js@3.8.5:
     locks "0.2.2"
     request "2.74.0"
     uuid "3.0.0"
+    uuid-parse "1.0.0"
   optionalDependencies:
     madlibs "0.0.0"
 
