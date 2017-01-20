@@ -6,17 +6,17 @@ var abi = require("augur-abi");
 var utils = require("../../../src/utilities");
 
 describe("cash", function() {
-	// 9 total tests
+// 12 total tests
   describe("sendEther", function() {
-		// 6 total tests
+    // 6 total tests
+    var transact = augur.transact;
+    afterEach(function() {
+        augur.transact = transact;
+    });
     var test = function(t) {
       it(t.description, function() {
-        var transact = augur.transact;
         augur.transact = t.transact;
-
         t.assertions(augur.sendEther(t.to, t.value, t.from, t.onSent, t.onSuccess, t.onFailed));
-
-        augur.transact = transact;
       });
     };
 
@@ -29,7 +29,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "handles a string input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -49,7 +49,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "handles a JS Number input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -69,7 +69,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "handles a Big Number input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -91,7 +91,7 @@ describe("cash", function() {
       },
       description: "handles a string input for value, args passed as single arg object",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -113,7 +113,7 @@ describe("cash", function() {
       },
       description: "handles a JS Number input for value, args passed as single arg object",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -135,7 +135,7 @@ describe("cash", function() {
       },
       description: "handles a Big Number input for value, args passed as single arg object",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -149,15 +149,15 @@ describe("cash", function() {
   });
 
   describe("depositEther", function() {
-		// 3 total tests
+	// 3 total tests
+    var transact = augur.transact;
+    afterEach(function() {
+        augur.transact = transact;
+    });
     var test = function(t) {
       it(t.description, function() {
-        var transact = augur.transact;
         augur.transact = t.transact;
-
         t.assertions(augur.depositEther(t.to, t.value, t.from, t.onSent, t.onSuccess, t.onFailed));
-
-        augur.transact = transact;
       });
     };
 
@@ -168,7 +168,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "depositeEther with a JS Number input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -186,7 +186,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "depositeEther with a String input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -204,7 +204,7 @@ describe("cash", function() {
       onFailed: utils.noop,
       description: "depositeEther with a Big Number input for value",
       transact: function(tx, onSent, onSuccess, onFailed) {
-				// just return the tx to be passed to assertions.
+		// just return the tx to be passed to assertions.
         return tx;
       },
       assertions: function(out) {
@@ -216,5 +216,87 @@ describe("cash", function() {
       }
     });
   });
-	// getCashBalance, sendCash, sendCashFrom are straight forward pass through functions and probably don't need unit tests.
+    describe("getCashBalance", function() {
+        // 1 total test
+        var Cash = augur.Cash;
+        afterEach(function() {
+            augur.Cash = Cash;
+        });
+        var test = function(t) {
+          it(t.description, function() {
+            augur.Cash = t.Cash;
+            augur.getCashBalance(t.account, t.callback);
+          });
+        };
+        // Cash.balance acts as our assertions for this test
+        test({
+            description: 'should pass inputs to augur.Cash.balance',
+            Cash: { balance: function(account, cb) {
+                assert.deepEqual(account, '0x1');
+                assert.deepEqual(cb, utils.noop);
+            }},
+            account: '0x1',
+            callback: utils.noop
+        });
+    });
+    describe("sendCash", function() {
+        // 1 total test
+        var Cash = augur.Cash;
+        afterEach(function() {
+            augur.Cash = Cash;
+        });
+        var test = function(t) {
+          it(t.description, function() {
+            augur.Cash = t.Cash;
+            augur.sendCash(t.recver, t.value, t.onSent, t.onSuccess, t.onFailed);
+          });
+        };
+        // Cash.send acts as our assertions for this test
+        test({
+            description: 'should pass inputs to augur.Cash.send',
+            Cash: { send: function(recver, value, onSent, onSuccess, onFailed) {
+                assert.deepEqual(recver, '0x1');
+                assert.deepEqual(value, '100');
+                assert.deepEqual(onSent, utils.noop);
+                assert.deepEqual(onSuccess, utils.noop);
+                assert.deepEqual(onFailed, utils.noop);
+            }},
+            recver: '0x1',
+            value: '100',
+            onSent: utils.noop,
+            onSuccess: utils.noop,
+            onFailed: utils.noop
+        });
+    });
+    describe("sendCashFrom", function() {
+        // 1 total test
+        var Cash = augur.Cash;
+        afterEach(function() {
+            augur.Cash = Cash;
+        });
+        var test = function(t) {
+          it(t.description, function() {
+            augur.Cash = t.Cash;
+            augur.sendCashFrom(t.recver, t.value, t.from, t.onSent, t.onSuccess, t.onFailed);
+          });
+        };
+        // Cash.sendFrom acts as our assertions for this test
+        test({
+            description: 'should pass inputs to augur.Cash.sendFrom',
+            Cash: { sendFrom: function(recver, value, from, onSent, onSuccess, onFailed) {
+                assert.deepEqual(recver, '0x1');
+                assert.deepEqual(value, '100');
+                assert.deepEqual(from, '0x2');
+                assert.deepEqual(onSent, utils.noop);
+                assert.deepEqual(onSuccess, utils.noop);
+                assert.deepEqual(onFailed, utils.noop);
+            }},
+            recver: '0x1',
+            value: '100',
+            from: '0x2',
+            onSent: utils.noop,
+            onSuccess: utils.noop,
+            onFailed: utils.noop
+        });
+    });
 });
