@@ -1,18 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 
-// import AuthLogin from 'modules/auth/compoenents/auth-login';
-// import AuthSignup from 'modules/auth/components/auth-signup';
+import AuthLogin from 'modules/auth/components/auth-login';
+import AuthSignup from 'modules/auth/components/auth-signup';
 import ComponentNav from 'modules/common/components/component-nav';
 
-import { AUTH_SIGNUP } from 'modules/app/constants/views';
+import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
 
-class AuthPage extends Component {
+export default class AuthView extends Component {
+  static propTypes = {
+    authForm: PropTypes.object
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       selectedNav: AUTH_SIGNUP
     };
+
+    this.updateSelectedNav = this.updateSelectedNav.bind(this);
   }
 
   componentDidMount() {
@@ -34,14 +40,13 @@ class AuthPage extends Component {
           selectedNav={s.selectedNav}
           updateSelectedNav={this.updateSelectedNav}
         />
+        {s.selectedNav === AUTH_SIGNUP &&
+          <AuthSignup />
+        }
+        {s.selectedNav === AUTH_LOGIN &&
+          <AuthLogin />
+        }
       </section>
     );
   }
 }
-
-AuthPage.propTypes = {
-  className: PropTypes.string,
-  authForm: PropTypes.object
-};
-
-export default AuthPage;
