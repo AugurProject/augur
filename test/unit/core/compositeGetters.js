@@ -5,7 +5,7 @@ var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 var constants = require("../../../src/constants");
-// 56 tests total
+// 68 tests total
 
 describe('CompositeGetters.loadNextMarketsBatch', function() {
     // 5 tests total
@@ -1263,9 +1263,118 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
         }
     });
 });
-describe.skip('CompositeGetters.parseMarketsInfo', function() {});
+describe('CompositeGetters.parseMarketsInfo', function() {
+    // 4 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.parseMarketsInfo(t.marketsArray, t.branch));
+        });
+    };
+    // [numMarketsTotal, MarketLength, marketID, tradingPeriod, tradingFee, creationTime, volume, tag1, tag2, tag3, endDate, makerProportionOfFee, eventID, minVale, maxValue, numOutcomes, reportedOutcome, description]
+    test({
+        description: 'Should handle a marketsArray with all three market types and process everything correctly.',
+        marketsArray: ['3', '17', '0x0a1', '500', '400000000000000000', 140000000, '1000000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('football'), abi.short_string_to_int256('nfl'), 15000000, '20000000000000000', '0x0e1', '1000000000000000000', '2000000000000000000', '2', '1000000000000000000',
+        '57696c6c2074686520436c6576656c616e642042726f776e732077696e205375706572626f776c204c493f',
+        '17', '0x0a2', '500', '600000000000000000', 140000000, '2500000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('basketball'), abi.short_string_to_int256('nba'), 15000000, '30000000000000000', '0x0e2', '1000000000000000000', '250000000000000000000', '2', '',
+        '486f77206d616e7920706f696e74732077696c6c2062652073636f72656420696e2067616d652031206f66207468652032303137204e42412066696e616c733f',
+        '17', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
+        '5768696368207465616d2077696c6c2077696e2074686520414c204561737420696e20746865203230313720736561736f6e206f66204d4c423f'],
+        branch: augur.constants.DEFAULT_BRANCH_ID,
+        assertions: function(parsedMarketsInfo) {
+            assert.deepEqual(parsedMarketsInfo, {
+            	'0x00000000000000000000000000000000000000000000000000000000000000a1': {
+            		sortOrder: 0,
+            		id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+            		branchId: '0xf69b5',
+            		tradingPeriod: 1280,
+            		tradingFee: '0.4',
+            		makerFee: '0.008',
+            		takerFee: '0.592',
+            		creationTime: 5368709120,
+            		volume: '1000',
+            		tags: ['sports', 'football', 'nfl'],
+            		endDate: 352321536,
+            		eventID: '0x00000000000000000000000000000000000000000000000000000000000000e1',
+            		minValue: '1',
+            		maxValue: '2',
+            		numOutcomes: 2,
+            		type: 'binary',
+            		reportedOutcome: '1',
+            		isIndeterminate: false,
+            		description: 'Will the Cleveland Browns win Superbowl LI?'
+            	},
+            	'0x00000000000000000000000000000000000000000000000000000000000000a2': {
+            		sortOrder: 1,
+            		id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
+            		branchId: '0xf69b5',
+            		tradingPeriod: 1280,
+            		tradingFee: '0.6',
+            		makerFee: '0.018',
+            		takerFee: '0.882',
+            		creationTime: 5368709120,
+            		volume: '2500',
+            		tags: ['sports', 'basketball', 'nba'],
+            		endDate: 352321536,
+            		eventID: '0x00000000000000000000000000000000000000000000000000000000000000e2',
+            		minValue: '1',
+            		maxValue: '250',
+            		numOutcomes: 2,
+            		type: 'scalar',
+            		reportedOutcome: undefined,
+            		isIndeterminate: undefined,
+            		description: 'How many points will be scored in game 1 of the 2017 NBA finals?'
+            	},
+            	'0x00000000000000000000000000000000000000000000000000000000000000a3': {
+            		sortOrder: 2,
+            		id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
+            		branchId: '0xf69b5',
+            		tradingPeriod: 1280,
+            		tradingFee: '0.2',
+            		makerFee: '0.002',
+            		takerFee: '0.298',
+            		creationTime: 5368709120,
+            		volume: '125',
+            		tags: ['sports', 'baseball', 'mlb'],
+            		endDate: 352321536,
+            		eventID: '0x00000000000000000000000000000000000000000000000000000000000000e3',
+            		minValue: '1',
+            		maxValue: '50',
+            		numOutcomes: 5,
+            		type: 'categorical',
+            		reportedOutcome: undefined,
+            		isIndeterminate: undefined,
+            		description: 'Which team will win the AL East in the 2017 season of MLB?'
+            	}
+            });
+        }
+    });
+    test({
+        description: 'Should handle an empty markets array and return null',
+        marketsArray: [],
+        branch: augur.constants.DEFAULT_BRANCH_ID,
+        assertions: function(parsedMarketsInfo) {
+            assert.isNull(parsedMarketsInfo);
+        }
+    });
+    test({
+        description: 'Should handle a non array passed as marketsArray and return null',
+        marketsArray: {},
+        branch: augur.constants.DEFAULT_BRANCH_ID,
+        assertions: function(parsedMarketsInfo) {
+            assert.isNull(parsedMarketsInfo);
+        }
+    });
+    test({
+        description: 'Should handle undefined passed as marketsArray and return null',
+        marketsArray: undefined,
+        branch: augur.constants.DEFAULT_BRANCH_ID,
+        assertions: function(parsedMarketsInfo) {
+            assert.isNull(parsedMarketsInfo);
+        }
+    });
+});
 describe('CompositeGetters.getMarketsInfo', function() {
-    // ? tests total
+    // 7 tests total
     var fire = augur.fire;
     var augurNodeGetMarketsInfo = augur.augurNode.getMarketsInfo;
     var augurNodes = augur.augurNode.nodes;
