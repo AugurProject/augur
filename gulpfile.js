@@ -17,25 +17,23 @@ gulp.task("lint", function (callback) {
 
 gulp.task("test", function (callback) {
   cp.exec("npm test", function (err, stdout) {
-  if (err) if (stdout) process.stdout.write(stdout);
-  callback(err);
+    if (err) if (stdout) process.stdout.write(stdout);
+    callback(err);
   });
 });
 
 gulp.task("build", function (callback) {
-  cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | "+
-    "./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js",
-    function (err, stdout) {
+  cp.exec("./node_modules/babel/bin/babel ./src --presets es2015 -o ./build.js", function (err, stdout) {
+    cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js | ./node_modules/uglify-js/bin/uglifyjs > ./dist/augur.min.js", function (err, stdout) {
       if (err) return callback(err);
       if (stdout) process.stdout.write(stdout);
-      cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js "+
-        "> ./dist/augur.js",
-        function (err, stdout) {
-          if (err) return callback(err);
-          if (stdout) process.stdout.write(stdout);
-          callback();
-        });
+      cp.exec("./node_modules/browserify/bin/cmd.js ./exports.js > ./dist/augur.js", function (err, stdout) {
+        if (err) return callback(err);
+        if (stdout) process.stdout.write(stdout);
+        callback();
+      });
     });
+  });
 });
 
 gulp.task("default", ["lint", "test", "build"]);

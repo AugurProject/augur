@@ -33,6 +33,10 @@ var modules = [
   require("./modules/reporting"),
   require("./modules/payout"),
   require("./modules/tradingActions"),
+  require("./modules/makeOrder"),
+  require("./modules/takeOrder"),
+  require("./modules/selectOrder"),
+  require("./modules/executeTrade"),
   require("./modules/positions"),
   require("./modules/register")
 ];
@@ -42,7 +46,7 @@ function Augur() {
 
   this.options = {
     debug: {
-      tools: false,       // if true, testing tools (test/tools.js) included
+      tools: true,       // if true, testing tools (test/tools.js) included
       abi: false,         // debug logging in augur-abi
       broadcast: false,   // broadcast debug logging in ethrpc
       connect: false,     // connection debug logging in ethereumjs-connect
