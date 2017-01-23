@@ -3,10 +3,10 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var augur = require('../../../src');
 var utils = require('../../../src/utilities.js');
-// 8 tests total
+// 16 tests total
 
 describe("generateOrderBook", function() {
-// 8 tests total
+// 16 tests total
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -55,7 +55,7 @@ describe("generateOrderBook", function() {
         });
     };
     test({
-        descrption: 'Should handle missing marketInfo and call onFailed with an error.',
+        description: 'Should handle missing marketInfo and call onFailed with an error.',
         p: {
     		market: '0xa1',
     		liquidity: 10000,
@@ -86,7 +86,7 @@ describe("generateOrderBook", function() {
         getOrderBook: function(market, scalarMinMax, onSuccess) {},
     });
     test({
-        descrption: 'Should handle marketInfo that has a different number of outcomes then expected, should call onFailed.',
+        description: 'Should handle marketInfo that has a different number of outcomes then expected, should call onFailed.',
         p: {
     		market: '0xa1',
     		liquidity: 10000,
@@ -117,7 +117,7 @@ describe("generateOrderBook", function() {
         getOrderBook: function(market, scalarMinMax, onSuccess) {},
     });
     test({
-        descrption: 'Should handle a binary market where priceDepth is less than or equal to 0, triggering an onFailed called.',
+        description: 'Should handle a binary market where priceDepth is less than or equal to 0, triggering an onFailed called.',
         p: {
     		market: '0xa1',
     		liquidity: 100,
@@ -148,7 +148,7 @@ describe("generateOrderBook", function() {
         getOrderBook: function(market, scalarMinMax, onSuccess) {},
     });
     test({
-        descrption: 'Should handle a binary market where priceDepth is Infinity, triggering an onFailed called.',
+        description: 'Should handle a binary market where priceDepth is Infinity, triggering an onFailed called.',
         p: {
     		market: '0xa1',
     		liquidity: 100,
@@ -169,6 +169,130 @@ describe("generateOrderBook", function() {
                 assert.deepEqual(err, augur.errors.INSUFFICIENT_LIQUIDITY);
             }
     	},
+        getMarketInfo: function(market, account, callback) {
+            // return marketInfo with the expected numOutcomes and a type of binary.
+            callback({ numOutcomes: 2, type: 'binary' });
+        },
+        buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
+        buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    });
+    test({
+        description: 'Should handle a binary market where initial price is out of bounds, too low, should trigger onFailed',
+        p: {
+            market: '0xa1',
+            liquidity: 10000,
+            initialFairPrices: ['0.006573092', '0.49422020'],
+            startingQuantity: 501,
+            bestStartingQuantity: 500,
+            priceWidth: '0.0812',
+            isSimulation: false
+        },
+        cb: {
+            onSimulate: function(simulation) {},
+            onBuyCompleteSets: function(res) {},
+            onSetupOutcome: function(outcome) {},
+            onSetupOrder: function(order) {},
+            onSuccess: function(orderBook) {},
+            onFailed: function(err) {
+                // this callback should be called, lets assert we get the expected error back.
+                assert.deepEqual(err, augur.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+            }
+        },
+        getMarketInfo: function(market, account, callback) {
+            // return marketInfo with the expected numOutcomes and a type of binary.
+            callback({ numOutcomes: 2, type: 'binary' });
+        },
+        buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
+        buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    });
+    test({
+        description: 'Should handle a binary market where initial price is out of bounds, too high, should trigger onFailed',
+        p: {
+            market: '0xa1',
+            liquidity: 10000,
+            initialFairPrices: ['0.996573092', '0.49422020'],
+            startingQuantity: 501,
+            bestStartingQuantity: 500,
+            priceWidth: '0.0812',
+            isSimulation: false
+        },
+        cb: {
+            onSimulate: function(simulation) {},
+            onBuyCompleteSets: function(res) {},
+            onSetupOutcome: function(outcome) {},
+            onSetupOrder: function(order) {},
+            onSuccess: function(orderBook) {},
+            onFailed: function(err) {
+                // this callback should be called, lets assert we get the expected error back.
+                assert.deepEqual(err, augur.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+            }
+        },
+        getMarketInfo: function(market, account, callback) {
+            // return marketInfo with the expected numOutcomes and a type of binary.
+            callback({ numOutcomes: 2, type: 'binary' });
+        },
+        buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
+        buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    });
+    test({
+        description: 'Should handle a binary market where price width is out of bounds, too high, should trigger onFailed',
+        p: {
+            market: '0xa1',
+            liquidity: 10000,
+            initialFairPrices: ['0.6', '0.49422020'],
+            startingQuantity: 501,
+            bestStartingQuantity: 500,
+            priceWidth: '0.8',
+            isSimulation: false
+        },
+        cb: {
+            onSimulate: function(simulation) {},
+            onBuyCompleteSets: function(res) {},
+            onSetupOutcome: function(outcome) {},
+            onSetupOrder: function(order) {},
+            onSuccess: function(orderBook) {},
+            onFailed: function(err) {
+                // this callback should be called, lets assert we get the expected error back.
+                assert.deepEqual(err, augur.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
+            }
+        },
+        getMarketInfo: function(market, account, callback) {
+            // return marketInfo with the expected numOutcomes and a type of binary.
+            callback({ numOutcomes: 2, type: 'binary' });
+        },
+        buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
+        buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+        getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    });
+    test({
+        description: 'Should handle a binary market where price width is out of bounds, too low, should trigger onFailed',
+        p: {
+            market: '0xa1',
+            liquidity: 10000,
+            initialFairPrices: ['0.4', '0.49422020'],
+            startingQuantity: 501,
+            bestStartingQuantity: 500,
+            priceWidth: '0.8',
+            isSimulation: false
+        },
+        cb: {
+            onSimulate: function(simulation) {},
+            onBuyCompleteSets: function(res) {},
+            onSetupOutcome: function(outcome) {},
+            onSetupOrder: function(order) {},
+            onSuccess: function(orderBook) {},
+            onFailed: function(err) {
+                // this callback should be called, lets assert we get the expected error back.
+                assert.deepEqual(err, augur.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
+            }
+        },
         getMarketInfo: function(market, account, callback) {
             // return marketInfo with the expected numOutcomes and a type of binary.
             callback({ numOutcomes: 2, type: 'binary' });
