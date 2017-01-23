@@ -623,7 +623,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bignumber.js":2,"buffer":117,"ethereumjs-abi":28,"js-sha3":38}],2:[function(require,module,exports){
+},{"bignumber.js":2,"buffer":152,"ethereumjs-abi":28,"js-sha3":38}],2:[function(require,module,exports){
 /*! bignumber.js v2.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -3473,7 +3473,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],4:[function(require,module,exports){
+},{"buffer":152}],4:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -6961,7 +6961,7 @@ if (typeof window === 'object') {
   }
 }
 
-},{"crypto":87}],6:[function(require,module,exports){
+},{"crypto":122}],6:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -6999,7 +6999,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"js-sha3":38}],7:[function(require,module,exports){
+},{"buffer":152,"js-sha3":38}],7:[function(require,module,exports){
 (function (Buffer){
 var Transform = require('stream').Transform
 var inherits = require('inherits')
@@ -7093,7 +7093,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"inherits":37,"stream":225,"string_decoder":226}],8:[function(require,module,exports){
+},{"buffer":152,"inherits":37,"stream":260,"string_decoder":261}],8:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var inherits = require('inherits')
@@ -7149,7 +7149,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":10,"buffer":117,"cipher-base":7,"inherits":37,"ripemd160":40,"sha.js":49}],9:[function(require,module,exports){
+},{"./md5":10,"buffer":152,"cipher-base":7,"inherits":37,"ripemd160":40,"sha.js":49}],9:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var intSize = 4;
@@ -7186,7 +7186,7 @@ function hash(buf, fn, hashSize, bigEndian) {
 }
 exports.hash = hash;
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],10:[function(require,module,exports){
+},{"buffer":152}],10:[function(require,module,exports){
 'use strict';
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
@@ -11992,7 +11992,7 @@ ABI.toSerpent = function (types) {
 module.exports = ABI
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":4,"buffer":117,"ethereumjs-util":30}],30:[function(require,module,exports){
+},{"bn.js":4,"buffer":152,"ethereumjs-util":30}],30:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -12697,7 +12697,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":4,"buffer":117,"create-hash":8,"keccakjs":39,"rlp":41,"secp256k1":42}],31:[function(require,module,exports){
+},{"assert":113,"bn.js":4,"buffer":152,"create-hash":8,"keccakjs":39,"rlp":41,"secp256k1":42}],31:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -14506,7 +14506,7 @@ function ripemd160 (message) {
 module.exports = ripemd160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],41:[function(require,module,exports){
+},{"buffer":152}],41:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -14739,7 +14739,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"buffer":117}],42:[function(require,module,exports){
+},{"assert":113,"buffer":152}],42:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
@@ -14791,7 +14791,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../augur.js/node_modules/is-buffer/index.js")})
-},{"../../../../augur.js/node_modules/is-buffer/index.js":172}],44:[function(require,module,exports){
+},{"../../../../augur.js/node_modules/is-buffer/index.js":207}],44:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -14992,7 +14992,7 @@ exports.signatureImportLax = function (sig) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bip66":3,"buffer":117}],45:[function(require,module,exports){
+},{"bip66":3,"buffer":152}],45:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -15243,7 +15243,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../messages.json":47,"bn.js":4,"buffer":117,"create-hash":8,"elliptic":11}],46:[function(require,module,exports){
+},{"../messages.json":47,"bn.js":4,"buffer":152,"create-hash":8,"elliptic":11}],46:[function(require,module,exports){
 'use strict'
 var assert = require('./assert')
 var der = require('./der')
@@ -15587,7 +15587,7 @@ Hash.prototype._update = function () {
 module.exports = Hash
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],49:[function(require,module,exports){
+},{"buffer":152}],49:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -15701,7 +15701,7 @@ Sha.prototype._hash = function () {
 module.exports = Sha
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"buffer":117,"inherits":37}],51:[function(require,module,exports){
+},{"./hash":48,"buffer":152,"inherits":37}],51:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -15803,7 +15803,7 @@ Sha1.prototype._hash = function () {
 module.exports = Sha1
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"buffer":117,"inherits":37}],52:[function(require,module,exports){
+},{"./hash":48,"buffer":152,"inherits":37}],52:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -15859,7 +15859,7 @@ Sha224.prototype._hash = function () {
 module.exports = Sha224
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"./sha256":53,"buffer":117,"inherits":37}],53:[function(require,module,exports){
+},{"./hash":48,"./sha256":53,"buffer":152,"inherits":37}],53:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -15997,7 +15997,7 @@ Sha256.prototype._hash = function () {
 module.exports = Sha256
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"buffer":117,"inherits":37}],54:[function(require,module,exports){
+},{"./hash":48,"buffer":152,"inherits":37}],54:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
@@ -16057,7 +16057,7 @@ Sha384.prototype._hash = function () {
 module.exports = Sha384
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"./sha512":55,"buffer":117,"inherits":37}],55:[function(require,module,exports){
+},{"./hash":48,"./sha512":55,"buffer":152,"inherits":37}],55:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var Hash = require('./hash')
@@ -16320,7 +16320,7 @@ Sha512.prototype._hash = function () {
 module.exports = Sha512
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":48,"buffer":117,"inherits":37}],56:[function(require,module,exports){
+},{"./hash":48,"buffer":152,"inherits":37}],56:[function(require,module,exports){
 module.exports={
   "events": {
     "Approval": {
@@ -22710,7 +22710,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],60:[function(require,module,exports){
+},{"buffer":152}],60:[function(require,module,exports){
 /**
  * Augur contract method info.
  */
@@ -22740,18 +22740,6215 @@ module.exports = function (network, contracts) {
 };
 
 },{"./api":56,"./contracts":57,"clone":59}],61:[function(require,module,exports){
+(function (process,Buffer){
+/**
+ * Client-side accounts
+ */
+
+"use strict";
+
+var NODE_JS = typeof module !== "undefined" && process && !process.browser;
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var EthTx = require("ethereumjs-tx");
+var keys = require("keythereum");
+var uuid = require("uuid");
+var clone = require("clone");
+var locks = require("locks");
+var request = NODE_JS ? require("request") : require("browser-request");
+var abi = require("augur-abi");
+var errors = require("ethrpc").errors;
+var constants = require("./constants");
+var utils = require("./utilities");
+
+request = request.defaults({ timeout: 999999 });
+
+keys.constants.pbkdf2.c = constants.ROUNDS;
+keys.constants.scrypt.n = constants.ROUNDS;
+
+module.exports = function () {
+
+  var augur = this;
+  return {
+
+    // The account object is set when logged in
+    account: {},
+
+    // free (testnet) ether for new accounts on registration
+    fundNewAccountFromFaucet: function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, onFailed) {
+      onSent = onSent || utils.noop;
+      onSuccess = onSuccess || utils.noop;
+      onFailed = onFailed || utils.noop;
+      if (registeredAddress === undefined || registeredAddress === null || registeredAddress.constructor !== String) {
+        return onFailed(registeredAddress);
+      }
+      var url = constants.FAUCET + abi.format_address(registeredAddress);
+      console.debug("fundNewAccountFromFaucet:", url);
+      request(url, function (err, response, body) {
+        console.log("faucet err:", err);
+        console.log("faucet response:", response);
+        console.log("faucet body:", body);
+        if (err) return onFailed(err);
+        if (response.statusCode !== 200) {
+          return onFailed(response.statusCode);
+        }
+        console.debug("Sent ether to:", registeredAddress);
+        augur.rpc.balance(registeredAddress, function (ethBalance) {
+          console.debug("Balance:", ethBalance);
+          var balance = parseInt(ethBalance, 16);
+          if (balance > 0) {
+            augur.fundNewAccount({
+              branch: branch || constants.DEFAULT_BRANCH_ID,
+              onSent: onSent,
+              onSuccess: onSuccess,
+              onFailed: onFailed
+            });
+          } else {
+            async.until(function () {
+              return balance > 0;
+            }, function (callback) {
+              augur.rpc.fastforward(1, function (nextBlock) {
+                console.log("Block:", nextBlock);
+                augur.rpc.balance(registeredAddress, function (ethBalance) {
+                  console.debug("Balance:", ethBalance);
+                  balance = parseInt(ethBalance, 16);
+                  callback(null, balance);
+                });
+              });
+            }, function (e, balance) {
+              if (e) console.error(e);
+              augur.fundNewAccount({
+                branch: branch || constants.DEFAULT_BRANCH_ID,
+                onSent: onSent,
+                onSuccess: onSuccess,
+                onFailed: onFailed
+              });
+            });
+          }
+        });
+      });
+    },
+
+    fundNewAccountFromAddress: function fundNewAccountFromAddress(fromAddress, amount, registeredAddress, branch, onSent, _onSuccess, onFailed) {
+      onSent = onSent || utils.noop;
+      _onSuccess = _onSuccess || utils.noop;
+      onFailed = onFailed || utils.noop;
+      augur.rpc.sendEther({
+        to: registeredAddress,
+        value: amount,
+        from: fromAddress,
+        onSent: utils.noop,
+        onSuccess: function onSuccess(res) {
+          augur.fundNewAccount({
+            branch: branch || constants.DEFAULT_BRANCH_ID,
+            onSent: onSent,
+            onSuccess: _onSuccess,
+            onFailed: onFailed
+          });
+        },
+        onFailed: onFailed
+      });
+    },
+
+    changeAccountName: function changeAccountName(newName, cb) {
+      cb = cb || utils.pass;
+
+      // web.account object is set to use new name
+      this.account.name = newName;
+
+      // send back the new updated loginAccount object.
+      return cb(clone(this.account));
+    },
+
+    register: function register(name, password, cb) {
+      var self = this;
+      cb = utils.is_function(cb) ? cb : utils.pass;
+      if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
+
+      // generate ECDSA private key and initialization vector
+      keys.create(null, function (plain) {
+        if (plain.error) return cb(plain);
+
+        // derive secret key from password
+        keys.deriveKey(password, plain.salt, { kdf: constants.KDF }, function (derivedKey) {
+          if (derivedKey.error) return cb(derivedKey);
+          if (!Buffer.isBuffer(derivedKey)) {
+            derivedKey = new Buffer(derivedKey, "hex");
+          }
+          var encryptedPrivateKey = new Buffer(keys.encrypt(plain.privateKey, derivedKey.slice(0, 16), plain.iv), "base64").toString("hex");
+
+          // encrypt private key using derived key and IV, then
+          // store encrypted key & IV, indexed by handle
+          var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+          var kdfparams = {
+            dklen: keys.constants[constants.KDF].dklen,
+            salt: plain.salt.toString("hex")
+          };
+          if (constants.KDF === "scrypt") {
+            kdfparams.n = keys.constants.scrypt.n;
+            kdfparams.r = keys.constants.scrypt.r;
+            kdfparams.p = keys.constants.scrypt.p;
+          } else {
+            kdfparams.c = keys.constants.pbkdf2.c;
+            kdfparams.prf = keys.constants.pbkdf2.prf;
+          }
+          var keystore = {
+            address: address,
+            crypto: {
+              cipher: keys.constants.cipher,
+              ciphertext: encryptedPrivateKey,
+              cipherparams: { iv: plain.iv.toString("hex") },
+              kdf: constants.KDF,
+              kdfparams: kdfparams,
+              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+            },
+            version: 3,
+            id: uuid.v4()
+          };
+          var loginID = augur.base58Encode({ keystore: keystore });
+
+          // while logged in, web.account object is set
+          self.account = {
+            name: name,
+            loginID: loginID,
+            privateKey: plain.privateKey,
+            address: address,
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
+
+          return cb(clone(self.account));
+        }); // deriveKey
+      }); // create
+    },
+
+    importAccount: function importAccount(name, password, keystore, cb) {
+      var self = this;
+      cb = utils.is_function(cb) ? cb : utils.pass;
+
+      // blank password
+      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+
+      // preparing to redo the secureLoginID to use the new name
+      keys.recover(password, keystore, function (privateKey) {
+        var keystoreCrypto = keystore.crypto || keystore.Crypto;
+        keys.deriveKey(password, keystoreCrypto.kdfparams.salt, { kdf: constants.KDF }, function (derivedKey) {
+          var loginID = augur.base58Encode({ keystore: keystore });
+
+          // while logged in, web.account object is set
+          self.account = {
+            name: name,
+            loginID: loginID,
+            privateKey: privateKey,
+            address: abi.format_address(keystore.address),
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
+          return cb(clone(self.account));
+        });
+      });
+    },
+
+    loadLocalLoginAccount: function loadLocalLoginAccount(localAccount, cb) {
+      var self = this;
+      cb = utils.is_function(cb) ? cb : utils.pass;
+      var privateKey = localAccount.privateKey;
+      var derivedKey = localAccount.derivedKey;
+      if (privateKey && !Buffer.isBuffer(privateKey)) {
+        privateKey = new Buffer(privateKey, "hex");
+      }
+      if (derivedKey && !Buffer.isBuffer(derivedKey)) {
+        derivedKey = new Buffer(derivedKey, "hex");
+      }
+      self.account = {
+        name: localAccount.name,
+        loginID: localAccount.loginID,
+        privateKey: privateKey,
+        address: abi.format_address(localAccount.keystore.address),
+        keystore: localAccount.keystore,
+        derivedKey: derivedKey
+      };
+      return cb(clone(this.account));
+    },
+
+    login: function login(loginID, password, cb) {
+      var self = this;
+      cb = utils.is_function(cb) ? cb : utils.pass;
+
+      // blank password
+      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+      var decodedLoginID;
+      try {
+        decodedLoginID = augur.base58Decode(loginID);
+      } catch (err) {
+        return cb(errors.BAD_CREDENTIALS);
+      }
+      var keystore = decodedLoginID.keystore;
+      var keystoreCrypto = keystore.crypto || keystore.Crypto;
+      var options = {
+        kdf: keystoreCrypto.kdf,
+        kdfparams: keystoreCrypto.kdfparams,
+        cipher: keystoreCrypto.kdf
+      };
+
+      // derive secret key from password
+      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
+        if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+
+        // verify that message authentication codes match
+        var storedKey = keystoreCrypto.ciphertext;
+        if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
+          return cb(errors.BAD_CREDENTIALS);
+        }
+
+        if (!Buffer.isBuffer(derivedKey)) {
+          derivedKey = new Buffer(derivedKey, "hex");
+        }
+
+        // decrypt stored private key using secret key
+        try {
+          var privateKey = new Buffer(keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv), "hex");
+
+          // while logged in, web.account object is set
+          self.account = {
+            name: "",
+            loginID: loginID,
+            privateKey: privateKey,
+            address: abi.format_address(keystore.address),
+            keystore: keystore,
+            derivedKey: derivedKey
+          };
+          return cb(clone(self.account));
+
+          // decryption failure: bad password
+        } catch (exc) {
+          var e = clone(errors.BAD_CREDENTIALS);
+          e.bubble = exc;
+          return cb(e);
+        }
+      }); // deriveKey
+    },
+
+    // user-supplied plaintext private key
+    loginWithMasterKey: function loginWithMasterKey(name, privateKey, cb) {
+      if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
+      this.account = {
+        name: name,
+        loginID: augur.base58Encode({ name: name }),
+        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
+        privateKey: privateKey,
+        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")
+      };
+      return cb(clone(this.account));
+    },
+
+    logout: function logout() {
+      this.account = {};
+      augur.rpc.clear();
+    },
+
+    submitTx: function submitTx(packaged, cb) {
+      var self = this;
+      var mutex = locks.createMutex();
+      mutex.lock(function () {
+        for (var rawTxHash in augur.rpc.rawTxs) {
+          if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
+          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce && (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
+            packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
+            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+              console.debug("[augur.js] duplicate nonce, incremented:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
+            }
+            break;
+          }
+        }
+        if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
+          packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
+        } else {
+          augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
+        }
+        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+          console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
+        }
+        mutex.unlock();
+        if (augur.rpc.debug.broadcast) {
+          console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
+        }
+        var etx = new EthTx(packaged);
+
+        // sign, validate, and send the transaction
+        etx.sign(self.account.privateKey);
+
+        // calculate the cost (in ether) of this transaction
+        // (note: this is just an upper bound on the cost, set by the gasLimit!)
+        var cost = etx.getUpfrontCost().toString();
+
+        // transaction validation
+        if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
+
+        // send the raw signed transaction to geth
+        augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+          if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
+          if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+          if (res.error) {
+            if (res.message.indexOf("rlp") > -1) {
+              var err = clone(errors.RLP_ENCODING_ERROR);
+              err.bubble = res;
+              err.packaged = packaged;
+              return cb(err);
+            } else if (res.message.indexOf("Nonce too low") > -1) {
+              if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
+                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
+              }
+              ++augur.rpc.rawTxMaxNonce;
+              delete packaged.nonce;
+              return self.getTxNonce(packaged, cb);
+            }
+            return cb(res);
+          }
+
+          // res is the txhash if nothing failed immediately
+          // (even if the tx is nulled, still index the hash)
+          augur.rpc.rawTxs[res] = { tx: packaged, cost: abi.unfix(cost, "string") };
+
+          // nonce ok, execute callback
+          return cb(res);
+        });
+      });
+    },
+
+    // get nonce: number of transactions
+    getTxNonce: function getTxNonce(packaged, cb) {
+      var self = this;
+      if (packaged.nonce) return this.submitTx(packaged, cb);
+      augur.rpc.pendingTxCount(self.account.address, function (txCount) {
+        if (augur.rpc.debug.nonce) {
+          console.debug('[augur.js] txCount:', parseInt(txCount, 16));
+        }
+        if (txCount && !txCount.error && !(txCount instanceof Error)) {
+          packaged.nonce = abi.hex(txCount);
+        }
+        self.submitTx(packaged, cb);
+      });
+    },
+
+    invoke: function invoke(payload, cb) {
+      var self = this;
+
+      // if this is just a call, use ethrpc's regular invoke method
+      if (!payload.send) {
+        if (augur.rpc.debug.broadcast) {
+          console.log("[augur.js] eth_call payload:", payload);
+        }
+        return augur.rpc.fire(payload, cb);
+      }
+
+      cb = cb || utils.pass;
+      if (!this.account.address || !this.account.privateKey) {
+        return cb(errors.NOT_LOGGED_IN);
+      }
+      if (!payload || payload.constructor !== Object) {
+        return cb(errors.TRANSACTION_FAILED);
+      }
+
+      // parse and serialize transaction parameters
+      var packaged = augur.rpc.packageRequest(payload);
+      packaged.from = this.account.address;
+      packaged.nonce = payload.nonce || "0x0";
+      packaged.value = payload.value || "0x0";
+      if (payload.gasLimit) {
+        packaged.gasLimit = abi.hex(payload.gasLimit);
+      } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
+        packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
+      } else {
+        packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
+      }
+      if (augur.rpc.debug.broadcast) {
+        console.log("[augur.js] payload:", payload);
+      }
+      if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
+        packaged.gasPrice = payload.gasPrice;
+        return this.getTxNonce(packaged, cb);
+      }
+      augur.rpc.getGasPrice(function (gasPrice) {
+        if (!gasPrice || gasPrice.error) {
+          return cb(errors.TRANSACTION_FAILED);
+        }
+        packaged.gasPrice = gasPrice;
+        self.getTxNonce(packaged, cb);
+      });
+    }
+
+  };
+};
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"./constants":65,"./utilities":95,"_process":226,"async":114,"augur-abi":1,"bignumber.js":117,"browser-request":121,"buffer":152,"clone":155,"ethereumjs-tx":193,"ethrpc":282,"keythereum":288,"locks":210,"request":122,"uuid":271}],62:[function(require,module,exports){
+(function (process){
+/**
+ * Augur JavaScript API
+ * @author Kevin Day (@k_day)
+ */
+
+"use strict";
+
+var NODE_JS = typeof module !== "undefined" && process && !process.browser;
+var request = NODE_JS ? require("request") : require("browser-request");
+var noop = function noop() {};
+
+//for now, cache nodes only have 1 second to respond before we fall back to chain.
+request = request.defaults({ timeout: 1000 });
+
+module.exports = function () {
+
+  var augur = this;
+
+  return {
+
+    nodes: [],
+
+    //(For now just takes list of nodes as input)
+    bootstrap: function bootstrap(cache_nodes, cb) {
+      var self = this;
+      cb = cb || noop;
+      if (cache_nodes && cache_nodes.constructor === Array) {
+        self.nodes = cache_nodes;
+      }
+      return cb();
+    },
+
+    buildRequest: function buildRequest(endpoint, params) {
+      if (this.nodes.length <= 0) return null;
+
+      var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+      url = url + "/" + endpoint;
+      var first = true;
+      for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+          if (first) {
+            url += "?";
+            first = false;
+          } else {
+            url += "&";
+          }
+          if (params[key].constructor === Array) {
+            url = url + key + "=" + params[key].toString();
+          } else {
+            url = url + key + "=" + params[key];
+          }
+        }
+      }
+      return url;
+    },
+
+    fetchHelper: function fetchHelper(url, cb) {
+      if (!url) return cb("no nodes to fetch from");
+      request(url, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+          return cb(null, body);
+        } else {
+          return cb(url + " " + error);
+        }
+      });
+    },
+
+    getMarketsInfo: function getMarketsInfo(branch, cb) {
+      var url = this.buildRequest("getMarketsInfo", { branch: branch });
+      return this.fetchHelper(url, cb);
+    },
+
+    getMarketInfo: function getMarketInfo(market, cb) {
+      var url = this.buildRequest("getMarketInfo", { id: market });
+      return this.fetchHelper(url, cb);
+    },
+
+    batchGetMarketInfo: function batchGetMarketInfo(marketIds, cb) {
+      var url = this.buildRequest("batchGetMarketInfo", { ids: marketIds });
+      return this.fetchHelper(url, cb);
+    },
+
+    getMarketPriceHistory: function getMarketPriceHistory(options, cb) {
+      var url = this.buildRequest("getMarketPriceHistory", options);
+      return this.fetchHelper(url, cb);
+    },
+
+    getAccountTrades: function getAccountTrades(options, cb) {
+      var url = this.buildRequest("getAccountTrades", options);
+      return this.fetchHelper(url, cb);
+    }
+  };
+};
+}).call(this,require('_process'))
+},{"_process":226,"browser-request":121,"request":122}],63:[function(require,module,exports){
+/**
+ * Batch interface:
+ * var b = augur.createBatch();
+ * b.add("getCashBalance", [augur.coinbase], callback);
+ * b.add("getRepBalance", [augur.constants.DEFAULT_BRANCH_ID, augur.coinbase], callback);
+ * b.execute();
+ */
+
+"use strict";
+
+var clone = require("clone");
+
+var Batch = function Batch(tx, rpc) {
+  this.tx = tx;
+  this.rpc = rpc;
+  this.txlist = [];
+};
+
+Batch.prototype.add = function (contract, method, params, callback) {
+  if (method && contract) {
+    var tx = clone(this.tx[contract][method]);
+    tx.params = params;
+    if (callback) tx.callback = callback;
+    this.txlist.push(tx);
+  }
+};
+
+Batch.prototype.execute = function () {
+  this.rpc.batch(this.txlist, true);
+};
+
+module.exports = function () {
+  return new Batch(this.tx, this.rpc);
+};
+},{"clone":155}],64:[function(require,module,exports){
+"use strict";
+
+var abi = require("augur-abi");
+
+module.exports = function () {
+
+  var rpc = this.rpc;
+
+  return {
+
+    POLL_INTERVAL: 3000, // poll for updates every 3 seconds
+
+    whisper: {
+      id: null,
+      filters: { augur: null }
+    },
+
+    parseMessage: function parseMessage(message) {
+      return JSON.parse(abi.decode_hex(message));
+    },
+
+    parseMessages: function parseMessages(messages) {
+      var parsedMessages = [];
+      if (messages && messages.constructor === Array && messages.length) {
+        for (var i = 0, numMessages = messages.length; i < numMessages; ++i) {
+          parsedMessages.push(this.parseMessage(messages[i].payload));
+        }
+      }
+      return parsedMessages;
+    },
+
+    joinRoom: function joinRoom(roomName, onMessages) {
+      var self = this;
+      if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
+      if (!this.whisper.filters[roomName]) {
+        this.whisper.filters[roomName] = {
+          id: rpc.shh("newFilter", {
+            topics: [abi.prefix_hex(abi.encode_hex(roomName))]
+          }),
+          heartbeat: setInterval(function () {
+            self.getNewMessages(roomName, function (err, messages) {
+              if (err) return console.error(err);
+              onMessages(messages);
+            });
+          }, this.POLL_INTERVAL)
+        };
+      }
+      rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
+        onMessages(self.parseMessages(messages));
+      });
+    },
+
+    getNewMessages: function getNewMessages(roomName, callback) {
+      var self = this;
+      if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
+        rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
+          callback(null, self.parseMessages(messages));
+        });
+      }
+    },
+
+    postMessage: function postMessage(roomName, message, senderAddress, senderName, callback) {
+      var payload = {
+        name: senderName,
+        address: senderAddress,
+        message: message,
+        timestamp: new Date().getTime()
+      };
+      rpc.shh("post", {
+        from: this.whisper.id,
+        topics: [abi.prefix_hex(abi.encode_hex(roomName))],
+        payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
+        priority: "0x64",
+        ttl: "0x93a80"
+      }, function (posted) {
+        if (!posted) return callback("couldn't post message: " + message);
+        callback(null);
+      });
+    },
+
+    leaveRoom: function leaveRoom(roomName, callback) {
+      var self = this;
+      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
+        if (!uninstalled) return callback("couldn't leave room: " + roomName);
+        clearInterval(self.whisper.filters[roomName].heartbeat);
+        self.whisper.filters[roomName] = null;
+        callback(null, uninstalled);
+      });
+    }
+
+  };
+};
+},{"augur-abi":1}],65:[function(require,module,exports){
+/**
+ * augur.js constants
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+
+var ten = new BigNumber(10, 10);
+var decimals = new BigNumber(4, 10);
+var multiple = ten.toPower(decimals);
+var ONE = ten.toPower(18);
+
+module.exports = {
+  ZERO: new BigNumber(0),
+  ONE: ONE,
+  ETHER: ONE,
+
+  PRECISION: {
+    decimals: decimals.toNumber(),
+    limit: ten.dividedBy(multiple),
+    zero: new BigNumber(1, 10).dividedBy(multiple),
+    multiple: multiple
+  },
+  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
+  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+
+  DEFAULT_NETWORK_ID: "3",
+
+  // default branch info: "root branch", 1010101
+  DEFAULT_BRANCH_ID: "0xf69b5",
+  DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
+
+  BID: 1,
+  ASK: 2,
+
+  // milliseconds to wait between getMarketsInfo batches
+  PAUSE_BETWEEN_MARKET_BATCHES: 50,
+
+  // milliseconds to wait before the rpc.getLogs method times out
+  GET_LOGS_TIMEOUT: 480000,
+
+  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
+  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
+
+  COST_PER_REPORTER: new BigNumber("0.0000000000035", 10),
+
+  // int256 type codes for log filters
+  LOG_TYPE_CODES: {
+    buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
+    sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
+  },
+
+  // maximum number of transactions to auto-submit in parallel
+  PARALLEL_LIMIT: 5,
+
+  // fixed-point indeterminate: 1.5 * 10^18
+  BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
+  CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
+  INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
+
+  // default gas: 3.135M
+  DEFAULT_GAS: 3135000,
+
+  // gas needed for trade transactions (values from pyethereum tester)
+  MAKE_ORDER_GAS: { sell: 725202, buy: 725202 },
+  TRADE_GAS: [{ sell: 756374, buy: 787421 }, // first trade_id only
+  { sell: 615817, buy: 661894 } // each additional trade_id
+  ],
+  CANCEL_GAS: { sell: 288060, buy: 230059 },
+
+  // expected block interval
+  SECONDS_PER_BLOCK: 12,
+
+  // keythereum crypto parameters
+  // KDF: "pbkdf2",
+  KDF: "scrypt",
+  ROUNDS: 4096,
+  // ROUNDS: 65536,
+  KEYSIZE: 32,
+  IVSIZE: 16,
+
+  // cipher used to encrypt/decrypt reports
+  REPORT_CIPHER: "aes-256-ctr",
+
+  // Morden testnet faucet endpoint
+  FAUCET: "https://faucet.augur.net/faucet/"
+};
+},{"bignumber.js":117}],66:[function(require,module,exports){
+/**
+ * Filters / logging
+ */
+
+"use strict";
+
+var async = require("async");
+var clone = require("clone");
+var abi = require("augur-abi");
+var errors = require("ethrpc").errors;
+var events_api = require("augur-contracts").api.events;
+var utils = require("./utilities");
+var constants = require("./constants");
+
+// non-event filters
+var filters = {
+  block: { id: null, heartbeat: null },
+  contracts: { id: null, heartbeat: null }
+};
+
+// event filters
+for (var label in events_api) {
+  if (!events_api.hasOwnProperty(label)) continue;
+  filters[label] = { id: null, heartbeat: null };
+}
+
+module.exports = function () {
+
+  var augur = this;
+
+  return {
+
+    PULSE: constants.SECONDS_PER_BLOCK * 500,
+
+    filter: filters,
+
+    format_trade_type: function format_trade_type(type) {
+      return parseInt(type, 16) === 1 ? "buy" : "sell";
+    },
+    format_common_fields: function format_common_fields(msg) {
+      var fmt = clone(msg);
+      if (msg.sender) fmt.sender = abi.format_address(msg.sender);
+      if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
+      if (msg.type) fmt.type = this.format_trade_type(msg.type);
+      if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
+      if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
+      return fmt;
+    },
+    format_event_message: function format_event_message(label, msg) {
+      var fmt;
+      switch (label) {
+        case "Approval":
+          fmt = clone(msg);
+          fmt._owner = abi.format_address(msg._owner);
+          fmt._spender = abi.format_address(msg._spender);
+          fmt.value = abi.unfix(msg.value);
+          return fmt;
+        case "collectedFees":
+          fmt = this.format_common_fields(msg);
+          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
+          fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
+          fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
+          fmt.repGain = abi.unfix_signed(msg.repGain, "string");
+          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+          fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
+          fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
+          fmt.period = parseInt(msg.period, 16);
+          return fmt;
+        case "deposit":
+          fmt = this.format_common_fields(msg);
+          fmt.value = abi.unfix(msg.value, "string");
+          return fmt;
+        case "fundedAccount":
+          fmt = this.format_common_fields(msg);
+          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+          fmt.repBalance = abi.unfix(msg.repBalance, "string");
+          return fmt;
+        case "log_add_tx":
+          fmt = this.format_common_fields(msg);
+          fmt.outcome = parseInt(msg.outcome, 16);
+          fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
+          return fmt;
+        case "log_cancel":
+          fmt = this.format_common_fields(msg);
+          fmt.outcome = parseInt(msg.outcome, 16);
+          fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
+          return fmt;
+        case "log_fill_tx":
+        case "log_short_fill_tx":
+          fmt = this.format_common_fields(msg);
+          if (!fmt.type) {
+            fmt.type = "sell";
+            fmt.isShortSell = true;
+          }
+          fmt.owner = abi.format_address(msg.owner); // maker
+          fmt.takerFee = abi.unfix(msg.takerFee, "string");
+          fmt.makerFee = abi.unfix(msg.makerFee, "string");
+          fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
+          fmt.outcome = parseInt(msg.outcome, 16);
+          return fmt;
+        case "marketCreated":
+          fmt = this.format_common_fields(msg);
+          fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
+          fmt.eventBond = abi.unfix(msg.eventBond, "string");
+          return fmt;
+        case "payout":
+          fmt = this.format_common_fields(msg);
+          fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
+          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
+          fmt.shares = abi.unfix(msg.shares, "string");
+          return fmt;
+        case "penalizationCaughtUp":
+          fmt = this.format_common_fields(msg);
+          fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
+          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+          fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
+          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
+          return fmt;
+        case "penalize":
+          fmt = this.format_common_fields(msg);
+          fmt.oldrep = abi.unfix(msg.oldrep, "string");
+          fmt.repchange = abi.unfix_signed(msg.repchange, "string");
+          fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
+          fmt.p = abi.unfix(msg.p, "string");
+          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
+          return fmt;
+        case "sentCash":
+        case "Transfer":
+          fmt = clone(msg);
+          fmt._from = abi.format_address(msg._from);
+          fmt._to = abi.format_address(msg._to);
+          fmt._value = abi.unfix(msg._value);
+          return fmt;
+        case "submittedReport":
+        case "submittedReportHash":
+          fmt = this.format_common_fields(msg);
+          fmt.ethics = abi.unfix(msg.ethics, "string");
+          return fmt;
+        case "tradingFeeUpdated":
+          fmt = this.format_common_fields(msg);
+          fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
+          return fmt;
+        case "withdraw":
+          fmt = this.format_common_fields(msg);
+          fmt.to = abi.format_address(msg.to);
+          fmt.value = abi.unfix(msg.value, "string");
+          return fmt;
+        default:
+          return this.format_common_fields(msg);
+      }
+    },
+    parse_event_message: function parse_event_message(label, msg, onMessage) {
+      var i;
+      if (augur.options.debug.filters) {
+        console.log("parse_event_message label:", label);
+        console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
+      }
+      if (msg) {
+        switch (msg.constructor) {
+          case Array:
+            for (i = 0; i < msg.length; ++i) {
+              this.parse_event_message(label, msg[i], onMessage);
+            }
+            break;
+          case Object:
+            if (!msg.error && msg.topics && msg.data) {
+              var inputs = augur.api.events[label].inputs;
+              var parsed = {};
+              var topicIndex = 0;
+              var dataIndex = 0;
+              var topics = msg.topics;
+              var numIndexed = topics.length - 1;
+              var data = augur.rpc.unmarshal(msg.data);
+              if (data && data.constructor !== Array) data = [data];
+              for (i = 0; i < inputs.length; ++i) {
+                parsed[inputs[i].name] = 0;
+                if (inputs[i].indexed) {
+                  parsed[inputs[i].name] = topics[topicIndex + 1];
+                  ++topicIndex;
+                } else {
+                  parsed[inputs[i].name] = data[dataIndex];
+                  ++dataIndex;
+                }
+              }
+              parsed.blockNumber = parseInt(msg.blockNumber, 16);
+              parsed.transactionHash = msg.transactionHash;
+              parsed.removed = msg.removed;
+              if (!onMessage) {
+                return this.format_event_message(label, parsed);
+              }
+              onMessage(this.format_event_message(label, parsed));
+            }
+            break;
+          default:
+            console.warn("unknown event message:", msg);
+        }
+      }
+    },
+    parse_block_message: function parse_block_message(message, onMessage) {
+      if (message) {
+        if (message.length && message.constructor === Array) {
+          for (var i = 0, len = message.length; i < len; ++i) {
+            if (message[i] && message[i].number) {
+              onMessage(message[i].number);
+            } else {
+              onMessage(message[i]);
+            }
+          }
+        } else if (message.number) {
+          onMessage(message.number);
+        }
+      }
+    },
+    parse_contracts_message: function parse_contracts_message(message, onMessage) {
+      if (message && message.length && message.constructor === Array) {
+        for (var i = 0, len = message.length; i < len; ++i) {
+          if (message[i]) {
+            if (message[i].constructor === Object && message[i].data) {
+              message[i].data = augur.rpc.unmarshal(message[i].data);
+            }
+            onMessage(message[i]);
+          }
+        }
+      }
+    },
+    poll_filter: function poll_filter(label, onMessage) {
+      var callback,
+          self = this;
+      if (this.filter[label]) {
+        switch (label) {
+          case "contracts":
+            callback = function callback(msg) {
+              self.parse_contracts_message(msg, onMessage);
+            };
+            break;
+          case "block":
+            callback = function callback(msg) {
+              self.parse_block_message(msg, onMessage);
+            };
+            break;
+          default:
+            callback = function callback(msg) {
+              self.parse_event_message(label, msg, onMessage);
+            };
+        }
+        augur.rpc.getFilterChanges(this.filter[label].id, callback);
+      }
+    },
+
+    // clear/uninstall filters
+    clear_filter: function clear_filter(label, cb) {
+      if (utils.is_function(cb)) {
+        var self = this;
+        this.unsubscribe(this.filter[label].id, function (uninst) {
+          self.filter[label].id = null;
+          cb(uninst);
+        });
+      } else {
+        var uninst = this.unsubscribe(this.filter[label].id);
+        this.filter[label].id = null;
+        return uninst;
+      }
+    },
+
+    // set up filters
+    setup_event_filter: function setup_event_filter(contract, label, f) {
+      return this.subscribeLogs({
+        address: augur.contracts[contract],
+        topics: [augur.api.events[label].signature]
+      }, f);
+    },
+    setup_contracts_filter: function setup_contracts_filter(f) {
+      var self = this;
+      var contract_list = [];
+      for (var c in augur.contracts) {
+        if (!augur.contracts.hasOwnProperty(c)) continue;
+        contract_list.push(augur.contracts[c]);
+      }
+      var params = {
+        address: contract_list,
+        fromBlock: "0x01",
+        toBlock: "latest"
+      };
+      if (!utils.is_function(f)) {
+        this.filter.contracts = {
+          id: this.subscribeLogs(params),
+          heartbeat: null
+        };
+        return this.filter.contracts;
+      }
+      this.subscribeLogs(params, function (filter_id) {
+        self.filter.contracts = {
+          id: filter_id,
+          heartbeat: null
+        };
+        f(self.filter.contracts);
+      });
+    },
+    setup_block_filter: function setup_block_filter(f) {
+      var self = this;
+      if (!utils.is_function(f)) {
+        this.filter.block = {
+          id: this.subscribeNewBlocks(),
+          heartbeat: null
+        };
+        return this.filter.block;
+      }
+      this.subscribeNewBlocks(function (filter_id) {
+        self.filter.block = { id: filter_id, heartbeat: null };
+        f(self.filter.block);
+      });
+    },
+
+    // start listeners
+    start_event_listener: function start_event_listener(label, cb) {
+      var self = this;
+      var contract = augur.api.events[label].contract;
+      if (this.filter[label] && this.filter[label].id) {
+        if (!utils.is_function(cb)) return this.filter[label].id;
+        return cb(this.filter[label].id);
+      }
+      if (!utils.is_function(cb)) {
+        var filter_id = this.setup_event_filter(contract, label);
+        if (!filter_id || filter_id === "0x") {
+          return errors.FILTER_NOT_CREATED;
+        }
+        if (filter_id.error) return filter_id;
+        self.filter[label] = {
+          id: filter_id,
+          heartbeat: null
+        };
+        return filter_id;
+      }
+      this.setup_event_filter(contract, label, function (filter_id) {
+        if (!filter_id || filter_id === "0x") {
+          return cb(errors.FILTER_NOT_CREATED);
+        }
+        if (filter_id.error) return cb(filter_id);
+        self.filter[label] = {
+          id: filter_id,
+          heartbeat: null
+        };
+        cb(filter_id);
+      });
+    },
+    start_contracts_listener: function start_contracts_listener(cb) {
+      if (this.filter.contracts.id === null) {
+        if (!utils.is_function(cb)) {
+          return this.setup_contracts_filter();
+        }
+        this.setup_contracts_filter(cb);
+      }
+    },
+    start_block_listener: function start_block_listener(cb) {
+      if (this.filter.block.id === null) {
+        if (!utils.is_function(cb)) {
+          return this.setup_block_filter();
+        }
+        this.setup_block_filter(cb);
+      }
+    },
+
+    // start/stop polling
+    pacemaker: function pacemaker(cb) {
+      var self = this;
+      if (!cb || cb.constructor !== Object) return;
+      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+        async.forEachOf(this.filter, function (filter, label, next) {
+          if (utils.is_function(cb[label])) {
+            self.poll_filter(label, cb[label]);
+            self.filter[label].heartbeat = setInterval(function () {
+              self.poll_filter(label, cb[label]);
+            }, self.PULSE);
+          }
+          next();
+        });
+      } else {
+        async.forEachOf(this.filter, function (filter, label, next) {
+          if (utils.is_function(cb[label])) {
+            var callback = cb[label];
+            switch (label) {
+              case "contracts":
+                cb[label] = function (msg) {
+                  self.parse_contracts_message(msg, callback);
+                };
+                break;
+              case "block":
+                cb[label] = function (msg) {
+                  self.parse_block_message(msg, callback);
+                };
+                break;
+              default:
+                cb[label] = function (msg) {
+                  self.parse_event_message(label, msg, callback);
+                };
+            }
+            augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
+            next();
+          }
+        });
+      }
+    },
+
+    listen: function listen(cb, setup_complete) {
+      var self = this;
+
+      function listenHelper(callback, label, next) {
+        switch (label) {
+          case "contracts":
+            self.start_contracts_listener(function () {
+              self.pacemaker({ contracts: callback });
+              next(null, [label, self.filter[label].id]);
+            });
+            break;
+          case "block":
+            self.start_block_listener(function () {
+              self.pacemaker({ block: callback });
+              next(null, [label, self.filter[label].id]);
+            });
+            break;
+          default:
+            self.start_event_listener(label, function () {
+              var p = {};
+              p[label] = callback;
+              self.pacemaker(p);
+              next(null, [label, self.filter[label].id]);
+            });
+        }
+      }
+
+      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+        this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+        this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+        this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+      } else {
+        this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+        this.subscribeNewBlocks = augur.rpc.subscribeNewHeads.bind(augur.rpc);
+        this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+      }
+      async.forEachOfSeries(cb, function (callback, label, next) {
+
+        // skip invalid labels, undefined callbacks
+        if (!self.filter[label] || !callback) {
+          next(null, null);
+        } else if (self.filter[label].id === null && callback) {
+          listenHelper(callback, label, next);
+
+          // callback already registered. uninstall, and reinstall new callback.
+        } else if (self.filter[label].id && callback) {
+          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
+            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
+          }
+          self.clear_filter(label, function () {
+            listenHelper(callback, label, next);
+          });
+        }
+      }, function (err) {
+        if (err) console.error(err);
+        augur.rpc.customSubscriptionCallback = cb;
+        augur.rpc.resetCustomSubscription = function () {
+          self.listen(augur.rpc.customSubscriptionCallback);
+        }.bind(self);
+        if (utils.is_function(setup_complete)) setup_complete(self.filter);
+      });
+    },
+
+    all_filters_removed: function all_filters_removed() {
+      var f,
+          isRemoved = true;
+      for (var label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        f = this.filter[label];
+        if (f.heartbeat !== null || f.id !== null) {
+          isRemoved = false;
+          break;
+        }
+      }
+      return isRemoved;
+    },
+
+    ignore: function ignore(uninstall, cb, complete) {
+      var label,
+          self = this;
+      augur.rpc.resetCustomSubscription = null;
+
+      function cleared(uninst, callback, complete) {
+        callback(uninst);
+        if (uninst && uninst.constructor === Object) {
+          return complete(uninst);
+        }
+        if (self.all_filters_removed()) complete();
+      }
+
+      if (!complete && utils.is_function(cb)) {
+        complete = cb;
+        cb = null;
+      }
+      if (uninstall && uninstall.constructor === Object) {
+        cb = {};
+        for (label in this.filter) {
+          if (!this.filter.hasOwnProperty(label)) continue;
+          if (utils.is_function(uninstall[label])) {
+            cb[label] = uninstall[label];
+          }
+        }
+        uninstall = false;
+      }
+      cb = cb || {}; // individual filter removal callbacks
+      for (label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
+      }
+      complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
+      for (label in this.filter) {
+        if (!this.filter.hasOwnProperty(label)) continue;
+        if (this.filter[label].heartbeat !== null) {
+          clearInterval(this.filter[label].heartbeat);
+          this.filter[label].heartbeat = null;
+          if (!uninstall && utils.is_function(cb[label])) {
+            cb[label]();
+            if (this.all_filters_removed()) complete();
+          }
+        }
+      }
+      if (uninstall) {
+        async.forEachOfSeries(this.filter, function (filter, label, next) {
+          if (filter.id === null) return next();
+          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
+            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
+          }
+          self.clear_filter(label, function (uninst) {
+            cleared(uninst, cb[label], complete);
+            next();
+          });
+        });
+      }
+    }
+  };
+};
+},{"./constants":65,"./utilities":95,"async":114,"augur-abi":1,"augur-contracts":58,"clone":155,"ethrpc":282}],67:[function(require,module,exports){
+/**
+ * generateOrderBook: convenience method for generating an initial order book
+ * for a newly created market. generateOrderBook calculates the number of
+ * orders to create, as well as the spacing between orders.
+ *
+ * @param {Object} p
+ *     market: market ID
+ *     liquidity: initial cash to be placed on the order book
+ *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
+ *     startingQuantity: number of shares in each order
+ *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
+ *     priceWidth: spread between best bid/offer
+ *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
+ * @param {Object} cb
+ *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
+ *     (note: callbacks can also be properties of the p object)
+ */
+
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var constants = require("./constants");
+
+module.exports = function (p, cb) {
+  var self = this;
+  var liquidity = abi.bignum(p.liquidity);
+  var numOutcomes = p.initialFairPrices.length;
+  var initialFairPrices = new Array(numOutcomes);
+  for (var i = 0; i < numOutcomes; ++i) {
+    initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
+  }
+  var startingQuantity = abi.bignum(p.startingQuantity);
+  var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
+  var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
+  cb = cb || {};
+  var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
+  var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
+  var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
+  var _onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
+  var _onFailed = cb.onFailed || p.onFailed || this.utils.noop;
+  this.getMarketInfo(p.market, null, function (marketInfo) {
+    var minValue, maxValue;
+    if (!marketInfo) return _onFailed(self.errors.NO_MARKET_INFO);
+    if (marketInfo.numOutcomes !== numOutcomes) {
+      return _onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
+    }
+    var scalarMinMax;
+    if (marketInfo.type === "scalar") {
+      minValue = abi.bignum(marketInfo.events[0].minValue);
+      maxValue = abi.bignum(marketInfo.events[0].maxValue);
+      scalarMinMax = { minValue: minValue, maxValue: maxValue };
+    } else {
+      minValue = new BigNumber(0);
+      maxValue = new BigNumber(1);
+    }
+
+    var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+    if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
+      return _onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
+    }
+    var buyPrices = new Array(numOutcomes);
+    var sellPrices = new Array(numOutcomes);
+    var numSellOrders = new Array(numOutcomes);
+    var numBuyOrders = new Array(numOutcomes);
+    var shares = new BigNumber(0);
+    var i, j, buyPrice, sellPrice, outcomeShares;
+    for (i = 0; i < numOutcomes; ++i) {
+      if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) || initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+        console.log("priceDepth:", priceDepth.toFixed());
+        console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+        console.log("minValue:", minValue.toFixed());
+        console.log("maxValue:", maxValue.toFixed());
+        console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+        console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+        console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+        console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+        return _onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+      }
+      if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) || initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
+        return _onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
+      }
+      buyPrice = initialFairPrices[i].minus(halfPriceWidth);
+      sellPrice = initialFairPrices[i].plus(halfPriceWidth);
+      numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+      if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
+      numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+      if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
+      outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
+      if (outcomeShares.gt(shares)) shares = outcomeShares;
+      numSellOrders[i] = numSellOrders[i].toNumber();
+      buyPrices[i] = new Array(numBuyOrders[i]);
+      buyPrices[i][0] = buyPrice;
+      for (j = 1; j < numBuyOrders[i]; ++j) {
+        buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
+        if (buyPrices[i][j].lte(minValue)) {
+          buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
+        }
+      }
+      sellPrices[i] = new Array(numSellOrders[i]);
+      sellPrices[i][0] = sellPrice;
+      for (j = 1; j < numSellOrders[i]; ++j) {
+        sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
+        if (sellPrices[i][j].gte(maxValue)) {
+          sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
+        }
+      }
+    }
+    var numTransactions = 0;
+    for (i = 0; i < numOutcomes; ++i) {
+      numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
+    }
+    var onSimulate = cb.onSimulate || p.onSimulate;
+    if (self.utils.is_function(onSimulate)) {
+      onSimulate({
+        shares: shares.toFixed(),
+        numBuyOrders: numBuyOrders,
+        numSellOrders: numSellOrders,
+        buyPrices: abi.string(buyPrices),
+        sellPrices: abi.string(sellPrices),
+        numTransactions: numTransactions,
+        priceDepth: priceDepth.toFixed()
+      });
+      if (p.isSimulation) return;
+    }
+    self.buyCompleteSets({
+      market: p.market,
+      amount: abi.hex(shares),
+      onSent: function onSent(res) {
+        // console.log("generateOrderBook.buyCompleteSets sent:", res);
+      },
+      onSuccess: function onSuccess(res) {
+        // console.log("generateOrderBook.buyCompleteSets success:", res);
+        onBuyCompleteSets(res);
+        var outcomes = new Array(numOutcomes);
+        for (var i = 0; i < numOutcomes; ++i) {
+          outcomes[i] = i + 1;
+        }
+        async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
+          async.parallelLimit([function (callback) {
+            async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
+              var amount = !i ? bestStartingQuantity : startingQuantity;
+              self.buy({
+                amount: amount.toFixed(),
+                price: buyPrice.toFixed(),
+                market: p.market,
+                outcome: outcome,
+                scalarMinMax: scalarMinMax,
+                onSent: function onSent(res) {
+                  // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
+                },
+                onSuccess: function onSuccess(res) {
+                  // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
+                  onSetupOrder({
+                    tradeId: res.callReturn,
+                    market: p.market,
+                    outcome: outcome,
+                    amount: amount.toFixed(),
+                    buyPrice: buyPrice.toFixed(),
+                    timestamp: res.timestamp,
+                    hash: res.hash,
+                    gasUsed: res.gasUsed
+                  });
+                  nextBuyPrice();
+                },
+                onFailed: function onFailed(err) {
+                  console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                  nextBuyPrice(err);
+                }
+              });
+            }, function (err) {
+              if (err) console.error("async.each buy:", err);
+              callback(err);
+            });
+          }, function (callback) {
+            async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
+              var amount = !i ? bestStartingQuantity : startingQuantity;
+              self.sell({
+                amount: amount.toFixed(),
+                price: sellPrice.toFixed(),
+                market: p.market,
+                outcome: outcome,
+                scalarMinMax: scalarMinMax,
+                onSent: function onSent(res) {
+                  // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
+                },
+                onSuccess: function onSuccess(res) {
+                  // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
+                  onSetupOrder({
+                    tradeId: res.callReturn,
+                    market: p.market,
+                    outcome: outcome,
+                    amount: amount.toFixed(),
+                    sellPrice: sellPrice.toFixed(),
+                    timestamp: res.timestamp,
+                    hash: res.hash,
+                    gasUsed: res.gasUsed
+                  });
+                  nextSellPrice();
+                },
+                onFailed: function onFailed(err) {
+                  console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                  nextSellPrice(err);
+                }
+              });
+            }, function (err) {
+              if (err) console.error("async.each sell:", err);
+              callback(err);
+            });
+          }], constants.PARALLEL_LIMIT, function (err) {
+            // if (err) console.error("buy/sell:", err);
+            onSetupOutcome({ market: p.market, outcome: outcome });
+            nextOutcome(err);
+          });
+        }, function (err) {
+          if (err) return _onFailed(err);
+          var scalarMinMax = {};
+          if (marketInfo.type === "scalar") {
+            scalarMinMax.minValue = minValue;
+            scalarMinMax.maxValue = maxValue;
+          }
+          self.getOrderBook(p.market, scalarMinMax, _onSuccess);
+        });
+      },
+      onFailed: function onFailed(err) {
+        console.error("generateOrderBook.buyCompleteSets failed:", err);
+        _onFailed(err);
+      }
+    });
+  });
+};
+},{"./constants":65,"async":114,"augur-abi":1,"bignumber.js":117}],68:[function(require,module,exports){
+(function (process){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var NODE_JS = typeof module !== "undefined" && process && !process.browser;
+
+var BigNumber = require("bignumber.js");
+
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
+
+function Augur() {
+  this.version = "3.8.8";
+
+  this.options = {
+    debug: {
+      tools: false, // if true, testing tools (test/tools.js) included
+      abi: false, // debug logging in augur-abi
+      broadcast: false, // broadcast debug logging in ethrpc
+      connect: false, // connection debug logging in ethereumjs-connect
+      trading: false, // trading-related debug logging
+      reporting: false, // reporting-related debug logging
+      filters: false, // filters-related debug logging
+      sync: false // show warning on synchronous RPC request
+    },
+    loadZeroVolumeMarkets: true
+  };
+  this.protocol = NODE_JS || document.location.protocol;
+
+  this.connection = null;
+  this.coinbase = null;
+  this.from = null;
+
+  this.abi = require("augur-abi");
+  this.constants = require("./constants");
+  this.utils = require("./utilities");
+  this.rpc = require("ethrpc");
+  this.errors = this.rpc.errors;
+  this.abi.debug = this.options.debug.abi;
+  this.rpc.debug = this.options.debug;
+
+  // Load submodules
+  for (var i = 0, len = modules.length; i < len; ++i) {
+    for (var fn in modules[i]) {
+      if (!modules[i].hasOwnProperty(fn)) continue;
+      this[fn] = modules[i][fn].bind(this);
+      this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
+    }
+  }
+  this.generateOrderBook = require("./generateOrderBook").bind(this);
+  this.createBatch = require("./batch").bind(this);
+  this.accounts = this.Accounts();
+  this.web = this.accounts; // deprecated
+  this.filters = this.Filters();
+  this.chat = this.Chat();
+  this.augurNode = this.AugurNode();
+  if (this.options.debug.tools) this.tools = require("../test/tools");
+  this.sync();
+}
+
+Augur.prototype.Accounts = require("./accounts");
+Augur.prototype.Filters = require("./filters");
+Augur.prototype.Chat = require("./chat");
+Augur.prototype.AugurNode = require("./augurNode");
+
+module.exports = new Augur();
+}).call(this,require('_process'))
+},{"../test/tools":277,"./accounts":61,"./augurNode":62,"./batch":63,"./chat":64,"./constants":65,"./filters":66,"./generateOrderBook":67,"./modules/abacus":69,"./modules/buyAndSellShares":70,"./modules/cash":71,"./modules/collectFees":72,"./modules/compositeGetters":73,"./modules/connect":74,"./modules/createBranch":75,"./modules/createMarket":76,"./modules/events":77,"./modules/executeTrade":78,"./modules/logs":79,"./modules/makeOrder":80,"./modules/makeReports":81,"./modules/markets":82,"./modules/payout":84,"./modules/positions":85,"./modules/register":86,"./modules/reporting":87,"./modules/selectOrder":88,"./modules/sendReputation":89,"./modules/takeOrder":91,"./modules/trade":92,"./modules/tradingActions":93,"./modules/transact":94,"./utilities":95,"_process":226,"augur-abi":1,"bignumber.js":117,"ethrpc":282}],69:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Utility functions that do a local calculation (i.e., these functions do not
+ * make RPC requests).
+ */
+
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var bs58 = require("bs58");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+var makeReports = require("./makeReports");
+
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+var ONE = new BigNumber("1", 10);
+var ONE_POINT_FIVE = new BigNumber("1.5", 10);
+var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
+
+module.exports = {
+
+  /**
+   * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
+   * @param tradingfee BigNumber
+   * @param price BigNumber
+   * @param range BigNumber
+   * @return BigNumber
+   */
+  calculateFxpAdjustedTradingFee: function calculateFxpAdjustedTradingFee(tradingFee, price, range) {
+    return tradingFee.times(4).times(price).times(constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())).dividedBy(range.times(constants.ONE)).floor();
+  },
+
+  /**
+   * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
+   * @param tradingfee BigNumber
+   * @param price BigNumber
+   * @param range BigNumber
+   * @return BigNumber
+   */
+  calculateAdjustedTradingFee: function calculateAdjustedTradingFee(tradingFee, price, range) {
+    return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
+  },
+
+  // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
+  // @return {BigNumbers}
+  calculateFxpTradingCost: function calculateFxpTradingCost(amount, price, tradingFee, makerProportionOfFee, range) {
+    var fxpAmount = abi.fix(amount);
+    var fxpPrice = abi.fix(price);
+    var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
+    var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+    var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
+    var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
+    return {
+      fee: abi.unfix(fee),
+      percentFee: noFeeCost.gt(constants.ZERO) ? abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) : constants.ZERO,
+      cost: abi.unfix(noFeeCost.plus(fee)),
+      cash: abi.unfix(noFeeCost.minus(fee))
+    };
+  },
+
+  // Calculates adjusted total trade cost at a specified price
+  // @return {BigNumbers}
+  calculateTradingCost: function calculateTradingCost(amount, price, tradingFee, makerProportionOfFee, range) {
+    var bnAmount = abi.bignum(amount);
+    var bnPrice = abi.bignum(price);
+    var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
+    var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
+    var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
+    var noFeeCost = bnAmount.times(bnPrice);
+    return {
+      fee: fee,
+      percentFee: noFeeCost.gt(constants.ZERO) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
+      cost: noFeeCost.plus(fee),
+      cash: noFeeCost.minus(fee)
+    };
+  },
+
+  calculateValidityBond: function calculateValidityBond(tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod) {
+    var bnPeriodLength = abi.bignum(periodLength);
+    var bnBaseReporters = abi.bignum(baseReporters);
+    var bnPast24 = abi.bignum(numEventsCreatedInPast24Hours);
+    var bnNumberEvents = abi.bignum(numEventsInReportPeriod);
+    var bnGasPrice = abi.bignum(this.rpc.gasPrice);
+    var creationFee = abi.bignum("0.03").times(bnBaseReporters).dividedBy(tradingFee);
+    var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
+    if (creationFee.lt(minFee)) creationFee = minFee;
+    return creationFee.plus(bnPast24.dividedBy(bnPeriodLength).plus(1)).dividedBy(bnNumberEvents.plus(1)).dividedBy(2).toFixed();
+  },
+
+  // type: "buy" or "sell"
+  // gasLimit (optional): block gas limit as an integer
+  maxOrdersPerTrade: function maxOrdersPerTrade(type, gasLimit) {
+    return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
+  },
+
+  // tradeTypes: array of "buy" and/or "sell"
+  sumTradeGas: function sumTradeGas(tradeTypes) {
+    var gas = 0;
+    for (var i = 0, n = tradeTypes.length; i < n; ++i) {
+      gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
+    }
+    return gas;
+  },
+
+  sumTrades: function sumTrades(trade_ids) {
+    var trades = new BigNumber(0);
+    for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+      trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
+    }
+    return abi.hex(trades, true);
+  },
+
+  makeTradeHash: function makeTradeHash(max_value, max_amount, trade_ids) {
+    return utils.sha3([this.sumTrades(trade_ids), abi.fix(max_amount, "hex"), abi.fix(max_value, "hex")]);
+  },
+
+  calculateFxpTradingFees: function calculateFxpTradingFees(makerFee, takerFee) {
+    var fxpMakerFee = abi.fix(makerFee);
+    var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
+    var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
+    return { tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee };
+  },
+
+  calculateTradingFees: function calculateTradingFees(makerFee, takerFee) {
+    var bnMakerFee = abi.bignum(makerFee);
+    var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
+    var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+    return { tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee };
+  },
+
+  calculateFxpMakerTakerFees: function calculateFxpMakerTakerFees(tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+    var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
+    fxpTradingFee = abi.bignum(tradingFee);
+    fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+    makerFee = fxpTradingFee.times(fxpMakerProportionOfFee).dividedBy(constants.ONE).floor();
+    takerFee = ONE_POINT_FIVE.times(fxpTradingFee).dividedBy(constants.ONE).floor().minus(makerFee);
+    return {
+      trading: fxpTradingFee,
+      maker: makerFee,
+      taker: takerFee
+    };
+  },
+
+  // expects fixed-point inputs if !isUnfixed
+  calculateMakerTakerFees: function calculateMakerTakerFees(tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+    var bnTradingFee, bnMakerProportionOfFee, makerFee;
+    if (!isUnfixed) {
+      bnTradingFee = abi.unfix(tradingFee);
+      bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
+    } else {
+      bnTradingFee = abi.bignum(tradingFee);
+      bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
+    }
+    makerFee = bnTradingFee.times(bnMakerProportionOfFee);
+    if (returnBigNumber) {
+      return {
+        trading: bnTradingFee,
+        maker: makerFee,
+        taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
+      };
+    }
+    return {
+      trading: bnTradingFee.toFixed(),
+      maker: makerFee.toFixed(),
+      taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
+    };
+  },
+
+  parseMarketInfo: function parseMarketInfo(rawInfo) {
+    var EVENTS_FIELDS = 9;
+    var OUTCOMES_FIELDS = 3;
+    var info = {};
+    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+      // marketInfo[0] = marketID
+      // marketInfo[1] = MARKETS.getMakerFees(marketID)
+      // marketInfo[2] = numOutcomes
+      // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+      // marketInfo[4] = MARKETS.getTradingFee(marketID)
+      // marketInfo[5] = MARKETS.getBranchID(marketID)
+      // marketInfo[6] = MARKETS.getCumScale(marketID)
+      // marketInfo[7] = MARKETS.getCreationTime(marketID)
+      // marketInfo[8] = MARKETS.getVolume(marketID)
+      // marketInfo[9] = INFO.getCreationFee(marketID)
+      // marketInfo[10] = INFO.getCreator(marketID)
+      // tags = MARKETS.returnTags(marketID, outitems=3)
+      // marketInfo[11] = tags[0]
+      // marketInfo[12] = tags[1]
+      // marketInfo[13] = tags[2]
+      var index = 14;
+      var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+      info = {
+        id: abi.format_int256(rawInfo[0]),
+        network: this.network_id,
+        makerFee: fees.maker,
+        takerFee: fees.taker,
+        tradingFee: fees.trading,
+        numOutcomes: parseInt(rawInfo[2], 16),
+        tradingPeriod: parseInt(rawInfo[3], 16),
+        branchId: rawInfo[5],
+        numEvents: 1,
+        cumulativeScale: abi.unfix(rawInfo[6], "string"),
+        creationTime: parseInt(rawInfo[7], 16),
+        volume: abi.unfix(rawInfo[8], "string"),
+        creationFee: abi.unfix(rawInfo[9], "string"),
+        author: abi.format_address(rawInfo[10]),
+        tags: [this.decodeTag(rawInfo[11]), this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])]
+      };
+      info.outcomes = new Array(info.numOutcomes);
+
+      // organize event info
+      // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+      var event = {
+        id: abi.format_int256(rawInfo[index]),
+        endDate: parseInt(rawInfo[index + 1], 16),
+        minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
+        maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
+        numOutcomes: parseInt(rawInfo[index + 5], 16),
+        bond: abi.unfix_signed(rawInfo[index + 6], "string")
+      };
+
+      // event type: binary, categorical, or scalar
+      if (event.numOutcomes > 2) {
+        event.type = "categorical";
+      } else if (event.minValue === "1" && event.maxValue === "2") {
+        event.type = "binary";
+      } else {
+        event.type = "scalar";
+      }
+      info.type = event.type;
+      info.endDate = event.endDate;
+      info.minValue = event.minValue;
+      info.maxValue = event.maxValue;
+      var outcome, proportionCorrect;
+      if (parseInt(rawInfo[index + 2], 16) !== 0) {
+        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        outcome = unfixed.report;
+        info.isIndeterminate = unfixed.isIndeterminate;
+      }
+      if (parseInt(rawInfo[index + 8], 16) !== 0) {
+        proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+      }
+      if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
+      info.reportedOutcome = outcome;
+      info.proportionCorrect = proportionCorrect;
+      info.events = [event];
+      index += EVENTS_FIELDS;
+
+      // organize outcome info
+      for (var i = 0; i < info.numOutcomes; ++i) {
+        info.outcomes[i] = {
+          id: i + 1,
+          outstandingShares: abi.unfix(rawInfo[i * OUTCOMES_FIELDS + index], "string"),
+          price: abi.unfix_signed(rawInfo[i * OUTCOMES_FIELDS + index + 1], "string"),
+          sharesPurchased: abi.unfix(rawInfo[i * OUTCOMES_FIELDS + index + 2], "string")
+        };
+      }
+      index += info.numOutcomes * OUTCOMES_FIELDS;
+
+      // convert description byte array to unicode
+      var descriptionLength = parseInt(rawInfo[index], 16);
+      ++index;
+      if (descriptionLength) {
+        info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+        index += descriptionLength;
+      }
+
+      // convert resolution byte array to unicode
+      var resolutionLength = parseInt(rawInfo[index], 16);
+      ++index;
+      if (resolutionLength) {
+        info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+        index += resolutionLength;
+      }
+
+      // convert extraInfo byte array to unicode
+      var extraInfoLength = parseInt(rawInfo[index], 16);
+      if (extraInfoLength) {
+        info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+      }
+    }
+    return info;
+  },
+
+  formatTags: function formatTags(tags) {
+    var formattedTags = clone(tags);
+    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+    if (formattedTags.length) {
+      for (var i = 0; i < formattedTags.length; ++i) {
+        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+          formattedTags[i] = "0x0";
+        } else {
+          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
+        }
+      }
+    }
+    while (formattedTags.length < 3) {
+      formattedTags.push("0x0");
+    }
+    return formattedTags;
+  },
+
+  calculateRequiredMarketValue: function calculateRequiredMarketValue(gasPrice) {
+    gasPrice = abi.bignum(gasPrice);
+    return abi.prefix_hex(new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice)).toString(16));
+  },
+
+  // expects BigNumber inputs
+  calculatePriceDepth: function calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+  },
+
+  shrinkScalarPrice: function shrinkScalarPrice(minValue, price) {
+    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return price.minus(minValue).toFixed();
+  },
+
+  expandScalarPrice: function expandScalarPrice(minValue, price) {
+    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return price.plus(minValue).toFixed();
+  },
+
+  adjustScalarSellPrice: function adjustScalarSellPrice(maxValue, price) {
+    if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
+    if (price.constructor !== BigNumber) price = abi.bignum(price);
+    return maxValue.minus(price).toFixed();
+  },
+
+  roundToPrecision: function roundToPrecision(value, minimum, round, roundingMode) {
+    if (value.lt(minimum || constants.PRECISION.zero)) return null;
+    if (value.lt(constants.PRECISION.limit)) {
+      value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
+    } else {
+      value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
+    }
+    return value;
+  },
+
+  parseTradeInfo: function parseTradeInfo(trade) {
+    var type, round, roundingMode;
+    if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
+
+    // 0x1=buy, 0x2=sell
+    switch (trade[1]) {
+      case "0x1":
+        type = "buy";
+        round = "floor";
+        roundingMode = BigNumber.ROUND_DOWN;
+        break;
+      case "0x2":
+        type = "sell";
+        round = "ceil";
+        roundingMode = BigNumber.ROUND_UP;
+        break;
+      default:
+        return null;
+    }
+
+    var fullPrecisionAmount = abi.unfix(trade[3]);
+    var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
+    if (amount === null) return null;
+
+    var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
+    var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+    if (price === null) return null;
+
+    return {
+      id: abi.format_int256(trade[0]),
+      type: type,
+      market: trade[2],
+      amount: amount,
+      fullPrecisionAmount: fullPrecisionAmount.toFixed(),
+      price: price,
+      fullPrecisionPrice: fullPrecisionPrice.toFixed(),
+      owner: abi.format_address(trade[5]),
+      block: parseInt(trade[6], 16),
+      outcome: abi.string(trade[7])
+    };
+  },
+
+  decodeTag: function decodeTag(tag) {
+    try {
+      return tag && tag !== "0x0" && tag !== "0x" ? abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+    } catch (exc) {
+      if (this.options.debug.broadcast) console.error(exc, tag);
+      return null;
+    }
+  },
+
+  base58Decode: function base58Decode(encoded) {
+    return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
+  },
+
+  base58Encode: function base58Encode(o) {
+    return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
+  }
+};
+}).call(this,require("buffer").Buffer)
+},{"../constants":65,"../utilities":95,"./makeReports":81,"async":114,"augur-abi":1,"bignumber.js":117,"bs58":150,"buffer":152,"clone":155}],70:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  cancel: function cancel(trade_id, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("cancel:", JSON.stringify(trade_id, null, 2));
+    }
+    var self = this;
+    if (trade_id.constructor === Object) {
+      onSent = trade_id.onSent;
+      onSuccess = trade_id.onSuccess;
+      onFailed = trade_id.onFailed;
+      trade_id = trade_id.trade_id;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    var tx = clone(this.tx.BuyAndSellShares.cancel);
+    tx.params = trade_id;
+    if (this.options.debug.trading) {
+      console.log("cancel tx:", JSON.stringify(tx, null, 2));
+    }
+    var prepare = function prepare(result, cb) {
+      if (!result || !result.callReturn) return cb(result);
+      self.rpc.receipt(result.hash, function (receipt) {
+        if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+        if (receipt.error) return onFailed(receipt);
+        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+          var logs = receipt.logs;
+          var sig = self.api.events.log_cancel.signature;
+          result.cashRefund = "0";
+          var numLogs = logs.length;
+          var logdata;
+          for (var i = 0; i < numLogs; ++i) {
+            if (logs[i].topics[0] === sig) {
+              logdata = self.rpc.unmarshal(logs[i].data);
+              if (logdata && logdata.constructor === Array && logdata.length) {
+                result.cashRefund = abi.unfix(logdata[5], "string");
+                break;
+              }
+            }
+          }
+        }
+        cb(result);
+      });
+    };
+    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+  },
+
+  buy: function buy(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("buy:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.buy);
+    tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0];
+    if (this.options.debug.trading) {
+      console.log("buy tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  sell: function sell(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("sell:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.sell);
+    tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"), "0x0", tradeGroupID || 0];
+    if (this.options.debug.trading) {
+      console.log("sell tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  shortAsk: function shortAsk(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
+    if (this.options.debug.trading) {
+      console.log("shortAsk:", JSON.stringify(amount, null, 2));
+    }
+    if (amount.constructor === Object && amount.amount) {
+      price = amount.price;
+      market = amount.market;
+      outcome = amount.outcome;
+      tradeGroupID = amount.tradeGroupID;
+      scalarMinMax = amount.scalarMinMax;
+      onSent = amount.onSent;
+      onSuccess = amount.onSuccess;
+      onFailed = amount.onFailed;
+      amount = amount.amount;
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
+      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
+    }
+    var tx = clone(this.tx.BuyAndSellShares.shortAsk);
+    tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0];
+    if (this.options.debug.trading) {
+      console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"clone":155}],71:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  sendEther: function sendEther(to, value, from, onSent, onSuccess, onFailed) {
+    if (to && to.constructor === Object) {
+      value = to.value;
+      from = to.from;
+      onSent = to.onSent;
+      onSuccess = to.onSuccess;
+      onFailed = to.onFailed;
+      to = to.to;
+    }
+    return this.transact({
+      from: from,
+      to: to,
+      value: abi.fix(value, "hex"),
+      returns: "null",
+      gas: "0xcf08"
+    }, onSent, onSuccess, onFailed);
+  },
+
+  depositEther: function depositEther(value, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.Cash.depositEther);
+    var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
+    tx.value = abi.fix(unpacked.params[0], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+  },
+
+  getCashBalance: function getCashBalance(account, callback) {
+    return this.Cash.balance(account, callback);
+  },
+
+  sendCash: function sendCash(recver, value, onSent, onSuccess, onFailed) {
+    return this.Cash.send(recver, value, onSent, onSuccess, onFailed);
+  },
+
+  sendCashFrom: function sendCashFrom(recver, value, from, onSent, onSuccess, onFailed) {
+    return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"clone":155}],72:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+  collectFees: function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch && branch.constructor === Object) {
+      sender = branch.sender;
+      periodLength = branch.periodLength;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    if (this.getCurrentPeriodProgress(periodLength) < 50) {
+      return onFailed({
+        "-2": "needs to be second half of reporting period to claim rep"
+      });
+    }
+    var tx = clone(this.tx.CollectFees.collectFees);
+    tx.params = [branch, sender];
+    this.getVotePeriod(branch, function (period) {
+      self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+        if (self.options.debug.reporting) {
+          console.log("Fees collected:", branch, sender, period - 1, feesCollected);
+        }
+        if (feesCollected === "1") return onSuccess({ callReturn: "2" });
+        self.rpc.getGasPrice(function (gasPrice) {
+          tx.gasPrice = gasPrice;
+          tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
+          var prepare = function prepare(res, cb) {
+            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
+              return cb(res);
+            }
+            self.getVotePeriod(branch, function (period) {
+              self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                if (feesCollected !== "1") {
+                  res.callReturn = "2";
+                  return cb(res);
+                }
+                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                  if (parseInt(afterRep, 10) <= 1) {
+                    res.callReturn = "2";
+                    return cb(res);
+                  }
+                  res.callReturn = "1";
+                  return cb(res);
+                });
+              });
+            });
+          };
+          return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+        });
+      });
+    });
+  }
+};
+},{"../utilities":95,"augur-abi":1,"bignumber.js":117,"clone":155}],73:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  // load each batch of marketdata sequentially and recursively until complete
+  loadNextMarketsBatch: function loadNextMarketsBatch(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+    var self = this;
+    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
+    this.getMarketsInfo({
+      branch: branchID,
+      offset: startIndex,
+      numMarketsToLoad: numMarketsToLoad,
+      volumeMin: volumeMin,
+      volumeMax: volumeMax
+    }, function (marketsData) {
+      if (!marketsData || marketsData.error) {
+        chunkCB(marketsData);
+      } else {
+        chunkCB(null, marketsData);
+      }
+      var pause = Object.keys(marketsData).length ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
+      if (isDesc && startIndex > 0) {
+        setTimeout(function () {
+          self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        }, pause);
+      } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+        setTimeout(function () {
+          self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        }, pause);
+      } else if (utils.is_function(nextPass)) {
+        setTimeout(function () {
+          nextPass();
+        }, pause);
+      }
+    });
+  },
+
+  loadMarketsHelper: function loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB) {
+    var self = this;
+
+    // load the total number of markets
+    this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+      var numMarkets = parseInt(numMarketsRaw, 10);
+      var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+
+      // load markets in batches
+      // first pass: only markets with nonzero volume
+      self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
+
+        // second pass: zero-volume markets
+        if (self.options.loadZeroVolumeMarkets) {
+          self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+        }
+      });
+    });
+  },
+
+  loadMarkets: function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
+    var self = this;
+
+    // Try hitting a cache node, if available
+    if (!this.augurNode.nodes.length) {
+      return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+    }
+    this.augurNode.getMarketsInfo(branchID, function (err, result) {
+      if (err) {
+        console.warn("cache node getMarketsInfo failed:", err);
+
+        // Abandon the use of cache nodes since there was a connection issue.
+        self.augurNode.nodes = [];
+
+        // fallback to loading in batches from chain
+        return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
+      }
+      chunkCB(null, JSON.parse(result));
+    });
+  },
+
+  loadAssets: function loadAssets(branchID, accountID, cbEther, cbRep, cbRealEther) {
+    this.getCashBalance(accountID, function (result) {
+      if (!result || result.error) return cbEther(result);
+      return cbEther(null, abi.string(result));
+    });
+    this.getRepBalance(branchID, accountID, function (result) {
+      if (!result || result.error) return cbRep(result);
+      return cbRep(null, abi.string(result));
+    });
+    this.rpc.balance(accountID, function (wei) {
+      if (!wei || wei.error) return cbRealEther(wei);
+      return cbRealEther(null, abi.unfix(wei, "string"));
+    });
+  },
+
+  finishLoadBranch: function finishLoadBranch(branch, callback) {
+    if (branch.periodLength && branch.description && branch.baseReporters) {
+      callback(null, branch);
+    }
+  },
+
+  loadBranch: function loadBranch(branchID, callback) {
+    var self = this;
+    var branch = { id: abi.hex(branchID) };
+    this.getPeriodLength(branchID, function (periodLength) {
+      if (!periodLength || periodLength.error) return callback(periodLength);
+      branch.periodLength = periodLength;
+      self.finishLoadBranch(branch, callback);
+    });
+    this.getDescription(branchID, function (description) {
+      if (!description || description.error) return callback(description);
+      branch.description = description;
+      self.finishLoadBranch(branch, callback);
+    });
+    this.getBaseReporters(branchID, function (baseReporters) {
+      if (!baseReporters || baseReporters.error) return callback(baseReporters);
+      branch.baseReporters = parseInt(baseReporters, 10);
+      self.finishLoadBranch(branch, callback);
+    });
+  },
+
+  parsePositionInMarket: function parsePositionInMarket(positionInMarket) {
+    if (!positionInMarket || positionInMarket.error) return positionInMarket;
+    var numOutcomes = positionInMarket.length;
+    var position = {};
+    for (var i = 0; i < numOutcomes; ++i) {
+      position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
+    }
+    return position;
+  },
+
+  getPositionInMarket: function getPositionInMarket(market, account, callback) {
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    if (market && market.market) {
+      account = market.account;
+      callback = callback || market.callback;
+      market = market.market;
+    }
+    return this.CompositeGetters.getPositionInMarket(market, account || this.from, callback);
+  },
+
+  adjustScalarOrder: function adjustScalarOrder(order, minValue) {
+    order.price = this.expandScalarPrice(minValue, order.price);
+    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
+    return order;
+  },
+
+  parseOrderBook: function parseOrderBook(orderArray, scalarMinMax) {
+    if (!orderArray || orderArray.error) return orderArray;
+    var minValue, order;
+    var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+    if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
+    var numOrders = orderArray.length / 8;
+    var orderBook = { buy: {}, sell: {} };
+    for (var i = 0; i < numOrders; ++i) {
+      order = this.parseTradeInfo(orderArray.slice(8 * i, 8 * (i + 1)));
+      if (order) {
+        if (isScalar) order = this.adjustScalarOrder(order, minValue);
+        orderBook[order.type][order.id] = order;
+      }
+    }
+    return orderBook;
+  },
+
+  // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
+  getOrderBook: function getOrderBook(market, scalarMinMax, callback) {
+    var self = this;
+    if (!callback && utils.is_function(scalarMinMax)) {
+      callback = scalarMinMax;
+      scalarMinMax = null;
+    }
+    var offset, numTradesToLoad;
+    if (market && market.market) {
+      offset = market.offset;
+      numTradesToLoad = market.numTradesToLoad;
+      scalarMinMax = scalarMinMax || market.scalarMinMax;
+      callback = callback || market.callback;
+      market = market.market;
+    }
+    var tx = clone(this.tx.CompositeGetters.getOrderBook);
+    tx.params = [market, offset || 0, numTradesToLoad || 0];
+    return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
+  },
+
+  validateMarketInfo: function validateMarketInfo(marketInfo) {
+    if (!marketInfo) return null;
+    var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+    if (!parsedMarketInfo.numOutcomes) return null;
+    return parsedMarketInfo;
+  },
+
+  // account is optional, if provided will return sharesPurchased
+  getMarketInfo: function getMarketInfo(market, account, callback) {
+    if (market && market.market) {
+      callback = callback || market.callback;
+      account = market.account;
+      market = market.market;
+    }
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
+  },
+
+  parseBatchMarketInfo: function parseBatchMarketInfo(marketsArray, numMarkets) {
+    var len, shift, rawInfo, info, marketID;
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+      return marketsArray;
+    }
+    var marketsInfo = {};
+    var totalLen = 0;
+    for (var i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen]);
+      shift = totalLen + 1;
+      rawInfo = marketsArray.slice(shift, shift + len - 1);
+      marketID = abi.format_int256(marketsArray[shift]);
+      info = this.parseMarketInfo(rawInfo);
+      if (info && info.numOutcomes) {
+        marketsInfo[marketID] = info;
+        marketsInfo[marketID].sortOrder = i;
+      }
+      totalLen += len;
+    }
+    return marketsInfo;
+  },
+
+  batchGetMarketInfo: function batchGetMarketInfo(marketIDs, account, callback) {
+    if (!callback && utils.is_function(account)) {
+      callback = account;
+      account = null;
+    }
+    var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+    tx.params = [marketIDs, account || 0];
+    return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+  },
+
+  parseMarketsInfo: function parseMarketsInfo(marketsArray, branch) {
+    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+      return null;
+    }
+    var numMarkets = parseInt(marketsArray.shift(), 16);
+    var marketsInfo = {};
+    var totalLen = 0;
+    for (var i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen]);
+      shift = totalLen + 1;
+      marketID = abi.format_int256(marketsArray[shift]);
+      fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+      minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
+      maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
+      numOutcomes = parseInt(marketsArray[shift + 13], 16);
+      if (numOutcomes > 2) {
+        type = "categorical";
+      } else if (minValue === "1" && maxValue === "2") {
+        type = "binary";
+      } else {
+        type = "scalar";
+      }
+      reportedOutcome = abi.hex(marketsArray[shift + 14], true);
+      if (!abi.unfix(reportedOutcome, "number")) {
+        reportedOutcome = undefined;
+        isIndeterminate = undefined;
+      } else {
+        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+        reportedOutcome = unfixed.report;
+        isIndeterminate = unfixed.isIndeterminate;
+      }
+      marketsInfo[marketID] = {
+        sortOrder: i,
+        id: marketID,
+        branchId: branch,
+        tradingPeriod: parseInt(marketsArray[shift + 1], 16),
+        tradingFee: fees.trading,
+        makerFee: fees.maker,
+        takerFee: fees.taker,
+        creationTime: parseInt(marketsArray[shift + 3], 16),
+        volume: abi.unfix(marketsArray[shift + 4], "string"),
+        tags: [this.decodeTag(marketsArray[shift + 5]), this.decodeTag(marketsArray[shift + 6]), this.decodeTag(marketsArray[shift + 7])],
+        endDate: parseInt(marketsArray[shift + 8], 16),
+        eventID: abi.format_int256(marketsArray[shift + 10]),
+        minValue: minValue,
+        maxValue: maxValue,
+        numOutcomes: numOutcomes,
+        type: type,
+        reportedOutcome: reportedOutcome,
+        isIndeterminate: isIndeterminate,
+        description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
+      };
+      totalLen += len;
+    }
+    return marketsInfo;
+  },
+
+  getMarketsInfo: function getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
+    var self = this;
+    if (!callback && utils.is_function(offset)) {
+      callback = offset;
+      offset = null;
+      numMarketsToLoad = null;
+      volumeMin = null;
+      volumeMax = null;
+    }
+    if (branch && branch.branch) {
+      offset = branch.offset;
+      numMarketsToLoad = branch.numMarketsToLoad;
+      volumeMin = branch.volumeMin;
+      volumeMax = branch.volumeMax;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    // Only use cache if there are nodes available and no offset+numMarkets specified
+    // Can't rely on cache for partial markets fetches since no good way to verify partial data.
+    // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
+    branch = branch || this.constants.DEFAULT_BRANCH_ID;
+    offset = offset || 0;
+    numMarketsToLoad = numMarketsToLoad || 0;
+    volumeMin = volumeMin || 0;
+    volumeMax = volumeMax || 0;
+    if (!this.augurNode.nodes.length) {
+      var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+      tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
+      tx.timeout = 240000;
+      return this.fire(tx, callback, this.parseMarketsInfo, branch);
+    }
+    this.augurNode.getMarketsInfo(branch, function (err, result) {
+      if (err) {
+        return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
+      }
+      callback(JSON.parse(result));
+    });
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"bignumber.js":117,"clone":155}],74:[function(require,module,exports){
+/**
+ * Ethereum network connection / contract lookup
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var connector = require("ethereumjs-connect");
+var Contracts = require("augur-contracts");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+module.exports = {
+
+  /**
+   * Direct no-frills bindings to Augur's Serpent (contract) API.
+   *  - Parameter positions and types are the same as the underlying
+   *    contract method's parameters.
+   *  - Parameters should be passed in exactly as they would be
+   *    passed to the contract method (e.g., if the contract method
+   *    expects a fixed-point number, you must do that conversion
+   *    yourself and pass the fixed-point number in).
+   */
+  bindContractMethod: function bindContractMethod(contract, method) {
+    var self = this;
+    return function (args) {
+      var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
+      tx = clone(self.api.functions[contract][method]);
+      if (!arguments) {
+        if (!tx.send) return self.fire(tx);
+        return self.transact(tx);
+      }
+      params = Array.prototype.slice.call(arguments);
+      numInputs = tx.inputs && tx.inputs.length ? tx.inputs.length : 0;
+      if (!tx.send) {
+        if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
+          cb = params[0].callback;
+          if (numInputs) {
+            tx.params = new Array(numInputs);
+            for (i = 0; i < numInputs; ++i) {
+              tx.params[i] = params[0][tx.inputs[i]];
+            }
+          }
+        } else {
+          if (numInputs) {
+            tx.params = new Array(numInputs);
+            for (i = 0; i < numInputs; ++i) {
+              tx.params[i] = params[i];
+            }
+          }
+          if (params.length > numInputs && utils.is_function(params[numInputs])) {
+            cb = params[numInputs];
+          }
+        }
+        if (tx.fixed && tx.fixed.length) {
+          numFixed = tx.fixed.length;
+          for (i = 0; i < numFixed; ++i) {
+            tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+          }
+        }
+        if (!tx.parser) {
+          if (!utils.is_function(cb)) return self.fire(tx);
+          return self.fire(tx, cb);
+        }
+        if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
+        return self.fire(tx, cb, self[tx.parser]);
+      }
+      if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
+        onSent = params[0].onSent;
+        onSuccess = params[0].onSuccess;
+        onFailed = params[0].onFailed;
+        if (numInputs) {
+          tx.params = new Array(numInputs);
+          for (i = 0; i < tx.inputs.length; ++i) {
+            tx.params[i] = params[0][tx.inputs[i]];
+          }
+        }
+      } else {
+        if (numInputs) {
+          tx.params = new Array(numInputs);
+          for (i = 0; i < tx.inputs.length; ++i) {
+            tx.params[i] = params[i];
+          }
+        }
+        if (params.length > numInputs && utils.is_function(params[numInputs])) {
+          onSent = params[numInputs];
+        }
+        if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+          onSuccess = params[numInputs + 1];
+        }
+        if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+          onFailed = params[numInputs + 2];
+        }
+      }
+      if (tx.fixed && tx.fixed.length) {
+        numFixed = tx.fixed.length;
+        for (i = 0; i < numFixed; ++i) {
+          tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
+        }
+      }
+      if (!tx.parser) {
+        return self.transact(tx, onSent, onSuccess, onFailed);
+      }
+      return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
+    };
+  },
+
+  bindContractAPI: function bindContractAPI(methods) {
+    methods = methods || this.api.functions;
+    for (var contract in methods) {
+      if (!methods.hasOwnProperty(contract)) continue;
+      this[contract] = {};
+      for (var method in methods[contract]) {
+        if (!methods[contract].hasOwnProperty(method)) continue;
+        this[contract][method] = this.bindContractMethod(contract, method);
+        if (!this[method]) this[method] = this[contract][method];
+      }
+    }
+    return methods;
+  },
+
+  sync: function sync() {
+    if (connector && connector.constructor === Object) {
+      this.network_id = connector.state.networkID;
+      this.from = connector.state.from;
+      this.coinbase = connector.state.coinbase;
+      this.rpc = connector.rpc;
+      if (!connector.state.contracts) {
+        connector.configure({ contracts: Contracts, api: Contracts.api });
+        if (!connector.state.networkID) {
+          connector.state.networkID = constants.DEFAULT_NETWORK_ID;
+        }
+        connector.setContracts();
+      }
+      this.contracts = connector.state.contracts;
+      connector.setupFunctionsAPI();
+      connector.setupEventsAPI();
+      if (connector.state.api && connector.state.api.functions) {
+        this.api = connector.state.api;
+      } else {
+        this.api = Contracts.api;
+      }
+      this.tx = this.api.functions;
+      this.bindContractAPI();
+      return true;
+    }
+    return false;
+  },
+
+  useAccount: function useAccount(account) {
+    connector.from = account;
+    connector.setFrom(account);
+    this.sync();
+  },
+
+  /**
+   * @param rpcinfo {Object|string=} Two forms accepted:
+   *    1. Object with connection info fields:
+   *       { http: "https://eth3.augur.net",
+   *         ipc: "/path/to/geth.ipc",
+   *         ws: "wss://ws.augur.net" }
+   *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+   * @param cb {function=} Callback function.
+   */
+  connect: function connect(rpcinfo, cb) {
+    var options = { contracts: Contracts, api: Contracts.api };
+    if (rpcinfo) {
+      switch (rpcinfo.constructor) {
+        case String:
+          options.http = rpcinfo;
+          break;
+        case Function:
+          cb = rpcinfo;
+          options.http = null;
+          break;
+        case Object:
+          options = rpcinfo;
+          options.contracts = Contracts;
+          options.api = Contracts.api;
+          break;
+        default:
+          options.http = null;
+      }
+    }
+    if (!utils.is_function(cb)) {
+      var connection = connector.connect(options);
+      this.sync();
+      if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
+      return connection;
+    }
+    var self = this;
+    connector.connect(options, function (connection) {
+      self.sync();
+      if (options.augurNodes) {
+        self.augurNode.bootstrap(options.augurNodes, function () {
+          cb(connection);
+        });
+      } else {
+        cb(connection);
+      }
+    });
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"augur-contracts":58,"clone":155,"ethereumjs-connect":278}],75:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+  createBranch: function createBranch(description, periodLength, parent, minTradingFee, oracleOnly, onSent, _onSuccess, onFailed) {
+    var self = this;
+    if (description && description.parent) {
+      periodLength = description.periodLength;
+      parent = description.parent;
+      minTradingFee = description.minTradingFee;
+      oracleOnly = description.oracleOnly;
+      onSent = description.onSent;
+      _onSuccess = description.onSuccess;
+      onFailed = description.onFailed;
+      description = description.description;
+    }
+    oracleOnly = oracleOnly || 0;
+    description = description.trim();
+    if (!utils.is_function(onSent)) {
+      var response = this.CreateBranch.createSubbranch({
+        description: description,
+        periodLength: periodLength,
+        parent: parent,
+        minTradingFee: abi.fix(minTradingFee, "hex"),
+        oracleOnly: oracleOnly
+      });
+      var block = this.rpc.getBlock(response.blockNumber);
+      response.branchID = utils.sha3([response.from, "0x28c418afbbb5c0000", periodLength, block.timestamp, parent, abi.fix(minTradingFee, "hex"), oracleOnly, description]);
+      return response;
+    }
+    this.createSubbranch({
+      description: description,
+      periodLength: periodLength,
+      parent: parent,
+      minTradingFee: minTradingFee,
+      oracleOnly: oracleOnly,
+      onSent: onSent,
+      onSuccess: function onSuccess(response) {
+        self.rpc.getBlock(response.blockNumber, false, function (block) {
+          response.branchID = utils.sha3([response.from, "0x28c418afbbb5c0000", periodLength, block.timestamp, parent, abi.fix(minTradingFee, "hex"), oracleOnly, description]);
+          _onSuccess(response);
+        });
+      },
+      onFailed: onFailed
+    });
+  },
+
+  createSubbranch: function createSubbranch(description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    if (description && description.parent) {
+      periodLength = description.periodLength;
+      parent = description.parent;
+      minTradingFee = description.minTradingFee;
+      oracleOnly = description.oracleOnly;
+      onSent = description.onSent;
+      onSuccess = description.onSuccess;
+      onFailed = description.onFailed;
+      description = description.description;
+    }
+    oracleOnly = oracleOnly || 0;
+    var tx = clone(this.tx.CreateBranch.createSubbranch);
+    tx.params = [description.trim(), periodLength, parent, abi.fix(minTradingFee, "hex"), oracleOnly];
+    tx.description = description.trim();
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  }
+};
+},{"../utilities":95,"augur-abi":1,"clone":155}],76:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+  createSingleEventMarket: function createSingleEventMarket(branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description; // string
+      expDate = branchId.expDate;
+      minValue = branchId.minValue; // integer (1 for binary)
+      maxValue = branchId.maxValue; // integer (2 for binary)
+      numOutcomes = branchId.numOutcomes; // integer (2 for binary)
+      resolution = branchId.resolution;
+      takerFee = branchId.takerFee;
+      tags = branchId.tags;
+      makerFee = branchId.makerFee;
+      extraInfo = branchId.extraInfo;
+      onSent = branchId.onSent; // function
+      onSuccess = branchId.onSuccess; // function
+      onFailed = branchId.onFailed; // function
+      branchId = branchId.branchId; // sha256 hash
+    }
+    var formattedTags = this.formatTags(tags);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    expDate = parseInt(expDate);
+    if (description) description = description.trim();
+    if (resolution) resolution = resolution.trim();
+    var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
+    tx.params = [branchId, description, expDate, abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || "", abi.fix(fees.tradingFee, "hex"), formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
+    if (!utils.is_function(onSent)) {
+      var gasPrice = this.rpc.getGasPrice();
+      tx.gasPrice = gasPrice;
+      tx.value = this.calculateRequiredMarketValue(gasPrice);
+      return this.transact(tx);
+    }
+    this.rpc.getGasPrice(function (gasPrice) {
+      tx.gasPrice = gasPrice;
+      tx.value = self.calculateRequiredMarketValue(gasPrice);
+      self.transact(tx, onSent, onSuccess, onFailed);
+    });
+  },
+
+  createEvent: function createEvent(branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description; // string
+      minValue = branchId.minValue; // integer (1 for binary)
+      maxValue = branchId.maxValue; // integer (2 for binary)
+      numOutcomes = branchId.numOutcomes; // integer (2 for binary)
+      expDate = branchId.expDate;
+      resolution = branchId.resolution;
+      onSent = branchId.onSent; // function
+      onSuccess = branchId.onSuccess; // function
+      onFailed = branchId.onFailed; // function
+      branchId = branchId.branchId; // sha256 hash
+    }
+    var tx = clone(this.tx.CreateMarket.createEvent);
+    if (description) description = description.trim();
+    if (resolution) resolution = resolution.trim();
+    tx.params = [branchId, description, parseInt(expDate), abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || ""];
+    return this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  createMarket: function createMarket(branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      description = branchId.description; // string
+      takerFee = branchId.takerFee;
+      events = branchId.events; // array [sha256, ...]
+      tags = branchId.tags;
+      makerFee = branchId.makerFee;
+      extraInfo = branchId.extraInfo;
+      onSent = branchId.onSent; // function
+      onSuccess = branchId.onSuccess; // function
+      onFailed = branchId.onFailed; // function
+      branchId = branchId.branchId; // sha256 hash
+    }
+    onSent = onSent || utils.noop;
+    onSuccess = onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    var formattedTags = this.formatTags(tags);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    var tx = clone(this.tx.CreateMarket.createMarket);
+    if (description) description = description.trim();
+    tx.params = [branchId, description, abi.fix(fees.tradingFee, "hex"), events, formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
+    if (!utils.is_function(onSent)) {
+      var gasPrice = this.rpc.getGasPrice();
+      tx.gasPrice = gasPrice;
+      tx.value = this.calculateRequiredMarketValue(gasPrice);
+      return this.transact(tx);
+    }
+    this.rpc.getGasPrice(function (gasPrice) {
+      tx.gasPrice = gasPrice;
+      tx.value = self.calculateRequiredMarketValue(gasPrice);
+      self.transact(tx, onSent, onSuccess, onFailed);
+    });
+  },
+
+  updateTradingFee: function updateTradingFee(branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branchId.constructor === Object && branchId.branchId) {
+      market = branchId.market; // string
+      takerFee = branchId.takerFee;
+      makerFee = branchId.makerFee;
+      onSent = branchId.onSent; // function
+      onSuccess = branchId.onSuccess; // function
+      onFailed = branchId.onFailed; // function
+      branchId = branchId.branchId; // sha256 hash
+    }
+    var tx = clone(this.tx.CreateMarket.updateTradingFee);
+    var fees = this.calculateTradingFees(makerFee, takerFee);
+    tx.params = [branchId, market, abi.fix(fees.tradingFee, "hex"), abi.fix(fees.makerProportionOfFee, "hex")];
+    if (!utils.is_function(onSent)) return this.transact(tx);
+    self.transact(tx, onSent, onSuccess, onFailed);
+  }
+};
+},{"../utilities":95,"augur-abi":1,"bignumber.js":117,"clone":155}],77:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var abi = require("augur-abi");
+
+module.exports = {
+
+  parseMarket: function parseMarket(market) {
+    return abi.format_int256(market);
+  },
+
+  parseMarkets: function parseMarkets(markets) {
+    if (!markets) return markets;
+    var numMarkets = markets.length;
+    var parsedMarkets = new Array(numMarkets);
+    for (var i = 0; i < numMarkets; ++i) {
+      parsedMarkets[i] = this.parseMarket(markets[i]);
+    }
+    return parsedMarkets;
+  },
+
+  parseEventInfo: function parseEventInfo(info) {
+    // 0: self.Events[event].branch
+    // 1: self.Events[event].expirationDate
+    // 2: self.Events[event].outcome
+    // 3: self.Events[event].minValue
+    // 4: self.Events[event].maxValue
+    // 5: self.Events[event].numOutcomes
+    // 6: self.Events[event].bond
+    if (info && info.length) {
+      info[0] = abi.hex(info[0]);
+      info[1] = abi.bignum(info[1]).toFixed();
+      info[2] = abi.unfix(info[2], "string");
+      info[3] = abi.unfix(abi.hex(info[3], true), "string");
+      info[4] = abi.unfix(abi.hex(info[4], true), "string");
+      info[5] = parseInt(info[5]);
+      info[6] = abi.unfix(info[6], "string");
+    }
+    return info;
+  }
+};
+},{"augur-abi":1}],78:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var async = require("async");
+var abi = require("augur-abi");
+var selectOrder = require("./selectOrder").selectOrder;
+var constants = require("../constants");
+
+module.exports = {
+
+  // if buying numShares must be 0, if selling totalEthWithFee must be 0
+  executeTrade: function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+    console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
+    var self = this;
+    var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
+    var bnNumShares = abi.bignum(numShares) || constants.ZERO;
+    var res = {
+      remainingEth: bnTotalEth,
+      remainingShares: bnNumShares,
+      filledShares: constants.ZERO,
+      filledEth: constants.ZERO,
+      tradingFees: constants.ZERO,
+      gasFees: constants.ZERO
+    };
+    var matchingTradeIDs;
+    var bnSharesPurchased = bnNumShares;
+    var bnCashBalance = bnTotalEth;
+    async.until(function () {
+      matchingTradeIDs = getTradeIDs();
+      console.log("matchingTradeIDs:", matchingTradeIDs);
+      console.log("remainingEth:", res.remainingEth.toFixed());
+      console.log("remainingShares:", res.remainingShares.toFixed());
+      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
+      console.log("balance:", bnCashBalance.toFixed());
+      return !matchingTradeIDs || !matchingTradeIDs.length || res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero) || bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero) || bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero);
+    }, function (nextTrade) {
+      var tradeIDs = matchingTradeIDs;
+      tradeIDs = tradeIDs.slice(0, 3);
+      self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+        bnSharesPurchased = abi.bignum(sharesPurchased);
+        self.getCashBalance(address, function (cashBalance) {
+          bnCashBalance = abi.bignum(cashBalance);
+          var isRemainder;
+          var maxAmount;
+          if (res.remainingShares.gt(bnSharesPurchased)) {
+            maxAmount = bnSharesPurchased;
+            isRemainder = true;
+          } else {
+            maxAmount = res.remainingShares;
+            isRemainder = false;
+          }
+          var maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
+          self.trade({
+            max_value: maxValue.toFixed(),
+            max_amount: maxAmount.toFixed(),
+            trade_ids: tradeIDs,
+            tradeGroupID: tradeGroupID,
+            sender: address,
+            onTradeHash: function onTradeHash(tradeHash) {
+              tradeCommitmentCallback({
+                tradeHash: abi.format_int256(tradeHash),
+                orders: tradeIDs.map(function (tradeID) {
+                  return selectOrder(tradeID, orderBooks);
+                }),
+                maxValue: maxValue.toFixed(),
+                maxAmount: maxAmount.toFixed(),
+                remainingEth: res.remainingEth.toFixed(),
+                remainingShares: res.remainingShares.toFixed(),
+                filledEth: res.filledEth.toFixed(),
+                filledShares: res.filledShares.toFixed(),
+                tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
+                gasFees: res.gasFees.toFixed()
+              });
+            },
+            onCommitSent: function onCommitSent(data) {
+              console.log("commit sent:", data);
+            },
+            onCommitSuccess: function onCommitSuccess(data) {
+              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+              tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
+            },
+            onCommitFailed: nextTrade,
+            onNextBlock: function onNextBlock(data) {
+              console.log("trade-onNextBlock", data);
+            },
+            onTradeSent: function onTradeSent(data) {
+              console.log("trade sent:", data);
+            },
+            onTradeSuccess: function onTradeSuccess(data) {
+              console.log("trade success:", data);
+              res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
+              res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
+              if (isRemainder) {
+                res.remainingShares = res.remainingShares.minus(maxAmount).plus(abi.bignum(data.unmatchedShares));
+              } else {
+                res.remainingShares = abi.bignum(data.unmatchedShares);
+              }
+              res.remainingEth = abi.bignum(data.unmatchedCash);
+              res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
+              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+              tradeCommitmentCallback({
+                filledShares: res.filledShares.toFixed(),
+                filledEth: res.filledEth.toFixed(),
+                remainingShares: res.remainingShares.toFixed(),
+                remainingEth: res.remainingEth.toFixed(),
+                tradingFees: res.tradingFees.toFixed(),
+                gasFees: res.gasFees.toFixed()
+              });
+              self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+                bnSharesPurchased = abi.bignum(sharesPurchased);
+                self.getCashBalance(address, function (cashBalance) {
+                  bnCashBalance = abi.bignum(cashBalance);
+                  nextTrade();
+                });
+              });
+            },
+            onTradeFailed: nextTrade
+          });
+        });
+      });
+    }, function (err) {
+      if (err) return cb(err);
+      console.log("trade complete:", JSON.stringify(res, null, 2));
+      cb(null, res);
+    });
+  },
+
+  executeShortSell: function executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+    var self = this;
+    var res = {
+      remainingShares: abi.bignum(numShares) || constants.ZERO,
+      filledShares: constants.ZERO,
+      filledEth: constants.ZERO,
+      tradingFees: constants.ZERO,
+      gasFees: constants.ZERO
+    };
+    var matchingIDs = getTradeIDs();
+    console.log("matching trade IDs:", matchingIDs);
+    if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
+    async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
+      var maxAmount = res.remainingShares.toFixed();
+      self.short_sell({
+        max_amount: maxAmount,
+        buyer_trade_id: matchingID,
+        sender: address,
+        tradeGroupID: tradeGroupID,
+        onTradeHash: function onTradeHash(tradeHash) {
+          tradeCommitmentCallback({
+            tradeHash: abi.format_int256(tradeHash),
+            orders: [selectOrder(matchingID, orderBooks)],
+            maxValue: "0",
+            maxAmount: maxAmount,
+            remainingEth: "0",
+            remainingShares: res.remainingShares.toFixed(),
+            filledEth: res.filledEth.toFixed(),
+            filledShares: res.filledShares.toFixed(),
+            tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
+            gasFees: res.gasFees.toFixed()
+          });
+        },
+        onCommitSent: function onCommitSent(data) {
+          console.log("short sell commit sent:", data);
+        },
+        onCommitSuccess: function onCommitSuccess(data) {
+          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+          tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
+        },
+        onCommitFailed: nextMatchingID,
+        onNextBlock: function onNextBlock(data) {
+          console.log("short_sell onNextBlock", data);
+        },
+        onTradeSent: function onTradeSent(data) {
+          console.debug("short sell sent", data);
+        },
+        onTradeSuccess: function onTradeSuccess(data) {
+          if (data.unmatchedShares) {
+            res.remainingShares = abi.bignum(data.unmatchedShares);
+          } else {
+            res.remainingShares = constants.ZERO;
+          }
+          if (data.matchedShares) {
+            res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
+          }
+          if (data.cashFromTrade) {
+            res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
+          }
+          res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
+          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
+          tradeCommitmentCallback({
+            filledShares: res.filledShares.toFixed(),
+            filledEth: res.filledEth.toFixed(),
+            remainingShares: res.remainingShares.toFixed(),
+            tradingFees: res.tradingFees.toFixed(),
+            gasFees: res.gasFees.toFixed()
+          });
+          if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
+          nextMatchingID({ isComplete: true });
+        },
+        onTradeFailed: nextMatchingID
+      });
+    }, function (err) {
+      if (err && !err.isComplete) return cb(err);
+      console.log("short_sell success:", JSON.stringify(res, null, 2));
+      cb(null, res);
+    });
+  }
+
+};
+},{"../constants":65,"./selectOrder":88,"async":114,"augur-abi":1,"bignumber.js":117}],79:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+var ONE = abi.bignum("1");
+
+module.exports = {
+
+  parseCompleteSetsLogs: function parseCompleteSetsLogs(logs, mergeInto) {
+    var marketID, logData, numOutcomes, logType, parsed;
+    parsed = mergeInto || {};
+    for (var i = 0, n = logs.length; i < n; ++i) {
+      if (logs[i] && logs[i].data !== undefined && logs[i].data !== null && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        logType = this.filters.format_trade_type(logs[i].topics[3]);
+        logData = this.rpc.unmarshal(logs[i].data);
+        numOutcomes = parseInt(logData[1], 16);
+        if (mergeInto) {
+          if (!parsed[marketID]) parsed[marketID] = {};
+          for (var j = 1; j <= numOutcomes; ++j) {
+            if (!parsed[marketID][j]) parsed[marketID][j] = [];
+            parsed[marketID][j].push({
+              type: logType,
+              isCompleteSet: true,
+              amount: abi.unfix(logData[0], "string"),
+              price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
+              blockNumber: parseInt(logs[i].blockNumber, 16)
+            });
+          }
+        } else {
+          if (!parsed[marketID]) parsed[marketID] = [];
+          parsed[marketID].push({
+            type: logType,
+            amount: abi.unfix(logData[0], "string"),
+            numOutcomes: numOutcomes,
+            blockNumber: parseInt(logs[i].blockNumber, 16)
+          });
+        }
+      }
+    }
+    return parsed;
+  },
+
+  /***********
+   * Getters *
+   ***********/
+
+  getFirstLogBlockNumber: function getFirstLogBlockNumber(logs) {
+    return !logs || !logs.length ? 1 : logs[0].blockNumber;
+  },
+
+  getMarketCreationBlock: function getMarketCreationBlock(marketID, callback) {
+    var self = this;
+    if (!utils.is_function(callback)) {
+      return this.getFirstLogBlockNumber(this.getLogs("marketCreated", { marketID: marketID }));
+    }
+    this.getLogs("marketCreated", { marketID: marketID }, function (err, logs) {
+      // TODO change on next contract reupload to callback(err)
+      if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      callback(null, self.getFirstLogBlockNumber(logs));
+    });
+  },
+
+  getMarketPriceHistory: function getMarketPriceHistory(market, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var params = clone(options || {});
+    params.market = market;
+    if (!params.fromBlock) {
+      if (!utils.is_function(callback)) {
+        params.fromBlock = this.getMarketCreationBlock(market);
+        return this.getMarketPriceHistory(market, params);
+      }
+      this.getMarketCreationBlock(market, function (err, fromBlock) {
+        params.fromBlock = fromBlock;
+        self.getMarketPriceHistory(market, params, callback);
+      });
+    } else {
+      var aux = { index: "outcome", mergedLogs: {} };
+      if (!utils.is_function(callback)) {
+        this.getLogs("log_fill_tx", params, aux);
+        this.getLogs("log_short_fill_tx", params, aux);
+        return aux.mergedLogs;
+      }
+      this.getLogs("log_fill_tx", params, aux, function (err) {
+        if (err) return callback(err);
+        self.getLogs("log_short_fill_tx", params, aux, function (err) {
+          if (err) return callback(err);
+          callback(null, aux.mergedLogs);
+        });
+      });
+    }
+  },
+
+  sortByBlockNumber: function sortByBlockNumber(a, b) {
+    return a.blockNumber - b.blockNumber;
+  },
+
+  buildTopicsList: function buildTopicsList(event, params) {
+    var topics = [event.signature];
+    var inputs = event.inputs;
+    for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
+      if (inputs[i].indexed) {
+        if (params[inputs[i].name]) {
+          topics.push(abi.format_int256(params[inputs[i].name]));
+        } else {
+          topics.push(null);
+        }
+      }
+    }
+    return topics;
+  },
+
+  parametrizeFilter: function parametrizeFilter(event, params) {
+    return {
+      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+      toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
+      address: this.contracts[event.contract],
+      topics: this.buildTopicsList(event, params),
+      timeout: constants.GET_LOGS_TIMEOUT
+    };
+  },
+
+  // warning: mutates processedLogs
+  insertIndexedLog: function insertIndexedLog(processedLogs, parsed, index, log) {
+    if (index.constructor === Array) {
+      if (index.length === 1) {
+        if (!processedLogs[parsed[index[0]]]) {
+          processedLogs[parsed[index[0]]] = [];
+        }
+        processedLogs[parsed[index[0]]].push(parsed);
+      } else if (index.length === 2) {
+        if (!processedLogs[parsed[index[0]]]) {
+          processedLogs[parsed[index[0]]] = {};
+        }
+        if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
+          processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
+        }
+        processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
+      }
+    } else {
+      if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];
+      processedLogs[parsed[index]].push(parsed);
+    }
+  },
+
+  // warning: mutates processedLogs, if passed
+  processLogs: function processLogs(label, index, logs, extraField, processedLogs) {
+    var parsed;
+    if (!processedLogs) processedLogs = index ? {} : [];
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (!logs[i].removed) {
+        parsed = this.filters.parse_event_message(label, logs[i]);
+        if (extraField && extraField.name) {
+          parsed[extraField.name] = extraField.value;
+        }
+        if (index) {
+          this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
+        } else {
+          processedLogs.push(parsed);
+        }
+      }
+    }
+    return processedLogs;
+  },
+
+  getFilteredLogs: function getFilteredLogs(label, filterParams, callback) {
+    if (!callback && utils.is_function(filterParams)) {
+      callback = filterParams;
+      filterParams = null;
+    }
+    var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
+    if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+    this.rpc.getLogs(filter, function (logs) {
+      if (logs && logs.error) return callback(logs, null);
+      if (!logs || !logs.length) return callback(null, []);
+      callback(null, logs);
+    });
+  },
+
+  // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
+  getLogs: function getLogs(label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (!utils.is_function(callback)) {
+      return this.processLogs(label, aux.index, this.getFilteredLogs(label, filterParams || {}), aux.extraField, aux.mergedLogs);
+    }
+    this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
+    });
+  },
+
+  getAccountTrades: function getAccountTrades(account, filterParams, callback) {
+    var self = this;
+    if (!callback && utils.is_function(filterParams)) {
+      callback = filterParams;
+      filterParams = null;
+    }
+    filterParams = filterParams || {};
+    var takerTradesFilterParams = clone(filterParams);
+    takerTradesFilterParams.sender = account;
+    var aux = {
+      index: ["market", "outcome"],
+      mergedLogs: {},
+      extraField: { name: "maker", value: false }
+    };
+    this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
+      if (err) return callback(err);
+      var makerTradesFilterParams = clone(filterParams);
+      makerTradesFilterParams.owner = account;
+      aux.extraField.value = true;
+      self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
+        if (err) return callback(err);
+        var takerShortSellsFilterParams = clone(filterParams);
+        takerShortSellsFilterParams.sender = account;
+        aux.extraField.value = false;
+        self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
+          if (err) return callback(err);
+          var makerShortSellsFilterParams = clone(filterParams);
+          makerShortSellsFilterParams.owner = account;
+          aux.extraField.value = true;
+          self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
+            if (err) return callback(err);
+            if (filterParams.noCompleteSets) {
+              callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
+            } else {
+              var completeSetsFilterParams = clone(filterParams);
+              completeSetsFilterParams.shortAsk = false;
+              completeSetsFilterParams.mergeInto = aux.mergedLogs;
+              self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
+                if (err) {
+                  console.error("getAccountTrades:", err);
+                  return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
+                }
+                callback(null, self.sortTradesByBlockNumber(merged));
+              });
+            }
+          });
+        });
+      });
+    });
+  },
+
+  sortTradesByBlockNumber: function sortTradesByBlockNumber(trades) {
+    var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
+    var marketIDs = Object.keys(trades);
+    var numMarkets = marketIDs.length;
+    for (var i = 0; i < numMarkets; ++i) {
+      marketTrades = trades[marketIDs[i]];
+      outcomeIDs = Object.keys(marketTrades);
+      numOutcomes = outcomeIDs.length;
+      for (var j = 0; j < numOutcomes; ++j) {
+        outcomeTrades = marketTrades[outcomeIDs[j]];
+        outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
+      }
+    }
+    return trades;
+  },
+
+  /********************************
+   * Raw log getters (deprecated) *
+   ********************************/
+
+  getShortSellLogs: function getShortSellLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var topics = [this.api.events.log_short_fill_tx.signature, options.market ? abi.format_int256(options.market) : null, null, null];
+      topics[options.maker ? 3 : 2] = abi.format_int256(account);
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Trade,
+        topics: topics,
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (logs && logs.error) return callback(logs, null);
+        if (!logs || !logs.length) return callback(null, []);
+        callback(null, logs);
+      });
+    }
+  },
+
+  getTakerShortSellLogs: function getTakerShortSellLogs(account, filterParams, callback) {
+    if (!callback && utils.is_function(filterParams)) {
+      callback = filterParams;
+      filterParams = null;
+    }
+    var aux = {
+      index: ["market", "outcome"],
+      extraField: { name: "maker", value: false }
+    };
+    var params = clone(filterParams || {});
+    params.maker = false;
+    return this.getShortSellLogs(account, params, callback);
+  },
+
+  getShortAskBuyCompleteSetsLogs: function getShortAskBuyCompleteSetsLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = true;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getParsedCompleteSetsLogs: function getParsedCompleteSetsLogs(account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    this.getCompleteSetsLogs(account, options, function (err, logs) {
+      if (err) return callback(err);
+      callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
+    });
+  },
+
+  getCompleteSetsLogs: function getCompleteSetsLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var typeCode = constants.LOG_TYPE_CODES[options.type] || null;
+      var market = options.market ? abi.format_int256(options.market) : null;
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: options.shortAsk ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
+        topics: [this.api.events.completeSets_logReturn.signature, abi.format_int256(account), market, typeCode],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (logs && logs.error) return callback(logs, null);
+        if (!logs || !logs.length) return callback(null, []);
+        callback(null, logs);
+      });
+    }
+  },
+
+  getBuyCompleteSetsLogs: function getBuyCompleteSetsLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "buy";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  },
+
+  getSellCompleteSetsLogs: function getSellCompleteSetsLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    var opt = options ? clone(options) : {};
+    opt.shortAsk = false;
+    opt.type = "sell";
+    return this.getCompleteSetsLogs(account, opt, callback);
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"clone":155}],80:[function(require,module,exports){
+"use strict";
+
+var parametrizeOrder = require("./parametrizeOrder").parametrizeOrder;
+
+module.exports = {
+
+  placeBid: function placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) {
+      console.log("bid sent:", res);
+    };
+    params.onSuccess = function (res) {
+      console.log("bid success:", res);
+    };
+    params.onFailed = function (err) {
+      console.error("bid failed:", err);
+    };
+    return this.buy(params);
+  },
+
+  placeAsk: function placeAsk(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) {
+      console.log("ask sent:", res);
+    };
+    params.onSuccess = function (res) {
+      console.log("ask success:", res);
+    };
+    params.onFailed = function (err) {
+      console.error("ask failed:", err);
+    };
+    return this.sell(params);
+  },
+
+  placeShortAsk: function placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
+    params.onSent = function (res) {
+      console.log("short ask sent:", res);
+    };
+    params.onSuccess = function (res) {
+      console.log("short ask success:", res);
+    };
+    params.onFailed = function (err) {
+      console.error("short ask failed:", err);
+    };
+    return this.shortAsk(params);
+  }
+
+};
+},{"./parametrizeOrder":83}],81:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var keys = require("keythereum");
+var contracts = require("augur-contracts");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  // rules: http://docs.augur.net/#reporting-outcomes
+  fixReport: function fixReport(report, minValue, maxValue, type, isIndeterminate) {
+    var fixedReport, rescaledReport, bnMinValue;
+    if (isIndeterminate) {
+      if (type === "binary") {
+        fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
+      } else {
+        fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
+      }
+    } else {
+      if (type === "binary") {
+        fixedReport = abi.fix(report, "hex");
+      } else {
+        // y = (x - min)/(max - min)
+        bnMinValue = abi.bignum(minValue);
+        rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(abi.bignum(maxValue).minus(bnMinValue));
+        if (rescaledReport.eq(constants.ZERO)) {
+          fixedReport = "0x1";
+        } else {
+          fixedReport = abi.fix(rescaledReport, "hex");
+        }
+      }
+
+      // if report is equal to fix(0.5) but is not indeterminate,
+      // then set report to fix(0.5) + 1
+      if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+        fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
+      }
+    }
+    return fixedReport;
+  },
+
+  unfixReport: function unfixReport(fixedReport, minValue, maxValue, type) {
+    var report, bnMinValue, bnFixedReport;
+    bnFixedReport = abi.bignum(fixedReport);
+    if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
+      return { report: "1.5", isIndeterminate: true };
+    } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+      return { report: "0.5", isIndeterminate: true };
+    } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
+      return { report: "0.5", isIndeterminate: false };
+    }
+    if (type === "binary") {
+      report = abi.unfix(fixedReport);
+    } else {
+      if (bnFixedReport.eq(abi.bignum(1))) {
+        fixedReport = "0";
+      }
+      // x = (max - min)*y + min
+      bnMinValue = abi.bignum(minValue);
+      report = abi.unfix(fixedReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
+    }
+    if (type !== "scalar") {
+      report = report.round();
+    }
+    return { report: report.toFixed(), isIndeterminate: false };
+  },
+
+  // report in fixed-point
+  makeHash: function makeHash(salt, report, event, from) {
+    return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+  },
+
+  // report in fixed-point
+  encryptReport: function encryptReport(report, key, salt) {
+    if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
+    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    return abi.prefix_hex(new Buffer(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER), "base64").toString("hex"));
+  },
+
+  // returns plaintext fixed-point report
+  decryptReport: function decryptReport(encryptedReport, key, salt) {
+    if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
+    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER));
+  },
+
+  parseAndDecryptReport: function parseAndDecryptReport(arr, secret) {
+    if (!arr || arr.constructor !== Array || arr.length < 2) return null;
+    var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
+    return {
+      salt: salt,
+      report: this.decryptReport(arr[0], secret.derivedKey, salt),
+      ethics: arr.length > 2 ? arr[2] : false
+    };
+  },
+
+  getAndDecryptReport: function getAndDecryptReport(branch, expDateIndex, reporter, event, secret, callback) {
+    var self = this;
+    if (branch.constructor === Object) {
+      expDateIndex = branch.expDateIndex;
+      reporter = branch.reporter;
+      event = branch.event;
+      secret = branch.secret;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+    tx.params = [branch, expDateIndex, reporter, event];
+    return this.fire(tx, callback, this.parseAndDecryptReport, secret);
+  },
+
+  submitReportHash: function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (event.constructor === Object) {
+      reportHash = event.reportHash;
+      encryptedReport = event.encryptedReport;
+      encryptedSalt = event.encryptedSalt;
+      ethics = event.ethics;
+      branch = event.branch;
+      period = event.period;
+      periodLength = event.periodLength;
+      onSent = event.onSent;
+      onSuccess = event.onSuccess;
+      onFailed = event.onFailed;
+      event = event.event;
+    }
+    if (this.getCurrentPeriodProgress(periodLength) >= 50) {
+      return onFailed({ "-2": "not in first half of period (commit phase)" });
+    }
+    var tx = clone(this.tx.MakeReports.submitReportHash);
+    tx.params = [event, reportHash, encryptedReport || 0, encryptedSalt || 0, abi.fix(ethics, "hex")];
+    if (this.options.debug.reporting) {
+      console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
+    }
+    return this.transact(tx, onSent, function (res) {
+      if (self.options.debug.reporting) {
+        console.log('submitReportHash response:', res.callReturn);
+      }
+      res.callReturn = abi.bignum(res.callReturn, "string", true);
+      if (res.callReturn === "0") {
+        return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
+          if (err) return onFailed(err);
+          self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
+            if (self.options.debug.reporting) {
+              console.log('rep redistribution done:', repRedistributionDone);
+            }
+            if (repRedistributionDone === "0") {
+              return onFailed("rep redistribution not done");
+            }
+            self.submitReportHash({
+              event: event,
+              reportHash: reportHash,
+              encryptedReport: encryptedReport,
+              encryptedSalt: encryptedSalt,
+              ethics: ethics,
+              branch: branch,
+              period: period,
+              periodLength: periodLength,
+              onSent: onSent,
+              onSuccess: onSuccess,
+              onFailed: onFailed
+            });
+          });
+        });
+      } else if (res.callReturn !== "-2") {
+        return onSuccess(res);
+      }
+      self.ExpiringEvents.getReportHash({
+        branch: branch,
+        expDateIndex: period,
+        reporter: res.from,
+        event: event,
+        callback: function callback(storedReportHash) {
+          if (parseInt(storedReportHash, 16)) {
+            res.callReturn = "1";
+            return onSuccess(res);
+          }
+          onFailed({ "-2": "not in first half of period (commit phase)" });
+        }
+      });
+    }, onFailed);
+  },
+
+  submitReport: function submitReport(event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
+    if (event.constructor === Object) {
+      salt = event.salt;
+      report = event.report;
+      ethics = event.ethics;
+      minValue = event.minValue;
+      maxValue = event.maxValue;
+      type = event.type;
+      isIndeterminate = event.isIndeterminate;
+      onSent = event.onSent;
+      onSuccess = event.onSuccess;
+      onFailed = event.onFailed;
+      event = event.event;
+    }
+    if (this.options.debug.reporting) {
+      console.log('MakeReports.submitReport params:', event, abi.hex(salt), this.fixReport(report, minValue, maxValue, type, isIndeterminate), ethics);
+    }
+    return this.MakeReports.submitReport(event, abi.hex(salt), this.fixReport(report, minValue, maxValue, type, isIndeterminate), ethics, onSent, onSuccess, onFailed);
+  }
+};
+}).call(this,require("buffer").Buffer)
+},{"../constants":65,"../utilities":95,"augur-abi":1,"augur-contracts":58,"buffer":152,"clone":155,"keythereum":288}],82:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var utils = require("../utilities");
+
+module.exports = {
+
+  getWinningOutcomes: function getWinningOutcomes(market, callback) {
+    // market: hash id
+    var self = this;
+    var tx = clone(this.tx.Markets.getWinningOutcomes);
+    tx.params = market;
+    if (!utils.is_function(callback)) {
+      var winningOutcomes = this.fire(tx);
+      if (!winningOutcomes) return null;
+      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+        return winningOutcomes;
+      }
+      var numOutcomes = this.getMarketNumOutcomes(market);
+      return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
+    }
+    this.fire(tx, function (winningOutcomes) {
+      if (!winningOutcomes) return callback(null);
+      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+        return callback(winningOutcomes);
+      }
+      self.getMarketNumOutcomes(market, function (numOutcomes) {
+        if (numOutcomes && numOutcomes.error) {
+          return callback(numOutcomes);
+        }
+        callback(winningOutcomes.slice(0, numOutcomes));
+      });
+    });
+  }
+};
+},{"../utilities":95,"clone":155}],83:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+
+  parametrizeOrder: function parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+    return {
+      amount: numShares,
+      price: limitPrice,
+      market: market.id,
+      outcome: outcomeID,
+      tradeGroupID: tradeGroupID,
+      scalarMinMax: this.getScalarMinimum(market.type, market.minValue)
+    };
+  },
+
+  getScalarMinimum: function getScalarMinimum(type, minValue) {
+    var scalarMinimum = {};
+    if (type === "scalar") scalarMinimum.minValue = minValue;
+    return scalarMinimum;
+  }
+
+};
+},{}],84:[function(require,module,exports){
+/**
+ * Cash payouts from closed markets
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var async = require("async");
+var constants = require("../constants");
+
+module.exports = {
+
+  closeMarket: function closeMarket(branch, market, sender, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object) {
+      market = branch.market;
+      sender = branch.sender;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.CloseMarket.closeMarket);
+    tx.params = [branch, market, sender];
+    this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  // markets: array of market IDs for which to claim proceeds
+  claimMarketsProceeds: function claimMarketsProceeds(branch, markets, callback) {
+    if (this.options.debug.reporting) {
+      console.log("claimMarketsProceeds:", branch, markets);
+    }
+    var self = this;
+    var claimedMarkets = [];
+    async.eachSeries(markets, function (market, nextMarket) {
+      if (self.options.debug.reporting) {
+        console.log("claimMarketsProceeds", market);
+      }
+      self.getWinningOutcomes(market.id, function (winningOutcomes) {
+        // market not yet resolved
+        if (self.options.debug.reporting) {
+          console.log("got winning outcomes:", winningOutcomes);
+        }
+        if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
+          if (self.options.debug.reporting) {
+            console.log("market not yet resolved", market.id);
+          }
+          return nextMarket();
+        }
+        self.claimProceeds({
+          branch: branch,
+          market: market.id,
+          onSent: function onSent(res) {
+            if (self.options.debug.reporting) {
+              console.log("claim proceeds sent:", market.id, res);
+            }
+          },
+          onSuccess: function onSuccess(res) {
+            if (self.options.debug.reporting) {
+              console.log("claim proceeds success:", market.id, res);
+            }
+            claimedMarkets.push(market.id);
+            nextMarket();
+          },
+          onFailed: nextMarket
+        });
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, claimedMarkets);
+    });
+  },
+
+  claimProceeds: function claimProceeds(branch, market, onSent, onSuccess, onFailed) {
+    var self = this;
+    if (branch.constructor === Object) {
+      market = branch.market;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(self.tx.CloseMarket.claimProceeds);
+    tx.params = [branch, market];
+    if (self.options.debug.reporting) {
+      console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
+    }
+    self.transact(tx, onSent, function (res) {
+      if (self.options.debug.reporting) {
+        console.log("claimProceeds success:", market, res);
+      }
+      if (res.callReturn !== "1") return onFailed(res.callReturn);
+      self.rpc.receipt(res.hash, function (receipt) {
+        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+          var logs = receipt.logs;
+          var sig = self.api.events.payout.signature;
+          for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+            if (logs[i].topics[0] === sig) {
+              res.callReturn = self.filters.parse_event_message("payout", logs[i]);
+              break;
+            }
+          }
+        }
+        onSuccess(res);
+      });
+    }, onFailed);
+  }
+};
+},{"../constants":65,"async":114,"augur-abi":1,"clone":155}],85:[function(require,module,exports){
+/**
+ * Tools to adjust positions in Augur markets for display.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+var ONE = new BigNumber("1", 10);
+
+module.exports = {
+
+  /**
+   * @param {string} typeCode Type code (buy=1, sell=2); integer 32-byte hex.
+   * @param {BigNumber} position Starting number of shares.
+   * @param {string} numShares Shares to add or subtract; fixedpoint 32-byte hex.
+   * @return {BigNumber} Modified number of shares.
+   */
+  modifyPosition: function modifyPosition(typeCode, position, numShares) {
+    var unfixedNumShares = abi.unfix(numShares);
+    var newPosition;
+    switch (parseInt(typeCode, 16)) {
+      case 1:
+        // buy
+        newPosition = position.plus(unfixedNumShares);
+        break;
+      default:
+        // sell
+        newPosition = position.minus(unfixedNumShares);
+        break;
+    }
+    return newPosition;
+  },
+
+  /**
+   * Calculates the total number of complete sets bought/sold.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Total number of complete sets keyed by market ID.
+   */
+  calculateCompleteSetsShareTotals: function calculateCompleteSetsShareTotals(logs) {
+    if (!logs) return {};
+    var marketID, logData, shareTotals;
+    shareTotals = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
+        logData = this.rpc.unmarshal(logs[i].data);
+        if (logData && logData.length) {
+          shareTotals[marketID] = this.modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
+        }
+      }
+    }
+    return shareTotals;
+  },
+
+  /**
+   * Calculates the effective price of each complete set (1/numOutcomes).
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Effective price keyed by market ID.
+   */
+  calculateCompleteSetsEffectivePrice: function calculateCompleteSetsEffectivePrice(logs) {
+    if (!logs) return {};
+    var marketID, logData, effectivePrice;
+    effectivePrice = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[2];
+        if (!effectivePrice[marketID]) {
+          logData = this.rpc.unmarshal(logs[i].data);
+          if (logData && logData.length) {
+            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
+          }
+        }
+      }
+    }
+    return effectivePrice;
+  },
+
+  /**
+   * Calculates the effective price of each complete set (1/numOutcomes).
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return {Object} Effective price keyed by market ID.
+   */
+  calculateShortSellBuyCompleteSetsEffectivePrice: function calculateShortSellBuyCompleteSetsEffectivePrice(logs) {
+    if (!logs) return {};
+    var marketID, logData, effectivePrice, outcomeID;
+    effectivePrice = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[1];
+        if (!effectivePrice[marketID]) {
+          logData = this.rpc.unmarshal(logs[i].data);
+          if (logData && logData.length && logData.length === 8) {
+            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
+          }
+        }
+      }
+    }
+    return effectivePrice;
+  },
+
+  /**
+   * Calculates the largest number of shares short sold in any outcome per market.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return Object Largest total number of shares sold keyed by market ID.
+   */
+  calculateShortSellShareTotals: function calculateShortSellShareTotals(logs) {
+    if (!logs) return {};
+    var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
+    shareTotals = {};
+    sharesOutcomes = {};
+    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
+        marketID = logs[i].topics[1];
+        logData = this.rpc.unmarshal(logs[i].data);
+        if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
+        outcomeID = parseInt(logData[3], 16).toString();
+        if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
+        sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
+        shareTotals[marketID] = BigNumber.max(sharesOutcomes[marketID][outcomeID], shareTotals[marketID] || constants.ZERO);
+      }
+    }
+    return shareTotals;
+  },
+
+  /**
+   * @param {Object} position Starting position in a market {outcomeID: String{decimal}}.
+   * @param {BigNumber} adjustment Amount to decrease all positions by.
+   * @return {Object} Decreased market position {outcomeID: String{decimal}}.
+   */
+  decreasePosition: function decreasePosition(position, adjustment) {
+    var newPosition = {};
+    var outcomeIDs = Object.keys(position);
+    for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
+      newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
+    }
+    return newPosition;
+  },
+
+  /**
+   * Adjusts positions by subtracting out contributions from auto-generated
+   * buyCompleteSets during shortAsk (or implicitly during short_sell).
+   *
+   * Standalone (non-delegated) buyCompleteSets are assumed to be part of
+   * generateOrderBook, and are included in the user's position.
+   *
+   * sellCompleteSets - shortAskBuyCompleteSets
+   *
+   * Note: short_sell on-contract does not create a buyCompleteSets log.
+   *
+   * @param {string} account Ethereum account address.
+   * @param {Array} marketIDs List of market IDs for position adjustment.
+   * @param {Object} shareTotals Share totals keyed by log type.
+   * @param {function=} callback Callback function (optional).
+   * @return {Object} Adjusted positions keyed by marketID.
+   */
+  adjustPositions: function adjustPositions(account, marketIDs, shareTotals, callback) {
+    var self = this;
+    var adjustedPositions = {};
+    if (!utils.is_function(callback)) {
+      var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
+      for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
+        marketID = marketIDs[i];
+        onChainPosition = this.getPositionInMarket(marketID, account);
+        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
+        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
+        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+        }
+        adjustedPositions[marketID] = this.decreasePosition(onChainPosition, shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
+      }
+      return adjustedPositions;
+    }
+    async.eachSeries(marketIDs, function (marketID, nextMarket) {
+      self.getPositionInMarket(marketID, account, function (onChainPosition) {
+        if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
+        if (onChainPosition.error) return nextMarket(onChainPosition);
+        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
+        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
+        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
+          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
+        }
+        adjustedPositions[marketID] = self.decreasePosition(onChainPosition, shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
+        nextMarket();
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, adjustedPositions);
+    });
+  },
+
+  /**
+   * @param {Object} shareTotals Share totals keyed by log type.
+   * @return {Array} marketIDs List of market IDs for position adjustment.
+   */
+  findUniqueMarketIDs: function findUniqueMarketIDs(shareTotals) {
+    return Object.keys(shareTotals.shortAskBuyCompleteSets).concat(Object.keys(shareTotals.shortSellBuyCompleteSets)).concat(Object.keys(shareTotals.sellCompleteSets)).filter(utils.unique);
+  },
+
+  /**
+   * @param {Object} logs Event logs from eth_getLogs request.
+   * @return {Object} Share totals keyed by log type.
+   */
+  calculateShareTotals: function calculateShareTotals(logs) {
+    return {
+      shortAskBuyCompleteSets: this.calculateCompleteSetsShareTotals(logs.shortAskBuyCompleteSets),
+      shortSellBuyCompleteSets: this.calculateShortSellShareTotals(logs.shortSellBuyCompleteSets),
+      sellCompleteSets: this.calculateCompleteSetsShareTotals(logs.sellCompleteSets)
+    };
+  },
+
+  /**
+   * @param {string} account Ethereum account address.
+   * @param {Object=} options eth_getLogs parameters (optional).
+   * @param {function=} callback Callback function (optional).
+   * @return {Object} Adjusted positions keyed by marketID.
+   */
+  getAdjustedPositions: function getAdjustedPositions(account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (!utils.is_function(callback)) {
+      var shareTotals = this.calculateShareTotals({
+        shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
+        shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
+        sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
+      });
+      var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
+      return this.adjustPositions(account, marketIDs, shareTotals);
+    }
+    async.parallel({
+      shortAskBuyCompleteSets: function shortAskBuyCompleteSets(done) {
+        self.getShortAskBuyCompleteSetsLogs(account, options, done);
+      },
+      shortSellBuyCompleteSets: function shortSellBuyCompleteSets(done) {
+        self.getTakerShortSellLogs(account, options, done);
+      },
+      sellCompleteSets: function sellCompleteSets(done) {
+        self.getSellCompleteSetsLogs(account, options, done);
+      }
+    }, function (err, logs) {
+      if (err) return callback(err);
+      var shareTotals = self.calculateShareTotals(logs);
+      var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
+      self.adjustPositions(account, marketIDs, shareTotals, callback);
+    });
+  },
+
+  /**
+   * Calculates aggregate trade from buy/sell complete sets.
+   *
+   * @param {Array} logs Event logs from eth_getLogs request.
+   * @return Object Aggregate trades keyed by market ID.
+   */
+  calculateNetEffectiveTrades: function calculateNetEffectiveTrades(logs) {
+    var marketID, shareTotal, effectivePrice;
+    var shareTotals = this.calculateShareTotals({
+      shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
+      shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
+      sellCompleteSets: logs.sellCompleteSets
+    });
+    var effectivePrices = {
+      shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
+      shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
+      sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
+    };
+    var netEffectiveTrades = {};
+    var marketIDs = this.findUniqueMarketIDs(effectivePrices);
+    var numMarketIDs = marketIDs.length;
+    for (var i = 0; i < numMarketIDs; ++i) {
+      marketID = marketIDs[i];
+      if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
+      var completeSetsTypes = Object.keys(effectivePrices);
+      var numCompleteSetsTypes = completeSetsTypes.length;
+      for (var j = 0; j < numCompleteSetsTypes; ++j) {
+        var completeSetsType = completeSetsTypes[j];
+        shareTotal = shareTotals[completeSetsType][marketID];
+        effectivePrice = effectivePrices[completeSetsType][marketID];
+        if (shareTotal && effectivePrice) {
+          netEffectiveTrades[marketID][completeSetsType] = {
+            type: completeSetsType === "sellCompleteSets" ? "sell" : "buy",
+            price: effectivePrice,
+            shares: shareTotal.abs()
+          };
+        }
+      }
+    }
+    return netEffectiveTrades;
+  },
+
+  updateRealizedPL: function updateRealizedPL(meanOpenPrice, realized, shares, price) {
+    return realized.plus(shares.times(price.minus(meanOpenPrice)));
+  },
+
+  updateMeanOpenPrice: function updateMeanOpenPrice(position, meanOpenPrice, shares, price) {
+    return position.dividedBy(shares.plus(position)).times(meanOpenPrice).plus(shares.dividedBy(shares.plus(position)).times(price));
+  },
+
+  sellCompleteSetsPL: function sellCompleteSetsPL(PL, shares, price) {
+    var updatedPL = {
+      position: PL.position,
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
+
+    // If position <= 0, user is closing out a short position:
+    //  - update realized P/L
+    if (PL.position.lte(constants.ZERO)) {
+      if (shares.gt(constants.ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
+        while (updatedPL.tradeQueue.length) {
+          if (updatedPL.tradeQueue[0].shares.gt(shares)) {
+            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
+            updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
+            break;
+          } else {
+            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
+            updatedPL.tradeQueue.splice(0, 1);
+          }
+        }
+      }
+
+      // If position > 0, user is decreasing their long position:
+      //  - decrease position
+    } else {
+      updatedPL.position = updatedPL.position.minus(shares);
+      updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+    }
+
+    return updatedPL;
+  },
+
+  // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
+  // realized P/L = shares sold * (price on cash out - price on buy in)
+  longerPositionPL: function longerPositionPL(PL, shares, price) {
+    var updatedPL = {
+      position: PL.position.plus(shares),
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
+
+    // If position >= 0, user is increasing a long position:
+    //  - update weighted price of open positions
+    if (PL.position.abs().lte(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = price;
+    } else if (PL.position.gt(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
+
+      // If position < 0, user is decreasing a short position:
+    } else {
+      if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
+
+      // If |position| >= shares, user is buying back a short position:
+      //  - update queued P/L (becomes realized P/L when complete sets sold)
+      if (PL.position.abs().gte(shares)) {
+        updatedPL.tradeQueue.push({
+          meanOpenPrice: PL.meanOpenPrice,
+          realized: PL.realized,
+          shares: shares,
+          price: price
+        });
+
+        // If |position| < shares, user is buying back short then going long:
+        //  - update queued P/L for the short position (buy to 0)
+        //  - update mean open price for the remainder of shares
+      } else {
+        updatedPL.tradeQueue.push({
+          meanOpenPrice: PL.meanOpenPrice,
+          realized: PL.realized,
+          shares: PL.position.abs(),
+          price: price
+        });
+        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
+      }
+    }
+
+    return updatedPL;
+  },
+
+  shorterPositionPL: function shorterPositionPL(PL, shares, price) {
+    var updatedPL = {
+      position: PL.position.minus(shares),
+      meanOpenPrice: PL.meanOpenPrice,
+      realized: PL.realized,
+      completeSetsBought: PL.completeSetsBought,
+      queued: PL.queued,
+      tradeQueue: PL.tradeQueue
+    };
+
+    // If position < 0, user is increasing a short position:
+    //  - treat as a "negative buy" for P/L
+    //  - update weighted price of open positions
+    if (PL.position.abs().lte(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = price;
+    } else if (PL.position.lt(constants.PRECISION.zero)) {
+      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
+
+      // If position > 0, user is decreasing a long position
+    } else {
+
+      // If position >= shares, user is doing a regular sale:
+      //  - update realized P/L
+      if (PL.position.gte(shares)) {
+        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
+
+        // If position < shares, user is selling then short selling:
+        //  - update realized P/L for the current position (sell to 0)
+        //  - update mean open price for the remainder of shares (short sell)
+      } else {
+        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
+        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
+      }
+    }
+
+    return updatedPL;
+  },
+
+  // Trades where user is the maker:
+  //  - buy orders (matched user's ask): user loses shares, gets cash
+  //  - sell orders (matched user's bid): user loses cash, gets shares
+  calculateMakerPL: function calculateMakerPL(PL, type, price, shares) {
+
+    // Sell: matched user's bid order
+    if (type === "sell") {
+      // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+      return this.longerPositionPL(PL, shares, price);
+    }
+
+    // Buy: matched user's ask order
+    // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return this.shorterPositionPL(PL, shares, price);
+  },
+
+  // Trades where user is the taker:
+  //  - buy orders: user loses cash, gets shares
+  //  - sell orders: user loses shares, gets cash
+  calculateTakerPL: function calculateTakerPL(PL, type, price, shares) {
+
+    // Buy order
+    if (type === "buy") {
+      // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+      return this.longerPositionPL(PL, shares, price);
+    }
+
+    // Sell order
+    // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
+    return this.shorterPositionPL(PL, shares, price);
+  },
+
+  calculateTradePL: function calculateTradePL(PL, trade) {
+    if (trade.isCompleteSet) {
+      if (trade.type === "buy") {
+        // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+      }
+      // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
+      return this.sellCompleteSetsPL(PL, abi.bignum(trade.amount), abi.bignum(trade.price));
+    } else if (trade.maker) {
+      return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+    }
+    return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
+  },
+
+  calculateTradesPL: function calculateTradesPL(PL, trades) {
+    var numTrades = trades.length;
+    if (numTrades) {
+      for (var i = 0; i < numTrades; ++i) {
+        PL = this.calculateTradePL(PL, trades[i]);
+      }
+    }
+    return PL;
+  },
+
+  // unrealized P/L: shares held * (last trade price - price on buy in)
+  calculateUnrealizedPL: function calculateUnrealizedPL(position, meanOpenPrice, lastTradePrice) {
+    if (lastTradePrice.eq(constants.ZERO)) return constants.ZERO;
+    return position.times(abi.bignum(lastTradePrice).minus(meanOpenPrice));
+  },
+
+  /**
+   * Calculates realized and unrealized profit/loss for trades in a single outcome.
+   *
+   * Note: buy/sell labels are from taker's point-of-view.
+   *
+   * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
+   * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
+   * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
+   */
+  calculateProfitLoss: function calculateProfitLoss(trades, lastTradePrice) {
+    var PL = {
+      position: constants.ZERO,
+      meanOpenPrice: constants.ZERO,
+      realized: constants.ZERO,
+      unrealized: constants.ZERO,
+      queued: constants.ZERO,
+      completeSetsBought: constants.ZERO,
+      tradeQueue: []
+    };
+    var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
+    if (trades) {
+      PL = this.calculateTradesPL(PL, trades);
+      // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
+      var queuedShares = constants.ZERO;
+      if (PL.tradeQueue && PL.tradeQueue.length) {
+        // console.log('Trade queue:', JSON.stringify(PL.tradeQueue));
+        for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
+          queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
+          PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
+        }
+      }
+      // console.log('Queued shares:', queuedShares.toFixed());
+      // console.log('Last trade price:', bnLastTradePrice.toFixed());
+      PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, bnLastTradePrice);
+      // console.log('Unrealized P/L:', PL.unrealized.toFixed());
+      if (PL.position.abs().lt(constants.PRECISION.zero)) {
+        PL.position = constants.ZERO;
+        PL.meanOpenPrice = constants.ZERO;
+        PL.unrealized = constants.ZERO;
+      }
+    }
+    PL.position = PL.position.toFixed();
+    PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
+    PL.realized = PL.realized.toFixed();
+    PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
+    PL.queued = PL.queued.toFixed();
+    // console.log('Queued P/L:', PL.queued);
+    delete PL.completeSetsBought;
+    delete PL.tradeQueue;
+    return PL;
+  }
+};
+},{"../constants":65,"../utilities":95,"async":114,"augur-abi":1,"bignumber.js":117}],86:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+module.exports = {
+
+  parseLastTime: function parseLastTime(logs) {
+    return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
+  },
+
+  parseLastBlock: function parseLastBlock(logs) {
+    return parseInt(logs[logs.length - 1].blockNumber, 16);
+  },
+
+  getRegisterBlockNumber: function getRegisterBlockNumber(account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [this.api.events.registration.signature, abi.format_int256(account)],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) {
+        var logs = this.rpc.getLogs(filter);
+        if (!logs || !logs.length || logs && logs.error) return null;
+        return this.parseLastBlock(logs);
+      }
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, null);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, self.parseLastBlock(logs));
+      });
+    }
+  },
+
+  getRegisterTime: function getRegisterTime(account, options, callback) {
+    var self = this;
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [this.api.events.registration.signature, abi.format_int256(account)],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) {
+        var logs = this.rpc.getLogs(filter);
+        if (!logs || !logs.length || logs && logs.error) return null;
+        return this.parseLastTime(logs);
+      }
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, null);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, self.parseLastTime(logs));
+      });
+    }
+  },
+
+  getRegisterLogs: function getRegisterLogs(account, options, callback) {
+    if (!callback && utils.is_function(options)) {
+      callback = options;
+      options = null;
+    }
+    options = options || {};
+    if (account !== undefined && account !== null) {
+      var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.Register,
+        topics: [this.api.events.registration.signature, abi.format_int256(account)],
+        timeout: constants.GET_LOGS_TIMEOUT
+      };
+      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      this.rpc.getLogs(filter, function (logs) {
+        if (!logs || !logs.length) return callback(null, []);
+        if (logs && logs.error) return callback(logs, null);
+        callback(null, logs);
+      });
+    }
+  }
+};
+},{"../constants":65,"../utilities":95,"augur-abi":1,"clone":155}],87:[function(require,module,exports){
+/**
+ * Reporting time/period toolkit
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var async = require("async");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  getCurrentPeriod: function getCurrentPeriod(periodLength, timestamp) {
+    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    return Math.floor(t / periodLength);
+  },
+
+  getCurrentPeriodProgress: function getCurrentPeriodProgress(periodLength, timestamp) {
+    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    return 100 * (t % periodLength) / periodLength;
+  },
+
+  hashSenderPlusEvent: function hashSenderPlusEvent(sender, event) {
+    return abi.wrap(utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
+  },
+
+  getReport: function getReport(branch, period, event, sender, minValue, maxValue, type, callback) {
+    var self = this;
+    if (branch.constructor === Object) {
+      period = branch.period;
+      event = branch.event;
+      sender = branch.sender;
+      minValue = branch.minValue;
+      maxValue = branch.maxValue;
+      type = branch.type;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+      if (!rawReport || rawReport.error) {
+        return callback(rawReport || self.errors.REPORT_NOT_FOUND);
+      }
+      if (!parseInt(rawReport, 16)) {
+        return callback({ report: "0", isIndeterminate: false });
+      }
+      var report = self.unfixReport(rawReport, minValue, maxValue, type);
+      if (self.options.debug.reporting) {
+        console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+      }
+      callback(report);
+    });
+  },
+
+  penalizeWrong: function penalizeWrong(branch, event, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object) {
+      event = branch.event;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.Consensus.penalizeWrong);
+    tx.params = [branch, event];
+    this.transact(tx, onSent, onSuccess, onFailed);
+  },
+
+  // Increment vote period until vote period = current period - 1
+  checkPeriod: function checkPeriod(branch, periodLength, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[checkPeriod] calling periodCatchUp...", branch, periodLength, sender);
+    }
+    this.periodCatchUp(branch, periodLength, function (err, votePeriod) {
+      if (self.options.debug.reporting) {
+        console.log("[checkPeriod] periodCatchUp:", err, votePeriod);
+      }
+      if (err) return callback(err);
+      if (self.options.debug.reporting) {
+        console.log("[checkPeriod] calling feePenaltyCatchUp...", branch, votePeriod - 1);
+      }
+      self.feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
+        if (self.options.debug.reporting) {
+          console.log("[checkPeriod] feePenaltyCatchUp:", err);
+        }
+        if (err) return callback(err);
+        callback(null, votePeriod);
+      });
+    });
+  },
+
+  periodCatchUp: function periodCatchUp(branch, periodLength, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("calling getVotePeriod...", branch);
+    }
+    self.getVotePeriod(branch, function (votePeriod) {
+      if (self.options.debug.reporting) {
+        console.log("votePeriod:", votePeriod);
+      }
+      if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+        if (self.options.debug.reporting) {
+          console.log("votePeriod < currentPeriod - 1, calling increment period...");
+        }
+        self.incrementPeriodAfterReporting({
+          branch: branch,
+          onSent: function onSent(r) {},
+          onSuccess: function onSuccess(r) {
+            if (self.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
+            self.periodCatchUp(branch, periodLength, callback);
+          },
+          onFailed: callback
+        });
+      } else {
+        if (self.options.debug.reporting) {
+          console.log("votePeriod ok:", votePeriod, self.getCurrentPeriod(periodLength));
+        }
+        callback(null, votePeriod);
+      }
+    });
+  },
+
+  feePenaltyCatchUp: function feePenaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[feePenaltyCatchUp] params:", branch, periodToCheck, sender);
+    }
+    // If reported last period and called collectfees then call the penalization functions in
+    // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
+    // last period then call penalizationCatchup in order to allow submitReportHash to work.
+    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      if (self.options.debug.reporting) {
+        console.log("[feePenaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[feePenaltyCatchUp] Checking period:      ", periodToCheck);
+      }
+      self.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+        if (!feesCollected || feesCollected.error) {
+          return callback(feesCollected || "couldn't get fees collected");
+        }
+        if (self.options.debug.reporting) {
+          console.log("[feePenaltyCatchUp] feesCollected:", feesCollected);
+        }
+        if (feesCollected === "1") {
+          return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        }
+        if (self.getCurrentPeriodProgress(periodLength) < 50) {
+          return self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        }
+        self.collectFees({
+          branch: branch,
+          sender: sender,
+          periodLength: periodLength,
+          onSent: function onSent(r) {
+            console.log("collectFees sent:", r);
+          },
+          onSuccess: function onSuccess(r) {
+            console.log("collectFees success:", r);
+            self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          },
+          onFailed: function onFailed(e) {
+            if (e.error !== "-1") return callback(e);
+            console.info("collectFees:", e.message);
+            self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          }
+        });
+      });
+    });
+  },
+
+  penaltyCatchUp: function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
+    var self = this;
+    self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      if (self.options.debug.reporting) {
+        console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
+        console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
+      }
+      if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
+        if (self.options.debug.reporting) {
+          console.log("[penaltyCatchUp] Penalties caught up!");
+        }
+        return callback(null);
+      } else if (lastPeriodPenalized < periodToCheck - 1) {
+        if (self.getCurrentPeriodProgress(periodLength) >= 50) {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] not in first half of cycle, cannot call penalizationCatchup");
+          }
+          return callback(null);
+        }
+        return self.penalizationCatchup({
+          branch: branch,
+          sender: sender,
+          onSent: utils.noop,
+          onSuccess: function onSuccess(r) {
+            if (self.options.debug.reporting) {
+              console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
+            }
+            callback(null);
+          },
+          onFailed: function onFailed(e) {
+            console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+            callback(e);
+          }
+        });
+      }
+      self.getEvents(branch, periodToCheck, function (events) {
+        if (!events || events.constructor !== Array || !events.length) {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] No events found in period", periodToCheck);
+          }
+          self.penalizeWrong({
+            branch: branch,
+            event: 0,
+            onSent: utils.noop,
+            onSuccess: function onSuccess(r) {
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
+              }
+              callback(null);
+            },
+            onFailed: function onFailed(e) {
+              console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+              callback(null);
+            }
+          });
+        } else {
+          if (self.options.debug.reporting) {
+            console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
+          }
+          async.eachSeries(events, function (event, nextEvent) {
+            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+              }
+              if (parseInt(canReportOn) === 0) return nextEvent(null);
+              if (self.options.debug.reporting) {
+                console.log("[penaltyCatchUp] penalizeWrong:", event);
+              }
+              self.penalizeWrong({
+                branch: branch,
+                event: event,
+                onSent: utils.noop,
+                onSuccess: function onSuccess(r) {
+                  if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                  }
+                  self.closeExtraMarkets(branch, event, sender, function (err, markets) {
+                    if (err) return nextEvent(err);
+                    nextEvent(null);
+                  });
+                },
+                onFailed: function onFailed(e) {
+                  console.error("[penaltyCatchUp] penalizeWrong error:", e);
+                  nextEvent(null);
+                }
+              });
+            });
+          }, callback);
+        }
+      });
+    });
+  },
+
+  closeExtraMarkets: function closeExtraMarkets(branch, event, sender, callback) {
+    var self = this;
+    if (self.options.debug.reporting) {
+      console.log("[closeExtraMarkets] Closing extra markets for event", event);
+    }
+    self.getMarkets(event, function (markets) {
+      if (!markets || !markets.length) {
+        return callback("no markets found for " + event);
+      }
+      if (markets && markets.error) return callback(markets);
+      async.eachSeries(markets, function (market, nextMarket) {
+        self.getWinningOutcomes(market, function (winningOutcomes) {
+          console.log("winning outcomes for", market, winningOutcomes);
+          if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
+          if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+            self.closeMarket({
+              branch: branch,
+              market: market,
+              sender: sender,
+              onSent: function onSent(r) {
+                if (self.options.debug.reporting) {
+                  console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                }
+              },
+              onSuccess: function onSuccess(r) {
+                if (self.options.debug.reporting) {
+                  console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                }
+                nextMarket(null);
+              },
+              onFailed: function onFailed(e) {
+                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
+                self.getWinningOutcomes(market, function (winningOutcomes) {
+                  if (!winningOutcomes) return nextMarket(e);
+                  if (winningOutcomes.error) return nextMarket(winningOutcomes);
+                  if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                    return nextMarket(winningOutcomes);
+                  }
+                  nextMarket(null);
+                });
+              }
+            });
+          }
+        });
+      }, callback);
+    });
+  },
+
+  // Make sure current period = expiration period + periodGap
+  // If not, wait until it is:
+  // expPeriod - currentPeriod periods
+  // t % periodLength seconds
+  checkTime: function checkTime(branch, event, periodLength, periodGap, callback) {
+    var self = this;
+    if (!callback && utils.is_function(periodGap)) {
+      callback = periodGap;
+      periodGap = null;
+    }
+    periodGap = periodGap || 1;
+    function wait(branch, secondsToWait, next) {
+      console.log("Waiting", secondsToWait / 60, "minutes...");
+      setTimeout(function () {
+        self.Consensus.incrementPeriodAfterReporting({
+          branch: branch,
+          onSent: function onSent(r) {},
+          onSuccess: function onSuccess(r) {
+            console.log("Incremented period:", r.callReturn);
+            self.getVotePeriod(branch, function (votePeriod) {
+              next(null, votePeriod);
+            });
+          },
+          onFailed: next
+        });
+      }, secondsToWait * 1000);
+    }
+    this.getExpiration(event, function (expTime) {
+      var expPeriod = Math.floor(expTime / periodLength);
+      var currentPeriod = self.getCurrentPeriod(periodLength);
+      console.log("\nreporting.checkTime:");
+      console.log(" - Expiration period:", expPeriod);
+      console.log(" - Current period:   ", currentPeriod);
+      console.log(" - Target period:    ", expPeriod + periodGap);
+      if (currentPeriod < expPeriod + periodGap) {
+        var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
+        console.log("Full periods to wait:", fullPeriodsToWait);
+        var secondsToWait = periodLength;
+        if (fullPeriodsToWait === 0) {
+          secondsToWait -= parseInt(new Date().getTime() / 1000) % periodLength;
+        }
+        console.log("Seconds to wait:", secondsToWait);
+        wait(branch, secondsToWait, function (err, votePeriod) {
+          if (err) return callback(err);
+          console.log("New vote period:", votePeriod);
+          self.checkTime(branch, event, periodLength, callback);
+        });
+      } else {
+        callback(null);
+      }
+    });
+  }
+};
+},{"../constants":65,"../utilities":95,"async":114,"augur-abi":1,"clone":155}],88:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+
+  selectOrder: function selectOrder(orderID, orderBooks) {
+    var marketIDs = Object.keys(orderBooks);
+    var numMarkets = marketIDs.length;
+    for (var i = 0; i < numMarkets; ++i) {
+      var orderBook = orderBooks[marketIDs[i]];
+      var order = this.selectOrderInOrderBookSide(orderID, orderBook.buy) || this.selectOrderInOrderBookSide(orderID, orderBook.sell);
+      if (order) return order;
+    }
+  },
+
+  selectOrderInOrderBookSide: function selectOrderInOrderBookSide(orderID, orderBookSide) {
+    var orderIDs = Object.keys(orderBookSide);
+    var numOrderIDs = orderIDs.length;
+    for (var j = 0; j < numOrderIDs; ++j) {
+      if (orderBookSide[orderID]) return orderBookSide[orderID];
+    }
+  }
+
+};
+},{}],89:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+  sendReputation: function sendReputation(branch, recver, value, onSent, onSuccess, onFailed) {
+    // branch: hash id
+    // recver: ethereum address of recipient
+    // value: number -> fixed-point
+    var self = this;
+    if (branch && branch.branch) {
+      recver = branch.recver;
+      value = branch.value;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
+    }
+    var tx = clone(this.tx.SendReputation.sendReputation);
+    tx.params = [branch, recver, abi.fix(value, "hex")];
+
+    // if callReturn is 0, but account has sufficient Reputation and Rep
+    // redistribution is done, then re-invoke sendReputation
+    // (penalizationCatchup is being called)
+    var prepare = function prepare(result, cb) {
+      if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
+        return cb(result);
+      }
+      self.getRepBalance(branch, result.from, function (repBalance) {
+        if (!repBalance || repBalance.error) {
+          return onFailed(repBalance);
+        }
+        if (abi.bignum(repBalance).lt(abi.bignum(value))) {
+          return onFailed({ error: "0", message: "not enough reputation" });
+        }
+        self.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
+          if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
+            return onFailed({ error: "-3", message: "cannot send reputation until redistribution is complete" });
+          }
+          self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
+        });
+      });
+    };
+
+    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+  }
+};
+},{"../utilities":95,"augur-abi":1,"clone":155}],90:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var constants = require("../constants");
+
+module.exports = function (numShares, position) {
+  var askShares, shortAskShares;
+  if (position.gt(numShares)) {
+    askShares = numShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+    shortAskShares = 0;
+  } else {
+    askShares = position.toFixed();
+    shortAskShares = numShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
+  }
+  return { askShares: askShares, shortAskShares: shortAskShares };
+};
+},{"../constants":65,"bignumber.js":117}],91:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var async = require("async");
+var uuid = require("uuid");
+var uuidParse = require("uuid-parse");
+var abi = require("augur-abi");
+var rpc = require("ethrpc");
+var splitOrder = require("./splitOrder");
+var abacus = require("./abacus");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  placeBuy: function placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    tradeCommitLockCallback(true);
+    var self = this;
+    var marketID = market.id;
+    var getTradeIDs = function getTradeIDs() {
+      return self.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
+    };
+    this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
+      if (err) return console.error("trade failed:", err);
+      var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
+      if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
+        console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
+      }
+    });
+  },
+
+  placeSell: function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    var self = this;
+    tradeCommitLockCallback(true);
+    var marketID = market.id;
+    var getTradeIDs = function getTradeIDs() {
+      return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
+    };
+    this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
+      if (err) return console.error("trade failed:", err);
+      if (res.remainingShares.gt(constants.PRECISION.zero)) {
+        self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+          var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+          var remainingShares = abi.bignum(res.remainingShares);
+          if (position.gt(constants.PRECISION.zero)) {
+            var shares = splitOrder(remainingShares, position);
+            var askShares = shares.askShares;
+            var shortAskShares = shares.shortAskShares;
+            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
+              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
+            }
+            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
+              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
+            }
+          } else {
+            self.getOrderBook(marketID, function (updatedOrderBook) {
+              if (err) console.error("getOrderBook:", err);
+              var orderBook = {};
+              orderBook[marketID] = updatedOrderBook;
+              var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
+              if (tradeIDs && tradeIDs.length) {
+                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
+              } else {
+                self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
+              }
+            });
+          }
+        });
+      }
+    });
+  },
+
+  placeShortSell: function placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    var self = this;
+    tradeCommitLockCallback(true);
+    var marketID = market.id;
+    var getTradeIDs = function getTradeIDs() {
+      return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
+    };
+    this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+      tradeCommitLockCallback(false);
+      if (err) return console.error("short sell failed:", err);
+      if (res.remainingShares.gt(constants.PRECISION.zero)) {
+        self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
+      }
+    });
+  }
+
+};
+},{"../constants":65,"../utilities":95,"./abacus":69,"./splitOrder":90,"async":114,"augur-abi":1,"bignumber.js":117,"clone":155,"ethrpc":282,"uuid":271,"uuid-parse":269}],92:[function(require,module,exports){
+"use strict";
+
+var clone = require("clone");
+var async = require("async");
+var abi = require("augur-abi");
+var rpc = require("ethrpc");
+var utils = require("../utilities");
+var constants = require("../constants");
+var abacus = require("./abacus");
+
+module.exports = {
+
+  // tradeTypes: array of "buy" and/or "sell"
+  // gasLimit (optional): block gas limit as integer
+  isUnderGasLimit: function isUnderGasLimit(tradeTypes, gasLimit, callback) {
+    if (utils.is_function(gasLimit) && !callback) {
+      callback = gasLimit;
+      gasLimit = null;
+    }
+    var gas = abacus.sumTradeGas(tradeTypes);
+    if (!utils.is_function(callback)) {
+      if (gasLimit) return gas <= gasLimit;
+      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
+    }
+    if (gasLimit) return callback(gas <= gasLimit);
+    var self = this;
+    this.rpc.blockNumber(function (blockNumber) {
+      self.rpc.getBlock(blockNumber, false, function (block) {
+        callback(gas <= parseInt(block.gasLimit, 16));
+      });
+    });
+  },
+
+  checkGasLimit: function checkGasLimit(trade_ids, sender, callback) {
+    var self = this;
+    var gas = 0;
+    var count = { buy: 0, sell: 0 };
+    self.rpc.blockNumber(function (blockNumber) {
+      self.rpc.getBlock(blockNumber, false, function (block) {
+        var checked_trade_ids = trade_ids.slice();
+        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+          self.get_trade(trade_id, function (trade) {
+            if (!trade || !trade.id) {
+              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+              if (!checked_trade_ids.length) {
+                return callback(self.errors.TRADE_NOT_FOUND);
+              }
+              console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
+            } else if (trade.owner === sender) {
+              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+              if (!checked_trade_ids.length) {
+                return callback({ error: "-5", message: self.errors.trade["-5"] });
+              }
+              console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
+            }
+            ++count[trade.type];
+            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+            next();
+          });
+        }, function (e) {
+          if (e) return callback(e);
+          if (gas <= parseInt(block.gasLimit, 16)) {
+            return callback(null, checked_trade_ids);
+          } else if (!count.buy || !count.sell) {
+            var type = count.buy ? "buy" : "sell";
+            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+          }
+          callback(self.errors.GAS_LIMIT_EXCEEDED);
+        });
+      });
+    });
+  },
+
+  trade: function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (this.options.debug.trading) {
+      console.log("trade:", JSON.stringify(max_value, null, 2));
+    }
+    if (max_value.constructor === Object) {
+      max_amount = max_value.max_amount;
+      trade_ids = max_value.trade_ids;
+      tradeGroupID = max_value.tradeGroupID;
+      sender = max_value.sender;
+      onTradeHash = max_value.onTradeHash;
+      onCommitSent = max_value.onCommitSent;
+      onCommitSuccess = max_value.onCommitSuccess;
+      onCommitFailed = max_value.onCommitFailed;
+      onNextBlock = max_value.onNextBlock;
+      onTradeSent = max_value.onTradeSent;
+      onTradeSuccess = max_value.onTradeSuccess;
+      onTradeFailed = max_value.onTradeFailed;
+      max_value = max_value.max_value;
+    }
+    onTradeHash = onTradeHash || utils.noop;
+    onCommitSent = onCommitSent || utils.noop;
+    onCommitSuccess = onCommitSuccess || utils.noop;
+    onCommitFailed = onCommitFailed || utils.noop;
+    onNextBlock = onNextBlock || utils.noop;
+    onTradeSent = onTradeSent || utils.noop;
+    onTradeSuccess = onTradeSuccess || utils.noop;
+    onTradeFailed = onTradeFailed || utils.noop;
+    this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
+      if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
+      if (err) return onTradeFailed(err);
+      var bn_max_value = abi.bignum(max_value);
+      if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
+        return onTradeFailed({ error: "-4", message: self.errors.trade["-4"] });
+      }
+      var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+      if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
+      onTradeHash(tradeHash);
+      self.commitTrade({
+        hash: tradeHash,
+        onSent: onCommitSent,
+        onSuccess: function onSuccess(res) {
+          if (self.options.debug.trading) console.log('commitTrade:', res);
+          onCommitSuccess(res);
+          self.rpc.fastforward(1, function (blockNumber) {
+            if (self.options.debug.trading) console.log('fastforward:', blockNumber);
+            onNextBlock(blockNumber);
+            var tx = clone(self.tx.Trade.trade);
+            tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
+            if (self.options.debug.trading) {
+              console.log("trade tx:", JSON.stringify(tx, null, 2));
+            }
+            var prepare = function prepare(result, cb) {
+              if (self.options.debug.trading) {
+                console.log("trade response:", JSON.stringify(result, null, 2));
+              }
+              var err;
+              var txHash = result.hash;
+              if (result.callReturn && result.callReturn.constructor === Array) {
+                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                  err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
+                  if (!err) {
+                    err = clone(self.errors.TRADE_FAILED);
+                    err.message += result.callReturn[0].toString();
+                    return onTradeFailed(err);
+                  }
+                  return onTradeFailed({ error: err, message: self.errors.trade[err], tx: tx });
+                }
+                self.rpc.receipt(txHash, function (receipt) {
+                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                  if (receipt.error) return onTradeFailed(receipt);
+                  var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
+                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    logs = receipt.logs;
+                    sig = self.api.events.log_fill_tx.signature;
+                    sharesBought = constants.ZERO;
+                    cashFromTrade = constants.ZERO;
+                    tradingFees = constants.ZERO;
+                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                      if (logs[i].topics[0] === sig) {
+                        logdata = self.rpc.unmarshal(logs[i].data);
+                        if (logdata && logdata.constructor === Array && logdata.length > 6) {
+                          tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+
+                          // buy (matched sell order)
+                          if (parseInt(logdata[0], 16) === 1) {
+                            sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+
+                            // sell (matched buy order)
+                            // cash received = price per share * shares sold
+                          } else {
+                            cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
+                          }
+                        }
+                      }
+                    }
+                  }
+                  cb({
+                    hash: txHash,
+                    unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
+                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                    sharesBought: abi.string(sharesBought),
+                    cashFromTrade: abi.string(cashFromTrade),
+                    tradingFees: abi.string(tradingFees),
+                    gasFees: result.gasFees,
+                    timestamp: result.timestamp
+                  });
+                });
+              } else {
+                err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                if (!err) {
+                  err = clone(self.errors.TRADE_FAILED);
+                  err.message += result.callReturn.toString();
+                  return onTradeFailed(result);
+                }
+                onTradeFailed({ error: err, message: self.errors[err], tx: tx });
+              }
+            };
+            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
+          });
+        },
+        onFailed: onCommitFailed
+      });
+    });
+  },
+
+  short_sell: function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (this.options.debug.trading) {
+      console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
+    }
+    if (buyer_trade_id.constructor === Object) {
+      max_amount = buyer_trade_id.max_amount;
+      tradeGroupID = buyer_trade_id.tradeGroupID;
+      sender = buyer_trade_id.sender;
+      onTradeHash = buyer_trade_id.onTradeHash;
+      onCommitSent = buyer_trade_id.onCommitSent;
+      onCommitSuccess = buyer_trade_id.onCommitSuccess;
+      onCommitFailed = buyer_trade_id.onCommitFailed;
+      onNextBlock = buyer_trade_id.onNextBlock;
+      onTradeSent = buyer_trade_id.onTradeSent;
+      onTradeSuccess = buyer_trade_id.onTradeSuccess;
+      onTradeFailed = buyer_trade_id.onTradeFailed;
+      buyer_trade_id = buyer_trade_id.buyer_trade_id;
+    }
+    onTradeHash = onTradeHash || utils.noop;
+    onCommitSent = onCommitSent || utils.noop;
+    onCommitSuccess = onCommitSuccess || utils.noop;
+    onCommitFailed = onCommitFailed || utils.noop;
+    onNextBlock = onNextBlock || utils.noop;
+    onTradeSent = onTradeSent || utils.noop;
+    onTradeSuccess = onTradeSuccess || utils.noop;
+    onTradeFailed = onTradeFailed || utils.noop;
+    this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
+      if (err) return onTradeFailed(err);
+      var tradeHash = self.makeTradeHash(0, max_amount, trade_ids);
+      onTradeHash(tradeHash);
+      self.commitTrade({
+        hash: tradeHash,
+        onSent: onCommitSent,
+        onSuccess: function onSuccess(res) {
+          onCommitSuccess(res);
+          self.rpc.fastforward(1, function (blockNumber) {
+            onNextBlock(blockNumber);
+            var tx = clone(self.tx.Trade.short_sell);
+            tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
+            if (self.options.debug.trading) {
+              console.log("short_sell tx:", JSON.stringify(tx, null, 2));
+            }
+            var prepare = function prepare(result, cb) {
+              if (self.options.debug.trading) {
+                console.log("short_sell response:", JSON.stringify(result, null, 2));
+              }
+              var err;
+              var txHash = result.hash;
+              if (result.callReturn && result.callReturn.constructor === Array) {
+                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                  err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
+                  if (!err) {
+                    err = clone(self.errors.TRADE_FAILED);
+                    err.message += result.callReturn[0].toString();
+                    return onTradeFailed(err);
+                  }
+                  return onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx });
+                }
+                self.rpc.receipt(txHash, function (receipt) {
+                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                  if (receipt.error) return onTradeFailed(receipt);
+                  var cashFromTrade, tradingFees, logs, sig, logdata;
+                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                    logs = receipt.logs;
+                    sig = self.api.events.log_short_fill_tx.signature;
+                    cashFromTrade = constants.ZERO;
+                    tradingFees = constants.ZERO;
+                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                      if (logs[i].topics[0] === sig) {
+                        logdata = self.rpc.unmarshal(logs[i].data);
+                        if (logdata && logdata.constructor === Array && logdata.length > 8) {
+                          cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
+                          tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
+                        }
+                      }
+                    }
+                  }
+                  cb({
+                    hash: txHash,
+                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                    matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
+                    cashFromTrade: abi.string(cashFromTrade),
+                    price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
+                    tradingFees: abi.string(tradingFees),
+                    gasFees: result.gasFees,
+                    timestamp: result.timestamp
+                  });
+                });
+              } else {
+                err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                if (!err) {
+                  err = clone(self.errors.TRADE_FAILED);
+                  err.message += result.callReturn.toString();
+                  return onTradeFailed(result);
+                }
+                onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx });
+              }
+            };
+            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
+          });
+        },
+        onFailed: onCommitFailed
+      });
+    });
+  }
+};
+},{"../constants":65,"../utilities":95,"./abacus":69,"async":114,"augur-abi":1,"clone":155,"ethrpc":282}],93:[function(require,module,exports){
+/*
+ * Author: priecint
+ */
+
+"use strict";
+
+var clone = require("clone");
+var BigNumber = require("bignumber.js");
+var EthTx = require("ethereumjs-tx");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var abacus = require("./abacus");
+
+var ONE = new BigNumber(1, 10);
+
+module.exports = {
+
+  calculateBuyTradeIDs: function calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = orderBooks[marketID] && orderBooks[marketID].sell || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "buy", limitPrice, outcomeID, address).map(function (order) {
+      return order.id;
+    });
+  },
+
+  calculateSellTradeIDs: function calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address) {
+    var orders = orderBooks[marketID] && orderBooks[marketID].buy || {};
+    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "sell", limitPrice, outcomeID, address).map(function (order) {
+      return order.id;
+    });
+  },
+
+  /**
+   * Calculates (approximately) gas needed to run the transaction
+   *
+   * @param {Object} tx
+   * @param {Number} gasPrice
+   * @return {BigNumber}
+   */
+  getTxGasEth: function getTxGasEth(tx, gasPrice) {
+    tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
+    tx.gasPrice = gasPrice;
+    var etx = new EthTx(tx);
+    return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
+  },
+
+  /**
+   * Bids are sorted descendingly, asks are sorted ascendingly
+   *
+   * @param {Array} orders Bids or asks
+   * @param {String} traderOrderType What trader want to do (buy or sell)
+   * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
+   * @param {String} outcomeId
+   * @param {String} userAddress
+   * @return {Array.<Object>}
+   */
+  filterByPriceAndOutcomeAndUserSortByPrice: function filterByPriceAndOutcomeAndUserSortByPrice(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    if (!orders) return [];
+    var isMarketOrder = limitPrice === null || limitPrice === undefined;
+    return Object.keys(orders).map(function (orderID) {
+      return orders[orderID];
+    }).filter(function (order) {
+      if (!order || !order.price) return false;
+      var isMatchingPrice;
+      if (isMarketOrder) {
+        isMatchingPrice = true;
+      } else {
+        isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+      }
+      return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+    }).sort(function compareOrdersByPrice(order1, order2) {
+      return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+    });
+  },
+
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getBidAction: function getBidAction(shares, limitPrice, makerFee, gasPrice) {
+    var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
+    var etherToBid = shares.times(limitPrice).dividedBy(constants.ONE).floor();
+    var feeEth = etherToBid.times(makerFee).dividedBy(constants.ONE).floor();
+    return {
+      action: "BID",
+      shares: abi.unfix(shares, "string"),
+      gasEth: bidGasEth.toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
+      avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string")
+    };
+  },
+
+  /**
+   *
+   * @param {BigNumber} buyEth
+   * @param {BigNumber} sharesFilled
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getBuyAction: function getBuyAction(buyEth, sharesFilled, takerFeeEth, gasPrice) {
+    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var fxpBuyEth = abi.fix(buyEth);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    var fxpSharesFilled = abi.fix(sharesFilled);
+    return {
+      action: "BUY",
+      shares: sharesFilled.toFixed(),
+      gasEth: tradeGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: buyEth.toFixed(),
+      avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
+    };
+  },
+
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getAskAction: function getAskAction(shares, limitPrice, makerFee, gasPrice) {
+    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var costEth = shares.times(limitPrice).dividedBy(constants.ONE).floor();
+    var feeEth = costEth.times(makerFee).dividedBy(constants.ONE).floor();
+    return {
+      action: "ASK",
+      shares: abi.unfix(shares, "string"),
+      gasEth: askGasEth.toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(costEth.minus(feeEth), "string"),
+      avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string")
+    };
+  },
+
+  /**
+   *
+   * @param {BigNumber} sellEth
+   * @param {BigNumber} sharesFilled
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getSellAction: function getSellAction(sellEth, sharesFilled, takerFeeEth, gasPrice) {
+    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var fxpSellEth = abi.fix(sellEth);
+    var fxpSharesFilled = abi.fix(sharesFilled);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    return {
+      action: "SELL",
+      shares: sharesFilled.toFixed(),
+      gasEth: tradeGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: sellEth.toFixed(),
+      avgPrice: abi.unfix(fxpSellEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpSellEth.plus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
+    };
+  },
+
+  /**
+   *
+   * @param {BigNumber} shortSellEth
+   * @param {BigNumber} shares
+   * @param {BigNumber} takerFeeEth
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getShortSellAction: function getShortSellAction(shortSellEth, shares, takerFeeEth, gasPrice) {
+    var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
+    var fxpShortSellEth = abi.fix(shortSellEth);
+    var fxpTakerFeeEth = abi.fix(takerFeeEth);
+    var fxpShares = abi.fix(shares);
+    return {
+      action: "SHORT_SELL",
+      shares: shares.toFixed(),
+      gasEth: shortSellGasEth.toFixed(),
+      feeEth: takerFeeEth.toFixed(),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
+      costEth: shortSellEth.toFixed(),
+      avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
+    };
+  },
+
+  /**
+   *
+   * @param {BigNumber} shares
+   * @param {BigNumber} limitPrice
+   * @param {BigNumber} makerFee
+   * @param {Number} gasPrice
+   * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
+   */
+  getShortAskAction: function getShortAskAction(shares, limitPrice, makerFee, gasPrice) {
+    var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
+    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
+    // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
+    var costEth = shares.neg().minus(feeEth);
+    return {
+      action: "SHORT_ASK",
+      shares: abi.unfix(shares, "string"),
+      gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
+      feeEth: abi.unfix(feeEth, "string"),
+      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      costEth: abi.unfix(costEth, "string"),
+      avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
+      noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
+    };
+  },
+
+  /**
+   * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+   * much they pay for trading
+   *
+   * @param {String} type 'buy' or 'sell'
+   * @param {String|BigNumber} orderShares
+   * @param {String|BigNumber=} orderLimitPrice null value results in market order
+   * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
+   * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
+   * @param {String} userAddress Address of trader to exclude orders from order book
+   * @param {String|BigNumber} userPositionShares
+   * @param {String} outcomeId
+   * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
+   * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
+   * @return {Array}
+   */
+  getTradingActions: function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
+    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
+    if (type.constructor === Object) {
+      orderShares = type.orderShares;
+      orderLimitPrice = type.orderLimitPrice;
+      takerFee = type.takerFee;
+      makerFee = type.makerFee;
+      userAddress = type.userAddress;
+      userPositionShares = type.userPositionShares;
+      outcomeId = type.outcomeId;
+      marketOrderBook = type.marketOrderBook;
+      range = type.range;
+      scalarMinMax = type.scalarMinMax;
+      type = type.type;
+    }
+
+    userAddress = abi.format_address(userAddress);
+    orderShares = new BigNumber(orderShares, 10);
+    orderLimitPrice = orderLimitPrice === null || orderLimitPrice === undefined ? null : new BigNumber(orderLimitPrice, 10);
+    var bnTakerFee = new BigNumber(takerFee, 10);
+    var bnMakerFee = new BigNumber(makerFee, 10);
+    var bnRange = new BigNumber(range, 10);
+    userPositionShares = new BigNumber(userPositionShares, 10);
+    isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
+    fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+    if (!isMarketOrder) {
+      adjustedFees = abacus.calculateFxpMakerTakerFees(abacus.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(orderLimitPrice), abi.fix(bnRange)), fees.makerProportionOfFee, false, true);
+    }
+
+    var augur = this;
+    var gasPrice = augur.rpc.gasPrice;
+    var tradingCost, fullPrecisionPrice;
+    if (type === "buy") {
+      var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
+      var areSuitableOrders = matchingSortedAsks.length > 0;
+      if (!areSuitableOrders) {
+        if (isMarketOrder) {
+          return [];
+        }
+        return [augur.getBidAction(abi.fix(orderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice)];
+      } else {
+        var buyActions = [];
+
+        var etherToTrade = constants.ZERO;
+        totalTakerFeeEth = constants.ZERO;
+        remainingOrderShares = orderShares;
+        length = matchingSortedAsks.length;
+        for (i = 0; i < length; i++) {
+          ask = matchingSortedAsks[i];
+          orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
+          fullPrecisionPrice = scalarMinMax && scalarMinMax.minValue ? abacus.shrinkScalarPrice(scalarMinMax.minValue, ask.fullPrecisionPrice) : ask.fullPrecisionPrice;
+          tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+          totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+          etherToTrade = etherToTrade.plus(tradingCost.cost);
+          remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+          if (remainingOrderShares.lte(constants.PRECISION.zero)) {
+            break;
+          }
+        }
+        buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
+
+        if (!remainingOrderShares.lte(constants.PRECISION.zero) && !isMarketOrder) {
+          buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+        }
+
+        return buyActions;
+      }
+    } else {
+      var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
+
+      var areSuitableBids = matchingSortedBids.length > 0;
+      var userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
+      var sellActions = [];
+
+      if (userHasPosition) {
+        var etherToSell = constants.ZERO;
+        remainingOrderShares = orderShares;
+        var remainingPositionShares = userPositionShares;
+        if (areSuitableBids) {
+          totalTakerFeeEth = constants.ZERO;
+          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+            bid = matchingSortedBids[i];
+            bidAmount = new BigNumber(bid.amount, 10);
+            orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
+            fullPrecisionPrice = scalarMinMax && scalarMinMax.minValue ? abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) : bid.fullPrecisionPrice;
+            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+            etherToSell = etherToSell.plus(tradingCost.cash);
+            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
+            if (orderSharesFilled.equals(bidAmount)) {
+              // since this order is filled we remove it. Change for-cycle variables accordingly
+              matchingSortedBids.splice(i, 1);
+              i--;
+              length--;
+            } else {
+              var newBid = clone(bid);
+              newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
+              matchingSortedBids[i] = newBid;
+            }
+            if (remainingOrderShares.lte(constants.PRECISION.zero) || remainingPositionShares.lte(constants.PRECISION.zero)) {
+              break;
+            }
+          }
+          sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
+        } else {
+          if (!isMarketOrder) {
+            var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+            remainingOrderShares = remainingOrderShares.minus(askShares);
+            remainingPositionShares = remainingPositionShares.minus(askShares);
+            sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+          }
+        }
+
+        if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
+          // recursion
+          sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, { buy: matchingSortedBids }, scalarMinMax));
+        }
+      } else {
+        if (isMarketOrder) {
+          return sellActions;
+        }
+
+        var etherToShortSell = constants.ZERO;
+        remainingOrderShares = orderShares;
+        if (areSuitableBids) {
+          totalTakerFeeEth = constants.ZERO;
+          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+            bid = matchingSortedBids[i];
+            orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
+            fullPrecisionPrice = scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined ? abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) : bid.fullPrecisionPrice;
+            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+            etherToShortSell = etherToShortSell.plus(tradingCost.cash);
+            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            if (remainingOrderShares.lte(constants.PRECISION.zero)) {
+              break;
+            }
+          }
+          sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
+        }
+        if (remainingOrderShares.gt(constants.PRECISION.zero)) {
+          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+        }
+      }
+
+      return sellActions;
+    }
+  }
+};
+},{"../constants":65,"./abacus":69,"augur-abi":1,"bignumber.js":117,"clone":155,"ethereumjs-tx":193}],94:[function(require,module,exports){
+/**
+ * ethrpc fire/transact wrappers
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+module.exports = {
+
+  fire: function fire(tx, callback, wrapper, aux) {
+    if (this.web && this.web.account && this.web.account.address) {
+      tx.from = this.web.account.address;
+    } else {
+      tx.from = tx.from || this.from || this.coinbase;
+    }
+    return this.rpc.fire(tx, callback, wrapper, aux);
+  },
+
+  transact: function transact(tx, onSent, onSuccess, onFailed) {
+    if (this.web && this.web.account && this.web.account.address) {
+      tx.from = this.web.account.address;
+      tx.invocation = { invoke: this.web.invoke, context: this.web };
+    } else {
+      tx.from = tx.from || this.from || this.coinbase;
+    }
+    return this.rpc.transact(tx, onSent, onSuccess, onFailed);
+  }
+};
+},{}],95:[function(require,module,exports){
+(function (process,Buffer){
+"use strict";
+
+var NODE_JS = typeof module !== "undefined" && process && !process.browser;
+
+var crypto = require("crypto");
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var constants = require("./constants");
+
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+module.exports = {
+
+  noop: function noop() {},
+
+  pass: function pass(o) {
+    return o;
+  },
+
+  is_function: function is_function(f) {
+    return Object.prototype.toString.call(f) === "[object Function]";
+  },
+
+  STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
+
+  ARGUMENT_NAMES: /([^\s,]+)/g,
+
+  compose: function compose(prepare, callback) {
+    if (!this.is_function(callback)) return null;
+    if (!this.is_function(prepare)) return callback;
+    return function (result) {
+      return prepare(result, callback);
+    };
+  },
+
+  labels: function labels(func) {
+    var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
+    var result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
+    if (result === null) result = [];
+    return result;
+  },
+
+  unpack: function unpack(o, labels, args) {
+    var params = [],
+        cb = [];
+
+    // unpack object argument
+    if (o !== undefined && o !== null && o.constructor === Object && labels && labels.constructor === Array && labels.length) {
+      for (var i = 0, len = labels.length; i < len; ++i) {
+        if (o[labels[i]] !== undefined) {
+          if (o[labels[i]].constructor === Function) {
+            cb.push(o[labels[i]]);
+          } else {
+            params.push(o[labels[i]]);
+          }
+        }
+      }
+      // unpack positional arguments
+    } else {
+      for (var j = 0, arglen = args.length; j < arglen; ++j) {
+        if (args[j] !== undefined) {
+          if (args[j] && args[j].constructor === Function) {
+            cb.push(args[j]);
+          } else {
+            params.push(args[j]);
+          }
+        }
+      }
+    }
+
+    return { params: params, cb: cb };
+  },
+
+  unique: function unique(value, index, self) {
+    return self.indexOf(value) === index;
+  },
+
+  serialize: function serialize(x) {
+    var serialized, bn;
+    if (x !== null && x !== undefined) {
+
+      // if x is an array, serialize and concatenate its individual elements
+      if (x.constructor === Array || Buffer.isBuffer(x)) {
+        serialized = "";
+        for (var i = 0, n = x.length; i < n; ++i) {
+          serialized += this.serialize(x[i]);
+        }
+      } else {
+
+        // input is a base-10 javascript number
+        if (x.constructor === Number) {
+          bn = abi.bignum(x);
+          if (bn.lt(constants.ZERO)) {
+            bn = bn.add(abi.constants.MOD);
+          }
+          serialized = abi.encode_int(bn);
+
+          // input is a utf8 or hex string
+        } else if (x.constructor === String) {
+
+          // negative hex
+          if (x.slice(0, 1) === '-') {
+            serialized = abi.encode_int(abi.bignum(x).add(abi.constants.MOD).toFixed());
+
+            // positive hex
+          } else if (x.slice(0, 2) === "0x") {
+            serialized = abi.pad_left(x.slice(2));
+
+            // text string
+          } else {
+            serialized = new Buffer(x, "utf8").toString("hex");
+          }
+        }
+      }
+    }
+    return serialized;
+  },
+
+  sha256: function sha256(hashable) {
+    return abi.hex(abi.prefix_hex(crypto.createHash("sha256").update(this.serialize(hashable)).digest("hex")), true);
+  },
+
+  sha3: function sha3(hashable) {
+    return abi.prefix_hex(abi.sha3(this.serialize(hashable)));
+  }
+
+};
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"./constants":65,"_process":226,"augur-abi":1,"bignumber.js":117,"buffer":152,"clone":155,"crypto":162}],96:[function(require,module,exports){
 (function (global){
-var augur = global.augur || require("./src/index");
+var augur = global.augur || require("./build/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":245}],62:[function(require,module,exports){
+},{"./build/index":68}],97:[function(require,module,exports){
 'use strict';
 module.exports = function () {
 	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 'use strict';
 
 function assembleStyles () {
@@ -22818,7 +29015,7 @@ Object.defineProperty(module, 'exports', {
 	get: assembleStyles
 });
 
-},{}],64:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -22829,7 +29026,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":65,"./asn1/base":67,"./asn1/constants":71,"./asn1/decoders":73,"./asn1/encoders":76,"bn.js":84}],65:[function(require,module,exports){
+},{"./asn1/api":100,"./asn1/base":102,"./asn1/constants":106,"./asn1/decoders":108,"./asn1/encoders":111,"bn.js":119}],100:[function(require,module,exports){
 var asn1 = require('../asn1');
 var inherits = require('inherits');
 
@@ -22892,7 +29089,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":64,"inherits":171,"vm":237}],66:[function(require,module,exports){
+},{"../asn1":99,"inherits":206,"vm":272}],101:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -23010,7 +29207,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":67,"buffer":117,"inherits":171}],67:[function(require,module,exports){
+},{"../base":102,"buffer":152,"inherits":206}],102:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -23018,7 +29215,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":66,"./node":68,"./reporter":69}],68:[function(require,module,exports){
+},{"./buffer":101,"./node":103,"./reporter":104}],103:[function(require,module,exports){
 var Reporter = require('../base').Reporter;
 var EncoderBuffer = require('../base').EncoderBuffer;
 var DecoderBuffer = require('../base').DecoderBuffer;
@@ -23654,7 +29851,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":67,"minimalistic-assert":182}],69:[function(require,module,exports){
+},{"../base":102,"minimalistic-assert":217}],104:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -23777,7 +29974,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":171}],70:[function(require,module,exports){
+},{"inherits":206}],105:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -23821,7 +30018,7 @@ exports.tag = {
 };
 exports.tagByName = constants._reverse(exports.tag);
 
-},{"../constants":71}],71:[function(require,module,exports){
+},{"../constants":106}],106:[function(require,module,exports){
 var constants = exports;
 
 // Helper
@@ -23842,7 +30039,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":70}],72:[function(require,module,exports){
+},{"./der":105}],107:[function(require,module,exports){
 var inherits = require('inherits');
 
 var asn1 = require('../../asn1');
@@ -24168,13 +30365,13 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":64,"inherits":171}],73:[function(require,module,exports){
+},{"../../asn1":99,"inherits":206}],108:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":72,"./pem":74}],74:[function(require,module,exports){
+},{"./der":107,"./pem":109}],109:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -24225,7 +30422,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":72,"buffer":117,"inherits":171}],75:[function(require,module,exports){
+},{"./der":107,"buffer":152,"inherits":206}],110:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -24522,13 +30719,13 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":64,"buffer":117,"inherits":171}],76:[function(require,module,exports){
+},{"../../asn1":99,"buffer":152,"inherits":206}],111:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":75,"./pem":77}],77:[function(require,module,exports){
+},{"./der":110,"./pem":112}],112:[function(require,module,exports){
 var inherits = require('inherits');
 
 var DEREncoder = require('./der');
@@ -24551,7 +30748,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":75,"inherits":171}],78:[function(require,module,exports){
+},{"./der":110,"inherits":206}],113:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -24912,7 +31109,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":233}],79:[function(require,module,exports){
+},{"util/":268}],114:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -26181,7 +32378,7 @@ var objectKeys = Object.keys || function (obj) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":191}],80:[function(require,module,exports){
+},{"_process":226}],115:[function(require,module,exports){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
 // Originally written by Mike Hearn for BitcoinJ
@@ -26269,7 +32466,7 @@ module.exports = function base (ALPHABET) {
   }
 }
 
-},{}],81:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -26395,15 +32592,15 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],82:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],83:[function(require,module,exports){
+},{"dup":2}],118:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"buffer":117,"dup":3}],84:[function(require,module,exports){
+},{"buffer":152,"dup":3}],119:[function(require,module,exports){
 arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],85:[function(require,module,exports){
+},{"dup":4}],120:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"crypto":87,"dup":5}],86:[function(require,module,exports){
+},{"crypto":122,"dup":5}],121:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26899,9 +33096,9 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],87:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 
-},{}],88:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 (function (Buffer){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
@@ -27082,7 +33279,7 @@ AES.prototype._doCryptBlock = function (M, keySchedule, SUB_MIX, SBOX) {
 exports.AES = AES
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],89:[function(require,module,exports){
+},{"buffer":152}],124:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -27183,7 +33380,7 @@ function xorTest (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":88,"./ghash":93,"buffer":117,"buffer-xor":116,"cipher-base":119,"inherits":171}],90:[function(require,module,exports){
+},{"./aes":123,"./ghash":128,"buffer":152,"buffer-xor":151,"cipher-base":154,"inherits":206}],125:[function(require,module,exports){
 var ciphers = require('./encrypter')
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
@@ -27196,7 +33393,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":91,"./encrypter":92,"./modes":94}],91:[function(require,module,exports){
+},{"./decrypter":126,"./encrypter":127,"./modes":129}],126:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -27337,7 +33534,7 @@ exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":88,"./authCipher":89,"./modes":94,"./modes/cbc":95,"./modes/cfb":96,"./modes/cfb1":97,"./modes/cfb8":98,"./modes/ctr":99,"./modes/ecb":100,"./modes/ofb":101,"./streamCipher":102,"buffer":117,"cipher-base":119,"evp_bytestokey":161,"inherits":171}],92:[function(require,module,exports){
+},{"./aes":123,"./authCipher":124,"./modes":129,"./modes/cbc":130,"./modes/cfb":131,"./modes/cfb1":132,"./modes/cfb8":133,"./modes/ctr":134,"./modes/ecb":135,"./modes/ofb":136,"./streamCipher":137,"buffer":152,"cipher-base":154,"evp_bytestokey":196,"inherits":206}],127:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -27463,7 +33660,7 @@ exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":88,"./authCipher":89,"./modes":94,"./modes/cbc":95,"./modes/cfb":96,"./modes/cfb1":97,"./modes/cfb8":98,"./modes/ctr":99,"./modes/ecb":100,"./modes/ofb":101,"./streamCipher":102,"buffer":117,"cipher-base":119,"evp_bytestokey":161,"inherits":171}],93:[function(require,module,exports){
+},{"./aes":123,"./authCipher":124,"./modes":129,"./modes/cbc":130,"./modes/cfb":131,"./modes/cfb1":132,"./modes/cfb8":133,"./modes/ctr":134,"./modes/ecb":135,"./modes/ofb":136,"./streamCipher":137,"buffer":152,"cipher-base":154,"evp_bytestokey":196,"inherits":206}],128:[function(require,module,exports){
 (function (Buffer){
 var zeros = new Buffer(16)
 zeros.fill(0)
@@ -27565,7 +33762,7 @@ function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],94:[function(require,module,exports){
+},{"buffer":152}],129:[function(require,module,exports){
 exports['aes-128-ecb'] = {
   cipher: 'AES',
   key: 128,
@@ -27738,7 +33935,7 @@ exports['aes-256-gcm'] = {
   type: 'auth'
 }
 
-},{}],95:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -27757,7 +33954,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":116}],96:[function(require,module,exports){
+},{"buffer-xor":151}],131:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -27792,7 +33989,7 @@ function encryptStart (self, data, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"buffer-xor":116}],97:[function(require,module,exports){
+},{"buffer":152,"buffer-xor":151}],132:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad
@@ -27830,7 +34027,7 @@ function shiftIn (buffer, value) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],98:[function(require,module,exports){
+},{"buffer":152}],133:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad = self._cipher.encryptBlock(self._prev)
@@ -27849,7 +34046,7 @@ exports.encrypt = function (self, chunk, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],99:[function(require,module,exports){
+},{"buffer":152}],134:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -27884,7 +34081,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"buffer-xor":116}],100:[function(require,module,exports){
+},{"buffer":152,"buffer-xor":151}],135:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -27892,7 +34089,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],101:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -27912,7 +34109,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"buffer-xor":116}],102:[function(require,module,exports){
+},{"buffer":152,"buffer-xor":151}],137:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -27941,7 +34138,7 @@ StreamCipher.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":88,"buffer":117,"cipher-base":119,"inherits":171}],103:[function(require,module,exports){
+},{"./aes":123,"buffer":152,"cipher-base":154,"inherits":206}],138:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -28016,7 +34213,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":90,"browserify-aes/modes":94,"browserify-des":104,"browserify-des/modes":105,"evp_bytestokey":161}],104:[function(require,module,exports){
+},{"browserify-aes/browser":125,"browserify-aes/modes":129,"browserify-des":139,"browserify-des/modes":140,"evp_bytestokey":196}],139:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -28063,7 +34260,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"cipher-base":119,"des.js":128,"inherits":171}],105:[function(require,module,exports){
+},{"buffer":152,"cipher-base":154,"des.js":163,"inherits":206}],140:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -28089,7 +34286,7 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],106:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -28133,11 +34330,11 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":84,"buffer":117,"randombytes":198}],107:[function(require,module,exports){
+},{"bn.js":119,"buffer":152,"randombytes":233}],142:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"buffer":117,"dup":6,"js-sha3":108}],108:[function(require,module,exports){
+},{"buffer":152,"dup":6,"js-sha3":143}],143:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],109:[function(require,module,exports){
+},{"dup":38}],144:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 exports['RSA-SHA224'] = exports.sha224WithRSAEncryption = {
@@ -28213,7 +34410,7 @@ exports['RSA-MD5'] = exports.md5WithRSAEncryption = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],110:[function(require,module,exports){
+},{"buffer":152}],145:[function(require,module,exports){
 (function (Buffer){
 var _algos = require('./algos')
 var createHash = require('create-hash')
@@ -28320,7 +34517,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algos":109,"./sign":112,"./verify":113,"buffer":117,"create-hash":123,"inherits":171,"stream":225}],111:[function(require,module,exports){
+},{"./algos":144,"./sign":147,"./verify":148,"buffer":152,"create-hash":158,"inherits":206,"stream":260}],146:[function(require,module,exports){
 'use strict'
 exports['1.3.132.0.10'] = 'secp256k1'
 
@@ -28334,7 +34531,7 @@ exports['1.3.132.0.34'] = 'p384'
 
 exports['1.3.132.0.35'] = 'p521'
 
-},{}],112:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -28523,7 +34720,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":111,"bn.js":84,"browserify-rsa":106,"buffer":117,"create-hmac":126,"elliptic":138,"parse-asn1":186}],113:[function(require,module,exports){
+},{"./curves":146,"bn.js":119,"browserify-rsa":141,"buffer":152,"create-hmac":161,"elliptic":173,"parse-asn1":221}],148:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var curves = require('./curves')
@@ -28630,9 +34827,9 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":111,"bn.js":84,"buffer":117,"elliptic":138,"parse-asn1":186}],114:[function(require,module,exports){
-arguments[4][87][0].apply(exports,arguments)
-},{"dup":87}],115:[function(require,module,exports){
+},{"./curves":146,"bn.js":119,"buffer":152,"elliptic":173,"parse-asn1":221}],149:[function(require,module,exports){
+arguments[4][122][0].apply(exports,arguments)
+},{"dup":122}],150:[function(require,module,exports){
 var basex = require('base-x')
 var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 var base58 = basex(ALPHABET)
@@ -28642,7 +34839,7 @@ module.exports = {
   decode: base58.decode
 }
 
-},{"base-x":80}],116:[function(require,module,exports){
+},{"base-x":115}],151:[function(require,module,exports){
 (function (Buffer){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -28656,7 +34853,7 @@ module.exports = function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117}],117:[function(require,module,exports){
+},{"buffer":152}],152:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -30208,7 +36405,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":81,"ieee754":169,"isarray":173}],118:[function(require,module,exports){
+},{"base64-js":116,"ieee754":204,"isarray":208}],153:[function(require,module,exports){
 (function (process){
 'use strict';
 var escapeStringRegexp = require('escape-string-regexp');
@@ -30328,11 +36525,11 @@ module.exports.stripColor = stripAnsi;
 module.exports.supportsColor = supportsColor;
 
 }).call(this,require('_process'))
-},{"_process":191,"ansi-styles":63,"escape-string-regexp":155,"has-ansi":162,"strip-ansi":227,"supports-color":228}],119:[function(require,module,exports){
+},{"_process":226,"ansi-styles":98,"escape-string-regexp":190,"has-ansi":197,"strip-ansi":262,"supports-color":263}],154:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"buffer":117,"dup":7,"inherits":171,"stream":225,"string_decoder":226}],120:[function(require,module,exports){
+},{"buffer":152,"dup":7,"inherits":206,"stream":260,"string_decoder":261}],155:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":117,"dup":59}],121:[function(require,module,exports){
+},{"buffer":152,"dup":59}],156:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -30443,7 +36640,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":172}],122:[function(require,module,exports){
+},{"../../is-buffer/index.js":207}],157:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -30569,13 +36766,13 @@ function formatReturnValue(bn, enc, len) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":84,"buffer":117,"elliptic":138}],123:[function(require,module,exports){
+},{"bn.js":119,"buffer":152,"elliptic":173}],158:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"./md5":125,"buffer":117,"cipher-base":119,"dup":8,"inherits":171,"ripemd160":209,"sha.js":218}],124:[function(require,module,exports){
+},{"./md5":160,"buffer":152,"cipher-base":154,"dup":8,"inherits":206,"ripemd160":244,"sha.js":253}],159:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
-},{"buffer":117,"dup":9}],125:[function(require,module,exports){
+},{"buffer":152,"dup":9}],160:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"./helpers":124,"dup":10}],126:[function(require,module,exports){
+},{"./helpers":159,"dup":10}],161:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var createHash = require('create-hash/browser');
@@ -30647,7 +36844,7 @@ module.exports = function createHmac(alg, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"create-hash/browser":123,"inherits":171,"stream":225}],127:[function(require,module,exports){
+},{"buffer":152,"create-hash/browser":158,"inherits":206,"stream":260}],162:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -30726,7 +36923,7 @@ var publicEncrypt = require('public-encrypt')
   }
 })
 
-},{"browserify-cipher":103,"browserify-sign":110,"browserify-sign/algos":109,"create-ecdh":122,"create-hash":123,"create-hmac":126,"diffie-hellman":134,"pbkdf2":188,"public-encrypt":192,"randombytes":198}],128:[function(require,module,exports){
+},{"browserify-cipher":138,"browserify-sign":145,"browserify-sign/algos":144,"create-ecdh":157,"create-hash":158,"create-hmac":161,"diffie-hellman":169,"pbkdf2":223,"public-encrypt":227,"randombytes":233}],163:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -30735,7 +36932,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":129,"./des/cipher":130,"./des/des":131,"./des/ede":132,"./des/utils":133}],129:[function(require,module,exports){
+},{"./des/cbc":164,"./des/cipher":165,"./des/des":166,"./des/ede":167,"./des/utils":168}],164:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30802,7 +36999,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":171,"minimalistic-assert":182}],130:[function(require,module,exports){
+},{"inherits":206,"minimalistic-assert":217}],165:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30945,7 +37142,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":182}],131:[function(require,module,exports){
+},{"minimalistic-assert":217}],166:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -31090,7 +37287,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":128,"inherits":171,"minimalistic-assert":182}],132:[function(require,module,exports){
+},{"../des":163,"inherits":206,"minimalistic-assert":217}],167:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -31147,7 +37344,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":128,"inherits":171,"minimalistic-assert":182}],133:[function(require,module,exports){
+},{"../des":163,"inherits":206,"minimalistic-assert":217}],168:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -31405,7 +37602,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],134:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -31451,7 +37648,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/dh":135,"./lib/generatePrime":136,"./lib/primes.json":137,"buffer":117}],135:[function(require,module,exports){
+},{"./lib/dh":170,"./lib/generatePrime":171,"./lib/primes.json":172,"buffer":152}],170:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -31619,7 +37816,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":136,"bn.js":84,"buffer":117,"miller-rabin":181,"randombytes":198}],136:[function(require,module,exports){
+},{"./generatePrime":171,"bn.js":119,"buffer":152,"miller-rabin":216,"randombytes":233}],171:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -31726,7 +37923,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":84,"miller-rabin":181,"randombytes":198}],137:[function(require,module,exports){
+},{"bn.js":119,"miller-rabin":216,"randombytes":233}],172:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -31761,39 +37958,39 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],138:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":154,"./elliptic/curve":141,"./elliptic/curves":144,"./elliptic/ec":145,"./elliptic/eddsa":148,"./elliptic/hmac-drbg":151,"./elliptic/utils":153,"brorand":85,"dup":11}],139:[function(require,module,exports){
+},{"../package.json":189,"./elliptic/curve":176,"./elliptic/curves":179,"./elliptic/ec":180,"./elliptic/eddsa":183,"./elliptic/hmac-drbg":186,"./elliptic/utils":188,"brorand":120,"dup":11}],174:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"../../elliptic":138,"bn.js":84,"dup":12}],140:[function(require,module,exports){
+},{"../../elliptic":173,"bn.js":119,"dup":12}],175:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"../../elliptic":138,"../curve":141,"bn.js":84,"dup":13,"inherits":171}],141:[function(require,module,exports){
+},{"../../elliptic":173,"../curve":176,"bn.js":119,"dup":13,"inherits":206}],176:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":139,"./edwards":140,"./mont":142,"./short":143,"dup":14}],142:[function(require,module,exports){
+},{"./base":174,"./edwards":175,"./mont":177,"./short":178,"dup":14}],177:[function(require,module,exports){
 arguments[4][15][0].apply(exports,arguments)
-},{"../../elliptic":138,"../curve":141,"bn.js":84,"dup":15,"inherits":171}],143:[function(require,module,exports){
+},{"../../elliptic":173,"../curve":176,"bn.js":119,"dup":15,"inherits":206}],178:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../elliptic":138,"../curve":141,"bn.js":84,"dup":16,"inherits":171}],144:[function(require,module,exports){
+},{"../../elliptic":173,"../curve":176,"bn.js":119,"dup":16,"inherits":206}],179:[function(require,module,exports){
 arguments[4][17][0].apply(exports,arguments)
-},{"../elliptic":138,"./precomputed/secp256k1":152,"dup":17,"hash.js":163}],145:[function(require,module,exports){
+},{"../elliptic":173,"./precomputed/secp256k1":187,"dup":17,"hash.js":198}],180:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
-},{"../../elliptic":138,"./key":146,"./signature":147,"bn.js":84,"dup":18}],146:[function(require,module,exports){
+},{"../../elliptic":173,"./key":181,"./signature":182,"bn.js":119,"dup":18}],181:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
-},{"bn.js":84,"dup":19}],147:[function(require,module,exports){
+},{"bn.js":119,"dup":19}],182:[function(require,module,exports){
 arguments[4][20][0].apply(exports,arguments)
-},{"../../elliptic":138,"bn.js":84,"dup":20}],148:[function(require,module,exports){
+},{"../../elliptic":173,"bn.js":119,"dup":20}],183:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":138,"./key":149,"./signature":150,"dup":21,"hash.js":163}],149:[function(require,module,exports){
+},{"../../elliptic":173,"./key":184,"./signature":185,"dup":21,"hash.js":198}],184:[function(require,module,exports){
 arguments[4][22][0].apply(exports,arguments)
-},{"../../elliptic":138,"dup":22}],150:[function(require,module,exports){
+},{"../../elliptic":173,"dup":22}],185:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"../../elliptic":138,"bn.js":84,"dup":23}],151:[function(require,module,exports){
+},{"../../elliptic":173,"bn.js":119,"dup":23}],186:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":138,"dup":24,"hash.js":163}],152:[function(require,module,exports){
+},{"../elliptic":173,"dup":24,"hash.js":198}],187:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],153:[function(require,module,exports){
+},{"dup":25}],188:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"bn.js":84,"dup":26}],154:[function(require,module,exports){
+},{"bn.js":119,"dup":26}],189:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -31914,7 +38111,7 @@ module.exports={
   "version": "6.3.2"
 }
 
-},{}],155:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 'use strict';
 
 var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
@@ -31927,7 +38124,7 @@ module.exports = function (str) {
 	return str.replace(matchOperatorsRe, '\\$&');
 };
 
-},{}],156:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -32160,10 +38357,10 @@ module.exports={
   }
 }
 
-},{}],157:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 module.exports = require('./params.json')
 
-},{"./params.json":156}],158:[function(require,module,exports){
+},{"./params.json":191}],193:[function(require,module,exports){
 (function (global,Buffer){
 const ethUtil = require('ethereumjs-util')
 const fees = require('ethereum-common/params')
@@ -32423,7 +38620,7 @@ Transaction.prototype.validate = function (stringError) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"buffer":117,"ethereum-common/params":157,"ethereumjs-util":159}],159:[function(require,module,exports){
+},{"buffer":152,"ethereum-common/params":192,"ethereumjs-util":194}],194:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -33092,7 +39289,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":84,"buffer":117,"create-hash":123,"keccakjs":174,"rlp":210,"secp256k1":211}],160:[function(require,module,exports){
+},{"assert":113,"bn.js":119,"buffer":152,"create-hash":158,"keccakjs":209,"rlp":245,"secp256k1":246}],195:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -33396,7 +39593,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],161:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 (function (Buffer){
 var md5 = require('create-hash/md5')
 module.exports = EVP_BytesToKey
@@ -33468,25 +39665,25 @@ function EVP_BytesToKey (password, salt, keyLen, ivLen) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"create-hash/md5":125}],162:[function(require,module,exports){
+},{"buffer":152,"create-hash/md5":160}],197:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex');
 var re = new RegExp(ansiRegex().source); // remove the `g` flag
 module.exports = re.test.bind(re);
 
-},{"ansi-regex":62}],163:[function(require,module,exports){
+},{"ansi-regex":97}],198:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":164,"./hash/hmac":165,"./hash/ripemd":166,"./hash/sha":167,"./hash/utils":168,"dup":31}],164:[function(require,module,exports){
+},{"./hash/common":199,"./hash/hmac":200,"./hash/ripemd":201,"./hash/sha":202,"./hash/utils":203,"dup":31}],199:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":163,"dup":32}],165:[function(require,module,exports){
+},{"../hash":198,"dup":32}],200:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":163,"dup":33}],166:[function(require,module,exports){
+},{"../hash":198,"dup":33}],201:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":163,"dup":34}],167:[function(require,module,exports){
+},{"../hash":198,"dup":34}],202:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":163,"dup":35}],168:[function(require,module,exports){
+},{"../hash":198,"dup":35}],203:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":171}],169:[function(require,module,exports){
+},{"dup":36,"inherits":206}],204:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -33572,7 +39769,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],170:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -33583,9 +39780,9 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],171:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],172:[function(require,module,exports){
+},{"dup":37}],207:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -33608,16 +39805,16 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],173:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],174:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 arguments[4][39][0].apply(exports,arguments)
-},{"browserify-sha3":107,"dup":39}],175:[function(require,module,exports){
+},{"browserify-sha3":142,"dup":39}],210:[function(require,module,exports){
 var Semaphore = require('./lib/Semaphore');
 var CondVariable = require('./lib/CondVariable');
 var Mutex = require('./lib/Mutex');
@@ -33646,7 +39843,7 @@ exports.createReadWriteLock = function () {
 	return new ReadWriteLock();
 };
 
-},{"./lib/CondVariable":176,"./lib/Mutex":177,"./lib/ReadWriteLock":178,"./lib/Semaphore":179}],176:[function(require,module,exports){
+},{"./lib/CondVariable":211,"./lib/Mutex":212,"./lib/ReadWriteLock":213,"./lib/Semaphore":214}],211:[function(require,module,exports){
 function CondVariable(initialValue) {
 	this._value = initialValue;
 	this._waiting = [];
@@ -33706,7 +39903,7 @@ CondVariable.prototype.set = function (value) {
 	}
 };
 
-},{}],177:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 function Mutex() {
 	this.isLocked = false;
 	this._waiting = [];
@@ -33778,7 +39975,7 @@ Mutex.prototype.unlock = function () {
 	}
 };
 
-},{}],178:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 function ReadWriteLock() {
 	this.isLocked = false;
 	this._readLocks = 0;
@@ -33935,7 +40132,7 @@ ReadWriteLock.prototype.unlock = function () {
 	}
 };
 
-},{}],179:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 function Semaphore(initialCount) {
 	this._count = initialCount || 1;
 	this._waiting = [];
@@ -33966,7 +40163,7 @@ Semaphore.prototype.signal = function () {
 	}
 };
 
-},{}],180:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 (function (__dirname){
 var _ = require('underscore')
 var fs = require('fs')
@@ -34148,7 +40345,7 @@ function firstOrLastName() {
 
 
 }).call(this,"/node_modules/madlibs")
-},{"fs":114,"underscore":229}],181:[function(require,module,exports){
+},{"fs":149,"underscore":264}],216:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -34263,7 +40460,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":84,"brorand":85}],182:[function(require,module,exports){
+},{"bn.js":119,"brorand":120}],217:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -34276,7 +40473,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],183:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -34290,7 +40487,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],184:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 
@@ -34409,7 +40606,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"asn1.js":64}],185:[function(require,module,exports){
+},{"asn1.js":99}],220:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
@@ -34443,7 +40640,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":90,"buffer":117,"evp_bytestokey":161}],186:[function(require,module,exports){
+},{"browserify-aes":125,"buffer":152,"evp_bytestokey":196}],221:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -34548,7 +40745,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":183,"./asn1":184,"./fixProc":185,"browserify-aes":90,"buffer":117,"pbkdf2":188}],187:[function(require,module,exports){
+},{"./aesid.json":218,"./asn1":219,"./fixProc":220,"browserify-aes":125,"buffer":152,"pbkdf2":223}],222:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -34776,7 +40973,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":191}],188:[function(require,module,exports){
+},{"_process":226}],223:[function(require,module,exports){
 (function (process,Buffer){
 var createHmac = require('create-hmac')
 var checkParameters = require('./precondition')
@@ -34848,7 +41045,7 @@ exports.pbkdf2Sync = function (password, salt, iterations, keylen, digest) {
 }
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./precondition":189,"_process":191,"buffer":117,"create-hmac":126}],189:[function(require,module,exports){
+},{"./precondition":224,"_process":226,"buffer":152,"create-hmac":161}],224:[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 module.exports = function (iterations, keylen) {
   if (typeof iterations !== 'number') {
@@ -34868,7 +41065,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],190:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34915,7 +41112,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":191}],191:[function(require,module,exports){
+},{"_process":226}],226:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -35097,7 +41294,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],192:[function(require,module,exports){
+},{}],227:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -35108,7 +41305,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":194,"./publicEncrypt":195}],193:[function(require,module,exports){
+},{"./privateDecrypt":229,"./publicEncrypt":230}],228:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -35127,7 +41324,7 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"create-hash":123}],194:[function(require,module,exports){
+},{"buffer":152,"create-hash":158}],229:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -35238,7 +41435,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":193,"./withPublic":196,"./xor":197,"bn.js":84,"browserify-rsa":106,"buffer":117,"create-hash":123,"parse-asn1":186}],195:[function(require,module,exports){
+},{"./mgf":228,"./withPublic":231,"./xor":232,"bn.js":119,"browserify-rsa":141,"buffer":152,"create-hash":158,"parse-asn1":221}],230:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -35336,7 +41533,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":193,"./withPublic":196,"./xor":197,"bn.js":84,"browserify-rsa":106,"buffer":117,"create-hash":123,"parse-asn1":186,"randombytes":198}],196:[function(require,module,exports){
+},{"./mgf":228,"./withPublic":231,"./xor":232,"bn.js":119,"browserify-rsa":141,"buffer":152,"create-hash":158,"parse-asn1":221,"randombytes":233}],231:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -35349,7 +41546,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":84,"buffer":117}],197:[function(require,module,exports){
+},{"bn.js":119,"buffer":152}],232:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -35358,7 +41555,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],198:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 (function (process,global,Buffer){
 'use strict'
 
@@ -35398,10 +41595,10 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":191,"buffer":117}],199:[function(require,module,exports){
+},{"_process":226,"buffer":152}],234:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":200}],200:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":235}],235:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -35477,7 +41674,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":202,"./_stream_writable":204,"core-util-is":121,"inherits":171,"process-nextick-args":190}],201:[function(require,module,exports){
+},{"./_stream_readable":237,"./_stream_writable":239,"core-util-is":156,"inherits":206,"process-nextick-args":225}],236:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -35504,7 +41701,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":203,"core-util-is":121,"inherits":171}],202:[function(require,module,exports){
+},{"./_stream_transform":238,"core-util-is":156,"inherits":206}],237:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -36387,7 +42584,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":200,"_process":191,"buffer":117,"core-util-is":121,"events":160,"inherits":171,"isarray":173,"process-nextick-args":190,"string_decoder/":226,"util":87}],203:[function(require,module,exports){
+},{"./_stream_duplex":235,"_process":226,"buffer":152,"core-util-is":156,"events":195,"inherits":206,"isarray":208,"process-nextick-args":225,"string_decoder/":261,"util":122}],238:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -36568,7 +42765,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":200,"core-util-is":121,"inherits":171}],204:[function(require,module,exports){
+},{"./_stream_duplex":235,"core-util-is":156,"inherits":206}],239:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -37087,10 +43284,10 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":200,"_process":191,"buffer":117,"core-util-is":121,"events":160,"inherits":171,"process-nextick-args":190,"util-deprecate":230}],205:[function(require,module,exports){
+},{"./_stream_duplex":235,"_process":226,"buffer":152,"core-util-is":156,"events":195,"inherits":206,"process-nextick-args":225,"util-deprecate":265}],240:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":201}],206:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":236}],241:[function(require,module,exports){
 var Stream = (function (){
   try {
     return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
@@ -37104,19 +43301,19 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":200,"./lib/_stream_passthrough.js":201,"./lib/_stream_readable.js":202,"./lib/_stream_transform.js":203,"./lib/_stream_writable.js":204}],207:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":235,"./lib/_stream_passthrough.js":236,"./lib/_stream_readable.js":237,"./lib/_stream_transform.js":238,"./lib/_stream_writable.js":239}],242:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":203}],208:[function(require,module,exports){
+},{"./lib/_stream_transform.js":238}],243:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":204}],209:[function(require,module,exports){
+},{"./lib/_stream_writable.js":239}],244:[function(require,module,exports){
 arguments[4][40][0].apply(exports,arguments)
-},{"buffer":117,"dup":40}],210:[function(require,module,exports){
+},{"buffer":152,"dup":40}],245:[function(require,module,exports){
 arguments[4][41][0].apply(exports,arguments)
-},{"assert":78,"buffer":117,"dup":41}],211:[function(require,module,exports){
+},{"assert":113,"buffer":152,"dup":41}],246:[function(require,module,exports){
 arguments[4][42][0].apply(exports,arguments)
-},{"./lib":215,"./lib/elliptic":214,"dup":42}],212:[function(require,module,exports){
+},{"./lib":250,"./lib/elliptic":249,"dup":42}],247:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -37164,31 +43361,31 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":172}],213:[function(require,module,exports){
+},{"../../is-buffer/index.js":207}],248:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"bip66":83,"buffer":117,"dup":44}],214:[function(require,module,exports){
+},{"bip66":118,"buffer":152,"dup":44}],249:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"../messages.json":216,"bn.js":84,"buffer":117,"create-hash":123,"dup":45,"elliptic":138}],215:[function(require,module,exports){
+},{"../messages.json":251,"bn.js":119,"buffer":152,"create-hash":158,"dup":45,"elliptic":173}],250:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"./assert":212,"./der":213,"./messages.json":216,"dup":46}],216:[function(require,module,exports){
+},{"./assert":247,"./der":248,"./messages.json":251,"dup":46}],251:[function(require,module,exports){
 arguments[4][47][0].apply(exports,arguments)
-},{"dup":47}],217:[function(require,module,exports){
+},{"dup":47}],252:[function(require,module,exports){
 arguments[4][48][0].apply(exports,arguments)
-},{"buffer":117,"dup":48}],218:[function(require,module,exports){
+},{"buffer":152,"dup":48}],253:[function(require,module,exports){
 arguments[4][49][0].apply(exports,arguments)
-},{"./sha":219,"./sha1":220,"./sha224":221,"./sha256":222,"./sha384":223,"./sha512":224,"dup":49}],219:[function(require,module,exports){
+},{"./sha":254,"./sha1":255,"./sha224":256,"./sha256":257,"./sha384":258,"./sha512":259,"dup":49}],254:[function(require,module,exports){
 arguments[4][50][0].apply(exports,arguments)
-},{"./hash":217,"buffer":117,"dup":50,"inherits":171}],220:[function(require,module,exports){
+},{"./hash":252,"buffer":152,"dup":50,"inherits":206}],255:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"./hash":217,"buffer":117,"dup":51,"inherits":171}],221:[function(require,module,exports){
+},{"./hash":252,"buffer":152,"dup":51,"inherits":206}],256:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"./hash":217,"./sha256":222,"buffer":117,"dup":52,"inherits":171}],222:[function(require,module,exports){
+},{"./hash":252,"./sha256":257,"buffer":152,"dup":52,"inherits":206}],257:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./hash":217,"buffer":117,"dup":53,"inherits":171}],223:[function(require,module,exports){
+},{"./hash":252,"buffer":152,"dup":53,"inherits":206}],258:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"./hash":217,"./sha512":224,"buffer":117,"dup":54,"inherits":171}],224:[function(require,module,exports){
+},{"./hash":252,"./sha512":259,"buffer":152,"dup":54,"inherits":206}],259:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"./hash":217,"buffer":117,"dup":55,"inherits":171}],225:[function(require,module,exports){
+},{"./hash":252,"buffer":152,"dup":55,"inherits":206}],260:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -37317,7 +43514,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":160,"inherits":171,"readable-stream/duplex.js":199,"readable-stream/passthrough.js":205,"readable-stream/readable.js":206,"readable-stream/transform.js":207,"readable-stream/writable.js":208}],226:[function(require,module,exports){
+},{"events":195,"inherits":206,"readable-stream/duplex.js":234,"readable-stream/passthrough.js":240,"readable-stream/readable.js":241,"readable-stream/transform.js":242,"readable-stream/writable.js":243}],261:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -37540,7 +43737,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":117}],227:[function(require,module,exports){
+},{"buffer":152}],262:[function(require,module,exports){
 'use strict';
 var ansiRegex = require('ansi-regex')();
 
@@ -37548,7 +43745,7 @@ module.exports = function (str) {
 	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
 };
 
-},{"ansi-regex":62}],228:[function(require,module,exports){
+},{"ansi-regex":97}],263:[function(require,module,exports){
 (function (process){
 'use strict';
 var argv = process.argv;
@@ -37602,7 +43799,7 @@ module.exports = (function () {
 })();
 
 }).call(this,require('_process'))
-},{"_process":191}],229:[function(require,module,exports){
+},{"_process":226}],264:[function(require,module,exports){
 //     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
@@ -38830,7 +45027,7 @@ module.exports = (function () {
 
 }).call(this);
 
-},{}],230:[function(require,module,exports){
+},{}],265:[function(require,module,exports){
 (function (global){
 
 /**
@@ -38901,16 +45098,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],231:[function(require,module,exports){
+},{}],266:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],232:[function(require,module,exports){
+},{"dup":37}],267:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],233:[function(require,module,exports){
+},{}],268:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -39500,10 +45697,11 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":232,"_process":191,"inherits":231}],234:[function(require,module,exports){
+},{"./support/isBuffer":267,"_process":226,"inherits":266}],269:[function(require,module,exports){
 'use strict';
 
 // Maps for number <-> hex string conversion
+
 var _byteToHex = [];
 var _hexToByte = {};
 for (var i = 0; i < 256; i++) {
@@ -39513,12 +45711,13 @@ for (var i = 0; i < 256; i++) {
 
 // **`parse()` - Parse a UUID into it's component bytes**
 function parse(s, buf, offset) {
-  const i = (buf && offset) || 0;
-  let ii = 0;
+  var i = buf && offset || 0;
+  var ii = 0;
 
   buf = buf || [];
-  s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
-    if (ii < 16) { // Don't overflow!
+  s.toLowerCase().replace(/[0-9a-f]{2}/g, function (oct) {
+    if (ii < 16) {
+      // Don't overflow!
       buf[i + ii++] = _hexToByte[oct];
     }
   });
@@ -39533,24 +45732,16 @@ function parse(s, buf, offset) {
 
 // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
 function unparse(buf, offset) {
-  let i = offset || 0;
-  const bth = _byteToHex;
-  return  bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] + '-' +
-          bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]] +
-          bth[buf[i++]] + bth[buf[i++]];
+  var i = offset || 0;
+  var bth = _byteToHex;
+  return bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]] + '-' + bth[buf[i++]] + bth[buf[i++]] + '-' + bth[buf[i++]] + bth[buf[i++]] + '-' + bth[buf[i++]] + bth[buf[i++]] + '-' + bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]] + bth[buf[i++]];
 }
 
 module.exports = {
-  parse,
-  unparse
+  parse: parse,
+  unparse: unparse
 };
-
-},{}],235:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 (function (global){
 
 var rng;
@@ -39586,7 +45777,7 @@ module.exports = rng;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],236:[function(require,module,exports){
+},{}],271:[function(require,module,exports){
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
@@ -39745,7 +45936,7 @@ uuid.v4 = v4;
 
 module.exports = uuid;
 
-},{"./lib/rng":235}],237:[function(require,module,exports){
+},{"./lib/rng":270}],272:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -39885,688 +46076,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":170}],238:[function(require,module,exports){
-(function (process,Buffer){
-/**
- * Client-side accounts
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
-var keys = require("keythereum");
-var uuid = require("uuid");
-var clone = require("clone");
-var locks = require("locks");
-var request = (NODE_JS) ? require("request") : require("browser-request");
-var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var constants = require("./constants");
-var utils = require("./utilities");
-
-request = request.defaults({timeout: 999999});
-
-keys.constants.pbkdf2.c = constants.ROUNDS;
-keys.constants.scrypt.n = constants.ROUNDS;
-
-module.exports = function () {
-
-  var augur = this;
-  return {
-
-    // The account object is set when logged in
-    account: {},
-
-    // free (testnet) ether for new accounts on registration
-    fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-      onSent = onSent || utils.noop;
-      onSuccess = onSuccess || utils.noop;
-      onFailed = onFailed || utils.noop;
-      if (registeredAddress === undefined || registeredAddress === null || registeredAddress.constructor !== String) {
-        return onFailed(registeredAddress);
-      }
-      var url = constants.FAUCET + abi.format_address(registeredAddress);
-      console.debug("fundNewAccountFromFaucet:", url);
-      request(url, function (err, response, body) {
-        console.log("faucet err:", err);
-        console.log("faucet response:", response);
-        console.log("faucet body:", body);
-        if (err) return onFailed(err);
-        if (response.statusCode !== 200) {
-          return onFailed(response.statusCode);
-        }
-        console.debug("Sent ether to:", registeredAddress);
-        augur.rpc.balance(registeredAddress, function (ethBalance) {
-          console.debug("Balance:", ethBalance);
-          var balance = parseInt(ethBalance, 16);
-          if (balance > 0) {
-            augur.fundNewAccount({
-              branch: branch || constants.DEFAULT_BRANCH_ID,
-              onSent: onSent,
-              onSuccess: onSuccess,
-              onFailed: onFailed
-            });
-          } else {
-            async.until(function () {
-              return balance > 0;
-            }, function (callback) {
-              augur.rpc.fastforward(1, function (nextBlock) {
-                console.log("Block:", nextBlock);
-                augur.rpc.balance(registeredAddress, function (ethBalance) {
-                  console.debug("Balance:", ethBalance);
-                  balance = parseInt(ethBalance, 16);
-                  callback(null, balance);
-                });
-              });
-            }, function (e, balance) {
-              if (e) console.error(e);
-              augur.fundNewAccount({
-                branch: branch || constants.DEFAULT_BRANCH_ID,
-                onSent: onSent,
-                onSuccess: onSuccess,
-                onFailed: onFailed
-              });
-            });
-          }
-        });
-      });
-    },
-
-    fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-      onSent = onSent || utils.noop;
-      onSuccess = onSuccess || utils.noop;
-      onFailed = onFailed || utils.noop;
-      augur.rpc.sendEther({
-        to: registeredAddress,
-        value: amount,
-        from: fromAddress,
-        onSent: utils.noop,
-        onSuccess: function (res) {
-          augur.fundNewAccount({
-            branch: branch || constants.DEFAULT_BRANCH_ID,
-            onSent: onSent,
-            onSuccess: onSuccess,
-            onFailed: onFailed
-          });
-        },
-        onFailed: onFailed
-      });
-    },
-
-    changeAccountName: function (newName, cb) {
-      cb = cb || utils.pass;
-
-      // web.account object is set to use new name
-      this.account.name = newName;
-
-      // send back the new updated loginAccount object.
-      return cb(clone(this.account));
-    },
-
-    register: function (name, password, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
-
-      // generate ECDSA private key and initialization vector
-      keys.create(null, function (plain) {
-        if (plain.error) return cb(plain);
-
-        // derive secret key from password
-        keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
-          if (derivedKey.error) return cb(derivedKey);
-          if (!Buffer.isBuffer(derivedKey)) {
-            derivedKey = new Buffer(derivedKey, "hex");
-          }
-          var encryptedPrivateKey = new Buffer(keys.encrypt(
-                        plain.privateKey,
-                        derivedKey.slice(0, 16),
-                        plain.iv
-                    ), "base64").toString("hex");
-
-          // encrypt private key using derived key and IV, then
-          // store encrypted key & IV, indexed by handle
-          var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
-          var kdfparams = {
-            dklen: keys.constants[constants.KDF].dklen,
-            salt: plain.salt.toString("hex")
-          };
-          if (constants.KDF === "scrypt") {
-            kdfparams.n = keys.constants.scrypt.n;
-            kdfparams.r = keys.constants.scrypt.r;
-            kdfparams.p = keys.constants.scrypt.p;
-          } else {
-            kdfparams.c = keys.constants.pbkdf2.c;
-            kdfparams.prf = keys.constants.pbkdf2.prf;
-          }
-          var keystore = {
-            address: address,
-            crypto: {
-              cipher: keys.constants.cipher,
-              ciphertext: encryptedPrivateKey,
-              cipherparams: {iv: plain.iv.toString("hex")},
-              kdf: constants.KDF,
-              kdfparams: kdfparams,
-              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-            },
-            version: 3,
-            id: uuid.v4()
-          };
-          var loginID = augur.base58Encode({ keystore: keystore });
-
-          // while logged in, web.account object is set
-          self.account = {
-            name: name,
-            loginID: loginID,
-            privateKey: plain.privateKey,
-            address: address,
-            keystore: keystore,
-            derivedKey: derivedKey
-          };
-
-          return cb(clone(self.account));
-        }); // deriveKey
-      }); // create
-    },
-
-    importAccount: function (name, password, keystore, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-
-      // blank password
-      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-
-      // preparing to redo the secureLoginID to use the new name
-      keys.recover(password, keystore, function (privateKey) {
-        var keystoreCrypto = keystore.crypto || keystore.Crypto;
-        keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-          var loginID = augur.base58Encode({ keystore: keystore });
-
-          // while logged in, web.account object is set
-          self.account = {
-            name: name,
-            loginID: loginID,
-            privateKey: privateKey,
-            address: abi.format_address(keystore.address),
-            keystore: keystore,
-            derivedKey: derivedKey
-          };
-          return cb(clone(self.account));
-        });
-      });
-    },
-
-    loadLocalLoginAccount: function (localAccount, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      var privateKey = localAccount.privateKey;
-      var derivedKey = localAccount.derivedKey;
-      if (privateKey && !Buffer.isBuffer(privateKey)) {
-        privateKey = new Buffer(privateKey, "hex");
-      }
-      if (derivedKey && !Buffer.isBuffer(derivedKey)) {
-        derivedKey = new Buffer(derivedKey, "hex");
-      }
-      self.account = {
-        name: localAccount.name,
-        loginID: localAccount.loginID,
-        privateKey: privateKey,
-        address: abi.format_address(localAccount.keystore.address),
-        keystore: localAccount.keystore,
-        derivedKey: derivedKey
-      };
-      return cb(clone(this.account));
-    },
-
-    login: function (loginID, password, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-
-      // blank password
-      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-      var decodedLoginID;
-      try {
-        decodedLoginID = augur.base58Decode(loginID);
-      } catch (err) {
-        return cb(errors.BAD_CREDENTIALS);
-      }
-      var keystore = decodedLoginID.keystore;
-      var keystoreCrypto = keystore.crypto || keystore.Crypto;
-      var options = {
-        kdf: keystoreCrypto.kdf,
-        kdfparams: keystoreCrypto.kdfparams,
-        cipher: keystoreCrypto.kdf
-      };
-
-      // derive secret key from password
-      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
-        if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
-
-        // verify that message authentication codes match
-        var storedKey = keystoreCrypto.ciphertext;
-        if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
-          return cb(errors.BAD_CREDENTIALS);
-        }
-
-        if (!Buffer.isBuffer(derivedKey)) {
-          derivedKey = new Buffer(derivedKey, "hex");
-        }
-
-        // decrypt stored private key using secret key
-        try {
-          var privateKey = new Buffer(keys.decrypt(
-            storedKey,
-            derivedKey.slice(0, 16),
-            keystoreCrypto.cipherparams.iv
-          ), "hex");
-
-          // while logged in, web.account object is set
-          self.account = {
-            name: "",
-            loginID: loginID,
-            privateKey: privateKey,
-            address: abi.format_address(keystore.address),
-            keystore: keystore,
-            derivedKey: derivedKey
-          };
-          return cb(clone(self.account));
-
-          // decryption failure: bad password
-        } catch (exc) {
-          var e = clone(errors.BAD_CREDENTIALS);
-          e.bubble = exc;
-          return cb(e);
-        }
-      }); // deriveKey
-    },
-
-    // user-supplied plaintext private key
-    loginWithMasterKey: function (name, privateKey, cb) {
-      if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
-      this.account = {
-        name: name,
-        loginID: augur.base58Encode({name: name}),
-        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
-        privateKey: privateKey,
-        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")
-      };
-      return cb(clone(this.account));
-    },
-
-    logout: function () {
-      this.account = {};
-      augur.rpc.clear();
-    },
-
-    submitTx: function (packaged, cb) {
-      var self = this;
-      var mutex = locks.createMutex();
-      mutex.lock(function () {
-        for (var rawTxHash in augur.rpc.rawTxs) {
-          if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
-                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
-            packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
-            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-              console.debug("[augur.js] duplicate nonce, incremented:",
-                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-            }
-            break;
-          }
-        }
-        if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
-          packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
-        } else {
-          augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
-        }
-        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-          console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-        }
-        mutex.unlock();
-        if (augur.rpc.debug.broadcast) {
-          console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
-        }
-        var etx = new EthTx(packaged);
-
-        // sign, validate, and send the transaction
-        etx.sign(self.account.privateKey);
-
-        // calculate the cost (in ether) of this transaction
-        // (note: this is just an upper bound on the cost, set by the gasLimit!)
-        var cost = etx.getUpfrontCost().toString();
-
-        // transaction validation
-        if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-        // send the raw signed transaction to geth
-        augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-          if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
-          if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
-          if (res.error) {
-            if (res.message.indexOf("rlp") > -1) {
-              var err = clone(errors.RLP_ENCODING_ERROR);
-              err.bubble = res;
-              err.packaged = packaged;
-              return cb(err);
-            } else if (res.message.indexOf("Nonce too low") > -1) {
-              if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
-              }
-              ++augur.rpc.rawTxMaxNonce;
-              delete packaged.nonce;
-              return self.getTxNonce(packaged, cb);
-            }
-            return cb(res);
-          }
-
-          // res is the txhash if nothing failed immediately
-          // (even if the tx is nulled, still index the hash)
-          augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-          // nonce ok, execute callback
-          return cb(res);
-        });
-      });
-    },
-
-    // get nonce: number of transactions
-    getTxNonce: function (packaged, cb) {
-      var self = this;
-      if (packaged.nonce) return this.submitTx(packaged, cb);
-      augur.rpc.pendingTxCount(self.account.address, function (txCount) {
-        if (augur.rpc.debug.nonce) {
-          console.debug('[augur.js] txCount:', parseInt(txCount, 16));
-        }
-        if (txCount && !txCount.error && !(txCount instanceof Error)) {
-          packaged.nonce = abi.hex(txCount);
-        }
-        self.submitTx(packaged, cb);
-      });
-    },
-
-    invoke: function (payload, cb) {
-      var self = this;
-
-      // if this is just a call, use ethrpc's regular invoke method
-      if (!payload.send) {
-        if (augur.rpc.debug.broadcast) {
-          console.log("[augur.js] eth_call payload:", payload);
-        }
-        return augur.rpc.fire(payload, cb);
-      }
-
-      cb = cb || utils.pass;
-      if (!this.account.address || !this.account.privateKey) {
-        return cb(errors.NOT_LOGGED_IN);
-      }
-      if (!payload || payload.constructor !== Object) {
-        return cb(errors.TRANSACTION_FAILED);
-      }
-
-      // parse and serialize transaction parameters
-      var packaged = augur.rpc.packageRequest(payload);
-      packaged.from = this.account.address;
-      packaged.nonce = payload.nonce || "0x0";
-      packaged.value = payload.value || "0x0";
-      if (payload.gasLimit) {
-        packaged.gasLimit = abi.hex(payload.gasLimit);
-      } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
-        packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
-      } else {
-        packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
-      }
-      if (augur.rpc.debug.broadcast) {
-        console.log("[augur.js] payload:", payload);
-      }
-      if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
-        packaged.gasPrice = payload.gasPrice;
-        return this.getTxNonce(packaged, cb);
-      }
-      augur.rpc.getGasPrice(function (gasPrice) {
-        if (!gasPrice || gasPrice.error) {
-          return cb(errors.TRANSACTION_FAILED);
-        }
-        packaged.gasPrice = gasPrice;
-        self.getTxNonce(packaged, cb);
-      });
-    }
-
-  };
-};
-
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":242,"./utilities":272,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"browser-request":86,"buffer":117,"clone":120,"ethereumjs-tx":158,"ethrpc":279,"keythereum":285,"locks":175,"request":87,"uuid":236}],239:[function(require,module,exports){
-(function (process){
-/**
- * Augur JavaScript API
- * @author Kevin Day (@k_day)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-var request = (NODE_JS) ? require("request") : require("browser-request");
-var noop = function () {};
-
-//for now, cache nodes only have 1 second to respond before we fall back to chain.
-request = request.defaults({timeout: 1000});
-
-module.exports  = function () {
-
-  var augur = this;
-
-  return {
-
-    nodes: [],
-
-    //(For now just takes list of nodes as input)
-    bootstrap: function (cache_nodes, cb) {
-      var self = this;
-      cb = cb || noop;
-      if (cache_nodes && cache_nodes.constructor === Array) {
-        self.nodes = cache_nodes;
-      }
-      return cb();
-    },
-
-    buildRequest: function (endpoint, params) {
-      if (this.nodes.length <= 0) return null;
-
-      var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
-      url = url + "/" + endpoint;
-      var first = true;
-      for (var key in params) {
-        if (params.hasOwnProperty(key)) {
-          if (first) {
-            url += "?";
-            first = false;
-          } else {
-            url += "&";
-          }
-          if (params[key].constructor === Array) {
-            url = url + key + "=" + params[key].toString();
-          } else {
-            url = url + key + "=" + params[key];
-          }
-        }
-      }
-      return url;
-    },
-
-    fetchHelper: function (url, cb) {
-      if (!url) return cb("no nodes to fetch from");
-      request(url, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-          return cb(null, body);
-        } else {
-          return cb(url + " " + error);
-        }
-      });
-    },
-
-    getMarketsInfo: function (branch, cb) {
-      var url = this.buildRequest("getMarketsInfo", {branch: branch});
-      return this.fetchHelper(url, cb);
-    },
-
-    getMarketInfo: function (market, cb) {
-      var url = this.buildRequest("getMarketInfo", {id: market});
-      return this.fetchHelper(url, cb);
-    },
-
-    batchGetMarketInfo: function (marketIds, cb) {
-      var url = this.buildRequest("batchGetMarketInfo", {ids: marketIds});
-      return this.fetchHelper(url, cb);
-    },
-
-    getMarketPriceHistory: function (options, cb) {
-      var url = this.buildRequest("getMarketPriceHistory", options);
-      return this.fetchHelper(url, cb);
-    },
-
-    getAccountTrades: function (options, cb) {
-      var url = this.buildRequest("getAccountTrades", options);
-      return this.fetchHelper(url, cb);
-    }
-  };
-};
-
-}).call(this,require('_process'))
-},{"_process":191,"browser-request":86,"request":87}],240:[function(require,module,exports){
-/**
- * Batch interface:
- * var b = augur.createBatch();
- * b.add("getCashBalance", [augur.coinbase], callback);
- * b.add("getRepBalance", [augur.constants.DEFAULT_BRANCH_ID, augur.coinbase], callback);
- * b.execute();
- */
-
-"use strict";
-
-var clone = require("clone");
-
-var Batch = function (tx, rpc) {
-  this.tx = tx;
-  this.rpc = rpc;
-  this.txlist = [];
-};
-
-Batch.prototype.add = function (contract, method, params, callback) {
-  if (method && contract) {
-    var tx = clone(this.tx[contract][method]);
-    tx.params = params;
-    if (callback) tx.callback = callback;
-    this.txlist.push(tx);
-  }
-};
-
-Batch.prototype.execute = function () {
-  this.rpc.batch(this.txlist, true);
-};
-
-module.exports = function () {
-  return new Batch(this.tx, this.rpc);
-};
-
-},{"clone":120}],241:[function(require,module,exports){
-"use strict";
-
-var abi = require("augur-abi");
-
-module.exports = function () {
-
-  var rpc = this.rpc;
-
-  return {
-
-    POLL_INTERVAL: 3000, // poll for updates every 3 seconds
-
-    whisper: {
-      id: null,
-      filters: {augur: null}
-    },
-
-    parseMessage: function (message) {
-      return JSON.parse(abi.decode_hex(message));
-    },
-
-    parseMessages: function (messages) {
-      var parsedMessages = [];
-      if (messages && messages.constructor === Array && messages.length) {
-        for (var i = 0, numMessages = messages.length; i < numMessages; ++i) {
-          parsedMessages.push(this.parseMessage(messages[i].payload));
-        }
-      }
-      return parsedMessages;
-    },
-
-    joinRoom: function (roomName, onMessages) {
-      var self = this;
-      if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
-      if (!this.whisper.filters[roomName]) {
-        this.whisper.filters[roomName] = {
-          id: rpc.shh("newFilter", {
-            topics: [abi.prefix_hex(abi.encode_hex(roomName))]
-          }),
-          heartbeat: setInterval(function () {
-            self.getNewMessages(roomName, function (err, messages) {
-              if (err) return console.error(err);
-              onMessages(messages);
-            });
-          }, this.POLL_INTERVAL)
-        };
-      }
-      rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
-        onMessages(self.parseMessages(messages));
-      });
-    },
-
-    getNewMessages: function (roomName, callback) {
-      var self = this;
-      if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
-        rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
-          callback(null, self.parseMessages(messages));
-        });
-      }
-    },
-
-    postMessage: function (roomName, message, senderAddress, senderName, callback) {
-      var payload = {
-        name: senderName,
-        address: senderAddress,
-        message: message,
-        timestamp: new Date().getTime()
-      };
-      rpc.shh("post", {
-        from: this.whisper.id,
-        topics: [abi.prefix_hex(abi.encode_hex(roomName))],
-        payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
-        priority: "0x64",
-        ttl: "0x93a80"
-      }, function (posted) {
-        if (!posted) return callback("couldn't post message: " + message);
-        callback(null);
-      });
-    },
-
-    leaveRoom: function (roomName, callback) {
-      var self = this;
-      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
-        if (!uninstalled) return callback("couldn't leave room: " + roomName);
-        clearInterval(self.whisper.filters[roomName].heartbeat);
-        self.whisper.filters[roomName] = null;
-        callback(null, uninstalled);
-      });
-    }
-
-  };
-};
-
-},{"augur-abi":1}],242:[function(require,module,exports){
+},{"indexof":205}],273:[function(require,module,exports){
 /**
  * augur.js constants
  */
@@ -40657,4220 +46167,7 @@ module.exports = {
   FAUCET: "https://faucet.augur.net/faucet/"
 };
 
-},{"bignumber.js":82}],243:[function(require,module,exports){
-/**
- * Filters / logging
- */
-
-"use strict";
-
-var async = require("async");
-var clone = require("clone");
-var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var events_api = require("augur-contracts").api.events;
-var utils = require("./utilities");
-var constants = require("./constants");
-
-// non-event filters
-var filters = {
-  block: {id: null, heartbeat: null},
-  contracts: {id: null, heartbeat: null}
-};
-
-// event filters
-for (var label in events_api) {
-  if (!events_api.hasOwnProperty(label)) continue;
-  filters[label] = {id: null, heartbeat: null};
-}
-
-module.exports = function () {
-
-  var augur = this;
-
-  return {
-
-    PULSE: constants.SECONDS_PER_BLOCK * 500,
-
-    filter: filters,
-
-    format_trade_type: function (type) {
-      return (parseInt(type, 16) === 1) ? "buy" : "sell";
-    },
-    format_common_fields: function (msg) {
-      var fmt = clone(msg);
-      if (msg.sender) fmt.sender = abi.format_address(msg.sender);
-      if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
-      if (msg.type) fmt.type = this.format_trade_type(msg.type);
-      if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
-      if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
-      return fmt;
-    },
-    format_event_message: function (label, msg) {
-      var fmt;
-      switch (label) {
-        case "Approval":
-          fmt = clone(msg);
-          fmt._owner = abi.format_address(msg._owner);
-          fmt._spender = abi.format_address(msg._spender);
-          fmt.value = abi.unfix(msg.value);
-          return fmt;
-        case "collectedFees":
-          fmt = this.format_common_fields(msg);
-          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
-          fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
-          fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
-          fmt.repGain = abi.unfix_signed(msg.repGain, "string");
-          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-          fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
-          fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
-          fmt.period = parseInt(msg.period, 16);
-          return fmt;
-        case "deposit":
-          fmt = this.format_common_fields(msg);
-          fmt.value = abi.unfix(msg.value, "string");
-          return fmt;
-        case "fundedAccount":
-          fmt = this.format_common_fields(msg);
-          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-          fmt.repBalance = abi.unfix(msg.repBalance, "string");
-          return fmt;
-        case "log_add_tx":
-          fmt = this.format_common_fields(msg);
-          fmt.outcome = parseInt(msg.outcome, 16);
-          fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
-          return fmt;
-        case "log_cancel":
-          fmt = this.format_common_fields(msg);
-          fmt.outcome = parseInt(msg.outcome, 16);
-          fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
-          return fmt;
-        case "log_fill_tx":
-        case "log_short_fill_tx":
-          fmt = this.format_common_fields(msg);
-          if (!fmt.type) {
-            fmt.type = "sell";
-            fmt.isShortSell = true;
-          }
-          fmt.owner = abi.format_address(msg.owner); // maker
-          fmt.takerFee = abi.unfix(msg.takerFee, "string");
-          fmt.makerFee = abi.unfix(msg.makerFee, "string");
-          fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
-          fmt.outcome = parseInt(msg.outcome, 16);
-          return fmt;
-        case "marketCreated":
-          fmt = this.format_common_fields(msg);
-          fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
-          fmt.eventBond = abi.unfix(msg.eventBond, "string");
-          return fmt;
-        case "payout":
-          fmt = this.format_common_fields(msg);
-          fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
-          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-          fmt.shares = abi.unfix(msg.shares, "string");
-          return fmt;
-        case "penalizationCaughtUp":
-          fmt = this.format_common_fields(msg);
-          fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
-          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-          fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
-          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-          return fmt;
-        case "penalize":
-          fmt = this.format_common_fields(msg);
-          fmt.oldrep = abi.unfix(msg.oldrep, "string");
-          fmt.repchange = abi.unfix_signed(msg.repchange, "string");
-          fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
-          fmt.p = abi.unfix(msg.p, "string");
-          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-          return fmt;
-        case "sentCash":
-        case "Transfer":
-          fmt = clone(msg);
-          fmt._from = abi.format_address(msg._from);
-          fmt._to = abi.format_address(msg._to);
-          fmt._value = abi.unfix(msg._value);
-          return fmt;
-        case "submittedReport":
-        case "submittedReportHash":
-          fmt = this.format_common_fields(msg);
-          fmt.ethics = abi.unfix(msg.ethics, "string");
-          return fmt;
-        case "tradingFeeUpdated":
-          fmt = this.format_common_fields(msg);
-          fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-          return fmt;
-        case "withdraw":
-          fmt = this.format_common_fields(msg);
-          fmt.to = abi.format_address(msg.to);
-          fmt.value = abi.unfix(msg.value, "string");
-          return fmt;
-        default:
-          return this.format_common_fields(msg);
-      }
-    },
-    parse_event_message: function (label, msg, onMessage) {
-      var i;
-      if (augur.options.debug.filters) {
-	            console.log("parse_event_message label:", label);
-	            console.log("parse_event_message msg:", JSON.stringify(msg, null, 4));
-      }
-      if (msg) {
-        switch (msg.constructor) {
-          case Array:
-            for (i = 0; i < msg.length; ++i) {
-              this.parse_event_message(label, msg[i], onMessage);
-            }
-            break;
-          case Object:
-            if (!msg.error && msg.topics && msg.data) {
-              var inputs = augur.api.events[label].inputs;
-              var parsed = {};
-              var topicIndex = 0;
-              var dataIndex = 0;
-              var topics = msg.topics;
-              var numIndexed = topics.length - 1;
-              var data = augur.rpc.unmarshal(msg.data);
-              if (data && data.constructor !== Array) data = [data];
-              for (i = 0; i < inputs.length; ++i) {
-                parsed[inputs[i].name] = 0;
-                if (inputs[i].indexed) {
-                  parsed[inputs[i].name] = topics[topicIndex + 1];
-                  ++topicIndex;
-                } else {
-                  parsed[inputs[i].name] = data[dataIndex];
-                  ++dataIndex;
-                }
-              }
-              parsed.blockNumber = parseInt(msg.blockNumber, 16);
-              parsed.transactionHash = msg.transactionHash;
-              parsed.removed = msg.removed;
-              if (!onMessage) {
-                return this.format_event_message(label, parsed);
-              }
-              onMessage(this.format_event_message(label, parsed));
-            }
-            break;
-          default:
-            console.warn("unknown event message:", msg);
-        }
-      }
-    },
-    parse_block_message: function (message, onMessage) {
-      if (message) {
-        if (message.length && message.constructor === Array) {
-          for (var i = 0, len = message.length; i < len; ++i) {
-            if (message[i] && message[i].number) {
-              onMessage(message[i].number);
-            } else {
-              onMessage(message[i]);
-            }
-          }
-        } else if (message.number) {
-          onMessage(message.number);
-        }
-      }
-    },
-    parse_contracts_message: function (message, onMessage) {
-      if (message && message.length && message.constructor === Array) {
-        for (var i = 0, len = message.length; i < len; ++i) {
-          if (message[i]) {
-            if (message[i].constructor === Object && message[i].data) {
-              message[i].data = augur.rpc.unmarshal(message[i].data);
-            }
-            onMessage(message[i]);
-          }
-        }
-      }
-    },
-    poll_filter: function (label, onMessage) {
-      var callback, self = this;
-      if (this.filter[label]) {
-        switch (label) {
-          case "contracts":
-            callback = function (msg) {
-              self.parse_contracts_message(msg, onMessage);
-            };
-            break;
-          case "block":
-            callback = function (msg) {
-              self.parse_block_message(msg, onMessage);
-            };
-            break;
-          default:
-            callback = function (msg) {
-              self.parse_event_message(label, msg, onMessage);
-            };
-        }
-        augur.rpc.getFilterChanges(this.filter[label].id, callback);
-      }
-    },
-
-        // clear/uninstall filters
-    clear_filter: function (label, cb) {
-      if (utils.is_function(cb)) {
-        var self = this;
-        this.unsubscribe(this.filter[label].id, function (uninst) {
-          self.filter[label].id = null;
-          cb(uninst);
-        });
-      } else {
-        var uninst = this.unsubscribe(this.filter[label].id);
-        this.filter[label].id = null;
-        return uninst;
-      }
-    },
-
-        // set up filters
-    setup_event_filter: function (contract, label, f) {
-      return this.subscribeLogs({
-        address: augur.contracts[contract],
-        topics: [augur.api.events[label].signature]
-      }, f);
-    },
-    setup_contracts_filter: function (f) {
-      var self = this;
-      var contract_list = [];
-      for (var c in augur.contracts) {
-        if (!augur.contracts.hasOwnProperty(c)) continue;
-        contract_list.push(augur.contracts[c]);
-      }
-      var params = {
-        address: contract_list,
-        fromBlock: "0x01",
-        toBlock: "latest"
-      };
-      if (!utils.is_function(f)) {
-        this.filter.contracts = {
-          id: this.subscribeLogs(params),
-          heartbeat: null
-        };
-        return this.filter.contracts;
-      }
-      this.subscribeLogs(params, function (filter_id) {
-        self.filter.contracts = {
-          id: filter_id,
-          heartbeat: null
-        };
-        f(self.filter.contracts);
-      });
-    },
-    setup_block_filter: function (f) {
-      var self = this;
-      if (!utils.is_function(f)) {
-        this.filter.block = {
-          id: this.subscribeNewBlocks(),
-          heartbeat: null
-        };
-        return this.filter.block;
-      }
-      this.subscribeNewBlocks(function (filter_id) {
-        self.filter.block = {id: filter_id, heartbeat: null};
-        f(self.filter.block);
-      });
-    },
-
-        // start listeners
-    start_event_listener: function (label, cb) {
-      var self = this;
-      var contract = augur.api.events[label].contract;
-      if (this.filter[label] && this.filter[label].id) {
-        if (!utils.is_function(cb)) return this.filter[label].id;
-        return cb(this.filter[label].id);
-      }
-      if (!utils.is_function(cb)) {
-        var filter_id = this.setup_event_filter(contract, label);
-        if (!filter_id || filter_id === "0x") {
-          return errors.FILTER_NOT_CREATED;
-        }
-        if (filter_id.error) return filter_id;
-        self.filter[label] = {
-          id: filter_id,
-          heartbeat: null
-        };
-        return filter_id;
-      }
-      this.setup_event_filter(contract, label, function (filter_id) {
-        if (!filter_id || filter_id === "0x") {
-          return cb(errors.FILTER_NOT_CREATED);
-        }
-        if (filter_id.error) return cb(filter_id);
-        self.filter[label] = {
-          id: filter_id,
-          heartbeat: null
-        };
-        cb(filter_id);
-      });
-    },
-    start_contracts_listener: function (cb) {
-      if (this.filter.contracts.id === null) {
-        if (!utils.is_function(cb)) {
-          return this.setup_contracts_filter();
-        }
-        this.setup_contracts_filter(cb);
-      }
-    },
-    start_block_listener: function (cb) {
-      if (this.filter.block.id === null) {
-        if (!utils.is_function(cb)) {
-          return this.setup_block_filter();
-        }
-        this.setup_block_filter(cb);
-      }
-    },
-
-        // start/stop polling
-    pacemaker: function (cb) {
-      var self = this;
-      if (!cb || cb.constructor !== Object) return;
-      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-        async.forEachOf(this.filter, function (filter, label, next) {
-          if (utils.is_function(cb[label])) {
-            self.poll_filter(label, cb[label]);
-            self.filter[label].heartbeat = setInterval(function () {
-              self.poll_filter(label, cb[label]);
-            }, self.PULSE);
-          }
-          next();
-        });
-      } else {
-        async.forEachOf(this.filter, function (filter, label, next) {
-          if (utils.is_function(cb[label])) {
-            var callback = cb[label];
-            switch (label) {
-              case "contracts":
-                cb[label] = function (msg) {
-                  self.parse_contracts_message(msg, callback);
-                };
-                break;
-              case "block":
-                cb[label] = function (msg) {
-                  self.parse_block_message(msg, callback);
-                };
-                break;
-              default:
-                cb[label] = function (msg) {
-                  self.parse_event_message(label, msg, callback);
-                };
-            }
-            augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
-            next();
-          }
-        });
-      }
-    },
-
-    listen: function (cb, setup_complete) {
-      var self = this;
-
-      function listenHelper(callback, label, next) {
-        switch (label) {
-          case "contracts":
-            self.start_contracts_listener(function () {
-              self.pacemaker({contracts: callback});
-              next(null, [label, self.filter[label].id]);
-            });
-            break;
-          case "block":
-            self.start_block_listener(function () {
-              self.pacemaker({block: callback});
-              next(null, [label, self.filter[label].id]);
-            });
-            break;
-          default:
-            self.start_event_listener(label, function () {
-              var p = {};
-              p[label] = callback;
-              self.pacemaker(p);
-              next(null, [label, self.filter[label].id]);
-            });
-        }
-      }
-
-      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-        this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
-        this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
-        this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-      } else {
-        this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-        this.subscribeNewBlocks = augur.rpc.subscribeNewHeads.bind(augur.rpc);
-        this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-      }
-      async.forEachOfSeries(cb, function (callback, label, next) {
-
-                // skip invalid labels, undefined callbacks
-        if (!self.filter[label] || !callback) {
-          next(null, null);
-        } else if (self.filter[label].id === null && callback) {
-          listenHelper(callback, label, next);
-
-                // callback already registered. uninstall, and reinstall new callback.
-        } else if (self.filter[label].id && callback) {
-          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
-            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
-          }
-          self.clear_filter(label, function () {
-            listenHelper(callback, label, next);
-          });
-        }
-      }, function (err) {
-        if (err) console.error(err);
-        augur.rpc.customSubscriptionCallback = cb;
-        augur.rpc.resetCustomSubscription = function () {
-          self.listen(augur.rpc.customSubscriptionCallback);
-        }.bind(self);
-        if (utils.is_function(setup_complete)) setup_complete(self.filter);
-      });
-    },
-
-    all_filters_removed: function () {
-      var f, isRemoved = true;
-      for (var label in this.filter) {
-        if (!this.filter.hasOwnProperty(label)) continue;
-        f = this.filter[label];
-        if (f.heartbeat !== null || f.id !== null) {
-          isRemoved = false;
-          break;
-        }
-      }
-      return isRemoved;
-    },
-
-    ignore: function (uninstall, cb, complete) {
-      var label, self = this;
-      augur.rpc.resetCustomSubscription = null;
-
-      function cleared(uninst, callback, complete) {
-        callback(uninst);
-        if (uninst && uninst.constructor === Object) {
-          return complete(uninst);
-        }
-        if (self.all_filters_removed()) complete();
-      }
-
-      if (!complete && utils.is_function(cb)) {
-        complete = cb;
-        cb = null;
-      }
-      if (uninstall && uninstall.constructor === Object) {
-        cb = {};
-        for (label in this.filter) {
-          if (!this.filter.hasOwnProperty(label)) continue;
-          if (utils.is_function(uninstall[label])) {
-            cb[label] = uninstall[label];
-          }
-        }
-        uninstall = false;
-      }
-      cb = cb || {}; // individual filter removal callbacks
-      for (label in this.filter) {
-        if (!this.filter.hasOwnProperty(label)) continue;
-        cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
-      }
-      complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-      for (label in this.filter) {
-        if (!this.filter.hasOwnProperty(label)) continue;
-        if (this.filter[label].heartbeat !== null) {
-          clearInterval(this.filter[label].heartbeat);
-          this.filter[label].heartbeat = null;
-          if (!uninstall && utils.is_function(cb[label])) {
-            cb[label]();
-            if (this.all_filters_removed()) complete();
-          }
-        }
-      }
-      if (uninstall) {
-        async.forEachOfSeries(this.filter, function (filter, label, next) {
-          if (filter.id === null) return next();
-          if (augur.rpc.wsUrl || augur.rpc.ipcpath) {
-            augur.rpc.unregisterSubscriptionCallback(self.filter[label].id);
-          }
-          self.clear_filter(label, function (uninst) {
-            cleared(uninst, cb[label], complete);
-            next();
-          });
-        });
-      }
-    }
-  };
-};
-
-},{"./constants":242,"./utilities":272,"async":79,"augur-abi":1,"augur-contracts":58,"clone":120,"ethrpc":279}],244:[function(require,module,exports){
-/**
- * generateOrderBook: convenience method for generating an initial order book
- * for a newly created market. generateOrderBook calculates the number of
- * orders to create, as well as the spacing between orders.
- *
- * @param {Object} p
- *     market: market ID
- *     liquidity: initial cash to be placed on the order book
- *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
- *     startingQuantity: number of shares in each order
- *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
- *     priceWidth: spread between best bid/offer
- *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
- * @param {Object} cb
- *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
- *     (note: callbacks can also be properties of the p object)
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("./constants");
-
-module.exports = function (p, cb) {
-  var self = this;
-  var liquidity = abi.bignum(p.liquidity);
-  var numOutcomes = p.initialFairPrices.length;
-  var initialFairPrices = new Array(numOutcomes);
-  for (var i = 0; i < numOutcomes; ++i) {
-    initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
-  }
-  var startingQuantity = abi.bignum(p.startingQuantity);
-  var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
-  var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
-  cb = cb || {};
-  var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
-  var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
-  var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
-  var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
-  var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
-  this.getMarketInfo(p.market, null, function (marketInfo) {
-    var minValue, maxValue;
-    if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
-    if (marketInfo.numOutcomes !== numOutcomes) {
-      return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
-    }
-    var scalarMinMax;
-    if (marketInfo.type === "scalar") {
-      minValue = abi.bignum(marketInfo.events[0].minValue);
-      maxValue = abi.bignum(marketInfo.events[0].maxValue);
-      scalarMinMax = {minValue: minValue, maxValue: maxValue};
-    } else {
-      minValue = new BigNumber(0);
-      maxValue = new BigNumber(1);
-    }
-
-    var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
-    if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
-      return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
-    }
-    var buyPrices = new Array(numOutcomes);
-    var sellPrices = new Array(numOutcomes);
-    var numSellOrders = new Array(numOutcomes);
-    var numBuyOrders = new Array(numOutcomes);
-    var shares = new BigNumber(0);
-    var i, j, buyPrice, sellPrice, outcomeShares;
-    for (i = 0; i < numOutcomes; ++i) {
-      if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
-          initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-            console.log("priceDepth:", priceDepth.toFixed());
-            console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-            console.log("minValue:", minValue.toFixed());
-            console.log("maxValue:", maxValue.toFixed());
-            console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-            console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-            console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-            console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-            return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
-          }
-      if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
-        initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
-          return onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
-        }
-      buyPrice = initialFairPrices[i].minus(halfPriceWidth);
-      sellPrice = initialFairPrices[i].plus(halfPriceWidth);
-      numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
-      if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
-      numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
-      if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
-      outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
-      if (outcomeShares.gt(shares)) shares = outcomeShares;
-      numSellOrders[i] = numSellOrders[i].toNumber();
-      buyPrices[i] = new Array(numBuyOrders[i]);
-      buyPrices[i][0] = buyPrice;
-      for (j = 1; j < numBuyOrders[i]; ++j) {
-        buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
-        if (buyPrices[i][j].lte(minValue)) {
-          buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
-        }
-      }
-      sellPrices[i] = new Array(numSellOrders[i]);
-      sellPrices[i][0] = sellPrice;
-      for (j = 1; j < numSellOrders[i]; ++j) {
-        sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
-        if (sellPrices[i][j].gte(maxValue)) {
-          sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-        }
-      }
-    }
-    var numTransactions = 0;
-    for (i = 0; i < numOutcomes; ++i) {
-      numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
-    }
-    var onSimulate = cb.onSimulate || p.onSimulate;
-    if (self.utils.is_function(onSimulate)) {
-      onSimulate({
-        shares: shares.toFixed(),
-        numBuyOrders: numBuyOrders,
-        numSellOrders: numSellOrders,
-        buyPrices: abi.string(buyPrices),
-        sellPrices: abi.string(sellPrices),
-        numTransactions: numTransactions,
-        priceDepth: priceDepth.toFixed()
-      });
-      if (p.isSimulation) return;
-    }
-    self.buyCompleteSets({
-      market: p.market,
-      amount: abi.hex(shares),
-      onSent: function (res) {
-        // console.log("generateOrderBook.buyCompleteSets sent:", res);
-      },
-      onSuccess: function (res) {
-        // console.log("generateOrderBook.buyCompleteSets success:", res);
-        onBuyCompleteSets(res);
-        var outcomes = new Array(numOutcomes);
-        for (var i = 0; i < numOutcomes; ++i) {
-          outcomes[i] = i + 1;
-        }
-        async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
-          async.parallelLimit([
-            function (callback) {
-              async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
-                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                self.buy({
-                  amount: amount.toFixed(),
-                  price: buyPrice.toFixed(),
-                  market: p.market,
-                  outcome: outcome,
-                  scalarMinMax: scalarMinMax,
-                  onSent: function (res) {
-                    // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
-                  },
-                  onSuccess: function (res) {
-                    // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
-                    onSetupOrder({
-                        tradeId: res.callReturn,
-                        market: p.market,
-                        outcome: outcome,
-                        amount: amount.toFixed(),
-                        buyPrice: buyPrice.toFixed(),
-                        timestamp: res.timestamp,
-                        hash: res.hash,
-                        gasUsed: res.gasUsed
-                      });
-                    nextBuyPrice();
-                  },
-                  onFailed: function (err) {
-                    console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
-                    nextBuyPrice(err);
-                  }
-                });
-              }, function (err) {
-                if (err) console.error("async.each buy:", err);
-                callback(err);
-              });
-            },
-            function (callback) {
-              async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
-                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                self.sell({
-                  amount: amount.toFixed(),
-                  price: sellPrice.toFixed(),
-                  market: p.market,
-                  outcome: outcome,
-                  scalarMinMax: scalarMinMax,
-                  onSent: function (res) {
-                    // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
-                  },
-                  onSuccess: function (res) {
-                    // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
-                    onSetupOrder({
-                        tradeId: res.callReturn,
-                        market: p.market,
-                        outcome: outcome,
-                        amount: amount.toFixed(),
-                        sellPrice: sellPrice.toFixed(),
-                        timestamp: res.timestamp,
-                        hash: res.hash,
-                        gasUsed: res.gasUsed
-                      });
-                    nextSellPrice();
-                  },
-                  onFailed: function (err) {
-                    console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
-                    nextSellPrice(err);
-                  }
-                });
-              }, function (err) {
-                if (err) console.error("async.each sell:", err);
-                callback(err);
-              });
-            }
-          ], constants.PARALLEL_LIMIT, function (err) {
-            // if (err) console.error("buy/sell:", err);
-            onSetupOutcome({market: p.market, outcome: outcome});
-            nextOutcome(err);
-          });
-        }, function (err) {
-          if (err) return onFailed(err);
-          var scalarMinMax = {};
-          if (marketInfo.type === "scalar") {
-            scalarMinMax.minValue = minValue;
-            scalarMinMax.maxValue = maxValue;
-          }
-          self.getOrderBook(p.market, scalarMinMax, onSuccess);
-        });
-      },
-      onFailed: function (err) {
-        console.error("generateOrderBook.buyCompleteSets failed:", err);
-        onFailed(err);
-      }
-    });
-  });
-};
-
-},{"./constants":242,"async":79,"augur-abi":1,"bignumber.js":82}],245:[function(require,module,exports){
-(function (process){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var BigNumber = require("bignumber.js");
-
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
-var modules = [
-  require("./modules/connect"),
-  require("./modules/transact"),
-  require("./modules/cash"),
-  require("./modules/events"),
-  require("./modules/markets"),
-  require("./modules/buyAndSellShares"),
-  require("./modules/trade"),
-  require("./modules/createBranch"),
-  require("./modules/sendReputation"),
-  require("./modules/makeReports"),
-  require("./modules/collectFees"),
-  require("./modules/createMarket"),
-  require("./modules/compositeGetters"),
-  require("./modules/logs"),
-  require("./modules/abacus"),
-  require("./modules/reporting"),
-  require("./modules/payout"),
-  require("./modules/tradingActions"),
-  require("./modules/makeOrder"),
-  require("./modules/takeOrder"),
-  require("./modules/selectOrder"),
-  require("./modules/executeTrade"),
-  require("./modules/positions"),
-  require("./modules/register")
-];
-
-function Augur() {
-  this.version = "3.8.7";
-
-  this.options = {
-    debug: {
-      tools: false,       // if true, testing tools (test/tools.js) included
-      abi: false,         // debug logging in augur-abi
-      broadcast: false,   // broadcast debug logging in ethrpc
-      connect: false,     // connection debug logging in ethereumjs-connect
-      trading: false,     // trading-related debug logging
-      reporting: false,   // reporting-related debug logging
-      filters: false,     // filters-related debug logging
-      sync: false         // show warning on synchronous RPC request
-    },
-    loadZeroVolumeMarkets: true
-  };
-  this.protocol = NODE_JS || document.location.protocol;
-
-  this.connection = null;
-  this.coinbase = null;
-  this.from = null;
-
-  this.abi = require("augur-abi");
-  this.constants = require("./constants");
-  this.utils = require("./utilities");
-  this.rpc = require("ethrpc");
-  this.errors = this.rpc.errors;
-  this.abi.debug = this.options.debug.abi;
-  this.rpc.debug = this.options.debug;
-
-  // Load submodules
-  for (var i = 0, len = modules.length; i < len; ++i) {
-    for (var fn in modules[i]) {
-      if (!modules[i].hasOwnProperty(fn)) continue;
-      this[fn] = modules[i][fn].bind(this);
-      this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
-    }
-  }
-  this.generateOrderBook = require("./generateOrderBook").bind(this);
-  this.createBatch = require("./batch").bind(this);
-  this.accounts = this.Accounts();
-  this.web = this.accounts; // deprecated
-  this.filters = this.Filters();
-  this.chat = this.Chat();
-  this.augurNode = this.AugurNode();
-  if (this.options.debug.tools) this.tools = require("../test/tools");
-  this.sync();
-}
-
-Augur.prototype.Accounts = require("./accounts");
-Augur.prototype.Filters = require("./filters");
-Augur.prototype.Chat = require("./chat");
-Augur.prototype.AugurNode = require("./augurNode");
-
-module.exports = new Augur();
-
-}).call(this,require('_process'))
-},{"../test/tools":274,"./accounts":238,"./augurNode":239,"./batch":240,"./chat":241,"./constants":242,"./filters":243,"./generateOrderBook":244,"./modules/abacus":246,"./modules/buyAndSellShares":247,"./modules/cash":248,"./modules/collectFees":249,"./modules/compositeGetters":250,"./modules/connect":251,"./modules/createBranch":252,"./modules/createMarket":253,"./modules/events":254,"./modules/executeTrade":255,"./modules/logs":256,"./modules/makeOrder":257,"./modules/makeReports":258,"./modules/markets":259,"./modules/payout":261,"./modules/positions":262,"./modules/register":263,"./modules/reporting":264,"./modules/selectOrder":265,"./modules/sendReputation":266,"./modules/takeOrder":268,"./modules/trade":269,"./modules/tradingActions":270,"./modules/transact":271,"./utilities":272,"_process":191,"augur-abi":1,"bignumber.js":82,"ethrpc":279}],246:[function(require,module,exports){
-(function (Buffer){
-/**
- * Utility functions that do a local calculation (i.e., these functions do not
- * make RPC requests).
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var bs58 = require("bs58");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-var makeReports = require("./makeReports");
-
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
-var ONE = new BigNumber("1", 10);
-var ONE_POINT_FIVE = new BigNumber("1.5", 10);
-var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
-
-module.exports = {
-
-  /**
-   * 4 * $market_fee * $price * (ONE - $price*ONE/$range) / ($range*ONE)
-   * @param tradingfee BigNumber
-   * @param price BigNumber
-   * @param range BigNumber
-   * @return BigNumber
-   */
-  calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
-    return tradingFee.times(4).times(price).times(
-            constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())
-        ).dividedBy(range.times(constants.ONE)).floor();
-  },
-
-  /**
-   * 4 * fee * price * (1 - price/range)/range keeps fees lower at the edges
-   * @param tradingfee BigNumber
-   * @param price BigNumber
-   * @param range BigNumber
-   * @return BigNumber
-   */
-  calculateAdjustedTradingFee: function (tradingFee, price, range) {
-    return tradingFee.times(4).times(price).times(ONE.minus(price.dividedBy(range))).dividedBy(range);
-  },
-
-  // Calculates adjusted total trade cost at a specified price using fixed-point arithmetic
-  // @return {BigNumbers}
-  calculateFxpTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
-    var fxpAmount = abi.fix(amount);
-    var fxpPrice = abi.fix(price);
-    var adjustedTradingFee = this.calculateFxpAdjustedTradingFee(abi.bignum(tradingFee), fxpPrice, abi.fix(range));
-    var takerFee = FXP_ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-    var fee = takerFee.times(adjustedTradingFee.times(fxpAmount).dividedBy(constants.ONE).floor().times(fxpPrice).dividedBy(constants.ONE).floor()).dividedBy(constants.ONE).floor();
-    var noFeeCost = fxpAmount.times(fxpPrice).dividedBy(constants.ONE).floor();
-    return {
-      fee: abi.unfix(fee),
-      percentFee: (noFeeCost.gt(constants.ZERO)) ?
-        abi.unfix(fee.dividedBy(noFeeCost).times(constants.ONE).abs()) :
-        constants.ZERO,
-      cost: abi.unfix(noFeeCost.plus(fee)),
-      cash: abi.unfix(noFeeCost.minus(fee))
-    };
-  },
-
-  // Calculates adjusted total trade cost at a specified price
-  // @return {BigNumbers}
-  calculateTradingCost: function (amount, price, tradingFee, makerProportionOfFee, range) {
-    var bnAmount = abi.bignum(amount);
-    var bnPrice = abi.bignum(price);
-    var adjustedTradingFee = this.calculateAdjustedTradingFee(abi.bignum(tradingFee), bnPrice, abi.bignum(range));
-    var takerFee = ONE_POINT_FIVE.minus(abi.bignum(makerProportionOfFee));
-    var fee = takerFee.times(adjustedTradingFee.times(bnAmount).times(bnPrice));
-    var noFeeCost = bnAmount.times(bnPrice);
-    return {
-      fee: fee,
-      percentFee: (noFeeCost.gt(constants.ZERO)) ? fee.dividedBy(noFeeCost).abs() : constants.ZERO,
-      cost: noFeeCost.plus(fee),
-      cash: noFeeCost.minus(fee)
-    };
-  },
-
-  calculateValidityBond: function (tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod) {
-    var bnPeriodLength = abi.bignum(periodLength);
-    var bnBaseReporters = abi.bignum(baseReporters);
-    var bnPast24 = abi.bignum(numEventsCreatedInPast24Hours);
-    var bnNumberEvents = abi.bignum(numEventsInReportPeriod);
-    var bnGasPrice = abi.bignum(this.rpc.gasPrice);
-    var creationFee = abi.bignum("0.03").times(bnBaseReporters).dividedBy(tradingFee);
-    var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
-    if (creationFee.lt(minFee)) creationFee = minFee;
-    return creationFee.plus(bnPast24.dividedBy(bnPeriodLength).plus(1))
-            .dividedBy(bnNumberEvents.plus(1))
-            .dividedBy(2)
-            .toFixed();
-  },
-
-  // type: "buy" or "sell"
-  // gasLimit (optional): block gas limit as an integer
-  maxOrdersPerTrade: function (type, gasLimit) {
-    return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
-  },
-
-  // tradeTypes: array of "buy" and/or "sell"
-  sumTradeGas: function (tradeTypes) {
-    var gas = 0;
-    for (var i = 0, n = tradeTypes.length; i < n; ++i) {
-      gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
-    }
-    return gas;
-  },
-
-  sumTrades: function (trade_ids) {
-    var trades = new BigNumber(0);
-    for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
-      trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
-    }
-    return abi.hex(trades, true);
-  },
-
-  makeTradeHash: function (max_value, max_amount, trade_ids) {
-    return utils.sha3([
-      this.sumTrades(trade_ids),
-      abi.fix(max_amount, "hex"),
-      abi.fix(max_value, "hex")
-    ]);
-  },
-
-  calculateFxpTradingFees: function (makerFee, takerFee) {
-    var fxpMakerFee = abi.fix(makerFee);
-    var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
-    var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
-    return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-  },
-
-  calculateTradingFees: function (makerFee, takerFee) {
-    var bnMakerFee = abi.bignum(makerFee);
-    var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
-    var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-    return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-  },
-
-  calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
-    var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
-    fxpTradingFee = abi.bignum(tradingFee);
-    fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
-    makerFee = fxpTradingFee.times(fxpMakerProportionOfFee).dividedBy(constants.ONE).floor();
-    takerFee = ONE_POINT_FIVE.times(fxpTradingFee).dividedBy(constants.ONE).floor().minus(makerFee);
-    return {
-      trading: fxpTradingFee,
-      maker: makerFee,
-      taker: takerFee
-    };
-  },
-
-  // expects fixed-point inputs if !isUnfixed
-  calculateMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
-    var bnTradingFee, bnMakerProportionOfFee, makerFee;
-    if (!isUnfixed) {
-      bnTradingFee = abi.unfix(tradingFee);
-      bnMakerProportionOfFee = abi.unfix(makerProportionOfFee);
-    } else {
-      bnTradingFee = abi.bignum(tradingFee);
-      bnMakerProportionOfFee = abi.bignum(makerProportionOfFee);
-    }
-    makerFee = bnTradingFee.times(bnMakerProportionOfFee);
-    if (returnBigNumber) {
-      return {
-        trading: bnTradingFee,
-        maker: makerFee,
-        taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee)
-      };
-    }
-    return {
-      trading: bnTradingFee.toFixed(),
-      maker: makerFee.toFixed(),
-      taker: ONE_POINT_FIVE.times(bnTradingFee).minus(makerFee).toFixed()
-    };
-  },
-
-  parseMarketInfo: function (rawInfo) {
-    var EVENTS_FIELDS = 9;
-    var OUTCOMES_FIELDS = 3;
-    var info = {};
-    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-    // marketInfo[0] = marketID
-    // marketInfo[1] = MARKETS.getMakerFees(marketID)
-    // marketInfo[2] = numOutcomes
-    // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
-    // marketInfo[4] = MARKETS.getTradingFee(marketID)
-    // marketInfo[5] = MARKETS.getBranchID(marketID)
-    // marketInfo[6] = MARKETS.getCumScale(marketID)
-    // marketInfo[7] = MARKETS.getCreationTime(marketID)
-    // marketInfo[8] = MARKETS.getVolume(marketID)
-    // marketInfo[9] = INFO.getCreationFee(marketID)
-    // marketInfo[10] = INFO.getCreator(marketID)
-    // tags = MARKETS.returnTags(marketID, outitems=3)
-    // marketInfo[11] = tags[0]
-    // marketInfo[12] = tags[1]
-    // marketInfo[13] = tags[2]
-      var index = 14;
-      var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-      info = {
-        id: abi.format_int256(rawInfo[0]),
-        network: this.network_id,
-        makerFee: fees.maker,
-        takerFee: fees.taker,
-        tradingFee: fees.trading,
-        numOutcomes: parseInt(rawInfo[2], 16),
-        tradingPeriod: parseInt(rawInfo[3], 16),
-        branchId: rawInfo[5],
-        numEvents: 1,
-        cumulativeScale: abi.unfix(rawInfo[6], "string"),
-        creationTime: parseInt(rawInfo[7], 16),
-        volume: abi.unfix(rawInfo[8], "string"),
-        creationFee: abi.unfix(rawInfo[9], "string"),
-        author: abi.format_address(rawInfo[10]),
-        tags: [
-          this.decodeTag(rawInfo[11]),
-          this.decodeTag(rawInfo[12]),
-          this.decodeTag(rawInfo[13])
-        ]
-      };
-      info.outcomes = new Array(info.numOutcomes);
-
-      // organize event info
-      // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-      var event = {
-        id: abi.format_int256(rawInfo[index]),
-        endDate: parseInt(rawInfo[index + 1], 16),
-        minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
-        maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
-        numOutcomes: parseInt(rawInfo[index + 5], 16),
-        bond: abi.unfix_signed(rawInfo[index + 6], "string")
-      };
-
-      // event type: binary, categorical, or scalar
-      if (event.numOutcomes > 2) {
-        event.type = "categorical";
-      } else if (event.minValue === "1" && event.maxValue === "2") {
-        event.type = "binary";
-      } else {
-        event.type = "scalar";
-      }
-      info.type = event.type;
-      info.endDate = event.endDate;
-      info.minValue = event.minValue;
-      info.maxValue = event.maxValue;
-      var outcome, proportionCorrect;
-      if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
-        outcome = unfixed.report;
-        info.isIndeterminate = unfixed.isIndeterminate;
-      }
-      if (parseInt(rawInfo[index + 8], 16) !== 0) {
-        proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-      }
-      if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
-      info.reportedOutcome = outcome;
-      info.proportionCorrect = proportionCorrect;
-      info.events = [event];
-      index += EVENTS_FIELDS;
-
-      // organize outcome info
-      for (var i = 0; i < info.numOutcomes; ++i) {
-        info.outcomes[i] = {
-          id: i + 1,
-          outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-          price: abi.unfix_signed(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string"),
-          sharesPurchased: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 2], "string")
-        };
-      }
-      index += info.numOutcomes*OUTCOMES_FIELDS;
-
-      // convert description byte array to unicode
-      var descriptionLength = parseInt(rawInfo[index], 16);
-      ++index;
-      if (descriptionLength) {
-        info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
-        index += descriptionLength;
-      }
-
-      // convert resolution byte array to unicode
-      var resolutionLength = parseInt(rawInfo[index], 16);
-      ++index;
-      if (resolutionLength) {
-        info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-        index += resolutionLength;
-      }
-
-      // convert extraInfo byte array to unicode
-      var extraInfoLength = parseInt(rawInfo[index], 16);
-      if (extraInfoLength) {
-        info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
-      }
-    }
-    return info;
-  },
-
-  formatTags: function (tags) {
-    var formattedTags = clone(tags);
-    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
-    if (formattedTags.length) {
-      for (var i = 0; i < formattedTags.length; ++i) {
-        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-          formattedTags[i] = "0x0";
-        } else {
-          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-        }
-      }
-    }
-    while (formattedTags.length < 3) {
-      formattedTags.push("0x0");
-    }
-    return formattedTags;
-  },
-
-  calculateRequiredMarketValue: function (gasPrice) {
-    gasPrice = abi.bignum(gasPrice);
-    return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-  },
-
-  // expects BigNumber inputs
-  calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-  },
-
-  shrinkScalarPrice: function (minValue, price) {
-    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-    if (price.constructor !== BigNumber) price = abi.bignum(price);
-    return price.minus(minValue).toFixed();
-  },
-
-  expandScalarPrice: function (minValue, price) {
-    if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-    if (price.constructor !== BigNumber) price = abi.bignum(price);
-    return price.plus(minValue).toFixed();
-  },
-
-  adjustScalarSellPrice: function (maxValue, price) {
-    if (maxValue.constructor !== BigNumber) maxValue = abi.bignum(maxValue);
-    if (price.constructor !== BigNumber) price = abi.bignum(price);
-    return maxValue.minus(price).toFixed();
-  },
-
-  roundToPrecision: function (value, minimum, round, roundingMode) {
-    if (value.lt(minimum || constants.PRECISION.zero)) return null;
-    if (value.lt(constants.PRECISION.limit)) {
-      value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
-    } else {
-      value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
-    }
-    return value;
-  },
-
-  parseTradeInfo: function (trade) {
-    var type, round, roundingMode;
-    if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
-
-    // 0x1=buy, 0x2=sell
-    switch (trade[1]) {
-      case "0x1":
-        type = "buy";
-        round = "floor";
-        roundingMode = BigNumber.ROUND_DOWN;
-        break;
-      case "0x2":
-        type = "sell";
-        round = "ceil";
-        roundingMode = BigNumber.ROUND_UP;
-        break;
-      default:
-        return null;
-    }
-
-    var fullPrecisionAmount = abi.unfix(trade[3]);
-    var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
-    if (amount === null) return null;
-
-    var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
-    var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
-    if (price === null) return null;
-
-    return {
-      id: abi.format_int256(trade[0]),
-      type: type,
-      market: trade[2],
-      amount: amount,
-      fullPrecisionAmount: fullPrecisionAmount.toFixed(),
-      price: price,
-      fullPrecisionPrice: fullPrecisionPrice.toFixed(),
-      owner: abi.format_address(trade[5]),
-      block: parseInt(trade[6], 16),
-      outcome: abi.string(trade[7])
-    };
-  },
-
-  decodeTag: function (tag) {
-    try {
-      return (tag && tag !== "0x0" && tag !== "0x") ?
-        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-    } catch (exc) {
-      if (this.options.debug.broadcast) console.error(exc, tag);
-      return null;
-    }
-  },
-
-  base58Decode: function (encoded) {
-    return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
-  },
-
-  base58Encode: function (o) {
-    return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
-  }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":272,"./makeReports":258,"async":79,"augur-abi":1,"bignumber.js":82,"bs58":115,"buffer":117,"clone":120}],247:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  cancel: function (trade_id, onSent, onSuccess, onFailed) {
-    if (this.options.debug.trading) {
-      console.log("cancel:", JSON.stringify(trade_id, null, 2));
-    }
-    var self = this;
-    if (trade_id.constructor === Object) {
-      onSent = trade_id.onSent;
-      onSuccess = trade_id.onSuccess;
-      onFailed = trade_id.onFailed;
-      trade_id = trade_id.trade_id;
-    }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    var tx = clone(this.tx.BuyAndSellShares.cancel);
-    tx.params = trade_id;
-    if (this.options.debug.trading) {
-      console.log("cancel tx:", JSON.stringify(tx, null, 2));
-    }
-    var prepare = function (result, cb) {
-      if (!result || !result.callReturn) return cb(result);
-      self.rpc.receipt(result.hash, function (receipt) {
-        if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-        if (receipt.error) return onFailed(receipt);
-        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-          var logs = receipt.logs;
-          var sig = self.api.events.log_cancel.signature;
-          result.cashRefund = "0";
-          var numLogs = logs.length;
-          var logdata;
-          for (var i = 0; i < numLogs; ++i) {
-            if (logs[i].topics[0] === sig) {
-              logdata = self.rpc.unmarshal(logs[i].data);
-              if (logdata && logdata.constructor === Array && logdata.length) {
-                result.cashRefund = abi.unfix(logdata[5], "string");
-                break;
-              }
-            }
-          }
-        }
-        cb(result);
-      });
-    };
-    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
-  },
-
-  buy: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-    if (this.options.debug.trading) {
-      console.log("buy:", JSON.stringify(amount, null, 2));
-    }
-    if (amount.constructor === Object && amount.amount) {
-      price = amount.price;
-      market = amount.market;
-      outcome = amount.outcome;
-      tradeGroupID = amount.tradeGroupID;
-      scalarMinMax = amount.scalarMinMax;
-      onSent = amount.onSent;
-      onSuccess = amount.onSuccess;
-      onFailed = amount.onFailed;
-      amount = amount.amount;
-    }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-    }
-    var tx = clone(this.tx.BuyAndSellShares.buy);
-    tx.params = [
-      abi.fix(amount, "hex"),
-      abi.fix(price, "hex"),
-      market,
-      outcome,
-      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-      tradeGroupID || 0
-    ];
-    if (this.options.debug.trading) {
-      console.log("buy tx:", JSON.stringify(tx, null, 2));
-    }
-    return this.transact(tx, onSent, onSuccess, onFailed);
-  },
-
-  sell: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-    if (this.options.debug.trading) {
-      console.log("sell:", JSON.stringify(amount, null, 2));
-    }
-    if (amount.constructor === Object && amount.amount) {
-      price = amount.price;
-      market = amount.market;
-      outcome = amount.outcome;
-      tradeGroupID = amount.tradeGroupID;
-      scalarMinMax = amount.scalarMinMax;
-      onSent = amount.onSent;
-      onSuccess = amount.onSuccess;
-      onFailed = amount.onFailed;
-      amount = amount.amount;
-    }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-    }
-    var tx = clone(this.tx.BuyAndSellShares.sell);
-    tx.params = [
-      abi.fix(amount, "hex"),
-      abi.fix(price, "hex"),
-      market,
-      outcome,
-      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-      "0x0",
-      tradeGroupID || 0
-    ];
-    if (this.options.debug.trading) {
-      console.log("sell tx:", JSON.stringify(tx, null, 2));
-    }
-    return this.transact(tx, onSent, onSuccess, onFailed);
-  },
-
-  shortAsk: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-    if (this.options.debug.trading) {
-      console.log("shortAsk:", JSON.stringify(amount, null, 2));
-    }
-    if (amount.constructor === Object && amount.amount) {
-      price = amount.price;
-      market = amount.market;
-      outcome = amount.outcome;
-      tradeGroupID = amount.tradeGroupID;
-      scalarMinMax = amount.scalarMinMax;
-      onSent = amount.onSent;
-      onSuccess = amount.onSuccess;
-      onFailed = amount.onFailed;
-      amount = amount.amount;
-    }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-      price = this.shrinkScalarPrice(scalarMinMax.minValue, price);
-    }
-    var tx = clone(this.tx.BuyAndSellShares.shortAsk);
-    tx.params = [
-      abi.fix(amount, "hex"),
-      abi.fix(price, "hex"),
-      market,
-      outcome,
-      abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-      tradeGroupID || 0
-    ];
-    if (this.options.debug.trading) {
-      console.log("shortAsk tx:", JSON.stringify(tx, null, 2));
-    }
-    return this.transact(tx, onSent, onSuccess, onFailed);
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],248:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  sendEther: function (to, value, from, onSent, onSuccess, onFailed) {
-    if (to && to.constructor === Object) {
-      value = to.value;
-      from = to.from;
-      onSent = to.onSent;
-      onSuccess = to.onSuccess;
-      onFailed = to.onFailed;
-      to = to.to;
-    }
-    return this.transact({
-      from: from,
-      to: to,
-      value: abi.fix(value, "hex"),
-      returns: "null",
-      gas: "0xcf08"
-    }, onSent, onSuccess, onFailed);
-  },
-
-  depositEther: function (value, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.Cash.depositEther);
-    var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
-    tx.value = abi.fix(unpacked.params[0], "hex");
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-  },
-
-  getCashBalance: function (account, callback) {
-    return this.Cash.balance(account, callback);
-  },
-
-  sendCash: function (recver, value, onSent, onSuccess, onFailed) {
-    return this.Cash.send(recver, value, onSent, onSuccess, onFailed);
-  },
-
-  sendCashFrom: function (recver, value, from, onSent, onSuccess, onFailed) {
-    return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],249:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-  collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (branch && branch.constructor === Object) {
-      sender = branch.sender;
-      periodLength = branch.periodLength;
-      onSent = branch.onSent;
-      onSuccess = branch.onSuccess;
-      onFailed = branch.onFailed;
-      branch = branch.branch;
-    }
-    if (this.getCurrentPeriodProgress(periodLength) < 50) {
-      return onFailed({
-        "-2": "needs to be second half of reporting period to claim rep"
-      });
-    }
-    var tx = clone(this.tx.CollectFees.collectFees);
-    tx.params = [branch, sender];
-    this.getVotePeriod(branch, function (period) {
-      self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-        if (self.options.debug.reporting) {
-          console.log("Fees collected:", branch, sender, period - 1, feesCollected);
-        }
-        if (feesCollected === "1") return onSuccess({callReturn: "2"});
-        self.rpc.getGasPrice(function (gasPrice) {
-          tx.gasPrice = gasPrice;
-          tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-          var prepare = function (res, cb) {
-            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-              return cb(res);
-            }
-            self.getVotePeriod(branch, function (period) {
-              self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                if (feesCollected !== "1") {
-                  res.callReturn = "2";
-                  return cb(res);
-                }
-                self.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                  if (parseInt(afterRep, 10) <= 1) {
-                    res.callReturn = "2";
-                    return cb(res);
-                  }
-                  res.callReturn = "1";
-                  return cb(res);
-                });
-              });
-            });
-          };
-          return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
-        });
-      });
-    });
-  }
-};
-
-},{"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],250:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  // load each batch of marketdata sequentially and recursively until complete
-  loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-    var self = this;
-    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
-    this.getMarketsInfo({
-      branch: branchID,
-      offset: startIndex,
-      numMarketsToLoad: numMarketsToLoad,
-      volumeMin: volumeMin,
-      volumeMax: volumeMax
-    }, function (marketsData) {
-      if (!marketsData || marketsData.error) {
-        chunkCB(marketsData);
-      } else {
-        chunkCB(null, marketsData);
-      }
-      var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
-      if (isDesc && startIndex > 0) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (!isDesc && startIndex + chunkSize < numMarkets) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (utils.is_function(nextPass)) {
-        setTimeout(function () { nextPass(); }, pause);
-      }
-    });
-  },
-
-  loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
-    var self = this;
-
-    // load the total number of markets
-    this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-      var numMarkets = parseInt(numMarketsRaw, 10);
-      var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
-
-      // load markets in batches
-      // first pass: only markets with nonzero volume
-      self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
-
-        // second pass: zero-volume markets
-        if (self.options.loadZeroVolumeMarkets) {
-          self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
-        }
-      });
-    });
-  },
-
-  loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
-    var self = this;
-
-        // Try hitting a cache node, if available
-    if (!this.augurNode.nodes.length) {
-      return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-    }
-    this.augurNode.getMarketsInfo(branchID, function (err, result) {
-      if (err) {
-        console.warn("cache node getMarketsInfo failed:", err);
-
-        // Abandon the use of cache nodes since there was a connection issue.
-        self.augurNode.nodes = [];
-
-        // fallback to loading in batches from chain
-        return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-      }
-      chunkCB(null, JSON.parse(result));
-    });
-  },
-
-  loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
-    this.getCashBalance(accountID, function (result) {
-      if (!result || result.error) return cbEther(result);
-      return cbEther(null, abi.string(result));
-    });
-    this.getRepBalance(branchID, accountID, function (result) {
-      if (!result || result.error) return cbRep(result);
-      return cbRep(null, abi.string(result));
-    });
-    this.rpc.balance(accountID, function (wei) {
-      if (!wei || wei.error) return cbRealEther(wei);
-      return cbRealEther(null, abi.unfix(wei, "string"));
-    });
-  },
-
-  finishLoadBranch: function (branch, callback) {
-    if (branch.periodLength && branch.description && branch.baseReporters) {
-      callback(null, branch);
-    }
-  },
-
-  loadBranch: function (branchID, callback) {
-    var self = this;
-    var branch = {id: abi.hex(branchID)};
-    this.getPeriodLength(branchID, function (periodLength) {
-      if (!periodLength || periodLength.error) return callback(periodLength);
-      branch.periodLength = periodLength;
-      self.finishLoadBranch(branch, callback);
-    });
-    this.getDescription(branchID, function (description) {
-      if (!description || description.error) return callback(description);
-      branch.description = description;
-      self.finishLoadBranch(branch, callback);
-    });
-    this.getBaseReporters(branchID, function (baseReporters) {
-      if (!baseReporters || baseReporters.error) return callback(baseReporters);
-      branch.baseReporters = parseInt(baseReporters, 10);
-      self.finishLoadBranch(branch, callback);
-    });
-  },
-
-  parsePositionInMarket: function (positionInMarket) {
-    if (!positionInMarket || positionInMarket.error) return positionInMarket;
-    var numOutcomes = positionInMarket.length;
-    var position = {};
-    for (var i = 0; i < numOutcomes; ++i) {
-      position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
-    }
-    return position;
-  },
-
-  getPositionInMarket: function (market, account, callback) {
-    if (!callback && utils.is_function(account)) {
-      callback = account;
-      account = null;
-    }
-    if (market && market.market) {
-      account = market.account;
-      callback = callback || market.callback;
-      market = market.market;
-    }
-    return this.CompositeGetters.getPositionInMarket(
-      market,
-      account || this.from,
-      callback);
-  },
-
-  adjustScalarOrder: function (order, minValue) {
-    order.price = this.expandScalarPrice(minValue, order.price);
-    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
-    return order;
-  },
-
-  parseOrderBook: function (orderArray, scalarMinMax) {
-    if (!orderArray || orderArray.error) return orderArray;
-    var minValue, order;
-    var isScalar = scalarMinMax &&
-      scalarMinMax.minValue !== undefined &&
-      scalarMinMax.maxValue !== undefined;
-    if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-    var numOrders = orderArray.length / 8;
-    var orderBook = {buy: {}, sell: {}};
-    for (var i = 0; i < numOrders; ++i) {
-      order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-      if (order) {
-        if (isScalar) order = this.adjustScalarOrder(order, minValue);
-        orderBook[order.type][order.id] = order;
-      }
-    }
-    return orderBook;
-  },
-
-  // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-  getOrderBook: function (market, scalarMinMax, callback) {
-    var self = this;
-    if (!callback && utils.is_function(scalarMinMax)) {
-      callback = scalarMinMax;
-      scalarMinMax = null;
-    }
-    var offset, numTradesToLoad;
-    if (market && market.market) {
-      offset = market.offset;
-      numTradesToLoad = market.numTradesToLoad;
-      scalarMinMax = scalarMinMax || market.scalarMinMax;
-      callback = callback || market.callback;
-      market = market.market;
-    }
-    var tx = clone(this.tx.CompositeGetters.getOrderBook);
-    tx.params = [market, offset || 0, numTradesToLoad || 0];
-    return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
-  },
-
-  validateMarketInfo: function (marketInfo) {
-    if (!marketInfo) return null;
-    var parsedMarketInfo = this.parseMarketInfo(marketInfo);
-    if (!parsedMarketInfo.numOutcomes) return null;
-    return parsedMarketInfo;
-  },
-
-  // account is optional, if provided will return sharesPurchased
-  getMarketInfo: function (market, account, callback) {
-    if (market && market.market) {
-      callback = callback || market.callback;
-      account = market.account;
-      market = market.market;
-    }
-    if (!callback && utils.is_function(account)) {
-      callback = account;
-      account = null;
-    }
-    return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
-  },
-
-  parseBatchMarketInfo: function (marketsArray, numMarkets) {
-    var len, shift, rawInfo, info, marketID;
-    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-      return marketsArray;
-    }
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-      len = parseInt(marketsArray[totalLen]);
-      shift = totalLen + 1;
-      rawInfo = marketsArray.slice(shift, shift + len - 1);
-      marketID = abi.format_int256(marketsArray[shift]);
-      info = this.parseMarketInfo(rawInfo);
-      if (info && info.numOutcomes) {
-        marketsInfo[marketID] = info;
-        marketsInfo[marketID].sortOrder = i;
-      }
-      totalLen += len;
-    }
-    return marketsInfo;
-  },
-
-  batchGetMarketInfo: function (marketIDs, account, callback) {
-    if (!callback && utils.is_function(account)) {
-      callback = account;
-      account = null;
-    }
-    var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-    tx.params = [marketIDs, account || 0];
-    return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
-  },
-
-  parseMarketsInfo: function (marketsArray, branch) {
-    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
-    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-      return null;
-    }
-    var numMarkets = parseInt(marketsArray.shift(), 16);
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-      len = parseInt(marketsArray[totalLen]);
-      shift = totalLen + 1;
-      marketID = abi.format_int256(marketsArray[shift]);
-      fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
-      minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
-      maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
-      numOutcomes = parseInt(marketsArray[shift + 13], 16);
-      if (numOutcomes > 2) {
-        type = "categorical";
-      } else if (minValue === "1" && maxValue === "2") {
-        type = "binary";
-      } else {
-        type = "scalar";
-      }
-      reportedOutcome = abi.hex(marketsArray[shift + 14], true);
-      if (!abi.unfix(reportedOutcome, "number")) {
-        reportedOutcome = undefined;
-        isIndeterminate = undefined;
-      } else {
-        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
-        reportedOutcome = unfixed.report;
-        isIndeterminate = unfixed.isIndeterminate;
-      }
-      marketsInfo[marketID] = {
-        sortOrder: i,
-        id: marketID,
-        branchId: branch,
-        tradingPeriod: parseInt(marketsArray[shift + 1], 16),
-        tradingFee: fees.trading,
-        makerFee: fees.maker,
-        takerFee: fees.taker,
-        creationTime: parseInt(marketsArray[shift + 3], 16),
-        volume: abi.unfix(marketsArray[shift + 4], "string"),
-        tags: [
-          this.decodeTag(marketsArray[shift + 5]),
-          this.decodeTag(marketsArray[shift + 6]),
-          this.decodeTag(marketsArray[shift + 7])
-        ],
-        endDate: parseInt(marketsArray[shift + 8], 16),
-        eventID: abi.format_int256(marketsArray[shift + 10]),
-        minValue: minValue,
-        maxValue: maxValue,
-        numOutcomes: numOutcomes,
-        type: type,
-        reportedOutcome: reportedOutcome,
-        isIndeterminate: isIndeterminate,
-        description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
-      };
-      totalLen += len;
-    }
-    return marketsInfo;
-  },
-
-  getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
-    var self = this;
-    if (!callback && utils.is_function(offset)) {
-      callback = offset;
-      offset = null;
-      numMarketsToLoad = null;
-      volumeMin = null;
-      volumeMax = null;
-    }
-    if (branch && branch.branch) {
-      offset = branch.offset;
-      numMarketsToLoad = branch.numMarketsToLoad;
-      volumeMin = branch.volumeMin;
-      volumeMax = branch.volumeMax;
-      callback = callback || branch.callback;
-      branch = branch.branch;
-    }
-    // Only use cache if there are nodes available and no offset+numMarkets specified
-    // Can't rely on cache for partial markets fetches since no good way to verify partial data.
-    // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
-    branch = branch || this.constants.DEFAULT_BRANCH_ID;
-    offset = offset || 0;
-    numMarketsToLoad = numMarketsToLoad || 0;
-    volumeMin = volumeMin || 0;
-    volumeMax = volumeMax || 0;
-    if (!this.augurNode.nodes.length) {
-      var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-      tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
-      tx.timeout = 240000;
-      return this.fire(tx, callback, this.parseMarketsInfo, branch);
-    }
-    this.augurNode.getMarketsInfo(branch, function (err, result) {
-      if (err) {
-        return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
-      }
-      callback(JSON.parse(result));
-    });
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],251:[function(require,module,exports){
-/**
- * Ethereum network connection / contract lookup
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var connector = require("ethereumjs-connect");
-var Contracts = require("augur-contracts");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-module.exports = {
-
-  /**
-   * Direct no-frills bindings to Augur's Serpent (contract) API.
-   *  - Parameter positions and types are the same as the underlying
-   *    contract method's parameters.
-   *  - Parameters should be passed in exactly as they would be
-   *    passed to the contract method (e.g., if the contract method
-   *    expects a fixed-point number, you must do that conversion
-   *    yourself and pass the fixed-point number in).
-   */
-  bindContractMethod: function (contract, method) {
-    var self = this;
-    return function (args) {
-      var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
-      tx = clone(self.api.functions[contract][method]);
-      if (!arguments) {
-        if (!tx.send) return self.fire(tx);
-        return self.transact(tx);
-      }
-      params = Array.prototype.slice.call(arguments);
-      numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
-      if (!tx.send) {
-        if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
-          cb = params[0].callback;
-          if (numInputs) {
-            tx.params = new Array(numInputs);
-            for (i = 0; i < numInputs; ++i) {
-              tx.params[i] = params[0][tx.inputs[i]];
-            }
-          }
-        } else {
-          if (numInputs) {
-            tx.params = new Array(numInputs);
-            for (i = 0; i < numInputs; ++i) {
-              tx.params[i] = params[i];
-            }
-          }
-          if (params.length > numInputs && utils.is_function(params[numInputs])) {
-            cb = params[numInputs];
-          }
-        }
-        if (tx.fixed && tx.fixed.length) {
-          numFixed = tx.fixed.length;
-          for (i = 0; i < numFixed; ++i) {
-            tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
-          }
-        }
-        if (!tx.parser) {
-          if (!utils.is_function(cb)) return self.fire(tx);
-          return self.fire(tx, cb);
-        }
-        if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
-        return self.fire(tx, cb, self[tx.parser]);
-      }
-      if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
-        onSent = params[0].onSent;
-        onSuccess = params[0].onSuccess;
-        onFailed = params[0].onFailed;
-        if (numInputs) {
-          tx.params = new Array(numInputs);
-          for (i = 0; i < tx.inputs.length; ++i) {
-            tx.params[i] = params[0][tx.inputs[i]];
-          }
-        }
-      } else {
-        if (numInputs) {
-          tx.params = new Array(numInputs);
-          for (i = 0; i < tx.inputs.length; ++i) {
-            tx.params[i] = params[i];
-          }
-        }
-        if (params.length > numInputs && utils.is_function(params[numInputs])) {
-          onSent = params[numInputs];
-        }
-        if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
-          onSuccess = params[numInputs + 1];
-        }
-        if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
-          onFailed = params[numInputs + 2];
-        }
-      }
-      if (tx.fixed && tx.fixed.length) {
-        numFixed = tx.fixed.length;
-        for (i = 0; i < numFixed; ++i) {
-          tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
-        }
-      }
-      if (!tx.parser) {
-        return self.transact(tx, onSent, onSuccess, onFailed);
-      }
-      return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
-    };
-  },
-
-  bindContractAPI: function (methods) {
-    methods = methods || this.api.functions;
-    for (var contract in methods) {
-      if (!methods.hasOwnProperty(contract)) continue;
-      this[contract] = {};
-      for (var method in methods[contract]) {
-        if (!methods[contract].hasOwnProperty(method)) continue;
-        this[contract][method] = this.bindContractMethod(contract, method);
-        if (!this[method]) this[method] = this[contract][method];
-      }
-    }
-    return methods;
-  },
-
-  sync: function () {
-    if (connector && connector.constructor === Object) {
-      this.network_id = connector.state.networkID;
-      this.from = connector.state.from;
-      this.coinbase = connector.state.coinbase;
-      this.rpc = connector.rpc;
-      if (!connector.state.contracts) {
-        connector.configure({contracts: Contracts, api: Contracts.api});
-        if (!connector.state.networkID) {
-          connector.state.networkID = constants.DEFAULT_NETWORK_ID;
-        }
-        connector.setContracts();
-      }
-      this.contracts = connector.state.contracts;
-      connector.setupFunctionsAPI();
-      connector.setupEventsAPI();
-      if (connector.state.api && connector.state.api.functions) {
-        this.api = connector.state.api;
-      } else {
-        this.api = Contracts.api;
-      }
-      this.tx = this.api.functions;
-      this.bindContractAPI();
-      return true;
-    }
-    return false;
-  },
-
-  useAccount: function (account) {
-    connector.from = account;
-    connector.setFrom(account);
-    this.sync();
-  },
-
-  /**
-   * @param rpcinfo {Object|string=} Two forms accepted:
-   *    1. Object with connection info fields:
-   *       { http: "https://eth3.augur.net",
-   *         ipc: "/path/to/geth.ipc",
-   *         ws: "wss://ws.augur.net" }
-   *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-   * @param cb {function=} Callback function.
-   */
-  connect: function (rpcinfo, cb) {
-    var options = {contracts: Contracts, api: Contracts.api};
-    if (rpcinfo) {
-      switch (rpcinfo.constructor) {
-        case String:
-          options.http = rpcinfo;
-          break;
-        case Function:
-          cb = rpcinfo;
-          options.http = null;
-          break;
-        case Object:
-          options = rpcinfo;
-          options.contracts = Contracts;
-          options.api = Contracts.api;
-          break;
-        default:
-          options.http = null;
-      }
-    }
-    if (!utils.is_function(cb)) {
-      var connection = connector.connect(options);
-      this.sync();
-      if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
-      return connection;
-    }
-    var self = this;
-    connector.connect(options, function (connection) {
-      self.sync();
-      if (options.augurNodes){
-        self.augurNode.bootstrap(options.augurNodes, function () {
-          cb(connection);
-        });
-      }else{
-        cb(connection);
-      }
-    });
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"augur-contracts":58,"clone":120,"ethereumjs-connect":275}],252:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-  createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (description && description.parent) {
-      periodLength = description.periodLength;
-      parent = description.parent;
-      minTradingFee = description.minTradingFee;
-      oracleOnly = description.oracleOnly;
-      onSent = description.onSent;
-      onSuccess = description.onSuccess;
-      onFailed = description.onFailed;
-      description = description.description;
-    }
-    oracleOnly = oracleOnly || 0;
-    description = description.trim();
-    if (!utils.is_function(onSent)) {
-      var response = this.CreateBranch.createSubbranch({
-        description: description,
-        periodLength: periodLength,
-        parent: parent,
-        minTradingFee: abi.fix(minTradingFee, "hex"),
-        oracleOnly: oracleOnly
-      });
-      var block = this.rpc.getBlock(response.blockNumber);
-      response.branchID = utils.sha3([
-        response.from,
-        "0x28c418afbbb5c0000",
-        periodLength,
-        block.timestamp,
-        parent,
-        abi.fix(minTradingFee, "hex"),
-        oracleOnly,
-        description
-      ]);
-      return response;
-    }
-    this.createSubbranch({
-      description: description,
-      periodLength: periodLength,
-      parent: parent,
-      minTradingFee: minTradingFee,
-      oracleOnly: oracleOnly,
-      onSent: onSent,
-      onSuccess: function (response) {
-        self.rpc.getBlock(response.blockNumber, false, function (block) {
-          response.branchID = utils.sha3([
-            response.from,
-            "0x28c418afbbb5c0000",
-            periodLength,
-            block.timestamp,
-            parent,
-            abi.fix(minTradingFee, "hex"),
-            oracleOnly,
-            description
-          ]);
-          onSuccess(response);
-        });
-      },
-      onFailed: onFailed
-    });
-  },
-
-  createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-    if (description && description.parent) {
-      periodLength = description.periodLength;
-      parent = description.parent;
-      minTradingFee = description.minTradingFee;
-      oracleOnly = description.oracleOnly;
-      onSent = description.onSent;
-      onSuccess = description.onSuccess;
-      onFailed = description.onFailed;
-      description = description.description;
-    }
-    oracleOnly = oracleOnly || 0;
-    var tx = clone(this.tx.CreateBranch.createSubbranch);
-    tx.params = [
-      description.trim(),
-      periodLength,
-      parent,
-      abi.fix(minTradingFee, "hex"),
-      oracleOnly
-    ];
-    tx.description = description.trim();
-    return this.transact(tx, onSent, onSuccess, onFailed);
-  }
-};
-
-},{"../utilities":272,"augur-abi":1,"clone":120}],253:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-  createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description;         // string
-      expDate = branchId.expDate;
-      minValue = branchId.minValue;               // integer (1 for binary)
-      maxValue = branchId.maxValue;               // integer (2 for binary)
-      numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-      resolution = branchId.resolution;
-      takerFee = branchId.takerFee;
-      tags = branchId.tags;
-      makerFee = branchId.makerFee;
-      extraInfo = branchId.extraInfo;
-      onSent = branchId.onSent;                   // function
-      onSuccess = branchId.onSuccess;             // function
-      onFailed = branchId.onFailed;               // function
-      branchId = branchId.branchId;               // sha256 hash
-    }
-    var formattedTags = this.formatTags(tags);
-    var fees = this.calculateTradingFees(makerFee, takerFee);
-    expDate = parseInt(expDate);
-    if (description) description = description.trim();
-    if (resolution) resolution = resolution.trim();
-    var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-    tx.params = [
-      branchId,
-      description,
-      expDate,
-      abi.fix(minValue, "hex"),
-      abi.fix(maxValue, "hex"),
-      numOutcomes,
-      resolution || "",
-      abi.fix(fees.tradingFee, "hex"),
-      formattedTags[0],
-      formattedTags[1],
-      formattedTags[2],
-      abi.fix(fees.makerProportionOfFee, "hex"),
-      extraInfo || ""
-    ];
-    if (!utils.is_function(onSent)) {
-      var gasPrice = this.rpc.getGasPrice();
-      tx.gasPrice = gasPrice;
-      tx.value = this.calculateRequiredMarketValue(gasPrice);
-      return this.transact(tx);
-    }
-    this.rpc.getGasPrice(function (gasPrice) {
-      tx.gasPrice = gasPrice;
-      tx.value = self.calculateRequiredMarketValue(gasPrice);
-      self.transact(tx, onSent, onSuccess, onFailed);
-    });
-  },
-
-  createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description;         // string
-      minValue = branchId.minValue;               // integer (1 for binary)
-      maxValue = branchId.maxValue;               // integer (2 for binary)
-      numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-      expDate = branchId.expDate;
-      resolution = branchId.resolution;
-      onSent = branchId.onSent;                   // function
-      onSuccess = branchId.onSuccess;             // function
-      onFailed = branchId.onFailed;               // function
-      branchId = branchId.branchId;               // sha256 hash
-    }
-    var tx = clone(this.tx.CreateMarket.createEvent);
-    if (description) description = description.trim();
-    if (resolution) resolution = resolution.trim();
-    tx.params = [
-      branchId,
-      description,
-      parseInt(expDate),
-      abi.fix(minValue, "hex"),
-      abi.fix(maxValue, "hex"),
-      numOutcomes,
-      resolution || ""
-    ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-  },
-
-  createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description; // string
-      takerFee = branchId.takerFee;
-      events = branchId.events;           // array [sha256, ...]
-      tags = branchId.tags;
-      makerFee = branchId.makerFee;
-      extraInfo = branchId.extraInfo;
-      onSent = branchId.onSent;           // function
-      onSuccess = branchId.onSuccess;     // function
-      onFailed = branchId.onFailed;       // function
-      branchId = branchId.branchId;       // sha256 hash
-    }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    var formattedTags = this.formatTags(tags);
-    var fees = this.calculateTradingFees(makerFee, takerFee);
-    var tx = clone(this.tx.CreateMarket.createMarket);
-    if (description) description = description.trim();
-    tx.params = [
-      branchId,
-      description,
-      abi.fix(fees.tradingFee, "hex"),
-      events,
-      formattedTags[0],
-      formattedTags[1],
-      formattedTags[2],
-      abi.fix(fees.makerProportionOfFee, "hex"),
-      extraInfo || ""
-    ];
-    if (!utils.is_function(onSent)) {
-      var gasPrice = this.rpc.getGasPrice();
-      tx.gasPrice = gasPrice;
-      tx.value = this.calculateRequiredMarketValue(gasPrice);
-      return this.transact(tx);
-    }
-    this.rpc.getGasPrice(function (gasPrice) {
-      tx.gasPrice = gasPrice;
-      tx.value = self.calculateRequiredMarketValue(gasPrice);
-      self.transact(tx, onSent, onSuccess, onFailed);
-    });
-  },
-
-  updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      market = branchId.market;         // string
-      takerFee = branchId.takerFee;
-      makerFee = branchId.makerFee;
-      onSent = branchId.onSent;         // function
-      onSuccess = branchId.onSuccess;   // function
-      onFailed = branchId.onFailed;     // function
-      branchId = branchId.branchId;     // sha256 hash
-    }
-    var tx = clone(this.tx.CreateMarket.updateTradingFee);
-    var fees = this.calculateTradingFees(makerFee, takerFee);
-    tx.params = [
-      branchId,
-      market,
-      abi.fix(fees.tradingFee, "hex"),
-      abi.fix(fees.makerProportionOfFee, "hex"),
-    ];
-    if (!utils.is_function(onSent)) return this.transact(tx);
-    self.transact(tx, onSent, onSuccess, onFailed);
-  }
-};
-
-},{"../utilities":272,"augur-abi":1,"bignumber.js":82,"clone":120}],254:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var abi = require("augur-abi");
-
-module.exports = {
-
-  parseMarket: function (market) {
-    return abi.format_int256(market);
-  },
-
-  parseMarkets: function (markets) {
-    if (!markets) return markets;
-    var numMarkets = markets.length;
-    var parsedMarkets = new Array(numMarkets);
-    for (var i = 0; i < numMarkets; ++i) {
-      parsedMarkets[i] = this.parseMarket(markets[i]);
-    }
-    return parsedMarkets;
-  },
-
-  parseEventInfo: function (info) {
-    // 0: self.Events[event].branch
-    // 1: self.Events[event].expirationDate
-    // 2: self.Events[event].outcome
-    // 3: self.Events[event].minValue
-    // 4: self.Events[event].maxValue
-    // 5: self.Events[event].numOutcomes
-    // 6: self.Events[event].bond
-    if (info && info.length) {
-      info[0] = abi.hex(info[0]);
-      info[1] = abi.bignum(info[1]).toFixed();
-      info[2] = abi.unfix(info[2], "string");
-      info[3] = abi.unfix(abi.hex(info[3], true), "string");
-      info[4] = abi.unfix(abi.hex(info[4], true), "string");
-      info[5] = parseInt(info[5]);
-      info[6] = abi.unfix(info[6], "string");
-    }
-    return info;
-  }
-};
-
-},{"augur-abi":1}],255:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var async = require("async");
-var abi = require("augur-abi");
-var selectOrder = require("./selectOrder").selectOrder;
-var constants = require("../constants");
-
-module.exports = {
-
-  // if buying numShares must be 0, if selling totalEthWithFee must be 0
-  executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
-    var self = this;
-    var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
-    var bnNumShares = abi.bignum(numShares) || constants.ZERO;
-    var res = {
-      remainingEth: bnTotalEth,
-      remainingShares: bnNumShares,
-      filledShares: constants.ZERO,
-      filledEth: constants.ZERO,
-      tradingFees: constants.ZERO,
-      gasFees: constants.ZERO
-    };
-    var matchingTradeIDs;
-    var bnSharesPurchased = bnNumShares;
-    var bnCashBalance = bnTotalEth;
-    async.until(function () {
-      matchingTradeIDs = getTradeIDs();
-      console.log("matchingTradeIDs:", matchingTradeIDs);
-      console.log("remainingEth:", res.remainingEth.toFixed());
-      console.log("remainingShares:", res.remainingShares.toFixed());
-      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
-      console.log("balance:", bnCashBalance.toFixed());
-      return !matchingTradeIDs || !matchingTradeIDs.length ||
-        (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
-        (bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
-        (bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero));
-    }, function (nextTrade) {
-      var tradeIDs = matchingTradeIDs;
-      tradeIDs = tradeIDs.slice(0, 3);
-      self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-        bnSharesPurchased = abi.bignum(sharesPurchased);
-        self.getCashBalance(address, function (cashBalance) {
-          bnCashBalance = abi.bignum(cashBalance);
-          var isRemainder;
-          var maxAmount;
-          if (res.remainingShares.gt(bnSharesPurchased)) {
-            maxAmount = bnSharesPurchased;
-            isRemainder = true;
-          } else {
-            maxAmount = res.remainingShares;
-            isRemainder = false;
-          }
-          var maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
-          self.trade({
-            max_value: maxValue.toFixed(),
-            max_amount: maxAmount.toFixed(),
-            trade_ids: tradeIDs,
-            tradeGroupID: tradeGroupID,
-            sender: address,
-            onTradeHash: function (tradeHash) {
-              tradeCommitmentCallback({
-                tradeHash: abi.format_int256(tradeHash),
-                orders: tradeIDs.map(function (tradeID) {
-                  return selectOrder(tradeID, orderBooks);
-                }),
-                maxValue: maxValue.toFixed(),
-                maxAmount: maxAmount.toFixed(),
-                remainingEth: res.remainingEth.toFixed(),
-                remainingShares: res.remainingShares.toFixed(),
-                filledEth: res.filledEth.toFixed(),
-                filledShares: res.filledShares.toFixed(),
-                tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
-                gasFees: res.gasFees.toFixed()
-              });
-            },
-            onCommitSent: function (data) { console.log("commit sent:", data); },
-            onCommitSuccess: function (data) {
-              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-              tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
-            },
-            onCommitFailed: nextTrade,
-            onNextBlock: function (data) { console.log("trade-onNextBlock", data); },
-            onTradeSent: function (data) { console.log("trade sent:", data); },
-            onTradeSuccess: function (data) {
-              console.log("trade success:", data);
-              res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
-              res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
-              if (isRemainder) {
-                res.remainingShares = res.remainingShares.minus(maxAmount).plus(abi.bignum(data.unmatchedShares));
-              } else {
-                res.remainingShares = abi.bignum(data.unmatchedShares);
-              }
-              res.remainingEth = abi.bignum(data.unmatchedCash);
-              res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
-              res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-              tradeCommitmentCallback({
-                filledShares: res.filledShares.toFixed(),
-                filledEth: res.filledEth.toFixed(),
-                remainingShares: res.remainingShares.toFixed(),
-                remainingEth: res.remainingEth.toFixed(),
-                tradingFees: res.tradingFees.toFixed(),
-                gasFees: res.gasFees.toFixed()
-              });
-              self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-                bnSharesPurchased = abi.bignum(sharesPurchased);
-                self.getCashBalance(address, function (cashBalance) {
-                  bnCashBalance = abi.bignum(cashBalance);
-                  nextTrade();
-                });
-              });
-            },
-            onTradeFailed: nextTrade
-          });
-        });
-      });
-    }, function (err) {
-      if (err) return cb(err);
-      console.log("trade complete:", JSON.stringify(res, null, 2));
-      cb(null, res);
-    });
-  },
-
-  executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    var self = this;
-    var res = {
-      remainingShares: abi.bignum(numShares) || constants.ZERO,
-      filledShares: constants.ZERO,
-      filledEth: constants.ZERO,
-      tradingFees: constants.ZERO,
-      gasFees: constants.ZERO
-    };
-    var matchingIDs = getTradeIDs();
-    console.log("matching trade IDs:", matchingIDs);
-    if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
-    async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
-      var maxAmount = res.remainingShares.toFixed();
-      self.short_sell({
-        max_amount: maxAmount,
-        buyer_trade_id: matchingID,
-        sender: address,
-        tradeGroupID: tradeGroupID,
-        onTradeHash: function (tradeHash) {
-          tradeCommitmentCallback({
-            tradeHash: abi.format_int256(tradeHash),
-            orders: [selectOrder(matchingID, orderBooks)],
-            maxValue: "0",
-            maxAmount: maxAmount,
-            remainingEth: "0",
-            remainingShares: res.remainingShares.toFixed(),
-            filledEth: res.filledEth.toFixed(),
-            filledShares: res.filledShares.toFixed(),
-            tradingFees: res.tradingFees.gt(constants.ZERO) ? res.tradingFees.toFixed() : tradingFees,
-            gasFees: res.gasFees.toFixed()
-          });
-        },
-        onCommitSent: function (data) { console.log("short sell commit sent:", data); },
-        onCommitSuccess: function (data) {
-          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-          tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
-        },
-        onCommitFailed: nextMatchingID,
-        onNextBlock: function (data) { console.log("short_sell onNextBlock", data); },
-        onTradeSent: function (data) { console.debug("short sell sent", data); },
-        onTradeSuccess: function (data) {
-          if (data.unmatchedShares) {
-            res.remainingShares = abi.bignum(data.unmatchedShares);
-          } else {
-            res.remainingShares = constants.ZERO;
-          }
-          if (data.matchedShares) {
-            res.filledShares = res.filledShares.plus(abi.bignum(data.matchedShares));
-          }
-          if (data.cashFromTrade) {
-            res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
-          }
-          res.tradingFees = res.tradingFees.plus(abi.bignum(data.tradingFees));
-          res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
-          tradeCommitmentCallback({
-            filledShares: res.filledShares.toFixed(),
-            filledEth: res.filledEth.toFixed(),
-            remainingShares: res.remainingShares.toFixed(),
-            tradingFees: res.tradingFees.toFixed(),
-            gasFees: res.gasFees.toFixed()
-          });
-          if (res.remainingShares.gt(constants.PRECISION.zero)) return nextMatchingID();
-          nextMatchingID({ isComplete: true });
-        },
-        onTradeFailed: nextMatchingID
-      });
-    }, function (err) {
-      if (err && !err.isComplete) return cb(err);
-      console.log("short_sell success:", JSON.stringify(res, null, 2));
-      cb(null, res);
-    });
-  }
-
-};
-
-},{"../constants":242,"./selectOrder":265,"async":79,"augur-abi":1,"bignumber.js":82}],256:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-var ONE = abi.bignum("1");
-
-module.exports = {
-
-  parseCompleteSetsLogs: function (logs, mergeInto) {
-    var marketID, logData, numOutcomes, logType, parsed;
-    parsed = mergeInto || {};
-    for (var i = 0, n = logs.length; i < n; ++i) {
-      if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-        marketID = logs[i].topics[2];
-        logType = this.filters.format_trade_type(logs[i].topics[3]);
-        logData = this.rpc.unmarshal(logs[i].data);
-        numOutcomes = parseInt(logData[1], 16);
-        if (mergeInto) {
-          if (!parsed[marketID]) parsed[marketID] = {};
-          for (var j = 1; j <= numOutcomes; ++j) {
-            if (!parsed[marketID][j]) parsed[marketID][j] = [];
-            parsed[marketID][j].push({
-              type: logType,
-              isCompleteSet: true,
-              amount: abi.unfix(logData[0], "string"),
-              price: ONE.dividedBy(abi.bignum(numOutcomes)).toFixed(),
-              blockNumber: parseInt(logs[i].blockNumber, 16)
-            });
-          }
-        } else {
-          if (!parsed[marketID]) parsed[marketID] = [];
-          parsed[marketID].push({
-            type: logType,
-            amount: abi.unfix(logData[0], "string"),
-            numOutcomes: numOutcomes,
-            blockNumber: parseInt(logs[i].blockNumber, 16)
-          });
-        }
-      }
-    }
-    return parsed;
-  },
-
-  /***********
-   * Getters *
-   ***********/
-
-  getFirstLogBlockNumber: function (logs) {
-    return (!logs || !logs.length) ? 1 : logs[0].blockNumber;
-  },
-
-  getMarketCreationBlock: function (marketID, callback) {
-    var self = this;
-    if (!utils.is_function(callback)) {
-      return this.getFirstLogBlockNumber(this.getLogs("marketCreated", {marketID: marketID}));
-    }
-    this.getLogs("marketCreated", {marketID: marketID}, function (err, logs) {
-      // TODO change on next contract reupload to callback(err)
-      if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
-      callback(null, self.getFirstLogBlockNumber(logs));
-    });
-  },
-
-  getMarketPriceHistory: function (market, options, callback) {
-    var self = this;
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    var params = clone(options || {});
-    params.market = market;
-    if (!params.fromBlock) {
-      if (!utils.is_function(callback)) {
-        params.fromBlock = this.getMarketCreationBlock(market);
-        return this.getMarketPriceHistory(market, params);
-      }
-      this.getMarketCreationBlock(market, function (err, fromBlock) {
-        params.fromBlock = fromBlock;
-        self.getMarketPriceHistory(market, params, callback);
-      });
-    } else {
-      var aux = {index: "outcome", mergedLogs: {}};
-      if (!utils.is_function(callback)) {
-        this.getLogs("log_fill_tx", params, aux);
-        this.getLogs("log_short_fill_tx", params, aux);
-        return aux.mergedLogs;
-      }
-      this.getLogs("log_fill_tx", params, aux, function (err) {
-        if (err) return callback(err);
-        self.getLogs("log_short_fill_tx", params, aux, function (err) {
-          if (err) return callback(err);
-          callback(null, aux.mergedLogs);
-        });
-      });
-    }
-  },
-
-  sortByBlockNumber: function (a, b) {
-    return a.blockNumber - b.blockNumber;
-  },
-
-  buildTopicsList: function (event, params) {
-    var topics = [event.signature];
-    var inputs = event.inputs;
-    for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
-      if (inputs[i].indexed) {
-        if (params[inputs[i].name]) {
-          topics.push(abi.format_int256(params[inputs[i].name]));
-        } else {
-          topics.push(null);
-        }
-      }
-    }
-    return topics;
-  },
-
-  parametrizeFilter: function (event, params) {
-    return {
-      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
-      toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
-      address: this.contracts[event.contract],
-      topics: this.buildTopicsList(event, params),
-      timeout: constants.GET_LOGS_TIMEOUT
-    };
-  },
-
-  // warning: mutates processedLogs
-  insertIndexedLog: function (processedLogs, parsed, index, log) {
-    if (index.constructor === Array) {
-      if (index.length === 1) {
-        if (!processedLogs[parsed[index[0]]]) {
-          processedLogs[parsed[index[0]]] = [];
-        }
-        processedLogs[parsed[index[0]]].push(parsed);
-      } else if (index.length === 2) {
-        if (!processedLogs[parsed[index[0]]]) {
-          processedLogs[parsed[index[0]]] = {};
-        }
-        if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
-          processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
-        }
-        processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
-      }
-    } else {
-      if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];
-      processedLogs[parsed[index]].push(parsed);
-    }
-  },
-
-  // warning: mutates processedLogs, if passed
-  processLogs: function (label, index, logs, extraField, processedLogs) {
-    var parsed;
-    if (!processedLogs) processedLogs = (index) ? {} : [];
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (!logs[i].removed) {
-        parsed = this.filters.parse_event_message(label, logs[i]);
-        if (extraField && extraField.name) {
-          parsed[extraField.name] = extraField.value;
-        }
-        if (index) {
-          this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
-        } else {
-          processedLogs.push(parsed);
-        }
-      }
-    }
-    return processedLogs;
-  },
-
-  getFilteredLogs: function (label, filterParams, callback) {
-    if (!callback && utils.is_function(filterParams)) {
-      callback = filterParams;
-      filterParams = null;
-    }
-    var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
-    if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-    this.rpc.getLogs(filter, function (logs) {
-      if (logs && logs.error) return callback(logs, null);
-      if (!logs || !logs.length) return callback(null, []);
-      callback(null, logs);
-    });
-  },
-
-  // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
-  getLogs: function (label, filterParams, aux, callback) {
-    var self = this;
-    if (!utils.is_function(callback) && utils.is_function(aux)) {
-      callback = aux;
-      aux = null;
-    }
-    aux = aux || {};
-    if (!utils.is_function(callback)) {
-      return this.processLogs(
-        label,
-        aux.index,
-        this.getFilteredLogs(label, filterParams || {}),
-        aux.extraField,
-        aux.mergedLogs
-      );
-    }
-    this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
-      if (err) return callback(err);
-      callback(null, self.processLogs(
-        label,
-        aux.index,
-        logs,
-        aux.extraField,
-        aux.mergedLogs
-      ));
-    });
-  },
-
-  getAccountTrades: function (account, filterParams, callback) {
-    var self = this;
-    if (!callback && utils.is_function(filterParams)) {
-      callback = filterParams;
-      filterParams = null;
-    }
-    filterParams = filterParams || {};
-    var takerTradesFilterParams = clone(filterParams);
-    takerTradesFilterParams.sender = account;
-    var aux = {
-      index: ["market", "outcome"],
-      mergedLogs: {},
-      extraField: {name: "maker", value: false}
-    };
-    this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
-      if (err) return callback(err);
-      var makerTradesFilterParams = clone(filterParams);
-      makerTradesFilterParams.owner = account;
-      aux.extraField.value = true;
-      self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
-        if (err) return callback(err);
-        var takerShortSellsFilterParams = clone(filterParams);
-        takerShortSellsFilterParams.sender = account;
-        aux.extraField.value = false;
-        self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
-          if (err) return callback(err);
-          var makerShortSellsFilterParams = clone(filterParams);
-          makerShortSellsFilterParams.owner = account;
-          aux.extraField.value = true;
-          self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
-            if (err) return callback(err);
-            if (filterParams.noCompleteSets) {
-              callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-            } else {
-              var completeSetsFilterParams = clone(filterParams);
-              completeSetsFilterParams.shortAsk = false;
-              completeSetsFilterParams.mergeInto = aux.mergedLogs;
-              self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
-                if (err) {
-                  console.error("getAccountTrades:", err);
-                  return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-                }
-                callback(null, self.sortTradesByBlockNumber(merged));
-              });
-            }
-          });
-        });
-      });
-    });
-  },
-
-  sortTradesByBlockNumber: function (trades) {
-    var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
-    var marketIDs = Object.keys(trades);
-    var numMarkets = marketIDs.length;
-    for (var i = 0; i < numMarkets; ++i) {
-      marketTrades = trades[marketIDs[i]];
-      outcomeIDs = Object.keys(marketTrades);
-      numOutcomes = outcomeIDs.length;
-      for (var j = 0; j < numOutcomes; ++j) {
-        outcomeTrades = marketTrades[outcomeIDs[j]];
-        outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
-      }
-    }
-    return trades;
-  },
-
-  /********************************
-   * Raw log getters (deprecated) *
-   ********************************/
-
-  getShortSellLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (account !== undefined && account !== null) {
-      var topics = [
-        this.api.events.log_short_fill_tx.signature,
-        options.market ? abi.format_int256(options.market) : null,
-        null,
-        null
-      ];
-      topics[options.maker ? 3 : 2] = abi.format_int256(account);
-      var filter = {
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.Trade,
-        topics: topics,
-        timeout: constants.GET_LOGS_TIMEOUT
-      };
-      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-      this.rpc.getLogs(filter, function (logs) {
-        if (logs && logs.error) return callback(logs, null);
-        if (!logs || !logs.length) return callback(null, []);
-        callback(null, logs);
-      });
-    }
-  },
-
-  getTakerShortSellLogs: function (account, filterParams, callback) {
-    if (!callback && utils.is_function(filterParams)) {
-      callback = filterParams;
-      filterParams = null;
-    }
-    var aux = {
-      index: ["market", "outcome"],
-      extraField: {name: "maker", value: false}
-    };
-    var params = clone(filterParams || {});
-    params.maker = false;
-    return this.getShortSellLogs(account, params, callback);
-  },
-
-  getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    var opt = options ? clone(options) : {};
-    opt.shortAsk = true;
-    opt.type = "buy";
-    return this.getCompleteSetsLogs(account, opt, callback);
-  },
-
-  getParsedCompleteSetsLogs: function (account, options, callback) {
-    var self = this;
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    this.getCompleteSetsLogs(account, options, function (err, logs) {
-      if (err) return callback(err);
-      callback(null, self.parseCompleteSetsLogs(logs, options.mergeInto));
-    });
-  },
-
-  getCompleteSetsLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (account !== undefined && account !== null) {
-      var typeCode = constants.LOG_TYPE_CODES[options.type] || null;
-      var market = options.market ? abi.format_int256(options.market) : null;
-      var filter = {
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: (options.shortAsk) ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
-        topics: [
-          this.api.events.completeSets_logReturn.signature,
-          abi.format_int256(account),
-          market,
-          typeCode
-        ],
-        timeout: constants.GET_LOGS_TIMEOUT
-      };
-      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-      this.rpc.getLogs(filter, function (logs) {
-        if (logs && logs.error) return callback(logs, null);
-        if (!logs || !logs.length) return callback(null, []);
-        callback(null, logs);
-      });
-    }
-  },
-
-  getBuyCompleteSetsLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    var opt = options ? clone(options) : {};
-    opt.shortAsk = false;
-    opt.type = "buy";
-    return this.getCompleteSetsLogs(account, opt, callback);
-  },
-
-  getSellCompleteSetsLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    var opt = options ? clone(options) : {};
-    opt.shortAsk = false;
-    opt.type = "sell";
-    return this.getCompleteSetsLogs(account, opt, callback);
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],257:[function(require,module,exports){
-"use strict";
-
-var parametrizeOrder = require("./parametrizeOrder").parametrizeOrder;
-
-module.exports = {
-
-  placeBid: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("bid sent:", res); };
-    params.onSuccess = function (res) { console.log("bid success:", res); };
-    params.onFailed = function (err) { console.error("bid failed:", err); };
-    return this.buy(params);
-  },
-
-  placeAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("ask sent:", res); };
-    params.onSuccess = function (res) { console.log("ask success:", res); };
-    params.onFailed = function (err) { console.error("ask failed:", err); };
-    return this.sell(params);
-  },
-
-  placeShortAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    var params = parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) { console.log("short ask sent:", res); };
-    params.onSuccess = function (res) { console.log("short ask success:", res); };
-    params.onFailed = function (err) { console.error("short ask failed:", err); };
-    return this.shortAsk(params);
-  }
-
-};
-
-},{"./parametrizeOrder":260}],258:[function(require,module,exports){
-(function (Buffer){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var keys = require("keythereum");
-var contracts = require("augur-contracts");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  // rules: http://docs.augur.net/#reporting-outcomes
-  fixReport: function (report, minValue, maxValue, type, isIndeterminate) {
-    var fixedReport, rescaledReport, bnMinValue;
-    if (isIndeterminate) {
-      if (type === "binary") {
-        fixedReport = abi.hex(constants.BINARY_INDETERMINATE);
-      } else {
-        fixedReport = abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE);
-      }
-    } else {
-      if (type === "binary") {
-        fixedReport = abi.fix(report, "hex");
-      } else {
-        // y = (x - min)/(max - min)
-        bnMinValue = abi.bignum(minValue);
-        rescaledReport = abi.bignum(report).minus(bnMinValue).dividedBy(
-          abi.bignum(maxValue).minus(bnMinValue)
-        );
-        if (rescaledReport.eq(constants.ZERO)) {
-          fixedReport = "0x1";
-        } else {
-          fixedReport = abi.fix(rescaledReport, "hex");
-        }
-      }
-
-      // if report is equal to fix(0.5) but is not indeterminate,
-      // then set report to fix(0.5) + 1
-      if (abi.bignum(fixedReport).eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-        fixedReport = abi.hex(constants.INDETERMINATE_PLUS_ONE);
-      }
-    }
-    return fixedReport;
-  },
-
-  unfixReport: function (fixedReport, minValue, maxValue, type) {
-    var report, bnMinValue, bnFixedReport;
-    bnFixedReport = abi.bignum(fixedReport);
-    if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
-      return {report: "1.5", isIndeterminate: true};
-    } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-      return {report: "0.5", isIndeterminate: true};
-    } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
-      return {report: "0.5", isIndeterminate: false};
-    }
-    if (type === "binary") {
-      report = abi.unfix(fixedReport);
-    } else {
-      if (bnFixedReport.eq(abi.bignum(1))) {
-        fixedReport = "0";
-      }
-      // x = (max - min)*y + min
-      bnMinValue = abi.bignum(minValue);
-      report = abi.unfix(fixedReport).times(
-        abi.bignum(maxValue).minus(bnMinValue)
-      ).plus(bnMinValue);
-    }
-    if (type !== "scalar") {
-      report = report.round();
-    }
-    return {report: report.toFixed(), isIndeterminate: false};
-  },
-
-  // report in fixed-point
-  makeHash: function (salt, report, event, from) {
-    return utils.sha3([from || this.from, abi.hex(salt), report, event]);
-  },
-
-  // report in fixed-point
-  encryptReport: function (report, key, salt) {
-    if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
-    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-    return abi.prefix_hex(
-      new Buffer(
-        keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
-        "base64"
-      ).toString("hex")
-    );
-  },
-
-  // returns plaintext fixed-point report
-  decryptReport: function (encryptedReport, key, salt) {
-    if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
-    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-    return abi.prefix_hex(
-      keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
-    );
-  },
-
-  parseAndDecryptReport: function (arr, secret) {
-    if (!arr || arr.constructor !== Array || arr.length < 2) return null;
-    var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
-    return {
-      salt: salt,
-      report: this.decryptReport(arr[0], secret.derivedKey, salt),
-      ethics: (arr.length > 2) ? arr[2] : false
-    };
-  },
-
-  getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
-    var self = this;
-    if (branch.constructor === Object) {
-      expDateIndex = branch.expDateIndex;
-      reporter = branch.reporter;
-      event = branch.event;
-      secret = branch.secret;
-      callback = callback || branch.callback;
-      branch = branch.branch;
-    }
-    var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
-    tx.params = [branch, expDateIndex, reporter, event];
-    return this.fire(tx, callback, this.parseAndDecryptReport, secret);
-  },
-
-  submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (event.constructor === Object) {
-      reportHash = event.reportHash;
-      encryptedReport = event.encryptedReport;
-      encryptedSalt = event.encryptedSalt;
-      ethics = event.ethics;
-      branch = event.branch;
-      period = event.period;
-      periodLength = event.periodLength;
-      onSent = event.onSent;
-      onSuccess = event.onSuccess;
-      onFailed = event.onFailed;
-      event = event.event;
-    }
-    if (this.getCurrentPeriodProgress(periodLength) >= 50) {
-      return onFailed({"-2": "not in first half of period (commit phase)"});
-    }
-    var tx = clone(this.tx.MakeReports.submitReportHash);
-    tx.params = [
-      event,
-      reportHash,
-      encryptedReport || 0,
-      encryptedSalt || 0,
-      abi.fix(ethics, "hex")
-    ];
-    if (this.options.debug.reporting) {
-      console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
-    }
-    return this.transact(tx, onSent, function (res) {
-      if (self.options.debug.reporting) {
-        console.log('submitReportHash response:', res.callReturn);
-      }
-      res.callReturn = abi.bignum(res.callReturn, "string", true);
-      if (res.callReturn === "0") {
-        return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
-          if (err) return onFailed(err);
-          self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-            if (self.options.debug.reporting) {
-              console.log('rep redistribution done:', repRedistributionDone);
-            }
-            if (repRedistributionDone === "0") {
-              return onFailed("rep redistribution not done");
-            }
-            self.submitReportHash({
-              event: event,
-              reportHash: reportHash,
-              encryptedReport: encryptedReport,
-              encryptedSalt: encryptedSalt,
-              ethics: ethics,
-              branch: branch,
-              period: period,
-              periodLength: periodLength,
-              onSent: onSent,
-              onSuccess: onSuccess,
-              onFailed: onFailed
-            });
-          });
-        });
-      } else if (res.callReturn !== "-2") {
-        return onSuccess(res);
-      }
-      self.ExpiringEvents.getReportHash({
-        branch: branch,
-        expDateIndex: period,
-        reporter: res.from,
-        event: event,
-        callback: function (storedReportHash) {
-          if (parseInt(storedReportHash, 16)) {
-            res.callReturn = "1";
-            return onSuccess(res);
-          }
-          onFailed({"-2": "not in first half of period (commit phase)"});
-        }
-      });
-    }, onFailed);
-  },
-
-  submitReport: function (event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
-    if (event.constructor === Object) {
-      salt = event.salt;
-      report = event.report;
-      ethics = event.ethics;
-      minValue = event.minValue;
-      maxValue = event.maxValue;
-      type = event.type;
-      isIndeterminate = event.isIndeterminate;
-      onSent = event.onSent;
-      onSuccess = event.onSuccess;
-      onFailed = event.onFailed;
-      event = event.event;
-    }
-    if (this.options.debug.reporting) {
-      console.log('MakeReports.submitReport params:',
-        event,
-        abi.hex(salt),
-        this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-        ethics);
-    }
-    return this.MakeReports.submitReport(
-      event,
-      abi.hex(salt),
-      this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-      ethics,
-      onSent,
-      onSuccess,
-      onFailed
-    );
-  }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"../constants":242,"../utilities":272,"augur-abi":1,"augur-contracts":58,"buffer":117,"clone":120,"keythereum":285}],259:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var utils = require("../utilities");
-
-module.exports = {
-
-  getWinningOutcomes: function (market, callback) {
-    // market: hash id
-    var self = this;
-    var tx = clone(this.tx.Markets.getWinningOutcomes);
-    tx.params = market;
-    if (!utils.is_function(callback)) {
-      var winningOutcomes = this.fire(tx);
-      if (!winningOutcomes) return null;
-      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-        return winningOutcomes;
-      }
-      var numOutcomes = this.getMarketNumOutcomes(market);
-      return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
-    }
-    this.fire(tx, function (winningOutcomes) {
-      if (!winningOutcomes) return callback(null);
-      if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-        return callback(winningOutcomes);
-      }
-      self.getMarketNumOutcomes(market, function (numOutcomes) {
-        if (numOutcomes && numOutcomes.error) {
-          return callback(numOutcomes);
-        }
-        callback(winningOutcomes.slice(0, numOutcomes));
-      });
-    });
-  }
-};
-
-},{"../utilities":272,"clone":120}],260:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-
-  parametrizeOrder: function (market, outcomeID, numShares, limitPrice, tradeGroupID) {
-    return {
-      amount: numShares,
-      price: limitPrice,
-      market: market.id,
-      outcome: outcomeID,
-      tradeGroupID: tradeGroupID,
-      scalarMinMax: this.getScalarMinimum(market.type, market.minValue)
-    };
-  },
-
-  getScalarMinimum: function (type, minValue) {
-    var scalarMinimum = {};
-    if (type === "scalar") scalarMinimum.minValue = minValue;
-    return scalarMinimum;
-  }
-
-};
-
-},{}],261:[function(require,module,exports){
-/**
- * Cash payouts from closed markets
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var async = require("async");
-var constants = require("../constants");
-
-module.exports = {
-
-  closeMarket: function (branch, market, sender, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object) {
-      market = branch.market;
-      sender = branch.sender;
-      onSent = branch.onSent;
-      onSuccess = branch.onSuccess;
-      onFailed = branch.onFailed;
-      branch = branch.branch;
-    }
-    var tx = clone(this.tx.CloseMarket.closeMarket);
-    tx.params = [branch, market, sender];
-    this.transact(tx, onSent, onSuccess, onFailed);
-  },
-
-  // markets: array of market IDs for which to claim proceeds
-  claimMarketsProceeds: function (branch, markets, callback) {
-    if (this.options.debug.reporting) {
-      console.log("claimMarketsProceeds:", branch, markets);
-    }
-    var self = this;
-    var claimedMarkets = [];
-    async.eachSeries(markets, function (market, nextMarket) {
-      if (self.options.debug.reporting) {
-        console.log("claimMarketsProceeds", market);
-      }
-      self.getWinningOutcomes(market.id, function (winningOutcomes) {
-        // market not yet resolved
-        if (self.options.debug.reporting) {
-          console.log("got winning outcomes:", winningOutcomes);
-        }
-        if (!winningOutcomes || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
-          if (self.options.debug.reporting) {
-            console.log("market not yet resolved", market.id);
-          }
-          return nextMarket();
-        }
-        self.claimProceeds({
-          branch: branch,
-          market: market.id,
-          onSent: function (res) {
-            if (self.options.debug.reporting) {
-              console.log("claim proceeds sent:", market.id, res);
-            }
-          },
-          onSuccess: function (res) {
-            if (self.options.debug.reporting) {
-              console.log("claim proceeds success:", market.id, res);
-            }
-            claimedMarkets.push(market.id);
-            nextMarket();
-          },
-          onFailed: nextMarket
-        });
-      });
-    }, function (err) {
-      if (err) return callback(err);
-      callback(null, claimedMarkets);
-    });
-  },
-
-  claimProceeds: function (branch, market, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (branch.constructor === Object) {
-      market = branch.market;
-      onSent = branch.onSent;
-      onSuccess = branch.onSuccess;
-      onFailed = branch.onFailed;
-      branch = branch.branch;
-    }
-    var tx = clone(self.tx.CloseMarket.claimProceeds);
-    tx.params = [branch, market];
-    if (self.options.debug.reporting) {
-      console.log("claimProceeds tx:", JSON.stringify(tx, null, 2));
-    }
-    self.transact(tx, onSent, function (res) {
-      if (self.options.debug.reporting) {
-        console.log("claimProceeds success:", market, res);
-      }
-      if (res.callReturn !== "1") return onFailed(res.callReturn);
-      self.rpc.receipt(res.hash, function (receipt) {
-        if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-          var logs = receipt.logs;
-          var sig = self.api.events.payout.signature;
-          for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-            if (logs[i].topics[0] === sig) {
-              res.callReturn = self.filters.parse_event_message("payout", logs[i]);
-              break;
-            }
-          }
-        }
-        onSuccess(res);
-      });
-    }, onFailed);
-  }
-};
-
-},{"../constants":242,"async":79,"augur-abi":1,"clone":120}],262:[function(require,module,exports){
-/**
- * Tools to adjust positions in Augur markets for display.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-var ONE = new BigNumber("1", 10);
-
-module.exports = {
-
-  /**
-   * @param {string} typeCode Type code (buy=1, sell=2); integer 32-byte hex.
-   * @param {BigNumber} position Starting number of shares.
-   * @param {string} numShares Shares to add or subtract; fixedpoint 32-byte hex.
-   * @return {BigNumber} Modified number of shares.
-   */
-  modifyPosition: function (typeCode, position, numShares) {
-    var unfixedNumShares = abi.unfix(numShares);
-    var newPosition;
-    switch (parseInt(typeCode, 16)) {
-      case 1: // buy
-        newPosition = position.plus(unfixedNumShares);
-        break;
-      default: // sell
-        newPosition = position.minus(unfixedNumShares);
-        break;
-    }
-    return newPosition;
-  },
-
-  /**
-   * Calculates the total number of complete sets bought/sold.
-   *
-   * @param {Array} logs Event logs from eth_getLogs request.
-   * @return {Object} Total number of complete sets keyed by market ID.
-   */
-  calculateCompleteSetsShareTotals: function (logs) {
-    if (!logs) return {};
-    var marketID, logData, shareTotals;
-    shareTotals = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-        marketID = logs[i].topics[2];
-        if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
-        logData = this.rpc.unmarshal(logs[i].data);
-        if (logData && logData.length) {
-          shareTotals[marketID] = this.modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
-        }
-      }
-    }
-    return shareTotals;
-  },
-
-  /**
-   * Calculates the effective price of each complete set (1/numOutcomes).
-   *
-   * @param {Array} logs Event logs from eth_getLogs request.
-   * @return {Object} Effective price keyed by market ID.
-   */
-  calculateCompleteSetsEffectivePrice: function (logs) {
-    if (!logs) return {};
-    var marketID, logData, effectivePrice;
-    effectivePrice = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-        marketID = logs[i].topics[2];
-        if (!effectivePrice[marketID]) {
-          logData = this.rpc.unmarshal(logs[i].data);
-          if (logData && logData.length) {
-            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
-          }
-        }
-      }
-    }
-    return effectivePrice;
-  },
-
-  /**
-   * Calculates the effective price of each complete set (1/numOutcomes).
-   *
-   * @param {Array} logs Event logs from eth_getLogs request.
-   * @return {Object} Effective price keyed by market ID.
-   */
-  calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
-    if (!logs) return {};
-    var marketID, logData, effectivePrice, outcomeID;
-    effectivePrice = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-        marketID = logs[i].topics[1];
-        if (!effectivePrice[marketID]) {
-          logData = this.rpc.unmarshal(logs[i].data);
-          if (logData && logData.length && logData.length === 8) {
-            effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
-          }
-        }
-      }
-    }
-    return effectivePrice;
-  },
-
-  /**
-   * Calculates the largest number of shares short sold in any outcome per market.
-   *
-   * @param {Array} logs Event logs from eth_getLogs request.
-   * @return Object Largest total number of shares sold keyed by market ID.
-   */
-  calculateShortSellShareTotals: function (logs) {
-    if (!logs) return {};
-    var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
-    shareTotals = {};
-    sharesOutcomes = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-      if (logs[i] && logs[i].data && logs[i].data !== "0x") {
-        marketID = logs[i].topics[1];
-        logData = this.rpc.unmarshal(logs[i].data);
-        if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
-        outcomeID = parseInt(logData[3], 16).toString();
-        if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
-        sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
-        shareTotals[marketID] = BigNumber.max(sharesOutcomes[marketID][outcomeID], shareTotals[marketID] || constants.ZERO);
-      }
-    }
-    return shareTotals;
-  },
-
-  /**
-   * @param {Object} position Starting position in a market {outcomeID: String{decimal}}.
-   * @param {BigNumber} adjustment Amount to decrease all positions by.
-   * @return {Object} Decreased market position {outcomeID: String{decimal}}.
-   */
-  decreasePosition: function (position, adjustment) {
-    var newPosition = {};
-    var outcomeIDs = Object.keys(position);
-    for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
-      newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
-    }
-    return newPosition;
-  },
-
-  /**
-   * Adjusts positions by subtracting out contributions from auto-generated
-   * buyCompleteSets during shortAsk (or implicitly during short_sell).
-   *
-   * Standalone (non-delegated) buyCompleteSets are assumed to be part of
-   * generateOrderBook, and are included in the user's position.
-   *
-   * sellCompleteSets - shortAskBuyCompleteSets
-   *
-   * Note: short_sell on-contract does not create a buyCompleteSets log.
-   *
-   * @param {string} account Ethereum account address.
-   * @param {Array} marketIDs List of market IDs for position adjustment.
-   * @param {Object} shareTotals Share totals keyed by log type.
-   * @param {function=} callback Callback function (optional).
-   * @return {Object} Adjusted positions keyed by marketID.
-   */
-  adjustPositions: function (account, marketIDs, shareTotals, callback) {
-    var self = this;
-    var adjustedPositions = {};
-    if (!utils.is_function(callback)) {
-      var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
-      for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
-        marketID = marketIDs[i];
-        onChainPosition = this.getPositionInMarket(marketID, account);
-        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
-        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
-        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
-          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
-        }
-        adjustedPositions[marketID] = this.decreasePosition(
-          onChainPosition,
-          shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
-      }
-      return adjustedPositions;
-    }
-    async.eachSeries(marketIDs, function (marketID, nextMarket) {
-      self.getPositionInMarket(marketID, account, function (onChainPosition) {
-        if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
-        if (onChainPosition.error) return nextMarket(onChainPosition);
-        shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
-        shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || constants.ZERO;
-        sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
-        if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
-          sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
-        }
-        adjustedPositions[marketID] = self.decreasePosition(
-          onChainPosition,
-          shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
-        nextMarket();
-      });
-    }, function (err) {
-      if (err) return callback(err);
-      callback(null, adjustedPositions);
-    });
-  },
-
-  /**
-   * @param {Object} shareTotals Share totals keyed by log type.
-   * @return {Array} marketIDs List of market IDs for position adjustment.
-   */
-  findUniqueMarketIDs: function (shareTotals) {
-    return Object.keys(shareTotals.shortAskBuyCompleteSets)
-      .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
-      .concat(Object.keys(shareTotals.sellCompleteSets))
-      .filter(utils.unique);
-  },
-
-  /**
-   * @param {Object} logs Event logs from eth_getLogs request.
-   * @return {Object} Share totals keyed by log type.
-   */
-  calculateShareTotals: function (logs) {
-    return {
-      shortAskBuyCompleteSets: this.calculateCompleteSetsShareTotals(logs.shortAskBuyCompleteSets),
-      shortSellBuyCompleteSets: this.calculateShortSellShareTotals(logs.shortSellBuyCompleteSets),
-      sellCompleteSets: this.calculateCompleteSetsShareTotals(logs.sellCompleteSets)
-    };
-  },
-
-  /**
-   * @param {string} account Ethereum account address.
-   * @param {Object=} options eth_getLogs parameters (optional).
-   * @param {function=} callback Callback function (optional).
-   * @return {Object} Adjusted positions keyed by marketID.
-   */
-  getAdjustedPositions: function (account, options, callback) {
-    var self = this;
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (!utils.is_function(callback)) {
-      var shareTotals = this.calculateShareTotals({
-        shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
-        shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
-        sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
-      });
-      var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
-      return this.adjustPositions(account, marketIDs, shareTotals);
-    }
-    async.parallel({
-      shortAskBuyCompleteSets: function (done) {
-        self.getShortAskBuyCompleteSetsLogs(account, options, done);
-      },
-      shortSellBuyCompleteSets: function (done) {
-        self.getTakerShortSellLogs(account, options, done);
-      },
-      sellCompleteSets: function (done) {
-        self.getSellCompleteSetsLogs(account, options, done);
-      }
-    }, function (err, logs) {
-      if (err) return callback(err);
-      var shareTotals = self.calculateShareTotals(logs);
-      var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
-      self.adjustPositions(account, marketIDs, shareTotals, callback);
-    });
-  },
-
-  /**
-   * Calculates aggregate trade from buy/sell complete sets.
-   *
-   * @param {Array} logs Event logs from eth_getLogs request.
-   * @return Object Aggregate trades keyed by market ID.
-   */
-  calculateNetEffectiveTrades: function (logs) {
-    var marketID, shareTotal, effectivePrice;
-    var shareTotals = this.calculateShareTotals({
-      shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
-      shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
-      sellCompleteSets: logs.sellCompleteSets
-    });
-    var effectivePrices = {
-      shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
-      shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
-      sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
-    };
-    var netEffectiveTrades = {};
-    var marketIDs = this.findUniqueMarketIDs(effectivePrices);
-    var numMarketIDs = marketIDs.length;
-    for (var i = 0; i < numMarketIDs; ++i) {
-      marketID = marketIDs[i];
-      if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
-      var completeSetsTypes = Object.keys(effectivePrices);
-      var numCompleteSetsTypes = completeSetsTypes.length;
-      for (var j = 0; j < numCompleteSetsTypes; ++j) {
-        var completeSetsType = completeSetsTypes[j];
-        shareTotal = shareTotals[completeSetsType][marketID];
-        effectivePrice = effectivePrices[completeSetsType][marketID];
-        if (shareTotal && effectivePrice) {
-          netEffectiveTrades[marketID][completeSetsType] = {
-            type: completeSetsType === "sellCompleteSets" ? "sell" : "buy",
-            price: effectivePrice,
-            shares: shareTotal.abs()
-          };
-        }
-      }
-    }
-    return netEffectiveTrades;
-  },
-
-  updateRealizedPL: function (meanOpenPrice, realized, shares, price) {
-    return realized.plus(shares.times(price.minus(meanOpenPrice)));
-  },
-
-  updateMeanOpenPrice: function (position, meanOpenPrice, shares, price) {
-    return position.dividedBy(shares.plus(position))
-      .times(meanOpenPrice)
-      .plus(shares.dividedBy(shares.plus(position)).times(price));
-  },
-
-  sellCompleteSetsPL: function (PL, shares, price) {
-    var updatedPL = {
-      position: PL.position,
-      meanOpenPrice: PL.meanOpenPrice,
-      realized: PL.realized,
-      completeSetsBought: PL.completeSetsBought,
-      queued: PL.queued,
-      tradeQueue: PL.tradeQueue
-    };
-
-    // If position <= 0, user is closing out a short position:
-    //  - update realized P/L
-    if (PL.position.lte(constants.ZERO)) {
-      if (shares.gt(constants.ZERO) && updatedPL.tradeQueue && updatedPL.tradeQueue.length) {
-        while (updatedPL.tradeQueue.length) {
-          if (updatedPL.tradeQueue[0].shares.gt(shares)) {
-            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, shares.neg(), updatedPL.tradeQueue[0].price);
-            updatedPL.tradeQueue[0].shares = updatedPL.tradeQueue[0].shares.minus(shares);
-            break;
-          } else {
-            updatedPL.realized = this.updateRealizedPL(updatedPL.tradeQueue[0].meanOpenPrice, updatedPL.realized, updatedPL.tradeQueue[0].shares.neg(), updatedPL.tradeQueue[0].price);
-            updatedPL.tradeQueue.splice(0, 1);
-          }
-        }
-      }
-
-    // If position > 0, user is decreasing their long position:
-    //  - decrease position
-    } else {
-      updatedPL.position = updatedPL.position.minus(shares);
-      updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
-    }
-
-    return updatedPL;
-  },
-
-  // weighted price = (old total shares / new total shares) * weighted price + (shares traded / new total shares) * trade price
-  // realized P/L = shares sold * (price on cash out - price on buy in)
-  longerPositionPL: function (PL, shares, price) {
-    var updatedPL = {
-      position: PL.position.plus(shares),
-      meanOpenPrice: PL.meanOpenPrice,
-      realized: PL.realized,
-      completeSetsBought: PL.completeSetsBought,
-      queued: PL.queued,
-      tradeQueue: PL.tradeQueue
-    };
-
-    // If position >= 0, user is increasing a long position:
-    //  - update weighted price of open positions
-    if (PL.position.abs().lte(constants.PRECISION.zero)) {
-      updatedPL.meanOpenPrice = price;
-    } else if (PL.position.gt(constants.PRECISION.zero)) {
-      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares, price);
-
-    // If position < 0, user is decreasing a short position:
-    } else {
-      if (!updatedPL.tradeQueue) updatedPL.tradeQueue = [];
-
-      // If |position| >= shares, user is buying back a short position:
-      //  - update queued P/L (becomes realized P/L when complete sets sold)
-      if (PL.position.abs().gte(shares)) {
-        updatedPL.tradeQueue.push({
-          meanOpenPrice: PL.meanOpenPrice,
-          realized: PL.realized,
-          shares: shares,
-          price: price
-        });
-
-      // If |position| < shares, user is buying back short then going long:
-      //  - update queued P/L for the short position (buy to 0)
-      //  - update mean open price for the remainder of shares
-      } else {
-        updatedPL.tradeQueue.push({
-          meanOpenPrice: PL.meanOpenPrice,
-          realized: PL.realized,
-          shares: PL.position.abs(),
-          price: price
-        });
-        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.plus(shares), price);
-      }
-    }
-
-    return updatedPL;
-  },
-
-  shorterPositionPL: function (PL, shares, price) {
-    var updatedPL = {
-      position: PL.position.minus(shares),
-      meanOpenPrice: PL.meanOpenPrice,
-      realized: PL.realized,
-      completeSetsBought: PL.completeSetsBought,
-      queued: PL.queued,
-      tradeQueue: PL.tradeQueue
-    };
-
-    // If position < 0, user is increasing a short position:
-    //  - treat as a "negative buy" for P/L
-    //  - update weighted price of open positions
-    if (PL.position.abs().lte(constants.PRECISION.zero)) {
-      updatedPL.meanOpenPrice = price;
-    } else if (PL.position.lt(constants.PRECISION.zero)) {
-      updatedPL.meanOpenPrice = this.updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
-
-    // If position > 0, user is decreasing a long position
-    } else {
-
-      // If position >= shares, user is doing a regular sale:
-      //  - update realized P/L
-      if (PL.position.gte(shares)) {
-        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, shares, price);
-
-      // If position < shares, user is selling then short selling:
-      //  - update realized P/L for the current position (sell to 0)
-      //  - update mean open price for the remainder of shares (short sell)
-      } else {
-        updatedPL.realized = this.updateRealizedPL(PL.meanOpenPrice, PL.realized, PL.position, price);
-        updatedPL.meanOpenPrice = this.updateMeanOpenPrice(constants.ZERO, PL.meanOpenPrice, PL.position.minus(shares), price);
-      }
-    }
-
-    return updatedPL;
-  },
-
-  // Trades where user is the maker:
-  //  - buy orders (matched user's ask): user loses shares, gets cash
-  //  - sell orders (matched user's bid): user loses cash, gets shares
-  calculateMakerPL: function (PL, type, price, shares) {
-
-    // Sell: matched user's bid order
-    if (type === "sell") {
-      // console.log('sell (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-      return this.longerPositionPL(PL, shares, price);
-    }
-
-    // Buy: matched user's ask order
-    // console.log('buy (maker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-    return this.shorterPositionPL(PL, shares, price);
-  },
-
-  // Trades where user is the taker:
-  //  - buy orders: user loses cash, gets shares
-  //  - sell orders: user loses shares, gets cash
-  calculateTakerPL: function (PL, type, price, shares) {
-
-    // Buy order
-    if (type === "buy") {
-      // console.log('buy (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-      return this.longerPositionPL(PL, shares, price);
-    }
-
-    // Sell order
-    // console.log('sell (taker):', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), price.toFixed(), shares.toFixed(), JSON.stringify(PL.tradeQueue));
-    return this.shorterPositionPL(PL, shares, price);
-  },
-
-  calculateTradePL: function (PL, trade) {
-    if (trade.isCompleteSet) {
-      if (trade.type === "buy") {
-        // console.log('buy complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-        return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-      }
-      // console.log('sell complete sets:', PL.position.toFixed(), PL.meanOpenPrice.toFixed(), trade.amount, JSON.stringify(PL.tradeQueue));
-      return this.sellCompleteSetsPL(PL, abi.bignum(trade.amount), abi.bignum(trade.price));
-    } else if (trade.maker) {
-      return this.calculateMakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-    }
-    return this.calculateTakerPL(PL, trade.type, abi.bignum(trade.price), abi.bignum(trade.amount));
-  },
-
-  calculateTradesPL: function (PL, trades) {
-    var numTrades = trades.length;
-    if (numTrades) {
-      for (var i = 0; i < numTrades; ++i) {
-        PL = this.calculateTradePL(PL, trades[i]);
-      }
-    }
-    return PL;
-  },
-
-  // unrealized P/L: shares held * (last trade price - price on buy in)
-  calculateUnrealizedPL: function (position, meanOpenPrice, lastTradePrice) {
-    if (lastTradePrice.eq(constants.ZERO)) return constants.ZERO;
-    return position.times(abi.bignum(lastTradePrice).minus(meanOpenPrice));
-  },
-
-  /**
-   * Calculates realized and unrealized profit/loss for trades in a single outcome.
-   *
-   * Note: buy/sell labels are from taker's point-of-view.
-   *
-   * @param {Array} trades Trades for a single outcome {type, shares, price, maker}.
-   * @param {BigNumber|string} lastTradePrice Price of this outcome's most recent trade.
-   * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
-   */
-  calculateProfitLoss: function (trades, lastTradePrice) {
-    var PL = {
-      position: constants.ZERO,
-      meanOpenPrice: constants.ZERO,
-      realized: constants.ZERO,
-      unrealized: constants.ZERO,
-      queued: constants.ZERO,
-      completeSetsBought: constants.ZERO,
-      tradeQueue: []
-    };
-    var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
-    if (trades) {
-      PL = this.calculateTradesPL(PL, trades);
-      // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
-      var queuedShares = constants.ZERO;
-      if (PL.tradeQueue && PL.tradeQueue.length) {
-        // console.log('Trade queue:', JSON.stringify(PL.tradeQueue));
-        for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
-          queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
-          PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
-        }
-      }
-      // console.log('Queued shares:', queuedShares.toFixed());
-      // console.log('Last trade price:', bnLastTradePrice.toFixed());
-      PL.unrealized = this.calculateUnrealizedPL(PL.position, PL.meanOpenPrice, bnLastTradePrice);
-      // console.log('Unrealized P/L:', PL.unrealized.toFixed());
-      if (PL.position.abs().lt(constants.PRECISION.zero)) {
-        PL.position = constants.ZERO;
-        PL.meanOpenPrice = constants.ZERO;
-        PL.unrealized = constants.ZERO;
-      }
-    }
-    PL.position = PL.position.toFixed();
-    PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
-    PL.realized = PL.realized.toFixed();
-    PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
-    PL.queued = PL.queued.toFixed();
-    // console.log('Queued P/L:', PL.queued);
-    delete PL.completeSetsBought;
-    delete PL.tradeQueue;
-    return PL;
-  }
-};
-
-},{"../constants":242,"../utilities":272,"async":79,"augur-abi":1,"bignumber.js":82}],263:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-module.exports = {
-
-  parseLastTime: function (logs) {
-    return new Date(parseInt(logs[logs.length - 1].data, 16) * 1000);
-  },
-
-  parseLastBlock: function (logs) {
-    return parseInt(logs[logs.length - 1].blockNumber, 16);
-  },
-
-  getRegisterBlockNumber: function (account, options, callback) {
-    var self = this;
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (account !== undefined && account !== null) {
-      var filter = {
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.Register,
-        topics: [
-          this.api.events.registration.signature,
-          abi.format_int256(account)
-        ],
-        timeout: constants.GET_LOGS_TIMEOUT
-      };
-      if (!utils.is_function(callback)) {
-        var logs = this.rpc.getLogs(filter);
-        if (!logs || !logs.length || (logs && logs.error)) return null;
-        return this.parseLastBlock(logs);
-      }
-      this.rpc.getLogs(filter, function (logs) {
-        if (!logs || !logs.length) return callback(null, null);
-        if (logs && logs.error) return callback(logs, null);
-        callback(null, self.parseLastBlock(logs));
-      });
-    }
-  },
-
-  getRegisterTime: function (account, options, callback) {
-    var self = this;
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (account !== undefined && account !== null) {
-      var filter = {
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.Register,
-        topics: [
-          this.api.events.registration.signature,
-          abi.format_int256(account)
-        ],
-        timeout: constants.GET_LOGS_TIMEOUT
-      };
-      if (!utils.is_function(callback)) {
-        var logs = this.rpc.getLogs(filter);
-        if (!logs || !logs.length || (logs && logs.error)) return null;
-        return this.parseLastTime(logs);
-      }
-      this.rpc.getLogs(filter, function (logs) {
-        if (!logs || !logs.length) return callback(null, null);
-        if (logs && logs.error) return callback(logs, null);
-        callback(null, self.parseLastTime(logs));
-      });
-    }
-  },
-
-  getRegisterLogs: function (account, options, callback) {
-    if (!callback && utils.is_function(options)) {
-      callback = options;
-      options = null;
-    }
-    options = options || {};
-    if (account !== undefined && account !== null) {
-      var filter = {
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.Register,
-        topics: [
-          this.api.events.registration.signature,
-          abi.format_int256(account)
-        ],
-        timeout: constants.GET_LOGS_TIMEOUT
-      };
-      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
-      this.rpc.getLogs(filter, function (logs) {
-        if (!logs || !logs.length) return callback(null, []);
-        if (logs && logs.error) return callback(logs, null);
-        callback(null, logs);
-      });
-    }
-  }
-};
-
-},{"../constants":242,"../utilities":272,"augur-abi":1,"clone":120}],264:[function(require,module,exports){
+},{"bignumber.js":117}],274:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -45243,953 +46540,7 @@ module.exports = {
   }
 };
 
-},{"../constants":242,"../utilities":272,"async":79,"augur-abi":1,"clone":120}],265:[function(require,module,exports){
-"use strict";
-
-module.exports = {
-
-  selectOrder: function (orderID, orderBooks) {
-    var marketIDs = Object.keys(orderBooks);
-    var numMarkets = marketIDs.length;
-    for (var i = 0; i < numMarkets; ++i) {
-      var orderBook = orderBooks[marketIDs[i]];
-      var order = this.selectOrderInOrderBookSide(orderID, orderBook.buy) ||
-        this.selectOrderInOrderBookSide(orderID, orderBook.sell);
-      if (order) return order;
-    }
-  },
-
-  selectOrderInOrderBookSide: function (orderID, orderBookSide) {
-    var orderIDs = Object.keys(orderBookSide);
-    var numOrderIDs = orderIDs.length;
-    for (var j = 0; j < numOrderIDs; ++j) {
-      if (orderBookSide[orderID]) return orderBookSide[orderID];
-    }
-  }
-
-};
-
-},{}],266:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-  sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
-    // branch: hash id
-    // recver: ethereum address of recipient
-    // value: number -> fixed-point
-    var self = this;
-    if (branch && branch.branch) {
-      recver = branch.recver;
-      value = branch.value;
-      onSent = branch.onSent;
-      onSuccess = branch.onSuccess;
-      onFailed = branch.onFailed;
-      branch = branch.branch;
-    }
-    var tx = clone(this.tx.SendReputation.sendReputation);
-    tx.params = [branch, recver, abi.fix(value, "hex")];
-
-    // if callReturn is 0, but account has sufficient Reputation and Rep
-    // redistribution is done, then re-invoke sendReputation
-    // (penalizationCatchup is being called)
-    var prepare = function (result, cb) {
-      if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
-        return cb(result);
-      }
-      self.getRepBalance(branch, result.from, function (repBalance) {
-        if (!repBalance || repBalance.error) {
-          return onFailed(repBalance);
-        }
-        if (abi.bignum(repBalance).lt(abi.bignum(value))) {
-          return onFailed({error: "0", message: "not enough reputation"});
-        }
-        self.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
-          if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
-            return onFailed({error: "-3", message: "cannot send reputation until redistribution is complete"});
-          }
-          self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
-        });
-      });
-    };
-
-    this.transact(tx,
-      onSent,
-      utils.compose(prepare, onSuccess),
-      onFailed);
-  }
-};
-
-},{"../utilities":272,"augur-abi":1,"clone":120}],267:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var constants = require("../constants");
-
-module.exports = function (numShares, position) {
-  var askShares, shortAskShares;
-  if (position.gt(numShares)) {
-    askShares = numShares.round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-    shortAskShares = 0;
-  } else {
-    askShares = position.toFixed();
-    shortAskShares = numShares.minus(position).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN).toFixed();
-  }
-  return { askShares: askShares, shortAskShares: shortAskShares };
-};
-
-},{"../constants":242,"bignumber.js":82}],268:[function(require,module,exports){
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var async = require("async");
-var uuid = require("uuid");
-var uuidParse = require("uuid-parse");
-var abi = require("augur-abi");
-var rpc = require("ethrpc");
-var splitOrder = require("./splitOrder");
-var abacus = require("./abacus");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    tradeCommitLockCallback(true);
-    var self = this;
-    var marketID = market.id;
-    var getTradeIDs = function () {
-      return self.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
-    };
-    this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
-      tradeCommitLockCallback(false);
-      if (err) return console.error("trade failed:", err);
-      var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
-      if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
-        console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
-        self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
-      }
-    });
-  },
-
-  placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    var self = this;
-    tradeCommitLockCallback(true);
-    var marketID = market.id;
-    var getTradeIDs = function () {
-      return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
-    };
-    this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
-      tradeCommitLockCallback(false);
-      if (err) return console.error("trade failed:", err);
-      if (res.remainingShares.gt(constants.PRECISION.zero)) {
-        self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
-          var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-          var remainingShares = abi.bignum(res.remainingShares);
-          if (position.gt(constants.PRECISION.zero)) {
-            var shares = splitOrder(remainingShares, position);
-            var askShares = shares.askShares;
-            var shortAskShares = shares.shortAskShares;
-            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
-            }
-            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-            }
-          } else {
-            self.getOrderBook(marketID, function (updatedOrderBook) {
-              if (err) console.error("getOrderBook:", err);
-              var orderBook = {};
-              orderBook[marketID] = updatedOrderBook;
-              var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
-              if (tradeIDs && tradeIDs.length) {
-                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
-              } else {
-                self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
-              }
-            });
-          }
-        });
-      }
-    });
-  },
-
-  placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    var self = this;
-    tradeCommitLockCallback(true);
-    var marketID = market.id;
-    var getTradeIDs = function () {
-      return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
-    };
-    this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
-      tradeCommitLockCallback(false);
-      if (err) return console.error("short sell failed:", err);
-      if (res.remainingShares.gt(constants.PRECISION.zero)) {
-        self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
-      }
-    });
-  }
-
-};
-
-},{"../constants":242,"../utilities":272,"./abacus":246,"./splitOrder":267,"async":79,"augur-abi":1,"bignumber.js":82,"clone":120,"ethrpc":279,"uuid":236,"uuid-parse":234}],269:[function(require,module,exports){
-"use strict";
-
-var clone = require("clone");
-var async = require("async");
-var abi = require("augur-abi");
-var rpc = require("ethrpc");
-var utils = require("../utilities");
-var constants = require("../constants");
-var abacus = require("./abacus");
-
-module.exports = {
-
-  // tradeTypes: array of "buy" and/or "sell"
-  // gasLimit (optional): block gas limit as integer
-  isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
-    if (utils.is_function(gasLimit) && !callback) {
-      callback = gasLimit;
-      gasLimit = null;
-    }
-    var gas = abacus.sumTradeGas(tradeTypes);
-    if (!utils.is_function(callback)) {
-      if (gasLimit) return gas <= gasLimit;
-      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-    }
-    if (gasLimit) return callback(gas <= gasLimit);
-    var self = this;
-    this.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        callback(gas <= parseInt(block.gasLimit, 16));
-      });
-    });
-  },
-
-  checkGasLimit: function (trade_ids, sender, callback) {
-    var self = this;
-    var gas = 0;
-    var count = {buy: 0, sell: 0};
-    self.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        var checked_trade_ids = trade_ids.slice();
-        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-          self.get_trade(trade_id, function (trade) {
-            if (!trade || !trade.id) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback(self.errors.TRADE_NOT_FOUND);
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
-            } else if (trade.owner === sender) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback({error: "-5", message: self.errors.trade["-5"]});
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
-            }
-            ++count[trade.type];
-            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-            next();
-          });
-        }, function (e) {
-          if (e) return callback(e);
-          if (gas <= parseInt(block.gasLimit, 16)) {
-            return callback(null, checked_trade_ids);
-          } else if (!count.buy || !count.sell) {
-            var type = (count.buy) ? "buy" : "sell";
-            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
-          }
-          callback(self.errors.GAS_LIMIT_EXCEEDED);
-        });
-      });
-    });
-  },
-
-  trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-    var self = this;
-    if (this.options.debug.trading) {
-      console.log("trade:", JSON.stringify(max_value, null, 2));
-    }
-    if (max_value.constructor === Object) {
-      max_amount = max_value.max_amount;
-      trade_ids = max_value.trade_ids;
-      tradeGroupID = max_value.tradeGroupID;
-      sender = max_value.sender;
-      onTradeHash = max_value.onTradeHash;
-      onCommitSent = max_value.onCommitSent;
-      onCommitSuccess = max_value.onCommitSuccess;
-      onCommitFailed = max_value.onCommitFailed;
-      onNextBlock = max_value.onNextBlock;
-      onTradeSent = max_value.onTradeSent;
-      onTradeSuccess = max_value.onTradeSuccess;
-      onTradeFailed = max_value.onTradeFailed;
-      max_value = max_value.max_value;
-    }
-    onTradeHash = onTradeHash || utils.noop;
-    onCommitSent = onCommitSent || utils.noop;
-    onCommitSuccess = onCommitSuccess || utils.noop;
-    onCommitFailed = onCommitFailed || utils.noop;
-    onNextBlock = onNextBlock || utils.noop;
-    onTradeSent = onTradeSent || utils.noop;
-    onTradeSuccess = onTradeSuccess || utils.noop;
-    onTradeFailed = onTradeFailed || utils.noop;
-    this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
-      if (self.options.debug.trading) console.log('checkGasLimit:', err, trade_ids);
-      if (err) return onTradeFailed(err);
-      var bn_max_value = abi.bignum(max_value);
-      if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
-        return onTradeFailed({error: "-4", message: self.errors.trade["-4"]});
-      }
-      var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
-      if (self.options.debug.trading) console.log('tradeHash:', tradeHash);
-      onTradeHash(tradeHash);
-      self.commitTrade({
-        hash: tradeHash,
-        onSent: onCommitSent,
-        onSuccess: function (res) {
-          if (self.options.debug.trading) console.log('commitTrade:', res);
-          onCommitSuccess(res);
-          self.rpc.fastforward(1, function (blockNumber) {
-            if (self.options.debug.trading) console.log('fastforward:', blockNumber);
-            onNextBlock(blockNumber);
-            var tx = clone(self.tx.Trade.trade);
-            tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
-            if (self.options.debug.trading) {
-              console.log("trade tx:", JSON.stringify(tx, null, 2));
-            }
-            var prepare = function (result, cb) {
-              if (self.options.debug.trading) {
-                console.log("trade response:", JSON.stringify(result, null, 2));
-              }
-              var err;
-              var txHash = result.hash;
-              if (result.callReturn && result.callReturn.constructor === Array) {
-                result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                  err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
-                  if (!err) {
-                    err = clone(self.errors.TRADE_FAILED);
-                    err.message += result.callReturn[0].toString();
-                    return onTradeFailed(err);
-                  }
-                  return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx});
-                }
-                self.rpc.receipt(txHash, function (receipt) {
-                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                  if (receipt.error) return onTradeFailed(receipt);
-                  var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_fill_tx.signature;
-                    sharesBought = constants.ZERO;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 6) {
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
-
-                              // buy (matched sell order)
-                          if (parseInt(logdata[0], 16) === 1) {
-                            sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
-
-                                  // sell (matched buy order)
-                                  // cash received = price per share * shares sold
-                          } else {
-                            cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
-                          }
-                        }
-                      }
-                    }
-                  }
-                  cb({
-                    hash: txHash,
-                    unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
-                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                    sharesBought: abi.string(sharesBought),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    tradingFees: abi.string(tradingFees),
-                    gasFees: result.gasFees,
-                    timestamp: result.timestamp
-                  });
-                });
-              } else {
-                err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                if (!err) {
-                  err = clone(self.errors.TRADE_FAILED);
-                  err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
-                }
-                onTradeFailed({error: err, message: self.errors[err], tx: tx});
-              }
-            };
-            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
-          });
-        },
-        onFailed: onCommitFailed
-      });
-    });
-  },
-
-  short_sell: function (buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-    var self = this;
-    if (this.options.debug.trading) {
-      console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
-    }
-    if (buyer_trade_id.constructor === Object) {
-      max_amount = buyer_trade_id.max_amount;
-      tradeGroupID = buyer_trade_id.tradeGroupID;
-      sender = buyer_trade_id.sender;
-      onTradeHash = buyer_trade_id.onTradeHash;
-      onCommitSent = buyer_trade_id.onCommitSent;
-      onCommitSuccess = buyer_trade_id.onCommitSuccess;
-      onCommitFailed = buyer_trade_id.onCommitFailed;
-      onNextBlock = buyer_trade_id.onNextBlock;
-      onTradeSent = buyer_trade_id.onTradeSent;
-      onTradeSuccess = buyer_trade_id.onTradeSuccess;
-      onTradeFailed = buyer_trade_id.onTradeFailed;
-      buyer_trade_id = buyer_trade_id.buyer_trade_id;
-    }
-    onTradeHash = onTradeHash || utils.noop;
-    onCommitSent = onCommitSent || utils.noop;
-    onCommitSuccess = onCommitSuccess || utils.noop;
-    onCommitFailed = onCommitFailed || utils.noop;
-    onNextBlock = onNextBlock || utils.noop;
-    onTradeSent = onTradeSent || utils.noop;
-    onTradeSuccess = onTradeSuccess || utils.noop;
-    onTradeFailed = onTradeFailed || utils.noop;
-    this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
-      if (err) return onTradeFailed(err);
-      var tradeHash = self.makeTradeHash(0, max_amount, trade_ids);
-      onTradeHash(tradeHash);
-      self.commitTrade({
-        hash: tradeHash,
-        onSent: onCommitSent,
-        onSuccess: function (res) {
-          onCommitSuccess(res);
-          self.rpc.fastforward(1, function (blockNumber) {
-            onNextBlock(blockNumber);
-            var tx = clone(self.tx.Trade.short_sell);
-            tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
-            if (self.options.debug.trading) {
-              console.log("short_sell tx:", JSON.stringify(tx, null, 2));
-            }
-            var prepare = function (result, cb) {
-              if (self.options.debug.trading) {
-                console.log("short_sell response:", JSON.stringify(result, null, 2));
-              }
-              var err;
-              var txHash = result.hash;
-              if (result.callReturn && result.callReturn.constructor === Array) {
-                result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
-                  err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
-                  if (!err) {
-                    err = clone(self.errors.TRADE_FAILED);
-                    err.message += result.callReturn[0].toString();
-                    return onTradeFailed(err);
-                  }
-                  return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-                }
-                self.rpc.receipt(txHash, function (receipt) {
-                  if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                  if (receipt.error) return onTradeFailed(receipt);
-                  var cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_short_fill_tx.signature;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 8) {
-                          cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
-                        }
-                      }
-                    }
-                  }
-                  cb({
-                    hash: txHash,
-                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                    matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
-                    tradingFees: abi.string(tradingFees),
-                    gasFees: result.gasFees,
-                    timestamp: result.timestamp
-                  });
-                });
-              } else {
-                err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                if (!err) {
-                  err = clone(self.errors.TRADE_FAILED);
-                  err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
-                }
-                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-              }
-            };
-            self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
-          });
-        },
-        onFailed: onCommitFailed
-      });
-    });
-  }
-};
-
-},{"../constants":242,"../utilities":272,"./abacus":246,"async":79,"augur-abi":1,"clone":120,"ethrpc":279}],270:[function(require,module,exports){
-/*
- * Author: priecint
- */
-
-"use strict";
-
-var clone = require("clone");
-var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var abacus = require("./abacus");
-
-var ONE = new BigNumber(1, 10);
-
-module.exports = {
-
-  calculateBuyTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
-    var orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
-    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "buy", limitPrice, outcomeID, address).map(function (order) { return order.id; });
-  },
-
-  calculateSellTradeIDs: function (marketID, outcomeID, limitPrice, orderBooks, address) {
-    var orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
-    return this.filterByPriceAndOutcomeAndUserSortByPrice(orders, "sell", limitPrice, outcomeID, address).map(function (order) { return order.id; });
-  },
-
-  /**
-   * Calculates (approximately) gas needed to run the transaction
-   *
-   * @param {Object} tx
-   * @param {Number} gasPrice
-   * @return {BigNumber}
-   */
-  getTxGasEth: function (tx, gasPrice) {
-    tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
-    tx.gasPrice = gasPrice;
-    var etx = new EthTx(tx);
-    return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
-  },
-
-  /**
-   * Bids are sorted descendingly, asks are sorted ascendingly
-   *
-   * @param {Array} orders Bids or asks
-   * @param {String} traderOrderType What trader want to do (buy or sell)
-   * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
-   * @param {String} outcomeId
-   * @param {String} userAddress
-   * @return {Array.<Object>}
-   */
-  filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-    if (!orders) return [];
-    var isMarketOrder = limitPrice === null || limitPrice === undefined;
-    return Object.keys(orders)
-      .map(function (orderID) {
-        return orders[orderID];
-      })
-      .filter(function (order) {
-        if (!order || !order.price) return false;
-        var isMatchingPrice;
-        if (isMarketOrder) {
-          isMatchingPrice = true;
-        } else {
-          isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
-        }
-        return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
-      })
-      .sort(function compareOrdersByPrice(order1, order2) {
-        return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
-      });
-  },
-
-  /**
-   *
-   * @param {BigNumber} shares
-   * @param {BigNumber} limitPrice
-   * @param {BigNumber} makerFee
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
-    var etherToBid = shares.times(limitPrice).dividedBy(constants.ONE).floor();
-    var feeEth = etherToBid.times(makerFee).dividedBy(constants.ONE).floor();
-    return {
-      action: "BID",
-      shares: abi.unfix(shares, "string"),
-      gasEth: bidGasEth.toFixed(),
-      feeEth: abi.unfix(feeEth, "string"),
-      feePercent: abi.unfix(makerFee).times(100).toFixed(),
-      costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
-      avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(limitPrice, "string")
-    };
-  },
-
-  /**
-   *
-   * @param {BigNumber} buyEth
-   * @param {BigNumber} sharesFilled
-   * @param {BigNumber} takerFeeEth
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getBuyAction: function (buyEth, sharesFilled, takerFeeEth, gasPrice) {
-    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-    var fxpBuyEth = abi.fix(buyEth);
-    var fxpTakerFeeEth = abi.fix(takerFeeEth);
-    var fxpSharesFilled = abi.fix(sharesFilled);
-    return {
-      action: "BUY",
-      shares: sharesFilled.toFixed(),
-      gasEth: tradeGasEth.toFixed(),
-      feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: buyEth.toFixed(),
-      avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
-    };
-  },
-
-  /**
-   *
-   * @param {BigNumber} shares
-   * @param {BigNumber} limitPrice
-   * @param {BigNumber} makerFee
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-    var costEth = shares.times(limitPrice).dividedBy(constants.ONE).floor();
-    var feeEth = costEth.times(makerFee).dividedBy(constants.ONE).floor();
-    return {
-      action: "ASK",
-      shares: abi.unfix(shares, "string"),
-      gasEth: askGasEth.toFixed(),
-      feeEth: abi.unfix(feeEth, "string"),
-      feePercent: abi.unfix(makerFee).times(100).toFixed(),
-      costEth: abi.unfix(costEth.minus(feeEth), "string"),
-      avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(limitPrice, "string")
-    };
-  },
-
-  /**
-   *
-   * @param {BigNumber} sellEth
-   * @param {BigNumber} sharesFilled
-   * @param {BigNumber} takerFeeEth
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getSellAction: function (sellEth, sharesFilled, takerFeeEth, gasPrice) {
-    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-    var fxpSellEth = abi.fix(sellEth);
-    var fxpSharesFilled = abi.fix(sharesFilled);
-    var fxpTakerFeeEth = abi.fix(takerFeeEth);
-    return {
-      action: "SELL",
-      shares: sharesFilled.toFixed(),
-      gasEth: tradeGasEth.toFixed(),
-      feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: sellEth.toFixed(),
-      avgPrice: abi.unfix(fxpSellEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(fxpSellEth.plus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
-    };
-  },
-
-  /**
-   *
-   * @param {BigNumber} shortSellEth
-   * @param {BigNumber} shares
-   * @param {BigNumber} takerFeeEth
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
-    var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
-    var fxpShortSellEth = abi.fix(shortSellEth);
-    var fxpTakerFeeEth = abi.fix(takerFeeEth);
-    var fxpShares = abi.fix(shares);
-    return {
-      action: "SHORT_SELL",
-      shares: shares.toFixed(),
-      gasEth: shortSellGasEth.toFixed(),
-      feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: shortSellEth.toFixed(),
-      avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
-    };
-  },
-
-  /**
-   *
-   * @param {BigNumber} shares
-   * @param {BigNumber} limitPrice
-   * @param {BigNumber} makerFee
-   * @param {Number} gasPrice
-   * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
-   */
-  getShortAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
-    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-    var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
-    // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
-    var costEth = shares.neg().minus(feeEth);
-    return {
-      action: "SHORT_ASK",
-      shares: abi.unfix(shares, "string"),
-      gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
-      feeEth: abi.unfix(feeEth, "string"),
-      feePercent: abi.unfix(makerFee).times(100).toFixed(),
-      costEth: abi.unfix(costEth, "string"),
-      avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
-      noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
-    };
-  },
-
-  /**
-   * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
-   * much they pay for trading
-   *
-   * @param {String} type 'buy' or 'sell'
-   * @param {String|BigNumber} orderShares
-   * @param {String|BigNumber=} orderLimitPrice null value results in market order
-   * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
-   * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
-   * @param {String} userAddress Address of trader to exclude orders from order book
-   * @param {String|BigNumber} userPositionShares
-   * @param {String} outcomeId
-   * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
-   * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
-   * @return {Array}
-   */
-  getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
-    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
-    if (type.constructor === Object) {
-      orderShares = type.orderShares;
-      orderLimitPrice = type.orderLimitPrice;
-      takerFee = type.takerFee;
-      makerFee = type.makerFee;
-      userAddress = type.userAddress;
-      userPositionShares = type.userPositionShares;
-      outcomeId = type.outcomeId;
-      marketOrderBook = type.marketOrderBook;
-      range = type.range;
-      scalarMinMax = type.scalarMinMax;
-      type = type.type;
-    }
-
-    userAddress = abi.format_address(userAddress);
-    orderShares = new BigNumber(orderShares, 10);
-    orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
-      null :
-      new BigNumber(orderLimitPrice, 10);
-    var bnTakerFee = new BigNumber(takerFee, 10);
-    var bnMakerFee = new BigNumber(makerFee, 10);
-    var bnRange = new BigNumber(range, 10);
-    userPositionShares = new BigNumber(userPositionShares, 10);
-    isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
-    fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
-    if (!isMarketOrder) {
-      adjustedFees = abacus.calculateFxpMakerTakerFees(
-        abacus.calculateFxpAdjustedTradingFee(
-          fees.tradingFee,
-          abi.fix(orderLimitPrice),
-          abi.fix(bnRange)
-        ),
-        fees.makerProportionOfFee,
-        false,
-        true
-      );
-    }
-
-    var augur = this;
-    var gasPrice = augur.rpc.gasPrice;
-    var tradingCost, fullPrecisionPrice;
-    if (type === "buy") {
-      var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-      var areSuitableOrders = matchingSortedAsks.length > 0;
-      if (!areSuitableOrders) {
-        if (isMarketOrder) {
-          return [];
-        }
-        return [augur.getBidAction(abi.fix(orderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice)];
-      } else {
-        var buyActions = [];
-
-        var etherToTrade = constants.ZERO;
-        totalTakerFeeEth = constants.ZERO;
-        remainingOrderShares = orderShares;
-        length = matchingSortedAsks.length;
-        for (i = 0; i < length; i++) {
-          ask = matchingSortedAsks[i];
-          orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-          fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
-            abacus.shrinkScalarPrice(scalarMinMax.minValue, ask.fullPrecisionPrice) :
-            ask.fullPrecisionPrice;
-          tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-          totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-          etherToTrade = etherToTrade.plus(tradingCost.cost);
-          remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-          if (remainingOrderShares.lte(constants.PRECISION.zero)) {
-            break;
-          }
-        }
-        buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-
-        if (!remainingOrderShares.lte(constants.PRECISION.zero) && !isMarketOrder) {
-          buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-        }
-
-        return buyActions;
-      }
-    } else {
-      var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
-
-      var areSuitableBids = matchingSortedBids.length > 0;
-      var userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
-      var sellActions = [];
-
-      if (userHasPosition) {
-        var etherToSell = constants.ZERO;
-        remainingOrderShares = orderShares;
-        var remainingPositionShares = userPositionShares;
-        if (areSuitableBids) {
-          totalTakerFeeEth = constants.ZERO;
-          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-            bid = matchingSortedBids[i];
-            bidAmount = new BigNumber(bid.amount, 10);
-            orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-            fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
-              abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
-              bid.fullPrecisionPrice;
-            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-            etherToSell = etherToSell.plus(tradingCost.cash);
-            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-            remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
-            if (orderSharesFilled.equals(bidAmount)) {
-              // since this order is filled we remove it. Change for-cycle variables accordingly
-              matchingSortedBids.splice(i, 1);
-              i--;
-              length--;
-            } else {
-              var newBid = clone(bid);
-              newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
-              matchingSortedBids[i] = newBid;
-            }
-            if (remainingOrderShares.lte(constants.PRECISION.zero) || remainingPositionShares.lte(constants.PRECISION.zero)) {
-              break;
-            }
-          }
-          sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-        } else {
-          if (!isMarketOrder) {
-            var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
-            remainingOrderShares = remainingOrderShares.minus(askShares);
-            remainingPositionShares = remainingPositionShares.minus(askShares);
-            sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-          }
-        }
-
-        if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
-          // recursion
-          sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax));
-        }
-      } else {
-        if (isMarketOrder) {
-          return sellActions;
-        }
-
-        var etherToShortSell = constants.ZERO;
-        remainingOrderShares = orderShares;
-        if (areSuitableBids) {
-          totalTakerFeeEth = constants.ZERO;
-          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-            bid = matchingSortedBids[i];
-            orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-            fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
-                            abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
-                            bid.fullPrecisionPrice;
-            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-            etherToShortSell = etherToShortSell.plus(tradingCost.cash);
-            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-            if (remainingOrderShares.lte(constants.PRECISION.zero)) {
-              break;
-            }
-          }
-          sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-        }
-        if (remainingOrderShares.gt(constants.PRECISION.zero)) {
-          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
-        }
-      }
-
-      return sellActions;
-    }
-  }
-};
-
-},{"../constants":242,"./abacus":246,"augur-abi":1,"bignumber.js":82,"clone":120,"ethereumjs-tx":158}],271:[function(require,module,exports){
-/**
- * ethrpc fire/transact wrappers
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-module.exports = {
-
-  fire: function (tx, callback, wrapper, aux) {
-    if (this.web && this.web.account && this.web.account.address) {
-      tx.from = this.web.account.address;
-    } else {
-      tx.from = tx.from || this.from || this.coinbase;
-    }
-    return this.rpc.fire(tx, callback, wrapper, aux);
-  },
-
-  transact: function (tx, onSent, onSuccess, onFailed) {
-    if (this.web && this.web.account && this.web.account.address) {
-      tx.from = this.web.account.address;
-      tx.invocation = {invoke: this.web.invoke, context: this.web};
-    } else {
-      tx.from = tx.from || this.from || this.coinbase;
-    }
-    return this.rpc.transact(tx, onSent, onSuccess, onFailed);
-  }
-};
-
-},{}],272:[function(require,module,exports){
+},{"../constants":273,"../utilities":275,"async":114,"augur-abi":1,"clone":155}],275:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -46320,7 +46671,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":242,"_process":191,"augur-abi":1,"bignumber.js":82,"buffer":117,"clone":120,"crypto":127}],273:[function(require,module,exports){
+},{"./constants":273,"_process":226,"augur-abi":1,"bignumber.js":117,"buffer":152,"clone":155,"crypto":162}],276:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -46350,7 +46701,7 @@ module.exports = {
   }    
 };
 
-},{}],274:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 (function (process,__dirname){
 "use strict";
 
@@ -47079,7 +47430,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),"/test")
-},{"../src/constants":242,"../src/modules/reporting":264,"../src/utilities":272,"./madlibs":273,"_process":191,"async":79,"augur-abi":1,"bignumber.js":82,"chalk":118,"clone":120,"fs":114,"madlibs":180,"path":187}],275:[function(require,module,exports){
+},{"../src/constants":273,"../src/modules/reporting":274,"../src/utilities":275,"./madlibs":276,"_process":226,"async":114,"augur-abi":1,"bignumber.js":117,"chalk":153,"clone":155,"fs":149,"madlibs":215,"path":222}],278:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -47322,11 +47673,11 @@ module.exports = {
   }
 };
 
-},{"async":276,"clone":277,"ethrpc":279}],276:[function(require,module,exports){
-arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],277:[function(require,module,exports){
+},{"async":279,"clone":280,"ethrpc":282}],279:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"_process":226,"dup":114}],280:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":117,"dup":59}],278:[function(require,module,exports){
+},{"buffer":152,"dup":59}],281:[function(require,module,exports){
 module.exports={
   "0x": "no response or bad input",
   "buy": {
@@ -47655,7 +48006,7 @@ module.exports={
   }
 }
 
-},{}],279:[function(require,module,exports){
+},{}],282:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -49634,17 +49985,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"./errors":278,"_process":191,"async":280,"augur-abi":1,"bignumber.js":281,"browser-request":282,"clone":283,"js-sha3":284,"net":114,"request":87,"sync-request":87,"websocket":87}],280:[function(require,module,exports){
-arguments[4][79][0].apply(exports,arguments)
-},{"_process":191,"dup":79}],281:[function(require,module,exports){
+},{"./errors":281,"_process":226,"async":283,"augur-abi":1,"bignumber.js":284,"browser-request":285,"clone":286,"js-sha3":287,"net":149,"request":122,"sync-request":122,"websocket":122}],283:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"_process":226,"dup":114}],284:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],282:[function(require,module,exports){
-arguments[4][86][0].apply(exports,arguments)
-},{"dup":86}],283:[function(require,module,exports){
+},{"dup":2}],285:[function(require,module,exports){
+arguments[4][121][0].apply(exports,arguments)
+},{"dup":121}],286:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":117,"dup":59}],284:[function(require,module,exports){
+},{"buffer":152,"dup":59}],287:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],285:[function(require,module,exports){
+},{"dup":38}],288:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -50275,7 +50626,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":286,"./lib/scrypt":287,"_process":191,"buffer":117,"crypto":127,"elliptic":291,"ethereumjs-util":308,"fs":114,"path":187,"sjcl":318,"uuid":320,"validator":321}],286:[function(require,module,exports){
+},{"./lib/keccak":289,"./lib/scrypt":290,"_process":226,"buffer":152,"crypto":162,"elliptic":294,"ethereumjs-util":311,"fs":149,"path":222,"sjcl":321,"uuid":323,"validator":324}],289:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -50469,7 +50820,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],287:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -62190,7 +62541,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":191,"fs":114,"path":187}],288:[function(require,module,exports){
+},{"_process":226,"fs":149,"path":222}],291:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -64639,9 +64990,9 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],289:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"crypto":87,"dup":5}],290:[function(require,module,exports){
+},{"crypto":122,"dup":5}],293:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -64667,9 +65018,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":117,"js-sha3":316}],291:[function(require,module,exports){
+},{"buffer":152,"js-sha3":319}],294:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":307,"./elliptic/curve":294,"./elliptic/curves":297,"./elliptic/ec":298,"./elliptic/eddsa":301,"./elliptic/hmac-drbg":304,"./elliptic/utils":306,"brorand":289,"dup":11}],292:[function(require,module,exports){
+},{"../package.json":310,"./elliptic/curve":297,"./elliptic/curves":300,"./elliptic/ec":301,"./elliptic/eddsa":304,"./elliptic/hmac-drbg":307,"./elliptic/utils":309,"brorand":292,"dup":11}],295:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -65022,7 +65373,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":291,"bn.js":288}],293:[function(require,module,exports){
+},{"../../elliptic":294,"bn.js":291}],296:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -65430,9 +65781,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],294:[function(require,module,exports){
+},{"../../elliptic":294,"../curve":297,"bn.js":291,"inherits":318}],297:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":292,"./edwards":293,"./mont":295,"./short":296,"dup":14}],295:[function(require,module,exports){
+},{"./base":295,"./edwards":296,"./mont":298,"./short":299,"dup":14}],298:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -65610,7 +65961,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],296:[function(require,module,exports){
+},{"../../elliptic":294,"../curve":297,"bn.js":291,"inherits":318}],299:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -66519,7 +66870,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":291,"../curve":294,"bn.js":288,"inherits":315}],297:[function(require,module,exports){
+},{"../../elliptic":294,"../curve":297,"bn.js":291,"inherits":318}],300:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -66678,7 +67029,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":291,"./precomputed/secp256k1":305,"hash.js":309}],298:[function(require,module,exports){
+},{"../elliptic":294,"./precomputed/secp256k1":308,"hash.js":312}],301:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -66890,7 +67241,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":291,"./key":299,"./signature":300,"bn.js":288}],299:[function(require,module,exports){
+},{"../../elliptic":294,"./key":302,"./signature":303,"bn.js":291}],302:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -66999,7 +67350,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":288}],300:[function(require,module,exports){
+},{"bn.js":291}],303:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67071,9 +67422,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":291,"bn.js":288}],301:[function(require,module,exports){
+},{"../../elliptic":294,"bn.js":291}],304:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":291,"./key":302,"./signature":303,"dup":21,"hash.js":309}],302:[function(require,module,exports){
+},{"../../elliptic":294,"./key":305,"./signature":306,"dup":21,"hash.js":312}],305:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -67171,7 +67522,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":291}],303:[function(require,module,exports){
+},{"../../elliptic":294}],306:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67239,11 +67590,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":291,"bn.js":288}],304:[function(require,module,exports){
+},{"../../elliptic":294,"bn.js":291}],307:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":291,"dup":24,"hash.js":309}],305:[function(require,module,exports){
+},{"../elliptic":294,"dup":24,"hash.js":312}],308:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],306:[function(require,module,exports){
+},{"dup":25}],309:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -67417,7 +67768,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":288}],307:[function(require,module,exports){
+},{"bn.js":291}],310:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -67517,7 +67868,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],308:[function(require,module,exports){
+},{}],311:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -67865,23 +68216,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"bn.js":288,"buffer":117,"elliptic":291,"rlp":317,"sha3":290}],309:[function(require,module,exports){
+},{"assert":113,"bn.js":291,"buffer":152,"elliptic":294,"rlp":320,"sha3":293}],312:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":310,"./hash/hmac":311,"./hash/ripemd":312,"./hash/sha":313,"./hash/utils":314,"dup":31}],310:[function(require,module,exports){
+},{"./hash/common":313,"./hash/hmac":314,"./hash/ripemd":315,"./hash/sha":316,"./hash/utils":317,"dup":31}],313:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":309,"dup":32}],311:[function(require,module,exports){
+},{"../hash":312,"dup":32}],314:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":309,"dup":33}],312:[function(require,module,exports){
+},{"../hash":312,"dup":33}],315:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":309,"dup":34}],313:[function(require,module,exports){
+},{"../hash":312,"dup":34}],316:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":309,"dup":35}],314:[function(require,module,exports){
+},{"../hash":312,"dup":35}],317:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":315}],315:[function(require,module,exports){
+},{"dup":36,"inherits":318}],318:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],316:[function(require,module,exports){
+},{"dup":37}],319:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],317:[function(require,module,exports){
+},{"dup":38}],320:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -68110,7 +68461,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":78,"buffer":117}],318:[function(require,module,exports){
+},{"assert":113,"buffer":152}],321:[function(require,module,exports){
 "use strict";var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
 sjcl.cipher.aes=function(a){this.s[0][0][0]||this.O();var b,c,d,e,f=this.s[0][4],g=this.s[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.b=[d=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){c=d[a-1];if(0===a%b||8===b&&4===a%b)c=f[c>>>24]<<24^f[c>>16&255]<<16^f[c>>8&255]<<8^f[c&255],0===a%b&&(c=c<<8^c>>>24^h<<24,h=h<<1^283*(h>>7));d[a]=d[a-b]^c}for(b=0;a;b++,a--)c=d[b&3?a:a-4],e[b]=4>=a||4>b?c:g[0][f[c>>>24]]^g[1][f[c>>16&255]]^g[2][f[c>>8&255]]^g[3][f[c&
 255]]};
@@ -68172,11 +68523,11 @@ null!=d[3]?b[d[2]]=parseInt(d[3],10):null!=d[4]?b[d[2]]=d[2].match(/^(ct|adata|s
 b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return c}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.pa={};sjcl.misc.cachedPbkdf2=function(a,b){var c=sjcl.misc.pa,d;b=b||{};d=b.iter||1E3;c=c[a]=c[a]||{};d=c[d]=c[d]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};c=void 0===b.salt?d.firstSalt:b.salt;d[c]=d[c]||sjcl.misc.pbkdf2(a,c,b.iter);return{key:d[c].slice(0),salt:c.slice(0)}};
 "undefined"!==typeof module&&module.exports&&(module.exports=sjcl);"function"===typeof define&&define([],function(){return sjcl});
 
-},{"crypto":127}],319:[function(require,module,exports){
-arguments[4][235][0].apply(exports,arguments)
-},{"dup":235}],320:[function(require,module,exports){
-arguments[4][236][0].apply(exports,arguments)
-},{"./lib/rng":319,"dup":236}],321:[function(require,module,exports){
+},{"crypto":162}],322:[function(require,module,exports){
+arguments[4][270][0].apply(exports,arguments)
+},{"dup":270}],323:[function(require,module,exports){
+arguments[4][271][0].apply(exports,arguments)
+},{"./lib/rng":322,"dup":271}],324:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -68950,4 +69301,4 @@ arguments[4][236][0].apply(exports,arguments)
 
 });
 
-},{}]},{},[61]);
+},{}]},{},[96]);
