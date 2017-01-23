@@ -12,6 +12,7 @@
       "alias": {
         "src": "./src",
         "test": "./test",
+        "assets": "assets",
         "modules": "modules",
         "utils": "utils",
         "services": "services"

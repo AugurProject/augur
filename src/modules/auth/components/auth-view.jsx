@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
-import ComponentNav from 'modules/common/components/component-nav';
+import AirbitzLogo from 'modules/common/components/airbitz-logo';
 
-import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
+import AuthForm from 'modules/auth/components/auth-form'; // TODO -- remove before PR
+
+import { AUTH_TYPE_AIRBITZ, AUTH_TYPE_LOGIN_ID, AUTH_TYPE_LOGIN_WITH_LOGIN_ID, AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID, AUTH_TYPE_IMPORT } from 'modules/auth/constants/auth-types';
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -15,18 +18,39 @@ export default class AuthView extends Component {
     super(props);
 
     this.state = {
-      selectedNav: AUTH_SIGNUP
+      selectedAuthMethod: null,
+      selectedLoginIDMethod: null,
+      toggledOld: false // TODO -- remove before PR
     };
 
-    this.updateSelectedNav = this.updateSelectedNav.bind(this);
+    this.updateSelectedAuthMethod = this.updateSelectedAuthMethod.bind(this);
+    this.updateSelectedLoginIDMethod = this.updateSelectedLoginIDMethod.bind(this);
   }
 
   componentDidMount() {
     this.props.authForm.airbitzOnLoad.onLoad();
   }
 
-  updateSelectedNav(selectedNav) {
-    this.setState({ selectedNav });
+  updateSelectedAuthMethod(selectedAuthMethod) {
+    this.setState({ selectedLoginIDMethod: null });
+
+    if (this.state.selectedAuthMethod !== null && this.state.selectedAuthMethod === selectedAuthMethod) {
+      this.setState({ selectedAuthMethod: null });
+    } else {
+      this.setState({ selectedAuthMethod });
+    }
+  }
+
+  updateSelectedLoginIDMethod(selectedLoginIDMethod) {
+    if (this.state.selectedLoginIDMethod !== null && this.state.selectedLoginIDMethod === selectedLoginIDMethod) {
+      this.setState({ selectedLoginIDMethod: null });
+    } else {
+      this.setState({ selectedLoginIDMethod });
+    }
+  }
+
+  toggleToOld() {
+    this.setState({ toggledOld: !this.state.toggledOld });
   }
 
   render() {
@@ -34,17 +58,73 @@ export default class AuthView extends Component {
     const s = this.state;
 
     return (
-      <section id="auth_view">
-        <ComponentNav
-          navItems={p.authNavItems}
-          selectedNav={s.selectedNav}
-          updateSelectedNav={this.updateSelectedNav}
-        />
-        {s.selectedNav === AUTH_SIGNUP &&
-          <AuthSignup />
+      <section id={s.toggledOld ? 'auth_view_old' : 'auth_view'}>
+        <button onClick={() => this.toggleToOld()}>Toggle Form</button>
+        {s.toggledOld &&
+          <AuthForm {...p.authForm} />
         }
-        {s.selectedNav === AUTH_LOGIN &&
-          <AuthLogin />
+        {!s.toggledOld &&
+          <article className="auth-methods">
+            <h3>Sign Up / Login</h3>
+            <button
+              className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
+              onClick={() => {
+                this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
+              }}
+            >
+              <AirbitzLogo />
+              {s.selectedAuthMethod === AUTH_TYPE_AIRBITZ &&
+                <span>Opened in Modal</span>
+              }
+            </button>
+            <button
+              className={classNames('auth-login-id unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID })}
+              onClick={() => {
+                this.updateSelectedAuthMethod(AUTH_TYPE_LOGIN_ID);
+              }}
+            >
+              <span className="auth-button-title">Login ID</span>
+              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID &&
+                <div>
+                  <button
+                    className="unstyled"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      this.setState({ selectedLoginIDMethod: AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID });
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    className="unstyled"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      this.setState({ selectedLoginIDMethod: AUTH_TYPE_LOGIN_WITH_LOGIN_ID });
+                    }}
+                  >
+                    Login
+                  </button>
+                </div>
+              }
+              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
+                <AuthLogin />
+              }
+              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
+                <AuthSignup />
+              }
+            </button>
+            <button
+              className={classNames('auth-import unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_IMPORT })}
+              onClick={() => {
+                this.updateSelectedAuthMethod(AUTH_TYPE_IMPORT);
+              }}
+            >
+              <span className="auth-button-title">Account File</span>
+              {s.selectedAuthMethod === AUTH_TYPE_IMPORT &&
+                <span>import component</span>
+              }
+            </button>
+          </article>
         }
       </section>
     );

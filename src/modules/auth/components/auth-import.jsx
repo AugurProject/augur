@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class AuthSignup extends Component {
+export default class AuthImport extends Component {
   constructor(props) {
     super(props);
 
@@ -11,9 +11,7 @@ export default class AuthSignup extends Component {
 
   render() {
     return (
-      <article className="auth-signup-form">
-        <span>Sign Up</span>
-      </article>
+      <span>Import</span>
     );
   }
 }
