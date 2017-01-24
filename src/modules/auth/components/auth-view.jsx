@@ -72,6 +72,10 @@ export default class AuthView extends Component {
               className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
               onClick={() => {
                 this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
+
+                if (s.selectedAuthMethod !== AUTH_TYPE_AIRBITZ) {
+                  p.authAirbitz.airbitzLoginLink.onClick();
+                }
               }}
             >
               <span className="auth-button-title">Airbitz</span>
@@ -109,7 +113,7 @@ export default class AuthView extends Component {
                 </div>
               }
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
-                <AuthLogin {...p.login} />
+                <AuthLogin {...p.authLogin} />
               }
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
                 <AuthSignup />

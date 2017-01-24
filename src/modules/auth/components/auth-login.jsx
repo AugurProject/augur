@@ -54,7 +54,7 @@ export default class AuthLogin extends Component {
             this.setState({ password: e.target.value });
           }}
         />
-        <label
+        <label // eslint-disable-line jsx-a11y/no-static-element-interactions
           htmlFor="remember_me_input"
           onClick={(e) => {
             e.stopPropagation();

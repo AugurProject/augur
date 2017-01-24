@@ -39,7 +39,9 @@ export default class Routes extends Component {
       case IMPORT:
       case LOGOUT:
         viewProps = {
-          login: p.login
+          authLogin: p.authLogin,
+          authAirbitz: p.authAirbitz,
+          authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {
           const AuthView = module.default;
