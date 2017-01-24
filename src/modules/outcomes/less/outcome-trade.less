@@ -23,45 +23,6 @@
     display: flex;
     flex-direction: column;
 
-    .outcome-trade-inputs-sides {
-      display: flex;
-      flex-direction: row;
-
-      & > * {
-        flex: 1;
-
-        .link {
-          flex: 1;
-
-          &.selected {
-
-            .border(true, @border-bottom, @color-purple, @border-width-3);
-          }
-
-          &:hover:not(.selected) {
-
-            .border(true, @border-bottom, @color-purple, @border-width-2);
-          }
-
-          li {
-            display: flex;
-            justify-content: center;
-            margin: 0;
-
-            &.selected {
-
-              .border(false);
-            }
-
-            &:hover:not(.selected) {
-
-              .border(false);
-            }
-          }
-        }
-      }
-    }
-
     .outcome-trade-inputs-fields {
       align-items: center;
       display: flex;
