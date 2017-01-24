@@ -6,6 +6,8 @@ import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function importAccount(name, password, rememberMe, keystore) {
+  console.log('keystore -- ', keystore);
+
   return (dispatch, getState) => {
     const { links } = require('../../../selectors');
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;

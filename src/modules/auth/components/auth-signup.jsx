@@ -24,8 +24,6 @@ export default class AuthSignup extends Component {
       this.setState({ isGeneratingLoginID: true });
 
       this.props.getLoginID(this.state.password, null, this.state.rememberMe, (loginAccount) => {
-        console.log('loginAccount -- ', loginAccount);
-
         this.setState({
           loginAccount,
           isGeneratingLoginID: false
@@ -46,8 +44,6 @@ export default class AuthSignup extends Component {
         onSubmit={(e) => {
           e.stopPropagation();
           e.preventDefault();
-
-          console.log('submitted registration form');
 
           p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount);
         }}

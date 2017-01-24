@@ -42,6 +42,8 @@ export default class Routes extends Component {
           authLogin: p.authLogin,
           authAirbitz: p.authAirbitz,
           authSignup: p.authSignup,
+          authImport: p.authImport,
+          authForm: p.authForm, // TODO -- remove
           authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {
