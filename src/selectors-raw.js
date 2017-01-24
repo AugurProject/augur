@@ -38,6 +38,7 @@ import outcomeTradeNavItems from 'modules/outcomes/selectors/outcome-trade-nav-i
 import authNavItems from 'modules/auth/selectors/auth-nav-items';
 import authLogin from 'modules/auth/selectors/auth-login';
 import authAirbitz from 'modules/auth/selectors/auth-airbitz';
+import authSignup from 'modules/auth/selectors/auth-signup';
 
 const selectors = {
   activeView,
@@ -79,7 +80,8 @@ const selectors = {
   outcomeTradeNavItems,
   authNavItems,
   authLogin,
-  authAirbitz
+  authAirbitz,
+  authSignup
 };
 
 export default selectors;

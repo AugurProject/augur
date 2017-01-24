@@ -41,6 +41,7 @@ export default class Routes extends Component {
         viewProps = {
           authLogin: p.authLogin,
           authAirbitz: p.authAirbitz,
+          authSignup: p.authSignup,
           authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {

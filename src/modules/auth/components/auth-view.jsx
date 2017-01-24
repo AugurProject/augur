@@ -116,7 +116,7 @@ export default class AuthView extends Component {
                 <AuthLogin {...p.authLogin} />
               }
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
-                <AuthSignup />
+                <AuthSignup {...p.authSignup} />
               }
             </button>
             <button

@@ -32,6 +32,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       dispatch(loadLoginAccountDependents((err) => {
         if (err) return console.error(err);
         dispatch(fundNewAccount((err) => {
+          console.log('fundNewAccount');
           if (err) return console.error(err);
           dispatch(registerTimestamp());
         }));
