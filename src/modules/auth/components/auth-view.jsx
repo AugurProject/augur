@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
-import AirbitzLogo from 'modules/common/components/airbitz-logo';
+// import AirbitzLogo from 'modules/common/components/airbitz-logo';
 
 import AuthForm from 'modules/auth/components/auth-form'; // TODO -- remove before PR
 
