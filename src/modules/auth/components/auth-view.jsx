@@ -20,8 +20,7 @@ export default class AuthView extends Component {
 
     this.state = {
       selectedAuthMethod: null,
-      selectedLoginIDMethod: null,
-      toggledOld: false // TODO -- remove before PR
+      selectedLoginIDMethod: null
     };
 
     this.updateSelectedAuthMethod = this.updateSelectedAuthMethod.bind(this);
@@ -50,10 +49,6 @@ export default class AuthView extends Component {
     }
   }
 
-  toggleToOld() {
-    this.setState({ toggledOld: !this.state.toggledOld });
-  }
-
   render() {
     const p = this.props;
     const s = this.state;
@@ -62,77 +57,71 @@ export default class AuthView extends Component {
 
     return (
       <section id={s.toggledOld ? 'auth_view_old' : 'auth_view'}>
-        <button onClick={() => this.toggleToOld()}>Toggle Form</button>
-        {s.toggledOld &&
-          <AuthForm {...p.authForm} />
-        }
-        {!s.toggledOld &&
-          <article className="auth-methods">
-            <h3>Sign Up / Login</h3>
-            <button
-              className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
-              onClick={() => {
-                this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
+        <article className="auth-methods">
+          <h3>Sign Up / Login</h3>
+          <button
+            className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
+            onClick={() => {
+              this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
 
-                if (s.selectedAuthMethod !== AUTH_TYPE_AIRBITZ) {
-                  p.authAirbitz.airbitzLoginLink.onClick();
-                }
-              }}
-            >
-              <span className="auth-button-title">Airbitz</span>
-              {s.selectedAuthMethod === AUTH_TYPE_AIRBITZ &&
-                <span>Opened in Modal</span>
+              if (s.selectedAuthMethod !== AUTH_TYPE_AIRBITZ) {
+                p.authAirbitz.airbitzLoginLink.onClick();
               }
-            </button>
-            <button
-              className={classNames('auth-login-id unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID })}
-              onClick={() => {
-                this.updateSelectedAuthMethod(AUTH_TYPE_LOGIN_ID);
-              }}
-            >
-              <span className="auth-button-title">Login ID</span>
-              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID &&
-                <div className="auth-login-id-method-selection">
-                  <button
-                    className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID })}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      this.updateSelectedLoginIDMethod(AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID);
-                    }}
-                  >
-                    Sign Up
-                  </button>
-                  <button
-                    className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID })}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      this.updateSelectedLoginIDMethod(AUTH_TYPE_LOGIN_WITH_LOGIN_ID);
-                    }}
-                  >
-                    Login
-                  </button>
-                </div>
-              }
-              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
-                <AuthLogin {...p.authLogin} />
-              }
-              {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
-                <AuthSignup {...p.authSignup} />
-              }
-            </button>
-            <button
-              className={classNames('auth-import unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_IMPORT })}
-              onClick={() => {
-                this.updateSelectedAuthMethod(AUTH_TYPE_IMPORT);
-              }}
-            >
-              <span className="auth-button-title">Account File</span>
-              {s.selectedAuthMethod === AUTH_TYPE_IMPORT &&
-                <AuthImport {...p.authImport} />
-              }
-            </button>
-          </article>
-        }
+            }}
+          >
+            <span className="auth-button-title">Airbitz</span>
+            {s.selectedAuthMethod === AUTH_TYPE_AIRBITZ &&
+              <span>Opened in Modal</span>
+            }
+          </button>
+          <button
+            className={classNames('auth-login-id unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID })}
+            onClick={() => {
+              this.updateSelectedAuthMethod(AUTH_TYPE_LOGIN_ID);
+            }}
+          >
+            <span className="auth-button-title">Login ID</span>
+            {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID &&
+              <div className="auth-login-id-method-selection">
+                <button
+                  className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.updateSelectedLoginIDMethod(AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID);
+                  }}
+                >
+                  Sign Up
+                </button>
+                <button
+                  className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.updateSelectedLoginIDMethod(AUTH_TYPE_LOGIN_WITH_LOGIN_ID);
+                  }}
+                >
+                  Login
+                </button>
+              </div>
+            }
+            {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
+              <AuthLogin {...p.authLogin} />
+            }
+            {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
+              <AuthSignup {...p.authSignup} />
+            }
+          </button>
+          <button
+            className={classNames('auth-import unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_IMPORT })}
+            onClick={() => {
+              this.updateSelectedAuthMethod(AUTH_TYPE_IMPORT);
+            }}
+          >
+            <span className="auth-button-title">Account File</span>
+            {s.selectedAuthMethod === AUTH_TYPE_IMPORT &&
+              <AuthImport {...p.authImport} />
+            }
+          </button>
+        </article>
       </section>
     );
   }

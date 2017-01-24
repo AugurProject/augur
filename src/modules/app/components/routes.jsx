@@ -6,8 +6,8 @@ import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-typ
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
-// NOTE -- 	the respective routes are imported within the switch statement so that
-//					webpack can properly code split the views
+// NOTE --  the respective routes are imported within the switch statement so that
+//          webpack can properly code split the views
 export default class Routes extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +43,6 @@ export default class Routes extends Component {
           authAirbitz: p.authAirbitz,
           authSignup: p.authSignup,
           authImport: p.authImport,
-          authForm: p.authForm, // TODO -- remove
           authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {
