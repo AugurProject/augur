@@ -6,8 +6,9 @@ import AuthSignup from 'modules/auth/components/auth-signup';
 import AuthImport from 'modules/auth/components/auth-import';
 // import AirbitzLogo from 'modules/common/components/airbitz-logo';
 
-import AuthForm from 'modules/auth/components/auth-form'; // TODO -- remove before PR
+import ComponentNav from 'modules/common/components/component-nav';
 
+import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
 import { AUTH_TYPE_AIRBITZ, AUTH_TYPE_LOGIN_ID, AUTH_TYPE_LOGIN_WITH_LOGIN_ID, AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID, AUTH_TYPE_IMPORT } from 'modules/auth/constants/auth-types';
 
 export default class AuthView extends Component {
@@ -19,16 +20,18 @@ export default class AuthView extends Component {
     super(props);
 
     this.state = {
+      selectedNav: AUTH_SIGNUP,
       selectedAuthMethod: null,
       selectedLoginIDMethod: null
     };
 
+    this.updateSelectedNav = this.updateSelectedNav.bind(this);
     this.updateSelectedAuthMethod = this.updateSelectedAuthMethod.bind(this);
     this.updateSelectedLoginIDMethod = this.updateSelectedLoginIDMethod.bind(this);
   }
 
-  componentDidMount() {
-    this.props.authForm.airbitzOnLoad.onLoad();
+  updateSelectedNav(selectedNav) {
+    this.setState({ selectedNav });
   }
 
   updateSelectedAuthMethod(selectedAuthMethod) {
@@ -59,6 +62,12 @@ export default class AuthView extends Component {
       <section id={s.toggledOld ? 'auth_view_old' : 'auth_view'}>
         <article className="auth-methods">
           <h3>Sign Up / Login</h3>
+          <ComponentNav
+            fullWidth
+            navItems={p.authNavItems}
+            selectedNav={s.selectedNav}
+            updateSelectedNav={this.updateSelectedNav}
+          />
           <button
             className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
             onClick={() => {
