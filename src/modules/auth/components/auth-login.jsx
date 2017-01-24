@@ -16,7 +16,7 @@ export default class AuthLogin extends Component {
   }
 
   render() {
-    const s = this.state;
+    // const s = this.state;
 
     return (
       <article className="auth-login-form">
