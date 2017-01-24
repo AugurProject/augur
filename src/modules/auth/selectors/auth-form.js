@@ -17,9 +17,16 @@ import { login } from '../../auth/actions/login';
 import { selectAuthLink, selectAirbitzLink, selectAirbitzOnLoad } from '../../link/selectors/links';
 
 export default function () {
-  const { auth, loginAccount } = store.getState();
-  const { links } = require('../../../selectors');
-  return selectAuthForm(auth, loginAccount, links, store.dispatch);
+  // const { auth, loginAccount } = store.getState();
+  // const { links } = require('../../../selectors');
+  // return selectAuthForm(auth, loginAccount, links, store.dispatch);
+  return {
+    submitLogin
+  };
+}
+
+function submitLogin(id, password, remember) {
+  store.dispatch(login(id, password, remember));
 }
 
 export const selectErrMsg = (err) => {

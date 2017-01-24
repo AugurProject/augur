@@ -24,11 +24,13 @@
 
     & > button {
       align-items: stretch;
-      color: @color-white;
       min-height: @auth-button-height;
 
-      &:not(:last-child) {
+      &:first-of-type {
+        .border(true, @border-top, @border-light);
+      }
 
+      &:not(:last-child) {
         .border(true, @border-bottom, @border-light);
       }
     }
@@ -38,7 +40,7 @@
     }
 
     .auth-airbitz {
-      background-color: @color-airbitz-logo-background;
+      // background-color: @color-airbitz-logo-background;
       justify-content: center;
 
       .airbitz-logo {
@@ -49,11 +51,18 @@
     }
 
     .auth-login-id {
-      background-color: @color-base;
+      .auth-login-id-method-selection {
+        display: flex;
+
+        button {
+          flex: 1;
+          line-height: @auth-button-height;
+        }
+      }
     }
 
     .auth-import {
-      background-color: @color-gray;
+      // TODO
     }
   }
 }

@@ -8,6 +8,8 @@ import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-lo
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function login(loginID, password, rememberMe) {
+  console.log('login action -- ', loginID, password, rememberMe);
+
   return (dispatch, getState) => {
     accounts.login(loginID, password, (account) => {
       if (!account) {

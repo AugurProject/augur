@@ -57,6 +57,8 @@ export default class AuthView extends Component {
     const p = this.props;
     const s = this.state;
 
+    // console.log('p -- ', p);
+
     return (
       <section id={s.toggledOld ? 'auth_view_old' : 'auth_view'}>
         <button onClick={() => this.toggleToOld()}>Toggle Form</button>
@@ -72,7 +74,7 @@ export default class AuthView extends Component {
                 this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
               }}
             >
-              <AirbitzLogo />
+              <span className="auth-button-title">Airbitz</span>
               {s.selectedAuthMethod === AUTH_TYPE_AIRBITZ &&
                 <span>Opened in Modal</span>
               }
@@ -85,21 +87,21 @@ export default class AuthView extends Component {
             >
               <span className="auth-button-title">Login ID</span>
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID &&
-                <div>
+                <div className="auth-login-id-method-selection">
                   <button
-                    className="unstyled"
+                    className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID })}
                     onClick={(e) => {
                       e.stopPropagation();
-                      this.setState({ selectedLoginIDMethod: AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID });
+                      this.updateSelectedLoginIDMethod(AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID);
                     }}
                   >
                     Sign Up
                   </button>
                   <button
-                    className="unstyled"
+                    className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID })}
                     onClick={(e) => {
                       e.stopPropagation();
-                      this.setState({ selectedLoginIDMethod: AUTH_TYPE_LOGIN_WITH_LOGIN_ID });
+                      this.updateSelectedLoginIDMethod(AUTH_TYPE_LOGIN_WITH_LOGIN_ID);
                     }}
                   >
                     Login
@@ -107,7 +109,7 @@ export default class AuthView extends Component {
                 </div>
               }
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
-                <AuthLogin />
+                <AuthLogin {...p.login} />
               }
               {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
                 <AuthSignup />

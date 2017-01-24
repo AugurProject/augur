@@ -36,6 +36,7 @@ import marketUserDataNavItems from 'modules/market/selectors/market-user-data-na
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import outcomeTradeNavItems from 'modules/outcomes/selectors/outcome-trade-nav-items';
 import authNavItems from 'modules/auth/selectors/auth-nav-items';
+import login from 'modules/auth/selectors/login';
 
 const selectors = {
   activeView,
@@ -75,7 +76,8 @@ const selectors = {
   marketUserDataNavItems,
   scalarShareDenomination,
   outcomeTradeNavItems,
-  authNavItems
+  authNavItems,
+  login
 };
 
 export default selectors;
