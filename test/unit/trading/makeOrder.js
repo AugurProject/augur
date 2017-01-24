@@ -1,1116 +1,158 @@
-// import { describe, it } from 'mocha';
-// import { assert } from 'chai';
-// import proxyquire from 'proxyquire';
-// import sinon from 'sinon';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
+"use strict";
 
-// describe("makeOrder", () => {
-//   proxyquire.noPreserveCache();
-//   var middlewares = [thunk];
-//   var mockStore = configureMockStore(middlewares);
-//   describe('placeBid', () => {
-//     var test = (t) => {
-//       it(t.description, () => {
-//         var store = mockStore(t.state);
-//         var augur = { buy: () => {} };
-//         var action = proxyquire('../../../src/modules/trade/actions/make-order.js', {
-//           '../../../services/augurjs': augur
-//         });
-//         sinon.stub(augur, 'buy', (o) => {
-//           store.dispatch({ type: 'AUGURJS_BUY', params: JSON.parse(JSON.stringify(o)) });
-//         });
-//         action.placeBid(t.params.market, t.params.outcomeID, t.params.numShares, t.params.limitPrice, t.params.tradeGroupID);
-//         t.assertions(store.getActions());
-//         store.clearActions();
-//       });
-//     };
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 0.5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 0.5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 0.75 in a categorical market (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 7 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place bid for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_BUY',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//   });
-//   describe('placeAsk', () => {
-//     var test = (t) => {
-//       it(t.description, () => {
-//         var store = mockStore(t.state);
-//         var AugurJS = { augur: { sell: () => {} } };
-//         var action = proxyquire('../../../src/modules/trade/actions/make-order.js', {
-//           '../../../services/augurjs': AugurJS
-//         });
-//         sinon.stub(AugurJS.augur, 'sell', (o) => {
-//           store.dispatch({ type: 'AUGURJS_SELL', params: JSON.parse(JSON.stringify(o)) });
-//         });
-//         action.placeAsk(t.params.market, t.params.outcomeID, t.params.numShares, t.params.limitPrice, t.params.tradeGroupID);
-//         t.assertions(store.getActions());
-//         store.clearActions();
-//       });
-//     };
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 0.5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 0.5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 0.75 in a categorical market (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 7 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place ask for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SELL',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//   });
-//   describe('placeShortAsk', () => {
-//     var test = (t) => {
-//       it(t.description, () => {
-//         var store = mockStore(t.state);
-//         var AugurJS = { augur: { shortAsk: () => {} } };
-//         var action = proxyquire('../../../src/modules/trade/actions/make-order.js', {
-//           '../../../services/augurjs': AugurJS
-//         });
-//         sinon.stub(AugurJS.augur, 'shortAsk', (o) => {
-//           store.dispatch({ type: 'AUGURJS_SHORT_ASK', params: JSON.parse(JSON.stringify(o)) });
-//         });
-//         action.placeShortAsk(t.params.market, t.params.outcomeID, t.params.numShares, t.params.limitPrice, t.params.tradeGroupID);
-//         t.assertions(store.getActions());
-//         store.clearActions();
-//       });
-//     };
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 0.5 shares of outcome 2 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 0.5 shares of outcome 1 for 0.75 in a binary market',
-//       params: {
-//         market: {
-//           id: '0xa1',
-//           type: 'binary',
-//           minValue: '1'
-//         },
-//         outcomeID: '1',
-//         numShares: '0.5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '0.5',
-//             price: '0.75',
-//             market: '0xa1',
-//             outcome: '1',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 0.75 in a categorical market (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 7 for 0.75 in a categorical market',
-//       params: {
-//         market: {
-//           id: '0xa2',
-//           type: 'categorical',
-//           minValue: '1'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '0.75',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '0.75',
-//             market: '0xa2',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: {}
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value 0',
-//       params: {
-//         market: {
-//           id: '0xa3',
-//           type: 'scalar',
-//           minValue: '0'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa3',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '0' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3 (ungrouped)',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: null
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: null,
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 2 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '2',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '2',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//     test({
-//       description: 'place short-ask for 5 shares of outcome 7 for 3.1415 in a scalar market with minimum value -3',
-//       params: {
-//         market: {
-//           id: '0xa4',
-//           type: 'scalar',
-//           minValue: '-3'
-//         },
-//         outcomeID: '7',
-//         numShares: '5',
-//         limitPrice: '3.1415',
-//         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-//       },
-//       assertions: (actions) => {
-//         assert.deepEqual(actions, [{
-//           type: 'AUGURJS_SHORT_ASK',
-//           params: {
-//             amount: '5',
-//             price: '3.1415',
-//             market: '0xa4',
-//             outcome: '7',
-//             tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
-//             scalarMinMax: { minValue: '-3' }
-//           }
-//         }]);
-//       }
-//     });
-//   });
-// });
+var assert = require('chai').assert;
+var augur = require('../../../src');
+
+describe("augur.placeBid", function() {
+    // 2 tests total
+    var buy = augur.buy;
+    afterEach(function() {
+        augur.buy = buy;
+    });
+    var test = function(t) {
+        it(t.description, function() {
+            augur.buy = t.assertions;
+            augur.placeBid(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+        });
+    };
+    test({
+        description: 'Should prepare a binary market bid',
+        market: { id: '0xa1', type: 'binary', minValue: 0},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, {});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+    test({
+        description: 'Should prepare a scalar market bid',
+        market: { id: '0xa1', type: 'scalar', minValue: '-15'},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, { minValue: '-15'});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+});
+describe("augur.placeAsk", function() {
+    // 2 tests total
+    var sell = augur.sell;
+    afterEach(function() {
+        augur.sell = sell;
+    });
+    var test = function(t) {
+        it(t.description, function() {
+            augur.sell = t.assertions;
+            augur.placeAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+        });
+    };
+    test({
+        description: 'Should prepare a binary market ask',
+        market: { id: '0xa1', type: 'binary', minValue: 0},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, {});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+    test({
+        description: 'Should prepare a scalar market ask',
+        market: { id: '0xa1', type: 'scalar', minValue: '-15'},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, { minValue: '-15'});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+});
+describe("augur.placeShortAsk", function() {
+    // 2 tests total
+    var shortAsk = augur.shortAsk;
+    afterEach(function() {
+        augur.shortAsk = shortAsk;
+    });
+    var test = function(t) {
+        it(t.description, function() {
+            augur.shortAsk = t.assertions;
+            augur.placeShortAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+        });
+    };
+    test({
+        description: 'Should prepare a binary market shortAsk',
+        market: { id: '0xa1', type: 'binary', minValue: 0},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, {});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+    test({
+        description: 'Should prepare a scalar market shortAsk',
+        market: { id: '0xa1', type: 'scalar', minValue: '-15'},
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeGroupID: '0xab12',
+        assertions: function(order) {
+            assert.deepEqual(order.amount, '100');
+            assert.deepEqual(order.price, '0.5');
+            assert.deepEqual(order.market, '0xa1');
+            assert.deepEqual(order.outcome, '1');
+            assert.deepEqual(order.tradeGroupID, '0xab12');
+            assert.deepEqual(order.scalarMinMax, { minValue: '-15'});
+            assert.isFunction(order.onSent);
+            assert.isFunction(order.onSuccess);
+            assert.isFunction(order.onFailed);
+        }
+    });
+});

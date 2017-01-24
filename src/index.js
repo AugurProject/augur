@@ -31,6 +31,7 @@ var modules = [
   require("./modules/logs"),
   require("./modules/abacus"),
   require("./modules/reporting"),
+  require("./modules/parametrizeOrder"),
   require("./modules/payout"),
   require("./modules/tradingActions"),
   require("./modules/makeOrder"),
