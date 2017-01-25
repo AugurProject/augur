@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
@@ -9,7 +8,6 @@ import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/views';
-import { AUTH_TYPE_AIRBITZ, AUTH_TYPE_LOGIN_ID, AUTH_TYPE_LOGIN_WITH_LOGIN_ID, AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID, AUTH_TYPE_IMPORT } from 'modules/auth/constants/auth-types';
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -68,13 +66,9 @@ export default class AuthView extends Component {
             updateSelectedNav={this.updateSelectedNav}
           />
           <button
-            className={classNames('auth-airbitz unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_AIRBITZ })}
+            className="auth-airbitz unstyled"
             onClick={() => {
-              this.updateSelectedAuthMethod(AUTH_TYPE_AIRBITZ);
-
-              if (s.selectedAuthMethod !== AUTH_TYPE_AIRBITZ) {
-                p.authAirbitz.airbitzLoginLink.onClick();
-              }
+              p.authAirbitz.airbitzLoginLink.onClick();
             }}
           >
             <AirbitzLogoIcon /> <span>{s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz</span>

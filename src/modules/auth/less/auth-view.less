@@ -36,8 +36,8 @@
       justify-content: center;
       overflow: hidden;
 
-      &:before,
-      &:after {
+      &::before,
+      &::after {
         background-color: @color-border-light;
         content: "";
         display: inline-block;
@@ -46,11 +46,13 @@
         top: 0.6em;
         width: 40%;
       }
-      &:before {
-        right: 1em;
+
+      &::before {
         margin-left: -50%;
+        right: 1em;
       }
-      &:after {
+
+      &::after {
         left: 1em;
         margin-right: -50%;
       }
