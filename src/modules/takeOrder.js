@@ -14,7 +14,7 @@ var constants = require("../constants");
 
 module.exports = {
 
-  placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
@@ -27,12 +27,14 @@ module.exports = {
       var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
       if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
         console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
-        self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
+        if (!doNotMakeOrders) {
+          self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
+        }
       }
     });
   },
 
-  placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
@@ -47,14 +49,16 @@ module.exports = {
           var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
           var remainingShares = abi.bignum(res.remainingShares);
           if (position.gt(constants.PRECISION.zero)) {
-            var shares = splitOrder(remainingShares, position);
-            var askShares = shares.askShares;
-            var shortAskShares = shares.shortAskShares;
-            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
-            }
-            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
+            if (!doNotMakeOrders) {
+              var shares = splitOrder(remainingShares, position);
+              var askShares = shares.askShares;
+              var shortAskShares = shares.shortAskShares;
+              if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
+                self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
+              }
+              if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
+                self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
+              }
             }
           } else {
             self.getOrderBook(marketID, function (updatedOrderBook) {
@@ -64,7 +68,7 @@ module.exports = {
               var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
               if (tradeIDs && tradeIDs.length) {
                 self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
-              } else {
+              } else if (!doNotMakeOrders) {
                 self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
               }
             });
@@ -74,7 +78,7 @@ module.exports = {
     });
   },
 
-  placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
@@ -84,7 +88,7 @@ module.exports = {
     this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
       tradeCommitLockCallback(false);
       if (err) return console.error("short sell failed:", err);
-      if (res.remainingShares.gt(constants.PRECISION.zero)) {
+      if (res.remainingShares.gt(constants.PRECISION.zero) && !doNotMakeOrders) {
         self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
       }
     });
