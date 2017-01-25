@@ -27,11 +27,14 @@
     }
 
     h4 {
-
+      color: @color-text-light-light;
       display: flex;
       flex: 1;
-      overflow: hidden;
+      font-size: @font-size-large;
+      font-style: italic;
+      font-weight: @font-weight-extra-light;
       justify-content: center;
+      overflow: hidden;
 
       &:before,
       &:after {
@@ -40,8 +43,8 @@
         display: inline-block;
         height: 1px;
         position: relative;
-        vertical-align: middle;
-        width: 50%;
+        top: 0.6em;
+        width: 40%;
       }
       &:before {
         right: 1em;
@@ -65,7 +68,7 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-      margin: 1em 0;
+      margin: 1.4em 0 1em;
 
       .airbitz-logo-icon {
         .border(true, @border-right, @color-border-muted);

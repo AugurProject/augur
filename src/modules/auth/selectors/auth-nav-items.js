@@ -1,4 +1,4 @@
-import { AUTH_SIGNUP, AUTH_LOGIN } from 'modules/app/constants/views';
+import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/views';
 
 export default function () {
   return {
@@ -7,6 +7,9 @@ export default function () {
     },
     [AUTH_LOGIN]: {
       label: 'Login'
+    },
+    [AUTH_IMPORT]: {
+      label: 'Import'
     }
   };
 }
