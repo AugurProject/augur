@@ -53,142 +53,46 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
-      <h3>January 18, 2017</h3>
+      <h3>January 24, 2017</h3>
       <ol>
         <li>
-          A command queue and mutex is now used by ethrpc to handle multiple outgoing RPC requests during the initial socket (websocket or IPC socket) connection.
+          Moved updateTradesInProgress trading actions post-processing to a new augur.js function, calculateTradeTotals.
         </li>
         <li>
-          Fixed a bug caused by over-zealous log-getter removal from augur.js.
+          Moved placeTrade loop-thru-trading actions to new executeTradingActions function in augur.js.
+        </li>
+        <li>
+          Added optional doNotMakeOrders parameter to executeTradingActions, placeTrade, placeBuy, placeSell, and placeShortSell functions.
+        </li>
+        <li>
+          Fixed selectOrder references.
+        </li>
+        <li>
+          Fixed isShortAsk parameter formatting in sell function.
         </li>
       </ol>
-      <h3>January 17, 2017</h3>
+      <h3>January 23, 2017</h3>
       <ol>
         <li>
-          Expanded augur.js unit testing suite.
-        </li>
-        <li>
-          Progress on the inline close position functionality in the UI.
+          Increased augur.js unit test coverage by about 10%.
         </li>
       </ol>
-      <h3>January 16, 2017</h3>
+      <h3>January 21, 2017</h3>
       <ol>
         <li>
-          The market ID field in the marketCreated log is now indexed.
-        </li>
-        <li>
-          Improved the efficiency of market price history lookups: the price history getter now looks up the market creation block first and uses this to set the lower-bound of the log lookup.
-        </li>
-        <li>
-          Removed the &quot;mutable&quot; flag for createMarket and createSingleEventMarket from their static API data.  The return values from these functions are no longer state-dependent, so they can be used directly.
-        </li>
-        <li>
-          Moved the augur-contracts &quot;errors&quot; JSON file to the ethrpc repository, and updated augur.js to support this change.  ethrpc is now independent of the augur-contracts module.
-        </li>
-        <li>
-          Completed ethereumjs-connect refactoring.
-        </li>
-        <li>
-          Replaced the ethereumjs-connect semi-functional integration tests with unit tests, resulting in significantly increased test coverage (from 68% to 98%).
-        </li>
-        <li>
-          Updated augur.js connection code for compatibility with ethereumjs-connect 2.0.
-        </li>
-        <li>
-          The augur-contracts module now attaches raw API data to its exported object.
+          augur.js minified build now works correctly.
         </li>
       </ol>
-      <h3>January 15, 2017</h3>
+      <h3>January 19, 2017</h3>
       <ol>
         <li>
-          Started ethereumjs-connect refactoring.  Eliminated ethereumjs-connect dependence on the augur-contracts module.
-        </li>
-      </ol>
-      <h3>January 14, 2017</h3>
-      <ol>
-        <li>
-          Refactored sync-blockchain and separated sync methods from the update-blockchain action.
+          Moved (almost) all trading logic from UI to augur.js.
         </li>
         <li>
-          Moved update-branch and sync-branch actions to the branch module.
+          Added license link to footer.
         </li>
         <li>
-          Restructured sync-branch tests: assertions, selectors, and state are now specified inside each test case.
-        </li>
-      </ol>
-      <h3>January 13, 2017</h3>
-      <ol>
-        <li>
-          Fixed a trade ID formatting bug that was causing some trades to show up twice on the transactions page.
-        </li>
-        <li>
-          All contracts have been reuploaded on Ropsten (network 3) as well as our private testing chain (network 9000).  Transaction history is now &quot;portable&quot;: it will still be viewable even if you login on a different browser or computer!
-        </li>
-        <li>
-          The upgraded transactions subsystem is now merged into the master branch!
-        </li>
-        <li>
-          The bytes-to-utf16 conversion function in augur-abi now supports numeric inputs (BigNumber or JS numbers).
-        </li>
-        <li>
-          Added a parity check to bytes_to_utf16 to fix a bytearray conversion error from augur-abi.
-        </li>
-        <li>
-          Simplified loginWithMasterKey method in the augur.js accounts submodule, and removed placeholder (constant) salt/password/IV values.
-        </li>
-      </ol>
-      <h3>January 12, 2017</h3>
-      <ol>
-        <li>
-          Indentation is now uniform (2 spaces) across the following repositories in the AugurProject Github group: augur, augur.js, augur-abi, augur-contracts, and ethrpc.
-        </li>
-        <li>
-          Updated the default network ID from 2 to 3 across middleware repositories.
-        </li>
-        <li>
-          The &quot;price&quot; field is now used as a fallback for &quot;fullPrecisionPrice&quot; for scalar price adjustments when the latter field is not present.
-        </li>
-        <li>
-          Fixed messaging for maker of order taken by short sell transaction.
-        </li>
-        <li>
-          Saved log.shares in transaction.data.shares for payout transactions.
-        </li>
-        <li>
-          Used tradeCommitment for relayed short_sell order lookup.
-        </li>
-        <li>
-          Removed memoization from selectWinningPositions.
-        </li>
-        <li>
-          The addOrder function now works properly when the market order book is initially empty.
-        </li>
-        <li>
-          Added an initial existence check to sent* logs-to-transactions conversions.
-        </li>
-        <li>
-          Fixed an old reference to the &quot;shares&quot; property of a trade (should be &quot;amount&quot;) in the price history totals calculation.
-        </li>
-      </ol>
-      <h3>January 11, 2017</h3>
-      <ol>
-        <li>
-          Changed the getOutcome and getUncaughtOutcome returns types in augur-contracts static API data to &quot;number&quot;.
-        </li>
-        <li>
-          Added unfixReport conversion step to getMarket(s)Info callbacks in augur.js.
-        </li>
-        <li>
-          Reporter assets are now updated prior to reporter-only synchronization with the blockchain state.
-        </li>
-        <li>
-          Fixed penalizationCatchup NaN error.
-        </li>
-        <li>
-          Split two oversized files in the transactions module (register-transaction-relay and convert-logs-to-transactions) into 3 smaller files each.
-        </li>
-        <li>
-          All unit tests in the front-end are now compliant with the transaction relay (i.e., the new transactions subsystem).
+          Added popover text for long outcome names in market preview panels.
         </li>
       </ol>
       {p.marketsLink &&
