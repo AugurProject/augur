@@ -32,6 +32,7 @@ var modules = [
   require("./modules/abacus"),
   require("./modules/reporting"),
   require("./modules/payout"),
+  require("./modules/placeTrade"),
   require("./modules/tradingActions"),
   require("./modules/makeOrder"),
   require("./modules/takeOrder"),
@@ -42,7 +43,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.8.8";
+  this.version = "3.8.9";
 
   this.options = {
     debug: {
