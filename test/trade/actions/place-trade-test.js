@@ -43,16 +43,16 @@ describe(`modules/trade/actions/place-trade.js`, () => {
       format_int256: () => {}
     },
     augur: {
-      placeTrade: () => {}
+      executeTradingActions: () => {}
     }
   };
   sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
   sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n));
   sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n));
-  sinon.stub(AugurJS.augur, 'placeTrade', (market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
+  sinon.stub(AugurJS.augur, 'executeTradingActions', (market, outcomeID, address, orderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
     store.dispatch({
-      type: 'AUGURJS_PLACE_TRADE',
-      params: [market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks]
+      type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
+      params: [market, outcomeID, address, orderBooks, doNotMakeOrders, tradesInProgress]
     });
     callback(null);
   });
@@ -72,8 +72,9 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 
   it('should place a BUY trade for a binary market', () => {
     store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
+    console.log(JSON.stringify(store.getActions(), null, 2));
     assert.deepEqual(store.getActions(), [{
-      type: 'AUGURJS_PLACE_TRADE',
+      type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
       params: [
         {
           author: 'testAuthor1',
@@ -107,13 +108,31 @@ describe(`modules/trade/actions/place-trade.js`, () => {
           winningOutcomes: []
         },
         '2',
-        'buy',
-        '10',
-        '0.5',
-        '0.01',
         'testUser1',
-        '5.01',
-        tradeConstOrderBooks
+        tradeConstOrderBooks,
+        undefined,
+        {
+          2: {
+            side: 'buy',
+            numShares: '10',
+            limitPrice: '0.5',
+            totalFee: '0.01',
+            totalCost: '5.01',
+            tradeActions: [{
+              action: 'BID',
+              shares: '10',
+              gasEth: '0.01450404',
+              feeEth: '0.01',
+              feePercent: '0.2',
+              costEth: '5.01',
+              avgPrice: '0.501',
+              noFeePrice: '0.5'
+            }],
+            tradingFeesEth: '0.01',
+            gasFeesRealEth: '0.01450404',
+            feePercent: '0.199203187250996016'
+          }
+        }
       ]
     }, {
       type: 'CLEAR_TRADE_IN_PROGRESS',
