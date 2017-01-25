@@ -6,7 +6,6 @@ import { constructBasicTransaction, constructTradingTransaction, constructTransa
 import unpackTransactionParameters from '../../transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
-import selectOrder from '../../bids-asks/selectors/select-order';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
   const hash = tx.response.hash;
@@ -44,7 +43,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         gasFees
       }, p.market, p.outcome, status));
     case 'cancel': {
-      const order = selectOrder(p.trade_id);
+      const order = augur.selectOrder(p.trade_id, getState().orderBooks);
       return dispatch(constructTradingTransaction('log_cancel', {
         ...p,
         ...order,
