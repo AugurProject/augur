@@ -1,4 +1,7 @@
-// "use strict";
+"use strict";
+
+var assert = require('chai').assert;
+var augur = require('../../../src');
 
 // var augur = require("augur.js");
 // var assert = require("chai").assert;

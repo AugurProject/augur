@@ -10,13 +10,9 @@ describe("batch", function() {
 	for (var i = 1; i < 6; i++) {
 		tx['contract' + i] = { ['method' + i]: { params: ['some', 'default', 'params']}};
 	}
-	// create a this to apply to batch
-	var testThis = { tx: tx, rpc: { batch: utils.noop } };
-
 	var test = function(t) {
 		it(t.description, function() {
-			// set the batch function to t.rpcBatch if available to be tested in t.assertions
-			testThis.rpc.batch = t.rpcBatch || utils.noop;
+			var testThis = t.testThis;
 			// create a new instance of batch applied to testThis
 			// run test actions on the initiated batch object
 			// run assertions after test actions are complete.
@@ -26,6 +22,7 @@ describe("batch", function() {
 
 	test({
 		description: 'initialize batch and add some transactions',
+		testThis: { tx: tx, rpc: { batch: utils.noop } },
 		testActions: function(batch) {
 			// add: contract, method, params, callback
 			batch.add('contract1','method1', ['hello', 'world'], undefined);
@@ -54,18 +51,20 @@ describe("batch", function() {
 
 	test({
 		description: 'initialize batch and add some transactions then execute the transactions',
-		rpcBatch: function(txList, cb) {
-			assert.deepEqual(txList, [{
-			 	params: ['hello', 'world'],
-				callback: utils.noop
-			 }, {
-			 	params: ['9', '9'],
-				callback: utils.noop
-			 }, {
-			 	params: ['0x1234']
-			 }]);
-			assert.equal(cb, true);
-		},
+		testThis: { tx: tx, rpc: {
+			batch: function(txList, cb) {
+				assert.deepEqual(txList, [{
+				 	params: ['hello', 'world'],
+					callback: utils.noop
+				 }, {
+				 	params: ['9', '9'],
+					callback: utils.noop
+				 }, {
+				 	params: ['0x1234']
+				 }]);
+				assert.equal(cb, true);
+			}
+		} },
 		testActions: function(batch) {
 			// add: contract, method, params, callback
 			batch.add('contract1','method1', ['hello', 'world'], utils.noop);
@@ -89,17 +88,19 @@ describe("batch", function() {
 
 	test({
 		description: 'initialize batch and add some transactions with edge cases, then execute the transactions',
-		rpcBatch: function(txList, cb) {
-			assert.deepEqual(txList, [{
-			 	params: ['hello', 'world'],
-				callback: utils.noop
-			 }, {
-			 	params: ['9', '9'],
-			 }, {
-			 	params: undefined
-			 }]);
-			assert.equal(cb, true);
-		},
+		testThis: { tx: tx, rpc: {
+			batch: function(txList, cb) {
+				assert.deepEqual(txList, [{
+				 	params: ['hello', 'world'],
+					callback: utils.noop
+				 }, {
+				 	params: ['9', '9'],
+				 }, {
+				 	params: undefined
+				 }]);
+				assert.equal(cb, true);
+			}
+		} },
 		testActions: function(batch) {
 			// add: contract, method, params, callback
 			batch.add('contract1','method1', ['hello', 'world'], utils.noop);
