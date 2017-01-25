@@ -362,21 +362,15 @@ augur-abi@1.1.1:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.7.4:
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.7.4.tgz#2f76b1fd965f8c8d82f9294180148a2ed30e7e16"
-  dependencies:
-    clone "1.0.2"
-
 augur-contracts@2.8.2:
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.8.2.tgz#d571eb0e0b6bc08210d964274e8d7b45ad48b637"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.8.7:
-  version "3.8.7"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.7.tgz#aae2adbc4cb6ebb376a059af6bbb2aeb7c1b4618"
+augur.js@3.8.10:
+  version "3.8.10"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.8.10.tgz#4e67c74a87c691279014d26d54dfc120ea336709"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -386,7 +380,7 @@ augur.js@3.8.7:
     bs58 "3.0.0"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "2.0.0"
+    ethereumjs-connect "2.0.1"
     ethereumjs-tx "1.1.1"
     ethereumjs-util "4.4.1"
     ethrpc "2.4.1"
@@ -2868,13 +2862,13 @@ ethereumjs-abi@0.6.2:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-connect@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-2.0.0.tgz#570aef46d3a4e06134ab49ab2a05b0a3c22a8bcf"
+ethereumjs-connect@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-2.0.1.tgz#2a55ef0e5c98326bd3ca59e401bf084447283291"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "2.3.3"
+    ethrpc "2.4.0"
 
 ethereumjs-tx@1.1.1:
   version "1.1.1"
@@ -2903,13 +2897,12 @@ ethereumjs-util@4.4.1, ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0:
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
-ethrpc@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.3.3.tgz#fa2af78dcee7fcdbea46cc1f472e8fff04a8ae27"
+ethrpc@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-2.4.0.tgz#538644afe528bbbd3c83b72a7d0605b8b90e4dca"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.7.4"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"
