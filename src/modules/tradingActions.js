@@ -206,7 +206,6 @@ module.exports = {
     var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
     var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
     var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
-    // var costEth = shares.neg().minus(feeEth).plus(shares.times(limitPrice));
     var costEth = shares.neg().minus(feeEth);
     return {
       action: "SHORT_ASK",
@@ -218,6 +217,42 @@ module.exports = {
       avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
     };
+  },
+
+  calculateTradeTotals: function (type, numShares, limitPrice, tradeActions) {
+    var tradeActionsTotals = {
+      numShares: numShares,
+      limitPrice: limitPrice,
+      side: type,
+      totalFee: 0,
+      totalCost: 0
+    };
+    var numTradeActions = tradeActions.length;
+    if (numTradeActions) {
+      var totalCost = constants.ZERO;
+      var tradingFeesEth = constants.ZERO;
+      var gasFeesRealEth = constants.ZERO;
+      for (var i = 0; i < numTradeActions; ++i) {
+        totalCost = totalCost.plus(abi.bignum(tradeActions[i].costEth));
+        tradingFeesEth = tradingFeesEth.plus(abi.bignum(tradeActions[i].feeEth));
+        gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(tradeActions[i].gasEth));
+      }
+      tradeActionsTotals.tradeActions = tradeActions;
+      tradeActionsTotals.totalCost = totalCost.toFixed();
+      tradeActionsTotals.tradingFeesEth = tradingFeesEth.toFixed();
+      tradeActionsTotals.gasFeesRealEth = gasFeesRealEth.toFixed();
+      tradeActionsTotals.totalFee = tradingFeesEth.toFixed();
+      if (type === "sell") {
+        tradeActionsTotals.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
+          .times(100).abs()
+          .toFixed();
+      } else {
+        tradeActionsTotals.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
+          .times(100)
+          .toFixed();
+      }
+    }
+    return tradeActionsTotals;
   },
 
   /**
@@ -286,7 +321,16 @@ module.exports = {
         if (isMarketOrder) {
           return [];
         }
-        return [augur.getBidAction(abi.fix(orderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice)];
+        return this.calculateTradeTotals(
+          type,
+          orderShares.toFixed(),
+          orderLimitPrice && orderLimitPrice.toFixed(),
+          [augur.getBidAction(
+            abi.fix(orderShares),
+            abi.fix(orderLimitPrice),
+            adjustedFees.maker,
+            gasPrice)]
+        );
       } else {
         var buyActions = [];
 
@@ -314,7 +358,7 @@ module.exports = {
           buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
         }
 
-        return buyActions;
+        return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), buyActions);
       }
     } else {
       var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
@@ -371,7 +415,7 @@ module.exports = {
         }
       } else {
         if (isMarketOrder) {
-          return sellActions;
+          return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
         }
 
         var etherToShortSell = constants.ZERO;
@@ -382,8 +426,8 @@ module.exports = {
             bid = matchingSortedBids[i];
             orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
             fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
-                            abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
-                            bid.fullPrecisionPrice;
+              abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
+              bid.fullPrecisionPrice;
             tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
             totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
             etherToShortSell = etherToShortSell.plus(tradingCost.cash);
@@ -399,7 +443,7 @@ module.exports = {
         }
       }
 
-      return sellActions;
+      return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
     }
   }
 };

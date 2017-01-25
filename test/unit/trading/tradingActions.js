@@ -203,9 +203,14 @@ describe("getTradingActions", function () {
   }
 
   var txOriginal;
+  var calculateTradeTotals;
   before("getTradingActions", function () {
     txOriginal = augur.tx;
+    calculateTradeTotals = augur.calculateTradeTotals;
     augur.tx = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
+    augur.calculateTradeTotals = function (type, numShares, limitPrice, tradeActions) {
+      return tradeActions;
+    };
   });
 
   after("getTradingActions", function () {
