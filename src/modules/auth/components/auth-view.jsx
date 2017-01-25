@@ -59,9 +59,8 @@ export default class AuthView extends Component {
     // console.log('p -- ', p);
 
     return (
-      <section id={s.toggledOld ? 'auth_view_old' : 'auth_view'}>
+      <section id="auth_view">
         <article className="auth-methods">
-          <h3>Sign Up / Login</h3>
           <ComponentNav
             fullWidth
             navItems={p.authNavItems}
