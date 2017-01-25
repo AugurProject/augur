@@ -122,7 +122,7 @@ module.exports = {
       market,
       outcome,
       abi.fix(constants.MINIMUM_TRADE_SIZE, "hex"),
-      "0x0",
+      0,
       tradeGroupID || 0
     ];
     if (this.options.debug.trading) {
