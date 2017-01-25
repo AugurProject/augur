@@ -3,7 +3,7 @@
 var BigNumber = require("bignumber.js");
 var async = require("async");
 var abi = require("augur-abi");
-var selectOrder = require("./selectOrder").selectOrder;
+var selectOrder = require("./selectOrder");
 var constants = require("../constants");
 
 module.exports = {
@@ -63,7 +63,7 @@ module.exports = {
               tradeCommitmentCallback({
                 tradeHash: abi.format_int256(tradeHash),
                 orders: tradeIDs.map(function (tradeID) {
-                  return selectOrder(tradeID, orderBooks);
+                  return selectOrder.selectOrder(tradeID, orderBooks);
                 }),
                 maxValue: maxValue.toFixed(),
                 maxAmount: maxAmount.toFixed(),
@@ -144,7 +144,7 @@ module.exports = {
         onTradeHash: function (tradeHash) {
           tradeCommitmentCallback({
             tradeHash: abi.format_int256(tradeHash),
-            orders: [selectOrder(matchingID, orderBooks)],
+            orders: [selectOrder.selectOrder(matchingID, orderBooks)],
             maxValue: "0",
             maxAmount: maxAmount,
             remainingEth: "0",
