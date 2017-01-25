@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from '../../../services/augurjs';
 import { BUY, SELL } from '../../trade/constants/types';
-import { ZERO, TWO } from '../../trade/constants/numbers';
+import { TWO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
@@ -88,9 +88,10 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       cleanLimitPrice = outcomeTradeInProgress.limitPrice;
     }
 
-    if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== '0') {
+    if (cleanNumShares && !cleanLimitPrice && (market.type === SCALAR || cleanLimitPrice !== '0')) {
       cleanLimitPrice = topOrderPrice;
     }
+
     // if this isn't a scalar market, limitPrice must be positive.
     if (market.type !== SCALAR && limitPrice) {
       cleanLimitPrice = bignumLimit.abs().toFixed() || outcomeTradeInProgress.limitPrice || topOrderPrice;
@@ -103,6 +104,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       totalFee: 0,
       totalCost: 0
     };
+    console.log(newTradeDetails);
 
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
@@ -112,15 +114,11 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           console.error('getParticipantSharesPurchased:', sharesPurchased);
           return dispatch({
             type: UPDATE_TRADE_IN_PROGRESS,
-            data: {
-              marketID,
-              outcomeID,
-              details: newTradeDetails
-            }
+            data: { marketID, outcomeID, details: newTradeDetails }
           });
         }
         const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        newTradeDetails.tradeActions = augur.getTradingActions(
+        const tradingActions = augur.getTradingActions(
           newTradeDetails.side,
           newTradeDetails.numShares,
           newTradeDetails.limitPrice,
@@ -134,51 +132,18 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           (market.type === SCALAR) ? {
             minValue: market.minValue,
             maxValue: market.maxValue
-          } : null);
-        if (newTradeDetails.tradeActions) {
-          const numTradeActions = newTradeDetails.tradeActions.length;
-          if (numTradeActions) {
-            let totalCost = ZERO;
-            let tradingFeesEth = ZERO;
-            let gasFeesRealEth = ZERO;
-            for (let i = 0; i < numTradeActions; ++i) {
-              totalCost = totalCost.plus(abi.bignum(newTradeDetails.tradeActions[i].costEth));
-              tradingFeesEth = tradingFeesEth.plus(abi.bignum(newTradeDetails.tradeActions[i].feeEth));
-              gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(newTradeDetails.tradeActions[i].gasEth));
-            }
-            newTradeDetails.totalCost = totalCost.toFixed();
-            newTradeDetails.tradingFeesEth = tradingFeesEth.toFixed();
-            newTradeDetails.gasFeesRealEth = gasFeesRealEth.toFixed();
-            newTradeDetails.totalFee = tradingFeesEth.toFixed();
-            if (newTradeDetails.side === 'sell') {
-              newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth))
-                .times(100).abs()
-                .toFixed();
-            } else {
-              newTradeDetails.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth))
-                .times(100)
-                .toFixed();
-            }
-          }
-        }
-        console.debug('newTradeDetails:', JSON.stringify(newTradeDetails, null, 2));
+          } : null
+        );
+        console.debug('trading actions:', JSON.stringify(tradingActions, null, 2));
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: {
-            marketID,
-            outcomeID,
-            details: newTradeDetails
-          }
+          data: { marketID, outcomeID, details: tradingActions }
         });
       });
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
-        data: {
-          marketID,
-          outcomeID,
-          details: newTradeDetails
-        }
+        data: { marketID, outcomeID, details: newTradeDetails }
       });
     }
   };
