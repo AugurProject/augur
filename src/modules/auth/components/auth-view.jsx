@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
 import AuthImport from 'modules/auth/components/auth-import';
-// import AirbitzLogo from 'modules/common/components/airbitz-logo';
+import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 import ComponentNav from 'modules/common/components/component-nav';
 
@@ -78,11 +78,9 @@ export default class AuthView extends Component {
               }
             }}
           >
-            <span className="auth-button-title">Airbitz</span>
-            {s.selectedAuthMethod === AUTH_TYPE_AIRBITZ &&
-              <span>Opened in Modal</span>
-            }
+            <AirbitzLogoIcon /> <span>{s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz</span>
           </button>
+          <h4>or</h4>
           <button
             className={classNames('auth-login-id unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID })}
             onClick={() => {

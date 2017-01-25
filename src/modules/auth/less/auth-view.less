@@ -9,13 +9,9 @@
     .border(true);
 
     background-color: @color-white;
+    display: flex;
+    flex-direction: column;
     width: 400px;
-
-    &,
-    & > button {
-      display: flex;
-      flex-direction: column;
-    }
 
     h3 {
       align-self: flex-start;
@@ -23,15 +19,33 @@
     }
 
     & > button {
-      align-items: stretch;
-      min-height: @auth-button-height;
+      align-self: center;
+    }
 
-      &:first-of-type {
-        .border(true, @border-top, @border-light);
+    h4 {
+
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      justify-content: center;
+
+      &:before,
+      &:after {
+        background-color: @color-border-light;
+        content: "";
+        display: inline-block;
+        height: 1px;
+        position: relative;
+        vertical-align: middle;
+        width: 50%;
       }
-
-      &:not(:last-child) {
-        .border(true, @border-bottom, @border-light);
+      &:before {
+        right: 1em;
+        margin-left: -50%;
+      }
+      &:after {
+        left: 1em;
+        margin-right: -50%;
       }
     }
 
@@ -40,13 +54,23 @@
     }
 
     .auth-airbitz {
-      // background-color: @color-airbitz-logo-background;
+      align-items: center;
+      background-color: @color-airbitz-logo-background;
+      color: @color-text-light;
+      display: flex;
+      flex-direction: row;
       justify-content: center;
+      margin: 1em 0;
 
-      .airbitz-logo {
-        align-self: center;
-        padding: 0.7em 0;
-        width: 5em;
+      .airbitz-logo-icon {
+        .border(true, @border-right, @color-border-muted);
+
+        height: @font-size-large;
+        padding: 0.6em 0.4em;
+      }
+
+      span {
+        padding: 0 1.2em;
       }
     }
 
