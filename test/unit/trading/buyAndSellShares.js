@@ -525,7 +525,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using JS Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -550,7 +550,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using String inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -575,7 +575,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using Big Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -600,7 +600,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using String inputs but missing function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -622,7 +622,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using String inputs in a single object argument",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -640,7 +640,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a binary market sell using String inputs in a single object argument missing the function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -660,7 +660,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using JS Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -685,7 +685,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using String inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -710,7 +710,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using Big Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -735,7 +735,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using String inputs but missing function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -757,7 +757,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using String inputs in a single object argument",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -775,7 +775,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a scalar market sell using String inputs in a single object argument missing the function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -794,7 +794,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using JS Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -819,7 +819,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using String inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -844,7 +844,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using Big Number inputs",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -869,7 +869,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using String inputs but missing function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -891,7 +891,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using String inputs in a single object argument",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
@@ -909,7 +909,7 @@ describe("buyAndSellShares Unit Tests", function() {
       description: "Should handle a categorical market sell using String inputs in a single object argument missing the function hooks",
       transact: function(tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", "0x0", 0]);
+        assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
         assert.isFunction(onSent);
         assert.isFunction(onSuccess);
         assert.isFunction(onFailed);
