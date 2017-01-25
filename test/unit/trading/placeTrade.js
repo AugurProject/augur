@@ -2,6 +2,233 @@
 
 var assert = require('chai').assert;
 var augur = require('../../../src');
+var abi = require("augur-abi");
+// 4 tests total
+
+describe("placeTrade.generateTradeGroupID", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.generateTradeGroupID());
+        });
+    };
+    test({
+        description: 'Should return a int256 string to be used as a tradeGroupID.',
+        assertions: function(output) {
+            assert.isString(output);
+            // we expect this value to be padded and prefixed, so confirm that
+            assert.include(output, '0x0');
+        }
+    });
+});
+
+describe("placeTrade.executeTradingActions", function() {
+    // 3 tests total
+    var placeTrade = augur.placeTrade;
+    var tradeGroupIDtoAssert;
+    afterEach(function() {
+        augur.placeTrade = placeTrade;
+    });
+    var test = function(t) {
+        it(t.description, function(done) {
+            augur.placeTrade = t.placeTrade;
+
+            augur.executeTradingActions(t.market, t.outcomeID, t.address, t.orderBooks, t.doNotMakeOrders, t.tradesInProgress, t.tradeCommitmentCallback, t.tradeCommitLockCallback, function(err, tradeGroupID) {
+                t.assertions(err, tradeGroupID);
+                done();
+            });
+        });
+    };
+    test({
+        description: 'Should handle an array of tradesInProgress for a given market.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+        	{
+                marketID: '0xa1',
+        		side: 'buy',
+        		numShares: '100',
+        		limitPrice: '0.5',
+        		tradingFeesEth: '0.01',
+        		totalCost: '51'
+        	},
+            {
+                marketID: '0xa1',
+        		side: 'buy',
+        		numShares: '50',
+        		limitPrice: '0.35',
+        		tradingFeesEth: '0.01',
+        		totalCost: '18'
+        	},
+            {
+                marketID: '0xa1',
+        		side: 'sell',
+        		numShares: '150',
+        		limitPrice: '0.75',
+        		tradingFeesEth: '0.01',
+        		totalCost: '114'
+        	}
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with no error as placeTrade would.
+            callback(null);
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.isNull(err);
+            assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+        }
+    });
+    test({
+        description: 'Should handle an array of tradesInProgress for a given market but some of the tradesInProgress arent sent to placeTrade.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '100',
+                limitPrice: '0.5',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '25',
+                limitPrice: undefined,
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '50',
+                limitPrice: '0.35',
+                tradingFeesEth: '0.01',
+                totalCost: '18'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: undefined,
+                limitPrice: '0.24',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '30',
+                limitPrice: '0.6',
+                tradingFeesEth: '0.01',
+                totalCost: undefined
+            },
+            {
+                marketID: '0xa1',
+                side: 'sell',
+                numShares: '150',
+                limitPrice: '0.75',
+                tradingFeesEth: '0.01',
+                totalCost: '114'
+            }
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with no error as placeTrade would.
+            callback(null);
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.isNull(err);
+            assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+        }
+    });
+    test({
+        description: 'Should handle an error back from placeTrade',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '100',
+                limitPrice: '0.5',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '50',
+                limitPrice: '0.35',
+                tradingFeesEth: '0.01',
+                totalCost: '18'
+            },
+            {
+                marketID: '0xa1',
+                side: 'sell',
+                numShares: '150',
+                limitPrice: '0.75',
+                tradingFeesEth: '0.01',
+                totalCost: '114'
+            }
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with an error as placeTrade might.
+            callback({ error: 999, message: 'Uh-Oh!' });
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+            assert.isUndefined(tradeGroupID);
+        }
+    });
+});
 
 // var augur = require("augur.js");
 // var assert = require("chai").assert;
