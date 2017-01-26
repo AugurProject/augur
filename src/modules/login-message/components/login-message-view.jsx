@@ -53,6 +53,10 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>January 25, 2017</h3>
+      <ol>
+        <li>Completed a simplification refactor to authentication views (Sign Up, Login, Import).  Styling is in-process.</li>
+      </ol>
       <h3>January 24, 2017</h3>
       <ol>
         <li>
@@ -69,6 +73,9 @@ const LoginMessagePage = p => (
         </li>
         <li>
           Fixed isShortAsk parameter formatting in sell function.
+        </li>
+        <li>
+          {"Fix to a 'double header' bug in OS X Safari when scrolling."}
         </li>
       </ol>
       <h3>January 23, 2017</h3>
@@ -89,7 +96,7 @@ const LoginMessagePage = p => (
           Moved (almost) all trading logic from UI to augur.js.
         </li>
         <li>
-          Added license link to footer.
+          Added link to license (AAL) in footer.
         </li>
         <li>
           Added popover text for long outcome names in market preview panels.
