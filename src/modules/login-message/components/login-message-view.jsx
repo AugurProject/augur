@@ -75,7 +75,7 @@ const LoginMessagePage = p => (
           Fixed isShortAsk parameter formatting in sell function.
         </li>
         <li>
-          Fix to a 'double header' bug in OS X Safari when scrolling.
+          {"Fix to a 'double header' bug in OS X Safari when scrolling."}
         </li>
       </ol>
       <h3>January 23, 2017</h3>
