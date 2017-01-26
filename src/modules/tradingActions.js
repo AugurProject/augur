@@ -411,7 +411,7 @@ module.exports = {
 
         if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
           // recursion
-          sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax));
+          sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax).tradeActions);
         }
       } else {
         if (isMarketOrder) {
