@@ -4,15 +4,8 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var noop = require("../../../src/utilities").noop;
 var BigNumber = require("bignumber.js");
+var ClearCallCounts = require('../../tools').ClearCallCounts;
 // 12 tests total
-
-// a function to quickly reset the callCounts object.
-function ClearCallCounts(callCounts) {
-    var keys = Object.keys(callCounts);
-    for (keys in callCounts) {
-        callCounts[keys] = 0;
-    }
-};
 
 describe("takeOrder.placeBuy", function() {
     // 3 tests total
