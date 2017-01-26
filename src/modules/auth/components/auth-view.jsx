@@ -28,6 +28,10 @@ export default class AuthView extends Component {
     this.updateSelectedLoginIDMethod = this.updateSelectedLoginIDMethod.bind(this);
   }
 
+  componentDidMount() {
+    this.props.authAirbitz.airbitzOnLoad.onLoad();
+  }
+
   updateSelectedNav(selectedNav) {
     this.setState({ selectedNav });
   }
@@ -65,15 +69,17 @@ export default class AuthView extends Component {
             selectedNav={s.selectedNav}
             updateSelectedNav={this.updateSelectedNav}
           />
-          <button
-            className="auth-airbitz unstyled"
-            onClick={() => {
-              p.authAirbitz.airbitzLoginLink.onClick();
-            }}
-          >
-            <AirbitzLogoIcon /> <span>{s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz</span>
-          </button>
-          <h4>or</h4>
+          {s.selectedNav !== AUTH_IMPORT &&
+            <div className="default-auth">
+              <button
+                className="auth-airbitz unstyled"
+                onClick={p.authAirbitz.airbitzLoginLink.onClick}
+              >
+                <AirbitzLogoIcon /> <span>{s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz</span>
+              </button>
+              <h4>or</h4>
+            </div>
+          }
           {s.selectedNav === AUTH_SIGNUP &&
             <AuthSignup {...p.authSignup} />
           }

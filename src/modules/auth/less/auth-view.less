@@ -62,9 +62,16 @@
       line-height: @auth-button-height;
     }
 
+    .default-auth {
+      display: flex;
+      flex-direction: column;
+    }
+
     .auth-airbitz {
       align-items: center;
+      align-self: center;
       background-color: @color-airbitz-logo-background;
+      border-radius: 4px;
       color: @color-text-light;
       cursor: pointer;
       display: flex;
@@ -73,10 +80,10 @@
       margin: 1.4em 0 1em;
 
       .airbitz-logo-icon {
-        .border(true, @border-right, @color-border-muted);
+        .border(true, @border-right, @color-gray);
 
         height: @font-size-large;
-        padding: 0.6em 0.4em;
+        padding: 0.6em;
       }
 
       span {
