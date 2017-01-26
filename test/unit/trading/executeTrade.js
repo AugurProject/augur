@@ -11,7 +11,7 @@ describe.skip("executeTrade.executeTrade", function() {
     // ? tests total
 });
 
-describe("executeTrade.xecuteShortSell", function() {
+describe("executeTrade.executeShortSell", function() {
     // ? tests total
     var short_sell = augur.short_sell;
     var callCounts = {
@@ -56,6 +56,76 @@ describe("executeTrade.xecuteShortSell", function() {
             assert.isNull(err);
             assert.deepEqual(res, {
                 remainingShares: new BigNumber('100'),
+                filledShares: constants.ZERO,
+                filledEth: constants.ZERO,
+                tradingFees: constants.ZERO,
+                gasFees: constants.ZERO,
+            });
+            assert.deepEqual(callCounts, {
+                getTradeIDs: 1,
+                tradeCommitmentCallback: 0,
+                short_sell: 0
+            });
+        }
+    });
+    test({
+        description: 'Should handle empty matchingIDs array',
+        marketID: '0xa1',
+        outcomeID: '1',
+        numShares: '100',
+        tradingFees: '0.01',
+        tradeGroupID: '0x000abc123',
+        address: '0x1',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        getTradeIDs: function() {
+            callCounts.getTradeIDs++;
+            return [];
+        },
+        tradeCommitmentCallback: function(commit) {
+            callCounts.tradeCommitmentCallback++;
+        },
+        short_sell: function() {
+            callCounts.short_sell++;
+        },
+        assertions: function(err, res) {
+            assert.isNull(err);
+            assert.deepEqual(res, {
+                remainingShares: new BigNumber('100'),
+                filledShares: constants.ZERO,
+                filledEth: constants.ZERO,
+                tradingFees: constants.ZERO,
+                gasFees: constants.ZERO,
+            });
+            assert.deepEqual(callCounts, {
+                getTradeIDs: 1,
+                tradeCommitmentCallback: 0,
+                short_sell: 0
+            });
+        }
+    });
+    test({
+        description: 'Should handle matchingIDs but 0 numShares passed',
+        marketID: '0xa1',
+        outcomeID: '1',
+        numShares: '0',
+        tradingFees: '0.01',
+        tradeGroupID: '0x000abc123',
+        address: '0x1',
+        orderBooks: { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.45' }, '0xb2': { amount: '50', price: '0.35' }}, sell: {} } },
+        getTradeIDs: function() {
+            callCounts.getTradeIDs++;
+            return ['0xb1', '0xb2'];
+        },
+        tradeCommitmentCallback: function(commit) {
+            callCounts.tradeCommitmentCallback++;
+        },
+        short_sell: function() {
+            callCounts.short_sell++;
+        },
+        assertions: function(err, res) {
+            assert.isNull(err);
+            assert.deepEqual(res, {
+                remainingShares: constants.ZERO,
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
