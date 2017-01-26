@@ -1413,31 +1413,28 @@ describe('CompositeGetters.getMarketsInfo', function() {
         }
     });
     test({
-        description: 'Should return a markets object array, augurNodes available, all args passed in expected positions. augurNode.getMarketsInfo will return an error object the first 3 calls, then call itself again each time until we get market info back.',
+        description: 'Should return a markets object array, augurNodes available, all args passed in expected positions. augurNode.getMarketsInfo will return an error object which should cause the nodes to be cleared and getMarketsInfo to be called again with the same args.',
         branch: '101010',
         offset: 1,
         numMarketsToLoad: 1,
         volumeMin: 0,
         volumeMax: -1,
         callback: function(data) {
-            assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
-            // confirm we errored 3 times before returning markets and we continue to self call and retry.
-            assert.deepEqual(augurNodeGetMarketsInfoCC, 4);
+            assert.deepEqual(data.params, ['101010', 1, 1, 0, -1]);
+            assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+            // confirm we errored before clearing augurNode.nodes then recalled getMArketsInfo and didn't call augurNodeGetMarketsInfo again.
+            assert.deepEqual(augurNodeGetMarketsInfoCC, 1);
         },
         nodes: ["https://augurnode1.net", "https://augurnode2.net"],
         fire: function(tx, callback, parseMarketsInfo, branch) {
             // in this case, this function shouldn't be hit.
+            callback(tx);
         },
         augurNodeGetMarketsInfo: function(branch, cb) {
-            switch(augurNodeGetMarketsInfoCC) {
-            case 4:
-                cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-                break;
-            default:
-                augurNodeGetMarketsInfoCC++;
-                cb({ error: 'Uh-Oh!'});
-                break;
-            }
+            // increment call count
+            augurNodeGetMarketsInfoCC++;
+            // error
+            cb({ error: 'Uh-Oh!'});
         }
     });
     test({

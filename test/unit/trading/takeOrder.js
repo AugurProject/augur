@@ -383,6 +383,90 @@ describe("takeOrder.placeSell", function() {
             done();
         }
     });
+    test({
+        description: 'Should handle a sell order where the order is only partially filled by the sell order and we have a position still but are looking to short ask as well.',
+        market: { id: '0xa1' },
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '51',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeTrade: function(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeTrade++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(totalEthWithFee, 0);
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            cb(null, { remainingShares: new BigNumber('40') });
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(address, '0x1');
+            assert.equal(outcomeID, '1');
+            cb('10');
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+            assert.deepEqual(market, { id: '0xa1' });
+            assert.equal(outcomeID, '1');
+            assert.equal(askShares, new BigNumber('10'));
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+            assert.deepEqual(market, { id: '0xa1' });
+            assert.equal(outcomeID, '1');
+            assert.equal(shortAskShares, new BigNumber('30'));
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        getOrderBook: function(marketID, cb) {
+            callCounts.getOrderBook++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBook, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback) {
+            callCounts.placeShortSell++;
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                executeTrade: 1,
+                getParticipantSharesPurchased: 1,
+                placeAsk: 1,
+                placeShortAsk: 1,
+                getOrderBook: 0,
+                calculateSellTradeIDs: 0,
+                placeShortSell: 0,
+                tradeCommitLockCallback: 2
+            });
+            done();
+        }
+    });
 });
 
 describe("takeOrder.placeShortSell", function() {
@@ -565,62 +649,3 @@ describe("takeOrder.placeShortSell", function() {
         }
     });
 });
-// import { describe, it } from 'mocha';
-// import { assert } from 'chai';
-// import proxyquire from 'proxyquire';
-// import sinon from 'sinon';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-
-// describe(`modules/trade/actions/take-order.js`, () => {
-//   proxyquire.noPreserveCache();
-//   const middlewares = [thunk];
-//   const mockStore = configureMockStore(middlewares);
-//   const test = (t) => {
-//     it(t.description, () => {
-//       const store = mockStore(t.state);
-//       const AugurJS = {
-//         augur: {
-//           getParticipantSharesPurchased: () => {}
-//         }
-//       };
-//       const UpdateTradeCommitment = {};
-//       const Trade = {};
-//       const ShortSell = {};
-//       const LoadBidsAsks = {};
-//       const MakeOrder = {};
-//       const action = proxyquire('../../../src/modules/trade/actions/take-order.js', {
-//         '../../../services/augurjs': AugurJS,
-//         '../../trade/actions/update-trade-commitment': UpdateTradeCommitment,
-//         '../../trade/actions/helpers/trade': Trade,
-//         '../../trade/actions/helpers/short-sell': ShortSell,
-//         '../../bids-asks/actions/load-bids-asks': LoadBidsAsks,
-//         '../../trade/actions/make-order': MakeOrder
-//       });
-//       sinon.stub(AugurJS.augur, 'getParticipantSharesPurchased', () => {});
-//       store.dispatch(action.placeBuy(t.params.market, t.params.outcomeID, t.params.numShares, t.params.limitPrice, t.params.totalCost, t.params.tradingFees, t.params.tradeGroupID));
-//       t.assertions(store.getActions());
-//       store.clearActions();
-//     });
-//   };
-//   test({
-//     description: 'place buy',
-//     params: {
-//       market: '0xa1',
-//       outcomeID: '2',
-//       numShares: '5',
-//       limitPrice: '0.75',
-//       totalCost: '10',
-//       tradingFees: '0.01',
-//       tradeGroupID: null
-//     },
-//     state: {
-//       loginAccount: {
-//         address: '0x0000000000000000000000000000000000000b0b'
-//       }
-//     },
-//     assertions: (actions) => {
-//       assert.deepEqual(actions, []);
-//     }
-//   });
-// });

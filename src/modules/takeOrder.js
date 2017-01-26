@@ -62,7 +62,7 @@ module.exports = {
             }
           } else {
             self.getOrderBook(marketID, function (updatedOrderBook) {
-              if (err) console.error("getOrderBook:", err);
+              if (!updatedOrderBook || updatedOrderBook.error) return console.error("getOrderBook:", updatedOrderBook);
               var orderBook = {};
               orderBook[marketID] = updatedOrderBook;
               var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
