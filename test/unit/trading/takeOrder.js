@@ -5,6 +5,14 @@ var augur = require('../../../src');
 var noop = require("../../../src/utilities").noop;
 var BigNumber = require("bignumber.js");
 
+// a function to quickly reset the callCounts object.
+function ClearCallCounts(callCounts) {
+    var keys = Object.keys(callCounts);
+    for (keys in callCounts) {
+        callCounts[keys] = 0;
+    }
+};
+
 describe("takeOrder.placeBuy", function() {
     // 3 tests total
     var executeTrade = augur.executeTrade;
@@ -14,15 +22,8 @@ describe("takeOrder.placeBuy", function() {
         placeBid: 0,
         tradeCommitLockCallback: 0
     };
-    // a function to quickly reset the callCounts object.
-    function ClearCallCounts() {
-        var keys = Object.keys(callCounts);
-        for (keys in callCounts) {
-            callCounts[keys] = 0;
-        }
-    };
     afterEach(function() {
-        ClearCallCounts();
+        ClearCallCounts(callCounts);
         augur.executeTrade = executeTrade;
         augur.placeBid = placeBid;
     });
@@ -195,8 +196,189 @@ describe("takeOrder.placeBuy", function() {
         }
     });
 });
+
 describe("takeOrder.placeSell", function() {});
-describe("takeOrder.placeShortSell", function() {});
+
+describe("takeOrder.placeShortSell", function() {
+    // 3 tests total
+    var executeShortSell = augur.executeShortSell;
+    var placeShortAsk = augur.placeShortAsk;
+    var callCounts = {
+        tradeCommitLockCallback: 0,
+        executeShortSell: 0,
+        placeShortAsk: 0
+    };
+    afterEach(function() {
+        ClearCallCounts(callCounts);
+        augur.executeShortSell = executeShortSell;
+        augur.placeShortAsk = placeShortAsk;
+    });
+    var test = function(t) {
+        it(t.description, function(done) {
+            augur.executeShortSell = t.executeShortSell;
+            augur.placeShortAsk = t.placeShortAsk;
+
+            augur.placeShortSell(t.market, t.outcomeID, t.numShares, t.limitPrice, t.address, t.totalCost, t.tradingFees, t.orderBooks, t.doNotMakeOrders, t.tradeGroupID, t.tradeCommitmentCallback, t.tradeCommitLockCallback);
+
+            t.assertions(done);
+        });
+    };
+    test({
+        description: 'Should handle an error from executeShortSell',
+        market: { id: '0xa1' },
+        outcomeID: '2',
+        numShares: '50',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '25.5',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: true,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeShortSell: function(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeShortSell++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '2');
+            assert.equal(numShares, '50');
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            // return an error in this case
+            cb({ error: 999, message: 'Uh-Oh!' }, undefined);
+        },
+        placeShortAsk: function(market, outcomeID, remainingShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                tradeCommitLockCallback: 2,
+                executeShortSell: 1,
+                placeShortAsk: 0
+            });
+            done();
+        }
+    });
+    test({
+        description: 'Should call executeShortSell and completely fill the sell order',
+        market: { id: '0xa1' },
+        outcomeID: '2',
+        numShares: '50',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '25.5',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: true,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeShortSell: function(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeShortSell++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '2');
+            assert.equal(numShares, '50');
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            // return an error in this case
+            cb(null, { remainingShares: new BigNumber('0') });
+        },
+        placeShortAsk: function(market, outcomeID, remainingShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                tradeCommitLockCallback: 2,
+                executeShortSell: 1,
+                placeShortAsk: 0
+            });
+            done();
+        }
+    });
+    test({
+        description: 'Should call executeShortSell and partially fill the sell order, then place a shortAsk for the rest of the order',
+        market: { id: '0xa1' },
+        outcomeID: '2',
+        numShares: '50',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '25.5',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeShortSell: function(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeShortSell++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '2');
+            assert.equal(numShares, '50');
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            // return an error in this case
+            cb(null, { remainingShares: new BigNumber('10') });
+        },
+        placeShortAsk: function(market, outcomeID, remainingShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+            assert.deepEqual(market, { id: '0xa1' });
+            assert.equal(outcomeID, '2');
+            assert.equal(remainingShares, '10');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                tradeCommitLockCallback: 2,
+                executeShortSell: 1,
+                placeShortAsk: 1
+            });
+            done();
+        }
+    });
+});
 // import { describe, it } from 'mocha';
 // import { assert } from 'chai';
 // import proxyquire from 'proxyquire';
