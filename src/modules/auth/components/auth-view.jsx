@@ -11,7 +11,8 @@ import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/view
 
 export default class AuthView extends Component {
   static propTypes = {
-    authForm: PropTypes.object
+    authForm: PropTypes.object,
+    authAirbitz: PropTypes.object
   }
 
   constructor(props) {
@@ -57,8 +58,6 @@ export default class AuthView extends Component {
   render() {
     const p = this.props;
     const s = this.state;
-
-    // console.log('p -- ', p);
 
     return (
       <section id="auth_view">

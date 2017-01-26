@@ -1,1 +1,58 @@
-// TODO
+.auth-signup-form {
+  span:first-of-type {
+    align-self: center;
+    color: @color-text-light-extra-light;
+    margin: 1em 0;
+  }
+
+  .auth-signup-password {
+    z-index: 10;
+  }
+
+  .isHidden {
+    .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+
+    border: 0;
+    font-size: 0;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    transform: translateY(-100%);
+  }
+
+  .isVisible {
+    .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .password-confirm {
+    border-top: 0;
+  }
+
+  .username {
+    .isHidden();
+  }
+
+  .remember-me {
+    align-self: flex-end;
+    margin: 1em 0;
+  }
+
+  .password-suggestions {
+    .font-size-small();
+
+    &.isHidden {
+      margin-top: 0;
+    }
+
+    color: @color-orange-light;
+    list-style-type: disc;
+    margin-top: 0.6em;
+
+    li {
+      margin: 0.2em 0 0.2em 2em;
+    }
+  }
+}

@@ -102,8 +102,18 @@
       }
     }
 
-    .auth-import {
-      // TODO
+    & > form {
+      display: flex;
+      flex-direction: column;
+      margin: 0 2em 2em;
+
+      input {
+        background-color: @color-white;
+      }
+
+      input[type='submit'] {
+        align-self: flex-end;
+      }
     }
   }
 }
