@@ -67,7 +67,7 @@ module.exports = {
               orderBook[marketID] = updatedOrderBook;
               var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
               if (tradeIDs && tradeIDs.length) {
-                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback);
+                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback);
               } else if (!doNotMakeOrders) {
                 self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
               }

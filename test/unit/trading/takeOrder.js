@@ -4,6 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var noop = require("../../../src/utilities").noop;
 var BigNumber = require("bignumber.js");
+// 12 tests total
 
 // a function to quickly reset the callCounts object.
 function ClearCallCounts(callCounts) {
@@ -198,7 +199,7 @@ describe("takeOrder.placeBuy", function() {
 });
 
 describe("takeOrder.placeSell", function() {
-    // ? tests total
+    // 6 tests total
     var executeTrade = augur.executeTrade;
     var getParticipantSharesPurchased = augur.getParticipantSharesPurchased;
     var placeAsk = augur.placeAsk;
@@ -461,6 +462,261 @@ describe("takeOrder.placeSell", function() {
                 placeShortAsk: 1,
                 getOrderBook: 0,
                 calculateSellTradeIDs: 0,
+                placeShortSell: 0,
+                tradeCommitLockCallback: 2
+            });
+            done();
+        }
+    });
+    test({
+        description: 'Should handle a sell where not all shares are sold, but we have no position, and getOrderBook throws an error',
+        market: { id: '0xa1' },
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '51',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeTrade: function(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeTrade++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(totalEthWithFee, 0);
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            cb(null, { remainingShares: new BigNumber('40') });
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(address, '0x1');
+            assert.equal(outcomeID, '1');
+            cb('0');
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        getOrderBook: function(marketID, cb) {
+            callCounts.getOrderBook++;
+            assert.equal(marketID, '0xa1');
+            cb({ error: 999, message: 'Uh-Oh!' });
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBook, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBooks, tradeGroupID, tradeCommitmentCallback) {
+            callCounts.placeShortSell++;
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                executeTrade: 1,
+                getParticipantSharesPurchased: 1,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                getOrderBook: 1,
+                calculateSellTradeIDs: 0,
+                placeShortSell: 0,
+                tradeCommitLockCallback: 2
+            });
+            done();
+        }
+    });
+    test({
+        description: 'Should handle a sell where not all shares are sold, but we have no position, and there are potential buyers that match in the orderBook',
+        market: { id: '0xa1' },
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '51',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeTrade: function(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeTrade++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(totalEthWithFee, 0);
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            cb(null, { remainingShares: new BigNumber('40') });
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(address, '0x1');
+            assert.equal(outcomeID, '1');
+            cb('0');
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        getOrderBook: function(marketID, cb) {
+            callCounts.getOrderBook++;
+            assert.equal(marketID, '0xa1');
+            cb({ buy: { '0xb1': { amount: '40', price: '0.5' } }, sell: {} });
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBook, address) {
+            callCounts.calculateSellTradeIDs++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(limitPrice, '0.5');
+            assert.deepEqual(orderBook, { '0xa1': { buy: { '0xb1': { amount: '40', price: '0.5' } }, sell: {} }});
+            assert.equal(address, '0x1');
+            return ['0xb1'];
+        },
+        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback) {
+            callCounts.placeShortSell++;
+            assert.deepEqual(market, { id: '0xa1' });
+            assert.equal(outcomeID, '1');
+            assert.equal(remainingShares, '40');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(address, '0x1');
+            assert.equal(totalCost, '51');
+            assert.equal(tradingFees, '0.01');
+            assert.deepEqual(orderBook, { '0xa1': { buy: { '0xb1': { amount: '40', price: '0.5' } }, sell: {} }});
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.isFunction(tradeCommitmentCallback);
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                executeTrade: 1,
+                getParticipantSharesPurchased: 1,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                getOrderBook: 1,
+                calculateSellTradeIDs: 1,
+                placeShortSell: 1,
+                tradeCommitLockCallback: 2
+            });
+            done();
+        }
+    });
+    test({
+        description: 'Should handle a sell where not all shares are sold, but we have no position, and there are no potential buyers that match in the orderBook',
+        market: { id: '0xa1' },
+        outcomeID: '1',
+        numShares: '100',
+        limitPrice: '0.5',
+        address: '0x1',
+        totalCost: '51',
+        tradingFees: '0.01',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: function(lock) {
+            callCounts.tradeCommitLockCallback++;
+            switch(callCounts.tradeCommitLockCallback) {
+            case 2:
+                assert.isFalse(lock);
+                break;
+            default:
+                assert.isTrue(lock);
+                break;
+            }
+        },
+        executeTrade: function(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+            callCounts.executeTrade++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(totalEthWithFee, 0);
+            assert.equal(tradingFees, '0.01');
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.equal(address, '0x1');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: {} }});
+            assert.isFunction(getTradeIDs);
+            assert.isFunction(tradeCommitmentCallback);
+            cb(null, { remainingShares: new BigNumber('40') });
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(address, '0x1');
+            assert.equal(outcomeID, '1');
+            cb('0');
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+            assert.deepEqual(market, { id: '0xa1' });
+            assert.equal(outcomeID, '1');
+            assert.equal(shortAskShares, '40');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        getOrderBook: function(marketID, cb) {
+            callCounts.getOrderBook++;
+            assert.equal(marketID, '0xa1');
+            cb({ buy: {}, sell: {} });
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBook, address) {
+            callCounts.calculateSellTradeIDs++;
+            assert.equal(marketID, '0xa1');
+            assert.equal(outcomeID, '1');
+            assert.equal(limitPrice, '0.5');
+            assert.deepEqual(orderBook, { '0xa1': { buy: {}, sell: {} }});
+            assert.equal(address, '0x1');
+            return [];
+        },
+        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback) {
+            callCounts.placeShortSell++;
+        },
+        assertions: function(done) {
+            assert.deepEqual(callCounts, {
+                executeTrade: 1,
+                getParticipantSharesPurchased: 1,
+                placeAsk: 0,
+                placeShortAsk: 1,
+                getOrderBook: 1,
+                calculateSellTradeIDs: 1,
                 placeShortSell: 0,
                 tradeCommitLockCallback: 2
             });
