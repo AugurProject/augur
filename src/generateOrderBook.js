@@ -69,14 +69,14 @@ module.exports = function (p, cb) {
     for (i = 0; i < numOutcomes; ++i) {
       if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
           initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-            console.log("priceDepth:", priceDepth.toFixed());
-            console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-            console.log("minValue:", minValue.toFixed());
-            console.log("maxValue:", maxValue.toFixed());
-            console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-            console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-            console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-            console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+            // console.log("priceDepth:", priceDepth.toFixed());
+            // console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+            // console.log("minValue:", minValue.toFixed());
+            // console.log("maxValue:", maxValue.toFixed());
+            // console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+            // console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+            // console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+            // console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
             return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
           }
       if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
@@ -168,12 +168,12 @@ module.exports = function (p, cb) {
                     nextBuyPrice();
                   },
                   onFailed: function (err) {
-                    console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                    // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                     nextBuyPrice(err);
                   }
                 });
               }, function (err) {
-                if (err) console.error("async.each buy:", err);
+                // if (err) console.error("async.each buy:", err);
                 callback(err);
               });
             },
@@ -204,12 +204,12 @@ module.exports = function (p, cb) {
                     nextSellPrice();
                   },
                   onFailed: function (err) {
-                    console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                    // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                     nextSellPrice(err);
                   }
                 });
               }, function (err) {
-                if (err) console.error("async.each sell:", err);
+                // if (err) console.error("async.each sell:", err);
                 callback(err);
               });
             }
@@ -229,7 +229,7 @@ module.exports = function (p, cb) {
         });
       },
       onFailed: function (err) {
-        console.error("generateOrderBook.buyCompleteSets failed:", err);
+        // console.error("generateOrderBook.buyCompleteSets failed:", err);
         onFailed(err);
       }
     });

@@ -20815,20 +20815,6 @@ module.exports={
           "int256"
         ]
       }, 
-      "addToMarketsHash": {
-        "inputs": [
-          "branch", 
-          "newHash"
-        ], 
-        "label": "Add To Markets Hash", 
-        "method": "addToMarketsHash", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
       "addTrade": {
         "inputs": [
           "market", 
@@ -21001,17 +20987,6 @@ module.exports={
         "label": "Get Market Num Outcomes", 
         "method": "getMarketNumOutcomes", 
         "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketsHash": {
-        "inputs": [
-          "branch"
-        ], 
-        "label": "Get Markets Hash", 
-        "method": "getMarketsHash", 
-        "returns": "int256", 
         "signature": [
           "int256"
         ]
@@ -22507,38 +22482,38 @@ module.exports={
 module.exports={
     "10101": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
         "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Cash": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "CollectFees": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "CompleteSets": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "ConsensusData": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "CreateBranch": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "CreateMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "EventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "Faucets": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "ForkPenalize": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "FxpFunctions": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "PenalizationCatchup": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
-        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "SlashRep": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
@@ -22583,41 +22558,41 @@ module.exports={
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "BuyAndSellShares": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
-        "CloseMarket": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "CompleteSets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "CompositeGetters": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
-        "Consensus": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
+        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
+        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
+        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
+        "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
+        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Forking": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
+        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
+        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "Markets": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "Payout": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "PenalizeNotEnoughReports": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
+        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
+        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ReportingThreshold": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "RoundTwo": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "RoundTwoPenalize": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SendReputation": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
         "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
-        "Trade": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Trades": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7"
+        "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
+        "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }
 }
 },{}],58:[function(require,module,exports){
@@ -23524,6 +23499,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
+  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
 
@@ -24187,14 +24164,14 @@ module.exports = function (p, cb) {
     var i, j, buyPrice, sellPrice, outcomeShares;
     for (i = 0; i < numOutcomes; ++i) {
       if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) || initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-        console.log("priceDepth:", priceDepth.toFixed());
-        console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-        console.log("minValue:", minValue.toFixed());
-        console.log("maxValue:", maxValue.toFixed());
-        console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-        console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-        console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-        console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+        // console.log("priceDepth:", priceDepth.toFixed());
+        // console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+        // console.log("minValue:", minValue.toFixed());
+        // console.log("maxValue:", maxValue.toFixed());
+        // console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+        // console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+        // console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+        // console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
         return _onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
       }
       if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) || initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
@@ -24284,12 +24261,12 @@ module.exports = function (p, cb) {
                   nextBuyPrice();
                 },
                 onFailed: function onFailed(err) {
-                  console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                  // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                   nextBuyPrice(err);
                 }
               });
             }, function (err) {
-              if (err) console.error("async.each buy:", err);
+              // if (err) console.error("async.each buy:", err);
               callback(err);
             });
           }, function (callback) {
@@ -24319,12 +24296,12 @@ module.exports = function (p, cb) {
                   nextSellPrice();
                 },
                 onFailed: function onFailed(err) {
-                  console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                  // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                   nextSellPrice(err);
                 }
               });
             }, function (err) {
-              if (err) console.error("async.each sell:", err);
+              // if (err) console.error("async.each sell:", err);
               callback(err);
             });
           }], constants.PARALLEL_LIMIT, function (err) {
@@ -24343,7 +24320,7 @@ module.exports = function (p, cb) {
         });
       },
       onFailed: function onFailed(err) {
-        console.error("generateOrderBook.buyCompleteSets failed:", err);
+        // console.error("generateOrderBook.buyCompleteSets failed:", err);
         _onFailed(err);
       }
     });
@@ -24370,7 +24347,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.8.11";
+  this.version = "3.9.0";
 
   this.options = {
     debug: {
@@ -25115,6 +25092,35 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+  getOrderBookChunked: function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
+    var self = this;
+    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!totalTrades) {
+      return this.get_total_trades(marketID, function (totalTrades) {
+        if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
+          return callback(totalTrades);
+        }
+        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+      });
+    }
+    this.getOrderBook({
+      market: marketID,
+      offset: offset,
+      numTradesToLoad: numTradesToLoad || totalTrades,
+      scalarMinMax: scalarMinMax
+    }, function (orderBookChunk) {
+      if (!orderBookChunk || orderBookChunk.error) {
+        console.error("getOrderBook failed:", marketID, orderBookChunk);
+        return callback(orderBookChunk);
+      }
+      chunkCB(orderBookChunk);
+      if (offset + numTradesToLoad < totalTrades) {
+        return self.getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback);
+      }
+      callback(null);
+    });
+  },
 
   // load each batch of marketdata sequentially and recursively until complete
   loadNextMarketsBatch: function loadNextMarketsBatch(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
@@ -26176,7 +26182,7 @@ module.exports = {
     }
     this.getLogs("marketCreated", { marketID: marketID }, function (err, logs) {
       // TODO change on next contract reupload to callback(err)
-      if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      // if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
       callback(null, self.getFirstLogBlockNumber(logs));
     });
   },
@@ -46321,6 +46327,8 @@ module.exports = {
 
   BID: 1,
   ASK: 2,
+
+  ORDERBOOK_MAX_CHUNK_SIZE: 100,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
