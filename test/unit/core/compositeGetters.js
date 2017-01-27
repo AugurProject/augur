@@ -7,6 +7,168 @@ var abi = require("augur-abi");
 var constants = require("../../../src/constants");
 // 68 tests total
 
+describe("CompositeGetters.getOrderBookChunked", function () {
+  var getOrderBook = augur.getOrderBook;
+  var get_total_trades = augur.get_total_trades;
+  after(function () {
+    augur.getOrderBook = getOrderBook;
+    augur.get_total_trades = get_total_trades;
+  });
+  var test = function (t) {
+    it(t.description, function (done) {
+      augur.getOrderBook = function (params, callback) {
+        if (!callback) return t.state.orderBook;
+        callback(t.state.orderBook);
+      };
+      augur.get_total_trades = function (marketID, callback) {
+        if (!callback) return t.state.totalNumOrders;
+        callback(t.state.totalNumOrders);
+      };
+      augur.getOrderBookChunked(t.params.marketID, t.params.offset, t.params.numTradesToLoad, t.params.scalarMinMax, t.params.totalNumOrders, t.assertions, done);
+    });
+  };
+  test({
+    description: "load full empty order book",
+    params: {
+      marketID: "0xa1",
+      offset: 0,
+      numTradesToLoad: null,
+      scalarMinMax: {},
+      totalTrades: null
+    },
+    state: {
+      totalNumOrders: 0,
+      orderBook: {buy: {}, sell: {}}
+    },
+    assertions: function (orderBookChunk) {
+      throw new Error(JSON.stringify(orderBookChunked));
+    }
+  });
+  test({
+    description: "load full order book",
+    params: {
+      marketID: "0xa1",
+      offset: 0,
+      numTradesToLoad: null,
+      scalarMinMax: {},
+      totalTrades: null
+    },
+    state: {
+      totalNumOrders: 4,
+      orderBook: {
+        buy: {
+          "0xb1": {
+            id: "0xb1",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.0625",
+            fullPrecisionPrice: "0.0625",
+            owner: "0xb0b",
+            block: 1,
+            outcome: "2"
+          },
+          "0xb2": {
+            id: "0xb2",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.1187",
+            fullPrecisionPrice: "0.11875",
+            owner: "0xb0b",
+            block: 2,
+            outcome: "2"
+          }
+        },
+        sell: {
+          "0xc1": {
+            id: "0xc1",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.9375",
+            fullPrecisionPrice: "0.9375",
+            owner: "0xb0b",
+            block: 3,
+            outcome: "2"
+          },
+          "0xc2": {
+            id: "0xc2",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.8813",
+            fullPrecisionPrice: "0.88125",
+            owner: "0xb0b",
+            block: 4,
+            outcome: "2"
+          }
+        }
+      }
+    },
+    assertions: function (orderBookChunk) {
+      assert.deepEqual(orderBookChunk, {
+        buy: {
+          "0xb1": {
+            id: "0xb1",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.0625",
+            fullPrecisionPrice: "0.0625",
+            owner: "0xb0b",
+            block: 1,
+            outcome: "2"
+          },
+          "0xb2": {
+            id: "0xb2",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.1187",
+            fullPrecisionPrice: "0.11875",
+            owner: "0xb0b",
+            block: 2,
+            outcome: "2"
+          }
+        },
+        sell: {
+          "0xc1": {
+            id: "0xc1",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.9375",
+            fullPrecisionPrice: "0.9375",
+            owner: "0xb0b",
+            block: 3,
+            outcome: "2"
+          },
+          "0xc2": {
+            id: "0xc2",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.8813",
+            fullPrecisionPrice: "0.88125",
+            owner: "0xb0b",
+            block: 4,
+            outcome: "2"
+          }
+        }
+      });
+    }
+  });
+});
+
 describe('CompositeGetters.loadNextMarketsBatch', function() {
   // 5 tests total
   var assertionsCC = 0;

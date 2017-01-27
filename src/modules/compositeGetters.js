@@ -13,6 +13,35 @@ var constants = require("../constants");
 
 module.exports = {
 
+  getOrderBookChunked: function (marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
+    var self = this;
+    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!totalTrades) {
+      return this.get_total_trades(marketID, function (totalTrades) {
+        if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
+          return callback(totalTrades);
+        }
+        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+      });
+    }
+    this.getOrderBook({
+      market: marketID,
+      offset: offset,
+      numTradesToLoad: numTradesToLoad || totalTrades,
+      scalarMinMax: scalarMinMax
+    }, function (orderBookChunk) {
+      if (!orderBookChunk || orderBookChunk.error) {
+        console.error("getOrderBook failed:", marketID, orderBookChunk);
+        return callback(orderBookChunk);
+      }
+      chunkCB(orderBookChunk);
+      if (offset + numTradesToLoad < totalTrades) {
+        return self.getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback);
+      }
+      callback(null);
+    });
+  },
+
   // load each batch of marketdata sequentially and recursively until complete
   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
     var self = this;
