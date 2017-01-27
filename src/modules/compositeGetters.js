@@ -67,7 +67,7 @@ module.exports = {
   loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
     var self = this;
 
-        // Try hitting a cache node, if available
+    // Try hitting a cache node, if available
     if (!this.augurNode.nodes.length) {
       return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
     }
