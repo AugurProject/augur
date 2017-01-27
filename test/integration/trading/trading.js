@@ -160,7 +160,7 @@ describe("Trade", function () {
               assert.isNull(r.callReturn);
             },
             onSuccess: function (r) {
-              assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+              assert.include(augur.get_trade_ids(markets[t.market], 0, 0), abi.hex(r.callReturn));
               augur.get_trade(r.callReturn, function (trade) {
                 assert.isObject(trade);
                 assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
@@ -260,7 +260,7 @@ describe("Trade", function () {
                   assert.isNull(r.callReturn);
                 },
                 onSuccess: function (r) {
-                  assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+                  assert.include(augur.get_trade_ids(markets[t.market], 0, 0), abi.hex(r.callReturn));
                   augur.get_trade(r.callReturn, function (trade) {
                     assert.isObject(trade);
                     assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
@@ -358,7 +358,7 @@ describe("Trade", function () {
               onSuccess: function (r) {
                 assert(r.hash);
                 assert.isNotNull(r.callReturn);
-                assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+                assert.include(augur.get_trade_ids(markets[t.market], 0, 0), abi.hex(r.callReturn));
                 augur.cancel(r.callReturn, function (r) {
                   assert.isNull(r.callReturn);
                 }, function (r) {
@@ -453,7 +453,7 @@ describe("Trade", function () {
                 onSuccess: function (r) {
                   var new_trade_id = r.callReturn;
                   augur.useAccount(unlockable[1]);
-                  var trade_ids = augur.get_trade_ids(markets[t.market]);
+                  var trade_ids = augur.get_trade_ids(markets[t.market], 0, 0);
                   assert.include(trade_ids, abi.hex(new_trade_id));
                                     // var orderBook = augur.getOrderBook(markets[t.market]);
                                     // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
@@ -539,7 +539,7 @@ describe("Trade", function () {
                 amount: t.amount,
                 onSent: utils.noop,
                 onSuccess: function (r) {
-                  var trade_ids = augur.get_trade_ids(markets[t.market]);
+                  var trade_ids = augur.get_trade_ids(markets[t.market], 0, 0);
                   assert.include(trade_ids, abi.hex(new_trade_id));
                   // var orderBook = augur.getOrderBook(markets[t.market]);
                   // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
@@ -706,7 +706,7 @@ describe("Trade", function () {
           onSuccess: function (r) {
             var new_trade_id = r.callReturn;
             augur.useAccount(unlockable[1]);
-            var trade_ids = augur.get_trade_ids(markets[t.market]);
+            var trade_ids = augur.get_trade_ids(markets[t.market], 0, 0);
             assert.include(trade_ids, abi.hex(new_trade_id));
             // var orderBook = augur.getOrderBook(markets[t.market]);
             // console.log("[before] order book for", markets[t.market], JSON.stringify(orderBook, null, 4));
@@ -820,7 +820,7 @@ describe("Trade", function () {
             var tradeID = r.callReturn;
             var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
             assert.strictEqual(parseFloat(finalShares - initShares), 0);
-            assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(tradeID));
+            assert.include(augur.get_trade_ids(markets[t.market], 0, 0), abi.hex(tradeID));
             var trade = augur.get_trade(tradeID);
             assert.isObject(trade);
             assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);

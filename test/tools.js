@@ -395,7 +395,7 @@ module.exports = {
       var trades = {};
       async.forEachOf(markets, function (market, type, nextMarket) {
         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
-        var marketTrades = augur.get_trade_ids(market);
+        var marketTrades = augur.get_trade_ids(market, 0, 0);
         if (!marketTrades || !marketTrades.length) {
           return nextMarket("no trades found for " + market);
         }

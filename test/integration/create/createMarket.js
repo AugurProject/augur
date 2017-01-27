@@ -45,10 +45,7 @@ describe("CreateMarket.createMarket", function () {
               makerFee: t.makerFee,
               extraInfo: t.extraInfo,
               events: eventID,
-              onSent: function (res) {
-                assert(res.txHash);
-                assert.isNull(res.callReturn);
-              },
+              onSent: function (res) {},
               onSuccess: function (res) {
                 var marketID = res.callReturn;
                 assert.strictEqual(augur.getCreator(marketID), augur.from);
@@ -170,10 +167,7 @@ describe("CreateMarket.createMarket", function () {
           maxValue: t.maxValue,
           numOutcomes: t.numOutcomes,
           resolution: t.resolution,
-          onSent: function (r) {
-            assert(r.txHash);
-            assert(r.callReturn);
-          },
+          onSent: function (r) {},
           onSuccess: function (r) {
             var eventID = r.callReturn;
             assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
@@ -186,10 +180,7 @@ describe("CreateMarket.createMarket", function () {
               makerFee: t.makerFee,
               tags: t.tags,
               extraInfo: t.extraInfo || "",
-              onSent: function (res) {
-                assert(res.txHash);
-                assert.isNull(res.callReturn);
-              },
+              onSent: function (res) {},
               onSuccess: function (res) {
                 var marketID = res.callReturn;
                 augur.getMarketInfo(marketID);
@@ -266,19 +257,11 @@ describe("CreateMarket.createMarket", function () {
       "Will the Larsen B ice shelf collapse by November 1, 2017?",
       new Date("11-2-2017").getTime()/1000 + new Date().getTime()/1000*Math.random(),
       "http://lmgtfy.com"
-    ], [
-      "Will Hillary Clinton win the 2016 U.S. Presidential Election?",
-      new Date("1-2-2017").getTime()/1000 + new Date().getTime()/1000*Math.random(),
-      ""
-    ], [
-      "Will Bernie Sanders win the 2016 Democratic nomination for U.S. President?",
-      new Date("7-29-2016").getTime()/1000 + new Date().getTime()/1000*Math.random(),
-      "http://lmgtfy.com"
     ]];
     it.each(events, "%s", ["element"], function (element, next) {
       this.timeout(tools.TIMEOUT*2);
 
-            // create an event
+      // create an event
       var branch = augur.constants.DEFAULT_BRANCH_ID;
       var description = element[0];
       var expDate = element[1];
@@ -300,10 +283,7 @@ describe("CreateMarket.createMarket", function () {
         maxValue: maxValue,
         numOutcomes: numOutcomes,
         resolution: resolution,
-        onSent: function (r) {
-          assert(r.txHash);
-          assert(r.callReturn);
-        },
+        onSent: function (r) {},
         onSuccess: function (r) {
           var eventID = r.callReturn;
           var creator = augur.getCreator(eventID);
@@ -313,7 +293,7 @@ describe("CreateMarket.createMarket", function () {
           assert.strictEqual(creator, augur.coinbase);
           assert.strictEqual(augur.getDescription(eventID), description);
 
-                    // incorporate the new event into a market
+          // incorporate the new event into a market
           var takerFee = "0.02";
           augur.createMarket({
             branchId: branch,
@@ -323,10 +303,7 @@ describe("CreateMarket.createMarket", function () {
             makerFee: "0.0075",
             tags: tags,
             extraInfo: extraInfo,
-            onSent: function (res) {
-              assert(res.txHash);
-              assert.isNull(res.callReturn);
-            },
+            onSent: function (res) {},
             onSuccess: function (res) {
               var marketID = res.callReturn;
               var creator = augur.getCreator(marketID);
