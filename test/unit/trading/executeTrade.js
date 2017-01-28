@@ -445,7 +445,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: new BigNumber('0'),
         remainingShares: new BigNumber('0'),
         filledShares: new BigNumber('100'),
@@ -642,7 +642,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: new BigNumber('0'),
         remainingShares: new BigNumber('0'),
         filledShares: new BigNumber('0'),
@@ -692,7 +692,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
         remainingShares: new BigNumber('100'),
         filledShares: constants.ZERO,
@@ -742,7 +742,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
         remainingShares: new BigNumber('100'),
         filledShares: constants.ZERO,
@@ -792,7 +792,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
         remainingShares: constants.ZERO,
         filledShares: constants.ZERO,
@@ -842,7 +842,7 @@ describe("executeTrade.executeTrade", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
         remainingShares: constants.ZERO,
         filledShares: constants.ZERO,
@@ -904,7 +904,7 @@ describe("executeTrade.executeShortSell", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('100'),
         filledShares: constants.ZERO,
         filledEth: constants.ZERO,
@@ -939,7 +939,7 @@ describe("executeTrade.executeShortSell", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('100'),
         filledShares: constants.ZERO,
         filledEth: constants.ZERO,
@@ -974,7 +974,7 @@ describe("executeTrade.executeShortSell", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: constants.ZERO,
         filledShares: constants.ZERO,
         filledEth: constants.ZERO,
@@ -1062,7 +1062,7 @@ describe("executeTrade.executeShortSell", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('0'),
         filledShares: new BigNumber('100'),
         filledEth: new BigNumber('50'),
@@ -1210,7 +1210,7 @@ describe("executeTrade.executeShortSell", function() {
     },
     assertions: function(err, res) {
       assert.isNull(err);
-      assert.deepEqual(JSON.stringify(res), JSON.stringify({
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('0'),
         filledShares: new BigNumber('100'),
         filledEth: new BigNumber('50'),
