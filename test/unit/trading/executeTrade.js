@@ -1015,7 +1015,8 @@ describe("executeTrade.executeShortSell", function() {
           filledEth: '0',
           filledShares: '0',
           tradingFees: '0.01',
-          gasFees: '0'
+          gasFees: '0',
+          isShortSell: true
         });
         break;
       case 2:
@@ -1116,7 +1117,8 @@ describe("executeTrade.executeShortSell", function() {
           filledEth: '0',
           filledShares: '0',
           tradingFees: '0.01',
-          gasFees: '0'
+          gasFees: '0',
+          isShortSell: true
         });
         break;
       case 2:
@@ -1142,7 +1144,8 @@ describe("executeTrade.executeShortSell", function() {
           filledEth: '25',
           filledShares: '50',
           tradingFees: '0.01',
-          gasFees: '0.09'
+          gasFees: '0.09',
+          isShortSell: true
         });
         break;
       case 5:
@@ -1256,7 +1259,8 @@ describe("executeTrade.executeShortSell", function() {
         filledEth: '0',
         filledShares: '0',
         tradingFees: '0.01',
-        gasFees: '0'
+        gasFees: '0',
+        isShortSell: true
       });
     },
     short_sell: function(trade) {
@@ -1328,7 +1332,8 @@ describe("executeTrade.executeShortSell", function() {
           filledEth: '0',
           filledShares: '0',
           tradingFees: '0.01',
-          gasFees: '0'
+          gasFees: '0',
+          isShortSell: true
         });
         break;
       }
