@@ -859,12 +859,12 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0576",
-          costEth: "2.9424",
-          avgPrice: "0.58848",
-          feePercent: "1.9575856443719412",
-          noFeePrice: "0.6"
+          costEth: "2.0576",
+          avgPrice: "0.41152",
+          feePercent: "2.7993779160186625",
+          noFeePrice: "0.42304"
         }];
-        testTradeActions(actions, expected);
+        assert.deepEqual(actions, expected);
       }
     });
 
@@ -1009,10 +1009,10 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.02304",
-          costEth: "1.17696",
-          avgPrice: "0.58848",
-          feePercent: "1.9575856443719412",
-          noFeePrice: "0.6"
+          costEth: "0.82304",
+          avgPrice: "0.41152",
+          feePercent: "2.7993779160186625",
+          noFeePrice: "0.42304"
         }, {
           action: "SHORT_ASK",
           shares: "3",
@@ -1023,7 +1023,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        assert.deepEqual(actions, expected);
       }
     });
 
@@ -1059,10 +1059,10 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0588",
-          costEth: "3.4412",
-          avgPrice: "0.68824",
-          feePercent: "1.7087062652563059",
-          noFeePrice: "0.7"
+          costEth: "1.5588",
+          avgPrice: "0.31176",
+          feePercent: "3.7721324095458044",
+          noFeePrice: "0.32352"
         }];
         testTradeActions(actions, expected);
       }
@@ -1100,10 +1100,10 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.02352",
-          costEth: "1.37648",
-          avgPrice: "0.68824",
-          feePercent: "1.7087062652563059",
-          noFeePrice: "0.7"
+          costEth: "0.62352",
+          avgPrice: "0.31176",
+          feePercent: "3.7721324095458044",
+          noFeePrice: "0.32352"
         }, {
           action: "SHORT_ASK",
           shares: "3",
@@ -1158,10 +1158,10 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03224",
-          costEth: "2.26776",
-          avgPrice: "0.75592",
-          feePercent: "1.4216671958231911",
-          noFeePrice: "0.766666666666666666"
+          costEth: "0.73224",
+          avgPrice: "0.24408",
+          feePercent: "4.4029280017480607",
+          noFeePrice: "0.254826666666666666"
         }, {
           action: "SHORT_ASK",
           shares: "2",
@@ -1224,12 +1224,12 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0452",
-          costEth: "4.0548",
-          avgPrice: "0.81096",
-          feePercent: "1.1147282233402387",
-          noFeePrice: "0.82"
+          costEth: "0.9452",
+          avgPrice: "0.18904",
+          feePercent: "4.7820567075751163",
+          noFeePrice: "0.19808"
         }];
-        testTradeActions(actions, expected);
+        assert.deepEqual(actions, expected);
       }
     });
 
@@ -1361,12 +1361,12 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03456",
-          costEth: "1.76544",
-          avgPrice: "0.58848",
-          feePercent: "1.9575856443719412",
-          noFeePrice: "0.6"
+          costEth: "1.23456",
+          avgPrice: "0.41152",
+          feePercent: "2.7993779160186625",
+          noFeePrice: "0.42304"
         }];
-        testTradeActions(actions, expected);
+        assert.deepEqual(actions, expected);
       }
     });
 
@@ -1461,12 +1461,12 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03528",
-          costEth: "2.06472",
-          avgPrice: "0.68824",
-          feePercent: "1.7087062652563059",
-          noFeePrice: "0.7"
+          costEth: "0.93528",
+          avgPrice: "0.31176",
+          feePercent: "3.7721324095458044",
+          noFeePrice: "0.32352"
         }];
-        testTradeActions(actions, expected);
+        assert.deepEqual(actions, expected);
       }
     });
 
@@ -1569,10 +1569,10 @@ describe("getTradingActions", function () {
           shares: "1",
           gasEth: "0.02119592",
           feeEth: "0.01176",
-          costEth: "0.68824",
-          avgPrice: "0.68824",
-          feePercent: "1.7087062652563059",
-          noFeePrice: "0.7"
+          costEth: "0.31176",
+          avgPrice: "0.31176",
+          feePercent: "3.7721324095458044",
+          noFeePrice: "0.32352"
         }, {
           action: "SHORT_ASK",
           shares: "2",
@@ -1644,10 +1644,10 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03224",
-          costEth: "2.26776",
-          avgPrice: "0.75592",
-          feePercent: "1.4216671958231911",
-          noFeePrice: "0.766666666666666666"
+          costEth: "0.73224",
+          avgPrice: "0.24408",
+          feePercent: "4.4029280017480607",
+          noFeePrice: "0.254826666666666666"
         }];
         testTradeActions(actions, expected);
       }
@@ -2128,10 +2128,10 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.288",
-          feePercent: "1.9575856443719412",
-          costEth: "14.712",
-          avgPrice: "2.9424",
-          noFeePrice: "3"
+          feePercent: "0.337679392177094",
+          costEth: "85.288",
+          avgPrice: "17.0576",
+          noFeePrice: "17.1152"
         }];
         assert.lengthOf(actions, expected.length);
         testTradeActions(actions, expected);
@@ -2221,10 +2221,10 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.1152",
-          feePercent: "1.9575856443719412",
-          costEth: "5.8848",
-          avgPrice: "2.9424",
-          noFeePrice: "3"
+          feePercent: "0.337679392177094",
+          costEth: "34.1152",
+          avgPrice: "17.0576",
+          noFeePrice: "17.1152"
         }];
         assert.lengthOf(actions, expected.length);
         testTradeActions(actions, expected);
@@ -2272,10 +2272,10 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.1152",
-          feePercent: "1.9575856443719412",
-          costEth: "5.8848",
-          avgPrice: "2.9424",
-          noFeePrice: "3"
+          feePercent: "0.337679392177094",
+          costEth: "34.1152",
+          avgPrice: "17.0576",
+          noFeePrice: "17.1152"
         }];
         assert.lengthOf(actions, expected.length);
         testTradeActions(actions, expected);

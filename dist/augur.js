@@ -24349,7 +24349,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.3";
+  this.version = "3.9.4";
 
   this.options = {
     debug: {
@@ -28976,8 +28976,11 @@ module.exports = {
             fullPrecisionPrice = scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined ? abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) : bid.fullPrecisionPrice;
             tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
             totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-            etherToShortSell = etherToShortSell.plus(tradingCost.cash);
             remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            if (scalarMinMax && scalarMinMax.maxValue) {
+              orderSharesFilled = new BigNumber(scalarMinMax.maxValue, 10).times(orderSharesFilled);
+            }
+            etherToShortSell = etherToShortSell.plus(orderSharesFilled.minus(tradingCost.cash));
             if (remainingOrderShares.lte(constants.PRECISION.zero)) {
               break;
             }

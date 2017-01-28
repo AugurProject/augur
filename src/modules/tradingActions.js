@@ -436,8 +436,11 @@ module.exports = {
               bid.fullPrecisionPrice;
             tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
             totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-            etherToShortSell = etherToShortSell.plus(tradingCost.cash);
             remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+            if (scalarMinMax && scalarMinMax.maxValue) {
+              orderSharesFilled = new BigNumber(scalarMinMax.maxValue, 10).times(orderSharesFilled);
+            }
+            etherToShortSell = etherToShortSell.plus(orderSharesFilled.minus(tradingCost.cash));
             if (remainingOrderShares.lte(constants.PRECISION.zero)) {
               break;
             }
