@@ -1,5 +1,4 @@
 import { describe, it, beforeEach } from 'mocha';
-import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from 'test/mockStore';
@@ -17,8 +16,8 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   };
   const store = mocks.store;
   const loadBidsAsksModule = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
-  '../../../services/augurjs': augurJsMock,
-  '../../bids-asks/actions/update-market-order-book': updateMarketOrderBookModule,
+    '../../../services/augurjs': augurJsMock,
+    '../../bids-asks/actions/update-market-order-book': updateMarketOrderBookModule,
     '../../../store': store
   });
 
